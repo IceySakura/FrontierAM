@@ -1,0 +1,3 @@
+# Local legacy configurations can contain credentials.
+/*.yaml
+/*.yml

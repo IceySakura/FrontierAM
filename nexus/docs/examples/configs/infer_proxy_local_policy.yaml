@@ -1,0 +1,11 @@
+# 用于已配置好 infer_proxy 主模型的本地任务，沿用原来的模型名称、API Key 和服务地址。
+# 默认每分钟最多 600 次模型请求；模型繁忙时会自动降速，恢复后继续。
+# 直接 --use 本文件即可。需要其他额度时再用 --set 覆盖 quota_qpm。
+body:
+  openai_clients:
+    main:
+      config:
+        client_args:
+          local_request_policy:
+            quota_qpm: 600
+source: infer-proxy-local-policy

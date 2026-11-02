@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list . "scheduler") }}
+  labels:
+    {{- include "nexus-distributed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: scheduler
+spec:
+  replicas: {{ .Values.scheduler.replicas }}
+  selector:
+    matchLabels:
+      {{- include "nexus-distributed.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: scheduler
+  template:
+    metadata:
+      labels:
+        {{- include "nexus-distributed.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: scheduler
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: scheduler
+          image: {{ include "nexus-distributed.controlImage" . }}
+          imagePullPolicy: {{ .Values.controlImage.pullPolicy }}
+          command: ["sh", "-c"]
+          args:
+            - exec python -m nexus.cli.main distributed scheduler --owner-id "${POD_NAME}"
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{- include "nexus-distributed.processEnv" . | nindent 12 }}
+            {{- include "nexus-distributed.databaseEnv" . | nindent 12 }}
+            {{- include "nexus-distributed.otelEnv" (list . "nexus-distributed-scheduler" "distributed-scheduler") | nindent 12 }}
+          volumeMounts:
+            {{- include "nexus-distributed.databaseSecretVolumeMount" . | nindent 12 }}
+          {{- with .Values.scheduler.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        {{- include "nexus-distributed.databaseSecretVolume" . | nindent 8 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list . "reconciler") }}
+  labels:
+    {{- include "nexus-distributed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: reconciler
+spec:
+  replicas: {{ .Values.reconciler.replicas }}
+  selector:
+    matchLabels:
+      {{- include "nexus-distributed.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: reconciler
+  template:
+    metadata:
+      labels:
+        {{- include "nexus-distributed.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: reconciler
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      automountServiceAccountToken: {{ has "kubernetes" .Values.dynamicEnvironment.enabledProviders }}
+      {{- if has "kubernetes" .Values.dynamicEnvironment.enabledProviders }}
+      serviceAccountName: {{ include "nexus-distributed.componentName" (list . "environment-controller") }}
+      {{- end }}
+      containers:
+        - name: reconciler
+          image: {{ include "nexus-distributed.controlImage" . }}
+          imagePullPolicy: {{ .Values.controlImage.pullPolicy }}
+          args:
+            - distributed
+            - reconciler
+            - --owner-id
+            - "$(POD_NAME)"
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{- include "nexus-distributed.processEnv" . | nindent 12 }}
+            {{- include "nexus-distributed.databaseEnv" . | nindent 12 }}
+            {{- include "nexus-distributed.otelEnv" (list . "nexus-distributed-reconciler" "distributed-reconciler") | nindent 12 }}
+          volumeMounts:
+            {{- include "nexus-distributed.databaseSecretVolumeMount" . | nindent 12 }}
+            {{- with .Values.reconciler.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.reconciler.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        {{- include "nexus-distributed.databaseSecretVolume" . | nindent 8 }}
+        {{- with .Values.reconciler.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

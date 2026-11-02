@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-02",
+  "host_architecture": "arm64",
+  "image_architecture": "amd64",
+  "execution": "QEMU emulation for build/dependency checks only",
+  "native_x86_full_chain_tested": false,
+  "images": {
+    "exponential": {
+      "tag": "frontieram-exponential:port-v1",
+      "image_id": "sha256:367afe23308508ec09d7c60aa32b9f2f915b948794bab6269f01fb8626ee35ee",
+      "architecture": "amd64",
+      "container_image_identity_matches": true,
+      "dependency_check": {
+        "machine": "x86_64",
+        "python": "3.12.16",
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "numerical_check": true
+      },
+      "dockerfile_sha256": "0c166f1a2c5c7f4ae71e0fa225d7f730178e5b7cb05123b4d998a4eaee9a5e8b"
+    },
+    "conic": {
+      "tag": "frontieram-conic:success-v2-port-v1",
+      "image_id": "sha256:1eb2acd506f7dee28b8796a6d206b55babc4733c27ecd58c4ad4eef03cd3cf19",
+      "architecture": "amd64",
+      "container_image_identity_matches": true,
+      "dependency_check": {
+        "machine": "x86_64",
+        "python": "3.12.14",
+        "numpy": "2.3.5",
+        "scipy": "1.16.3",
+        "numerical_check": true
+      },
+      "dockerfile_sha256": "e96b563191277908401f4d002ec1a0307c272cd9ec4d3098bc9e09bd8447c22b"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+# Reuse a DevCloud macOS sandbox selected from an AccountPool by tag.
+#
+# Pool requirement:
+# - pool: gui-sandbox
+# - tags: [devcloud]
+# - credentials: {"instance_ip": "<reachable VM IP>", "server_port": 5000}
+#
+# The 300-second AccountPool lease is renewed automatically while the runtime is
+# in use. Releasing the runtime only detaches it and returns the account to idle;
+# it does not delete the persistent DevCloud VM.
+#
+# Required env: AI_HUB_API_KEY
+# Optional env: NEXUS_ACCOUNT_POOL_ENDPOINT (defaults to the production Polaris endpoint)
+# Run: uv run nexus run-single -o result.json docs/examples/configs/claude_code_native_bridge_devcloud_macos_account_pool.yaml
+
+task_name: identity
+task_config: {}
+
+runtime_provider_name: devcloud
+runtime_provider_config:
+  # Control-plane credentials are optional when reconnecting by instance_ip.
+  app_id: ${oc.env:DEVCLOUD_APP_ID,""}
+  app_token: ${oc.env:DEVCLOUD_APP_TOKEN,""}
+  sandbox_api_base_url: ${oc.env:DEVCLOUD_SANDBOX_API_BASE_URL,"http://21.6.221.82:18800"}
+  lease_time: ${oc.env:DEVCLOUD_LEASE_TIME,900}
+  server_port: 5000
+  request_timeout: ${oc.env:DEVCLOUD_REQUEST_TIMEOUT,1800}
+  instance_ready_timeout: ${oc.env:DEVCLOUD_INSTANCE_READY_TIMEOUT,300}
+
+runtime_configs:
+  main:
+    runtime_pool:
+      name: gui-sandbox
+      lease_ttl_seconds: 300
+      tags:
+        - devcloud
+
+agent_name: claude_code_native_bridge
+agent_config:
+  user_prompt: |
+    请按以下顺序操作：
+    1. 检查当前工作目录是否存在 account-pool-check.txt。
+    2. 如果存在，先读取并完整输出旧文件内容，标记为 previous content。
+    3. 获取当前时间和计算机名。
+    4. 使用当前时间和计算机名更新 account-pool-check.txt；如果不存在则创建。
+    5. 再次读取并完整输出文件内容，标记为 current content。
+    6. 最终回答必须包含原样字符串：runtime account pool reuse verified
+  working_dir: /tmp/nexus-account-pool
+  timeout: 3600
+  # DevCloud macOS images do not guarantee a preinstalled Claude executable.
+  ensure_claude: true
+  npm_registry: https://registry.npmmirror.com
+  pre_start_scripts:
+    - interpreter: bash
+      code: |
+        echo "[pre-start] preparing account-pool workspace"
+        mkdir -p /tmp/nexus-account-pool
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB_API_KEY}?provider=deepseek&model=deepseek-v4-pro&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/v1"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"deepseek-v4-pro"}
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 4200

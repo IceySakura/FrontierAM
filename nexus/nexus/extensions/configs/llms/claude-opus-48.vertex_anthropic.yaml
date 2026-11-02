@@ -1,0 +1,67 @@
+# GCP vertex_anthropic Claude Opus 4.8 LLM Profile
+#
+# 协议与路由：
+#   Client=vertex_anthropic，直接投递 Anthropic payload；模型名是裸 Anthropic id (client 用它拼 vertex endpoint）。thinking 块不能带 display —— vertex 会拒绝。
+#
+# 环境变量：
+#   必填：OPENAI_API_KEY，或 APP_ID + APP_KEY
+#   可选：
+#       ANTHROPIC_VERSION
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#       THINKING_TYPE
+#       THINKING_EFFORT
+#       DROP_FORCED_TOOL_CHOICE_WITH_THINKING
+#       CACHE_CONTROL_*
+#       LOG_LLM_USAGE
+#
+# 使用示例：
+#   LLM_CONFIG=claude-opus-48.vertex_anthropic
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.vertex_anthropic
+
+  # Facts about this model. The scaffold decides what to do with them, in its
+  # agent_config_by_llm section; this file never names a scaffold.
+  llm:
+    family: claude
+    anthropic_model: 'claude-opus-4-8[1m]'
+    no_thinking_request_args:
+      model: 'claude-opus-4-8'
+      max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,65535}}
+      anthropic_version: ${oc.env:ANTHROPIC_VERSION,vertex-2023-10-16}
+    # 协议无关的推理档位 fact，供 scaffold 读取，scaffold 不必知道这条 wire 怎么拼字段。
+    # 这条 wire 的真实字段是 vertex_anthropic 的 output_config.effort；和下面 request_args 用同一个 env var，不会不一致。
+    reasoning_effort: ${oc.env:THINKING_EFFORT,xhigh}
+
+  openai_clients:
+    main:
+      name: vertex_anthropic
+      config:
+        client_args:
+          api_key: ${oc.env:OPENAI_API_KEY,'${oc.env:APP_ID}:${oc.env:APP_KEY}?provider=google&model=claude-opus-4-8&api=claude_api&timeout=300'}
+          base_url: 'http://trpc-gpt-eval.production.polaris:8080'
+          # 数值和布尔值都要套 oc.decode：oc.env 一律返回字符串
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,900}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,15}}
+          cache_control_enabled: ${oc.decode:${oc.env:CACHE_CONTROL_ENABLED,true}}
+          cache_control_strategy: ${oc.env:CACHE_CONTROL_STRATEGY,claude_code}
+          log_llm_usage: ${oc.decode:${oc.env:LOG_LLM_USAGE,true}}
+
+        request_args:
+          model: 'claude-opus-4-8'
+          max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,65535}}
+          anthropic_version: ${oc.env:ANTHROPIC_VERSION,vertex-2023-10-16}
+          # thinking 开启时 vertex 拒绝强制 tool_choice，置 true 让 client 自动丢弃
+          drop_forced_tool_choice_with_thinking: ${oc.decode:${oc.env:DROP_FORCED_TOOL_CHOICE_WITH_THINKING,true}}
+          thinking:
+            type: ${oc.env:THINKING_TYPE,adaptive}
+          output_config:
+            effort: ${oc.env:THINKING_EFFORT,xhigh}
+
+merge:
+  imports: append_unique
+
+source: gcp-opus48-vertex

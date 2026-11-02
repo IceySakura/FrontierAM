@@ -1,0 +1,47 @@
+imports:
+  - nexus.extensions
+
+task_name: terminal_task
+task_config:
+  message: |
+${MESSAGE}
+  run_oracle: ${RUN_ORACLE}
+  task_dir: ${TASK_DIR}
+  test_timeout: ${TEST_TIMEOUT}
+  agent_timeout: ${AGENT_TIMEOUT}
+  docker_timeout: ${DOCKER_TIMEOUT}
+
+
+runtime_provider_name: "docker"
+runtime_provider_config:
+  image: ${IMAGE}
+  runtime_image: ${RUNTIME_IMAGE}
+  request_timeout: ${REQUEST_TIMEOUT}
+  runtime_provider: ${RUNTIME_PROVIDER}
+  resource_spec: ${RESOURCE_SPEC}
+  working_dir: ${WORKING_DIR}
+
+
+agent_name: ${AGENT_NAME}
+agent_config:
+  max_iterations: ${MAX_ITERATIONS}
+
+
+openai_client_name: ${OPENAI_CLIENT_NAME}  # litellm
+openai_clients:
+  main:
+    name: ${OPENAI_CLIENT_MAIN_NAME} # litellm
+    config:
+      client_args:
+        api_key: ${API_KEY}
+        base_url: ${API_BASE}
+      request_args:
+        model: ${MODEL}
+
+processors:
+  chat:
+    name: chat_tracker
+  trace:
+    name: json_line
+    args:
+      file_path: ${TRACE_FILE_PATH}

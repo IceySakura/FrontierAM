@@ -1,0 +1,32 @@
+# LLM backend patch for openai_clients.main.name == "vertex_anthropic".
+#
+# Deep-merged over the stage config (default/*.yaml + SWE_ANY_CONFIG_PATCH)
+# by batch_config.apply_client_patch, after the user patch, so it always wins.
+# vertex_anthropic posts an Anthropic payload directly, so the fields the
+# in-sandbox proxy cannot supply must come from the host client — otherwise
+# extended thinking is silently off. No "display" inside thinking: vertex rejects
+# it, unlike litellm/bedrock. Every value keeps an ${oc.env:...} interpolation so
+# an exported env var still overrides the default.
+openai_clients:
+  main:
+    config:
+      client_args:
+        # Empty = the client derives the endpoint from base_url.
+        endpoint: "${oc.env:SWE_ANY_GCP_ENDPOINT,''}"
+        # Fail fast on a hard/persistent error (e.g. a vertex/google 404 burst) instead of
+        # stalling a feature ~50 min: configurable_retry caps its backoff at 10 min, so the
+        # default 15 retries against a sticky failure burn ~50 min before giving up. A small
+        # count still absorbs transient blips, then returns control to the stage policy (Mask
+        # may use its draft; Select/Eval fail closed) in <~1 min. Bump via
+        # SWE_ANY_LLM_MAX_RETRIES when the backend is healthy for max agentic yield.
+        max_retries: "${oc.decode:${oc.env:SWE_ANY_LLM_MAX_RETRIES,3}}"
+      request_args:
+        model: "${oc.env:OPENAI_MODEL,claude-opus-4-8}"
+        anthropic_version: "${oc.env:SWE_ANY_ANTHROPIC_VERSION,vertex-2023-10-16}"
+        max_tokens: "${oc.decode:${oc.env:SWE_ANY_MAX_TOKENS,16000}}"
+        # Vertex rejects a forced tool_choice while thinking is on.
+        drop_forced_tool_choice_with_thinking: "${oc.decode:${oc.env:SWE_ANY_DROP_FORCED_TOOL_CHOICE_WITH_THINKING,true}}"
+        thinking:
+          type: "${oc.env:SWE_ANY_THINKING_TYPE,adaptive}"
+        output_config:
+          effort: "${oc.env:SWE_ANY_THINKING_EFFORT,xhigh}"

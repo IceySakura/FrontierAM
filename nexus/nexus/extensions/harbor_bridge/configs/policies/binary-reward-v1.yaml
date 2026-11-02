@@ -1,0 +1,9 @@
+# Per-sample HyTuner reward policy. The Harbor verifier's raw score is kept;
+# only the reward consumed by training is binarized.
+body:
+  task_config:
+    hytuner_reward_policy:
+      mode: binary
+      threshold: 1.0
+
+source: binary-reward-v1

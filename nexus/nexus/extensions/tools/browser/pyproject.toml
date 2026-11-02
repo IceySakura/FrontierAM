@@ -1,0 +1,33 @@
+[project]
+name = "browser"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+
+[tool.nexus.tools]
+"browser/click" = "nexus.extensions.tools.browser.actions"
+"browser/close_tab" = "nexus.extensions.tools.browser.actions"
+"browser/fill" = "nexus.extensions.tools.browser.actions"
+"browser/focus_tab" = "nexus.extensions.tools.browser.actions"
+"browser/get_observation" = "nexus.extensions.tools.browser.actions"
+"browser/go_back" = "nexus.extensions.tools.browser.actions"
+"browser/go_forward" = "nexus.extensions.tools.browser.actions"
+"browser/goto" = "nexus.extensions.tools.browser.actions"
+"browser/hover" = "nexus.extensions.tools.browser.actions"
+"browser/list_tabs" = "nexus.extensions.tools.browser.actions"
+"browser/new_tab" = "nexus.extensions.tools.browser.actions"
+"browser/press_key" = "nexus.extensions.tools.browser.actions"
+"browser/scroll" = "nexus.extensions.tools.browser.actions"
+"browser/select_option" = "nexus.extensions.tools.browser.actions"
+"browser/screenshot" = "nexus.extensions.tools.browser.actions"
+"browser/click_at" = "nexus.extensions.tools.browser.actions"
+"browser/double_click_at" = "nexus.extensions.tools.browser.actions"
+"browser/drag" = "nexus.extensions.tools.browser.actions"
+"browser/eval_js" = "nexus.extensions.tools.browser.actions"

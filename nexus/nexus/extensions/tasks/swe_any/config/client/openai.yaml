@@ -1,0 +1,21 @@
+# LLM backend patch for openai_clients.main.name == "openai".
+#
+# Deep-merged over the stage config (default/*.yaml + SWE_ANY_CONFIG_PATCH) by
+# batch_config.apply_client_patch, after the user patch, so it always wins. This is the plain
+# OpenAI-compatible chat-completions path — e.g. Taiji hy3-offline at
+# api.taiji.woa.com/openapi/inner/v2. api_key / base_url come from the stage default's client_args
+# (OPENAI_API_KEY / OPENAI_BASE_URL); this patch only adds the request shape + retry cap. Every
+# value keeps an ${oc.env:...} default so an exported env var still overrides it.
+openai_clients:
+  main:
+    config:
+      client_args:
+        # Fail fast on a hard/persistent error (mirrors litellm/vertex): after a small retry
+        # count, return control to the stage policy (Mask may use its draft; Select/Eval fail
+        # closed) instead of stalling. The default 15 retries could burn ~50 min.
+        max_retries: "${oc.decode:${oc.env:SWE_ANY_LLM_MAX_RETRIES,3}}"
+      request_args:
+        model: "${oc.env:OPENAI_MODEL,hy3-offline}"
+        max_tokens: "${oc.decode:${oc.env:SWE_ANY_MAX_TOKENS,16000}}"
+        # hy3 / reasoning models take an effort knob; harmless for models that ignore it.
+        reasoning_effort: "${oc.env:SWE_ANY_REASONING_EFFORT,high}"

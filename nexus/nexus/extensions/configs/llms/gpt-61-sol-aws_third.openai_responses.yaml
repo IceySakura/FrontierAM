@@ -1,0 +1,105 @@
+# AIHub GPT-6.1 SOL LLM Profile -- aihub-aws-third wire
+#
+# 协议与路由：
+#   Client=openai_responses（不是 chat 的 openai）
+#   Endpoint=http://api.aihub.woa.com/openai/v1/responses
+#   Bearer 必须带 ?provider=aws_third；账号由 key 查询串里的 cache_task_id 动态调度（account_id2 已下线，不要再指定）
+#   模型名在 aws_third 上是 `us.openai.gpt-6.1-sol`（去掉 us.openai. 前缀返回 401/2004）
+#
+# 和 gpt-61-sol.openai_responses.yaml（aihub-azure）的差别，只有网关三件套：
+#   网关       azure                     aws_third
+#   key 后缀   ?provider=azure           ?provider=aws_third
+#   model      gpt-6.1-sol               us.openai.gpt-6.1-sol
+#   账户       无（单一部署）             AIHub 按 cache_task_id 动态调度，见下
+#
+# 为什么生产走这条而不是 azure：**不是为了"能不能跑"**。2026-10-16 实测两条都 200、
+# 都回加密推理；差别在可读 reasoning summary 的产量——同一道硬题各 3 次，azure 共 2 段、
+# aws_third 共 16 段。加密推理人读不了、也不能当训练信号，可读 summary 才是轨迹的价值。
+# （生产 profile 里的注释写"azure drops the CoT return"，只说对了一半：加密块不丢，
+#  丢的是 summary 文本。以实测为准。）
+#
+# 账号与 cache_task_id（iwiki 4031597247）：AIHub 2.0 已支持按 cache_task_id 动态调度账号，account_id2 下线。
+#    同一条轨迹所有请求必须用同一个 cache_task_id，不同轨迹用不同的；它必须放在 key 的 ? 查询串里。
+#    加密推理只能由产出它的账号解码（rethink / CoT hack 环节），所以这个 id 还要写进 nexus output 的
+#    metadata.cache_task_id 交给 HyWay -> CoT hack。两件事都由 generator 一次决定（见 cache_id.py），不写在这里。
+#    实测（2026-10-16）：不带任何账号信息、只带 per-session cache_task_id，加密推理回放 0/9 失败；
+#    既不带 cache_task_id 也不钉账号则 8/10 失败（400 "encrypted reasoning was created for a different account"）。
+#
+# 推理配置：
+#   reasoning.effort 默认 high（生产 gpt61sol-high）或 xhigh（gpt61sol-xhigh）
+#   reasoning.summary 默认 auto、不发 reasoning.mode：与生产 gpt61sol-high 对齐。生产 profile 里写"detailed 会 400、mode 会被拒"，
+#   2026-10-16 在 aws_third 上实测 {summary:auto|detailed}、{mode:standard} 各种组合都是 200，该说法已过时，这里沿用是为了和生产一致
+#   store=false、include=[reasoning.encrypted_content]、max_output_tokens=128000
+#
+# 环境变量：
+#   必填：
+#       HR_API_KEY      裸 key，由本文件补上 ?provider=aws_third
+#   可选：
+#       OPENAI_API_KEY  整串覆盖，自带 query 时不再拼接
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#       REASONING_EFFORT   high / xhigh
+#       REASONING_SUMMARY  默认 auto
+#
+# 使用示例：
+#   LLM_CONFIG=gpt-61-sol-aws_third.openai_responses
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.openai_responses
+
+  # Facts about this model. The scaffold decides what to do with them, in its
+  # agent_config_by_llm section; this file never names a scaffold.
+  llm:
+    family: gpt
+    # 这条 wire 是 aws_third（bedrock 后方），不是 Azure 部署：不要 store=true、不要远端 /compact。
+    use_azure_provider: false
+    # 协议无关的推理档位 fact，供 scaffold 读取。真实字段是 openai_responses 的 reasoning.effort，
+    # 和下面 request_args 用同一个 env var，不会不一致。
+    reasoning_effort: ${oc.env:REASONING_EFFORT,high}
+
+    # 这条 wire 走 Responses，推理以原生 reasoning_items 下发，所以 codex 的 Responses
+    # 转换器不该再从纯文本 reasoning_content 另铸一个 reasoning item（会重复）。
+    # 这是 per-wire 事实而不是家族事实：litellm / openai chat / vertex_anthropic /
+    # infer_proxy 只有纯文本 reasoning_content，必须吃 true 的默认值，否则推理信号丢掉。
+    # 生产同样只在 openai_responses 的 llm 文件上声明 false（4/25 份）。
+    wrap_plaintext_reasoning_content: false
+
+  openai_clients:
+    main:
+      name: openai_responses
+      config:
+        client_args:
+          # 只声明 provider；cache_task_id 由 generator 按轨迹补上（cache_id.py）。
+          api_key: '${oc.env:HR_API_KEY}?provider=aws_third'
+          endpoint: 'http://api.aihub.woa.com/openai/v1/responses'
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,12000}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,32}}
+          capture_raw_io: true
+          # 这条 wire 的 reasoning.effort 下限是 low：脚手架发"不思考"旁路请求时用的 'none'
+          # 会被网关 400 unsupported_value（2026-10-16 实测；'minimal' 同样被拒，而 gpt-6-sol /
+          # gpt-5.6-sol / deepseek 这几条线接受 'none'，所以这是按模型的事实、不是协议事实）。
+          # client 按这个下限把过低的值抬上来，省掉一次必然失败的请求。
+          min_reasoning_effort: low
+          cache_task_id_from_run_id: true
+
+        request_args:
+          model: 'us.openai.gpt-6.1-sol'
+          store: false
+          stream: false
+          max_output_tokens: ${oc.decode:${oc.env:MAX_TOKENS,128000}}
+          reasoning_effort: ${oc.env:REASONING_EFFORT,high}
+          reasoning:
+            effort: ${oc.env:REASONING_EFFORT,high}
+            # auto 是硬要求：这个模型对 detailed 400。
+            summary: ${oc.env:REASONING_SUMMARY,auto}
+            # 刻意不发 reasoning.mode —— 这个模型拒收该键（见文件头）。
+          parallel_tool_calls: true
+          include:
+            - reasoning.encrypted_content
+
+merge:
+  imports: append_unique
+
+source: aihub-aws-third-gpt61-sol-openai-responses

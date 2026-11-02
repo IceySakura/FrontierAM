@@ -1,0 +1,64 @@
+# AIHub 2.0 Claude Opus 5 LLM Profile。
+#
+# 用途：
+#   通过 AIHub 2.0 标准 OpenAI Chat Completions 接口调用 AWS 渠道 Claude Opus 5。
+#
+# 协议与路由：
+#   Client=openai；Endpoint=http://api.aihub.woa.com/standard/v1/chat/completions；
+#   Model=claude-opus-5；Bearer credential 必须携带 ?provider=aws_third。
+#
+# 推理配置：
+#   adaptive thinking、summarized display、effort=max、max_tokens=128000，并启用 prompt cache。
+#
+# 环境变量：
+#   必填：OPENAI_API_KEY（完整值必须包含 ?provider=aws_third）。
+#   可选：AIHUB2_OPUS5_BASE_URL、AIHUB2_OPUS5_MODEL、AIHUB2_OPUS5_CLAUDE_MODEL。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/llm/opus5-aihub-2.0.yaml
+#
+# 组合约束：
+#   llm/ 下的 Profile 互斥，同一次运行只选择一个。
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.openai
+
+  agent_config:
+    thinking_preset: bedrock-claude
+    extra_env:
+      ANTHROPIC_MODEL: ${oc.env:AIHUB2_OPUS5_CLAUDE_MODEL,claude-opus-5}
+
+  openai_clients:
+    main:
+      name: openai
+      config:
+        client_args:
+          api_key__env: OPENAI_API_KEY
+          base_url: ${oc.env:AIHUB2_OPUS5_BASE_URL,http://api.aihub.woa.com/standard/v1}
+          timeout: 3660
+          max_retries: 3
+          cache_control_enabled: true
+          cache_control_strategy: default
+          cache_control_last_n_messages: 1
+
+        request_args:
+          model: ${oc.env:AIHUB2_OPUS5_MODEL,claude-opus-5}
+          max_tokens: 128000
+          # AsyncOpenAI merges ``extra_body`` into the top-level JSON sent to
+          # AIHub, allowing Anthropic-specific request fields on this OpenAI endpoint.
+          extra_body:
+            thinking:
+              type: adaptive
+              display: summarized
+            output_config:
+              effort: max
+
+        enforced_request_args:
+          max_tokens: ${oc.select:openai_clients.main.config.request_args.max_tokens,null}
+
+merge:
+  imports: append_unique
+
+source: harbor-aihub2-opus5

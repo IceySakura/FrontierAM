@@ -1,0 +1,31 @@
+# meta.yaml — HY hashed think 标签泄漏，三通道同一规则。
+canonical_name: think_protocol_leak_hy
+symptom_cluster: think_tag
+display_name: HY think 标签泄漏
+namespace: core.format.think_tag
+description: assistant 的 content、reasoning_content 或 tool_call 参数中出现带 :hex / _hex 的 HY <think> 协议标签。裸 <think> 不报。
+definition: |-
+  检测对象：每个 assistant 消息的 content、reasoning_content，以及结构化 tool_call 参数字符串。
+  命中条件：HASHED_TAG，即小写 think 后紧接 : 或 _ 和至少一位十六进制，例如 <think:6124c78e>、</think_deadbeef>。
+  三通道同一规则，不再按字段做 precision gate。裸 <think> / </think> 不命中——HY 协议本身用 hash 把协议标签和日常 XML 错开；提及、源码、单测留给友商 Think 泄漏。
+  归因：tool 协议标签由 tool_call_protocol_leak_hy 或友商 Tool Call 泄漏报告。hashed <think:hex> 只由本算子报告；裸 <think> 由友商 Think 泄漏报告。
+  输出粒度：每个命中的 assistant turn 一条 Finding；detail 记录命中字段和各字段 token。
+detection_tier: programmable
+channel:
+- content
+- reasoning
+- tool_call
+data_requirement:
+- any
+verification: verified
+example:
+  synthetic: true
+  caption: 任一 assistant 字段出现 <think:hex> / </think:hex>。
+runtime:
+  entrypoint: detect_think_protocol_leak_hy:ThinkProtocolLeakHyDetector
+  applicable_data_types:
+  - trajectory
+  detector_type: rule
+  tags:
+  - taxonomy_0706
+  behavior_version: 1.0.0

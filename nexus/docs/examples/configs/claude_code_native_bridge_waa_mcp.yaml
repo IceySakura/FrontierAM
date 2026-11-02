@@ -1,0 +1,75 @@
+# Claude Code with an MCP server on AGS WindowsAgentArena through the native LLM bridge.
+#
+# On Windows, launch npx through cmd /c so the npm batch shim is resolved correctly.
+# No pre_start_scripts are required. The first cold start may take longer while npx
+# downloads the package.
+#
+# Required env: AGS_SECRET_ID, AGS_SECRET_KEY, AGS_WAA_TOOL_ID, AI_HUB_API_KEY
+# Run:          uv run nexus run-single -o result.json docs/examples/configs/claude_code_native_bridge_waa_mcp.yaml
+
+task_name: identity
+task_config: {}
+
+runtime_provider_name: ags
+runtime_provider_config:
+  secret_id: ${oc.env:AGS_SECRET_ID}
+  secret_key: ${oc.env:AGS_SECRET_KEY}
+  region: ${oc.env:AGS_REGION,"ap-guangzhou"}
+  domain: ${oc.env:AGS_DOMAIN,"${oc.env:AGS_REGION,ap-guangzhou}.tencentags.com"}
+  interface_mode: nexus
+  request_timeout: 900
+  instance_ready_timeout: 300
+
+runtime_configs:
+  main:
+    provision_mode: control_plane
+    launch_mode: native
+    runtime_kind: waa
+    tool_type: waa
+    tool_id: ${oc.env:AGS_WAA_TOOL_ID}
+    interface_mode: nexus
+    timeout: ${oc.env:WAA_TIMEOUT,"900s"}
+
+agent_name: claude_code_native_bridge
+agent_config:
+  user_prompt: |
+    使用已配置的 everything MCP server 的 echo 工具发送文本：
+    nexus native bridge mcp verified on ags waa
+    最终回复 MCP 工具返回的原始文本。不要使用 PowerShell 模拟 echo 结果。
+  working_dir: '%TEMP%\nexus-claude-mcp-waa'
+  timeout: 600
+  # WAA images ship node + claude preinstalled; only probe, never install.
+  ensure_claude: false
+  mcp_servers:
+    - name: everything
+      command: cmd
+      args:
+        - /c
+        - npx
+        - -y
+        - "@modelcontextprotocol/server-everything"
+  extra_env:
+    # Registry used by npm/npx to download MCP server packages.
+    NPM_CONFIG_REGISTRY: "https://registry.npmjs.org/"
+    # Maximum time in milliseconds Claude Code waits for MCP servers to become ready.
+    MCP_TIMEOUT: "300000"
+    CLAUDE_CODE_ATTRIBUTION_HEADER: "0"
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+    CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: "1"
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB_API_KEY}?provider=deepseek&model=deepseek-v4-pro&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/v1"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"deepseek-v4-pro"}
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 4200

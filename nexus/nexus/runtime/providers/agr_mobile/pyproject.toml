@@ -1,0 +1,17 @@
+[project]
+name = "agr_mobile"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "Appium-Python-Client>=3.0.0",
+    "e2b>=0.17.0",
+]
+runtime = []
+
+[tool.nexus]
+runtime_providers = { agr_mobile = "nexus.runtime.providers.agr_mobile.provider" }

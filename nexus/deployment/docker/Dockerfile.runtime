@@ -1,0 +1,108 @@
+# Stage 1: Build nix environment
+FROM nixos/nix:2.26.3 AS nix-builder
+
+RUN mkdir -p ~/.config/nix && \
+    echo 'substituters = https://mirror.sjtu.edu.cn/nix-channels/store https://cache.nixos.org' > ~/.config/nix/nix.conf && \
+    echo 'sandbox = false' >> ~/.config/nix/nix.conf && \
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf && \
+    echo 'tarball-ttl = 31536000' >> ~/.config/nix/nix.conf && \
+    echo 'https://mirror.sjtu.edu.cn/nix-channels/nixpkgs-unstable nixpkgs' > ~/.nix-channels
+
+WORKDIR /workspace
+
+COPY ./deployment/runtime /workspace/
+
+RUN nix build && \
+    mkdir -p /nix-export/nix/store && \
+    for path in $(nix-store -qR ./result); do \
+        cp -a "$path" /nix-export/nix/store ; \
+    done
+
+# Stage 2: Final runtime image
+FROM alpine:3.22.2
+
+WORKDIR /nix/runtime
+
+COPY --from=nix-builder /nix-export /
+COPY --from=nix-builder /workspace/result /nix/runtime/nix-env
+
+# Route docker build (BuildKit) through dind-runc for proxy/CA/mirror injection.
+# Docker 27's BuildKit invokes runc through moby's libexec/docker/runc path, so
+# the nix profile bin/runc override alone is not enough. Repoint the copied nix
+# store entries at image-build time; at pod runtime /nix is effectively fixed.
+RUN set -eu; \
+    for r in /nix/store/*-moby-*/libexec/docker/runc; do \
+        [ -e "$r" ] || continue; \
+        chmod u+w "$(dirname "$r")"; \
+        ln -sf /nix/runtime/nix-env/bin/dind-runc "$r"; \
+    done
+
+ENV PATH=/nix/runtime/nix-env/bin:$PATH \
+    UV_CACHE_DIR=/nix/runtime/uv_cache \
+    UV_INDEX_URL=https://mirrors.tencent.com/pypi/simple/ \
+    NPM_CONFIG_REGISTRY=http://mirrors.tencent.com/npm/ \
+    npm_config_registry=http://mirrors.tencent.com/npm/ \
+    NEXUS_BASH_BIN=/nix/runtime/nix-env/bin/bash
+
+ARG NEXUS_INSTALL_FROM_WHEEL=0
+# Wheel paths must be provided via build args / env when NEXUS_INSTALL_FROM_WHEEL=1.
+# Each Python minor version has its own wheel because the wheel is ABI-tagged
+# (cpXY-cpXY). Leave any version blank to skip building that venv.
+ARG NEXUS_WHEEL_PATH_PY312=
+ARG NEXUS_WHEEL_PATH_PY313=
+ARG NEXUS_WHEEL_PATH_PY314=
+
+COPY ./ /nix/runtime/nexus
+
+# Installed-package contexts omit workspace members; export the existing lock without re-resolving it.
+# Constraints apply only to the core install, leaving module installation independent.
+RUN set -eu; \
+    cd /nix/runtime/nexus; \
+    core_constraints=/tmp/nexus-runtime-core-constraints.txt; \
+    uv export --frozen --no-dev --extra runtime --extra otel \
+        --no-emit-project --no-hashes --output-file "$core_constraints" > /dev/null; \
+    install_from_wheel() { \
+        py="$1"; wheel="$2"; \
+        if [ -z "$wheel" ]; then return 0; fi; \
+        if [ ! -f "$wheel" ]; then echo "nexus wheel not found for python${py}: $wheel" >&2; exit 1; fi; \
+        uv venv ".venv-${py}" --python "/nix/runtime/nix-env/bin/python${py}"; \
+        uv pip install -p ".venv-${py}" -c "$core_constraints" "${wheel}[runtime,otel]"; \
+        LD_LIBRARY_PATH=/nix/runtime/nix-env/lib \
+            VIRTUAL_ENV="/nix/runtime/nexus/.venv-${py}" ".venv-${py}/bin/nexus" modules install --all --runtime; \
+        uv pip check -p ".venv-${py}"; \
+        rm -f "/nix/runtime/nexus/.venv-${py}/lib/python${py}/site-packages/playwright/driver/node"; \
+        ln -s /nix/runtime/nix-env/bin/node "/nix/runtime/nexus/.venv-${py}/lib/python${py}/site-packages/playwright/driver/node"; \
+    }; \
+    install_from_source() { \
+        py="$1"; \
+        uv venv ".venv-${py}" --python "/nix/runtime/nix-env/bin/python${py}"; \
+        uv pip install -p ".venv-${py}" -c "$core_constraints" -e ".[runtime,otel]"; \
+        LD_LIBRARY_PATH=/nix/runtime/nix-env/lib \
+            VIRTUAL_ENV="/nix/runtime/nexus/.venv-${py}" ".venv-${py}/bin/nexus" modules install --all --runtime; \
+        uv pip check -p ".venv-${py}"; \
+        rm -f "/nix/runtime/nexus/.venv-${py}/lib/python${py}/site-packages/playwright/driver/node"; \
+        ln -s /nix/runtime/nix-env/bin/node "/nix/runtime/nexus/.venv-${py}/lib/python${py}/site-packages/playwright/driver/node"; \
+    }; \
+    if [ "$NEXUS_INSTALL_FROM_WHEEL" = "1" ]; then \
+        if [ -z "${NEXUS_WHEEL_PATH_PY312}${NEXUS_WHEEL_PATH_PY313}${NEXUS_WHEEL_PATH_PY314}" ]; then \
+            echo "NEXUS_INSTALL_FROM_WHEEL=1 but no NEXUS_WHEEL_PATH_PY3{12,13,14} is set" >&2; \
+            exit 1; \
+        fi; \
+        install_from_wheel 3.12 "$NEXUS_WHEEL_PATH_PY312"; \
+        install_from_wheel 3.13 "$NEXUS_WHEEL_PATH_PY313"; \
+        install_from_wheel 3.14 "$NEXUS_WHEEL_PATH_PY314"; \
+        find /nix/runtime/nexus -mindepth 1 -maxdepth 1 \
+            ! -name 'deployment' \
+            ! -name '.venv-3.12' \
+            ! -name '.venv-3.13' \
+            ! -name '.venv-3.14' \
+            -exec rm -rf {} +; \
+    else \
+        install_from_source 3.12; \
+        install_from_source 3.13; \
+        install_from_source 3.14; \
+    fi; \
+    rm -f "$core_constraints"
+
+
+VOLUME /nix

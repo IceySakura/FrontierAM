@@ -1,0 +1,100 @@
+# BFCL v4 benchmark configuration example.
+#
+# 评测模型的 function calling 能力，覆盖 30+ 测试类别：
+#   单轮调用、多轮对话、Agentic、相关性检测、格式敏感性等。
+#
+# 用法（单任务调试）：
+#   nexus run -c nexus/extensions/tasks/bfclv4/config.example.yaml
+#
+# 批量模式（推荐）：
+#   BFCL_OPENAI_BASE_URL=... BFCL_OPENAI_API_KEY=... BFCL_OPENAI_MODEL=... \
+#   nexus run-batch -g nexus/extensions/tasks/bfclv4/generator.py \
+#     -d ./outputs/bfclv4.db --max-concurrent 32
+#
+# 批量模式（Taiji client）：
+#   BFCL_OPENAI_CLIENTS_NAME=taiji BFCL_OPENAI_MODEL=your-model \
+#   BFCL_TAIJI_AUTH="Bearer xxx" BFCL_TAIJI_WSID=10103 \
+#   nexus run-batch -g nexus/extensions/tasks/bfclv4/generator.py \
+#     -d ./outputs/bfclv4.db --max-concurrent 32
+
+imports:
+  - nexus.extensions
+
+task_name: "bfcl"
+task_config:
+  # 测试条目（由 generator 填充，单任务调试时手动指定）
+  test_entry: {}
+  test_category: "simple_python"
+  ground_truth: {}
+
+  # 模型参数
+  model_name: "glm-5"
+  is_fc_model: true
+  temperature: 0.0
+
+  # OpenAI 客户端配置（用于在 task 内创建同步客户端）
+  _openai_client_config:
+    base_url: "http://litellm-cn.woa.com"
+    api_key: "YOUR_API_KEY_HERE"
+
+# OpenAI 客户端（框架层，用于提供 ExecutionContext）
+openai_clients:
+  # --- OpenAI-compatible client (default) ---
+  main:
+    name: "openai"
+    config:
+      client_args:
+        api_key: "YOUR_API_KEY_HERE"
+        base_url: "http://litellm-cn.woa.com"
+      request_args:
+        model: "glm-5"
+
+  # --- Taiji client (uncomment to use) ---
+  # main:
+  #   name: "taiji"
+  #   config:
+  #     client_args:
+  #       model: "your-taiji-model-name"
+  #       namespace: "Production"
+  #       service: "stream-server-online-sbs-11644"
+  #       authorization: "Bearer 7auGXNATFSKl7dF"
+  #       wsid: "11644"
+  #       url_pattern: "openapi"
+  #       timeout: 120
+  #       enable_thinking: false
+  #     request_args:
+  #       temperature: 0.0
+
+runner:
+  timeout: 1800  # 单任务超时 30 分钟
+
+# ============================================================================
+# 批量测评环境变量说明
+# ============================================================================
+#
+# 必填（OpenAI-compatible client）：
+#   BFCL_OPENAI_BASE_URL    API 地址
+#   BFCL_OPENAI_API_KEY     API Key
+#   BFCL_OPENAI_MODEL       模型名称（如 glm-5, deepseek-v3.2, gemini-3-flash-preview）
+#
+# 必填（Taiji client，设 BFCL_OPENAI_CLIENTS_NAME=taiji）：
+#   BFCL_OPENAI_CLIENTS_NAME  设为 "taiji"
+#   BFCL_OPENAI_MODEL         Taiji 模型名
+#
+# Taiji 可选（均有默认值）：
+#   BFCL_TAIJI_AUTH            Authorization header（默认 Bearer 7auGXNATFSKl7dF）
+#   BFCL_TAIJI_WSID            Workspace ID（默认 11644）
+#   BFCL_TAIJI_NS              Polaris namespace（默认 Production）
+#   BFCL_TAIJI_SERVICE         Polaris service name（默认 stream-server-online-sbs-11644）
+#   BFCL_TAIJI_URL_PATTERN     openapi 或 v1（默认 openapi）
+#   BFCL_TAIJI_TIMEOUT         超时秒数（默认 120）
+#   BFCL_TAIJI_ENABLE_THINKING 是否开启思考模式（默认 false）
+#
+# 通用可选：
+#   BFCL_CATEGORIES          测试类别（默认 all_scoring，不含 memory）
+#                            可选: all_scoring_with_memory, simple_python, multi_turn_base, ...
+#   BFCL_IS_FC_MODEL         是否支持 function calling（默认 true）
+#   BFCL_TEMPERATURE         采样温度（默认 0.0）
+#   BFCL_SKIP                每类别跳过条数（默认 0）
+#   BFCL_LIMIT               每类别最大条数（调试用）
+#   BFCL_MODEL_RESULT_DIR    memory 类别快照目录（默认 ./workspace/bfcl_memory）

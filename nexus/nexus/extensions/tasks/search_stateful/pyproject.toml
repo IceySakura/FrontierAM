@@ -1,0 +1,15 @@
+[project]
+name = "search_stateful"
+version = "0.1.0"
+authors = [
+    { name = "felixjjiang" },
+    { name = "adamwzhang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["polaris-cpp-py"]
+runtime = []
+
+[tool.nexus]
+tasks = { search_stateful = "nexus.extensions.tasks.search_stateful.task" }

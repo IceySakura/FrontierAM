@@ -1,0 +1,13 @@
+[project]
+name = "cua_gpt_agent"
+version = "0.1.0"
+authors = [
+    { name = "dericwang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { cua_gpt_agent = "nexus.extensions.agents.cua.cua_gpt_agent.agent" }

@@ -1,0 +1,15 @@
+# Local conic-solver success-v2 pilot
+
+This task uses the user's `conic-solver-20261102.tar.gz` (task 0.3.0), with the original mathematical checks and updated success-only verifier. The older 2026-10-28 task is retained as provenance and is not used for new conic attempts.
+
+Import `nexus.extensions.tasks.frontieram_conic`; select task `frontieram_conic_success_offline`, runtime provider `frontieram_conic_offline`, and agent `frontieram_codex_offline`. Provider configuration requires the shared frozen `source_root`, the conic `profile_path` and its SHA256, and a local `docker_host` Unix socket. Credentials remain with the host inference bridge and never enter the development or grading containers.
+
+The public tar contains only the updated instruction, public development resources and the authoritative local pilot override. The override documents the user's 30-minute offline setting, the shared one-CPU/4-GiB development environment, and all inference limits. The original unrestricted online development setting does not apply to this pilot. There are no solver implementations, private tests, baseline results or scoring anchors in this public tar.
+
+The private profile locks the archive, public tar, all original files and an outcome-independent subset of 20 cases: four per group, chosen by a fixed hash ordering before model attempts. Each selected case retains its original updated 1–300-second limit and three repeats. No full-suite score is computed for this subset. Report success counts/rates and diagnostic timings, including per-group counts; a balanced subset is not the same distribution as the full 650-case suite. Missing/invalid evaluation is unmeasured, never a fabricated zero. Invalid submissions are separately reported as submission errors.
+
+Development reuses the existing strict offline container and leased MCP execution boundary. Verification uses a separate networkless container with one CPU and 8 GiB including the original verifier. Its root supervisor starts candidate children as UID/GID 1000 under the original Landlock/seccomp rules. Candidates cannot read private tests or alter grading records. The original grader, checker and supervisor files are not patched; only the documented `config.json` pilot mode/case list is supplied to a stopped verification container. There are no host mounts, exposed Docker sockets or network endpoints in either container.
+
+The full-suite success-v2 mapping remains 0–10, with the frozen baseline at 5 and its relative 90% threshold at 0. Runtime and memory are constraints; they provide no separate score. The supplied anchor is retrospective and explicitly not recalibrated on this local runtime. Even a later full-suite result would need that limitation stated.
+
+The conic integration does not modify the exponential integration or any currently running attempt. Grading containers carry per-attempt ownership labels; cancellation drains owned workers and removes only their resources. Schedule development and grading serially across tasks to avoid CPU0 contention.

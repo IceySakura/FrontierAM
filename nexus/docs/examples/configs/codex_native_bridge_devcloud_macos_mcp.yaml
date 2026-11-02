@@ -1,0 +1,69 @@
+# Codex with an MCP server on a DevCloud macOS sandbox through the native LLM bridge.
+#
+# Codex is downloaded directly from the signed binary URL and verified with SHA256.
+# The first cold start may take longer while npx downloads the MCP server package.
+#
+# Required env: DEVCLOUD_APP_ID, DEVCLOUD_APP_TOKEN, AI_HUB_API_KEY
+# Run:          uv run nexus run-single -o result.json docs/examples/configs/codex_native_bridge_devcloud_macos_mcp.yaml
+
+task_name: identity
+task_config: {}
+
+runtime_provider_name: devcloud
+runtime_provider_config:
+  app_id: ${oc.env:DEVCLOUD_APP_ID}
+  app_token: ${oc.env:DEVCLOUD_APP_TOKEN}
+  sandbox_api_base_url: ${oc.env:DEVCLOUD_SANDBOX_API_BASE_URL,"http://21.6.221.82:18800"}
+  lease_time: ${oc.env:DEVCLOUD_LEASE_TIME,900}
+  server_port: 5000
+  request_timeout: ${oc.env:DEVCLOUD_REQUEST_TIMEOUT,1800}
+  instance_ready_timeout: ${oc.env:DEVCLOUD_INSTANCE_READY_TIMEOUT,300}
+
+runtime_configs:
+  main: {}
+
+agent_name: codex_native_bridge
+agent_config:
+  version: "0.146.1"
+  binary_url: "https://hy-llm-gui-1367471603.cos-internal.ap-guangzhou.tencentcos.cn/native-llm-bridge/codex/0.146.1/darwin-x64/codex?q-sign-algorithm=sha1&q-ak=AKIDJciaOzKRO6apvvlOn23rSwDKMO8gASWN&q-sign-time=1787727967%3B1882336027&q-key-time=1787727967%3B1882336027&q-header-list=host&q-url-param-list=&q-signature=a16ff2bdc8cb53dfd5bce0eaa38c8e44d0dd0ad8"
+  binary_checksum: "0538c29a25b617107c0ce47af38b5a8411f1ce101730d87c03a0d83350cb46d4"
+  model: deepseek-v4-pro
+  user_prompt: |
+    使用已配置的 everything MCP server 的 echo 工具发送文本：
+    nexus native bridge mcp verified on devcloud macos
+    最终回复 MCP 工具返回的原始文本。不要使用 shell 模拟 echo 结果。
+  working_dir: /tmp/nexus-codex-mcp-macos
+  timeout: 600
+  npm_registry: https://registry.npmjs.org
+  use_azure_provider: false
+  mcp_servers:
+    - name: everything
+      command: npx
+      args:
+        - -y
+        - "@modelcontextprotocol/server-everything"
+      env:
+        NPM_CONFIG_REGISTRY: "https://registry.npmjs.org/"
+      startup_timeout_sec: 300
+      tool_timeout_sec: 300
+      enabled_tools:
+        - echo
+      omit_tools_from:
+        - deferred
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB_API_KEY}?provider=deepseek&model=deepseek-v4-pro&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/v1"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"deepseek-v4-pro"}
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 4200

@@ -1,0 +1,29 @@
+[project]
+name = "web_search"
+version = "0.1.0"
+authors = [
+    { name = "shitaoxiao" },
+    { name = "clarenceai" },
+    { name = "mannaliang" },
+    { name = "drakosxiao" },
+    { name = "russellljin" },
+    { name = "kieranzhou" }
+]
+dependencies = [
+    "filelock>=3.13",
+]
+
+[project.optional-dependencies]
+host = []
+runtime = []
+
+[tool.nexus]
+
+[tool.nexus.tools]
+google_search = "nexus.extensions.tools.web_search.google_search"
+google_serper_search = "nexus.extensions.tools.web_search.google_serper_search"
+hunyuan_search = "nexus.extensions.tools.web_search.hunyuan_search"
+image_to_image_search = "nexus.extensions.tools.web_search.image_to_image"
+image_visit = "nexus.extensions.tools.web_search.visit_image"
+text_to_image_search = "nexus.extensions.tools.web_search.text_to_image"
+visit = "nexus.extensions.tools.web_search.visit"

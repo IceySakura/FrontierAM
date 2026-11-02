@@ -1,0 +1,56 @@
+# Taiji A5B-VL STEM GRPO high exp5, step 760, reasoning effort 64.
+#
+# Required:
+#   export OPENAI_API_KEY='<Taiji token>'
+#
+# Usage:
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/llm/taiji-a5b-vl-stem-grpo-exp5-effort64-step760.yaml
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.litellm
+
+  # Preserve the model's reasoning_content when adapting it for agent scaffolds.
+  agent_config:
+    thinking_preset: hunyuan
+    extra_env:
+      ANTHROPIC_MODEL: A5B-VL-STEM-GRPO-high-exp5-261002-effort64-step760
+
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          api_key__env: OPENAI_API_KEY
+          # LiteLLM's OpenAI-compatible route appends /chat/completions.
+          base_url: ${oc.env:TAIJI_A5B_VL_BASE_URL,http://infer-api.taiji.woa.com/api/v1}
+          timeout: 3660
+          max_retries: 3
+          log_llm_usage: true
+          # Derive a stable per-run SessionID and route all calls in one rollout
+          # through the same backend with StrategyType=ConsistentHash.
+          nexus_trace_id_from_run_id: true
+          nexus_llm_lb_strategy: ConsistentHash
+
+        request_args:
+          # LiteLLM requires the provider prefix and sends the bare model to Taiji.
+          model: openai/A5B-VL-STEM-GRPO-high-exp5-261002-effort64-step760
+          max_tokens: 32768
+          extra_body:
+            chat_template_kwargs:
+              reasoning_effort: 64
+
+        # Keep rollout comparisons reproducible and prevent per-call arguments from
+        # dropping the model-required chat_template_kwargs.
+        enforced_request_args:
+          model: openai/A5B-VL-STEM-GRPO-high-exp5-261002-effort64-step760
+          max_tokens: 32768
+          extra_body:
+            chat_template_kwargs:
+              reasoning_effort: 64
+
+merge:
+  imports: append_unique
+
+source: harbor-taiji-a5b-vl-stem-grpo-exp5-effort64-step760

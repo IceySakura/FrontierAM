@@ -1,0 +1,16 @@
+[project]
+name = "deepeyes"
+version = "0.1.0"
+authors = [
+    { name = "kumohu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["pillow>=10.0.0"]
+runtime = []
+
+[tool.nexus]
+agents = { deepeyes_agent = "nexus.extensions.projects.deepeyes.agent" }
+tasks = { deepeyes = "nexus.extensions.projects.deepeyes.task" }
+tools = { "deepeyes/image_zoom_in_tool" = "nexus.extensions.projects.deepeyes.tools" }

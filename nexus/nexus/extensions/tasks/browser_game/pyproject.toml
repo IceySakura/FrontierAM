@@ -1,0 +1,13 @@
+[project]
+name = "browser_game"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { browser_game = "nexus.extensions.tasks.browser_game.task" }

@@ -1,0 +1,14 @@
+[project]
+name = "claude_code"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = ["pyte>=0.8.2,<0.9"]
+
+[tool.nexus]
+agents = { claude_code = "nexus.extensions.agents.claude_code.agent", claude_code_native_bridge = "nexus.extensions.agents.claude_code.agent", claude_code_multiturn = "nexus.extensions.agents.claude_code.agent", claude_code_interactive = "nexus.extensions.agents.claude_code.agent" }
+run_parts = { claude_code = "nexus.extensions.agents.claude_code.run_parts" }

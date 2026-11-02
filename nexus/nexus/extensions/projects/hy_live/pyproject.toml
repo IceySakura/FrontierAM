@@ -1,0 +1,19 @@
+[project]
+name = "hy-live"
+version = "0.1.0"
+authors = [
+    { name = "wallyshi" },
+]
+maintainers = [
+    { name = "wallyshi" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["langfuse>=4.0.0", "hylive>=0.3.5"]
+runtime = []
+
+[tool.nexus]
+agents = { "hy-live" = "nexus.extensions.projects.hy_live.agent" }
+tasks = { "hy-live" = "nexus.extensions.projects.hy_live.task" }
+span_processors = { "hy_live_langfuse_tracker" = "nexus.extensions.projects.hy_live.langfuse_trace" }

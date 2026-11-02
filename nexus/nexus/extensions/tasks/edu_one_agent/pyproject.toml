@@ -1,0 +1,17 @@
+[project]
+name = "edu_one_agent"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "dateparser>=1.3.0",
+    "json-repair>=0.30",
+    "pandas>=2.3.3",
+    "pillow>=10.0",
+    "requests>=2.28",
+]
+runtime = []
+
+[tool.nexus]
+tasks = { edu_one_agent = "nexus.extensions.tasks.edu_one_agent.task" }

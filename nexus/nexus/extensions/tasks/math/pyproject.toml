@@ -1,0 +1,13 @@
+[project]
+name = "math"
+version = "0.1.0"
+authors = [
+    { name = "mannaliang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { math = "nexus.extensions.tasks.math.task" }

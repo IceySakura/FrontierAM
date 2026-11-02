@@ -1,0 +1,18 @@
+[project]
+name = "main"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { main_agent = "nexus.extensions.agents.main.agent" }
+span_processors = { main_agent_metrics = "nexus.extensions.agents.main.processor" }
+
+[tool.nexus.tools]
+"multi_agent/spawn_agent" = "nexus.extensions.agents.main.tools"
+"multi_agent/wait_agent" = "nexus.extensions.agents.main.tools"

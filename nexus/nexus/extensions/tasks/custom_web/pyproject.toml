@@ -1,0 +1,13 @@
+[project]
+name = "custom_web"
+version = "0.1.0"
+authors = [
+    { name = "jusewang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { custom_web = "nexus.extensions.tasks.custom_web.task" }

@@ -1,0 +1,10 @@
+[project]
+name = "kimi-code"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { kimi_code = "nexus.extensions.agents.kimi_code.agent" }

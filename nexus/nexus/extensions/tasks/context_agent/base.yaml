@@ -1,0 +1,114 @@
+imports:
+  - nexus.extensions
+  - nexus.extensions.tasks.context_agent.cache_clients
+  - nexus.trace.processors.token_counter
+  - nexus.extensions.agents.context_agent.general_agent
+  - nexus.extensions.tasks.context_agent.general_task
+  - nexus.extensions.agents.context_agent.tools.general.runtime_tools
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: "http://hyrl-sandbox.prod.woa.com:8052"
+  token: ${oc.env:CTXAGENT_GONGFENG_TOKEN}
+  # Model-visible curl/bash/python commands use this image's PATH and Python.
+  # Its Python packages are pinned in:
+  # nexus/extensions/agents/context_agent/requirements-main-image.txt
+  image: "mirrors.tencent.com/hunyuan_yanguan/context-agent:v1.2"
+  runtime_image: "current"
+  runtime_provider: "suanli"
+  # Deny outbound traffic by default. Dataset items and generator.py add exact
+  # per-row allow rules for HTTP(S) context_files. TaskFiles-only items keep an
+  # empty egress list.
+  network_policy:
+    default_action: deny
+    egress: []
+  request_timeout: 1800.0
+  rpc_protocol: http
+  resource_spec:
+    cpu: 2
+    memory: 10
+
+runtime_configs:
+  main:
+    # Install the current local Nexus wheel into a fresh Worker venv so
+    # Runtime-side Context Agent changes take effect without rebuilding
+    # runtime_image. Model-visible packages still come from the main image.
+    worker_venv:
+      modules: []
+
+task_name: context_agent_general_task
+task_config:
+  max_tool_rounds: 999
+  max_parallel_calls: 0
+  file_search_top_k: 5
+  file_search_chunk_lines: 50
+  python_timeout: 120
+  curl_timeout: 180
+  # Set this for tasks that need their Runtime workspace persisted as
+  # <artifact_root>/<run_id>/workspace before the Runtime is released.
+  artifact_root: null
+  evaluate: true
+
+agent_name: context_agent_general
+
+openai_clients:
+  main:
+    name: context_agent_openai_responses
+    config:
+      client_args:
+        api_key: "${oc.env:CTXAGENT_POLICY_API_KEY}?provider=azure&timeout=1800"
+        # Empty by default: no cache_task_id is sent unless explicitly enabled.
+        cache_task_id_prefix: ${oc.env:CTXAGENT_POLICY_CACHE_TASK_ID_PREFIX,""}
+        endpoint: "http://api.aihub.woa.com/openai/v1/responses"
+        timeout: 1800
+        max_retries: 5
+      request_args:
+        model: "gpt-6-astra"
+        reasoning:
+          # Formal default: xhigh. Set
+          # CTXAGENT_POLICY_REASONING_EFFORT=low for smoke tests.
+          effort: ${oc.env:CTXAGENT_POLICY_REASONING_EFFORT,xhigh}
+          summary: auto
+          context: all_turns
+        include:
+          - reasoning.encrypted_content
+        store: false
+        max_output_tokens: 32768
+  judge:
+    name: context_agent_openai_responses
+    config:
+      client_args:
+        api_key: "${oc.env:CTXAGENT_JUDGE_API_KEY}?provider=azure&timeout=1800"
+        cache_task_id_prefix: ${oc.env:CTXAGENT_JUDGE_CACHE_TASK_ID_PREFIX,""}
+        endpoint: "http://api.aihub.woa.com/openai/v1/responses"
+        timeout: 1800
+        max_retries: 1
+      request_args:
+        model: "gpt-5.6-sol"
+        reasoning:
+          # Formal default: high. Set
+          # CTXAGENT_JUDGE_REASONING_EFFORT=low for smoke tests.
+          effort: ${oc.env:CTXAGENT_JUDGE_REASONING_EFFORT,high}
+          summary: auto
+          context: all_turns
+        include:
+          - reasoning.encrypted_content
+        store: false
+
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      # Policy and agentic Judge are separate chat branches with different
+      # tool sets. Keep the last tools schema on each trajectory so HTML/export
+      # consumers can render the Judge's tools instead of only the Policy's.
+      tools_mode: branch_last
+  tokens:
+    name: token_counter
+    args:
+      client_keys:
+        - main
+        - judge
+
+runner:
+  timeout: 3600

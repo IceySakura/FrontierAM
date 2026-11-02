@@ -1,0 +1,53 @@
+# HyCode Agent Profile（@tencent/hycode CLI，在 Sandbox 内用 npm 安装），适合无人值守
+# 的 Harbor Batch 和 Native Compose 任务。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/agents/hycode.yaml
+#
+# 需要网络装 npm（用 allow_internet=true / public 网的任务）。user_prompt/working_dir
+# 由 Harbor Task 运行时覆盖。HyCode 同时返回原始 exit_code 和规范化 exit_status，
+# Harbor Bridge 据此区分 ENV_DONE、MAX_STEPS、FORMAT_ERROR、TRUNCATION 等终止原因。
+
+body:
+  imports:
+    - nexus.extensions.agents.hycode.agent
+  agent_name: hycode
+  agent_config:
+    version: ${oc.env:HYCODE_PACKAGE_VERSION,0.1.14}
+    npm_registry: ${oc.env:HYCODE_NPM_REGISTRY,http://mirrors.tencent.com/npm/}
+    timeout: ${oc.decode:${oc.env:HYCODE_AGENT_TIMEOUT,7200}}
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/app}
+    config_file_patches: []
+    pre_start_scripts: []
+    mcp_servers: []
+    mcp_servers_mode: strict_file
+    conversion_log_level: ERROR
+    thinking_preset: hunyuan
+    no_thinking_request_args:
+      model: ${oc.select:openai_clients.main.config.request_args.model,null}
+      max_tokens: ${oc.select:openai_clients.main.config.request_args.max_tokens,null}
+    haiku_model: ${oc.select:openai_clients.main.config.request_args.model,null}
+    max_turns: ${oc.decode:${oc.env:HYCODE_MAX_TURNS,100}}
+    stop_on_tool_error: false
+    extra_cli_args:
+      - --print
+      - --input-format
+      - text
+      - --output-format
+      - stream-json
+      - --verbose
+      - --no-session-persistence
+      - --disallowedTools
+      - WebSearch,WebFetch
+    extra_env:
+      ANTHROPIC_MODEL: ${oc.env:HYCODE_ANTHROPIC_MODEL,claude-opus-4-6}
+      _CLAUDE_CODE_ASSUME_FIRST_PARTY_BASE_URL: "1"
+      CLAUDE_CODE_ATTRIBUTION_HEADER: "0"
+      CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+      CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: "1"
+
+merge:
+  imports: append_unique
+
+source: harbor-hycode

@@ -1,0 +1,10 @@
+# Standalone Nexus-native EnterpriseBench example using local Taskfiles.
+compose:
+  - data:
+      uri: /apdcephfs_gy6/share_303171455/yufeihuang/align/ctx_agent_data/nexus_context_agent_eval
+      split: enterprisebench_native_eval_75
+      id: copyworks_1790752c
+  - use: base.yaml
+  - input:
+      task_config:
+        artifact_root: ${oc.env:ENTERPRISEBENCH_ARTIFACT_ROOT,"workspace/enterprisebench_single_native_local/artifacts"}

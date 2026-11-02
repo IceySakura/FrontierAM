@@ -1,0 +1,77 @@
+# litellm / AWS bedrock Claude Opus 4.8 LLM Profile。
+#
+# 协议与路由：
+#   Client=litellm；模型名带 provider 前缀（bedrock/anthropic.claude-opus-4-8）；
+#   Anthropic 专有字段直接放 request_args 顶层，不需要 extra_body。
+#
+# 环境变量：
+#   必填：OPENAI_API_KEY
+#   可选：
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#       THINKING_TYPE
+#       THINKING_EFFORT
+#       CACHE_CONTROL_ENABLED
+#       CACHE_CONTROL_STRATEGY
+#       LOG_LLM_USAGE
+#
+# 使用示例：
+#   LLM_CONFIG=claude-opus-48.litellm
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.litellm
+
+  # Facts about this model. The scaffold decides what to do with them, in its
+  # agent_config_by_llm section; this file never names a scaffold.
+  llm:
+    family: claude
+    anthropic_model: 'claude-opus-4-8[1m]'
+    no_thinking_request_args:
+      model: 'bedrock/anthropic.claude-opus-4-8'
+      max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,65535}}
+    # 输出上限 128000（claude-opus-4-8 / claude-opus-5 在 litellm 成本表里都是 128000）。
+    # 有的 scaffold 会把这两个事实写进自己的 catalog 的 context_window，并直接拿它当
+    # max_tokens 发请求，默认的 1000000 会被 litellm 这条线拒掉（claude-opus-5.litellm 真沙盒实测 400：
+    # max_tokens: 1000000 > 128000）。同一个 litellm client、同一条路径的 opus-4.8 文件一并声明。
+    # 只有 litellm 这条线声明：claude-opus-5.openai 在默认值下已真沙盒跑通，不要为了"一致"去改它。
+    context_window: 128000
+    auto_compact_token_limit: 115000
+    # 协议无关的推理档位 fact，供 scaffold 读取，scaffold 不必知道这条 wire 怎么拼字段。
+    # 这条 wire 的真实字段是 litellm/Anthropic 的 output_config.effort；和下面 request_args 用同一个 env var，不会不一致。
+    reasoning_effort: ${oc.env:THINKING_EFFORT,xhigh}
+
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          api_key: ${oc.env:OPENAI_API_KEY,'${oc.env:APP_ID}:${oc.env:APP_KEY}?provider=aws_third'}
+          base_url: 'http://trpc-gpt-eval.production.polaris:8080'
+          # 数值和布尔值都要套 oc.decode：oc.env 一律返回字符串
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,900}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,15}}
+          cache_control_enabled: ${oc.decode:${oc.env:CACHE_CONTROL_ENABLED,true}}
+          cache_control_strategy: ${oc.env:CACHE_CONTROL_STRATEGY,claude_code}
+          # 记录 token 数、cache 命中率等；仅 nexus 内部消费
+          log_llm_usage: ${oc.decode:${oc.env:LOG_LLM_USAGE,true}}
+
+        request_args:
+          model: 'bedrock/anthropic.claude-opus-4-8'
+          max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,65535}}
+          # codex 经 responses_proxy（converter.py:204）把 text.verbosity 转成 chat 的 verbosity，
+          # anthropic provider 直接拒（claude-opus-5.litellm 上真沙盒实测 400，同一条路径）。
+          # 这条 wire 本身没跑过 codex 真沙盒，按同根因同办法预防性丢掉。
+          additional_drop_params: ['verbosity']
+          thinking:
+            # 可选: adaptive, enabled, disabled
+            type: ${oc.env:THINKING_TYPE,adaptive}
+            display: summarized
+          output_config:
+            effort: ${oc.env:THINKING_EFFORT,xhigh}
+
+merge:
+  imports: append_unique
+
+source: aws-third-opus48-litellm

@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus 浏览器交互演示页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .inline-feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .inline-feedback.show {
+            display: block;
+        }
+
+        .inline-feedback.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .inline-feedback.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .inline-feedback.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .link-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .link-list li {
+            margin-bottom: 10px;
+        }
+
+        .link-list a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+
+        .link-list a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 8px 12px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 8px 12px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .dropdown-menu a:hover {
+            background: #f0f0f0;
+            border-radius: 3px;
+        }
+
+        .scroll-box {
+            height: 200px;
+            overflow-y: scroll;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 15px;
+            background: #f8f9fa;
+        }
+
+        .scroll-box p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .context-menu-area {
+            min-height: 170px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            background: #f8f9ff;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #4a5568;
+            cursor: context-menu;
+            user-select: none;
+        }
+
+        .context-menu-area.active {
+            background: #eef2ff;
+            border-style: solid;
+        }
+
+        .context-menu {
+            display: none;
+            position: fixed;
+            min-width: 210px;
+            background: white;
+            border: 1px solid #d7dce2;
+            border-radius: 8px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+            padding: 8px;
+            z-index: 2000;
+        }
+
+        .context-menu.show {
+            display: block;
+        }
+
+        .context-menu-title {
+            padding: 8px 10px;
+            color: #667eea;
+            font-size: 13px;
+            font-weight: 700;
+            border-bottom: 1px solid #edf0f4;
+            margin-bottom: 6px;
+        }
+
+        .context-menu button {
+            width: 100%;
+            background: transparent;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            padding: 9px 10px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .context-menu button:hover,
+        .context-menu button:focus {
+            background: #f0f2ff;
+            color: #4b5fc9;
+            outline: none;
+        }
+
+        .notification {
+            display: none;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .notification.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .notification.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #667eea;
+        }
+
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            line-height: 20px;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Nexus 浏览器交互演示</h1>
+            <p>这是一个用于演示 Nexus Browser Executor 各种交互功能的页面</p>
+        </div>
+
+        <div class="content">
+            <!-- 浏览器信息 -->
+            <div class="section">
+                <h2>🌐 浏览器信息</h2>
+                <div class="card">
+                    <h3>User-Agent</h3>
+                    <p id="user-agent" style="word-break: break-all; font-family: monospace; font-size: 14px; background: #e9ecef; padding: 10px; border-radius: 5px;"></p>
+                </div>
+            </div>
+
+            <!-- 搜索表单 -->
+            <div class="section" id="section-search">
+                <h2>🔍 搜索功能</h2>
+                <div class="form-group">
+                    <label for="search-input">搜索关键词：</label>
+                    <input type="text" id="search-input" class="search-input" data-testid="search-input" placeholder="请输入搜索关键词..." oninput="updateSearchFeedback()">
+                    <div id="search-feedback" class="inline-feedback info">
+                        <strong>提示：</strong>当前输入为空，请输入关键词后点击搜索按钮
+                    </div>
+                </div>
+                <button class="btn-primary btn-search" id="search-button" data-testid="search-button" onclick="handleSearch()">搜索</button>
+                <div id="search-result-feedback" class="inline-feedback"></div>
+            </div>
+
+            <!-- 表单输入 -->
+            <div class="section" id="section-form">
+                <h2>📝 表单填写</h2>
+                <div class="form-group">
+                    <label for="username">用户名：</label>
+                    <input type="text" id="username" class="form-input" data-testid="username-input" placeholder="请输入用户名" oninput="validateUsername()">
+                    <div id="username-feedback" class="inline-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">邮箱：</label>
+                    <input type="email" id="email" class="form-input" data-testid="email-input" placeholder="example@example.com" oninput="validateEmail()">
+                    <div id="email-feedback" class="inline-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码：</label>
+                    <input type="password" id="password" class="form-input" data-testid="password-input" placeholder="请输入密码" oninput="validatePassword()">
+                    <div id="password-feedback" class="inline-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="bio">个人简介：</label>
+                    <textarea id="bio" class="form-input" data-testid="bio-input" placeholder="介绍一下你自己..." oninput="updateBioCount()"></textarea>
+                    <div id="bio-feedback" class="inline-feedback info show">
+                        <strong>字符数：</strong>0 / 500
+                    </div>
+                </div>
+                <button class="btn-success btn-submit" id="submit-button" data-testid="submit-button" onclick="handleSubmit()">提交表单</button>
+                <div id="submit-feedback" class="inline-feedback"></div>
+            </div>
+
+            <!-- 下拉选择 -->
+            <div class="section" id="section-select">
+                <h2>🎯 下拉选择</h2>
+                <div class="form-group">
+                    <label for="country">选择国家：</label>
+                    <select id="country" class="form-select" data-testid="country-select" onchange="handleCountryChange()">
+                        <option value="">请选择...</option>
+                        <option value="china">中国</option>
+                        <option value="usa">美国</option>
+                        <option value="japan">日本</option>
+                        <option value="uk">英国</option>
+                        <option value="france">法国</option>
+                    </select>
+                    <div id="country-feedback" class="inline-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="framework">选择框架：</label>
+                    <select id="framework" class="form-select" data-testid="framework-select" onchange="handleFrameworkChange()">
+                        <option value="">请选择...</option>
+                        <option value="nexus">Nexus</option>
+                        <option value="langchain">LangChain</option>
+                        <option value="autogen">AutoGen</option>
+                        <option value="crewai">CrewAI</option>
+                    </select>
+                    <div id="framework-feedback" class="inline-feedback"></div>
+                </div>
+            </div>
+
+            <!-- 复选框和单选框 -->
+            <div class="section">
+                <h2>☑️ 选择选项</h2>
+                <div class="form-group">
+                    <label>兴趣爱好（多选）：</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hobby-coding" value="coding">
+                            <label for="hobby-coding">编程</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hobby-reading" value="reading">
+                            <label for="hobby-reading">阅读</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hobby-music" value="music">
+                            <label for="hobby-music">音乐</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hobby-sports" value="sports">
+                            <label for="hobby-sports">运动</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>选择订阅方案（单选）：</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="plan-free" name="plan" value="free">
+                            <label for="plan-free">免费版</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="plan-pro" name="plan" value="pro">
+                            <label for="plan-pro">专业版</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="plan-enterprise" name="plan" value="enterprise">
+                            <label for="plan-enterprise">企业版</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="section" id="section-buttons">
+                <h2>🎨 按钮操作</h2>
+                <div class="button-group">
+                    <button class="btn-primary" id="btn-primary" data-testid="btn-primary" onclick="showInlineFeedback('button-feedback', 'success', '✅ 主要操作执行成功！')">主要按钮</button>
+                    <button class="btn-success" id="btn-success" data-testid="btn-success" onclick="showInlineFeedback('button-feedback', 'success', '✅ 成功操作完成！')">成功按钮</button>
+                    <button class="btn-warning" id="btn-warning" data-testid="btn-warning" onclick="showInlineFeedback('button-feedback', 'info', '⚠️ 警告：请注意！')">警告按钮</button>
+                    <button class="btn-danger" id="btn-danger" data-testid="btn-danger" onclick="showInlineFeedback('button-feedback', 'error', '❌ 危险操作已阻止！')">危险按钮</button>
+                    <button class="btn-primary btn-modal" id="btn-modal" data-testid="btn-modal" onclick="showModal()">打开弹窗</button>
+                </div>
+                <div id="button-feedback" class="inline-feedback"></div>
+            </div>
+
+            <!-- 悬停提示 -->
+            <div class="section" id="section-hover">
+                <h2>💡 悬停提示</h2>
+                <p>将鼠标悬停在下面的元素上查看提示：</p>
+                <div class="button-group">
+                    <div class="tooltip-container">
+                        <button class="btn-primary btn-hover" id="btn-hover-1" data-testid="btn-hover-1">悬停我</button>
+                        <span class="tooltip-text">这是一个悬停提示框</span>
+                    </div>
+                    <div class="tooltip-container">
+                        <button class="btn-success btn-hover" id="btn-hover-2" data-testid="btn-hover-2">查看信息</button>
+                        <span class="tooltip-text">这里有更多信息</span>
+                    </div>
+                    <div class="tooltip-container">
+                        <button class="btn-warning btn-hover" id="btn-hover-3" data-testid="btn-hover-3">帮助</button>
+                        <span class="tooltip-text">点击获取帮助文档</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 自定义右键菜单 -->
+            <div class="section" id="section-context-menu">
+                <h2>🖱️ 自定义右键菜单</h2>
+                <div id="context-menu-area" class="context-menu-area" data-testid="context-menu-area">
+                    <div>
+                        <strong>在页面任意位置右键点击</strong>
+                        <p style="margin-top: 10px;">页面会阻止浏览器原生菜单，并显示由 DOM 实现的自定义菜单。</p>
+                    </div>
+                </div>
+                <div id="context-menu-feedback" class="inline-feedback info">
+                    <strong>提示：</strong>等待右键操作
+                </div>
+            </div>
+
+            <!-- 链接导航 -->
+            <div class="section">
+                <h2>🔗 链接导航</h2>
+                <ul class="link-list">
+                    <li><a href="#section-search" onclick="scrollToSection('section-search')">跳转到搜索部分</a></li>
+                    <li><a href="#section-form" onclick="scrollToSection('section-form')">跳转到表单部分</a></li>
+                    <li><a href="#section-table" onclick="scrollToSection('section-table')">跳转到表格部分</a></li>
+                    <li><a href="https://github.com" target="_blank">外部链接: GitHub</a></li>
+                    <li><a href="javascript:void(0)" onclick="alert('这是一个 JavaScript 链接')">JavaScript 链接</a></li>
+                </ul>
+            </div>
+
+            <!-- 滚动区域 -->
+            <div class="section">
+                <h2>📜 滚动区域</h2>
+                <div class="scroll-box">
+                    <p><strong>第 1 段：</strong>Nexus 是一个强大的 Python 框架，用于编排 AI 智能体并提供运行时隔离。</p>
+                    <p><strong>第 2 段：</strong>它提供与 OpenAI 兼容的 LLM 客户端集成，支持本地和远程（沙箱）工具调用。</p>
+                    <p><strong>第 3 段：</strong>Nexus 支持 Task/Agent/Tool 组合模式，提供灵活的架构设计。</p>
+                    <p><strong>第 4 段：</strong>运行时环境基于 Docker/Nix，确保安全隔离和可重复性。</p>
+                    <p><strong>第 5 段：</strong>浏览器执行器基于 Playwright，提供完整的浏览器自动化能力。</p>
+                    <p><strong>第 6 段：</strong>通过 BrowserGym ID (BID) 系统，可以精确定位和操作页面元素。</p>
+                    <p><strong>第 7 段：</strong>支持页面导航、元素交互、截图等多种操作。</p>
+                    <p><strong>第 8 段：</strong>所有操作都在隔离的容器环境中执行，确保安全性。</p>
+                    <p><strong>第 9 段：</strong>继续滚动查看更多内容...</p>
+                    <p><strong>第 10 段：</strong>你已经到达滚动区域的底部了！</p>
+                </div>
+            </div>
+
+            <!-- 表格 -->
+            <div class="section" id="section-table">
+                <h2>📊 数据表格</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>功能</th>
+                            <th>描述</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>浏览器控制</td>
+                            <td>基于 Playwright 的浏览器自动化</td>
+                            <td>✅ 已实现</td>
+                        </tr>
+                        <tr>
+                            <td>命令执行</td>
+                            <td>在容器中执行 Shell 命令</td>
+                            <td>✅ 已实现</td>
+                        </tr>
+                        <tr>
+                            <td>文件操作</td>
+                            <td>上传和下载文件</td>
+                            <td>✅ 已实现</td>
+                        </tr>
+                        <tr>
+                            <td>Jupyter 会话</td>
+                            <td>管理和执行 Jupyter 代码</td>
+                            <td>✅ 已实现</td>
+                        </tr>
+                        <tr>
+                            <td>终端会话</td>
+                            <td>持久化的交互式终端</td>
+                            <td>✅ 已实现</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 信息卡片 -->
+            <div class="section">
+                <h2>📦 信息卡片</h2>
+                <div class="card">
+                    <h3>关于 Nexus</h3>
+                    <p>Nexus 是一个用于构建 AI 智能体的现代化 Python 框架。它提供了完整的运行时隔离、工具调用和任务编排能力。</p>
+                </div>
+                <div class="card">
+                    <h3>浏览器执行器特性</h3>
+                    <p>支持页面导航、元素定位（BID 系统）、点击、填充、滚动、悬停、键盘操作等全面的浏览器自动化功能。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div id="modal" class="modal" data-testid="modal">
+        <div class="modal-content" data-testid="modal-content">
+            <div class="modal-header">
+                <span class="close" id="modal-close-x" data-testid="modal-close-x" onclick="hideModal()">&times;</span>
+                <h3>提示信息</h3>
+            </div>
+            <p>这是一个模态弹窗示例。您可以通过以下方式关闭它：</p>
+            <ul style="margin: 15px 0; padding-left: 25px; line-height: 1.8;">
+                <li>点击右上角的 × 按钮</li>
+                <li>点击弹窗外部区域</li>
+                <li>按 <strong>Escape</strong> 键</li>
+                <li>点击下方的关闭按钮</li>
+            </ul>
+            <button class="btn-primary btn-modal-close" id="modal-close-btn" data-testid="modal-close-btn" onclick="hideModal()">关闭</button>
+        </div>
+    </div>
+
+    <!-- DOM 自定义右键菜单 -->
+    <div id="custom-context-menu" class="context-menu" role="menu" data-testid="custom-context-menu">
+        <div class="context-menu-title">自定义右键菜单</div>
+        <button type="button" role="menuitem" data-action="inspect" data-testid="context-menu-inspect">查看点击位置</button>
+        <button type="button" role="menuitem" data-action="mark" data-testid="context-menu-mark">标记该区域</button>
+        <button type="button" role="menuitem" data-action="copy" data-testid="context-menu-copy">复制菜单文本</button>
+        <button type="button" role="menuitem" data-action="reset" data-testid="context-menu-reset">重置状态</button>
+    </div>
+
+    <script>
+        // 显示 User-Agent
+        document.getElementById('user-agent').textContent = navigator.userAgent;
+
+        // 通用的内联反馈显示函数
+        function showInlineFeedback(elementId, type, message, autoHide = true) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `inline-feedback show ${type}`;
+            if (autoHide) {
+                setTimeout(() => {
+                    element.className = 'inline-feedback';
+                }, 3000);
+            }
+        }
+
+        // 搜索功能
+        function updateSearchFeedback() {
+            const searchTerm = document.getElementById('search-input').value;
+            const feedback = document.getElementById('search-feedback');
+
+            if (searchTerm.trim() === '') {
+                feedback.className = 'inline-feedback info show';
+                feedback.innerHTML = '<strong>提示：</strong>当前输入为空，请输入关键词后点击搜索按钮';
+            } else {
+                feedback.className = 'inline-feedback success show';
+                feedback.innerHTML = `<strong>准备搜索：</strong>"${searchTerm}" (共 ${searchTerm.length} 个字符)`;
+            }
+        }
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('search-input').value;
+            if (searchTerm.trim()) {
+                showInlineFeedback('search-result-feedback', 'success', `✅ 搜索完成！找到关键词 "${searchTerm}" 的相关结果 15 条`);
+            } else {
+                showInlineFeedback('search-result-feedback', 'error', '❌ 请输入搜索关键词！');
+            }
+        }
+
+        // 表单验证
+        function validateUsername() {
+            const username = document.getElementById('username').value;
+            const feedback = document.getElementById('username-feedback');
+
+            if (username.length === 0) {
+                feedback.className = 'inline-feedback';
+            } else if (username.length < 3) {
+                showInlineFeedback('username-feedback', 'error', '❌ 用户名至少需要 3 个字符', false);
+            } else if (username.length > 20) {
+                showInlineFeedback('username-feedback', 'error', '❌ 用户名不能超过 20 个字符', false);
+            } else {
+                showInlineFeedback('username-feedback', 'success', `✅ 用户名可用 (${username.length}/20)`, false);
+            }
+        }
+
+        function validateEmail() {
+            const email = document.getElementById('email').value;
+            const feedback = document.getElementById('email-feedback');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email.length === 0) {
+                feedback.className = 'inline-feedback';
+            } else if (!emailRegex.test(email)) {
+                showInlineFeedback('email-feedback', 'error', '❌ 邮箱格式不正确', false);
+            } else {
+                showInlineFeedback('email-feedback', 'success', '✅ 邮箱格式正确', false);
+            }
+        }
+
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const feedback = document.getElementById('password-feedback');
+
+            if (password.length === 0) {
+                feedback.className = 'inline-feedback';
+            } else if (password.length < 6) {
+                showInlineFeedback('password-feedback', 'error', `❌ 密码强度：弱 (至少需要 6 个字符，当前 ${password.length} 个)`, false);
+            } else if (password.length < 10) {
+                showInlineFeedback('password-feedback', 'info', `⚠️ 密码强度：中 (建议至少 10 个字符，当前 ${password.length} 个)`, false);
+            } else {
+                showInlineFeedback('password-feedback', 'success', `✅ 密码强度：强 (${password.length} 个字符)`, false);
+            }
+        }
+
+        function updateBioCount() {
+            const bio = document.getElementById('bio').value;
+            const feedback = document.getElementById('bio-feedback');
+            const count = bio.length;
+
+            if (count > 500) {
+                showInlineFeedback('bio-feedback', 'error', `❌ 字符数超出限制：${count} / 500`, false);
+            } else if (count > 400) {
+                showInlineFeedback('bio-feedback', 'info', `⚠️ 字符数：${count} / 500 (即将达到上限)`, false);
+            } else {
+                showInlineFeedback('bio-feedback', 'info', `<strong>字符数：</strong>${count} / 500`, false);
+            }
+        }
+
+        function handleSubmit() {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!username || !email || !password) {
+                showInlineFeedback('submit-feedback', 'error', '❌ 请填写所有必填字段（用户名、邮箱、密码）！');
+            } else if (username.length < 3) {
+                showInlineFeedback('submit-feedback', 'error', '❌ 用户名至少需要 3 个字符！');
+            } else if (!emailRegex.test(email)) {
+                showInlineFeedback('submit-feedback', 'error', '❌ 邮箱格式不正确！');
+            } else if (password.length < 6) {
+                showInlineFeedback('submit-feedback', 'error', '❌ 密码至少需要 6 个字符！');
+            } else {
+                showInlineFeedback('submit-feedback', 'success', `✅ 表单提交成功！用户 "${username}" 已注册`);
+            }
+        }
+
+        // 下拉选择
+        function handleCountryChange() {
+            const country = document.getElementById('country').value;
+            const countryNames = {
+                'china': '中国',
+                'usa': '美国',
+                'japan': '日本',
+                'uk': '英国',
+                'france': '法国'
+            };
+
+            if (country) {
+                showInlineFeedback('country-feedback', 'success', `✅ 已选择国家：${countryNames[country]} (${country})`, false);
+            } else {
+                document.getElementById('country-feedback').className = 'inline-feedback';
+            }
+        }
+
+        function handleFrameworkChange() {
+            const framework = document.getElementById('framework').value;
+            const frameworkInfo = {
+                'nexus': '一个强大的 Python 框架，用于编排 AI 智能体并提供运行时隔离',
+                'langchain': '用于开发由语言模型驱动的应用程序的框架',
+                'autogen': 'Microsoft 开发的多智能体对话框架',
+                'crewai': '用于编排角色扮演、自主 AI 智能体的框架'
+            };
+
+            if (framework) {
+                showInlineFeedback('framework-feedback', 'info', `ℹ️ ${framework.toUpperCase()}：${frameworkInfo[framework]}`, false);
+            } else {
+                document.getElementById('framework-feedback').className = 'inline-feedback';
+            }
+        }
+
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+            return false;
+        }
+
+        function showModal() {
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        const contextMenuArea = document.getElementById('context-menu-area');
+        const customContextMenu = document.getElementById('custom-context-menu');
+        const contextMenuFeedback = document.getElementById('context-menu-feedback');
+        let lastContextMenuPoint = { x: 0, y: 0 };
+
+        function showCustomContextMenu(event) {
+            event.preventDefault();
+            lastContextMenuPoint = { x: event.clientX, y: event.clientY };
+
+            customContextMenu.classList.add('show');
+            const menuRect = customContextMenu.getBoundingClientRect();
+            const left = Math.min(event.clientX, window.innerWidth - menuRect.width - 8);
+            const top = Math.min(event.clientY, window.innerHeight - menuRect.height - 8);
+
+            customContextMenu.style.left = `${Math.max(8, left)}px`;
+            customContextMenu.style.top = `${Math.max(8, top)}px`;
+
+            contextMenuArea.classList.add('active');
+            contextMenuFeedback.className = 'inline-feedback info show';
+            contextMenuFeedback.innerHTML = `<strong>右键位置：</strong>x=${event.clientX}, y=${event.clientY}`;
+        }
+
+        function hideCustomContextMenu() {
+            customContextMenu.classList.remove('show');
+        }
+
+        function handleCustomContextMenuAction(action) {
+            if (action === 'inspect') {
+                showInlineFeedback(
+                    'context-menu-feedback',
+                    'info',
+                    `ℹ️ 上一次右键点击坐标：x=${lastContextMenuPoint.x}, y=${lastContextMenuPoint.y}`,
+                    false
+                );
+            } else if (action === 'mark') {
+                contextMenuArea.classList.add('active');
+                showInlineFeedback('context-menu-feedback', 'success', '✅ 已标记右键菜单区域', false);
+            } else if (action === 'copy') {
+                const text = 'Nexus demo custom context menu';
+                navigator.clipboard?.writeText(text);
+                showInlineFeedback('context-menu-feedback', 'success', `✅ 已复制文本：${text}`, false);
+            } else if (action === 'reset') {
+                contextMenuArea.classList.remove('active');
+                showInlineFeedback('context-menu-feedback', 'info', 'ℹ️ 已重置右键菜单状态', false);
+            }
+            hideCustomContextMenu();
+        }
+
+        document.addEventListener('contextmenu', showCustomContextMenu);
+        customContextMenu.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+        });
+        customContextMenu.addEventListener('click', (event) => {
+            const button = event.target.closest('button[data-action]');
+            if (button) {
+                handleCustomContextMenuAction(button.dataset.action);
+            }
+        });
+        document.addEventListener('click', (event) => {
+            if (!customContextMenu.contains(event.target)) {
+                hideCustomContextMenu();
+            }
+        });
+        window.addEventListener('resize', hideCustomContextMenu);
+        window.addEventListener('scroll', hideCustomContextMenu, true);
+
+        // 点击弹窗外部区域关闭弹窗
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target == modal) {
+                hideModal();
+            }
+        }
+
+        // 按 Escape 键关闭弹窗
+        window.onkeydown = function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('modal');
+                if (modal.classList.contains('show')) {
+                    hideModal();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

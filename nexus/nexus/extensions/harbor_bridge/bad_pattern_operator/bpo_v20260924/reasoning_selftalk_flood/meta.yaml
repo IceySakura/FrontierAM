@@ -1,0 +1,87 @@
+# meta.yaml — reasoning_selftalk_flood
+#
+# Same defect a human reviewer reported as its sibling reasoning_filler_loop
+# ("Let me write. / Here. / Now. / OK." spinning until the block is truncated),
+# but a DIFFERENT measurement, shipped alongside on purpose:
+#
+#   * reasoning_filler_loop  — run length: >= 8 filler lines back to back,
+#                              judged line by line after sentence splitting.
+#   * reasoning_selftalk_flood (this one) — density: the crowding of the
+#                              densest 200-char window, with separate EN/ZH
+#                              bars, and it reports the FIRST qualifying
+#                              window so the verdict matches what a streaming
+#                              inference-side implementation would see.
+#
+# Neither subsumes the other: a run of 8 long-ish filler lines can spread past
+# one window, and a dense window can interleave non-filler text that breaks
+# every run.
+#
+# v0.2.0 widened the scope from reasoning_content to all three assistant output
+# channels after an owner review of real content-channel hits. The canonical
+# name keeps its historical `reasoning_` prefix because a released name is
+# immutable (docs/archive/reference/detector_identity.md) — it is not a scope claim.
+# Census behind the thresholds: docs/archive/notes/selftalk_flood_channel_census.md.
+# NOTE: thresholds live on the detector class (behaviour), not here.
+canonical_name: reasoning_selftalk_flood
+symptom_cluster: repetition
+display_name: 自述句刷屏(思维链/正文/工具参数)
+namespace: core.quality.repetition.reasoning_selftalk_flood
+description: assistant 的思维链、正文或工具调用参数里，自述句起头与换行挤在一个窄窗口内高密度刷屏(“Let me write. / Here. / Now. / OK.”)，该通道塌成一行行短句不再产出新内容；正文侧最常见的形态是 `</think>` 泄漏后跟大段空行、箭头符号刷屏或截断的 JSON 尾巴。
+definition: |-
+  扫 assistant 轮的三个输出通道:reasoning_content、content、tool_call 参数文本
+  (args_raw 加上全部字符串型 args 的并集 —— 序列化 JSON 里换行是字面两字符 \n，
+  只看 args_raw 永远不可能命中)。每个通道独立判定，同一轮命中多个通道就出多条
+  Finding，detail.channel 记录是哪个通道。
+
+  取一个 window_chars (200) 字符的滑窗，统计窗内的关键词出现次数与换行数。
+  两条子判据 OR，任一满足即命中，不预先判语言:
+    算子 EN: 窗内 (let me + 换行) >= en_total (18)          且  let me >= en_keyword (4)
+    算子 ZH: 窗内 (让我/让me/let我 + 换行) >= zh_total (18)  且  让我类 >= zh_keyword (4)
+    两者都要求: 含关键词的行 + 填充行 >= 窗内非空行的 keyword_line_share (40%)
+  填充行指 Here. / Now. / OK. 这类不超过 12 字符、去掉标点后只剩英文字母的短行；中文短行多是标题和
+  列表项，中文只算含关键词的行。
+  关键词下限和行占比是必需的:光靠换行就能凑够总数，逐字节列举/编号清单/ASCII 字形会被误召回。
+  报第一个满足条件的窗口(对应流式实现最早触发的那一刻)，每个(轮, 通道)最多一条 Finding，
+  detail 记 channel/by/n_keyword/n_newline/n_keyword_lines/n_filler_lines/n_lines/first_hit_line。
+
+  0.3.0(2026-10-02)加了行占比，阈值从 28/40、关键词 >= 2 改为 18/18、关键词 >= 4。0.2.0 在 RL rollout
+  上的命中全是“两个 let me 挨着数字清单或字符画”的窗口；加行占比后这些全部排除，阈值随之放低，
+  接住每行一个换行的自述句循环(“Let me search.” 连写 14 行在 0.2.0 下只有 26 分)和反复宣布同一个
+  下一步(“让我先建任务。/ 实际上…… / 让我先建任务。”)。中文不再需要更高的总数，因为挡住正常中文
+  思考的是行占比而不是总数。
+
+  0.2.0 那条线的实际含义(实测 109 万条 assistant 消息，0.3.0 之后只作背景):
+    * 总分的 93%(EN)/95%(ZH) 由换行承担，关键词下限只占 2 分。所以这条线选的是
+      “极短行且拥挤”。正文里能过线的因此是版式塌陷(</think> 泄漏后跟裸换行、
+      箭头符号刷屏、截断 JSON 尾巴)，而不是散文式的自言自语 —— owner 已判定
+      这些属于 bad case，按本算子命中上报。
+    * 正文里句长 20+ 字符的自述句死循环(例如 552KB 的 `Let me persist.` 循环)
+      过不了这条线，归 repetition_content(正文复读)管。为接住它而降阈值，最先
+      涌进来的是正常代码块，所以阈值不动。
+    * tool_call 参数文本基本不存在该现象(关键词出现率 0.18%，阈值从 28 降到 12
+      命中恒为 0)。纳入扫描是为了口径完整与回归哨兵，不是因为那里发现了现象。
+detection_tier: programmable
+channel:
+- reasoning
+- content
+- tool_call
+data_requirement:
+- any
+# Owner marked verified (2026-09-22): counts toward Any Hit. 0.3.0
+# (2026-10-02) changed the matching rule, see definition.
+verification: verified
+example:
+  synthetic: false
+  caption: 正文末段 `</think>` 泄漏后跟 26 行裸空行、或思维链塌成 “Let me write. / Here. / Now. / OK.” 一行一句连续空转直到截断。
+runtime:
+  entrypoint: detect_reasoning_selftalk_flood:ReasoningSelftalkFloodDetector
+  applicable_data_types:
+  - trajectory
+  detector_type: rule
+  tags:
+  - reasoning
+  - content
+  - tool_call
+  - repetition
+  - output_anomaly
+  behavior_version: 0.3.0

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Nexus · Trajectory Explorer</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/media.js" defer></script>
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="./"><span class="brand-mark">N</span>NEXUS <span class="submark">/ EXPLORER</span></a>
+    <div class="section-heading">TRAJECTORY LIBRARY <button id="refresh" title="刷新列表">刷新</button></div>
+    <label class="search"><span>搜索 session</span><input id="search" type="search" placeholder="输入 session ID…" autocomplete="off"></label>
+    <div id="catalog-status" class="muted" role="status"></div>
+    <details id="catalog-errors" hidden><summary id="catalog-error-count">读取问题</summary><div id="catalog-error-list"></div></details>
+    <nav id="catalog" aria-label="轨迹列表"></nav>
+    <div class="pagination"><button id="previous">上一页</button><button id="next">下一页</button></div>
+    <div class="sidebar-footer"><span class="status-dot"></span> 只读 · 离线轨迹<br><span class="muted">Gateway Trajectory 是唯一事实来源</span></div>
+  </aside>
+  <main>
+    <header><div class="eyebrow">OBSERVABILITY / TRAJECTORIES</div><div class="title-row"><h1 id="title">轨迹浏览器</h1><span id="state" class="badge">OFFLINE</span></div><p id="subtitle">选择一条轨迹，查看 Agent 协作和原始消息。</p></header>
+    <section id="metrics" class="metrics" aria-label="轨迹概要"></section>
+    <section class="workspace">
+      <div class="toolbar"><div class="tabs" role="group" aria-label="视图"><button id="overview" class="active">行为泳道</button><button id="raw">原始拓扑</button><button id="conversation">对话</button></div><div class="zoom"><button id="zoom-out" aria-label="缩小">−</button><span id="zoom-value">100%</span><button id="zoom-in" aria-label="放大">+</button><button id="fit">适应画布</button></div></div>
+      <div class="legend"><span><i class="blue"></i>LLM</span><span><i class="gray"></i>消息 / 工具结果</span><span><i class="amber"></i>Segment 边界</span><span class="spawn-key">spawn</span><span class="join-key">join</span><span class="muted">按拓扑顺序排布，不代表真实耗时</span></div>
+      <div id="warnings" role="status"></div>
+      <div class="explorer"><div id="viewport" tabindex="0" aria-label="可拖动和缩放的轨迹画布"><div class="empty">选择左侧轨迹开始浏览。<small>可展开聚合节点，查看 spawn / join 与 segment 事实。</small></div></div><aside id="detail"><div class="eyebrow">INSPECTOR</div><h2>节点详情</h2><p class="muted">点击执行节点或泳道标题。<br>完整消息、调用参数、边界证据及原始事实会显示在这里。</p></aside></div>
+      <footer><span id="graph-status">未加载轨迹</span><span>拖动画布平移 · Ctrl + 滚轮缩放 · 点击泳道箭头折叠</span></footer>
+    </section>
+    <section class="segments-panel" aria-labelledby="segments-title">
+      <div class="segments-heading">
+        <div><h2 id="segments-title">Boundaries / Segments <span id="segment-count" class="badge">未加载</span></h2><p>Source 是完整节点列表；Targets 仅指本段 LLM 输出。共享上下文不等于重复输出。</p></div>
+        <button id="clear-segment" disabled>清除高亮</button>
+      </div>
+      <div class="segment-legend"><span class="segment-target-key">本段输出</span><span class="segment-context-key">上下文 / 轮间消息</span><span class="segment-tail-key">尾部观察</span><span>按规范分段顺序展示，不代表耗时或训练启用状态。</span></div>
+      <div id="segments"><p class="muted">选择轨迹后显示分段。</p></div>
+    </section>
+  </main>
+</body>
+</html>

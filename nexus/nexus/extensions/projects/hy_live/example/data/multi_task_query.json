@@ -1,0 +1,135 @@
+{
+  "case": "multi_task_query",
+  "prompt": "写一个贪吃蛇游戏",
+  "user_simulator": {
+    "type": "llm",
+    "client_name": "user_simulator",
+    "initial_prompt": "写一个贪吃蛇游戏",
+    "scenario": {
+      "meta": {
+        "script_id": "multi_task_query",
+        "topic_id": "hy-live-example-multi-task-query",
+        "expected_turns": [
+          10,
+          16
+        ]
+      },
+      "topic": "一通对话先后交出四个小程序，中间几次问进度",
+      "user": {
+        "background": "你想让助手帮你写几个练手的小程序，一次多交几件，顺便看看它怎么汇报各项工作的进度。",
+        "style": "A",
+        "habits": [
+          "说话短，像随口一句",
+          "已经提过的请求不再重复"
+        ]
+      },
+      "goal": "让助手依次做四件事：贪吃蛇游戏、快速排序、扫雷、俄罗斯方块，中间几次问一问现在的情况。只做这四件，不新增别的事。",
+      "required_nodes": [
+        {
+          "type": "D1",
+          "when": "开场",
+          "action": "让它写一个贪吃蛇游戏。"
+        },
+        {
+          "type": "D3",
+          "when": "在做时：贪吃蛇还在做",
+          "action": "问一句现在有哪些事情在做。"
+        },
+        {
+          "type": "D4",
+          "when": "在做时：贪吃蛇还在做或刚做好，且你已答复过它要的权限",
+          "action": "再交一件：写一个快速排序。"
+        },
+        {
+          "type": "Q2",
+          "when": "做完后：听到贪吃蛇游戏做好了",
+          "action": "问现在还有什么任务在做。"
+        },
+        {
+          "type": "O1",
+          "when": "做完后：听到快速排序做好了",
+          "action": "问有哪些任务做完了。"
+        },
+        {
+          "type": "D4",
+          "when": "空档：问过哪些任务做完了之后",
+          "action": "再交一件：写一个扫雷。"
+        },
+        {
+          "type": "D4",
+          "when": "在做时：扫雷在做，且你已答复过扫雷要的权限",
+          "action": "再交一件：写一个俄罗斯方块。"
+        },
+        {
+          "type": "Q2",
+          "when": "在做时：俄罗斯方块在做，且你已答复过它要的权限",
+          "action": "问游戏写得怎么样了。"
+        },
+        {
+          "type": "D9",
+          "when": "做完后：四项工作都已报告做好",
+          "action": "说一句好的，都看到了，谢谢。"
+        }
+      ],
+      "event_plan": {
+        "permission": {
+          "types": [
+            "P2",
+            "P3"
+          ],
+          "response": "按是哪项工作来答，一次只答助手刚问的那一条：贪吃蛇游戏、俄罗斯方块的权限答应以后都直接允许，说「我都允许」或「全部允许」；快速排序、扫雷的权限只允许这一次，说「允许」。"
+        },
+        "failure": {
+          "types": [
+            "D7"
+          ],
+          "stance": "accept",
+          "response": "说「那个先不用重试了」，还有工作没做完就继续等。"
+        }
+      },
+      "constraints": [
+        "快速排序、扫雷的操作每次都要单独确认，不能让它这两项以后直接做"
+      ],
+      "ending": {
+        "normal": "听到助手报告贪吃蛇游戏、快速排序、扫雷、俄罗斯方块四项工作都已做好，并说过谢谢。",
+        "early": "某项工作被助手明确报告失败，其余工作都已做好或失败。"
+      }
+    },
+    "decision_interval_s": 30,
+    "progress_interval_s": 90,
+    "max_elapsed_s": 1800,
+    "max_turns": 60,
+    "request_args": {
+      "temperature": 0,
+      "reasoning_effort": "low"
+    }
+  },
+  "task_config": {
+    "user_place": {
+      "country": "中国",
+      "province": "上海",
+      "city": "上海"
+    },
+    "user_now": "2026-10-09T14:35:00+08:00",
+    "web_search_provider": "yuanbao",
+    "max_user_turns": 60,
+    "task_delivery_timeout": 1800,
+    "hold_next_user_until_permission": false,
+    "default_budget": {
+      "timeout_s": 2400
+    },
+    "work_agent_configs": {
+      "codebuddy": {
+        "working_dir": "/workspace",
+        "skip_permissions": false,
+        "permission_policy": "defer",
+        "npm_registry": "http://mirrors.tencent.com/npm/"
+      },
+      "workbuddy": {
+        "workbuddy": {
+          "permission_mode": "default"
+        }
+      }
+    }
+  }
+}

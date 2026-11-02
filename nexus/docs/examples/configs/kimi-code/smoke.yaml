@@ -1,0 +1,83 @@
+# The official TypeScript CLI runs in Gongfeng; model calls go through Nexus.
+imports:
+  - nexus.extensions.agents.kimi_code
+  - nexus.extensions.openai_clients.infer_proxy
+  - nexus.trace.processors.chat_tracker
+  - nexus.trace.processors.langfuse_tracker
+
+task_name: identity
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: http://hyrl-sandbox.prod.woa.com:8052
+  token: ${oc.env:GONGFENG_RUNTIME_TOKEN}
+  runtime_image: current
+  purpose: prod
+  request_timeout: 3000
+  resource_spec:
+    cpu: 4
+    memory: 16
+
+runtime_configs:
+  main:
+    image: mirrors.tencent.com/hunyuan_yanguan/ubuntu:24.04
+    worker_venv:
+      modules: []
+
+agent_name: kimi_code
+agent_config:
+  version: '2.3.2'
+  npm_registry: https://mirrors.tencent.com/npm/
+  working_dir: /workspace
+  timeout: 900
+  context_window: 1000000
+  max_tokens: 16384
+  thinking_effort: high
+  max_steps: 20
+  user_prompt: >-
+    Create a.txt containing 17 and b.txt containing 19. Read both files with tools,
+    write their sum to sum.txt, and execute a shell assertion that sum.txt contains
+    36. After the assertion succeeds, reply KIMI_TOOL_OK_36.
+
+openai_clients:
+  main:
+    name: infer_proxy
+    config:
+      client_args:
+        api_key: ${oc.env:OPENAI_API_KEY,EMPTY}
+        base_url: ${oc.env:OPENAI_BASE_URL,"http://infer-proxy-yb-test.production.polaris:8000/openapi"}
+        timeout: 1200
+        max_retries: 3
+      request_args: &model_args
+        model: ${oc.env:MODEL_NAME}
+        max_tokens: 16384
+        temperature: 1.0
+        top_p: 1.0
+        stream: false
+        extra_body:
+          chat_template_kwargs:
+            reasoning_effort: high
+            preserved_thinking: true
+            interleaved_thinking: true
+      enforced_request_args: *model_args
+
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      tools_mode: branch_last
+  langfuse:
+    name: langfuse_tracker
+    args:
+      public_key: ${oc.env:LANGFUSE_PUBLIC_KEY}
+      secret_key: ${oc.env:LANGFUSE_SECRET_KEY}
+      host: ${oc.env:LANGFUSE_BASE_URL}
+      trace_name: kimi-code-tool-smoke
+      tags: [kimi-code, '2.3.2', tool-smoke, high]
+      record_provider_call: true
+      max_content_chars: 0
+      max_tool_chars: 0
+      max_provider_call_chars: 0
+
+runner:
+  timeout: 3600

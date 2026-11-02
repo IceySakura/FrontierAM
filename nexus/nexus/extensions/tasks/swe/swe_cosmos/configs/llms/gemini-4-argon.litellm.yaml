@@ -1,0 +1,63 @@
+# AIHub Google Vertex Gemini 4 Argon LLM Profile。
+#
+# 协议与路由：
+#   Client=litellm；模型名带 gemini/ 前缀，由 litellm 把 OpenAI 格式翻译成 Gemini 原生 generateContent；
+#   AIHub 的 google-vertex 通道只收原生协议，该模型未开通 standard/v1 标准协议，openai / openai_responses / vertex 都走不通；
+#   api_base 只写到 publishers/google，litellm 会自己拼 /models/gemini-4-argon:generateContent；
+#   api_key 由 litellm 放进 x-goog-api-key 请求头，必须带 ?provider=google-vertex，不能省略。
+#
+# 推理配置：
+#   该模型只认 thinkingLevel，不认 thinkingBudget：不要传 reasoning_effort / thinking，litellm 会把它们翻成 thinkingBudget 被拒；
+#   thinkingLevel 不区分大小写，可选 low / medium / high：只有 high 稳定思考，medium 偶尔思考，low 不思考；minimal、xhigh、none 会报 400；max 能过校验但表现和不传一样，不是比 high 更高的档；
+#   thinkingConfig 经 extra_body 原样透传，与 litellm 生成的 generationConfig（maxOutputTokens 等）合并；includeThoughts=true 时思考摘要进 reasoning_content；thoughtSignature 由 client 从 tool_call id 上摘下、跨轮回传时补回 tool_call，脚手架只看到裸 id。
+#
+# 环境变量：
+#   必填：HR_API_KEY
+#   可选：
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#       REASONING_EFFORT（low / medium / high，填进 thinkingLevel）
+#       INCLUDE_THOUGHTS
+#       LOG_LLM_USAGE
+#
+# 使用示例：
+#   LLM_CONFIG=gemini-4-argon.litellm
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.litellm
+
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          api_key: '${oc.env:HR_API_KEY}?provider=google-vertex'
+          api_base: 'http://api.aihub.woa.com/v1beta1/publishers/google'
+          # 数值和布尔值都要套 oc.decode：oc.env 一律返回字符串
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,1800}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,15}}
+          # 记录 token 数、cache 命中率等；仅 nexus 内部消费
+          log_llm_usage: ${oc.decode:${oc.env:LOG_LLM_USAGE,true}}
+          # 消息带 cache_control（如 Claude Code）时 litellm 会先调 cachedContents，AIHub 无此路由，报 2003 非法 api_key
+          strip_cache_control: true
+
+        request_args:
+          model: 'gemini/gemini-4-argon'
+          max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,128000}}
+          extra_body:
+            generationConfig:
+              thinkingConfig:
+                thinkingLevel: ${oc.env:REASONING_EFFORT,high}
+                includeThoughts: ${oc.decode:${oc.env:INCLUDE_THOUGHTS,true}}
+
+        # Codex / ResponsesProxy 等脚手架会在请求里自带 reasoning_effort（如 xhigh）或 thinking，用 null 压掉避免 litellm 翻成 thinkingBudget 报错
+        enforced_request_args:
+          reasoning_effort: null
+          thinking: null
+
+merge:
+  imports: append_unique
+
+source: aihub-google-vertex-gemini4-argon-litellm

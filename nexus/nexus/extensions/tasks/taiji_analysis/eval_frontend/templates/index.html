@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taiji Analysis Benchmark</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+
+        nav { background: #1a1a2e; color: #fff; padding: 12px 24px; display: flex; align-items: center; gap: 24px; position: sticky; top: 0; z-index: 100; }
+        nav h1 { font-size: 16px; font-weight: 600; }
+        nav .tabs { display: flex; gap: 4px; }
+        nav .tab { padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s; }
+        nav .tab:hover { background: rgba(255,255,255,0.1); }
+        nav .tab.active { background: rgba(255,255,255,0.2); }
+
+        .container { max-width: 1600px; margin: 0 auto; padding: 24px; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .card { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 16px; }
+        .card h2 { font-size: 16px; color: #555; margin-bottom: 12px; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; color: #555; position: sticky; top: 0; z-index: 1; }
+        tr:hover { background: #f0f4ff; cursor: pointer; }
+
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+        .badge-pass { background: #d4edda; color: #155724; }
+        .badge-fail { background: #f8d7da; color: #721c24; }
+        .badge-na { background: #e2e3e5; color: #383d41; }
+        .badge-exclude { background: #fff3cd; color: #856404; }
+
+        .label-btn { padding: 4px 10px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 4px; transition: all 0.2s; }
+        .label-btn:hover { border-color: #2563eb; }
+        .label-btn.selected { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+        .split-pane { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .pane { background: #f8f9fa; border-radius: 6px; padding: 16px; max-height: 600px; overflow-y: auto; }
+        .pane h3 { font-size: 14px; color: #555; margin-bottom: 8px; }
+        .pane pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; line-height: 1.6; }
+
+        .filters { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+        .filters select, .filters input { padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+        .filters input[type="text"] { width: 220px; }
+
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary { background: #e5e7eb; color: #333; }
+        .btn-secondary:hover { background: #d1d5db; }
+        .btn-link { background: none; color: #2563eb; padding: 4px 8px; text-decoration: underline; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: #fff; border-radius: 12px; padding: 24px; max-width: 90vw; max-height: 90vh; overflow-y: auto; min-width: 800px; }
+        .modal h2 { margin-bottom: 16px; }
+
+        .progress-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; display: inline-block; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+
+        .summary-row { display: flex; gap: 16px; margin-bottom: 16px; font-size: 13px; color: #666; align-items: center; }
+        .summary-row .metric { font-weight: 600; color: #333; }
+
+        .md-content { font-size: 13px; line-height: 1.7; max-height: 500px; overflow-y: auto; padding: 12px; }
+        .md-content h1, .md-content h2, .md-content h3 { margin: 12px 0 6px; }
+        .md-content h1 { font-size: 18px; } .md-content h2 { font-size: 16px; } .md-content h3 { font-size: 14px; }
+        .md-content p { margin: 6px 0; }
+        .md-content ul, .md-content ol { margin: 6px 0; padding-left: 20px; }
+        .md-content code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+        .md-content pre { background: #f8f9fa; padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+        .md-content blockquote { border-left: 3px solid #ddd; padding-left: 12px; color: #666; margin: 8px 0; }
+        .md-content strong { font-weight: 700; }
+        .md-content hr { border: none; border-top: 1px solid #eee; margin: 12px 0; }
+
+        .ann-note { width: 100%; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; resize: vertical; min-height: 32px; margin-top: 8px; }
+
+        .trace-span { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; background: #fff; }
+        .trace-span-header { padding: 10px 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+        .trace-span-header:hover { background: #f8f9fa; }
+        .trace-span-header .span-name { font-weight: 600; }
+        .trace-span-header .span-time { color: #888; font-size: 12px; margin-left: auto; }
+        .trace-span-header .span-toggle { font-size: 10px; color: #888; width: 16px; }
+        .trace-span-body { display: none; padding: 0 14px 14px; border-top: 1px solid #eee; }
+        .trace-span-body.open { display: block; }
+        .trace-msg { border-left: 3px solid #ddd; padding: 8px 12px; margin: 6px 0; font-size: 12px; border-radius: 0 4px 4px 0; background: #fafafa; }
+        .trace-msg.role-system { border-left-color: #a78bfa; }
+        .trace-msg.role-user { border-left-color: #3b82f6; }
+        .trace-msg.role-assistant { border-left-color: #22c55e; }
+        .trace-msg .msg-role { font-weight: 600; font-size: 11px; text-transform: uppercase; margin-bottom: 4px; }
+        .trace-msg .msg-content { white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow-y: auto; line-height: 1.5; }
+        .trace-output { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 10px; margin-top: 8px; }
+        .trace-output pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; max-height: 400px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <!-- Login -->
+    <div class="modal-overlay show" id="login-overlay">
+        <div class="modal" style="min-width:400px;max-width:400px;text-align:center;">
+            <h2 style="margin-bottom:8px;">Taiji Analysis Benchmark</h2>
+            <p style="color:#666;font-size:13px;margin-bottom:20px;">Select or enter your username to start.</p>
+            <div id="login-users" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+            <div style="display:flex;gap:8px;">
+                <input type="text" id="login-custom" placeholder="Or enter username..." style="flex:1;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+                <button class="btn btn-primary" onclick="loginCustom()">Go</button>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <h1>Taiji Analysis Benchmark</h1>
+        <div class="tabs">
+            <div class="tab active" data-page="dashboard">Dashboard</div>
+            <div class="tab" data-page="cases">Case Browser</div>
+            <div class="tab" data-page="compare">Compare & Annotate</div>
+            <div class="tab" data-page="trace">Trace Viewer</div>
+        </div>
+        <div style="margin-left:auto;font-size:13px;display:flex;align-items:center;gap:8px;">
+            <span id="nav-user" style="opacity:0.8;"></span>
+            <button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;" onclick="switchUser()">Switch</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Dashboard -->
+        <div class="page active" id="page-dashboard">
+            <div class="card">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;" id="dash-metrics"></div>
+            </div>
+            <div class="card">
+                <h2>Benchmark Versions</h2>
+                <table id="dash-versions"><thead><tr><th>Version</th><th>Date</th><th>Cases</th><th>Description</th><th>Dataset</th></tr></thead><tbody></tbody></table>
+            </div>
+            <div class="card">
+                <h2>Pass Rate by Experiment</h2>
+                <table id="dash-table"><thead><tr><th>Experiment</th><th>Version</th><th>Total</th><th>Pass Rate</th><th></th></tr></thead><tbody></tbody></table>
+            </div>
+        </div>
+
+        <!-- Case Browser -->
+        <div class="page" id="page-cases">
+            <div class="card">
+                <div style="margin-bottom:8px;display:flex;align-items:center;gap:12px;">
+                    <span id="case-count" style="font-size:13px;color:#888;"></span>
+                    <span id="case-quality-stats" style="font-size:12px;color:#666;"></span>
+                    <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="clearAllFilters()">Clear Filters</button>
+                </div>
+                <div style="max-height:calc(100vh - 180px);overflow:auto;">
+                    <table id="cases-table">
+                        <thead id="cases-thead"><tr></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compare & Annotate -->
+        <div class="page" id="page-compare">
+            <div class="card">
+                <div class="filters">
+                    <select id="compare-filter" onchange="updateCompareList()" style="font-size:13px;">
+                        <option value="">All</option>
+                        <option value="all_fail">All Fail</option>
+                        <option value="partial">Partial</option>
+                        <option value="all_pass">All Pass</option>
+                    </select>
+                    <select id="compare-label-filter" onchange="updateCompareList()" style="font-size:13px;">
+                        <option value="">Any Label</option>
+                        <option value="unlabeled">Unlabeled</option>
+                        <option value="correct">correct</option>
+                        <option value="judge_too_strict">judge_too_strict</option>
+                        <option value="judge_too_lenient">judge_too_lenient</option>
+                        <option value="ambiguous">ambiguous</option>
+                        <option value="data_issue">data_issue</option>
+                        <option value="inaccessible">inaccessible</option>
+                        <option value="bad_gt">bad_gt</option>
+                    </select>
+                    <span id="compare-nav" style="font-size:13px;color:#888;"></span>
+                    <button class="btn btn-secondary" style="padding:4px 12px;" onclick="comparePrev()">Prev</button>
+                    <button class="btn btn-secondary" style="padding:4px 12px;" onclick="compareNext()">Next</button>
+                    <input type="text" id="compare-run-id" placeholder="Or enter run_id..." style="width:100px;">
+                    <button class="btn btn-primary" onclick="loadCompare()">Go</button>
+                    <button class="btn btn-link" onclick="goToCasesAndHighlight()">Back to Cases</button>
+                </div>
+            </div>
+            <div id="compare-results"></div>
+        </div>
+
+        <!-- Trace Viewer -->
+        <div class="page" id="page-trace">
+            <div class="card">
+                <div class="filters">
+                    <select id="trace-exp" style="font-size:13px;" onchange="onTraceExpChange()"></select>
+                    <select id="trace-filter" onchange="updateTraceList()" style="font-size:13px;">
+                        <option value="">All</option>
+                        <option value="all_fail">All Fail</option>
+                        <option value="partial">Partial</option>
+                        <option value="all_pass">All Pass</option>
+                    </select>
+                    <span id="trace-nav" style="font-size:13px;color:#888;"></span>
+                    <button class="btn btn-secondary" style="padding:4px 12px;" onclick="tracePrev()">Prev</button>
+                    <button class="btn btn-secondary" style="padding:4px 12px;" onclick="traceNext()">Next</button>
+                    <input type="text" id="trace-run-id" placeholder="run_id" style="width:100px;">
+                    <button class="btn btn-primary" onclick="loadTrace()">Go</button>
+                    <span id="trace-info" style="font-size:13px;color:#888;"></span>
+                </div>
+            </div>
+            <div id="trace-content"></div>
+        </div>
+    </div>
+
+    <!-- Case Detail Modal -->
+    <div class="modal-overlay" id="case-modal">
+        <div class="modal">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h2 id="modal-title">Case Detail</h2>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn-primary" id="modal-compare-btn" onclick="">Compare</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                </div>
+            </div>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <script>
+    let experiments = [];
+    let annotations = {};
+    let currentUser = localStorage.getItem('taiji_user') || '';
+    let allCases = [];
+    let allCasesExps = [];
+    let tagDimensions = {};
+    let caseTags = {};
+    let judgeReasoning = {};
+    let currentCompareRunId = '';
+
+    // ─── Auth ────────────────────────────────────────────────
+    function getSavedUsers() {
+        try { return JSON.parse(localStorage.getItem('taiji_custom_users') || '[]'); } catch { return []; }
+    }
+    function saveCustomUser(u) {
+        const custom = getSavedUsers();
+        if (!custom.includes(u)) { custom.push(u); localStorage.setItem('taiji_custom_users', JSON.stringify(custom)); }
+    }
+    async function initLogin() {
+        const presetUsers = await fetchJSON('/api/users');
+        const customUsers = getSavedUsers();
+        const allUsers = [...presetUsers, ...customUsers.filter(u => !presetUsers.includes(u))];
+        document.getElementById('login-users').innerHTML = allUsers.map(u =>
+            `<button class="btn btn-primary" style="width:100%;" onclick="loginAs('${u}')">${u}</button>`
+        ).join('');
+        if (currentUser) hideLogin();
+    }
+    function loginAs(u) { currentUser = u; localStorage.setItem('taiji_user', u); saveCustomUser(u); hideLogin(); }
+    function loginCustom() { const v = document.getElementById('login-custom').value.trim(); if (v) loginAs(v); }
+    function hideLogin() { document.getElementById('login-overlay').classList.remove('show'); document.getElementById('nav-user').textContent = currentUser; }
+    function switchUser() { currentUser = ''; localStorage.removeItem('taiji_user'); initLogin(); document.getElementById('login-overlay').classList.add('show'); document.getElementById('nav-user').textContent = ''; }
+
+    // ─── Init ────────────────────────────────────────────────
+    async function init() {
+        await initLogin();
+        experiments = await fetchJSON('/api/experiments');
+        annotations = await fetchJSON('/api/annotations');
+        const tagData = await fetchJSON('/api/tags');
+        tagDimensions = tagData.dimensions || {};
+        caseTags = tagData.tags || {};
+        judgeReasoning = await fetchJSON('/api/judge_reasoning');
+        await loadAllCases();
+        compareList = allCases.slice();
+        renderDashboard();
+    }
+
+    async function fetchJSON(url) { return (await fetch(url)).json(); }
+
+    // ─── Navigation ──────────────────────────────────────────
+    function switchTab(page) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelector(`[data-page="${page}"]`).classList.add('active');
+        document.getElementById('page-' + page).classList.add('active');
+    }
+
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.page));
+    });
+
+    // ─── Dashboard ───────────────────────────────────────────
+    async function renderDashboard() {
+        const totalCases = experiments[0]?.metrics?.total || allCases.length || 0;
+        const annCount = Object.keys(annotations).length;
+        const grid = document.getElementById('dash-metrics');
+        grid.innerHTML = `
+            <div style="text-align:center;padding:12px;background:#f8f9fa;border-radius:8px;">
+                <div style="font-size:24px;font-weight:700;color:#2563eb;">${experiments.length}</div>
+                <div style="font-size:12px;color:#888;">Experiments</div>
+            </div>
+            <div style="text-align:center;padding:12px;background:#f8f9fa;border-radius:8px;">
+                <div style="font-size:24px;font-weight:700;color:#2563eb;">${totalCases}</div>
+                <div style="font-size:12px;color:#888;">Cases</div>
+            </div>
+            <div style="text-align:center;padding:12px;background:#f8f9fa;border-radius:8px;">
+                <div style="font-size:24px;font-weight:700;color:#2563eb;">${annCount}</div>
+                <div style="font-size:12px;color:#888;">Annotated</div>
+            </div>
+            <div style="text-align:center;padding:12px;background:#f8f9fa;border-radius:8px;">
+                <div style="font-size:24px;font-weight:700;color:${annCount >= totalCases ? '#22c55e' : '#f59e0b'};">${totalCases ? Math.round(annCount/totalCases*100) : 0}%</div>
+                <div style="font-size:12px;color:#888;">Progress</div>
+            </div>
+        `;
+
+        // Versions table
+        const versions = await fetchJSON('/api/versions');
+        const vTbody = document.querySelector('#dash-versions tbody');
+        vTbody.innerHTML = versions.map(v => `<tr>
+            <td><strong>${v.version}</strong></td>
+            <td>${v.date}</td>
+            <td>${v.cases}</td>
+            <td>${v.description}</td>
+            <td style="font-size:11px;font-family:monospace;">${v.dataset}</td>
+        </tr>`).join('');
+
+        // Models table — match version by case count
+        function matchVersion(total) {
+            for (let i = versions.length - 1; i >= 0; i--) {
+                if (total <= versions[i].cases) return versions[i].version;
+            }
+            return versions[0]?.version || '-';
+        }
+        const tbody = document.querySelector('#dash-table tbody');
+        const sorted = [...experiments].sort((a, b) => (b.metrics?.score?.pass_rate || 0) - (a.metrics?.score?.pass_rate || 0));
+        tbody.innerHTML = sorted.map(exp => {
+            const m = exp.metrics;
+            const total = m?.total || 0;
+            const pr = m?.score?.pass_rate || 0;
+            const ver = matchVersion(total);
+            const color = pr >= 0.5 ? '#22c55e' : pr >= 0.3 ? '#f59e0b' : '#ef4444';
+            return `<tr>
+                <td><strong>${exp.name.split('/').pop() || exp.name}</strong></td>
+                <td><span class="badge badge-na">${ver}</span></td>
+                <td>${total}</td>
+                <td><span class="badge ${pr >= 0.5 ? 'badge-pass' : 'badge-fail'}">${(pr*100).toFixed(1)}%</span></td>
+                <td><div class="progress-bar" style="width:180px;"><div class="progress-fill" style="width:${pr*100}%;background:${color}"></div></div></td>
+            </tr>`;
+        }).join('');
+
+    }
+
+    // ─── Case Browser ────────────────────────────────────────
+    let columnFilters = {};
+
+    async function loadAllCases() {
+        const data = await fetchJSON('/api/all_cases');
+        allCases = (data.cases || []).sort((a, b) => Number(a.run_id) - Number(b.run_id));
+        allCasesExps = data.experiments || [];
+        renderCasesHeader();
+        filterCases();
+    }
+
+    function renderCasesHeader() {
+        const thead = document.getElementById('cases-thead').querySelector('tr');
+        const shortNames = allCasesExps.map(e => e.split('/').pop() || e);
+
+        let html = `<th style="width:30px;">#</th>`;
+        html += `<th style="width:40px;">ID<br><input type="text" data-col="id" onchange="setColFilter('id',this.value)" style="width:40px;font-size:11px;padding:2px;margin-top:4px;"></th>`;
+        html += `<th>Ver<br><select data-col="version" onchange="setColFilter('version',this.value)" style="font-size:11px;padding:2px;margin-top:4px;">
+            <option value="">All</option><option value="v0">v0</option><option value="v1">v1</option><option value="v2">v2</option>
+        </select></th>`;
+        html += `<th>Pass<br><select data-col="pass" onchange="setColFilter('pass',this.value)" style="font-size:11px;padding:2px;margin-top:4px;">
+            <option value="">All</option><option value="all_pass">all_pass</option><option value="all_fail">all_fail</option><option value="partial">partial</option>
+        </select></th>`;
+        html += `<th style="min-width:200px;">Question<br><input type="text" data-col="question" onchange="setColFilter('question',this.value)" style="width:120px;font-size:11px;padding:2px;margin-top:4px;"></th>`;
+        html += `<th style="min-width:200px;">Reference<br><input type="text" data-col="reference" onchange="setColFilter('reference',this.value)" style="width:120px;font-size:11px;padding:2px;margin-top:4px;"></th>`;
+        html += `<th>Sender<br><input type="text" data-col="sender" onchange="setColFilter('sender',this.value)" style="width:60px;font-size:11px;padding:2px;margin-top:4px;"></th>`;
+        html += `<th>Label<br><select data-col="label" onchange="setColFilter('label',this.value)" style="font-size:11px;padding:2px;margin-top:4px;">
+            <option value="">All</option><option value="unlabeled">Unlabeled</option><option value="correct">correct</option><option value="judge_too_strict">judge_too_strict</option><option value="judge_too_lenient">judge_too_lenient</option><option value="ambiguous">ambiguous</option><option value="data_issue">data_issue</option><option value="inaccessible">inaccessible</option><option value="bad_gt">bad_gt</option>
+        </select></th>`;
+        html += `<th></th>`;
+
+        thead.innerHTML = html;
+    }
+
+    function setColFilter(col, value) {
+        if (value) columnFilters[col] = value;
+        else delete columnFilters[col];
+        filterCases();
+    }
+
+    function clearAllFilters() {
+        columnFilters = {};
+        document.querySelectorAll('#cases-thead input, #cases-thead select').forEach(el => el.value = '');
+        filterCases();
+    }
+
+    function getPassTag(scores) {
+        const vals = Object.values(scores).filter(s => s !== null && s !== undefined);
+        if (!vals.length) return { label: '-', cls: 'badge-na', passRate: 0 };
+        const passCount = vals.filter(s => s >= 1.0).length;
+        if (passCount === vals.length) return { label: 'all_pass', cls: 'badge-pass', passRate: 1 };
+        if (passCount === 0) return { label: 'all_fail', cls: 'badge-fail', passRate: 0 };
+        return { label: `${passCount}/${vals.length}`, cls: 'badge-na', passRate: passCount / vals.length };
+    }
+
+    function filterCases() {
+        let filtered = allCases;
+
+        for (const [col, val] of Object.entries(columnFilters)) {
+            if (!val) continue;
+            const v = val.toLowerCase();
+
+            if (col === 'id') {
+                filtered = filtered.filter(r => String(r.run_id).includes(v));
+            } else if (col === 'version') {
+                filtered = filtered.filter(r => (r.versions || []).includes(val));
+            } else if (col === 'pass') {
+                if (val === 'all_pass') filtered = filtered.filter(r => getPassTag(r.scores).passRate === 1);
+                else if (val === 'all_fail') filtered = filtered.filter(r => getPassTag(r.scores).passRate === 0);
+                else if (val === 'partial') filtered = filtered.filter(r => { const pr = getPassTag(r.scores).passRate; return pr > 0 && pr < 1; });
+            } else if (col === 'question') {
+                filtered = filtered.filter(r => (r.question || '').toLowerCase().includes(v));
+            } else if (col === 'reference') {
+                filtered = filtered.filter(r => (r.reference_summary || '').toLowerCase().includes(v));
+            } else if (col === 'sender') {
+                filtered = filtered.filter(r => (r.sender || '').toLowerCase().includes(v));
+            } else if (col === 'label') {
+                if (val === 'unlabeled') filtered = filtered.filter(r => !annotations[r.run_id] && !r.exclude_reason);
+                else if (val === 'inaccessible' || val === 'bad_gt') filtered = filtered.filter(r => r.exclude_reason === val);
+                else filtered = filtered.filter(r => annotations[r.run_id]?.label === val);
+            }
+        }
+
+        const labeledCount = allCases.filter(r => annotations[r.run_id]?.label).length;
+        document.getElementById('case-count').textContent = `${filtered.length} / ${allCases.length} | 已标注: ${labeledCount}`;
+        const qStats = {total: 0, '非常适合': 0, '一般': 0, '不适合': 0};
+        for (const r of allCases) {
+            const ann = annotations[r.run_id];
+            if (ann?.benchmark_quality) { qStats.total++; qStats[ann.benchmark_quality] = (qStats[ann.benchmark_quality] || 0) + 1; }
+        }
+        document.getElementById('case-quality-stats').textContent = qStats.total ? `| 非常适合: ${qStats['非常适合']}  一般: ${qStats['一般']}  不适合: ${qStats['不适合']}` : '';
+
+        const tbody = document.querySelector('#cases-table tbody');
+        tbody.innerHTML = filtered.map((r, idx) => {
+            const ann = annotations[r.run_id];
+            let labelBadge = '';
+            if (ann) {
+                labelBadge = `<span class="badge badge-na">${ann.label}</span>`;
+                if (ann.benchmark_quality) labelBadge += `<span class="badge badge-pass" style="margin-left:2px;">${ann.benchmark_quality}</span>`;
+            }
+            if (r.exclude_reason) labelBadge += `<span class="badge badge-exclude" style="margin-left:2px;">${esc(r.exclude_reason)}</span>`;
+            const diff = getPassTag(r.scores);
+            const verBadges = (r.versions || []).map(v => `<span class="badge ${v==='v2'?'badge-pass':'badge-na'}" style="margin-right:2px;">${v}</span>`).join('');
+
+            return `<tr id="case-row-${r.run_id}" onclick="goCompare('${r.run_id}')" style="cursor:pointer;">
+                <td style="font-size:11px;color:#999;">${idx + 1}</td>
+                <td style="font-size:11px;">${r.run_id}</td>
+                <td>${verBadges}</td>
+                <td><span class="badge ${diff.cls}">${diff.label}</span></td>
+                <td style="font-size:12px;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(r.question || '')}</td>
+                <td style="font-size:12px;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.url ? `<a href="${esc(r.url)}" target="_blank" onclick="event.stopPropagation()" style="margin-right:4px;">&#x1f517;</a>` : ''}${esc(r.reference_summary || '')}</td>
+                <td style="font-size:12px;">${esc(r.sender || '')}</td>
+                <td>${labelBadge}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ─── Case Detail Modal ───────────────────────────────────
+    async function openCaseDetail(runId) {
+        if (!experiments.length) return;
+        const detail = await fetchJSON(`/api/case/${encodeURIComponent(experiments[0].name)}/${runId}`);
+        showCaseModal(detail);
+    }
+
+    function showCaseModal(detail) {
+        const runId = detail.run_id;
+        document.getElementById('modal-title').textContent = `Case ${runId}`;
+        document.getElementById('modal-compare-btn').setAttribute('onclick', `closeModal();goCompare('${runId}')`);
+
+        const taskConfig = detail.config?.task_config || {};
+        const taskOutput = detail.task_output || {};
+        const agentOutput = detail.agent_output || {};
+        const ann = annotations[runId] || {};
+        const caseInfo = allCases.find(c => String(c.run_id) === String(runId));
+        const excludeReason = caseInfo?.exclude_reason || '';
+
+        document.getElementById('modal-content').innerHTML = `
+            <div style="margin:12px 0;font-size:13px;">
+                <strong>inst_id:</strong> ${taskConfig.inst_id || detail.metadata?.inst_id || ''}
+                &nbsp;|&nbsp; <strong>Score:</strong> <span class="badge ${(taskOutput.score||0) >= 1 ? 'badge-pass' : 'badge-fail'}">${taskOutput.score ?? 'N/A'}</span>
+                &nbsp;|&nbsp; <strong>Duration:</strong> ${agentOutput.execution_time ? (agentOutput.execution_time/60).toFixed(1) + ' min' : 'N/A'}
+                &nbsp;|&nbsp; <a href="${taskConfig.url || '#'}" target="_blank">Open in Taiji</a>
+                ${excludeReason ? `&nbsp;|&nbsp; <span class="badge badge-exclude">excluded: ${esc(excludeReason)}</span>` : ''}
+            </div>
+
+            <h3 style="margin:12px 0 8px;">Tags</h3>
+            <div style="margin-bottom:16px;display:flex;gap:16px;flex-wrap:wrap;">
+                ${Object.entries(tagDimensions).map(([dim, values]) => {
+                    const current = (caseTags[runId] || {})[dim] || '';
+                    return `<div style="font-size:13px;">
+                        <strong>${dim}:</strong>
+                        <select onchange="tagCase('${runId}','${dim}',this.value)" style="padding:4px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px;">
+                            <option value="">--</option>
+                            ${values.map(v => `<option value="${v}" ${v===current?'selected':''}>${v}</option>`).join('')}
+                        </select>
+                    </div>`;
+                }).join('')}
+                <div style="font-size:13px;">
+                    <strong>exclude_reason:</strong>
+                    <select onchange="setExcludeReason('${runId}',this.value)" style="padding:4px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px;">
+                        <option value="" ${!excludeReason?'selected':''}>--</option>
+                        <option value="inaccessible" ${excludeReason==='inaccessible'?'selected':''}>inaccessible</option>
+                        <option value="bad_gt" ${excludeReason==='bad_gt'?'selected':''}>bad_gt</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3 style="margin:12px 0 8px;">Annotation ${ann.annotator ? `<span style="font-size:12px;color:#888;font-weight:normal;">(by ${ann.annotator})</span>` : ''}</h3>
+            <div style="margin-bottom:8px;">
+                ${['correct','judge_too_strict','judge_too_lenient','ambiguous','data_issue','inaccessible','bad_gt'].map(l =>
+                    `<span class="label-btn ${ann.label===l?'selected':''}" onclick="annotateCase('${runId}','${l}',this)">${l.replace(/_/g,' ')}</span>`
+                ).join('')}
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-start;">
+                <textarea class="ann-note" id="modal-ann-note" placeholder="Add note..." style="flex:1;">${ann.note || ''}</textarea>
+                <button class="btn btn-primary" style="padding:6px 14px;white-space:nowrap;" onclick="saveNote('${runId}',document.getElementById('modal-ann-note').value)">Save</button>
+            </div>
+
+            <div class="split-pane">
+                <div class="pane">
+                    <h3>Ground Truth (Online 在线生成)</h3>
+                    <pre id="modal-online-gt-${runId}">Loading...</pre>
+                </div>
+                <div class="pane">
+                    <h3>Model Prediction</h3>
+                    <pre>${esc(taskOutput.prediction || '(empty)')}</pre>
+                </div>
+            </div>
+            <div class="card" style="margin-top:12px;background:#f0fdf4;border:1px solid #bbf7d0;">
+                <h3 style="margin-bottom:8px;">Ground Truth (Newrun Top模型重跑)</h3>
+                <div class="md-content" id="modal-newrun-gt-${runId}" style="max-height:400px;overflow-y:auto;"><em>Loading...</em></div>
+            </div>
+
+            <div style="margin-top:16px;">
+                <h3>Question</h3>
+                <pre style="background:#f8f9fa;padding:12px;border-radius:6px;font-size:12px;max-height:200px;overflow-y:auto;">${esc(taskConfig.question || '(empty)')}</pre>
+            </div>
+        `;
+        document.getElementById('case-modal').classList.add('show');
+        // Load online GT and newrun GT
+        fetchJSON('/api/online_gt/' + runId).then(data => {
+            const el = document.getElementById('modal-online-gt-' + runId);
+            if (el) el.textContent = data.answer || '(empty)';
+        });
+        fetchJSON('/api/newrun_gt/' + runId).then(data => {
+            const el = document.getElementById('modal-newrun-gt-' + runId);
+            if (el) el.innerHTML = data.answer ? renderMd(data.answer) : '<em>(无 newrun GT)</em>';
+        });
+    }
+
+    function closeModal() { document.getElementById('case-modal').classList.remove('show'); }
+
+    async function annotateCase(runId, label, el) {
+        if (!currentUser) { alert('Please select a user first.'); switchUser(); return; }
+        const note = document.getElementById('modal-ann-note')?.value || annotations[runId]?.note || '';
+        annotations[runId] = { label, note, annotator: currentUser, timestamp: new Date().toISOString() };
+        await fetch('/api/annotations', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ run_id: runId, ...annotations[runId] }),
+        });
+        el.parentElement.querySelectorAll('.label-btn').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+        filterCases();
+    }
+
+    async function saveNote(runId, note) {
+        if (!annotations[runId]) annotations[runId] = { label: '', note: '', annotator: currentUser, timestamp: new Date().toISOString() };
+        annotations[runId].note = note;
+        annotations[runId].annotator = currentUser;
+        annotations[runId].timestamp = new Date().toISOString();
+        await fetch('/api/annotations', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ run_id: runId, ...annotations[runId] }),
+        });
+    }
+
+    // ─── Compare & Annotate ─────────────────────────────────
+    let compareList = [];
+    let compareIdx = -1;
+
+    function updateCompareList() {
+        const passFilter = document.getElementById('compare-filter').value;
+        const labelFilter = document.getElementById('compare-label-filter').value;
+
+        compareList = allCases.slice();
+        if (passFilter === 'all_fail') compareList = compareList.filter(r => getPassTag(r.scores).passRate === 0);
+        else if (passFilter === 'all_pass') compareList = compareList.filter(r => getPassTag(r.scores).passRate === 1);
+        else if (passFilter === 'partial') compareList = compareList.filter(r => { const pr = getPassTag(r.scores).passRate; return pr > 0 && pr < 1; });
+
+        if (labelFilter === 'unlabeled') compareList = compareList.filter(r => !annotations[r.run_id] && !r.exclude_reason);
+        else if (labelFilter === 'inaccessible' || labelFilter === 'bad_gt') compareList = compareList.filter(r => r.exclude_reason === labelFilter);
+        else if (labelFilter) compareList = compareList.filter(r => annotations[r.run_id]?.label === labelFilter);
+
+        // Reset to first if current not in list
+        if (compareList.length) {
+            const curIdx = compareList.findIndex(r => String(r.run_id) === currentCompareRunId);
+            compareIdx = curIdx >= 0 ? curIdx : 0;
+            loadCompareByIdx();
+        } else {
+            compareIdx = -1;
+            document.getElementById('compare-nav').textContent = '0 / 0';
+            document.getElementById('compare-results').innerHTML = '<div class="card"><p>No cases match filters.</p></div>';
+        }
+    }
+
+    function comparePrev() { if (compareIdx > 0) { compareIdx--; loadCompareByIdx(); } }
+    function compareNext() { if (compareIdx < compareList.length - 1) { compareIdx++; loadCompareByIdx(); } }
+
+    function loadCompareByIdx() {
+        if (compareIdx < 0 || compareIdx >= compareList.length) return;
+        const r = compareList[compareIdx];
+        currentCompareRunId = String(r.run_id);
+        document.getElementById('compare-run-id').value = currentCompareRunId;
+        document.getElementById('compare-nav').textContent = `${compareIdx + 1} / ${compareList.length}`;
+        loadCompare();
+    }
+
+    function goCompare(runId) {
+        switchTab('compare');
+        currentCompareRunId = String(runId);
+        document.getElementById('compare-run-id').value = runId;
+        // Find in current list or reset list
+        const idx = compareList.findIndex(r => String(r.run_id) === String(runId));
+        if (idx >= 0) {
+            compareIdx = idx;
+            document.getElementById('compare-nav').textContent = `${compareIdx + 1} / ${compareList.length}`;
+        } else {
+            updateCompareList();
+            const newIdx = compareList.findIndex(r => String(r.run_id) === String(runId));
+            if (newIdx >= 0) compareIdx = newIdx;
+        }
+        loadCompare();
+    }
+
+    async function loadCompare() {
+        const runId = document.getElementById('compare-run-id').value.trim();
+        if (!runId) return;
+        currentCompareRunId = runId;
+
+        const compareData = await fetchJSON('/api/compare/' + runId);
+        const container = document.getElementById('compare-results');
+        const results = compareData.results || compareData;
+        const question = compareData.question || '';
+
+        if (!Object.keys(results).length) {
+            container.innerHTML = '<div class="card"><p>No results found.</p></div>';
+            return;
+        }
+
+        const ann = annotations[runId] || {};
+        const caseUrl = (allCases.find(c => String(c.run_id) === String(runId)) || {}).url || '';
+
+        const gtSource = ann.gt_source || '';
+        const expNames = Object.keys(results);
+
+        container.innerHTML = `
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <h2 style="margin:0;">Case ${runId}</h2>
+                    <span class="badge ${getPassTag(getCaseScores(runId)).cls}">${getPassTag(getCaseScores(runId)).label}</span>
+                </div>
+                <h3 style="margin-bottom:8px;">Annotation ${ann.annotator ? `<span style="font-size:12px;color:#888;font-weight:normal;">(by ${ann.annotator})</span>` : ''}</h3>
+                <div style="margin-bottom:8px;" id="compare-ann-btns">
+                    ${['correct','judge_too_strict','judge_too_lenient','ambiguous','data_issue','inaccessible','bad_gt','others'].map(l =>
+                        `<span class="label-btn ${ann.label===l?'selected':''}" onclick="annotateFromCompare('${runId}','${l}',this)">${l.replace(/_/g,' ')}</span>`
+                    ).join('')}
+                </div>
+                <div id="benchmark-quality-row" style="margin-bottom:8px;display:${ann.label==='correct'?'flex':'none'};align-items:center;gap:8px;">
+                    <label style="font-size:13px;font-weight:500;">Benchmark 适合度：</label>
+                    <select id="benchmark-quality-select" style="padding:4px 8px;border:1px solid #d1d5db;border-radius:4px;font-size:13px;">
+                        <option value="">请选择</option>
+                        <option value="非常适合" ${ann.benchmark_quality==='非常适合'?'selected':''}>非常适合</option>
+                        <option value="一般" ${ann.benchmark_quality==='一般'?'selected':''}>一般</option>
+                        <option value="不适合" ${ann.benchmark_quality==='不适合'?'selected':''}>不适合</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:8px;align-items:flex-start;">
+                    <textarea class="ann-note" id="compare-ann-note" placeholder="Add note..." style="flex:1;">${ann.note || ''}</textarea>
+                    <button class="btn btn-primary" style="padding:6px 14px;white-space:nowrap;" onclick="saveNoteFromCompare('${runId}',document.getElementById('compare-ann-note').value)">Save</button>
+                </div>
+                <div style="margin-top:12px;padding:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;">
+                    <strong style="font-size:13px;">&#x1f3af; GT Source 选择：</strong>
+                    <span style="font-size:12px;color:#666;margin-left:8px;">选择哪个来源作为此 case 的最终 Ground Truth</span>
+                    <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;" id="compare-gt-source-btns">
+                        <span class="label-btn ${gtSource===''||gtSource==='newrun'?'selected':''}" onclick="setGtSource('${runId}','newrun',this)">Newrun (默认)</span>
+                        <span class="label-btn ${gtSource==='online'?'selected':''}" onclick="setGtSource('${runId}','online',this)">Online 在线生成</span>
+                        ${expNames.map(name => `<span class="label-btn ${gtSource===name?'selected':''}" onclick="setGtSource('${runId}','${name}',this)">${name.split('/').pop() || name}</span>`).join('')}
+                    </div>
+                    <div style="margin-top:6px;font-size:12px;color:#888;" id="compare-gt-source-status">${gtSource ? `已选: ${gtSource}` : '未选择（默认 Newrun）'}</div>
+                </div>
+            </div>
+            ${question ? `<div class="card">
+                <h2>User Query</h2>
+                <pre style="white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.6;background:#f8f9fa;padding:12px;border-radius:6px;">${esc(question)}</pre>
+            </div>` : ''}
+            <div class="card" style="background:#f0fdf4;border:1px solid #bbf7d0;">
+                <h2>GT (Newrun Top模型重跑) ${caseUrl ? `<a href="${caseUrl}" target="_blank" style="font-size:13px;font-weight:normal;margin-left:12px;">Open in Taiji &#x2197;</a>` : ''}</h2>
+                <div class="md-content" id="compare-newrun-gt"><em>Loading...</em></div>
+            </div>
+            <div class="card">
+                <h2>GT (Online 在线生成)</h2>
+                <div class="md-content" id="compare-online-gt"><em>Loading...</em></div>
+            </div>
+            <div class="card">
+                <h2>Score Summary</h2>
+                <table>
+                    <thead><tr><th>Model</th><th>Score</th><th>Judge Reasoning</th><th>Judge Comments</th><th>Summary</th><th>Use as GT</th><th></th></tr></thead>
+                    <tbody>
+                        ${Object.entries(results).map(([name, r]) => {
+                            const score = r.task_output?.score ?? -1;
+                            const pred = r.task_output?.prediction || '';
+                            const reasoning = (judgeReasoning[name] || {})[runId] || r.task_output?.metadata?.judge_reasoning || r.metadata?.judge_reasoning || '';
+                            const summary = extractSummary(pred);
+                            const isGt = gtSource === name;
+                            const fb = (ann.model_feedback || {})[name] || {};
+                            return `<tr>
+                                <td><strong>${name.split('/').pop() || name}</strong></td>
+                                <td><span class="badge ${score >= 1 ? 'badge-pass' : 'badge-fail'}">${score >= 0 ? score.toFixed(1) : 'N/A'}</span></td>
+                                <td style="font-size:12px;color:#666;max-width:300px;">${esc(reasoning)}</td>
+                                <td><input type="text" id="mfb-judge-${name.replace(/[^a-zA-Z0-9]/g,'_')}-${runId}" placeholder="对Judge的评价..." value="${esc(fb.judge_comment || '')}" style="width:150px;padding:3px 6px;border:1px solid #ddd;border-radius:4px;font-size:11px;"></td>
+                                <td style="font-size:12px;">${esc(summary)}</td>
+                                <td>${isGt ? '<span class="badge badge-pass">&#x2713; GT</span>' : `<button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="setGtSourceFromTable('${runId}','${name}')">Set GT</button>`}</td>
+                                <td><button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="goTraceFromCompare('${name}','${runId}')">Trace</button></td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+            ${Object.entries(results).map(([name, r]) => {
+                const fb = (ann.model_feedback || {})[name] || {};
+                const judgeScore = r.task_output?.score ?? -1;
+                const displayScore = fb.score !== undefined ? fb.score : (judgeScore >= 0 ? judgeScore : null);
+                const isPreFilled = fb.score === undefined && judgeScore >= 0;
+                return `
+                <div class="card">
+                    <h2>${name.split('/').pop() || name}</h2>
+                    <div class="md-content">${renderMd(r.task_output?.prediction || '(empty)')}</div>
+                    <div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:12px;color:#666;font-weight:600;">Human Score:</span>
+                        <span class="label-btn ${displayScore===1?'selected':''}" onclick="saveModelFeedback('${runId}','${name}',1,this)" style="padding:4px 12px;">1</span>
+                        <span class="label-btn ${displayScore===0?'selected':''}" onclick="saveModelFeedback('${runId}','${name}',0,this)" style="padding:4px 12px;">0</span>
+                        ${isPreFilled ? '<span style="font-size:11px;color:#888;">(Judge预填，可以修改)</span>' : ''}
+                        <input type="text" id="mfb-report-${name.replace(/[^a-zA-Z0-9]/g,'_')}-${runId}" placeholder="对报告的评价..." value="${esc(fb.note || '')}" style="flex:1;padding:4px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px;">
+                    </div>
+                </div>
+            `}).join('')}
+        `;
+        // Load online GT and newrun GT
+        fetchJSON('/api/online_gt/' + runId).then(data => {
+            const el = document.getElementById('compare-online-gt');
+            if (el) el.innerHTML = data.answer ? renderMd(data.answer) : '<em>(无 online GT)</em>';
+        });
+        fetchJSON('/api/newrun_gt/' + runId).then(data => {
+            const el = document.getElementById('compare-newrun-gt');
+            if (el) el.innerHTML = data.answer ? renderMd(data.answer) : '<em>(无 newrun GT)</em>';
+        });
+    }
+
+    function getCaseScores(runId) {
+        const c = allCases.find(r => String(r.run_id) === String(runId));
+        return c ? c.scores : {};
+    }
+
+    async function annotateFromCompare(runId, label, el) {
+        if (!currentUser) { alert('Please select a user first.'); switchUser(); return; }
+        const note = document.getElementById('compare-ann-note')?.value || annotations[runId]?.note || '';
+        const existing = annotations[runId] || {};
+        let benchmark_quality = existing.benchmark_quality || '';
+        const qualityRow = document.getElementById('benchmark-quality-row');
+        if (label === 'correct') {
+            qualityRow.style.display = 'flex';
+        } else {
+            qualityRow.style.display = 'none';
+        }
+        annotations[runId] = { ...existing, label, note, benchmark_quality, annotator: currentUser, timestamp: new Date().toISOString() };
+        document.getElementById('compare-ann-btns').querySelectorAll('.label-btn').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+        filterCases();
+    }
+
+    async function saveNoteFromCompare(runId, note) {
+        if (!currentUser) { alert('Please select a user first.'); switchUser(); return; }
+        if (!annotations[runId]) annotations[runId] = { label: '', note: '', annotator: currentUser, timestamp: new Date().toISOString() };
+        const label = annotations[runId].label || '';
+        if (!label) { alert('请先选择一个 Label 再保存'); return; }
+        annotations[runId].note = note;
+        annotations[runId].annotator = currentUser;
+        annotations[runId].timestamp = new Date().toISOString();
+        const bqSelect = document.getElementById('benchmark-quality-select');
+        if (label === 'correct' && bqSelect) {
+            annotations[runId].benchmark_quality = bqSelect.value;
+        }
+        await fetch('/api/annotations', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ run_id: runId, ...annotations[runId] }),
+        });
+        // Save all model feedback: report notes + judge comments
+        const reportInputs = document.querySelectorAll(`[id^="mfb-report-"][id$="-${runId}"]`);
+        const judgeInputs = document.querySelectorAll(`[id^="mfb-judge-"][id$="-${runId}"]`);
+        const allModels = new Set();
+        reportInputs.forEach(el => allModels.add(el.id.replace('mfb-report-', '').replace(`-${runId}`, '')));
+        judgeInputs.forEach(el => allModels.add(el.id.replace('mfb-judge-', '').replace(`-${runId}`, '')));
+        for (const idKey of allModels) {
+            const modelName = Object.keys((annotations[runId]?.model_feedback || {})).find(m => m.replace(/[^a-zA-Z0-9]/g, '_') === idKey);
+            if (!modelName) continue;
+            const reportNote = document.getElementById(`mfb-report-${idKey}-${runId}`)?.value || '';
+            const judgeComment = document.getElementById(`mfb-judge-${idKey}-${runId}`)?.value || '';
+            const fb = (annotations[runId].model_feedback || {})[modelName] || {};
+            await fetch('/api/model_feedback', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ run_id: runId, model: modelName, score: fb.score ?? null, note: reportNote, judge_comment: judgeComment, annotator: currentUser, timestamp: new Date().toISOString() })
+            });
+        }
+        alert(`✓ 已保存 Case ${runId}\n\nLabel: ${label}\nNote: ${note || '(空)'}`);
+    }
+
+    function goToCasesAndHighlight() {
+        switchTab('cases');
+        const row = document.getElementById('case-row-' + currentCompareRunId);
+        if (row) { row.scrollIntoView({ block: 'center' }); row.style.background = '#e0ecff'; setTimeout(() => row.style.background = '', 2000); }
+    }
+
+    // ─── GT Source Selection ────────────────────────────────
+    async function setGtSource(runId, source, el) {
+        if (!currentUser) { alert('Please select a user first.'); switchUser(); return; }
+        if (!annotations[runId]) annotations[runId] = { label: '', note: '', annotator: currentUser, timestamp: new Date().toISOString() };
+        annotations[runId].gt_source = source;
+        annotations[runId].annotator = currentUser;
+        annotations[runId].timestamp = new Date().toISOString();
+        await fetch('/api/annotations', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ run_id: runId, gt_source: source, annotator: currentUser, timestamp: annotations[runId].timestamp }),
+        });
+        // Update UI
+        const btns = document.getElementById('compare-gt-source-btns');
+        if (btns) { btns.querySelectorAll('.label-btn').forEach(b => b.classList.remove('selected')); if (el) el.classList.add('selected'); }
+        const status = document.getElementById('compare-gt-source-status');
+        if (status) status.textContent = `已选: ${source}`;
+    }
+
+    async function setGtSourceFromTable(runId, source) {
+        await setGtSource(runId, source, null);
+        loadCompare();
+    }
+
+    async function saveModelFeedback(runId, model, score, el) {
+        if (!currentUser) { alert('Please select a user first.'); switchUser(); return; }
+        const noteId = 'mfb-note-' + model.replace(/[^a-zA-Z0-9]/g, '_') + '-' + runId;
+        const note = document.getElementById(noteId)?.value || '';
+        await fetch('/api/model_feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ run_id: runId, model, score, note, annotator: currentUser, timestamp: new Date().toISOString() })
+        });
+        // Update local annotations cache
+        if (!annotations[runId]) annotations[runId] = {};
+        if (!annotations[runId].model_feedback) annotations[runId].model_feedback = {};
+        annotations[runId].model_feedback[model] = { score, note, annotator: currentUser };
+        // Update button selection
+        const parent = el.parentElement;
+        parent.querySelectorAll('.label-btn').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    async function saveModelFeedbackNote(runId, model) {
+        if (!currentUser) { alert('Please select a user first.'); switchUser(); return; }
+        const noteId = 'mfb-note-' + model.replace(/[^a-zA-Z0-9]/g, '_') + '-' + runId;
+        const note = document.getElementById(noteId)?.value || '';
+        const existing = (annotations[runId]?.model_feedback || {})[model] || {};
+        const score = existing.score ?? null;
+        await fetch('/api/model_feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ run_id: runId, model, score, note, annotator: currentUser, timestamp: new Date().toISOString() })
+        });
+        if (!annotations[runId]) annotations[runId] = {};
+        if (!annotations[runId].model_feedback) annotations[runId].model_feedback = {};
+        annotations[runId].model_feedback[model] = { score, note, annotator: currentUser };
+    }
+
+
+    // ─── Tags ────────────────────────────────────────────────
+    async function tagCase(runId, dimension, value) {
+        if (!caseTags[runId]) caseTags[runId] = {};
+        if (value) caseTags[runId][dimension] = value;
+        else delete caseTags[runId][dimension];
+        await fetch('/api/tags', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ run_id: runId, dimension, value }),
+        });
+    }
+
+    async function setExcludeReason(runId, reason) {
+        await fetch('/api/exclude_reasons', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ run_id: runId, reason }),
+        });
+        const c = allCases.find(r => String(r.run_id) === String(runId));
+        if (c) { if (reason) c.exclude_reason = reason; else delete c.exclude_reason; }
+        filterCases();
+    }
+
+    // ─── Markdown Rendering ─────────────────────────────────
+    function renderMd(text) {
+        if (!text) return '<em>(empty)</em>';
+        let html = esc(text);
+        // Code blocks (``` ... ```)
+        html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+        // Inline code
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+        // Headers
+        html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+        html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+        html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+        // Bold and italic
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        // Blockquote
+        html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+        // Horizontal rule
+        html = html.replace(/^---$/gm, '<hr>');
+        // Unordered list items
+        html = html.replace(/^[-*] (.+)$/gm, '<li>$1</li>');
+        html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+        // Line breaks for remaining plain lines
+        html = html.replace(/\n/g, '<br>');
+        // Clean up double <br> inside block elements
+        html = html.replace(/<br>(<\/?(?:h[1-3]|pre|ul|li|blockquote|hr))/g, '$1');
+        html = html.replace(/(<\/(?:h[1-3]|pre|ul|li|blockquote|hr)>)<br>/g, '$1');
+        return html;
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────
+    function extractSummary(text) {
+        if (!text) return '';
+        for (const line of text.split('\n')) {
+            if (line.includes('一句话总结') || line.includes('\u{1f4a1}')) return line.trim().slice(0, 200);
+        }
+        for (const line of text.split('\n')) {
+            const l = line.trim();
+            if (l && !l.startsWith('#') && !l.startsWith('---')) return l.slice(0, 200);
+        }
+        return text.slice(0, 150);
+    }
+
+    function esc(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+
+    // ─── Trace Viewer ───────────────────────────────────────
+    let traceList = [];
+    let traceIdx = -1;
+    let traceFullMsgs = {};
+
+    function initTraceExp() {
+        const sel = document.getElementById('trace-exp');
+        sel.innerHTML = experiments.map(e => `<option value="${e.name}">${e.name}</option>`).join('');
+    }
+
+    function onTraceExpChange() { updateTraceList(); }
+
+    function updateTraceList() {
+        const filter = document.getElementById('trace-filter').value;
+        traceList = allCases.slice();
+        if (filter === 'all_fail') traceList = traceList.filter(r => getPassTag(r.scores).passRate === 0);
+        else if (filter === 'all_pass') traceList = traceList.filter(r => getPassTag(r.scores).passRate === 1);
+        else if (filter === 'partial') traceList = traceList.filter(r => { const pr = getPassTag(r.scores).passRate; return pr > 0 && pr < 1; });
+
+        const curId = document.getElementById('trace-run-id').value.trim();
+        const idx = traceList.findIndex(r => String(r.run_id) === curId);
+        traceIdx = idx >= 0 ? idx : 0;
+        document.getElementById('trace-nav').textContent = traceList.length ? `${traceIdx + 1} / ${traceList.length}` : '0 / 0';
+    }
+
+    function tracePrev() { if (traceIdx > 0) { traceIdx--; loadTraceByIdx(); } }
+    function traceNext() { if (traceIdx < traceList.length - 1) { traceIdx++; loadTraceByIdx(); } }
+
+    function loadTraceByIdx() {
+        if (traceIdx < 0 || traceIdx >= traceList.length) return;
+        const r = traceList[traceIdx];
+        document.getElementById('trace-run-id').value = r.run_id;
+        document.getElementById('trace-nav').textContent = `${traceIdx + 1} / ${traceList.length}`;
+        loadTrace();
+    }
+
+    async function loadTrace() {
+        const exp = document.getElementById('trace-exp').value;
+        const runId = document.getElementById('trace-run-id').value.trim();
+        if (!exp || !runId) return;
+
+        document.getElementById('trace-info').textContent = 'Loading...';
+        const spans = await fetchJSON(`/api/trace/${encodeURIComponent(exp)}/${runId}`);
+        if (spans.error) {
+            document.getElementById('trace-info').textContent = spans.error;
+            document.getElementById('trace-content').innerHTML = '';
+            return;
+        }
+
+        traceFullMsgs = {};
+        document.getElementById('trace-info').textContent = `${spans.length} spans`;
+        renderTrace(spans);
+    }
+
+    function goTrace(runId) {
+        switchTab('trace');
+        document.getElementById('trace-run-id').value = runId;
+        initTraceExp();
+        updateTraceList();
+        loadTrace();
+    }
+
+    function goTraceFromCompare(expName, runId) {
+        switchTab('trace');
+        initTraceExp();
+        document.getElementById('trace-exp').value = expName;
+        document.getElementById('trace-run-id').value = runId;
+        updateTraceList();
+        loadTrace();
+    }
+
+    function renderTrace(spans) {
+        const container = document.getElementById('trace-content');
+        // Build tree: find root spans (no parent or parent not in set)
+        const spanMap = {};
+        spans.forEach(s => { spanMap[s.span_id] = s; });
+
+        const roots = spans.filter(s => !s.parent_span_id || !spanMap[s.parent_span_id]);
+        const children = {};
+        spans.forEach(s => {
+            if (s.parent_span_id && spanMap[s.parent_span_id]) {
+                if (!children[s.parent_span_id]) children[s.parent_span_id] = [];
+                children[s.parent_span_id].push(s);
+            }
+        });
+
+        function renderSpan(span, depth) {
+            const dur = span.end_time && span.start_time ? ((span.end_time - span.start_time) / 1e9).toFixed(1) + 's' : '';
+            const isLLM = span.name === 'openai_completion';
+            const spanId = span.span_id;
+            const kids = children[spanId] || [];
+            const indent = depth * 16;
+
+            let bodyHtml = '';
+            if (isLLM) {
+                // Show messages
+                const msgs = span.inputs?.messages || [];
+                bodyHtml += '<div style="margin-top:8px;">';
+                msgs.forEach((m, mi) => {
+                    const content = typeof m.content === 'string' ? m.content : JSON.stringify(m.content, null, 2);
+                    const msgId = `msg-${spanId}-${mi}`;
+                    const isTruncated = content.length > 2000;
+                    const preview = isTruncated ? content.slice(0, 2000) + '\n... [truncated]' : content;
+                    bodyHtml += `<div class="trace-msg role-${m.role}"><div class="msg-role">${m.role} (${content.length} chars)${isTruncated ? ` <button class="btn btn-secondary" style="padding:1px 6px;font-size:10px;margin-left:8px;" onclick="toggleFullMsg('${msgId}')">Show Full</button>` : ''}</div><div class="msg-content" id="${msgId}">${esc(preview)}</div></div>`;
+                    if (isTruncated) {
+                        traceFullMsgs[msgId] = content;
+                    }
+                });
+                bodyHtml += '</div>';
+                // Show output
+                if (span.outputs) {
+                    const choices = span.outputs.choices || [];
+                    const usage = span.outputs.usage || {};
+                    const model = span.outputs.model || '';
+                    const usageStr = usage.prompt_tokens ? `${model} | ${usage.prompt_tokens} in → ${usage.completion_tokens} out (${usage.total_tokens} total)` : model;
+                    if (choices.length) {
+                        const msg = choices[0].message || {};
+                        const thinking = msg.thinking_blocks || msg.reasoning_content || msg.reasoning_items || null;
+                        const out = msg.content || '';
+                        const toolCalls = msg.tool_calls || msg.raw_tool || null;
+                        let fullOut = '';
+                        if (thinking) {
+                            const thinkText = typeof thinking === 'string' ? thinking : (Array.isArray(thinking) ? thinking.map(t => t.thinking || t.content || t.text || JSON.stringify(t)).join('\n') : JSON.stringify(thinking, null, 2));
+                            fullOut += '─── Thinking ───\n' + thinkText + '\n\n';
+                        }
+                        fullOut += out;
+                        if (toolCalls && toolCalls.length) {
+                            fullOut += (out ? '\n\n' : '') + '─── Tool Calls ───\n' + toolCalls.map(tc => {
+                                const fn = tc.function || {};
+                                return `${fn.name || 'unknown'}(${fn.arguments || ''})`;
+                            }).join('\n\n');
+                        }
+                        if (!fullOut) fullOut = JSON.stringify(choices[0], null, 2);
+                        const outId = `out-${spanId}`;
+                        const outTruncated = fullOut.length > 3000;
+                        const outPreview = outTruncated ? fullOut.slice(0, 3000) + '\n... [truncated]' : fullOut;
+                        bodyHtml += `<div class="trace-output"><div style="font-size:11px;font-weight:600;margin-bottom:4px;">OUTPUT (${fullOut.length} chars) <span style="font-weight:normal;color:#888;">${esc(usageStr)}</span>${outTruncated ? ` <button class="btn btn-secondary" style="padding:1px 6px;font-size:10px;margin-left:8px;" onclick="toggleFullMsg('${outId}')">Show Full</button>` : ''}</div><pre id="${outId}">${esc(outPreview)}</pre></div>`;
+                        if (outTruncated) { traceFullMsgs[outId] = fullOut; }
+                    }
+                }
+            }
+            // Render children
+            let childrenHtml = '';
+            kids.forEach(k => { childrenHtml += renderSpan(k, depth + 1); });
+
+            const hasContent = isLLM || kids.length > 0;
+            const icon = isLLM ? '&#x1f4ac;' : span.name === 'agent.claude_code' ? '&#x1f916;' : '&#x1f4cb;';
+
+            return `<div class="trace-span" style="margin-left:${indent}px;">
+                <div class="trace-span-header" onclick="toggleSpanBody('${spanId}')">
+                    <span class="span-toggle">${hasContent ? '&#x25b6;' : ''}</span>
+                    <span>${icon}</span>
+                    <span class="span-name">${esc(span.name || 'unknown')}</span>
+                    ${isLLM ? `<span class="badge badge-na" style="font-size:11px;">${(span.inputs?.messages||[]).length} msgs</span>` : ''}
+                    <span class="span-time">${dur}</span>
+                </div>
+                <div class="trace-span-body" id="span-body-${spanId}">
+                    ${bodyHtml}
+                    ${childrenHtml}
+                </div>
+            </div>`;
+        }
+
+        container.innerHTML = roots.map(r => renderSpan(r, 0)).join('');
+    }
+
+    function toggleFullMsg(msgId) {
+        const el = document.getElementById(msgId);
+        if (!el || !traceFullMsgs[msgId]) return;
+        const isExpanded = el.dataset.expanded === '1';
+        if (isExpanded) {
+            const content = traceFullMsgs[msgId];
+            el.textContent = content.slice(0, el.tagName === 'PRE' ? 3000 : 2000) + '\n... [truncated]';
+            el.dataset.expanded = '0';
+        } else {
+            el.textContent = traceFullMsgs[msgId];
+            el.style.maxHeight = 'none';
+            el.dataset.expanded = '1';
+        }
+    }
+
+    function toggleSpanBody(spanId) {
+        const body = document.getElementById('span-body-' + spanId);
+        if (body) {
+            body.classList.toggle('open');
+            const header = body.previousElementSibling;
+            const toggle = header.querySelector('.span-toggle');
+            if (toggle) toggle.innerHTML = body.classList.contains('open') ? '&#x25bc;' : '&#x25b6;';
+        }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    init().then(() => { initTraceExp(); updateTraceList(); });
+    </script>
+</body>
+</html>

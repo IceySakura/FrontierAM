@@ -1,0 +1,96 @@
+# HLE base config (eval/config override) - Taiji judge.
+# - Main LLM: unchanged (SCIENCE_* envs; LiteLLM base_url)
+# - Judge LLM: Taiji client via Polaris service discovery
+#
+# Usage:
+#   export CODE_INTERPRETER="jupyter"   # or "python" / "none"
+#   export TAIJI_AUTH="Bearer xxx"
+#   export TAIJI_WSID="10103"
+#   export JUDGE_MODEL="gpt-oss-120b-sci-128k-new_daisyyi_for_RL_R2_zwfy"
+#   # Optional:
+#   export TAIJI_NS="Production"
+#   export TAIJI_POLARIS_SERVICE="taiji-stream-server-online-openapi-prod"
+#   export TAIJI_URL_PATTERN="openapi"  # or "v1"
+
+imports:
+  - nexus.extensions
+  - nexus.extensions.openai_clients
+  - nexus.extensions.tasks.search_stateful
+  - nexus.extensions.agents.science_agent.agent
+  - nexus.extensions.tools.search_stateful
+  - nexus.extensions.tools.code_interpreter
+
+# Task config (task_config is filled per item by the generator).
+# Changed from "hle" to "search_stateful" to use LLM judge
+task_name: "search_stateful"
+task_config:
+  task_id: ""
+  question: ""
+  answer: ""  # search_stateful uses "answer" instead of "ground_truth"
+  timeout: 600
+
+# Runtime config (Gongfeng sandbox).
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "http://hyrl-sandbox.prod.woa.com:8052"
+  image: ${oc.env:HLE_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+  runtime_image: ${oc.env:HLE_RUNTIME_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+  runtime_provider: ""
+  resource_spec:
+    cpu: 2
+    memory: 10
+  request_timeout: 1800.0
+  python_version: "3.12"
+
+runtime_configs:
+  main:
+    image: ${oc.env:HLE_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+
+# Agent config.
+agent_name: "science_agent"
+agent_config:
+  max_iterations: 1000
+  code_interpreter: ${oc.env:CODE_INTERPRETER,null}  # "none" | "python" | "jupyter"
+  enable_search: true
+
+# Tool config.
+tool_configs:
+  search_stateful:
+    user: ${oc.env:SEARCH_USER,"YOUR_USER_ID"}
+    apikey: ${oc.env:SEARCH_API_KEY,"YOUR_API_KEY"}
+    max_search_results: 10
+
+  jupyter_code_interpreter:
+    timeout: 600
+
+# OpenAI client config.
+openai_clients:
+  # Main model (unchanged).
+  main:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:SCIENCE_API_KEY,"YOUR_API_KEY_HERE"}
+        base_url: ${oc.env:SCIENCE_BASE_URL,"http://api.model-eval.woa.com/v1"}
+        max_retries: ${oc.env:SCIENCE_MAX_RETRIES,25}
+      request_args:
+        model: ${oc.env:SCIENCE_MODEL,"deepseek/deepseek-reasoner"}
+
+  # Judge model via Taiji + Polaris service discovery.
+  # Notes:
+  # - `client_args.service` is the Polaris service used for discovery (NOT the model name).
+  # - `client_args.model` is the actual model name used in /chat/completions (your Taiji service name).
+  judge:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:SCIENCE_API_KEY,"YOUR_API_KEY_HERE"}
+        base_url: ${oc.env:SCIENCE_BASE_URL,"http://api.model-eval.woa.com/v1"}
+        max_retries: ${oc.env:SCIENCE_MAX_RETRIES,25}
+      request_args:
+        model: ${oc.env:SCIENCE_MODEL,"deepseek/deepseek-reasoner"}
+
+# Trace processors.
+processors:
+  chat:
+    name: "chat_tracker"

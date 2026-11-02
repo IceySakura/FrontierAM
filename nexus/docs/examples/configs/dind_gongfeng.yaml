@@ -1,0 +1,41 @@
+imports:
+  - nexus.extensions.tasks.identity
+
+task_name: identity
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: ${oc.env:GONGFENG_API_BASE_URL,"http://hyrl-sandbox.prod.woa.com:8052"}
+  token: ${oc.env:GONGFENG_TOKEN}
+  runtime_image: ${oc.env:NEXUS_GONGFENG_RUNTIME_IMAGE,"current"}
+  runtime_provider: ${oc.env:GONGFENG_RUNTIME_PROVIDER,""}
+  resource_spec:
+    cpu: 4
+    memory: 16
+  print_port_mappings: true
+
+runtime_configs:
+  main:
+    image: ${oc.env:NEXUS_DIND_TASK_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/ubuntu:24.04"}
+    enable_dind: true
+    worker_venv: true
+
+agent_name: claude_code
+agent_config:
+  user_prompt: "Run `docker version` and `docker run --rm alpine echo ok`, then report the results."
+  working_dir: /workspace
+  version: ${oc.env:CLAUDE_CODE_VERSION,"2.1.153"}
+  timeout: 600
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=azure_openai&model=${oc.env:NEXUS_MODEL,"gpt-5.5"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"60"}
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"gpt-5.5"}
+
+runner:
+  timeout: 1200

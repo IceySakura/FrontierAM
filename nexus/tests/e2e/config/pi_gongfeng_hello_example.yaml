@@ -1,0 +1,53 @@
+imports:
+  - nexus.extensions
+
+task_name: "echo"
+task_config:
+  message: "Hello, Nexus!"
+  run_oracle: false
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: ${oc.env:GONGFENG_RUNTIME_BASE_URL,"http://hyrl-sandbox.prod.woa.com:8052"}
+  token: ${oc.env:GONGFENG_RUNTIME_TOKEN}
+  runtime_image: "current"
+  request_timeout: 3600
+  rpc_protocol: http
+  purpose: ${oc.env:GONGFENG_PURPOSE,"prod"}
+  resource_spec:
+    cpu: 2
+    memory: 8
+
+agent_name: "pi"
+agent_config:
+  working_dir: "/workspace"
+  timeout: 1800
+  version: ${oc.env:PI_VERSION,"0.84.1"}
+
+# The prebuilt runtime image has no pi_agent module yet, so ship the local
+# working tree into the sandbox as a wheel.
+runtime_configs:
+  main:
+    worker_venv:
+      modules: []
+
+openai_clients:
+  main:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:NEXUS_AGENT_API_KEY}
+        # Bedrock forwarding endpoint: no /v1 suffix, litellm builds the path.
+        base_url: ${oc.env:NEXUS_AGENT_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080"}
+      request_args:
+        # provider=aws_third in api_key makes litellm use its bedrock provider,
+        # so the model must be in litellm's bedrock form, not the gateway's
+        # api_aws_third_* name.
+        model: ${oc.env:NEXUS_AGENT_MODEL,"bedrock/anthropic.claude-opus-5"}
+
+processors:
+  chat:
+    name: "chat_tracker"
+
+runner:
+  timeout: 3600

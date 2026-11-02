@@ -1,0 +1,15 @@
+# Requires the same credentials as claude_code_native_bridge_waa.yaml, plus Host ARTIFACT_TAIHU_PAT.
+# uv run nexus run-single docs/examples/configs/gui_recording_waa.yaml -o result.json
+compose:
+  - use: ./claude_code_native_bridge_waa.yaml
+  - input:
+      runner:
+        hooks:
+          recording:
+            name: gui_recording
+            required: false
+            args:
+              runtime_name: main
+              storage_pool: hy-gui
+              fps: 10
+              max_duration_seconds: 3600

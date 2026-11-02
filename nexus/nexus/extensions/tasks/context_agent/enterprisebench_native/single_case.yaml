@@ -1,0 +1,12 @@
+# Standalone EnterpriseBench example using the Nexus-native, Harbor-free task.
+# Replace `uri` with a published dataset produced by
+# `enterprisebench_native.dataset` before using this remote example.
+compose:
+  - data:
+      uri: yufeihuang/enterprisebench_native_eval_75@v1
+      split: enterprisebench_native_eval_75
+      id: copyworks_1790752c
+  - use: base.yaml
+  - input:
+      task_config:
+        artifact_root: ${oc.env:ENTERPRISEBENCH_ARTIFACT_ROOT,"workspace/enterprisebench_single_native/artifacts"}

@@ -1,0 +1,143 @@
+# HLE config: 使用 main_agent 替代 science_agent（自动 schema 模式）。
+# Generation + Judge 都走 Taiji，Generation 开启 thinking。
+#
+# Schema 来源：Pydantic 模型自动生成（含 default + anyOf），通过 tool_overrides 重命名工具。
+# 与 main_agent_think_manual_schema.yaml 的区别：本文件不依赖外部 schema 文件。
+#
+# Usage:
+#   export CODE_INTERPRETER="jupyter"   # or "none"
+#   export TAIJI_AUTH="Bearer xxx"
+#   export TAIJI_WSID="10103"
+#   export GENERATION_MODEL="your_generation_model"
+#   export GENERATION_TAIJI_POLARIS_SERVICE="your_generation_service_AIDE"
+#   export JUDGE_MODEL="gpt-oss-120b-sci-128k-new_daisyyi_for_RL_R2_zwfy_tp4"
+#   export TAIJI_POLARIS_SERVICE="your_judge_service_AIDE"
+
+imports:
+  - nexus.extensions
+  - nexus.extensions.openai_clients
+  - nexus.extensions.tasks.search_stateful
+  - nexus.extensions.agents.main
+  - nexus.extensions.tools.search_stateful
+  - nexus.extensions.tools.code_interpreter
+
+# Task config (task_config is filled per item by the generator).
+task_name: "search_stateful"
+task_config:
+  task_id: ""
+  question: ""
+  answer: ""
+  timeout: 600
+
+# Runtime config (Gongfeng sandbox).
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "http://hyrl-sandbox.prod.woa.com:8052"
+  token: "23483609b47ac280a1ef83a49fb5d234"
+  image: ${oc.env:HLE_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+  runtime_image: ${oc.env:HLE_RUNTIME_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+  runtime_provider: ""
+  resource_spec:
+    cpu: 2
+    memory: 10
+  request_timeout: 1800.0
+  python_version: "3.12"
+
+runtime_configs:
+  main:
+    image: ${oc.env:HLE_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+
+# Agent config — main_agent.
+agent_name: "main_agent"
+agent_config:
+  system_prompt: |
+    You are a helpful AI assistant that conducts thorough internet research to provide accurate answers.
+
+    IMPORTANT:
+    - Use only the provided tools to perform actual information retrieval without fabricating answers.
+    - Explore different aspects and refine your approach until comprehensive information is gathered.
+    - Synthesize information from diverse, credible sources. Cross-check facts to validate accuracy and reliability.
+    - When done, stop calling tools and provide your final answer directly.
+  max_iterations: 1000
+  tools:
+    - search_stateful/search
+    - search_stateful/open
+    - search_stateful/find
+    - jupyter_code_interpreter
+  parallel_tool_calls: false
+  tool_call_error_retries: 1
+  oom_runtime_recovery: true
+  tool_overrides:
+    - tool_name: search_stateful/search
+      name: search
+      description: "Use this tool to search the web for information using Google. Returns relevant web pages with titles, links, and snippets."
+    - tool_name: search_stateful/open
+      name: open
+      description: "Opens the link id from the page indicated by cursor starting at line number loc, showing num_lines lines. Valid link ids are displayed with the formatting: 【{id}†.*】. If cursor is not provided, the most recent page is implied. If id is a string, it is treated as a fully qualified URL associated with source. If loc is not provided, the viewport will be positioned at the beginning of the document or centered on the most relevant passage, if available. Use this function without id to scroll to a new location of an opened page."
+    - tool_name: search_stateful/find
+      name: find
+      description: "Finds exact matches of pattern in the current page, or the page given by cursor."
+    - tool_name: jupyter_code_interpreter
+      name: python
+      description: "Use this tool to execute Python code. The code will not be shown to the user. This tool should be used for internal reasoning, but not for code that is intended to be visible to the user (e.g. when creating plots, tables, or files). When you send a message containing Python code to python, it will be executed in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after configured timeout."
+
+# Tool config.
+tool_configs:
+  search_stateful:
+    user: ${oc.env:SEARCH_USER,"YOUR_USER_ID"}
+    apikey: ${oc.env:SEARCH_API_KEY,"YOUR_API_KEY"}
+    max_search_results: 10
+
+  jupyter_code_interpreter:
+    timeout: 600
+
+# OpenAI client config.
+openai_clients:
+  # Generation model via Taiji + Polaris service discovery.
+  main:
+    name: "taiji"
+    config:
+      client_args:
+        model: ${oc.env:GENERATION_MODEL,"A3B_MoE_SFT_256K_think_A3B_15T256k_0930bus_80w_sftexp5_64k"}
+        namespace: ${oc.env:TAIJI_NS,"Production"}
+        service: ${oc.env:GENERATION_TAIJI_POLARIS_SERVICE,"taiji-stream-server-online-openapi-prod"}
+        authorization: ${oc.env:TAIJI_AUTH,"Bearer xxx"}
+        wsid: ${oc.env:TAIJI_WSID,"10103"}
+        url_pattern: ${oc.env:TAIJI_URL_PATTERN,"openapi"}
+        timeout: ${oc.env:GENERATION_TIMEOUT,1200}
+        max_retries: ${oc.env:GENERATION_MAX_RETRIES,25}
+        # === 思考模式配置 ===
+        enable_thinking: true
+        chat_template_kwargs:
+          interleaved_thinking: true    # 多轮历史保留 <think> 内容
+          reasoning_effort: "high"      # 深度思考（64K window）
+      request_args:
+        temperature: 0.7
+        top_p: 1
+        max_tokens: 131072
+        top_k: -1
+        repetition_penalty: 1
+
+  # Judge model via Taiji + Polaris service discovery.
+  judge:
+    name: "taiji"
+    config:
+      client_args:
+        model: ${oc.env:JUDGE_MODEL,"gpt-oss-120b-sci-128k-new_daisyyi_for_RL_R2_zwfy_tp4"}
+        namespace: ${oc.env:TAIJI_NS,"Production"}
+        service: ${oc.env:TAIJI_POLARIS_SERVICE,"taiji-stream-server-online-openapi-prod"}
+        authorization: ${oc.env:TAIJI_AUTH,"Bearer xxx"}
+        wsid: ${oc.env:TAIJI_WSID,"10103"}
+        url_pattern: ${oc.env:TAIJI_URL_PATTERN,"openapi"}
+        timeout: ${oc.env:TAIJI_TIMEOUT,1200}
+        max_retries: ${oc.env:JUDGE_MAX_RETRIES,6}
+      request_args:
+        temperature: 0.0
+        top_p: 1.0
+
+# Trace processors.
+processors:
+  agent_metrics:
+    name: "main_agent_metrics"
+  chat:
+    name: "chat_tracker"

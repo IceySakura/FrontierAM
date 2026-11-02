@@ -1,0 +1,26 @@
+[project]
+name = "swe_agent"
+version = "0.1.0"
+authors = [
+    { name = "echoclchen" },
+    { name = "gussfang" },
+]
+maintainers = [
+    { name = "gussfang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+# SWE tools instantiate FileEditor directly; its runtime dependencies must be installed here.
+runtime = ["binaryornot>=0.4.4", "cachetools>=6.2.2", "charset-normalizer>=3.0.0"]
+
+[tool.nexus]
+agents = { swe_agent = "nexus.extensions.agents.swe_agent.agent", ch_swe_agent = "nexus.extensions.agents.swe_agent.agent" }
+
+[tool.nexus.tools]
+"swe_agent/bash" = "nexus.extensions.agents.swe_agent.tools"
+"swe_agent/str_replace_editor" = "nexus.extensions.agents.swe_agent.tools"
+"swe_agent/review_submit" = "nexus.extensions.agents.swe_agent.tools"
+"ch_swe_agent/bash" = "nexus.extensions.agents.swe_agent.tools"
+"ch_swe_agent/str_replace_editor" = "nexus.extensions.agents.swe_agent.tools"
+"ch_swe_agent/review_submit" = "nexus.extensions.agents.swe_agent.tools"

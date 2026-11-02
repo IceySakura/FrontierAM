@@ -1,0 +1,66 @@
+# Claude Code with an MCP server on a DevCloud macOS sandbox through the native LLM bridge.
+#
+# The MCP server is started directly with npx. No pre_start_scripts are required.
+# The first cold start may take longer while npx downloads the package.
+#
+# Required env: DEVCLOUD_APP_ID, DEVCLOUD_APP_TOKEN, AI_HUB_API_KEY
+# Run:          uv run nexus run-single -o result.json docs/examples/configs/claude_code_native_bridge_devcloud_macos_mcp.yaml
+
+task_name: identity
+task_config: {}
+
+runtime_provider_name: devcloud
+runtime_provider_config:
+  app_id: ${oc.env:DEVCLOUD_APP_ID}
+  app_token: ${oc.env:DEVCLOUD_APP_TOKEN}
+  sandbox_api_base_url: ${oc.env:DEVCLOUD_SANDBOX_API_BASE_URL,"http://21.6.221.82:18800"}
+  lease_time: ${oc.env:DEVCLOUD_LEASE_TIME,900}
+  server_port: 5000
+  request_timeout: ${oc.env:DEVCLOUD_REQUEST_TIMEOUT,1800}
+  instance_ready_timeout: ${oc.env:DEVCLOUD_INSTANCE_READY_TIMEOUT,300}
+
+runtime_configs:
+  main: {}
+
+agent_name: claude_code_native_bridge
+agent_config:
+  user_prompt: |
+    使用已配置的 everything MCP server 的 echo 工具发送文本：
+    nexus native bridge mcp verified on devcloud macos
+    最终回复 MCP 工具返回的原始文本。不要使用 shell 模拟 echo 结果。
+  working_dir: /tmp/nexus-claude-mcp-macos
+  timeout: 600
+  # macOS ships npm but not Claude Code; install it from npm when not already present.
+  ensure_claude: true
+  npm_registry: https://registry.npmjs.org
+  mcp_servers:
+    - name: everything
+      command: npx
+      args:
+        - -y
+        - "@modelcontextprotocol/server-everything"
+  extra_env:
+    # Registry used by npm/npx to download MCP server packages.
+    NPM_CONFIG_REGISTRY: "https://registry.npmjs.org/"
+    # Maximum time in milliseconds Claude Code waits for MCP servers to become ready.
+    MCP_TIMEOUT: "300000"
+    CLAUDE_CODE_ATTRIBUTION_HEADER: "0"
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+    CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: "1"
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB_API_KEY}?provider=deepseek&model=deepseek-v4-pro&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/v1"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"deepseek-v4-pro"}
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 4200

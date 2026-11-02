@@ -1,0 +1,70 @@
+# Polar is infer-proxy / 自部署 HY LLM Profile（litellm → OpenAI 兼容端点）
+#
+# 协议与路由：
+#   Client=litellm；Endpoint=http://infer-proxy-yb-test.production.polaris:8000/openapi；
+#   Model 须带 openai/ 前缀。thinking 走 extra_body.chat_template_kwargs，
+#   不是 Anthropic thinking / output_config。按 run_id 派生会话亲和。
+#
+# 环境变量：
+#   必填：OPENAI_MODEL
+#   可选：
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#       LOG_LLM_USAGE
+#
+# 使用示例：
+#   LLM_CONFIG=infer-proxy.litellm
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.litellm
+
+  agent_config:
+    # hunyuan：推理以纯文本 / reasoning_content 出现，不是带签名的 Anthropic thinking block
+    thinking_preset: hunyuan
+    no_thinking_request_args:
+      model: 'openai/${oc.env:OPENAI_MODEL}'
+      max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,262144}}
+      temperature: 1.0
+      extra_body:
+        chat_template_kwargs:
+          reasoning_effort: no_think
+          preserved_thinking: false
+    extra_env:
+      # Claude Code CLI 仍读 ANTHROPIC_MODEL；host 会改走 OPENAI_MODEL。默认值必须加引号
+      ANTHROPIC_MODEL: 'claude-opus-4-8[1m]'
+
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          # infer-proxy 不鉴权；LiteLLM 仍要非空占位，否则部分路径拒发请求
+          api_key: EMPTY
+          base_url: 'http://infer-proxy-yb-test.production.polaris:8000/openapi'
+          # 单次 HY4 生成可能很长；数值和布尔值都要套 oc.decode：oc.env 一律返回字符串
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,3600}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,15}}
+          log_llm_usage: ${oc.decode:${oc.env:LOG_LLM_USAGE,true}}
+          # 按 run_id+model 派生 SessionID，StrategyType=ConsistentHash，同一任务多轮请求落同一实例
+          nexus_trace_id_from_run_id: true
+          nexus_llm_lb_strategy: ConsistentHash
+          # 不设 cache_control_*：HY / infer-proxy 无 Anthropic prompt-cache 语义
+
+        request_args:
+          # 格式: openai/HY4...
+          model: 'openai/${oc.env:OPENAI_MODEL}'
+          temperature: 1.0
+          top_p: 1.0
+          max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,262144}}
+          extra_body:
+            chat_template_kwargs:
+              reasoning_effort: high
+              preserved_thinking: true
+              interleaved_thinking: true
+
+merge:
+  imports: append_unique
+
+source: infer-proxy-litellm

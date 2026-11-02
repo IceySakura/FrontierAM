@@ -1,0 +1,36 @@
+# Taiji GPU sandbox runtime profile.
+#
+# GPU count, card type, CPU, and memory are task-owned resources compiled from
+# task.toml [environment] / [verifier.environment]. This profile only selects
+# the Taiji scheduler and supplies deployment-specific routing metadata.
+#
+# Required environment variables:
+#   GONGFENG_RUNTIME_TOKEN
+#   TAIJI_APP_GROUP
+#   TAIJI_APP_GROUP_LOCATION
+#
+# Optional environment variables:
+#   GONGFENG_API_BASE_URL
+#   GONGFENG_RUNTIME_IMAGE
+#   TAIJI_PURPOSE
+
+body:
+  runtime_provider_name: taiji
+
+  runtime_provider_config:
+    api_base_url: ${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}
+    token__env: GONGFENG_RUNTIME_TOKEN
+    runtime_image: ${oc.env:GONGFENG_RUNTIME_IMAGE,current}
+    request_timeout: 24000
+    purpose: ${oc.env:TAIJI_PURPOSE,prod}
+
+    # A network-isolated Dataset Item may have selected the suanli backend while
+    # it was compiled without deployment context. Remove that backend override:
+    # TaijiRuntimeProvider pins runtime_provider=taiji and forwards the same
+    # network_policy to Taiji's sandboxConfig.
+    runtime_provider: null
+
+    taiji_app_group: ${oc.env:TAIJI_APP_GROUP}
+    taiji_app_group_location: ${oc.env:TAIJI_APP_GROUP_LOCATION}
+
+source: harbor-taiji-gpu

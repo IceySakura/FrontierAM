@@ -1,0 +1,21 @@
+# LLM backend patch for openai_clients.main.name == "litellm".
+#
+# Deep-merged over the stage config (default/*.yaml + SWE_ANY_CONFIG_PATCH)
+# by batch_config.apply_client_patch, after the user patch, so it always wins.
+# litellm routes through the Bedrock gateway; the provider-prefixed model is all
+# a request needs — the gateway tailors the rest. Every value keeps an
+# ${oc.env:...} interpolation so an exported env var still overrides the default.
+openai_clients:
+  main:
+    config:
+      client_args:
+        # Fail fast on a hard/persistent error instead of stalling a feature ~50 min.
+        # The shared configurable_retry caps its exponential backoff at 10 min, so the
+        # default 15 retries against a sticky failure (e.g. aws_third failing over under
+        # load to the org-SCP-denied global.* Bedrock CRIS) burns ~50 min before giving
+        # up. A small count still absorbs a couple of transient blips, then returns control
+        # to the stage's failure policy in <~1 min (Mask may use its draft; Select/Eval
+        # fail closed). Bump via SWE_ANY_LLM_MAX_RETRIES when the backend is healthy.
+        max_retries: "${oc.decode:${oc.env:SWE_ANY_LLM_MAX_RETRIES,3}}"
+      request_args:
+        model: "${oc.env:OPENAI_MODEL,bedrock/anthropic.claude-opus-4-8}"

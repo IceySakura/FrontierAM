@@ -1,0 +1,13 @@
+[project]
+name = "wildclaw_bench"
+version = "0.1.0"
+authors = [
+    { name = "felixxxi" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { wildclaw_bench = "nexus.extensions.tasks.wildclaw_bench.task" }

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: nexus-label
+description: Helm chart for the Nexus label service
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

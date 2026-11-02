@@ -1,0 +1,67 @@
+# Yuanbao OneAgent 测试配置
+#
+# 使用方式:
+#   nexus run-single tests/e2e/edu_one_agent_example.yaml
+#
+# 环境变量:
+#   OPENAI_API_KEY: LLM API Key
+#   OPENAI_BASE_URL: LLM API Base URL (可选, 默认 https://api.openai.com/v1)
+#   OPENAI_MODEL: 模型名 (可选, 默认 gpt-4)
+#
+# Tool proxy 支持通过北极星服务发现:
+#   tool_proxy_service: trpc.yuanbao.yb_agent.tool_proxy.ToolCallService  # 北极星服务名
+#   tool_proxy_namespace: Production  # 北极星命名空间 (默认 Production)
+#   tool_proxy_metadata:  # 北极星路由元数据 (可选, 用于匹配路由规则, 如 env tag)
+#     env: test
+#   tool_proxy_src_service: "Production:my-caller"  # 北极星源服务标识 (可选, 格式 namespace:service)
+
+imports:
+  - nexus.extensions.agents.edu_one_agent
+  - nexus.extensions.tasks.edu_one_agent.task
+
+task_name: "edu_one_agent"
+task_config:
+  question: "快用 web_search 这个工具帮我找一找 世界上第二高的山是什么吧"
+  image: "/apdcephfs_sgxy/share_304169095/hunyuan/sandorliang/hy3_train/train_v31_org/datas/images/valid/valid.01_000000_0.jpg"
+  answer: "我也不知道"
+
+agent_name: "edu_one_agent"
+agent_config:
+  max_iterations: 5
+  tool_proxy_service: trpc.yb_agent.tool_proxy.trpc
+  tool_proxy_namespace: Test
+  tool_proxy_metadata:
+    env: ci-741
+  tool_proxy_timeout: 30
+  tool_choice: auto
+  tools:
+    - type: function
+      function:
+        name: web_search
+        version: v1.0
+        description: >-
+          文本搜索工具，基于子任务查询query，在数据库中基于语义执行全文检索，可以返回多条相关的文本结果，为大模型提供参考信息，适用于信息检索、内容丰富等场景。
+        parameters:
+          type: object
+          properties:
+            query:
+              description: >-
+                用于文本检索的子任务查询query，应明确表达单一意图。
+                查询query应使用通用、搜索引擎友好且易于检索的关键词，以提高搜索效率和结果相关性。避免直接使用用户问题中难以有效检索的短语。例如：避免使用相对的术语，如"今天"或"明年"——应改用精确的日期，如"2025年9月3日"。
+                文本搜索工具只承接简单的基于相关性匹配的文档返回，不应包含任何需要进一步思考、筛选需求，例如：查询query中避免使用"第三个作者"这样的term，因为"第三个作者"一般不会直接出现在检索库的文档中，应改用"作者列表"这样更通用的表述。
+                查询query应保持简洁，去除不必要的辅助词、连词和疑问词。主要使用关键词组合（用空格分隔）。理想情况下不应超过15个字。避免使用特殊标点符号。
+              type: array
+              items:
+                type: string
+          required:
+            - query
+
+openai_clients:
+  main:
+    name: "openai"
+    config:
+      client_args:
+        api_key: ${oc.env:OPENAI_API_KEY}
+        base_url: ${oc.env:OPENAI_BASE_URL,https://api-inference.modelscope.cn/v1/}
+      request_args:
+        model: ${oc.env:OPENAI_MODEL,ZhipuAI/GLM-5}

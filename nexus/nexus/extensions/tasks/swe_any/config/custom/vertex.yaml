@@ -1,0 +1,14 @@
+# Example SWE_ANY_CONFIG_PATCH — switch the host LLM backend to GCP vertex.
+#
+# Single-axis on purpose: it only flips openai_clients.main.name, so it composes
+# with any other custom/*.yaml. The generator reads the merged name and layers
+# config/client/vertex_anthropic.yaml on top (anthropic_version / thinking / …),
+# so this file never repeats those transport details.
+#
+#   # cheap smoke, on vertex — later patch wins on shared keys (bare names
+#   # resolve under config/custom/):
+#   SWE_ANY_CONFIG_PATCH=smoke.yaml,vertex.yaml \
+#     bash nexus/extensions/tasks/swe_any/scripts/run_batch.swe_any_select.sh
+openai_clients:
+  main:
+    name: vertex_anthropic

@@ -1,0 +1,72 @@
+# Reuse a persistent AGS WindowsAgentArena sandbox through the native LLM bridge.
+#
+# The provider checks that AGS_INSTANCE_ID is RUNNING, refreshes its access token,
+# and reconnects without creating or stopping the sandbox.
+#
+# Required env: AGS_SECRET_ID, AGS_SECRET_KEY, AGS_INSTANCE_ID, AI_HUB_API_KEY
+# Run: uv run nexus run-single -o result.json docs/examples/configs/claude_code_native_bridge_waa_persistent.yaml
+
+task_name: identity
+task_config: {}
+
+runtime_provider_name: ags
+runtime_provider_config:
+  secret_id: ${oc.env:AGS_SECRET_ID}
+  secret_key: ${oc.env:AGS_SECRET_KEY}
+  region: ${oc.env:AGS_REGION,"ap-guangzhou"}
+  domain: ${oc.env:AGS_DOMAIN,"${oc.env:AGS_REGION,ap-guangzhou}.tencentags.com"}
+  interface_mode: nexus
+  request_timeout: 900
+  instance_ready_timeout: 300
+
+runtime_configs:
+  main:
+    runtime_credential:
+      instance_id: ${oc.env:AGS_INSTANCE_ID}
+    provision_mode: control_plane
+    launch_mode: native
+    runtime_kind: waa
+    tool_type: waa
+    interface_mode: nexus
+    timeout: ${oc.env:WAA_TIMEOUT,"900s"}
+
+agent_name: claude_code_native_bridge
+agent_config:
+  user_prompt: |
+    请按以下顺序操作：
+    1. 检查当前工作目录是否存在 persistent-check.txt。
+    2. 如果存在，先读取并完整输出旧文件内容，标记为 previous content。
+    3. 获取当前时间和计算机名。
+    4. 使用当前时间和计算机名更新 persistent-check.txt；如果不存在则创建。
+    5. 再次读取并完整输出文件内容，标记为 current content。
+    6. 最终回答必须包含原样字符串：persistent sandbox reuse verified
+  working_dir: '%TEMP%\nexus-claude-persistent'
+  timeout: 3600
+  ensure_claude: false
+  npm_registry: https://registry.npmmirror.com
+  extra_env:
+    CLAUDE_CODE_ATTRIBUTION_HEADER: '0'
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1'
+    CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: '1'
+  pre_start_scripts:
+    - interpreter: powershell
+      code: |
+        Write-Output "[pre-start] preparing working directory"
+        New-Item -ItemType Directory -Path $env:TEMP\nexus-claude-persistent -Force | Out-Null
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB_API_KEY}?provider=deepseek&model=deepseek-v4-pro&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/v1"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"deepseek-v4-pro"}
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 4200

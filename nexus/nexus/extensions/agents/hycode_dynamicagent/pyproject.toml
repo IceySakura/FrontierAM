@@ -1,0 +1,13 @@
+[project]
+name = "hycode_dynamicagent"
+version = "0.1.0"
+authors = [
+    { name = "kechizhang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { hycode_dynamicagent = "nexus.extensions.agents.hycode_dynamicagent.agent", hycode_dynamicagent_multiturn = "nexus.extensions.agents.hycode_dynamicagent.agent" }

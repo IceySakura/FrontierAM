@@ -1,0 +1,14 @@
+# 仅用于物化配置和验证 Host 模块依赖；不启动 Agent、Sandbox 或访问 LLM。
+# 在仓库根目录运行：
+#   uv run nexus materialize docs/examples/configs/harbor/module-wheel-validation.yaml \
+#     --output /tmp/nexus-harbor-tasks.jsonl
+#
+# 真实任务的完整验证与提交流程见 docs/cloud/local-validation.md。
+# 如需验证其他 scaffold，替换 agents/claude-code.yaml 为对应 Agent Profile。
+# 如需物化真实任务，在 compose 中添加 data: t3-harbor:///绝对路径。
+# Profile 中的 token__env / api_key__env 保留为运行时环境变量引用。
+compose:
+  - use: harbor_bridge:mode=agent
+  - use: ../../../../nexus/extensions/harbor_bridge/configs/runtime/gongfeng-prod.yaml
+  - use: ../../../../nexus/extensions/harbor_bridge/configs/agents/claude-code.yaml
+  - use: ../../../../nexus/extensions/harbor_bridge/configs/llm/aws-opus48-litellm.yaml

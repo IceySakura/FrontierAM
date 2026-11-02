@@ -1,0 +1,25 @@
+imports:
+  - nexus.extensions.projects.android_demo.tools
+  - nexus.extensions.projects.android_demo
+
+task_name: "agr_mobile_api_e2e"
+
+runtime_provider_name: "agr_mobile"
+runtime_provider_config:
+  api_key: "your_e2b_api_key"
+  domain: "ap-guangzhou.tencentags.com"
+  request_timeout: 1800.0
+  ready_timeout: 120
+
+scenarios:
+  template_parallel_e2e:
+    sandbox_template: "mobile-hunyuan-persistent"
+    parallel_count: 5
+    output_dir: "tests/e2e/agr_mobile_output/template_parallel_e2e"
+
+  existing_sandbox_parallel_e2e:
+    sandbox_ids:
+      - "sandbox-id-1"
+      - "sandbox-id-2"
+      - "sandbox-id-3"
+    output_dir: "tests/e2e/agr_mobile_output/existing_sandbox_parallel_e2e"

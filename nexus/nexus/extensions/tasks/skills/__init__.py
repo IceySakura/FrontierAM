@@ -1,0 +1,1 @@
+"""Skills task module."""

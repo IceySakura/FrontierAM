@@ -1,0 +1,32 @@
+[project]
+name = "nexus-local-one-agent"
+version = "0.1.0"
+authors = [
+    { name = "jimcjhe" },
+    { name = "caterwu" },
+    { name = "erwincpliu" },
+]
+description = "Local workspace agent with permission engine and sandbox isolation"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "jinja2>=3.0",
+]
+runtime = []
+
+[tool.nexus]
+agents = { local_one_agent = "nexus.extensions.agents.local_one_agent.agent" }
+
+[tool.nexus.tools]
+"local_one_agent/bash" = "nexus.extensions.agents.local_one_agent.tools.bash"
+"local_one_agent/read" = "nexus.extensions.agents.local_one_agent.tools.read"
+"local_one_agent/edit" = "nexus.extensions.agents.local_one_agent.tools.edit"
+"local_one_agent/write" = "nexus.extensions.agents.local_one_agent.tools.write"
+"yb_one_agent/web_fetch" = "nexus.extensions.agents.yb_one_agent.tools"
+"yb_one_agent/web_search" = "nexus.extensions.agents.yb_one_agent.tools"
+"yb_one_agent/picture_search" = "nexus.extensions.agents.yb_one_agent.tools"
+"yb_one_agent/video_search" = "nexus.extensions.agents.yb_one_agent.tools"
+"yb_one_agent/ask_user_question" = "nexus.extensions.agents.yb_one_agent.tools"
+"yb_one_agent/load_skill" = "nexus.extensions.agents.yb_one_agent.tools"

@@ -1,0 +1,15 @@
+[project]
+name = "pong"
+version = "0.1.0"
+description = "Stateful local MCP Atari Pong task"
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "gymnasium[atari]>=1.0.0",
+    "pillow>=10.0.0",
+]
+runtime = []
+
+[tool.nexus]
+tasks = { pong = "nexus.extensions.tasks.pong.task" }

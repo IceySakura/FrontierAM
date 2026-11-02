@@ -1,0 +1,69 @@
+# Claude Code on AGS WindowsAgentArena through the native LLM bridge.
+#
+# The sandbox runs Claude Code natively (no full Nexus runtime server); a lightweight
+# LLM bridge is uploaded and launched inside the Windows sandbox, and LLM calls are
+# proxied back to the host OpenAI client over Socket.IO with RSIO fault tolerance.
+#
+# Required env: AGS_SECRET_ID, AGS_SECRET_KEY, AGS_WAA_TOOL_ID, AI_HUB_API_KEY
+# Run:          uv run nexus run-single -o result.json docs/examples/configs/claude_code_native_bridge_waa.yaml
+
+task_name: identity
+task_config: {}
+
+runtime_provider_name: ags
+runtime_provider_config:
+  secret_id: ${oc.env:AGS_SECRET_ID}
+  secret_key: ${oc.env:AGS_SECRET_KEY}
+  region: ${oc.env:AGS_REGION,"ap-guangzhou"}
+  domain: ${oc.env:AGS_DOMAIN,"${oc.env:AGS_REGION,ap-guangzhou}.tencentags.com"}
+  interface_mode: nexus
+  request_timeout: 900
+  instance_ready_timeout: 300
+
+runtime_configs:
+  main:
+    provision_mode: control_plane
+    launch_mode: native
+    runtime_kind: waa
+    tool_type: waa
+    tool_id: ${oc.env:AGS_WAA_TOOL_ID}
+    interface_mode: nexus
+    timeout: ${oc.env:WAA_TIMEOUT,"900s"}
+
+agent_name: claude_code_native_bridge
+agent_config:
+  user_prompt: |
+    用 PowerShell 编写并运行快速排序脚本 quicksort.ps1，对 9 4 6 2 7 1 5 3 8 排序，
+    输出必须精确包含：sorted: 1 2 3 4 5 6 7 8 9。
+  working_dir: '%TEMP%\nexus-claude-quicksort'
+  timeout: 3600
+  # WAA images ship node + claude preinstalled; only probe, never install.
+  ensure_claude: false
+  npm_registry: https://registry.npmmirror.com
+  extra_env:
+    CLAUDE_CODE_ATTRIBUTION_HEADER: '0'
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1'
+    CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: '1'
+  # Scripts run in order inside the sandbox before Claude starts.
+  pre_start_scripts:
+    - interpreter: powershell
+      code: |
+        Write-Output "[pre-start] preparing workspace at $(Get-Location)"
+        Set-Content -Path pre_start_ready.txt -Value "ok"
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB_API_KEY}?provider=deepseek&model=deepseek-v4-pro&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/v1"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"deepseek-v4-pro"}
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 4200

@@ -1,0 +1,20 @@
+[project]
+name = "codeact"
+version = "0.1.0"
+authors = [
+    { name = "echoclchen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { codeact = "nexus.extensions.agents.codeact.agent" }
+
+[tool.nexus.tools]
+"codeact/terminal" = "nexus.extensions.agents.codeact.tools"
+"codeact/file_editor" = "nexus.extensions.agents.codeact.tools"
+"codeact/task_tracker" = "nexus.extensions.agents.codeact.tools"
+"codeact/think" = "nexus.extensions.agents.codeact.tools"
+"codeact/finish" = "nexus.extensions.agents.codeact.tools"

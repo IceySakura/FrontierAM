@@ -1,0 +1,3064 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nexus Live Runner</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --text: #182230;
+      --muted: #667085;
+      --border: #d0d7e2;
+      --border-soft: #e5e9f0;
+      --blue: #1d6fdc;
+      --green: #16845b;
+      --yellow: #a86100;
+      --red: #b42318;
+      --ink: #101828;
+      --term: #0d1117;
+      --term-line: #2f8f68;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    textarea,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      min-height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+
+    button.primary {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #ffffff;
+    }
+
+    button.danger {
+      border-color: #f0b8b2;
+      color: var(--red);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    textarea,
+    input,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--text);
+      padding: 8px 9px;
+      outline: none;
+    }
+
+    textarea:focus,
+    input:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(29, 111, 220, 0.12);
+    }
+
+    textarea {
+      resize: vertical;
+      line-height: 1.45;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      height: 100dvh;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      display: grid;
+      grid-template-rows: auto auto auto auto minmax(0, 1fr);
+      border-right: 1px solid var(--border);
+      background: #ffffff;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .sidebar-head {
+      padding: 14px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #b6cae7;
+      border-radius: 6px;
+      background:
+        linear-gradient(90deg, #1d6fdc 0 50%, transparent 50%),
+        linear-gradient(0deg, #18a05e 0 50%, #ffffff 50%);
+      flex: 0 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .sub {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sidebar-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .status-filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .status-filter {
+      min-height: 28px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status-filter.active {
+      border-color: #9db7db;
+      color: var(--text);
+      background: #eef4fb;
+    }
+
+    .cache-key-filter {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 6px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .cache-key-filter input {
+      min-width: 0;
+      height: 32px;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .sessions {
+      overflow: auto;
+      padding: 8px;
+    }
+
+    .session-row {
+      width: 100%;
+      text-align: left;
+      display: grid;
+      gap: 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      min-height: 78px;
+      padding: 9px;
+      border-radius: 6px;
+    }
+
+    .session-row:hover {
+      background: var(--panel-soft);
+    }
+
+    .session-row.active {
+      border-color: #b7d3f7;
+      background: #eef6ff;
+    }
+
+    .context-menu {
+      position: fixed;
+      z-index: 100;
+      min-width: 160px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+      padding: 5px;
+    }
+
+    .context-menu button {
+      width: 100%;
+      justify-content: flex-start;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      padding: 8px 9px;
+    }
+
+    .context-menu button:hover {
+      background: var(--panel-soft);
+    }
+
+    .session-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .session-title {
+      font-weight: 650;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    .session-id {
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 22px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: #ffffff;
+      padding: 2px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .badge.starting,
+    .badge.running,
+    .badge.killing {
+      color: var(--yellow);
+      border-color: #e7c58f;
+      background: #fff8ea;
+    }
+
+    .badge.idle {
+      color: var(--blue);
+      border-color: #b7d3f7;
+      background: #eef6ff;
+    }
+
+    .badge.closed {
+      color: var(--green);
+      border-color: #a6d8c4;
+      background: #edf8f3;
+    }
+
+    .badge.failed,
+    .badge.killed {
+      color: var(--red);
+      border-color: #efb5b0;
+      background: #fff1f0;
+    }
+
+    .main {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+    }
+
+    .title-block {
+      min-width: 0;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .content {
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .create-view {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+      max-width: none;
+    }
+
+    .create-panel {
+      height: 100%;
+    }
+
+    .run-view {
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(360px, 0.96fr) minmax(460px, 1.04fr);
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    .panel {
+      min-width: 0;
+      min-height: 0;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-soft);
+      background: #ffffff;
+    }
+
+    .collapse-toggle {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .collapsible-panel.collapsed {
+      grid-template-rows: auto;
+    }
+
+    .collapsible-panel.collapsed .collapsible-body {
+      display: none;
+    }
+
+    .panel-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .runtime-picker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .runtime-picker select {
+      width: auto;
+      min-width: 110px;
+      max-width: 180px;
+      min-height: 28px;
+      padding: 4px 26px 4px 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.2;
+      text-transform: uppercase;
+      color: #344054;
+      font-weight: 700;
+    }
+
+    .panel-body {
+      min-height: 0;
+      overflow: auto;
+      padding: 12px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .create-editor-body {
+      justify-items: center;
+      overflow: hidden;
+    }
+
+    .create-status {
+      max-width: 360px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .field-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: #344054;
+      font-size: 12px;
+      margin-bottom: 6px;
+      font-weight: 650;
+    }
+
+    .yaml-editor {
+      width: min(100%, 1080px);
+      height: 100%;
+      min-height: calc(100vh - 190px);
+      resize: none;
+    }
+
+    .small-editor {
+      min-height: 116px;
+    }
+
+    .chat-panel {
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      min-height: 0;
+    }
+
+    .panel-head-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .view-tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-soft);
+      padding: 2px;
+    }
+
+    .view-tab {
+      min-height: 26px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--muted);
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+
+    .view-tab.active {
+      background: #ffffff;
+      color: var(--text);
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .toggle-label input {
+      width: auto;
+    }
+
+    .loading-panel {
+      grid-column: 1 / -1;
+      align-content: center;
+      justify-items: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .metadata-panel {
+      grid-column: 1 / -1;
+      grid-template-rows: auto minmax(0, auto);
+    }
+
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px 14px;
+      padding: 10px 12px;
+    }
+
+    .metadata-item {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .metadata-label {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .metadata-value {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .metadata-value-row {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .metadata-copy-button {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .metadata-copy-button:empty::before {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 10px;
+      margin: 5px auto 0;
+      border: 1px solid currentColor;
+      box-shadow: -4px 4px 0 -1px var(--panel), -4px 4px 0 0 currentColor;
+    }
+
+    .metadata-copy-button:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    .metadata-copy-button.copied {
+      color: var(--ok);
+      border-color: var(--ok);
+    }
+
+    .submitted-config-panel {
+      grid-column: 1 / -1;
+      grid-template-rows: auto minmax(0, auto);
+    }
+
+    .submitted-config {
+      max-height: 220px;
+      overflow: auto;
+      padding: 10px 12px;
+      background: var(--panel-soft);
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .loading-body {
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+      max-width: 520px;
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 3px solid #d8e4f4;
+      border-top-color: var(--blue);
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loading-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .loading-text {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .chat {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      grid-auto-rows: max-content;
+      padding: 12px;
+      overflow: auto;
+      min-height: 0;
+      background: #fbfcfe;
+    }
+
+    .turn {
+      display: grid;
+      gap: 8px;
+    }
+
+    .msg {
+      max-width: 88%;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 9px 10px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .msg.user {
+      justify-self: end;
+      border-color: #b7d3f7;
+      background: #eef6ff;
+    }
+
+    .agent-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .agent-card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-soft);
+      color: #344054;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .agent-card-body {
+      display: grid;
+      gap: 8px;
+      padding: 9px 10px;
+    }
+
+    .agent-summary {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .agent-content,
+    .tool-group,
+    .raw-event-card {
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .agent-content {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 8px;
+      padding: 9px 10px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .part-icon {
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .tool-group summary,
+    .raw-event-card summary {
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px 10px;
+      color: #101828;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tool-count {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .tool-call-detail {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid var(--border-soft);
+      background: #fbfcfe;
+    }
+
+    .tool-call-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: #344054;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .tool-call-detail pre,
+    .raw-event-card pre,
+    .event-tree pre {
+      max-height: 260px;
+      overflow: auto;
+      margin: 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-soft);
+      background: #f8fafc;
+      color: #344054;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+
+    .event-tree {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      padding: 12px;
+      overflow: auto;
+      min-height: 0;
+      background: #fbfcfe;
+    }
+
+    .event-node {
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .event-node[open] {
+      overflow: visible;
+    }
+
+    .event-node > summary {
+      cursor: pointer;
+      padding: 8px 10px;
+      color: #101828;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .event-node-body {
+      padding: 0 10px 10px;
+    }
+
+    .json-tree {
+      display: grid;
+      gap: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .json-tree details {
+      border-left: 1px solid var(--border-soft);
+      padding-left: 9px;
+    }
+
+    .json-tree summary {
+      cursor: pointer;
+      color: #344054;
+      padding: 2px 0;
+    }
+
+    .json-leaf {
+      display: grid;
+      grid-template-columns: minmax(90px, max-content) minmax(0, 1fr);
+      gap: 8px;
+      padding: 2px 0 2px 10px;
+      color: #344054;
+      overflow-wrap: anywhere;
+    }
+
+    .json-key {
+      color: var(--muted);
+    }
+
+    .event-line {
+      border-left: 3px solid var(--border);
+      padding-left: 8px;
+      color: #344054;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .event-line.tool,
+    .event-line.tool-result {
+      border-left-color: var(--yellow);
+    }
+
+    .event-line.assistant {
+      border-left-color: var(--green);
+    }
+
+    .event-line.system,
+    .event-line.trace,
+    .event-line.stream {
+      border-left-color: var(--blue);
+    }
+
+    .event-line.error {
+      border-left-color: var(--red);
+    }
+
+    .event-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #101828;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .event-meta {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .event-text {
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .event-detail {
+      margin-top: 6px;
+    }
+
+    .event-detail summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .event-detail pre {
+      max-height: 220px;
+      overflow: auto;
+      margin: 6px 0 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-soft);
+      background: #f8fafc;
+      color: #344054;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+
+    .composer {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid var(--border-soft);
+      background: #ffffff;
+    }
+
+    .composer textarea {
+      height: 78px;
+      min-height: 78px;
+      max-height: 78px;
+      resize: none;
+    }
+
+    .sandbox {
+      display: grid;
+      grid-template-rows: minmax(0, 1fr);
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .code-server-frame {
+      width: 100%;
+      min-height: 0;
+      height: 100%;
+      border: 1px solid var(--border-soft);
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .preview {
+      border: 1px solid var(--border-soft);
+      border-radius: 6px;
+      min-height: 0;
+      overflow: auto;
+      padding: 10px;
+      background: var(--panel-soft);
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 250px minmax(0, 1fr);
+      }
+
+      .create-view,
+      .run-view {
+        grid-template-columns: 1fr;
+      }
+
+      .sandbox {
+        min-height: 520px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: 230px minmax(0, 1fr);
+      }
+
+      .sidebar {
+        min-height: 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="brand">
+          <div class="mark"></div>
+          <div>
+            <h1>Nexus Live Runner</h1>
+            <div class="sub" id="connectionText">Disconnected</div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-actions">
+        <button id="newSessionButton" type="button">New</button>
+        <button id="refreshSessionsButton" type="button">Refresh</button>
+        <button id="clearSessionsButton" type="button">Reset</button>
+      </div>
+      <div class="status-filters" aria-label="Run status filters">
+        <button class="status-filter active" type="button" data-status-filter="all">All</button>
+        <button class="status-filter" type="button" data-status-filter="active">Active</button>
+        <button class="status-filter" type="button" data-status-filter="cached">Cached</button>
+        <button class="status-filter" type="button" data-status-filter="closed">Closed</button>
+        <button class="status-filter" type="button" data-status-filter="failed">Failed</button>
+        <button class="status-filter" type="button" data-status-filter="killed">Killed</button>
+      </div>
+      <div class="cache-key-filter">
+        <input id="cacheKeyFilter" type="text" spellcheck="false" placeholder="run id / cache key">
+        <button id="applyCacheKeyFilterButton" type="button">Apply</button>
+        <button id="clearCacheKeyFilterButton" type="button">Clear</button>
+      </div>
+      <div class="sessions" id="sessionList"></div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="title-block">
+          <div class="title" id="pageTitle">Create Session</div>
+          <div class="sub" id="pageSubtitle">RunInput YAML</div>
+        </div>
+        <div class="toolbar">
+          <button id="closeRunButton" class="danger" type="button" disabled>Kill</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="create-view" id="createView">
+          <section class="panel create-panel">
+            <div class="panel-head">
+              <h2>RunInput YAML</h2>
+              <div class="toolbar">
+                <span class="create-status" id="createLog"></span>
+                <button id="loadSampleButton" type="button">Sample</button>
+                <button id="saveDraftButton" type="button">Save Draft</button>
+                <button id="createRunButton" class="primary" type="button">Create</button>
+              </div>
+            </div>
+            <div class="panel-body stack create-editor-body">
+              <textarea id="runYaml" class="yaml-editor" spellcheck="false"></textarea>
+            </div>
+          </section>
+        </div>
+
+        <div class="run-view hidden" id="runView">
+          <section class="panel loading-panel" id="startupView">
+            <div class="loading-body">
+              <div class="spinner"></div>
+              <div class="loading-title">Starting Run</div>
+              <div class="loading-text" id="startupText">Creating runtime and preparing the workspace.</div>
+            </div>
+          </section>
+
+          <section class="panel metadata-panel collapsible-panel hidden" id="metadataPanel">
+            <div class="panel-head">
+              <h2>Run Metadata</h2>
+              <button id="metadataCollapseButton" class="collapse-toggle" type="button" aria-label="Collapse run metadata" aria-expanded="true" title="Collapse">v</button>
+            </div>
+            <div class="metadata-grid collapsible-body" id="metadataList"></div>
+          </section>
+
+          <section class="panel submitted-config-panel collapsible-panel hidden" id="submittedConfigPanel">
+            <div class="panel-head">
+              <h2>Submitted Config</h2>
+              <div class="toolbar">
+                <span class="badge" id="submittedConfigStatus">none</span>
+                <button id="submittedConfigCollapseButton" class="collapse-toggle" type="button" aria-label="Collapse submitted config" aria-expanded="true" title="Collapse">v</button>
+              </div>
+            </div>
+            <pre class="submitted-config collapsible-body" id="submittedConfigText"></pre>
+          </section>
+
+          <section class="panel chat-panel hidden" id="chatPanel">
+            <div class="panel-head">
+              <div class="panel-head-main">
+                <h2>Conversation</h2>
+                <div class="view-tabs" role="tablist" aria-label="Conversation views">
+                  <button id="conversationViewButton" class="view-tab active" type="button">Conversation</button>
+                  <button id="eventsViewButton" class="view-tab" type="button">Events</button>
+                </div>
+              </div>
+              <div class="toolbar">
+                <label class="toggle-label">
+                  <input id="showClaudeEventsToggle" type="checkbox">
+                  <span>Claude Code events</span>
+                </label>
+                <span class="badge" id="chatStatus">none</span>
+              </div>
+            </div>
+            <div class="chat" id="chatLog"></div>
+            <div class="composer">
+              <textarea id="turnInput" spellcheck="false" placeholder="Type a reply, or send empty to finish"></textarea>
+              <div class="toolbar">
+                <button id="submitTurnButton" class="primary" type="button" disabled>Send</button>
+              </div>
+            </div>
+          </section>
+
+          <div class="sandbox hidden" id="sandboxPanel">
+            <section class="panel">
+              <div class="panel-head">
+                <div class="panel-title-row">
+                  <h2>Runtime Debug</h2>
+                  <label class="runtime-picker">
+                    <span>runtime</span>
+                    <select id="runtimeSelect" aria-label="Runtime">
+                      <option value="main">main</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="toolbar">
+                  <span class="badge" id="codeServerStatus">stopped</span>
+                  <button id="openCodeServerButton" type="button" disabled>Open</button>
+                </div>
+              </div>
+              <iframe id="codeServerFrame" class="code-server-frame" title="Code Server"></iframe>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="https://cdn.bootcdn.net/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script>
+    function normalizeLiveBasePath(value) {
+      if (!value || value === "/") return "";
+      let path = String(value).trim();
+      if (!path) return "";
+      if (!path.startsWith("/")) path = `/${path}`;
+      return path.replace(/\/+$/, "");
+    }
+
+    const liveBasePath = normalizeLiveBasePath(window.__NEXUS_LIVE_BASE_PATH__ || "");
+    const liveStorageScope = liveBasePath || "/";
+    const sessionTitleKey = `nexus-live:${liveStorageScope}:sessionTitles`;
+    const draftKey = `nexus-live:${liveStorageScope}:draft`;
+
+    function livePath(path) {
+      const normalized = String(path || "").startsWith("/") ? String(path || "") : `/${path || ""}`;
+      return `${liveBasePath}${normalized}`;
+    }
+
+    const defaultRunYaml = `task_name: identity
+
+agent_name: claude_code_multiturn
+agent_config:
+  user_prompt: |
+    In /workspace, ask the user to choose Alpha or Beta with AskUserQuestion.
+    After the user answers, create /workspace/decision.md
+    with the selected choice and a short note, then finish.
+  working_dir: /workspace
+  version: 2.1.153
+  npm_registry: https://registry.npmmirror.com/
+  max_turns: 10000
+  timeout: 86400
+  enable_user_input_hooks: true
+  include_hook_events: true
+  pre_start_scripts:
+    - code: |
+        mkdir -p /workspace
+        printf 'Nexus live runner workspace\\n' > /workspace/README.md
+
+runtime_provider_name: docker
+runtime_configs:
+  main:
+    image: mirrors.tencent.com/hunyuan_yanguan/nexus-ubuntu-session:latest
+    worker_venv: true
+    extra_args:
+      - '--tmpfs'
+      - '/run'
+      - '--tmpfs'
+      - '/run/lock'
+      - '-e'
+      - 'GTK_A11Y=none'
+      - '-e'
+      - 'NEXUS_GUI_REQUIRE_SYSTEM_DBUS=1'
+
+openai_clients:
+  main:
+    name: litellm
+    config:
+      client_args:
+        api_key: "YOUR_API_KEY_HERE?provider=aws_third&timeout=3600"
+        base_url: "http://trpc-gpt-eval.production.polaris:8080"
+        stream: true
+      request_args:
+        model: "anthropic.claude-sonnet-4-6"
+        thinking:
+          type: adaptive
+
+live:
+  cache:
+    namespace: live-runner-sample
+    key_paths:
+      - task_name
+      - agent_name
+      - agent_config.user_prompt
+      - agent_config.working_dir
+      - agent_config.version
+      - runtime_provider_name
+      - runtime_configs.main.image
+      - openai_clients.main.name
+      - openai_clients.main.config.request_args.model
+`;
+
+    const state = {
+      sessions: [],
+      activeRunId: "",
+      runInfo: null,
+      events: [],
+      source: null,
+      submittedConfig: null,
+      sessionStatusFilter: "all",
+      cacheKeyFilter: "",
+      metadataCollapsed: false,
+      submittedConfigCollapsed: false,
+      selectedRuntimeName: "main",
+      sessionTitles: {},
+      chatView: "conversation",
+      showClaudeEvents: false,
+      expandedEventIds: new Set(),
+    };
+
+    const els = {
+      connectionText: document.getElementById("connectionText"),
+      sessionList: document.getElementById("sessionList"),
+      newSessionButton: document.getElementById("newSessionButton"),
+      refreshSessionsButton: document.getElementById("refreshSessionsButton"),
+      clearSessionsButton: document.getElementById("clearSessionsButton"),
+      statusFilterButtons: Array.from(document.querySelectorAll("[data-status-filter]")),
+      cacheKeyFilter: document.getElementById("cacheKeyFilter"),
+      applyCacheKeyFilterButton: document.getElementById("applyCacheKeyFilterButton"),
+      clearCacheKeyFilterButton: document.getElementById("clearCacheKeyFilterButton"),
+      closeRunButton: document.getElementById("closeRunButton"),
+      pageTitle: document.getElementById("pageTitle"),
+      pageSubtitle: document.getElementById("pageSubtitle"),
+      createView: document.getElementById("createView"),
+      runView: document.getElementById("runView"),
+      loadSampleButton: document.getElementById("loadSampleButton"),
+      saveDraftButton: document.getElementById("saveDraftButton"),
+      createRunButton: document.getElementById("createRunButton"),
+      runYaml: document.getElementById("runYaml"),
+      createLog: document.getElementById("createLog"),
+      startupView: document.getElementById("startupView"),
+      startupText: document.getElementById("startupText"),
+      metadataPanel: document.getElementById("metadataPanel"),
+      metadataCollapseButton: document.getElementById("metadataCollapseButton"),
+      metadataList: document.getElementById("metadataList"),
+      submittedConfigPanel: document.getElementById("submittedConfigPanel"),
+      submittedConfigCollapseButton: document.getElementById("submittedConfigCollapseButton"),
+      submittedConfigStatus: document.getElementById("submittedConfigStatus"),
+      submittedConfigText: document.getElementById("submittedConfigText"),
+      chatPanel: document.getElementById("chatPanel"),
+      chatStatus: document.getElementById("chatStatus"),
+      chatLog: document.getElementById("chatLog"),
+      conversationViewButton: document.getElementById("conversationViewButton"),
+      eventsViewButton: document.getElementById("eventsViewButton"),
+      showClaudeEventsToggle: document.getElementById("showClaudeEventsToggle"),
+      turnInput: document.getElementById("turnInput"),
+      submitTurnButton: document.getElementById("submitTurnButton"),
+      sandboxPanel: document.getElementById("sandboxPanel"),
+      runtimeSelect: document.getElementById("runtimeSelect"),
+      openCodeServerButton: document.getElementById("openCodeServerButton"),
+      codeServerStatus: document.getElementById("codeServerStatus"),
+      codeServerFrame: document.getElementById("codeServerFrame"),
+    };
+
+    function pretty(value) {
+      return JSON.stringify(value ?? {}, null, 2);
+    }
+
+    function setLog(message) {
+      const time = new Date().toLocaleTimeString();
+      els.createLog.textContent = `[${time}] ${message}`;
+      els.createLog.title = message;
+    }
+
+    function setCodeServerStatus(text, statusClass = "") {
+      els.codeServerStatus.textContent = text;
+      els.codeServerStatus.title = text;
+      els.codeServerStatus.className = `badge ${statusClass}`.trim();
+    }
+
+    async function request(method, url, body) {
+      const response = await fetch(url, {
+        method,
+        headers: body === undefined ? undefined : { "Content-Type": "application/json" },
+        body: body === undefined ? undefined : JSON.stringify(body),
+      });
+      const text = await response.text();
+      let data = {};
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch (error) {
+          throw new Error(`${method} ${url} returned invalid JSON`);
+        }
+      }
+      if (!response.ok) {
+        throw new Error(data.error || `${method} ${url} failed with ${response.status}`);
+      }
+      return data;
+    }
+
+    function loadSessionTitles() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(sessionTitleKey) || "{}");
+        state.sessionTitles = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+      } catch (_error) {
+        state.sessionTitles = {};
+      }
+    }
+
+    function saveSessionTitles() {
+      localStorage.setItem(sessionTitleKey, JSON.stringify(state.sessionTitles));
+    }
+
+    function resetSelection() {
+      showCreate();
+      setLog("Selection reset");
+    }
+
+    function sessionFromRunInfo(info) {
+      return {
+        run_id: info.run_id,
+        title: state.sessionTitles[info.run_id] || info.run_id || "run",
+        status: info.status,
+        events_cursor: info.events_cursor,
+        cache_key: info.cache_key,
+        current_turn_id: info.current_turn_id,
+        runtime_base_url: info.runtime_base_url,
+        runtimes: info.runtimes,
+        error: info.error,
+        output: info.output,
+      };
+    }
+
+    function upsertSession(data) {
+      if (data.run_id && data.title) {
+        state.sessionTitles[data.run_id] = data.title;
+        saveSessionTitles();
+      }
+      const old = state.sessions.find((item) => item.run_id === data.run_id);
+      const next = {
+        ...(data.run_id ? sessionFromRunInfo(data) : {}),
+        ...(old || {}),
+        ...data,
+        title: data.title || old?.title || state.sessionTitles[data.run_id] || data.run_id || "run",
+        updated_at: Date.now(),
+      };
+      if (!next.created_at) {
+        next.created_at = Date.now();
+      }
+      state.sessions = [next, ...state.sessions.filter((item) => item.run_id !== data.run_id)];
+      renderSessions();
+    }
+
+    function sessionByRunId(runId) {
+      return state.sessions.find((item) => item.run_id === runId) || null;
+    }
+
+    function activeSession() {
+      return sessionByRunId(state.activeRunId);
+    }
+
+    function inferTitle(runInput) {
+      return typeof runInput?.task_name === "string" && runInput.task_name.trim() ? runInput.task_name.trim() : "run";
+    }
+
+    function parseRunInputYaml(yamlText) {
+      if (!window.jsyaml?.load) {
+        throw new Error("js-yaml is not loaded; check the CDN script.");
+      }
+      const runInput = window.jsyaml.load(yamlText);
+      if (!runInput || Array.isArray(runInput) || typeof runInput !== "object") {
+        throw new Error("RunInput YAML must resolve to an object");
+      }
+      if (!runInput.task_name) {
+        throw new Error("RunInput YAML must include task_name");
+      }
+      return runInput;
+    }
+
+    function renderSessions() {
+      if (!state.sessions.length) {
+        els.sessionList.innerHTML = '<div class="empty">No sessions</div>';
+        return;
+      }
+      const nodes = state.sessions.map((session) => {
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "session-row";
+        if (session.run_id === state.activeRunId) {
+          row.classList.add("active");
+        }
+        row.title = "Open run";
+        row.addEventListener("click", () => selectSession(session.run_id));
+
+        const top = document.createElement("div");
+        top.className = "session-top";
+        const title = document.createElement("div");
+        title.className = "session-title";
+        title.textContent = session.title || "run";
+        const badge = document.createElement("span");
+        badge.className = `badge ${session.status || ""}`;
+        badge.textContent = session.status || "unknown";
+        top.append(title, badge);
+
+        const id = document.createElement("div");
+        id.className = "session-id";
+        id.textContent = session.run_id;
+        const cursor = document.createElement("div");
+        cursor.className = "session-id";
+        cursor.textContent = `events ${session.events_cursor ?? 0}`;
+        row.append(top, id, cursor);
+        return row;
+      });
+      els.sessionList.replaceChildren(...nodes);
+    }
+
+    const statusFilterStatuses = {
+      all: [],
+      active: ["starting", "idle", "running", "killing"],
+      cached: ["cached"],
+      closed: ["closed"],
+      failed: ["failed"],
+      killed: ["killed"],
+    };
+
+    function statusFilterQuery() {
+      const params = new URLSearchParams({ limit: "500", summary: "true" });
+      for (const status of statusFilterStatuses[state.sessionStatusFilter] || []) {
+        params.append("status", status);
+      }
+      if (state.cacheKeyFilter) {
+        params.set("q", state.cacheKeyFilter);
+      }
+      return params.toString();
+    }
+
+    function renderStatusFilterButtons() {
+      for (const button of els.statusFilterButtons) {
+        const active = button.dataset.statusFilter === state.sessionStatusFilter;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+      }
+    }
+
+    function showCreate() {
+      closeEventSource();
+      state.activeRunId = "";
+      state.runInfo = null;
+      state.events = [];
+      state.submittedConfig = null;
+      state.expandedEventIds.clear();
+      state.selectedRuntimeName = "main";
+      els.createView.classList.remove("hidden");
+      els.runView.classList.add("hidden");
+      els.pageTitle.textContent = "Create Session";
+      els.pageSubtitle.textContent = "RunInput YAML";
+      els.closeRunButton.disabled = true;
+      syncRuntimeSelect();
+      renderMetadata();
+      renderSubmittedConfig();
+      setCodeServerStatus("stopped");
+      renderSessions();
+      if (!els.runYaml.value.trim()) {
+        loadSample(false);
+      }
+    }
+
+    async function selectSession(runId) {
+      state.activeRunId = runId;
+      state.events = [];
+      state.submittedConfig = null;
+      state.expandedEventIds.clear();
+      state.selectedRuntimeName = "main";
+      state.runInfo = {
+        run_id: runId,
+        status: activeSession()?.status || "starting",
+      };
+      els.createView.classList.add("hidden");
+      els.runView.classList.remove("hidden");
+      els.pageTitle.textContent = activeSession()?.title || "Session";
+      els.pageSubtitle.textContent = runId;
+      renderSessions();
+      updateRunLayout();
+      syncRuntimeSelect();
+      renderMetadata();
+      renderSubmittedConfig();
+      await refreshRun(false);
+      await refreshSubmittedConfig(false);
+      connectEvents(runId, 0);
+      updateCodeServerFrame();
+    }
+
+    function closeEventSource() {
+      if (state.source) {
+        state.source.close();
+        state.source = null;
+      }
+      els.connectionText.textContent = "Disconnected";
+    }
+
+    function connectEvents(runId, cursor) {
+      closeEventSource();
+      const source = new EventSource(livePath(`/v1/runs/${encodeURIComponent(runId)}/events?cursor=${cursor || 0}`));
+      state.source = source;
+      const types = [
+        "run.status",
+        "runtime.ready",
+        "turn.submitted",
+        "turn.started",
+        "input.required",
+        "trace.event",
+        "agent.event",
+        "run.output",
+        "run.error",
+        "run.killed",
+      ];
+      types.forEach((type) => {
+        source.addEventListener(type, (message) => {
+          try {
+            addEvent(JSON.parse(message.data));
+          } catch (error) {
+            setCodeServerStatus(`SSE parse failed: ${error.message}`, "failed");
+          }
+        });
+      });
+      source.onopen = () => {
+        els.connectionText.textContent = "SSE connected";
+      };
+      source.onerror = () => {
+        els.connectionText.textContent = "SSE reconnecting";
+      };
+    }
+
+    function addEvent(event) {
+      if (!event || state.events.some((item) => item.id === event.id)) {
+        return;
+      }
+      state.events.push(event);
+      if (event.type === "run.status") {
+        updateStatus(event.data?.status || "");
+      }
+      if (event.type === "runtime.ready") {
+        refreshRun(false).catch((error) => setCodeServerStatus(error.message, "failed"));
+      }
+      if (event.type === "run.output") {
+        refreshRun(false);
+      }
+      renderChat();
+    }
+
+    function updateStatus(status) {
+      const info = state.runInfo || {};
+      state.runInfo = { ...info, status };
+      els.chatStatus.className = `badge ${status || ""}`;
+      els.chatStatus.textContent = status || "none";
+      els.closeRunButton.disabled = !state.activeRunId || ["killing", "closed", "failed", "killed"].includes(status);
+      const active = activeSession();
+      if (active) {
+        active.status = status;
+        active.events_cursor = Math.max(active.events_cursor || 0, state.events.at(-1)?.id || 0);
+        renderSessions();
+      }
+      updateRunLayout();
+      updateRunButtons();
+      renderMetadata();
+    }
+
+    function updateRunInfo(info) {
+      state.runInfo = info;
+      updateStatus(info?.status || "");
+      els.pageSubtitle.textContent = info?.run_id || state.activeRunId || "";
+      upsertSession({
+        run_id: info.run_id,
+        title: activeSession()?.title || state.sessionTitles[info.run_id] || info.run_id || "run",
+        status: info.status,
+        events_cursor: info.events_cursor,
+        cache_key: info.cache_key,
+        current_turn_id: info.current_turn_id,
+        runtime_base_url: info.runtime_base_url,
+        runtimes: info.runtimes,
+        error: info.error,
+        output: info.output,
+      });
+      updateRunButtons();
+      syncRuntimeSelect();
+      renderMetadata();
+      updateCodeServerFrame();
+    }
+
+    function updateRunLayout() {
+      const status = state.runInfo?.status || "";
+      const loading = Boolean(state.activeRunId) && (!state.runInfo || status === "starting");
+      els.startupView.classList.toggle("hidden", !loading);
+      els.metadataPanel.classList.toggle("hidden", !state.activeRunId);
+      els.submittedConfigPanel.classList.toggle("hidden", !state.activeRunId);
+      els.chatPanel.classList.toggle("hidden", loading);
+      els.sandboxPanel.classList.toggle("hidden", loading);
+      if (loading) {
+        const runId = state.runInfo?.run_id || state.activeRunId;
+        els.startupText.textContent = runId
+          ? `Run ${runId} is starting. The workspace controls will appear when the runtime is ready.`
+          : "Creating runtime and preparing the workspace.";
+      }
+    }
+
+    function updateRunButtons() {
+      const status = state.runInfo?.status || "";
+      const hasRun = Boolean(state.activeRunId);
+      const runtimeActive = hasRun && runtimeProxyAvailable();
+      const idle = hasRun && status === "idle";
+      els.submitTurnButton.disabled = !idle;
+      els.openCodeServerButton.disabled = !runtimeActive || !codeServerUrl();
+    }
+
+    async function createRun() {
+      const yamlText = els.runYaml.value.trim();
+      if (!yamlText) {
+        throw new Error("RunInput YAML is empty");
+      }
+      const runInput = parseRunInputYaml(yamlText);
+      saveDraft(false);
+      const response = await request("POST", livePath("/v1/runs"), runInput);
+      state.sessionTitles[response.run_id] = inferTitle(runInput);
+      saveSessionTitles();
+      upsertSession({
+        run_id: response.run_id,
+        title: inferTitle(runInput),
+        status: response.status,
+        events_cursor: response.events_cursor,
+      });
+      setLog(`Created ${response.run_id}`);
+      await selectSession(response.run_id);
+    }
+
+    async function refreshRun(announce = true) {
+      if (!state.activeRunId) {
+        return;
+      }
+      try {
+        const info = await request("GET", livePath(`/v1/runs/${encodeURIComponent(state.activeRunId)}`));
+        updateRunInfo(info);
+        if (announce) {
+          setLog(`refreshed ${state.activeRunId}`);
+        }
+      } catch (error) {
+        const active = activeSession();
+        if (active) {
+          active.status = "missing";
+          renderSessions();
+        }
+        setCodeServerStatus(error.message, "failed");
+      }
+    }
+
+    async function refreshSubmittedConfig(announce = true) {
+      if (!state.activeRunId) {
+        return;
+      }
+      try {
+        const data = await request("GET", livePath(`/v1/runs/${encodeURIComponent(state.activeRunId)}/config`));
+        state.submittedConfig = data.request || {};
+        renderSubmittedConfig();
+        if (announce) {
+          setLog(`loaded config ${state.activeRunId}`);
+        }
+      } catch (error) {
+        state.submittedConfig = { error: error.message };
+        renderSubmittedConfig("failed");
+      }
+    }
+
+    async function killRun() {
+      if (!state.activeRunId) {
+        return;
+      }
+      try {
+        const info = await request("POST", livePath(`/v1/runs/${encodeURIComponent(state.activeRunId)}/kill`));
+        updateRunInfo(info);
+        closeEventSource();
+      } catch (error) {
+        setCodeServerStatus(error.message, "failed");
+      }
+    }
+
+    function runtimeNames() {
+      return Object.keys(state.runInfo?.runtimes || {});
+    }
+
+    function defaultRuntimeName() {
+      const names = runtimeNames();
+      if (names.includes("main")) return "main";
+      return names[0] || "main";
+    }
+
+    function normalizeSelectedRuntimeName() {
+      const names = runtimeNames();
+      if (!names.length) {
+        state.selectedRuntimeName = "main";
+        return "";
+      }
+      if (!names.includes(state.selectedRuntimeName)) {
+        state.selectedRuntimeName = defaultRuntimeName();
+      }
+      return state.selectedRuntimeName;
+    }
+
+    function syncRuntimeSelect() {
+      const names = runtimeNames();
+      const selected = normalizeSelectedRuntimeName() || defaultRuntimeName();
+      els.runtimeSelect.replaceChildren();
+      if (!names.length) {
+        els.runtimeSelect.appendChild(new Option("main", "main"));
+        els.runtimeSelect.value = "main";
+        els.runtimeSelect.disabled = false;
+        return;
+      }
+      for (const name of names) {
+        els.runtimeSelect.appendChild(new Option(name, name));
+      }
+      els.runtimeSelect.value = selected;
+      els.runtimeSelect.disabled = false;
+    }
+
+    function metadataValue(value) {
+      if (value === undefined || value === null || value === "") return "";
+      return String(value);
+    }
+
+    function fallbackCopyText(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      textarea.style.top = "0";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      textarea.setSelectionRange(0, textarea.value.length);
+      try {
+        if (!document.execCommand("copy")) {
+          throw new Error("copy command returned false");
+        }
+      } finally {
+        textarea.remove();
+      }
+    }
+
+    async function copyTextToClipboard(text) {
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+      } catch (_error) {
+        // Fall back below for HTTP deployments or denied clipboard permissions.
+      }
+      fallbackCopyText(text);
+    }
+
+    async function copyMetadataValue(button, value) {
+      const text = metadataValue(value);
+      if (!text) return;
+      try {
+        await copyTextToClipboard(text);
+        button.classList.add("copied");
+        button.textContent = "OK";
+        button.title = "Copied";
+        setTimeout(() => {
+          button.classList.remove("copied");
+          button.textContent = "";
+          button.title = "Copy full value";
+        }, 1200);
+      } catch (error) {
+        setLog(`Copy failed: ${error.message}`);
+      }
+    }
+
+    function setPanelCollapsed(panel, button, collapsed, label) {
+      panel.classList.toggle("collapsed", collapsed);
+      button.textContent = collapsed ? ">" : "v";
+      button.title = collapsed ? "Expand" : "Collapse";
+      button.setAttribute("aria-expanded", String(!collapsed));
+      button.setAttribute("aria-label", `${collapsed ? "Expand" : "Collapse"} ${label}`);
+    }
+
+    function renderCollapsiblePanels() {
+      setPanelCollapsed(els.metadataPanel, els.metadataCollapseButton, state.metadataCollapsed, "run metadata");
+      setPanelCollapsed(
+        els.submittedConfigPanel,
+        els.submittedConfigCollapseButton,
+        state.submittedConfigCollapsed,
+        "submitted config",
+      );
+    }
+
+    function inferNexusRuntimeId(baseUrl) {
+      try {
+        const host = new URL(baseUrl).hostname;
+        return host.startsWith("nexus-") ? host.split(".")[0] : "";
+      } catch (_error) {
+        return "";
+      }
+    }
+
+    function renderMetadata() {
+      if (!state.activeRunId) {
+        els.metadataList.replaceChildren();
+        els.metadataPanel.classList.add("hidden");
+        return;
+      }
+
+      const info = state.runInfo || {};
+      const runtimeName = activeRuntimeName();
+      const runtime = runtimeName ? info.runtimes?.[runtimeName] : null;
+      const runtimeBase = runtime?.base_url || info.runtime_base_url;
+      const runtimeId = runtime?.runtime_id || inferNexusRuntimeId(runtimeBase);
+      const proxyUrl = runtime?.proxy_url ? livePath(runtime.proxy_url) : runtimeProxyBase();
+      const rows = [
+        ["run_id", info.run_id || state.activeRunId],
+        ["status", info.status],
+        ["cache_key", info.cache_key],
+        ["turn_id", info.current_turn_id],
+        ["events_cursor", info.events_cursor],
+        ["runtime", runtimeName],
+        ["nexus_runtime_id", runtimeId],
+        ["runtime_base_url", runtimeBase],
+        ["proxy_url", proxyUrl],
+      ].filter(([, value]) => metadataValue(value));
+      const copyableLabels = new Set(["run_id", "cache_key", "nexus_runtime_id", "runtime_base_url", "proxy_url"]);
+
+      const nodes = rows.map(([label, value]) => {
+        const item = document.createElement("div");
+        item.className = "metadata-item";
+        const labelNode = document.createElement("div");
+        labelNode.className = "metadata-label";
+        labelNode.textContent = label;
+        const valueRow = document.createElement("div");
+        valueRow.className = "metadata-value-row";
+        const valueNode = document.createElement("div");
+        valueNode.className = "metadata-value";
+        valueNode.textContent = metadataValue(value);
+        valueNode.title = metadataValue(value);
+        valueRow.append(valueNode);
+        if (copyableLabels.has(label)) {
+          const copyButton = document.createElement("button");
+          copyButton.className = "metadata-copy-button";
+          copyButton.type = "button";
+          copyButton.title = "Copy full value";
+          copyButton.setAttribute("aria-label", `Copy ${label}`);
+          copyButton.addEventListener("click", () => copyMetadataValue(copyButton, value));
+          valueRow.append(copyButton);
+        }
+        item.append(labelNode, valueRow);
+        return item;
+      });
+      els.metadataList.replaceChildren(...nodes);
+      els.metadataPanel.classList.remove("hidden");
+      renderCollapsiblePanels();
+    }
+
+    function submittedConfigText() {
+      const value = state.submittedConfig || {};
+      if (window.jsyaml?.dump) {
+        return window.jsyaml.dump(value, { lineWidth: 120, noRefs: true, sortKeys: false });
+      }
+      return pretty(value);
+    }
+
+    function renderSubmittedConfig(statusClass = "") {
+      if (!state.activeRunId) {
+        els.submittedConfigText.textContent = "";
+        els.submittedConfigStatus.textContent = "none";
+        els.submittedConfigStatus.className = "badge";
+        els.submittedConfigPanel.classList.add("hidden");
+        return;
+      }
+      const hasConfig = state.submittedConfig && Object.keys(state.submittedConfig).length > 0;
+      els.submittedConfigText.textContent = hasConfig ? submittedConfigText() : "Loading config...";
+      els.submittedConfigStatus.textContent = hasConfig ? "loaded" : "loading";
+      els.submittedConfigStatus.className = `badge ${statusClass || (hasConfig ? "idle" : "starting")}`.trim();
+      els.submittedConfigPanel.classList.remove("hidden");
+      renderCollapsiblePanels();
+    }
+
+    function activeRuntimeName() {
+      return normalizeSelectedRuntimeName();
+    }
+
+    function runtimeProxyBase(runId = state.activeRunId) {
+      const runtimeName = activeRuntimeName();
+      if (!runId || !runtimeName) return "";
+      return livePath(`/v1/runs/${encodeURIComponent(runId)}/runtimes/${encodeURIComponent(runtimeName)}/proxy`);
+    }
+
+    function runtimeBaseUrl() {
+      const runtimeName = activeRuntimeName();
+      const runtime = runtimeName ? state.runInfo?.runtimes?.[runtimeName] : null;
+      return runtime?.base_url ? runtime.base_url.replace(/\/$/, "") : "";
+    }
+
+    function codeServerUrl(runId = state.activeRunId) {
+      const base = runtimeProxyBase(runId);
+      return base ? `${base}/` : "";
+    }
+
+    function terminalRunStatus(status = state.runInfo?.status || "") {
+      return ["killing", "closed", "failed", "killed"].includes(status);
+    }
+
+    function runtimeProxyAvailable() {
+      return Boolean(state.activeRunId && runtimeBaseUrl() && !terminalRunStatus());
+    }
+
+    function showRuntimeMessage(message, statusText, statusClass = "") {
+      els.codeServerFrame.removeAttribute("src");
+      els.codeServerFrame.srcdoc = `<!doctype html><html><body style="margin:0;padding:18px;font:13px system-ui,sans-serif;color:#344054;background:#f8fafc;">${message}</body></html>`;
+      setCodeServerStatus(statusText, statusClass);
+    }
+
+    function updateCodeServerFrame() {
+      const url = codeServerUrl();
+      const status = state.runInfo?.status || "";
+      const available = runtimeProxyAvailable();
+      els.openCodeServerButton.disabled = !url || !available;
+      if (terminalRunStatus(status)) {
+        showRuntimeMessage("Runtime debug is unavailable for finished or historical runs.", "unavailable", "failed");
+        return;
+      }
+      if (!url) {
+        showRuntimeMessage("Runtime debug will appear when the runtime is ready.", "stopped");
+        return;
+      }
+      setCodeServerStatus("ready", "idle");
+      els.codeServerFrame.removeAttribute("srcdoc");
+      if (els.codeServerFrame.src !== url) {
+        els.codeServerFrame.src = url;
+      }
+    }
+
+    async function submitTurn(text) {
+      const value = text ?? els.turnInput.value;
+      if (!state.activeRunId) {
+        return;
+      }
+      try {
+        await request("POST", livePath(`/v1/runs/${encodeURIComponent(state.activeRunId)}/turns`), { text: value });
+        if (text === undefined) {
+          els.turnInput.value = "";
+        }
+      } catch (error) {
+        setCodeServerStatus(error.message, "failed");
+      }
+    }
+
+    function compactText(value) {
+      if (value == null) return "";
+      if (typeof value === "string") return value;
+      return pretty(value);
+    }
+
+    function clipText(value, limit = 1200) {
+      const text = compactText(value);
+      return text.length > limit ? `${text.slice(0, limit)}\n...` : text;
+    }
+
+    function claudePayload(event) {
+      const raw = event.data?.event || {};
+      return raw.event || raw;
+    }
+
+    function contentParts(blocks, role) {
+      if (!Array.isArray(blocks)) {
+        const text = compactText(blocks);
+        return text ? [{ kind: role, title: role === "user" ? "User message" : "Assistant message", text }] : [];
+      }
+      return blocks
+        .map((block) => {
+          if (typeof block === "string") {
+            return { kind: role, title: role === "user" ? "User message" : "Assistant message", text: block };
+          }
+          if (!block || typeof block !== "object") {
+            return null;
+          }
+          if (block.type === "text") {
+            return {
+              kind: role,
+              title: role === "user" ? "User message" : "Assistant message",
+              text: block.text || "",
+            };
+          }
+          if (block.type === "tool_use") {
+            return {
+              kind: "tool",
+              title: `Tool call: ${block.name || "tool"}`,
+              text: block.name || "tool",
+              meta: block.id || "",
+              details: block.input == null ? "" : pretty(block.input),
+            };
+          }
+          if (block.type === "tool_result") {
+            const content = block.content == null ? "" : compactText(block.content);
+            return {
+              kind: block.is_error ? "error" : "tool-result",
+              title: `Tool result${block.tool_use_id ? `: ${block.tool_use_id}` : ""}`,
+              text: content || "(no output)",
+              details: pretty(block),
+            };
+          }
+          return {
+            kind: "event",
+            title: block.type || "Content block",
+            text: clipText(block.text || block.name || block.type || ""),
+            details: pretty(block),
+          };
+        })
+        .filter(Boolean)
+        .filter((part) => part.text || part.details || part.title);
+    }
+
+    function messageContentText(content) {
+      if (typeof content === "string") {
+        return content;
+      }
+      if (!Array.isArray(content)) {
+        return compactText(content);
+      }
+      return content
+        .map((block) => {
+          if (typeof block === "string") return block;
+          if (!block || typeof block !== "object") return "";
+          if (block.type === "text") return block.text || "";
+          if (block.type === "input_text") return block.text || "";
+          if (block.type === "tool_result") return compactText(block.content || "");
+          return "";
+        })
+        .filter(Boolean)
+        .join("\n");
+    }
+
+    function messagesFromTraceEvent(event) {
+      const trace = event.data?.event || {};
+      const traceEvent = trace.event || trace;
+      const attrs = traceEvent.attributes || trace.attributes || {};
+      const inputs = attrs.inputs || {};
+      const candidates = [inputs.messages, inputs.kwargs?.messages, attrs.messages, traceEvent.messages];
+      return candidates.find((messages) => Array.isArray(messages)) || [];
+    }
+
+    function openaiCompletionTrace(event) {
+      const trace = event.data?.event || {};
+      const traceEvent = trace.event || trace;
+      const spanName = trace.span_name || traceEvent.name || "";
+      if (spanName !== "openai_completion") {
+        return null;
+      }
+      const attrs = traceEvent.attributes || trace.attributes || {};
+      return { trace, traceEvent, attrs, inputs: attrs.inputs || {} };
+    }
+
+    function isTitleCompletionTrace(completion) {
+      const messages = completion?.inputs?.messages || completion?.inputs?.kwargs?.messages || [];
+      return messages.some((message) => {
+        const content = messageContentText(message?.content || "");
+        return content.includes("Generate a concise, sentence-case title") || content.includes('"title" field');
+      });
+    }
+
+    function outputMessagesFromTraceEvent(event) {
+      const completion = openaiCompletionTrace(event);
+      if (!completion || completion.traceEvent.type !== "END" || isTitleCompletionTrace(completion)) {
+        return [];
+      }
+      const outputs = parseMaybeJson(completion.attrs.outputs || {});
+      if (!outputs || typeof outputs !== "object") {
+        return [];
+      }
+      if (Array.isArray(outputs.choices)) {
+        return outputs.choices
+          .map((choice) => choice?.message || choice?.delta)
+          .filter((message) => message && typeof message === "object");
+      }
+      if (outputs.message && typeof outputs.message === "object") {
+        return [outputs.message];
+      }
+      if (outputs.role) {
+        return [outputs];
+      }
+      const text = outputs.content || outputs.text || outputs.output_text || "";
+      return text ? [{ role: "assistant", content: text }] : [];
+    }
+
+    function lastUserMessageFromTrace(event) {
+      const completion = openaiCompletionTrace(event);
+      if (!completion || isTitleCompletionTrace(completion)) {
+        return "";
+      }
+      const messages = messagesFromTraceEvent(event);
+      for (let index = messages.length - 1; index >= 0; index -= 1) {
+        const message = messages[index];
+        if (!message || typeof message !== "object" || message.role !== "user") {
+          continue;
+        }
+        const text = messageContentText(message.content || "");
+        if (text) return text;
+      }
+      return "";
+    }
+
+    function summarizeStreamEvent(payload) {
+      const inner = payload.event || {};
+      const type = inner.type || payload.subtype || "stream_event";
+      if (type === "content_block_delta" || type === "message_stop" || type === "content_block_stop") {
+        return [];
+      }
+      if (type === "content_block_start") {
+        const block = inner.content_block || {};
+        if (block.type === "tool_use") {
+          return [
+            {
+              kind: "tool",
+              title: `Tool call started: ${block.name || "tool"}`,
+              text: block.name || "tool",
+              meta: block.id || "",
+              details: pretty(block),
+            },
+          ];
+        }
+      }
+      return [
+        {
+          kind: "stream",
+          title: `Stream: ${type}`,
+          text: inner.message?.model || inner.delta?.stop_reason || inner.content_block?.type || "",
+          details: pretty(inner),
+        },
+      ];
+    }
+
+    function summarizeAgentPayload(payload) {
+      const type = payload.type || "event";
+      if (type === "assistant") {
+        const content = payload.message?.content || payload.content || [];
+        return contentParts(content, "assistant");
+      }
+      if (type === "user") {
+        const content = payload.message?.content || payload.content || [];
+        return contentParts(content, "user").filter((part) => ["tool-result", "error"].includes(part.kind));
+      }
+      if (type === "result") {
+        return [
+          {
+            kind: payload.is_error ? "error" : "assistant",
+            title: payload.is_error ? "Run result error" : "Run result",
+            text: payload.result || payload.subtype || "result",
+            meta: payload.stop_reason || payload.terminal_reason || "",
+            details: pretty(payload),
+          },
+        ];
+      }
+      if (type === "system") {
+        return [
+          {
+            kind: "system",
+            title: `System: ${payload.subtype || "event"}`,
+            text: payload.status || payload.model || payload.claude_code_version || "",
+            details: pretty(payload),
+          },
+        ];
+      }
+      if (type === "stream_event") {
+        return summarizeStreamEvent(payload);
+      }
+      return [
+        {
+          kind: "event",
+          title: `${type}${payload.subtype ? `: ${payload.subtype}` : ""}`,
+          text: clipText(payload.text || payload.message || payload.status || ""),
+          details: pretty(payload),
+        },
+      ];
+    }
+
+    function summarizeAgentEvent(event) {
+      return summarizeAgentPayload(claudePayload(event));
+    }
+
+    function agentStreamItems(event) {
+      const root = event.data?.event || {};
+      const items = [];
+      function scan(value) {
+        if (!value) return;
+        if (Array.isArray(value)) {
+          value.forEach(scan);
+          return;
+        }
+        if (typeof value !== "object") return;
+        if (value.name === "agent.stream") {
+          const attrs = value.attributes || {};
+          items.push({ raw: value, attrs, payload: attrs.event || {} });
+        }
+        if (Array.isArray(value.events)) scan(value.events);
+        if (Array.isArray(value.items)) scan(value.items);
+        if (value.event && value.event !== value) scan(value.event);
+      }
+      scan(root);
+      return items;
+    }
+
+    function providerStreamEvent(event) {
+      const root = event.data?.event || {};
+      const traceEvent = root.event || {};
+      const name = traceEvent.name || "";
+      if (!name.startsWith("chat.completion.")) return null;
+      const attrs = traceEvent.attributes || {};
+      return { name, attrs, raw: traceEvent };
+    }
+
+    function summarizeProviderStreamEvent(item) {
+      const attrs = item.attrs || {};
+      if (item.name === "chat.completion.delta") {
+        return [
+          {
+            kind: "assistant",
+            title: "Model stream",
+            text: attrs.delta || "",
+            meta: attrs["llm.model"] || attrs["llm.provider"] || "",
+            details: pretty(item.raw),
+          },
+        ];
+      }
+      if (item.name === "chat.completion.reasoning.delta") {
+        return [
+          {
+            kind: "stream",
+            title: "Reasoning text",
+            text: attrs.delta || "",
+            meta: attrs["llm.model"] || "",
+            details: pretty(item.raw),
+          },
+        ];
+      }
+      if (item.name === "chat.completion.tool_call.delta") {
+        return [
+          {
+            kind: "tool",
+            title: attrs["llm.tool_call.function.name"] || "Tool call arguments",
+            text: attrs.delta || "",
+            meta: attrs["llm.tool_call.id"] || attrs["llm.call_id"] || "",
+            details: pretty(item.raw),
+          },
+        ];
+      }
+      if (item.name === "chat.completion.completed" || item.name === "chat.completion.failed") {
+        return [
+          {
+            kind: item.name === "chat.completion.failed" ? "error" : "trace",
+            title: item.name === "chat.completion.failed" ? "Model stream failed" : "Model stream completed",
+            text: attrs.finish_reason || attrs["error.message"] || attrs.response_id || "",
+            meta: attrs["llm.model"] || "",
+            details: pretty(item.raw),
+          },
+        ];
+      }
+      return [
+        {
+          kind: "trace",
+          title: `Model stream: ${item.name}`,
+          text: attrs["llm.model"] || attrs["llm.provider"] || "",
+          details: pretty(item.raw),
+        },
+      ];
+    }
+
+    function userTextFromAgentPayload(payload) {
+      if ((payload.type || "") !== "user") {
+        return "";
+      }
+      return messageContentText(payload.message?.content || payload.content || "");
+    }
+
+    function summarizeTraceEventParts(event) {
+      const providerStream = providerStreamEvent(event);
+      if (providerStream) {
+        return summarizeProviderStreamEvent(providerStream);
+      }
+      const streamItems = agentStreamItems(event);
+      if (streamItems.length) {
+        return streamItems.flatMap((item) => summarizeAgentPayload(item.payload));
+      }
+      const completion = openaiCompletionTrace(event);
+      if (completion) {
+        const messages = messagesFromTraceEvent(event);
+        const tools = completion.inputs.kwargs?.tools || completion.inputs.tools || [];
+        const text = [
+          completion.inputs.model || completion.attrs._client_key || "openai_completion",
+          `${messages.length} message(s)`,
+          Array.isArray(tools) && tools.length ? `${tools.length} tool(s)` : "",
+        ]
+          .filter(Boolean)
+          .join(" · ");
+        return [
+          {
+            kind: "trace",
+            title: "Model request",
+            text,
+            meta: completion.trace.trace_id || "",
+            details: pretty(completion.inputs),
+          },
+        ];
+      }
+      const trace = event.data?.event || {};
+      const traceEvent = trace.event || {};
+      const attrs = traceEvent.attributes || {};
+      return [
+        {
+          kind: "trace",
+          title: `Trace: ${traceEvent.name || attrs.event_type || trace.span_name || "event"}`,
+          text: trace.span_name || trace.span_id || "",
+          meta: trace.trace_id || "",
+          details: pretty(trace),
+        },
+      ];
+    }
+
+    function compactSignature(value) {
+      return JSON.stringify(value ?? "");
+    }
+
+    function parseMaybeJson(value) {
+      if (typeof value !== "string") return value;
+      const trimmed = value.trim();
+      if (!trimmed) return value;
+      try {
+        return JSON.parse(trimmed);
+      } catch (_error) {
+        return value;
+      }
+    }
+
+    function createTurn(id) {
+      return {
+        id,
+        userText: "",
+        hasUserText: false,
+        agentLabel: "Agent",
+        contents: [],
+        toolCalls: [],
+        rawClaudeParts: [],
+        pendingCompletionMessages: [],
+        hasStructuredAgentEvents: false,
+        isEndInteraction: false,
+        waiting: false,
+        _seenContent: new Set(),
+        _seenRaw: new Set(),
+        _toolByKey: new Map(),
+        _providerContentByKey: new Map(),
+      };
+    }
+
+    function addContent(turn, text, meta = "") {
+      const content = compactText(text).trim();
+      if (!content) return;
+      const signature = `content:${content}`;
+      if (turn._seenContent.has(signature)) return;
+      const last = turn.contents.at(-1);
+      if (last?.text && content.startsWith(last.text) && content.length > last.text.length) {
+        turn._seenContent.delete(`content:${last.text}`);
+        last.text = content;
+        last.meta = meta || last.meta;
+        turn._seenContent.add(signature);
+        return;
+      }
+      if (last?.text && last.text.startsWith(content)) return;
+      turn._seenContent.add(signature);
+      turn.contents.push({ text: content, meta });
+    }
+
+    function addToolCall(turn, call) {
+      const name = call.name || "tool";
+      const input = call.input === undefined ? null : call.input;
+      const key = call.id || `${name}:${compactSignature(input)}`;
+      let item = turn._toolByKey.get(key);
+      if (!item) {
+        item = {
+          id: call.id || "",
+          name,
+          input,
+          output: "",
+          isError: false,
+          meta: call.meta || "",
+        };
+        turn._toolByKey.set(key, item);
+        turn.toolCalls.push(item);
+      }
+      if (call.input !== undefined) item.input = input;
+      if (call.output !== undefined && call.output !== "") item.output = compactText(call.output);
+      if (call.isError) item.isError = true;
+    }
+
+    function addToolResult(turn, result) {
+      const id = result.id || result.tool_use_id || result.tool_call_id || "";
+      if (id && turn._toolByKey.has(id)) {
+        const item = turn._toolByKey.get(id);
+        item.output = compactText(result.output || result.content || "");
+        item.isError = Boolean(result.isError || result.is_error);
+        return;
+      }
+      addToolCall(turn, {
+        id,
+        name: result.name || "Tool result",
+        output: result.output || result.content || "",
+        isError: Boolean(result.isError || result.is_error),
+      });
+    }
+
+    function extractMessageItems(content, role = "assistant") {
+      const items = [];
+      const blocks = Array.isArray(content) ? content : [content];
+      for (const block of blocks) {
+        if (block == null) continue;
+        if (typeof block === "string") {
+          if (role === "assistant") items.push({ kind: "content", text: block });
+          if (role === "tool") items.push({ kind: "tool_result", output: block });
+          continue;
+        }
+        if (typeof block !== "object") continue;
+        if (block.type === "text" || block.type === "input_text") {
+          if (role === "assistant") items.push({ kind: "content", text: block.text || "" });
+          continue;
+        }
+        if (block.type === "tool_use" || block.type === "server_tool_use") {
+          items.push({
+            kind: "tool_call",
+            id: block.id || "",
+            name: block.name || block.tool_name || "tool",
+            input: block.input ?? block.arguments ?? null,
+          });
+          continue;
+        }
+        if (block.type === "tool_result") {
+          items.push({
+            kind: "tool_result",
+            id: block.tool_use_id || block.id || "",
+            output: block.content ?? "",
+            isError: Boolean(block.is_error),
+          });
+        }
+      }
+      return items;
+    }
+
+    function ingestItems(turn, items) {
+      for (const item of items) {
+        if (item.kind === "content") addContent(turn, item.text, item.meta || "");
+        if (item.kind === "tool_call") addToolCall(turn, item);
+        if (item.kind === "tool_result") addToolResult(turn, item);
+      }
+    }
+
+    function ingestMessages(turn, messages) {
+      for (const message of Array.isArray(messages) ? messages : []) {
+        if (!message || typeof message !== "object") continue;
+        const role = message.role || "";
+        if (role === "assistant") {
+          ingestItems(turn, extractMessageItems(message.content || [], "assistant"));
+          if (Array.isArray(message.tool_calls)) {
+            message.tool_calls.forEach((toolCall) => {
+              const fn = toolCall.function || {};
+              addToolCall(turn, {
+                id: toolCall.id || "",
+                name: fn.name || toolCall.name || "tool",
+                input: parseMaybeJson(fn.arguments ?? toolCall.arguments ?? toolCall.input ?? null),
+              });
+            });
+          }
+        } else if (role === "tool") {
+          addToolResult(turn, {
+            id: message.tool_call_id || "",
+            output: message.content || "",
+            isError: false,
+          });
+        } else if (role === "user") {
+          ingestItems(turn, extractMessageItems(message.content || [], "user"));
+        }
+      }
+    }
+
+    function addRawClaudeParts(turn, payload) {
+      summarizeAgentPayload(payload).forEach((part) => {
+        const signature = compactSignature(part);
+        if (turn._seenRaw.has(signature)) return;
+        turn._seenRaw.add(signature);
+        turn.rawClaudeParts.push(part);
+      });
+    }
+
+    function ingestProviderStreamEvent(turn, item) {
+      turn.hasStructuredAgentEvents = true;
+      turn.hasProviderStreamEvents = true;
+      const attrs = item.attrs || {};
+      if (item.name === "chat.completion.delta") {
+        const key = `${attrs["llm.choice.index"] || 0}:${attrs["llm.content.index"] || 0}`;
+        const previous = turn._providerContentByKey.get(key) || "";
+        const next = `${previous}${attrs.delta || ""}`;
+        turn._providerContentByKey.set(key, next);
+        addContent(turn, next, attrs["llm.model"] || attrs["llm.provider"] || "");
+        return;
+      }
+      if (item.name === "chat.completion.tool_call.delta") {
+        const id = attrs["llm.tool_call.id"] || attrs["llm.call_id"] || "";
+        const existing = turn._toolByKey.get(id);
+        const previous = typeof existing?.input === "string" ? existing.input : "";
+        addToolCall(turn, {
+          id,
+          name: attrs["llm.tool_call.function.name"] || "tool",
+          input: `${previous}${attrs.delta || ""}`,
+          meta: attrs["llm.model"] || "",
+        });
+      }
+    }
+
+    function ingestAgentPayload(turn, payload, options = {}) {
+      const type = payload.type || "event";
+      if (state.showClaudeEvents) addRawClaudeParts(turn, payload);
+      if (type === "assistant") {
+        if (options.suppressAssistantContent) return;
+        ingestItems(turn, extractMessageItems(payload.message?.content || payload.content || [], "assistant"));
+        return;
+      }
+      if (type === "user") {
+        ingestItems(turn, extractMessageItems(payload.message?.content || payload.content || [], "user"));
+        return;
+      }
+      if (type === "result") {
+        if (options.suppressAssistantContent) return;
+        if (payload.result) addContent(turn, payload.result, payload.stop_reason || payload.terminal_reason || "");
+        return;
+      }
+      if (type === "stream_event") {
+        const inner = payload.event || {};
+        if (inner.type === "content_block_start") {
+          const block = inner.content_block || {};
+          if (block.type === "tool_use") {
+            addToolCall(turn, { id: block.id || "", name: block.name || "tool", input: block.input ?? null });
+          }
+        }
+      }
+    }
+
+    function buildTurns() {
+      const turns = [];
+      let current = null;
+      const byId = new Map();
+      function ensure(turnId) {
+        const id = turnId || current?.id || "run";
+        if (byId.has(id)) {
+          current = byId.get(id);
+          return current;
+        }
+        const turn = createTurn(id);
+        byId.set(id, turn);
+        turns.push(turn);
+        current = turn;
+        return turn;
+      }
+      state.events.forEach((event) => {
+        if (event.type === "turn.submitted") {
+          if (!compactText(event.data?.text ?? "").trim()) {
+            const turn = ensure(event.data?.turn_id);
+            turn.userText = "";
+            turn.hasUserText = true;
+            turn.isEndInteraction = true;
+            return;
+          }
+          const turn = ensure(event.data?.turn_id);
+          turn.userText = event.data?.text ?? "";
+          turn.hasUserText = true;
+          return;
+        }
+        if (event.type === "turn.started") {
+          ensure(event.data?.turn_id);
+          return;
+        }
+        if (event.type === "agent.event") {
+          const turn = ensure(event.data?.turn_id);
+          turn.hasStructuredAgentEvents = true;
+          const rawAgentEvent = event.data?.event || {};
+          const agent = rawAgentEvent.agent || rawAgentEvent.source || "";
+          if (agent === "claude_code") {
+            turn.agentLabel = "Claude Code";
+          } else if (agent) {
+            turn.agentLabel = agent;
+          }
+          ingestAgentPayload(turn, claudePayload(event));
+          return;
+        }
+        if (event.type === "trace.event") {
+          const turn = ensure(event.data?.turn_id);
+          const providerStream = providerStreamEvent(event);
+          if (providerStream) {
+            ingestProviderStreamEvent(turn, providerStream);
+            return;
+          }
+          const streamItems = agentStreamItems(event);
+          if (streamItems.length) {
+            turn.hasStructuredAgentEvents = true;
+            const agent = streamItems.find((item) => item.attrs.agent)?.attrs.agent || "";
+            turn.agentLabel = agent === "claude_code" ? "Claude Code" : agent || turn.agentLabel;
+            streamItems.forEach((item) => {
+              const userText = userTextFromAgentPayload(item.payload);
+              if (userText && !turn.hasUserText) {
+                turn.userText = userText;
+                turn.hasUserText = true;
+              }
+            });
+            streamItems.forEach((item) =>
+              ingestAgentPayload(turn, item.payload, { suppressAssistantContent: turn.hasProviderStreamEvents })
+            );
+          }
+          if (!turn.hasUserText) {
+            const userText = lastUserMessageFromTrace(event);
+            if (userText) {
+              turn.userText = userText;
+              turn.hasUserText = true;
+            }
+          }
+          const completion = openaiCompletionTrace(event);
+          if (completion?.traceEvent.type === "END") {
+            turn.pendingCompletionMessages.push(...outputMessagesFromTraceEvent(event));
+          }
+          return;
+        }
+        if (event.type === "input.required") {
+          const turn = ensure(event.data?.turn_id);
+          turn.waiting = true;
+          return;
+        }
+        if (event.type === "run.error") {
+          addContent(ensure(event.data?.turn_id), event.data?.error || "run error", "error");
+          return;
+        }
+        if (event.type === "run.output") {
+          const output = event.data?.output || {};
+          const taskOutput = output.task_output || {};
+          const text =
+            compactText(taskOutput.output || taskOutput.assistant_text || output.error?.message || "") ||
+            (event.data?.success ? "completed" : "failed");
+          if (event.data?.success) {
+            const turn =
+              (event.data?.turn_id ? ensure(event.data.turn_id) : [...turns].reverse().find((item) => item.isEndInteraction)) ||
+              null;
+            if (turn) {
+              addContent(turn, text, "task output");
+            }
+            return;
+          }
+          addContent(ensure(event.data?.turn_id), text, "error");
+          return;
+        }
+        if (event.type === "run.killed") {
+          addContent(ensure(event.data?.turn_id), `Run killed: ${event.data?.run_id || ""}`);
+        }
+      });
+      turns.forEach((turn) => {
+        if (!turn.hasStructuredAgentEvents && !turn.contents.length && !turn.toolCalls.length) {
+          ingestMessages(turn, turn.pendingCompletionMessages);
+        }
+      });
+      return turns.filter(
+        (turn) =>
+          (turn.hasUserText && compactText(turn.userText).trim()) ||
+          turn.isEndInteraction ||
+          turn.contents.length ||
+          turn.toolCalls.length ||
+          turn.rawClaudeParts.length ||
+          turn.waiting,
+      );
+    }
+
+    function renderContentItem(item) {
+      const row = document.createElement("div");
+      row.className = "agent-content";
+      const icon = document.createElement("div");
+      icon.className = "part-icon";
+      icon.textContent = "💬";
+      const text = document.createElement("div");
+      text.textContent = item.text;
+      row.append(icon, text);
+      return row;
+    }
+
+    function renderToolGroup(name, calls) {
+      const group = document.createElement("details");
+      group.className = "tool-group";
+      const summary = document.createElement("summary");
+      const label = document.createElement("span");
+      label.textContent = `🛠 ${name}`;
+      const count = document.createElement("span");
+      count.className = "tool-count";
+      count.textContent = `x${calls.length}`;
+      summary.append(label, count);
+      group.append(summary);
+      calls.forEach((call, index) => {
+        const detail = document.createElement("div");
+        detail.className = "tool-call-detail";
+        const title = document.createElement("div");
+        title.className = "tool-call-title";
+        const left = document.createElement("span");
+        left.textContent = `${name} #${index + 1}`;
+        const right = document.createElement("span");
+        right.textContent = call.id || call.meta || "";
+        title.append(left, right);
+        detail.append(title);
+        const input = document.createElement("pre");
+        input.textContent = `input\n${pretty(call.input ?? {})}`;
+        detail.append(input);
+        if (call.output) {
+          const output = document.createElement("pre");
+          output.textContent = `output${call.isError ? " (error)" : ""}\n${call.output}`;
+          detail.append(output);
+        }
+        group.append(detail);
+      });
+      return group;
+    }
+
+    function renderRawClaudePart(part) {
+      const details = document.createElement("details");
+      details.className = "raw-event-card";
+      const summary = document.createElement("summary");
+      summary.textContent = part.title || part.kind || "Claude Code event";
+      const pre = document.createElement("pre");
+      pre.textContent = [part.text, part.details].filter(Boolean).join("\n\n") || pretty(part);
+      details.append(summary, pre);
+      return details;
+    }
+
+    function renderAgentCard(turn) {
+      const agent = document.createElement("div");
+      agent.className = "agent-card";
+      const head = document.createElement("div");
+      head.className = "agent-card-head";
+      const label = document.createElement("span");
+      label.textContent = turn.agentLabel || "Agent";
+      const summary = document.createElement("span");
+      summary.className = "agent-summary";
+      summary.textContent = `${turn.id} · ${turn.contents.length} content · ${turn.toolCalls.length} tool call(s)`;
+      head.append(label, summary);
+      const body = document.createElement("div");
+      body.className = "agent-card-body";
+      if (!turn.contents.length && !turn.toolCalls.length && !turn.rawClaudeParts.length) {
+        const empty = document.createElement("div");
+        empty.className = "agent-content";
+        const icon = document.createElement("div");
+        icon.className = "part-icon";
+        icon.textContent = "💬";
+        const text = document.createElement("div");
+        text.textContent = turn.waiting ? "waiting for user input" : "running";
+        empty.append(icon, text);
+        body.append(empty);
+      }
+      turn.contents.forEach((item) => body.append(renderContentItem(item)));
+      const groups = new Map();
+      turn.toolCalls.forEach((call) => {
+        const name = call.name || "tool";
+        if (!groups.has(name)) groups.set(name, []);
+        groups.get(name).push(call);
+      });
+      groups.forEach((calls, name) => body.append(renderToolGroup(name, calls)));
+      if (state.showClaudeEvents && turn.rawClaudeParts.length) {
+        turn.rawClaudeParts.forEach((part) => body.append(renderRawClaudePart(part)));
+      }
+      agent.append(head, body);
+      return agent;
+    }
+
+    function renderJsonTree(value, key = "event", depth = 0) {
+      if (value && typeof value === "object") {
+        const node = document.createElement("details");
+        node.open = depth < 2;
+        const summary = document.createElement("summary");
+        const label = Array.isArray(value) ? `${key}: Array(${value.length})` : `${key}: Object`;
+        summary.textContent = label;
+        node.append(summary);
+        Object.entries(value).forEach(([childKey, childValue]) => {
+          node.append(renderJsonTree(childValue, childKey, depth + 1));
+        });
+        return node;
+      }
+      const leaf = document.createElement("div");
+      leaf.className = "json-leaf";
+      const keyEl = document.createElement("span");
+      keyEl.className = "json-key";
+      keyEl.textContent = key;
+      const valueEl = document.createElement("span");
+      valueEl.textContent = compactText(value);
+      leaf.append(keyEl, valueEl);
+      return leaf;
+    }
+
+    function renderEventTree() {
+      els.chatLog.className = "event-tree";
+      if (!state.events.length) {
+        els.chatLog.innerHTML = '<div class="empty">No events</div>';
+        return;
+      }
+      const nodes = state.events.map((event, index) => {
+        const node = document.createElement("details");
+        node.className = "event-node";
+        const eventKey = String(event.id ?? index);
+        node.open = state.expandedEventIds.has(eventKey);
+        node.addEventListener("toggle", () => {
+          if (node.open) {
+            state.expandedEventIds.add(eventKey);
+          } else {
+            state.expandedEventIds.delete(eventKey);
+          }
+        });
+        const summary = document.createElement("summary");
+        summary.addEventListener("click", () => {
+          if (node.open) {
+            state.expandedEventIds.delete(eventKey);
+          } else {
+            state.expandedEventIds.add(eventKey);
+          }
+        });
+        const turnId = event.data?.turn_id ? ` · ${event.data.turn_id}` : "";
+        summary.textContent = `#${event.id ?? "-"} · ${event.type || "event"}${turnId}`;
+        const body = document.createElement("div");
+        body.className = "event-node-body";
+        const tree = document.createElement("div");
+        tree.className = "json-tree";
+        tree.append(renderJsonTree(event));
+        body.append(tree);
+        node.append(summary, body);
+        return node;
+      });
+      els.chatLog.replaceChildren(...nodes);
+    }
+
+    function renderChat() {
+      els.conversationViewButton.classList.toggle("active", state.chatView === "conversation");
+      els.eventsViewButton.classList.toggle("active", state.chatView === "events");
+      if (state.chatView === "events") {
+        renderEventTree();
+        return;
+      }
+      els.chatLog.className = "chat";
+      const turns = buildTurns();
+      if (!turns.length) {
+        els.chatLog.innerHTML = '<div class="empty">No conversation</div>';
+        return;
+      }
+      const nodes = turns.map((turn) => {
+        const node = document.createElement("div");
+        node.className = "turn";
+        if (turn.isEndInteraction || (turn.hasUserText && compactText(turn.userText).trim())) {
+          const user = document.createElement("div");
+          user.className = "msg user";
+          user.textContent = turn.isEndInteraction ? "(end interaction)" : turn.userText;
+          node.append(user);
+        }
+        node.append(renderAgentCard(turn));
+        return node;
+      });
+      els.chatLog.replaceChildren(...nodes);
+      els.chatLog.scrollTop = els.chatLog.scrollHeight;
+    }
+
+    function loadSample(announce = true) {
+      els.runYaml.value = defaultRunYaml;
+      els.turnInput.value = "";
+      if (announce) setLog("Loaded sample");
+    }
+
+    function saveDraft(announce = true) {
+      localStorage.setItem(
+        draftKey,
+        JSON.stringify({
+          runYaml: els.runYaml.value,
+        }),
+      );
+      if (announce) setLog("Draft saved");
+    }
+
+    function loadDraft() {
+      try {
+        const draft = JSON.parse(localStorage.getItem(draftKey) || "{}");
+        els.runYaml.value = typeof draft.runYaml === "string" && draft.runYaml.trim() ? draft.runYaml : defaultRunYaml;
+      } catch (_error) {
+        loadSample(false);
+      }
+    }
+
+    async function refreshSessions(announce = true) {
+      const data = await request("GET", livePath(`/v1/runs?${statusFilterQuery()}`));
+      const runs = Array.isArray(data.runs) ? data.runs : [];
+      state.sessions = runs.map(sessionFromRunInfo);
+      renderSessions();
+      if (announce) {
+        setLog(`Loaded ${state.sessions.length} runs`);
+      }
+    }
+
+    els.newSessionButton.addEventListener("click", showCreate);
+    els.refreshSessionsButton.addEventListener("click", () => {
+      refreshSessions().catch((error) => setLog(error.message));
+    });
+    els.clearSessionsButton.addEventListener("click", resetSelection);
+    els.applyCacheKeyFilterButton.addEventListener("click", () => {
+      state.cacheKeyFilter = els.cacheKeyFilter.value.trim();
+      refreshSessions().catch((error) => setLog(error.message));
+    });
+    els.clearCacheKeyFilterButton.addEventListener("click", () => {
+      state.cacheKeyFilter = "";
+      els.cacheKeyFilter.value = "";
+      refreshSessions().catch((error) => setLog(error.message));
+    });
+    els.cacheKeyFilter.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        state.cacheKeyFilter = els.cacheKeyFilter.value.trim();
+        refreshSessions().catch((error) => setLog(error.message));
+      }
+    });
+    els.statusFilterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        state.sessionStatusFilter = button.dataset.statusFilter || "all";
+        renderStatusFilterButtons();
+        refreshSessions().catch((error) => setLog(error.message));
+      });
+    });
+    els.closeRunButton.addEventListener("click", killRun);
+    els.loadSampleButton.addEventListener("click", loadSample);
+    els.saveDraftButton.addEventListener("click", () => saveDraft(true));
+    els.createRunButton.addEventListener("click", async () => {
+      try {
+        await createRun();
+      } catch (error) {
+        setLog(error.message);
+      }
+    });
+    els.submitTurnButton.addEventListener("click", () => submitTurn());
+    els.openCodeServerButton.addEventListener("click", () => {
+      const url = codeServerUrl();
+      if (url) window.open(url, "_blank", "noopener,noreferrer");
+    });
+    els.conversationViewButton.addEventListener("click", () => {
+      state.chatView = "conversation";
+      renderChat();
+    });
+    els.eventsViewButton.addEventListener("click", () => {
+      state.chatView = "events";
+      renderChat();
+    });
+    els.showClaudeEventsToggle.addEventListener("change", () => {
+      state.showClaudeEvents = els.showClaudeEventsToggle.checked;
+      renderChat();
+    });
+    els.metadataCollapseButton.addEventListener("click", () => {
+      state.metadataCollapsed = !state.metadataCollapsed;
+      renderCollapsiblePanels();
+    });
+    els.submittedConfigCollapseButton.addEventListener("click", () => {
+      state.submittedConfigCollapsed = !state.submittedConfigCollapsed;
+      renderCollapsiblePanels();
+    });
+    els.runtimeSelect.addEventListener("change", () => {
+      state.selectedRuntimeName = els.runtimeSelect.value || defaultRuntimeName();
+      updateRunButtons();
+      renderMetadata();
+      updateCodeServerFrame();
+    });
+
+    loadSessionTitles();
+    loadDraft();
+    renderCollapsiblePanels();
+    renderStatusFilterButtons();
+    renderSessions();
+    showCreate();
+    refreshSessions(false).catch((error) => setLog(error.message));
+  </script>
+</body>
+</html>

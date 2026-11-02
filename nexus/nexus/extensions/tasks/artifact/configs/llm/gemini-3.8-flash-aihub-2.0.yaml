@@ -1,0 +1,30 @@
+body:
+  imports:
+    - nexus.extensions.openai_clients.litellm
+  agent_config:
+    thinking_preset: bedrock-claude
+    no_thinking_request_args:
+      model: ${oc.select:openai_clients.main.config.request_args.model}
+    no_thinking_request_args_mode: inherit
+    haiku_model: ${oc.select:openai_clients.main.config.request_args.model}
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          api_key__env: JUDGE_API_KEY
+          base_url: http://api.aihub.woa.com/standard/v1
+          timeout: 1800
+          max_retries: 2
+        request_args:
+          model: openai/gemini-3.8-flash
+          drop_params: true
+          max_tokens: 65536
+          extra_body:
+            enable_thinking: true
+        enforced_request_args:
+          model: ${oc.select:openai_clients.main.config.request_args.model}
+          max_tokens: ${oc.select:openai_clients.main.config.request_args.max_tokens}
+merge:
+  imports: append_unique
+source: artifact-gemini-3.8-flash-aihub-2.0

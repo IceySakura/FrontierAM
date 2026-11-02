@@ -1,0 +1,23 @@
+# 身份与上架信息。判定规则的唯一真源是同目录 detect_zh_ask_foreign_reply.py。
+canonical_name: zh_ask_foreign_reply
+symptom_cluster: language
+display_name: 中文问外文答
+description: 中文提问后，该问最后一条给人看的回复（无 tool_calls）整段以外文为主，例如整段英文或日韩。英文提问、中文回答、中文里夹英文不报。规则见同目录 detect_zh_ask_foreign_reply.py。
+definition: 见 detect_zh_ask_foreign_reply.py 文首「检测规则」。每个中文 user 只判窗口内最后一条无工具的 assistant.content；WorkBuddy/CodeBuddy 提问走 bpo.harness.user_query。
+detection_tier: programmable
+channel:
+- content
+data_requirement:
+- any
+verification: unverified
+example:
+  synthetic: true
+  caption: 中文提问后，助手整段用英文作答。
+runtime:
+  entrypoint: detect_zh_ask_foreign_reply:ZhAskForeignReplyDetector
+  applicable_data_types:
+  - trajectory
+  detector_type: rule
+  tags:
+  - taxonomy_0706
+  behavior_version: 1.0.0

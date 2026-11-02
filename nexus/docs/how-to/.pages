@@ -1,0 +1,24 @@
+title: How-to
+nav:
+  - use-agent
+  - tool-search.md
+  - tool_override_usage.md
+  - use-runtime
+  - use-task
+  - manage-modules
+  - use-datasets
+  - use-artifacts
+  - manage-runs
+  - run-parts.md
+  - compose-hooks.md
+  - run-batch.md
+  - osworld-runbook.md
+  - osworld-v2-runbook.md
+  - osworld-v2-hitl.md
+  - osworld-v2-platform.md
+  - osworld-hunyuan-clients.md
+  - use-agr-mobile
+  - use-skill-parser.md
+  - Observability:
+      - use-otel-tracing.md
+      - use-langfuse-tracker.md

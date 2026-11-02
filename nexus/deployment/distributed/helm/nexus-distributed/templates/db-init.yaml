@@ -1,0 +1,38 @@
+{{- if .Values.dbInit.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list . "db-init") }}
+  labels:
+    {{- include "nexus-distributed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: db-init
+  {{- if .Release.IsUpgrade }}
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  {{- end }}
+spec:
+  backoffLimit: {{ .Values.dbInit.backoffLimit }}
+  template:
+    metadata:
+      labels:
+        {{- include "nexus-distributed.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: db-init
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: db-init
+          image: {{ include "nexus-distributed.controlImage" . }}
+          imagePullPolicy: {{ .Values.controlImage.pullPolicy }}
+          args: ["distributed", "db", "init"]
+          env:
+            {{- include "nexus-distributed.processEnv" . | nindent 12 }}
+            {{- include "nexus-distributed.databaseEnv" . | nindent 12 }}
+            - name: NEXUS_DIST_DB_WAIT_TIMEOUT
+              value: {{ .Values.dbInit.waitTimeoutSeconds | quote }}
+          volumeMounts:
+            {{- include "nexus-distributed.databaseSecretVolumeMount" . | nindent 12 }}
+      volumes:
+        {{- include "nexus-distributed.databaseSecretVolume" . | nindent 8 }}
+{{- end }}

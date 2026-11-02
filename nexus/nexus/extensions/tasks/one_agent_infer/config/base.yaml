@@ -1,0 +1,88 @@
+# One-Agent inference task config (formerly YB OneAgentBench V0.1).
+
+imports:
+  - nexus.extensions.tasks.one_agent_infer
+  - nexus.extensions.tasks.one_agent_infer.direct_llm  # 注册 one_agent_direct client（直连 CSIG/Taiji）
+  - nexus.extensions.agents.yb_one_agent.agent
+  - nexus.extensions.tools.search_stateful
+  - nexus.extensions.tools.code_interpreter
+
+# Task config (filled per item by the generator).
+task_name: "one_agent_infer"
+task_config:
+  task_id: ""
+  query: ""
+  input_file_list: []
+  expected_output: ""
+  benchmark_root: ""
+  timeout: 600
+
+# Runtime config (Gongfeng sandbox).
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "http://hyrl-sandbox.prod.woa.com:8052"
+  token: ${oc.env:SANDBOX_TOKEN,""}
+  image: ${oc.env:ONE_AGENT_IMAGE,"mirrors.tencent.com/yuanbao_sandbox/all-in-one-experimental:v48-harness-3.1"}
+  runtime_image: ${oc.env:ONE_AGENT_RUNTIME_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:yuanbao-agent-harness-v3.1"}
+  runtime_provider: ""
+  resource_spec:
+    cpu: 4
+    memory: 10
+  request_timeout: 600.0
+  python_version: "3.13"
+  # need_transparent_proxy: [http, https, tcp]
+  purpose: ${oc.env:ONE_AGENT_PURPOSE,"test"}
+  
+runtime_configs:
+  main:
+    image: ${oc.env:ONE_AGENT_IMAGE,"mirrors.tencent.com/yuanbao_sandbox/all-in-one-experimental:v48-harness-3.1"}
+    # Inject COS-internal routing into the sandbox container as a native env var.
+    # tdocs-cli inside the sandbox reads this to route COS traffic to the
+    # internal domain. Override via TDOCS_COS_INTERNAL env.
+    environment:
+      YUANBAO_ROUTE_ENV: ${oc.env:YUANBAO_ROUTE_ENV,"ci-873"}
+      YUANBAO_USE_INTERNAL_URL: ${oc.env:YUANBAO_USE_INTERNAL_URL,"1"}
+      TDOCS_COS_INTERNAL: ${oc.env:TDOCS_COS_INTERNAL,"1"}
+      TENCENT_DOCS_COS_USE_INTERNAL: ${oc.env:TENCENT_DOCS_COS_USE_INTERNAL,"1"}
+      YUANBAO_OPEN_API_BASE_URL: ${oc.env:YUANBAO_OPEN_API_BASE_URL,"https://test-open-api.yuanbao.woa.com/open_api/doc_proxy/openapi/drive/v2/files"}
+
+# Agent config.
+agent_name: "yb_one_agent"
+agent_config:
+  max_iterations: 50
+  nudge_on_empty: ${oc.env:NUDGE_ON_EMPTY,0}
+
+# Tool config.
+tool_configs:
+  search_stateful:
+    user: ${oc.env:SEARCH_USER,"YOUR_USER_ID"}
+    apikey: ${oc.env:SEARCH_API_KEY,"YOUR_API_KEY"}
+    max_search_results: 10
+
+  jupyter_code_interpreter:
+    timeout: 600
+
+# OpenAI client config.
+#   name 由 ONE_AGENT_LLM_CLIENT 选择：
+#     - "one_agent_direct"（默认）：进程内直连 CSIG/Taiji，无需 router server
+#     - "litellm"：走原 litellm + 独立 router server（base_url 指向 router）
+#   client_args 中的 api_key/base_url 仅 litellm 模式使用，direct 模式会忽略。
+openai_clients:
+  main:
+    name: ${oc.env:ONE_AGENT_LLM_CLIENT,"one_agent_direct"}
+    config:
+      client_args:
+        api_key: ${oc.env:ONE_AGENT_API_KEY,"sk-placeholder"}
+        base_url: ${oc.env:ONE_AGENT_BASE_URL,"http://127.0.0.1:8001/v1"}
+        max_retries: ${oc.env:ONE_AGENT_MAX_RETRIES,25}
+      request_args:
+        model: ${oc.env:ONE_AGENT_MODEL,"openai/HY3.0_A20B_sftexp2_bus0320_from_pre20T_mid256k_2.38T-jim"}
+        temperature: ${oc.decode:${oc.env:ONE_AGENT_TEMPERATURE,"0.7"}}
+        top_p: ${oc.decode:${oc.env:ONE_AGENT_TOP_P,"0.8"}}
+        # chat_template_kwargs:
+        #   reasoning_effort: "high"
+
+# Trace processors.
+processors:
+  chat:
+    name: "chat_tracker"

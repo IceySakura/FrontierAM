@@ -1,0 +1,8 @@
+id: astropy__astropy-13236
+body:
+  task_name: swe_task
+  task_config:
+    remote_dataset: swe-public/SWE-bench_Verified
+    instance_id: astropy__astropy-13236
+    run_oracle: false
+    raise_on_runtime_error: true

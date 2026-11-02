@@ -1,0 +1,201 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list . "control-gateway") }}
+  labels:
+    {{- include "nexus-distributed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: control-gateway
+spec:
+  type: {{ .Values.controlGateway.service.type }}
+  selector:
+    {{- include "nexus-distributed.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: control-gateway
+  ports:
+    - name: http
+      port: {{ .Values.controlGateway.port }}
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list . "application-gateway") }}
+  labels:
+    {{- include "nexus-distributed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: application-gateway
+  {{- with .Values.applicationGateway.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.applicationGateway.service.type }}
+  {{- with .Values.applicationGateway.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . }}
+  {{- end }}
+  selector:
+    {{- include "nexus-distributed.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: application-gateway
+  ports:
+    - name: http
+      port: {{ .Values.applicationGateway.port }}
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list . "control-gateway") }}
+  labels:
+    {{- include "nexus-distributed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: control-gateway
+spec:
+  replicas: {{ .Values.controlGateway.replicas }}
+  selector:
+    matchLabels:
+      {{- include "nexus-distributed.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: control-gateway
+  template:
+    metadata:
+      labels:
+        {{- include "nexus-distributed.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: control-gateway
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if has "kubernetes" .Values.dynamicEnvironment.enabledProviders }}
+      serviceAccountName: {{ include "nexus-distributed.componentName" (list . "environment-controller") }}
+      {{- end }}
+      containers:
+        - name: control-gateway
+          image: {{ include "nexus-distributed.controlImage" . }}
+          imagePullPolicy: {{ .Values.controlImage.pullPolicy }}
+          args:
+            - distributed
+            - control-gateway
+            - --host
+            - 0.0.0.0
+            - --port
+            - {{ .Values.controlGateway.port | quote }}
+          env:
+            {{- include "nexus-distributed.processEnv" . | nindent 12 }}
+            {{- include "nexus-distributed.databaseEnv" . | nindent 12 }}
+            {{- include "nexus-distributed.otelEnv" (list . "nexus-distributed-control-gateway" "distributed-control-gateway") | nindent 12 }}
+          volumeMounts:
+            {{- include "nexus-distributed.databaseSecretVolumeMount" . | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.controlGateway.port }}
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 2
+          {{- with .Values.controlGateway.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        {{- include "nexus-distributed.databaseSecretVolume" . | nindent 8 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list . "application-gateway") }}
+  labels:
+    {{- include "nexus-distributed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: application-gateway
+spec:
+  replicas: {{ .Values.applicationGateway.replicas }}
+  selector:
+    matchLabels:
+      {{- include "nexus-distributed.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: application-gateway
+  template:
+    metadata:
+      labels:
+        {{- include "nexus-distributed.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: application-gateway
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: application-gateway
+          image: {{ include "nexus-distributed.controlImage" . }}
+          imagePullPolicy: {{ .Values.controlImage.pullPolicy }}
+          args:
+            - distributed
+            - application-gateway
+            - --host
+            - 0.0.0.0
+            - --port
+            - {{ .Values.applicationGateway.port | quote }}
+            {{- if .Values.liveCompatibility.enabled }}
+            - --enable-live-compat
+            - --control-base-url
+            - http://{{ include "nexus-distributed.componentName" (list . "control-gateway") }}:{{ .Values.controlGateway.port }}
+            - --application-base-url
+            - http://{{ include "nexus-distributed.componentName" (list . "application-gateway") }}:{{ .Values.applicationGateway.port }}
+            - --placement-environment
+            - {{ .Values.instanceManager.environmentId | quote }}
+            - --placement-pool
+            - {{ .Values.instanceManager.poolId | quote }}
+            {{- range $key, $value := .Values.instanceManager.labels }}
+            - --placement-label
+            - {{ printf "%s=%s" $key $value | quote }}
+            {{- end }}
+            {{- end }}
+          env:
+            {{- include "nexus-distributed.processEnv" . | nindent 12 }}
+            {{- include "nexus-distributed.databaseEnv" . | nindent 12 }}
+            {{- include "nexus-distributed.otelEnv" (list . "nexus-distributed-application-gateway" "distributed-application-gateway") | nindent 12 }}
+            - name: NEXUS_DIST_ARTIFACT_UPLOAD_SPOOL_DIR
+              value: /data/nexus-upload-spool
+          volumeMounts:
+            {{- include "nexus-distributed.databaseSecretVolumeMount" . | nindent 12 }}
+            - name: upload-spool
+              mountPath: /data/nexus-upload-spool
+          ports:
+            - containerPort: {{ .Values.applicationGateway.port }}
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 2
+          {{- with .Values.applicationGateway.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        {{- include "nexus-distributed.databaseSecretVolume" . | nindent 8 }}
+        - name: upload-spool
+          emptyDir:
+            sizeLimit: {{ .Values.applicationGateway.uploadSpoolSizeLimit }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

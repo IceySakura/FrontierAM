@@ -1,0 +1,19 @@
+[project]
+name = "desktop"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+
+[tool.nexus.tools]
+"desktop/start" = "nexus.extensions.tools.desktop.tools"
+"desktop/close_app" = "nexus.extensions.tools.desktop.tools"
+"desktop/launch_app" = "nexus.extensions.tools.desktop.tools"
+"desktop/screenshot" = "nexus.extensions.tools.desktop.tools"
+"desktop/screen_size" = "nexus.extensions.tools.desktop.tools"
+"desktop/computer_13" = "nexus.extensions.tools.desktop.tools"
+"desktop/pyautogui" = "nexus.extensions.tools.desktop.tools"
+"desktop/bash" = "nexus.extensions.tools.desktop.tools"

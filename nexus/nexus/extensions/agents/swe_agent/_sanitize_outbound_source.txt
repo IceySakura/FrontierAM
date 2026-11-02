@@ -1,0 +1,554 @@
+#!/usr/bin/env python3
+"""Sanitize outbound model text and captured command output.
+
+Chat hooks sanitize message content before adding cache markers. The optional
+Responses wrapper sanitizes plain text without changing protocol fields or
+adding Chat cache markers. Hook module and function names must match configuration.
+
+The CLI sanitizes stdin, captured command output, or a complete Responses request.
+Display redactions must not be written back to executable configuration. Text
+rules cover only the listed patterns; protected request fields fail closed.
+"""
+from __future__ import annotations
+
+import re
+from typing import Any
+
+
+# Sanitize email addresses before replacing keywords used by the email matcher.
+_TENCENT_EMAIL = re.compile(r'[A-Za-z0-9._%+-]+@tencent\.com', re.IGNORECASE)
+_REPLACEMENT = '[EMAIL_REDACTED]'
+
+# Replace matched keywords while preserving surrounding paths and URL structure.
+_INTERNAL_KEYWORDS = re.compile(r'tencent|hunyuan|yuanbao|\u6df7\u5143', re.IGNORECASE)
+_KEYWORD_REPLACEMENT = 'redacted'
+
+# Preserve URL structure; network configuration and opaque protocol fields use separate handling.
+_INTERNAL_GIT_HOST = re.compile(
+    r'(?<![A-Za-z0-9_.-])taiji' r'-git-proxy\.polaris(?![A-Za-z0-9_.-])',
+    re.IGNORECASE,
+)
+
+
+# Normalize the old display placeholder only in prose. It is not a real address.
+_LEGACY_EMAIL_PLACEHOLDER = re.compile(r'\[*(?<![A-Za-z0-9._%+-])redacted@example\.com(?![A-Za-z0-9._%+-])\]*', re.IGNORECASE)
+# Nested JSON doubles backslashes; encoded backslashes can also precede a unicode escape.
+_UNICODE_ESCAPE = re.compile(r'\\+(?:u005[cC])*u([0-9a-fA-F]{4})')
+
+
+def _unicode_text_view(text: str):
+    """Decode a matching view, retaining sparse offsets into the untouched source."""
+    view = text
+    layers = []
+    for _ in range(16):
+        pieces, positions, source_spans = [], [], []
+        cursor = shrink = 0
+        for match in _UNICODE_ESCAPE.finditer(view):
+            start, end = match.span()
+            pieces.extend((view[cursor:start], chr(int(match[1], 16))))
+            positions.append(start - shrink)
+            source_spans.append((start, end))
+            shrink += end - start - 1
+            cursor = end
+        if not positions:
+            return view, layers
+        pieces.append(view[cursor:])
+        view = ''.join(pieces)
+        layers.append((positions, source_spans))
+    if _UNICODE_ESCAPE.search(view):
+        raise RequestSanitizationError('Unsupported nested text encoding; request was not sent.')
+    return view, layers
+
+
+def _source_text_boundary(position: int, layers) -> int:
+    from bisect import bisect_left
+
+    for positions, spans in reversed(layers):
+        index = bisect_left(positions, position)
+        if index < len(positions) and positions[index] == position:
+            position = spans[index][0]
+        elif index:
+            position = spans[index - 1][1] + position - positions[index - 1] - 1
+    return position
+
+
+def _scrub_unicode_text(text: str) -> str:
+    """Replace only matched source spans; unrelated escapes and JSON stay intact."""
+    if '\\' not in text:
+        return text
+    view, layers = _unicode_text_view(text)
+    if not layers:
+        return text
+    matches = []
+    rules = ((_TENCENT_EMAIL, _REPLACEMENT),
+             (_LEGACY_EMAIL_PLACEHOLDER, _REPLACEMENT),
+             (_INTERNAL_GIT_HOST, 'internal.invalid'),
+             (_INTERNAL_KEYWORDS, _KEYWORD_REPLACEMENT))
+    for priority, (pattern, replacement) in enumerate(rules):
+        matches.extend((match.start(), priority, match.end(), replacement)
+                       for match in pattern.finditer(view))
+    pieces, cursor = [], 0
+    for start, _priority, end, replacement in sorted(matches):
+        original_start = _source_text_boundary(start, layers)
+        original_end = _source_text_boundary(end, layers)
+        if original_start < cursor:
+            continue
+        pieces.extend((text[cursor:original_start], replacement))
+        cursor = original_end
+    pieces.append(text[cursor:])
+    return ''.join(pieces)
+
+
+def _scrub_text(text: str) -> str:
+    text = _scrub_unicode_text(text)
+    text = _LEGACY_EMAIL_PLACEHOLDER.sub(_REPLACEMENT, text)
+    text = _TENCENT_EMAIL.sub(_REPLACEMENT, text)      # Match email addresses before their domain keywords are replaced.
+    text = _INTERNAL_KEYWORDS.sub(_KEYWORD_REPLACEMENT, text)
+    return _INTERNAL_GIT_HOST.sub('internal.invalid', text)
+
+
+def _scrub_content(content: Any) -> Any:
+    """Sanitize message content provided as text or a list of content blocks."""
+    if isinstance(content, str):
+        return _scrub_text(content)
+    if isinstance(content, list):
+        new_blocks = []
+        for block in content:
+            if isinstance(block, dict):
+                b = dict(block)
+                if b.get('type') in (None, 'text', 'input_text', 'output_text', 'summary_text', 'reasoning_text') and isinstance(b.get('text'), str):
+                    b['text'] = _scrub_text(b['text'])
+                elif b.get('type') == 'refusal' and isinstance(b.get('refusal'), str):
+                    b['refusal'] = _scrub_text(b['refusal'])
+                new_blocks.append(b)
+            elif isinstance(block, str):
+                new_blocks.append(_scrub_text(block))
+            else:
+                new_blocks.append(block)
+        return new_blocks
+    return content
+
+
+def _scrub_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    scrubbed = []
+    for m in messages:
+        mm = dict(m)
+        if 'content' in mm:
+            mm['content'] = _scrub_content(mm['content'])
+        scrubbed.append(mm)
+    return scrubbed
+
+
+def sanitize_and_cache(messages: list[dict[str, Any]], **kwargs: Any) -> list[dict[str, Any]]:
+    """Sanitize message text, then apply Chat cache markers.
+
+    Return sanitized messages even when the cache helper cannot be loaded or fails.
+    """
+    scrubbed = _scrub_messages(messages)
+    try:
+        from nexus.extensions.openai_clients.openai import apply_cache_control_claude_code
+
+        return apply_cache_control_claude_code(scrubbed)
+    except Exception:
+        # Keep sanitization effective when cache processing fails.
+        return scrubbed
+
+
+# Sanitize Responses text without adding Chat cache markers to native protocol items.
+
+_RESPONSES_PATCH_APPLIED = False
+
+
+def _scrub_responses_input(messages: list[Any]) -> list[Any]:
+    """Sanitize plain message content and tool output in Responses input.
+
+    Preserve reasoning, function calls, references, and unknown item types. Do not
+    rewrite opaque content, IDs, tool arguments, or add Chat cache markers.
+    """
+    out: list[Any] = []
+    for item in messages:
+        if not isinstance(item, dict):
+            out.append(item)
+            continue
+        item_type = item.get('type')
+        if 'type' in item and item_type not in ('message', 'function_call_output', 'custom_tool_call_output'):
+            out.append(item)
+            continue
+        new_item = dict(item)
+        if item_type in ('function_call_output', 'custom_tool_call_output'):
+            if 'output' in new_item:
+                new_item['output'] = _scrub_content(new_item['output'])
+        elif 'content' in new_item:
+            new_item['content'] = _scrub_content(new_item['content'])
+        out.append(new_item)
+    return out
+
+
+class RequestSanitizationError(ValueError):
+    """A request cannot be forwarded safely; messages must never contain input."""
+
+
+def _scrub_schema_descriptions(schema: Any) -> Any:
+    """Only schema documentation is prose; defaults, enums and names are data."""
+    if not isinstance(schema, dict):
+        return schema
+    result = dict(schema)
+    for key in ('description', 'title'):
+        if isinstance(result.get(key), str):
+            result[key] = _scrub_text(result[key])
+    for key in ('properties', 'patternProperties', '$defs', 'definitions', 'dependentSchemas'):
+        if isinstance(result.get(key), dict):
+            result[key] = {name: _scrub_schema_descriptions(value) for name, value in result[key].items()}
+    for key in ('items', 'additionalProperties', 'contains', 'propertyNames', 'not',
+                'if', 'then', 'else', 'unevaluatedProperties', 'unevaluatedItems', 'contentSchema'):
+        if isinstance(result.get(key), dict):
+            result[key] = _scrub_schema_descriptions(result[key])
+    for key in ('allOf', 'anyOf', 'oneOf', 'prefixItems'):
+        if isinstance(result.get(key), list):
+            result[key] = [_scrub_schema_descriptions(value) for value in result[key]]
+    return result
+
+
+def _scrub_tool_definitions(definitions: Any) -> Any:
+    if not isinstance(definitions, list):
+        return definitions
+    result = []
+    for definition in definitions:
+        if not isinstance(definition, dict):
+            result.append(definition)
+            continue
+        item = dict(definition)
+        if isinstance(item.get('description'), str):
+            item['description'] = _scrub_text(item['description'])
+        if item.get('type') == 'namespace':
+            item['tools'] = _scrub_tool_definitions(item.get('tools'))
+        if item.get('type') == 'function' and 'parameters' in item:
+            item['parameters'] = _scrub_schema_descriptions(item['parameters'])
+        result.append(item)
+    return result
+
+
+def _check_protected_plaintext(value: Any) -> None:
+    """Reject remaining email/Git-host hits without editing executable or opaque fields.
+
+    Encrypted reasoning and compaction are intentionally opaque. Other IDs,
+    references, tool arguments, unknown fields and object keys are checked but
+    never rewritten. This is a targeted guard, not a general secret detector.
+    """
+    if isinstance(value, str):
+        decoded, _layers = _unicode_text_view(value)
+        if _INTERNAL_GIT_HOST.search(decoded) or _scrub_email_match(decoded):
+            raise RequestSanitizationError(
+                'Restricted plaintext remains in a protected request field; request was not sent.'
+            )
+    elif isinstance(value, list):
+        for item in value:
+            _check_protected_plaintext(item)
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            _check_protected_plaintext(key)
+            if key == 'encrypted_content' and value.get('type') in ('reasoning', 'compaction'):
+                continue
+            _check_protected_plaintext(item)
+
+
+def _scrub_email_match(value: str) -> bool:
+    # Use the same email rule as _scrub_text without duplicating its expression.
+    return bool(_TENCENT_EMAIL.search(value))
+
+
+def sanitize_responses_request(request: Any) -> dict[str, Any]:
+    """Clean the entire explicit Responses history, without mutating its source.
+
+    This entry is used at the HTTP boundary, independently of Nexus and tool
+    hooks. Safe prose is rewritten; a targeted match elsewhere blocks sending.
+    """
+    if not isinstance(request, dict) or not isinstance(request.get('input'), (str, list)):
+        raise RequestSanitizationError('Expected a Responses object with an explicit input.')
+    result = dict(request)
+    source = request['input']
+    if isinstance(source, str):
+        result['input'] = _scrub_text(source)
+    else:
+        if any(not isinstance(item, dict) for item in source):
+            raise RequestSanitizationError('Expected objects in the Responses input array.')
+        result['input'] = _scrub_responses_input(source)
+        for index, item in enumerate(result['input']):
+            if item.get('type') == 'additional_tools':
+                result['input'][index] = {**item, 'tools': _scrub_tool_definitions(item.get('tools'))}
+            elif item.get('type') == 'reasoning':
+                copied = dict(item)
+                for field in ('summary', 'content'):
+                    if field in copied:
+                        copied[field] = _scrub_content(copied[field])
+                result['input'][index] = copied
+    if isinstance(result.get('instructions'), str):
+        result['instructions'] = _scrub_text(result['instructions'])
+    if 'tools' in result:
+        result['tools'] = _scrub_tool_definitions(result['tools'])
+    _check_protected_plaintext(result)
+    return result
+
+
+def sanitize_responses_json(data: bytes) -> bytes:
+    """Strict JSON boundary; duplicate keys and non-finite numbers are rejected."""
+    import json
+
+    def reject_constant(_value):
+        raise RequestSanitizationError('Non-finite JSON numbers are not supported.')
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise RequestSanitizationError('Duplicate JSON keys are not supported.')
+            result[key] = value
+        return result
+
+    try:
+        request = json.loads(data.decode('utf-8'), object_pairs_hook=unique_object, parse_constant=reject_constant)
+        result = sanitize_responses_request(request)
+        return json.dumps(result, ensure_ascii=False, allow_nan=False, separators=(',', ':')).encode('utf-8')
+    except RequestSanitizationError:
+        raise
+    except (ValueError, TypeError, RecursionError, OverflowError):
+        raise RequestSanitizationError('Invalid or unsupported Responses JSON; request was not sent.') from None
+
+
+def install_responses_patch() -> bool:
+    """Install the optional Responses text sanitizer once.
+
+    Return True when the wrapper is available and installed. Return False when
+    the Responses client cannot be imported or has no completion method.
+    """
+    global _RESPONSES_PATCH_APPLIED
+    if _RESPONSES_PATCH_APPLIED:
+        return True
+    try:
+        from nexus.extensions.openai_clients.openai_responses import OpenAIResponsesClient
+    except Exception:
+        return False
+
+    original = getattr(OpenAIResponsesClient, '_create_completion', None)
+    if original is None or getattr(original, '_sanitize_wrapped', False):
+        _RESPONSES_PATCH_APPLIED = original is not None
+        return _RESPONSES_PATCH_APPLIED
+
+    async def _create_completion(self, messages, model=None, **kwargs):   # type: ignore[no-untyped-def]
+        # Apply sanitization only when this client explicitly selects the strategy.
+        strategy = self.config.client_args.get('cache_control_strategy', '')
+        if self.config.client_args.get('cache_control_enabled') and 'sanitize_outbound' in str(strategy):
+            messages = _scrub_responses_input(messages)
+        return await original(self, messages, model, **kwargs)
+
+    _create_completion._sanitize_wrapped = True   # Avoid wrapping the same method more than once.
+    OpenAIResponsesClient._create_completion = _create_completion
+    _RESPONSES_PATCH_APPLIED = True
+    return True
+
+
+# Display redactions may hide entire hosts and credentials; keep them out of real request configuration.
+_INTERNAL_HOST = re.compile(
+    r'(?<![A-Za-z0-9_.-])(?:'
+    r'(?:[A-Za-z0-9-]+\.)*woa\.com'
+    r'|(?:[A-Za-z0-9-]+\.)+polaris'
+    r')(?![A-Za-z0-9_.-])',
+    re.IGNORECASE,
+)
+_SECRET_KEY = r'(?:[a-z0-9_-]*(?:token|password|passwd|secret|api[_-]?key)|authorization|proxy-authorization|cookie|set-cookie|x-api-key|private-token)'
+# Hide a literal credential fallback before the general assignment matcher
+# shortens expressions such as TOKEN = os.environ.get("TOKEN", "fallback").
+_SECRET_ENV_DEFAULT = re.compile(
+    r"""(?P<prefix>\b(?:os\.)?(?:getenv|environ(?:b)?\.get)\(\s*["']"""
+    + _SECRET_KEY + r"""["']\s*,\s*(?:default\s*=\s*)?)"""
+    r"""(?P<quote>["'])(?:\\[^\r\n]|(?!(?P=quote))[^\\\r\n])*?(?P=quote)""",
+    re.IGNORECASE,
+)
+
+_SECRET_ASSIGNMENT = re.compile(
+    r"""(?P<prefix>(?<![\w-])["']?""" + _SECRET_KEY + r"""["']?[ \t]*[:=][ \t]*)"""
+    r"""(?:(?P<quote>["'])(?:\\[^\r\n]|(?!(?P=quote))[^\\\r\n])*?(?P=quote)|[^\s,;}\]]+)""",
+    re.IGNORECASE,
+)
+
+
+_SECRET_SOURCE_CALL = re.compile(
+    r"""(?P<prefix>\b(?:os\.)?(?:getenv|environ(?:b)?\.get)\(\s*["']"""
+    + _SECRET_KEY + r"""["']\s*,\s*(?:default\s*=\s*)?)""",
+    re.IGNORECASE,
+)
+_SECRET_MULTILINE_ASSIGNMENT = re.compile(
+    r"""(?P<prefix>(?<![\w-])["']?""" + _SECRET_KEY
+    + r"""["']?[ \t]*=[ \t]*)(?=[ \t]*(?:\(|[rubf]*(?:"{3}|'{3})))""",
+    re.IGNORECASE,
+)
+
+
+def _redact_source_defaults(text: str) -> str:
+    """Mask complete credential defaults, including multiline source excerpts."""
+    import bisect
+    import io
+    import tokenize
+
+    # Readers often add a line number before each source line. Keep an offset
+    # map so only the value in the original display text is replaced.
+    original_starts, normalized_starts, removed = [], [], []
+    normalized_lines = []
+    original_pos = normalized_pos = 0
+    for line in text.splitlines(keepends=True):
+        match = re.match(r'^[ \t]*(?:\S+\.py:)?\d+[:-][ \t]?', line)
+        cut = match.end() if match else 0
+        original_starts.append(original_pos)
+        normalized_starts.append(normalized_pos)
+        removed.append(cut)
+        normalized_lines.append(line[cut:])
+        original_pos += len(line)
+        normalized_pos += len(line) - cut
+    source = ''.join(normalized_lines)
+    if not source:
+        return text
+
+    def original_offset(pos: int) -> int:
+        row = min(bisect.bisect_right(normalized_starts, pos) - 1,
+                  len(original_starts) - 1)
+        return original_starts[row] + removed[row] + pos - normalized_starts[row]
+
+    def expression_end(fragment: str, assignment: bool) -> int:
+        # An artificial opening parenthesis keeps conditional defaults on
+        # subsequent lines in the same token stream. No source is executed.
+        wrapped = '(' + fragment
+        starts = [0]
+        starts.extend(m.end() for m in re.finditer('\n', wrapped))
+        depth = 0
+        last = 0
+        try:
+            for token in tokenize.generate_tokens(io.StringIO(wrapped).readline):
+                kind, value, start, end, _ = token
+                if kind == tokenize.OP:
+                    if value in '([{':
+                        depth += 1
+                        if depth == 1 and start == (1, 0):
+                            continue
+                    elif value in ')]}':
+                        if depth == 1:
+                            return last
+                        depth -= 1
+                    elif value == ',' and depth == 1:
+                        return last
+                if assignment and kind in (tokenize.NL, tokenize.NEWLINE) and depth == 1:
+                    return last
+                if kind in (tokenize.NL, tokenize.NEWLINE, tokenize.INDENT,
+                            tokenize.DEDENT, tokenize.COMMENT, tokenize.ENDMARKER):
+                    continue
+                if kind == tokenize.ERRORTOKEN and value.isspace():
+                    continue
+                last = starts[end[0] - 1] + end[1] - 1
+        except (tokenize.TokenError, IndentationError, SyntaxError):
+            pass
+        # A truncated credential expression has no safe boundary to expose.
+        return len(fragment)
+
+    spans = []
+    for pattern, assignment in ((_SECRET_SOURCE_CALL, False),
+                                 (_SECRET_MULTILINE_ASSIGNMENT, True)):
+        for match in pattern.finditer(source):
+            start = match.end()
+            end = start + expression_end(source[start:], assignment)
+            if end > start:
+                spans.append((original_offset(start), original_offset(end)))
+    merged = []
+    for start, end in sorted(spans):
+        if merged and start <= merged[-1][1]:
+            merged[-1] = (merged[-1][0], max(merged[-1][1], end))
+        else:
+            merged.append((start, end))
+    for start, end in reversed(merged):
+        text = text[:start] + '"[REDACTED]"' + text[end:]
+    return text
+
+
+def sanitize_text(text: str) -> str:
+    """Redact display text without rewriting executable configuration or signed protocol objects."""
+    text = re.sub(r'(?i)\b(Bearer|Basic)\s+[^\s"\x27,;}]+', r'\1 [REDACTED]', text)
+    text = re.sub(
+        r'(?im)^([ \t]*(?:authorization|proxy-authorization|cookie|set-cookie)[ \t]*:[ \t]*)[^\r\n]*',
+        r'\1[REDACTED]',
+        text,
+    )
+    text = _redact_source_defaults(text)
+    text = _SECRET_ENV_DEFAULT.sub(
+        lambda m: m['prefix'] + m['quote'] + '[REDACTED]' + m['quote'], text,
+    )
+    text = _SECRET_ASSIGNMENT.sub(
+        lambda m: m['prefix'] + (m['quote'] or '') + '[REDACTED]' + (m['quote'] or ''), text,
+    )
+    text = re.sub(r'\btai_pat_[A-Za-z0-9_-]+', '[REDACTED]', text)
+    text = re.sub(r'(?i)(https?://)[^/\s:@]+:[^/\s@]+@', r'\1[REDACTED]@', text)
+    try:
+        return _scrub_text(_INTERNAL_HOST.sub('[INTERNAL_HOST]', text))
+    except RequestSanitizationError:
+        return '[TEXT_REDACTED: unsupported nested encoding]'
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Capture and sanitize command output while preserving stdout, stderr, and the exit status."""
+    import argparse
+    import os
+    import subprocess
+    import sys
+
+    class SanitizedArgumentParser(argparse.ArgumentParser):
+        def _print_message(self, message, file=None):
+            if message:
+                super()._print_message(sanitize_text(message), file)
+
+    parser = SanitizedArgumentParser(description=__doc__.splitlines()[0])
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--stdin', action='store_true', help='清洗标准输入中的完整文本')
+    mode.add_argument('--responses-json', action='store_true', help='清洗标准输入中的完整 Responses 请求；不能安全改写时拒绝输出')
+    parser.add_argument('command', nargs=argparse.REMAINDER, help='在 -- 后指定命令及参数；不使用 shell 解释')
+    args = parser.parse_args(argv)
+    command = args.command
+    if command[:1] == ['--']:
+        command = command[1:]
+    if args.responses_json:
+        if command:
+            parser.error('--responses-json 不能与命令同时使用')
+        try:
+            cleaned = sanitize_responses_json(sys.stdin.buffer.read())
+        except RequestSanitizationError as error:
+            sys.stderr.write(str(error) + '\n')
+            return 2
+        except Exception:
+            sys.stderr.write('Request sanitization failed; request was not sent.\n')
+            return 2
+        sys.stdout.buffer.write(cleaned)
+        return 0
+    if args.stdin:
+        if command:
+            parser.error('--stdin 不能与命令同时使用')
+        sys.stdout.write(sanitize_text(sys.stdin.buffer.read().decode('utf-8', 'replace')))
+        return 0
+    if not command:
+        parser.error('请指定 --stdin、--responses-json 或 -- COMMAND ...')
+    try:
+        result = subprocess.run(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            env={**os.environ, 'BASH_ENV': '/dev/null'},
+        )
+    except OSError as error:
+        sys.stderr.write(sanitize_text(f'无法执行命令：{error}\n'))
+        return 127
+    # Sanitize both streams before writing either; never fall back to raw output.
+    stdout = sanitize_text(result.stdout.decode('utf-8', 'replace'))
+    stderr = sanitize_text(result.stderr.decode('utf-8', 'replace'))
+    sys.stdout.write(stdout)
+    sys.stderr.write(stderr)
+    return result.returncode if result.returncode >= 0 else 128 - result.returncode
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
+else:
+    # Install the optional wrapper when this module is imported.
+    install_responses_patch()

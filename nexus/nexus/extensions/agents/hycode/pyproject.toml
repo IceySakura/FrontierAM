@@ -1,0 +1,13 @@
+[project]
+name = "hycode"
+version = "0.1.0"
+authors = [
+    { name = "kechizhang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { hycode = "nexus.extensions.agents.hycode.agent" }

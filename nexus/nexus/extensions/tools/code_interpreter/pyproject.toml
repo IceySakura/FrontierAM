@@ -1,0 +1,27 @@
+[project]
+name = "code_interpreter"
+version = "0.1.0"
+authors = [
+    { name = "nickklau" },
+    { name = "shitaoxiao" },
+    { name = "stephenruan" },
+    { name = "jiachengdu" },
+    { name = "kumohu" },
+    { name = "huaiyuli" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+# static-ffmpeg omitted: its publish-time deps pull a fresh `packaging` that uv cannot install
+# over the read-only sandbox venv; jupyter_with_videocut gets ffmpeg from apt-get instead.
+# No `host` extra: every tool here is ToolType.RUNTIME, so the kernel lives in the sandbox.
+runtime = ["ipykernel>=6.29.0", "jupyter-client>=8.6.0"]
+
+[tool.nexus]
+
+[tool.nexus.tools]
+jupyter_code_interpreter = "nexus.extensions.tools.code_interpreter.jupyter_code_interpreter"
+jupyter_with_image = "nexus.extensions.tools.code_interpreter.jupyter_with_image"
+jupyter_with_videocut = "nexus.extensions.tools.code_interpreter.jupyter_with_videocut"
+python_code_interpreter = "nexus.extensions.tools.code_interpreter.python_code_interpreter"
+safe_python_code_interpreter = "nexus.extensions.tools.code_interpreter.python_code_interpreter"

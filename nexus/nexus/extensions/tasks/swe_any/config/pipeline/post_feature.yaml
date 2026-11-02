@@ -1,0 +1,17 @@
+# SWE-Any additive pipeline: deterministic repo + dataset reduction.
+#
+# The post generator replaces feature_runs with normalized records from the
+# feature batch JSONL export.  No sandbox or LLM is needed.
+
+imports:
+  - nexus.extensions.tasks.swe_any
+
+task_name: "swe_any_pipeline_post_feature"
+
+task_config:
+  output_dir: "${oc.env:SWE_ANY_OUTPUT_DIR,./outputs/swe_any}"
+  feature_batch_results_path: "${oc.env:SWE_ANY_FEATURE_RESULTS,''}"
+  feature_runs: []
+
+runner:
+  timeout: "${oc.env:SWE_ANY_POST_FEATURE_TIMEOUT,3600.0}"

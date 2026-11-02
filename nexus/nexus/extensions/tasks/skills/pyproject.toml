@@ -1,0 +1,13 @@
+[project]
+name = "skills"
+version = "0.1.0"
+authors = [
+    { name = "felixhshi" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { skills_task = "nexus.extensions.tasks.skills.task" }

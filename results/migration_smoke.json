@@ -1,0 +1,59 @@
+{
+  "exponential": {
+    "verification": {
+      "passed": true,
+      "checks": {
+        "nexus_completed": true,
+        "agent_completed": true,
+        "tool_history": true,
+        "task_completed": true,
+        "numerical_runs": true
+      },
+      "real_model_calls": 0,
+      "real_codex_nexus_docker": true,
+      "not_a_model_performance_result": true
+    },
+    "task_summary": {
+      "status": "success",
+      "exit_status": "finished",
+      "score": null,
+      "score_status": "local_calibration_required",
+      "valid_runs": 69,
+      "total_runs": 69,
+      "verification_only": true
+    },
+    "nexus_result_sha256": "9642c673afcfb94be5452e5516a9d75869ca7fa72b6ad2f54503c149b1af4462"
+  },
+  "conic": {
+    "verification": {
+      "passed": true,
+      "checks": {
+        "nexus_completed": true,
+        "agent_completed": true,
+        "tool_history": true,
+        "task_completed": true,
+        "numerical_runs": true,
+        "valid_failure_assessment": true,
+        "all_boundary_probes": true
+      },
+      "real_model_calls": 0,
+      "real_codex_nexus_docker": true,
+      "not_a_model_performance_result": true
+    },
+    "task_summary": {
+      "status": "success",
+      "exit_status": "finished",
+      "score": null,
+      "score_status": null,
+      "valid_runs": 0,
+      "total_runs": 60,
+      "verification_only": true
+    },
+    "nexus_result_sha256": "e6098ea5803b051f224e0521f462c2347c041ae5a4761408fdc208dcb8479677"
+  },
+  "architecture": "arm64",
+  "date": "2026-11-02",
+  "codex_version": "0.166.0-alpha.5.1",
+  "unit_tests_passed": 156,
+  "real_model_calls": 0
+}

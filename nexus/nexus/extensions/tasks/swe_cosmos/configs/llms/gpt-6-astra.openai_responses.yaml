@@ -1,0 +1,53 @@
+# AIHub GPT-6 Astra LLM Profile
+#
+# 协议与路由：
+#   Client=openai_responses（不是 chat 的 openai）
+#   Model=gpt-6-astra；Bearer 必须带 ?provider=azure
+#
+# 推理配置：
+#   reasoning.effort 默认 xhigh
+#   summary=detailed；mode=standard；store=false；include encrypted_content
+#
+# 环境变量：
+#   必填：HR_API_KEY
+#   可选：同 gpt-6-sol.openai_responses
+#
+# 使用示例：
+#   LLM_CONFIG=gpt-6-astra.openai_responses
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.openai_responses
+
+  agent_config:
+    wrap_plaintext_reasoning_content: false
+
+  openai_clients:
+    main:
+      name: openai_responses
+      config:
+        client_args:
+          api_key: '${oc.env:HR_API_KEY}?provider=azure'
+          endpoint: 'http://api.aihub.woa.com/openai/v1/responses'
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,12000}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,32}}
+          capture_raw_io: true
+          cache_task_id_from_run_id: true
+
+        request_args:
+          model: 'gpt-6-astra'
+          store: false
+          stream: false
+          max_output_tokens: ${oc.decode:${oc.env:MAX_TOKENS,128000}}
+          reasoning_effort: ${oc.env:REASONING_EFFORT,xhigh}
+          reasoning:
+            effort: ${oc.env:REASONING_EFFORT,xhigh}
+            summary: ${oc.env:REASONING_SUMMARY,detailed}
+            mode: ${oc.env:REASONING_MODE,standard}
+          include:
+            - reasoning.encrypted_content
+
+merge:
+  imports: append_unique
+
+source: aihub-azure-gpt6-astra-openai-responses

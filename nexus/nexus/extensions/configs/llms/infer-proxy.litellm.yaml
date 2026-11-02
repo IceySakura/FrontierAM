@@ -1,0 +1,75 @@
+# Polar is infer-proxy / 自部署 HY LLM Profile（litellm → OpenAI 兼容端点）
+#
+# 协议与路由：
+#   Client=litellm；Endpoint=http://infer-proxy-yb-test.production.polaris:8000/openapi；
+#   Model 须带 openai/ 前缀。thinking 走 extra_body.chat_template_kwargs，
+#   不是 Anthropic thinking / output_config。按 run_id 派生会话亲和。
+#
+# 环境变量：
+#   必填：OPENAI_MODEL
+#   ⚠️ OPENAI_MODEL 要填**裸模型名**，本文件自己补 litellm 需要的 `openai/` 前缀。
+#      别把带前缀的值灌进来：前端生产那边的同名概念 `OPENAPI_MODEL_NAME` 默认值是 `openai/HY3-dev0413`（自带前缀），
+#      照抄过来会变成 `openai/openai/HY3-dev0413`，网关报模型不存在（2026-10-16 比对两边配置时发现）。
+#   可选：
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#       LOG_LLM_USAGE
+#
+# 使用示例：
+#   LLM_CONFIG=infer-proxy.litellm
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.litellm
+
+  # Facts about this model. The scaffold decides what to do with them, in its
+  # agent_config_by_llm section; this file never names a scaffold.
+  llm:
+    family: hunyuan
+    anthropic_model: 'claude-opus-4-8[1m]'
+    no_thinking_request_args:
+      model: 'openai/${oc.env:OPENAI_MODEL}'
+      max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,262144}}
+      temperature: 1.0
+      extra_body:
+        chat_template_kwargs:
+          reasoning_effort: no_think
+          preserved_thinking: false
+    # 协议无关的推理档位 fact，供 scaffold 读取，scaffold 不必知道这条 wire 怎么拼字段。
+    # 真实字段在 extra_body.chat_template_kwargs.reasoning_effort；和下面用同一个 env var/常量。
+    reasoning_effort: high
+
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          # infer-proxy 不鉴权；LiteLLM 仍要非空占位，否则部分路径拒发请求
+          api_key: EMPTY
+          base_url: 'http://infer-proxy-yb-test.production.polaris:8000/openapi'
+          # 单次 HY4 生成可能很长；数值和布尔值都要套 oc.decode：oc.env 一律返回字符串
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,3600}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,15}}
+          log_llm_usage: ${oc.decode:${oc.env:LOG_LLM_USAGE,true}}
+          # 按 run_id+model 派生 SessionID，StrategyType=ConsistentHash，同一任务多轮请求落同一实例
+          nexus_trace_id_from_run_id: true
+          nexus_llm_lb_strategy: ConsistentHash
+          # 不设 cache_control_*：HY / infer-proxy 无 Anthropic prompt-cache 语义
+
+        request_args:
+          # 格式: openai/HY4...
+          model: 'openai/${oc.env:OPENAI_MODEL}'
+          temperature: 1.0
+          top_p: 1.0
+          max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,262144}}
+          extra_body:
+            chat_template_kwargs:
+              reasoning_effort: high
+              preserved_thinking: true
+              interleaved_thinking: true
+
+merge:
+  imports: append_unique
+
+source: infer-proxy-litellm

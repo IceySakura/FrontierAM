@@ -1,0 +1,191 @@
+# Search Benchmark Runner — YAML Configuration
+#
+# This file is a superset of the `run-single` YAML (workspace/example.yaml).
+# Everything the single-task runner understands is valid here; the only extra
+# field is `benchmarks`, which lists the Parquet datasets to sweep over.
+#
+# Schema (same as nexus.runner.single.RunInput, plus `benchmarks`):
+#
+#   imports, task_name, task_config, tool_configs,
+#   runtime_provider_name, runtime_provider_config, runtime_configs,
+#   agent_name, agent_config,
+#   openai_clients, processors, runner,
+#   benchmarks: {name: parquet_path, ...}
+#
+# Usage:
+#   cp nexus/extensions/tasks/search/search_config.yaml.example search_config.yaml
+#   vim search_config.yaml            # fill in API keys, model names
+#   python nexus/extensions/tasks/search/run_benchmarks.py -c search_config.yaml
+#   python nexus/extensions/tasks/search/run_benchmarks.py -c search_config.yaml -b seal_0 --limit 5
+#
+# Env-var interpolation uses OmegaConf syntax (same as run-single):
+#   ${oc.env:MY_VAR}                # fails if MY_VAR is unset
+#   ${oc.env:MY_VAR,http://default} # falls back to default
+# ============================================================================
+
+
+# Module imports loaded before task execution (usually 'nexus.extensions').
+imports:
+  - nexus.extensions
+
+
+# The task registered under this name; for the search benchmark runner this is
+# fixed to "search". Per-row parquet data supplies the actual task_config values.
+task_name: search
+
+
+# Default agent — matches the agent registered at nexus/extensions/agents/search_agent.
+# Set to `science_agent` to use `search_stateful/search|open|find`.
+agent_name: search_agent
+
+
+# ============================================================================
+# OpenAI-compatible LLM clients
+# ============================================================================
+# Keys: 'main' for the agent, 'judge' for LLM-based evaluation.
+openai_clients:
+  main:
+    name: litellm
+    config:
+      client_args:
+        base_url: http://llm-api.model-eval.woa.com/v1
+        api_key: ${oc.env:SEARCH_API_KEY,YOUR_MAIN_API_KEY_HERE}
+      request_args:
+        model: openai/api_doubao_deepseek-v3-2-251201
+        temperature: 0.9
+        max_tokens: 32768
+
+  judge:
+    name: litellm
+    config:
+      client_args:
+        base_url: http://llm-api.model-eval.woa.com/v1
+        api_key: ${oc.env:JUDGE_API_KEY,YOUR_JUDGE_API_KEY_HERE}
+      request_args:
+        model: openai/api_aws_third_anthropic.claude-sonnet-4-6
+
+
+# ============================================================================
+# task_config — defaults for SearchTaskInput
+# ============================================================================
+# These act as defaults for every benchmark row; parquet rows override any key
+# present on the row (e.g. question/answer/instance_id always come from parquet).
+# Env overrides: SEARCH_EVAL_MODE, SEARCH_ENABLE_SUMMARY, SEARCH_RUN_ORACLE,
+# TRAINING_LENGTH_EXCEEDED — these win over the values below.
+task_config:
+  eval_mode: llm_judge
+  enable_summary: false
+  training_length_exceeded: true
+
+
+# ============================================================================
+# agent_config — defaults for SearchAgentInput
+# ============================================================================
+# See nexus.extensions.agents.search_agent.agent.SearchAgentInput for the full
+# schema. Per-row parquet `agent_config` overrides these; env overrides
+# (SEARCH_MAX_ITERATIONS, SEARCH_AGENT_MAX_LLM_RETRIES, SEARCH_TOOLSET_VERSION,
+# SEARCH_KEEP_RECENT_K, SEARCH_MAX_CONTEXT_TOKENS, SEARCH_ENABLE_COMPACTION)
+# win over both.
+agent_config:
+  toolset_version: v2            # Or drop this and set `tools` for an ad-hoc set.
+  max_iterations: 10
+  max_llm_retries: 0
+  is_training: false
+  finish_tool_names:
+    - finish
+
+  # Optional explicit tool list — overrides toolset_version when set.
+  # tools:
+  #   - google_serper_search
+  #   - base/finish
+  #   - visit
+  #   - base/write_todos
+  #   - execute_python
+
+  # Optional system prompt template. Supports {today_date} and {finish_instruction}
+  # placeholders resolved per row.
+  system_prompt: |
+    Today's date: {today_date}.
+
+    You are a helpful AI assistant that conducts thorough internet research
+    by using various tools and thinking deeply to provide accurate answers.
+
+    IMPORTANT:
+    - Fully understand the user's needs. Use `write_todos` to decompose
+      complex queries into granular steps and track progress.
+    - When facing uncertain information, use search tools to confirm.
+    - You MUST call exactly one tool at a time.
+    - When using `google_search`, if snippets are insufficient, use `visit`
+      to crawl detailed content from relevant URLs.
+    - When performing numerical calculations, use `execute_python`.
+      Do NOT use `execute_python` for web scraping.
+    - Synthesize information from diverse, credible sources.
+    - Always focus on the user's original question. {finish_instruction}
+
+
+# ============================================================================
+# Tool credentials
+# ============================================================================
+tool_configs:
+  google_serper_search:
+    serper_url: ${oc.env:SEARCH_SERPER_URL,http://trpc-gpt-eval.production.polaris:8080/search}
+    serper_app_id: ${oc.env:SEARCH_SERPER_APP_ID,YOUR_SERPER_APP_ID}
+    serper_app_key: ${oc.env:SEARCH_SERPER_APP_KEY,YOUR_SERPER_APP_KEY}
+
+  visit:
+    jina_url: ${oc.env:DEFAULT_JINA_URL,http://trpc-gpt-eval.production.polaris:8080/api/jina_ai/search}
+    jina_app_id: ${oc.env:DEFAULT_JINA_APP_ID,YOUR_JINA_APP_ID}
+    jina_app_key: ${oc.env:DEFAULT_JINA_APP_KEY,YOUR_JINA_APP_KEY}
+    jina_model_base_url: ${oc.env:DEFAULT_JINA_MODEL_BASE_URL,http://trpc-gpt-eval.production.polaris:8080/api/v1/data_eval}
+    jina_model: ${oc.env:DEFAULT_JINA_MODEL,api_doubao_DeepSeek-V3.1-250821}
+    jina_model_app_id: ${oc.env:DEFAULT_JINA_MODEL_APP_ID,YOUR_JINA_MODEL_APP_ID}
+    jina_model_app_key: ${oc.env:DEFAULT_JINA_MODEL_APP_KEY,YOUR_JINA_MODEL_APP_KEY}
+
+  # The search task will normalize this into the runtime shape expected by
+  # `nexus.extensions.tools.search_stateful` and automatically install the
+  # fetch-time credential shim for Jina:
+  # search_stateful:
+  #   serper:
+  #     serper_url: ${oc.env:SEARCH_SERPER_URL,http://trpc-gpt-eval.production.polaris:8080/search}
+  #     serper_app_id: ${oc.env:SEARCH_SERPER_APP_ID,YOUR_SERPER_APP_ID}
+  #     serper_app_key: ${oc.env:SEARCH_SERPER_APP_KEY,YOUR_SERPER_APP_KEY}
+  #   jina:
+  #     provider: ${oc.env:DEFAULT_JINA_PROVIDER,aws_jina}
+  #     jina_app_id: ${oc.env:DEFAULT_JINA_APP_ID,YOUR_JINA_APP_ID}
+  #     jina_app_key: ${oc.env:DEFAULT_JINA_APP_KEY,YOUR_JINA_APP_KEY}
+  #   # Note: the Jina fetch URL is currently fixed by the search_stateful backend.
+  #   # Optional:
+  #   # use_cache: false
+  #   # max_search_results: 10
+
+  # jupyter_code_interpreter:
+  #   python_path: /usr/local/bin/python3.12
+
+
+# ============================================================================
+# Span processors (optional) — defaults come from env vars when omitted.
+# ============================================================================
+# processors:
+#   chat:
+#     name: chat_tracker
+
+
+# ============================================================================
+# Benchmarks — mapping of benchmark name to Parquet dataset path.
+# ============================================================================
+# Set SEARCH_BENCHMARK_DATA_DIR to switch all paths at once:
+#   export SEARCH_BENCHMARK_DATA_DIR=/your/local/data
+benchmarks:
+  seal_0:                    ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/sealqa_seal_0.parquet
+  seal_0_260320:             ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/sealqa_seal_0_260320.parquet
+  gaia_text_only:            ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/gaia_text_only.parquet
+  browse_comp_zh:            ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/browse_comp_zh.parquet
+  browse_comp_150:           ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/browse_comp_150.parquet
+  browse_comp_full:          ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/browse_comp_full.parquet
+  fin_search_comp_t3:        ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/fin_search_comp_t3.parquet
+  fin_search_comp_t2_and_t3: ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/fin_search_comp_t2_and_t3.parquet
+  fin_search_comp_full:      ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/fin_search_comp_full.parquet
+  wide_search:               ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/wide_search.parquet
+  facts_search:              ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/facts_search.parquet
+  frames:                    ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/frames.parquet
+  hle_150:                   ${oc.env:SEARCH_BENCHMARK_DATA_DIR,/apdcephfs_zwfy/share_304017095/mannaliang/data/nexus_data}/hle_150.parquet

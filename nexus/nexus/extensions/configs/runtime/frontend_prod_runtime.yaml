@@ -1,0 +1,81 @@
+# Gongfeng 沙盒 + frontend_task（前端生产 rollout）
+#
+# 用途：
+#   和前端生产 rollout 对齐。值取自 frontend/prod/buses/1002/rollout/launch_cell.sh 和它调用的
+#   frontend/scaffold/nexus/extensions/tasks/frontend/generator_rollout.py（1010 班车前端没有 rollout，
+#   1002 是最近一次）。和评测的差别见 frontend_eval_runtime.yaml。
+#
+# 已对齐：镜像 testset:v4、8 CPU / 16G、request_timeout 10000、purpose prod、worker_venv、
+#         working_dir /workspace、不跑 oracle、不判分、langfuse 开。
+# 没法在这里对齐（生产用的是 frontend/scaffold 检出里那份 frontend_task，main 上的 task 没有这些）：
+#   task_config.cache_task_id / tar_exclude_paths、cline 专用的 raise_on_runtime_error、COS 上传、
+#   PROMPT_APPEND_STR。
+#
+# 环境变量：
+#   必填：GONGFENG_RUNTIME_TOKEN（或 GONGFENG_TOKEN）
+#         LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY —— 生产要求一定有轨迹，没设直接报错
+#   可选：FRONTEND_IMAGE  生产给 codebuddy / dsh / handy / pi / workbuddy 用的是
+#                         mirrors.tencent.com/g_kechizhang/webenv.claudecode.testset-node22:20260606
+#         RUNTIME_BASE_URL、RUNTIME_IMAGE、GONGFENG_PURPOSE、LANGFUSE_BASE_URL、LANGFUSE_SESSION_ID、LANGFUSE_TAGS
+#   建议：AGENT_TIMEOUT=10000 —— 取自 generator_rollout.py 的 `FRONTEND_AGENT_TIMEOUT or 10000`。
+#         注意前端生产把 agent 时限和 request_timeout **都设成 10000**（两者相等，外层保险丝不留余量），
+#         和 SWE 那边 runner.timeout 要大于 agent 的约定不同。这里按前端生产照抄，不自作主张加余量。
+#         （本文件原先写 12900 / 建议 12000，那是 SWE 的数；两份前端生产源码里都没有 12900，已改。）
+#
+# 使用示例：
+#   RUNTIME_CONFIG=frontend_prod_runtime AGENT_TIMEOUT=10000
+
+body:
+  imports:
+    - nexus.extensions.tasks.frontend
+    - nexus.trace.processors.chat_tracker
+    - nexus.trace.processors.langfuse_tracker
+
+  runtime_provider_name: gongfeng
+  runtime_provider_config:
+    api_base_url: ${oc.env:RUNTIME_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}
+    # 和 swecosmos_runtime.yaml 一致（MR !1609）：GONGFENG_TOKEN 作回退，hyway 上只设了它也能跑
+    token: ${oc.env:GONGFENG_RUNTIME_TOKEN,${oc.env:GONGFENG_TOKEN,''}}
+    image: ${oc.env:FRONTEND_IMAGE,mirrors.tencent.com/hunyuan_yanguan/webenv.claudecode.testset:v4}
+    runtime_image: ${oc.env:RUNTIME_IMAGE,current}
+    purpose: ${oc.env:GONGFENG_PURPOSE,prod}
+    resource_spec:
+      # 真实生产 rollout 的 generator（maxluxchen/workspace/nexus_frontend_eval 的
+      # workspace/frontend/generator.py）默认给的是 16/32，比这里写死的 8/16 高不少——但那份脚本
+      # 的 INSTANCE_RESOURCE_OVERRIDE 字典里混进了 SWE-bench 的实例 id（scikit-learn 那条），像是
+      # 从 SWE 模板改过来的，不敢直接断言 16/32 就是前端这边验证过的真实需要。没有把默认值抬到
+      # 16/32，但补上这两个环境变量，真要调就是一个变量的事，不用改文件。
+      cpu: ${oc.decode:${oc.env:RUNTIME_CPU,8}}
+      memory: ${oc.decode:${oc.env:RUNTIME_MEMORY,16}}
+    request_timeout: ${oc.decode:${oc.env:RUNTIME_REQUEST_TIMEOUT,10000}}
+
+  task_name: frontend_task
+  task_config:
+    working_dir: /workspace
+    run_oracle: false
+    skip_infer_patch_eval: true
+
+  processors:
+    chat:
+      name: chat_tracker
+      args:
+        tools_mode: branch_last
+    langfuse:
+      name: langfuse_tracker
+      args:
+        public_key: ${oc.env:LANGFUSE_PUBLIC_KEY}
+        secret_key: ${oc.env:LANGFUSE_SECRET_KEY}
+        host: ${oc.env:LANGFUSE_BASE_URL,'http://langfuse-taiji-api.woa.com'}
+        session_id: ${oc.env:LANGFUSE_SESSION_ID,''}
+        # 不设 LANGFUSE_TRACE_NAME 时，generator 按实例把 trace_name 填成 instance_id，并补 trace_metadata
+        trace_name: ${oc.env:LANGFUSE_TRACE_NAME,''}
+        tags: ${oc.decode:${oc.env:LANGFUSE_TAGS,'[]'}}
+
+  runtime_configs:
+    main:
+      worker_venv: true
+
+merge:
+  imports: append_unique
+
+source: frontend-prod-gongfeng-runtime

@@ -1,0 +1,7 @@
+[project]
+name = "hyness"
+version = "0.1.0"
+dependencies = []
+
+[tool.nexus]
+agents = { hyness = "nexus.extensions.agents.hyness.agent" }

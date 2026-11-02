@@ -1,0 +1,54 @@
+imports:
+  - nexus.extensions.tasks.os_world
+
+task_name: os_world
+task_config:
+  task_root: ${oc.env:OSWORLD_EXAMPLES_ROOT,"/tmp/OSWorld-official/evaluation_examples/examples"}
+  domain: chrome
+  task_id: 030eeff7-b492-4218-b312-701ec99ee0cc
+  observation_type: screenshot
+  action_space: computer_13
+  run_setup: true
+  run_evaluator: true
+  unsupported_evaluator_policy: fail
+
+runtime_provider_name: docker
+runtime_provider_config:
+  runtime_image: current
+  force_rebuild: false
+  print_port_mappings: true
+
+runtime_configs:
+  main:
+    image: ${oc.env:NEXUS_UBUNTU_SESSION_IMAGE,"nexus-ubuntu-session:latest"}
+    exposed_ports: [5900, 6080]
+    extra_args:
+      - --tmpfs
+      - /run
+      - --tmpfs
+      - /run/lock
+      - -e
+      - GTK_A11Y=none
+      - -e
+      - NEXUS_GUI_REQUIRE_SYSTEM_DBUS=1
+
+agent_name: main_agent
+agent_config:
+  max_iterations: 80
+  parallel_tool_calls: false
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=azure_openai&model=${oc.env:NEXUS_MODEL,"gpt-5.5"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"60"}
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"gpt-5.5"}
+
+processors:
+  chat:
+    name: chat_tracker
+  agent_metrics:
+    name: main_agent_metrics

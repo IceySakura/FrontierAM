@@ -1,0 +1,86 @@
+# HY4 自训模型 · 太极 infer-api · infer_proxy 客户端 LLM Profile
+#
+# 用途：
+#   SWE 评测里 HY4 系列自训 checkpoint 的 wire。请求体对齐 scaffold_agent/configs/llm/sft1008-exp20-t3-high.yaml，
+#   所以和那批评测格子可比。和 infer-api.litellm 的区别：
+#     客户端   infer_proxy（保留 reasoning_content），不是 litellm
+#     采样     不传 temperature；top_k=-1，repetition_penalty=1，openai_infer=true，stream=false
+#     锁定     enforced_request_args 再写一遍，agent 或网关侧改不掉 model / max_tokens / top_p / extra_body
+#     重试     max_retries 32，timeout 12000（单次 HY4 生成可能很长）
+#   模型名和 effort 只在环境变量里，run 之后看不出来，所以跑之前把这两个值记进 LANGFUSE_TAGS。
+#
+# 环境变量：
+#   必填：OPENAI_MODEL        太极上的模型名，不带 openai/ 前缀
+#         OPENAI_API_KEY      太极那份 key；用 api_key__env 延迟读取，不会落进 batch DB
+#   可选：REASONING_EFFORT    默认 high
+#         MAX_TOKENS          默认 262144
+#         LLM_TIMEOUT         默认 12000
+#         LLM_MAX_RETRIES     默认 32
+#
+# 使用示例：
+#   OPENAI_MODEL=<模型名> REASONING_EFFORT=high LLM_CONFIG=hy4-taiji-infer-proxy
+#
+# 注意：这个 key 是太极的，不是 AIHub 的；env.local.sh 里已有的 OPENAI_API_KEY 不一定是它。
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.infer_proxy
+
+  # Facts about this model. The scaffold decides what to do with them, in its
+  # agent_config_by_llm section; this file never names a scaffold.
+  llm:
+    family: hunyuan
+    anthropic_model: 'claude-opus-4-8[1m]'
+    no_thinking_request_args:
+      model: ${oc.env:OPENAI_MODEL}
+      max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,262144}}
+      extra_body:
+        openai_infer: true
+        top_k: -1
+        repetition_penalty: 1
+        chat_template_kwargs:
+          reasoning_effort: no_think
+          preserved_thinking: false
+    # 协议无关的推理档位 fact，供 scaffold 读取，scaffold 不必知道这条 wire 怎么拼字段。
+    # 真实字段在 extra_body.chat_template_kwargs.reasoning_effort；和下面用同一个 env var/常量。
+    reasoning_effort: ${oc.env:REASONING_EFFORT,high}
+
+  openai_clients:
+    main:
+      name: infer_proxy
+      config:
+        client_args:
+          api_key__env: OPENAI_API_KEY
+          base_url: http://infer-api.taiji.woa.com/api/v1
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,12000}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,32}}
+
+        request_args:
+          model: ${oc.env:OPENAI_MODEL}
+          max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,262144}}
+          top_p: 1
+          stream: false
+          extra_body:
+            openai_infer: true
+            top_k: -1
+            repetition_penalty: 1
+            chat_template_kwargs:
+              reasoning_effort: ${oc.env:REASONING_EFFORT,high}
+              preserved_thinking: true
+
+        enforced_request_args:
+          model: ${oc.env:OPENAI_MODEL}
+          max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,262144}}
+          top_p: 1
+          extra_body:
+            openai_infer: true
+            top_k: -1
+            repetition_penalty: 1
+            chat_template_kwargs:
+              reasoning_effort: ${oc.env:REASONING_EFFORT,high}
+              preserved_thinking: true
+
+merge:
+  imports: append_unique
+
+source: hy4-taiji-infer-proxy

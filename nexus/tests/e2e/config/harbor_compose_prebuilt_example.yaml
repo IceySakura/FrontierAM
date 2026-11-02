@@ -1,0 +1,47 @@
+imports:
+  - nexus.extensions.harbor_trial.task
+  - nexus.extensions.agents.claude_code
+  - nexus.extensions.openai_clients.openai
+  - nexus.runtime.providers.gongfeng
+
+task_name: harbor_trial_task
+
+task_config:
+  task_dir: tests/e2e/fixtures/harbor_compose_prebuilt
+  instance_id: harbor-compose-prebuilt
+  agent_timeout: 900
+  verifier_timeout: 120
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: ${oc.env:SWE_RUNTIME_BASE_URL,"http://hyrl-sandbox.prod.woa.com:8052"}
+  token__env: GONGFENG_RUNTIME_TOKEN
+  runtime_image: current
+  request_timeout: 24000
+
+runtime_configs:
+  main:
+    image: ${oc.env:NEXUS_DIND_OUTER_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/ubuntu:24.04"}
+    worker_venv: true
+
+agent_name: claude_code
+agent_config:
+  enable_unattended_interaction_hooks: true
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key__env: AIHUB_API_KEY
+        base_url: http://api.aihub.woa.com/standard/v1
+        timeout: 900
+        max_retries: 3
+      request_args:
+        model: hy4-preview
+        max_tokens: 32768
+      enforced_request_args:
+        max_tokens: 32768
+
+runner:
+  timeout: 3600

@@ -1,0 +1,20 @@
+schema_version = "1.1"
+artifacts = ["/app/result.txt"]
+
+[task]
+name = "nexus/harbor-compose-prebuilt"
+description = "Verify that a Nexus Agent running in Harbor's Compose main service can reach a sidecar."
+
+[environment]
+docker_image = "mirrors.tencent.com/hunyuan_yanguan/hunyuanharbor-test:0.0.1"
+build_timeout_sec = 600.0
+cpus = 4
+memory_mb = 8192
+network_mode = "public"
+workdir = "/app"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 120.0

@@ -1,0 +1,85 @@
+# AIHub GPT-6.1 SOL LLM Profile
+#
+# 协议与路由：
+#   Client=openai_responses（不是 chat 的 openai）
+#   Endpoint=http://api.aihub.woa.com/openai/v1/responses
+#   Bearer 必须带 ?provider=azure
+#
+# 推理配置：
+#   reasoning.effort 默认 xhigh
+#   reasoning.summary 默认 auto（detailed 也可用）
+#   reasoning.mode 刻意不发
+#   store=false、include=[reasoning.encrypted_content]、max_output_tokens=128000
+#
+# 环境变量：
+#   必填：
+#       HR_API_KEY      裸 key，由本文件补上 ?provider=azure
+#   可选：
+#       OPENAI_API_KEY  整串覆盖，自带 query 时不再拼 provider
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#       REASONING_EFFORT
+#       REASONING_SUMMARY
+#
+# 使用示例：
+#   LLM_CONFIG=gpt-61-sol.openai_responses
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.openai_responses
+
+  # Facts about this model. The scaffold decides what to do with them, in its
+  # agent_config_by_llm section; this file never names a scaffold.
+  llm:
+    family: gpt
+    # This specific wire is a real Azure-backed AIHub deployment (?provider=azure on the
+    # key, see Endpoint above), which is what makes it safe to tell a scaffold to trust
+    # server-side encrypted reasoning replay. This is NOT a family-wide GPT fact: the
+    # aihub2 'standard' endpoint (gpt-56-sol) is also family=gpt but is not azure-backed.
+    use_azure_provider: true
+    # 协议无关的推理档位 fact，供 scaffold 读取，scaffold 不必知道这条 wire 怎么拼字段。
+    # 这条 wire 的真实字段是 openai_responses 的 reasoning.effort；和下面 request_args 用同一个 env var，不会不一致。
+    reasoning_effort: ${oc.env:REASONING_EFFORT,xhigh}
+
+    # 这条 wire 走 Responses，推理以原生 reasoning_items 下发，所以 codex 的 Responses
+    # 转换器不该再从纯文本 reasoning_content 另铸一个 reasoning item（会重复）。
+    # 这是 per-wire 事实而不是家族事实：litellm / openai chat / vertex_anthropic /
+    # infer_proxy 只有纯文本 reasoning_content，必须吃 true 的默认值，否则推理信号丢掉。
+    # 生产同样只在 openai_responses 的 llm 文件上声明 false（4/25 份）。
+    wrap_plaintext_reasoning_content: false
+
+  openai_clients:
+    main:
+      name: openai_responses
+      config:
+        client_args:
+          api_key: '${oc.env:HR_API_KEY}?provider=azure'
+          endpoint: 'http://api.aihub.woa.com/openai/v1/responses'
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,12000}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,32}}
+          capture_raw_io: true
+          # 这条 wire 的 reasoning.effort 下限是 low：脚手架发"不思考"旁路请求时用的 'none'
+          # 会被网关 400 unsupported_value（2026-10-16 实测；'minimal' 同样被拒，而 gpt-6-sol /
+          # gpt-5.6-sol / deepseek 这几条线接受 'none'，所以这是按模型的事实、不是协议事实）。
+          # client 按这个下限把过低的值抬上来，省掉一次必然失败的请求。
+          min_reasoning_effort: low
+          cache_task_id_from_run_id: true
+
+        request_args:
+          model: 'gpt-6.1-sol'
+          store: false
+          stream: false
+          max_output_tokens: ${oc.decode:${oc.env:MAX_TOKENS,128000}}
+          reasoning_effort: ${oc.env:REASONING_EFFORT,xhigh}
+          reasoning:
+            effort: ${oc.env:REASONING_EFFORT,xhigh}
+            summary: ${oc.env:REASONING_SUMMARY,auto}
+          parallel_tool_calls: true
+          include:
+            - reasoning.encrypted_content
+
+merge:
+  imports: append_unique
+
+source: aihub-azure-gpt61-sol-openai-responses

@@ -1,0 +1,37 @@
+# Co-located identity and presentation metadata for tool_call_args_invalid.
+# Behaviour and thresholds live on the detector class, not here.
+canonical_name: tool_call_args_invalid
+symptom_cluster: tool_call_anomaly
+display_name: 工具参数不合法
+namespace: agent.tool.schema.args_invalid
+description: tool_call 的 arguments 违反该调用时刻可证明来源的 JSON/OpenAPI Schema；递归覆盖 required、type、enum、additionalProperties、本地 $ref、组合 schema 与 OpenAPI nullable。完整 HY3 参数标签能解释全部 schema 违规时输出不可判定证据。
+definition: 对每个 AssistantTurn.tool_calls[i]，从 request.tools、顶层 tools 和此前成功的 registry inspect 回执解析同名 parameters，保留 schema 来源和生效 turn。递归执行 JSON/OpenAPI Schema 校验并记录参数 path、expected/actual、tool/result turn 与结果状态；同一节点显式声明 type 且 OpenAPI nullable=true 时允许 null。arguments JSON 解析失败归 tool_call_args_parse_fail；调用时 undefined/inactive 归 tool_call_hallucination。schema 缺失、冲突、非法或依赖外部 $ref 时输出 is_issue=false 的 unjudgeable evidence。对可判定的 schema 违规，mapping key 中的完整 HY3 标签只解释该 malformed key 的 unknown_parameter，或同一对象内、key 文本确实包含的 missing required 字段；同一 string value 中成对但不平衡的 arg_key/arg_value 标签，只有标签里的参数名对应另一个顶层 schema property 时，才解释该路径的非 string type mismatch。只有这些污染能解释该调用的全部违规时，才改为 unjudgeable。裸 hash、string value 中的单个标签、标签平衡的文档示例和无关 sibling 违规保持原判。一个 tool_call 的多处违规合并为一个 Finding。
+detection_tier: programmable
+build_priority: 1
+channel: [tool_call]
+data_requirement: [needs_tool_calls]
+loss_mask_aware: false
+# Newly authored 2026-07-02 against real sft0628 data (schema + calls both
+# present in the record — zero mock). Promoted after the frozen TP/FP pass
+# recorded in the v0.2.7 benchmark-qualification campaign (2026-07-27).
+verification: verified
+# harness-scope: reads the structured tool_calls field, so it applies to
+# FUNCTION-CALLING harnesses. On content-embedded harnesses (terminal_bench /
+# terminus2) actions live in content XML and tool_calls is structurally empty,
+# so this detector can't fire there — not a bug, a scope limit until a
+# normalization adapter lands.
+example:
+  caption: 模型的 Read 工具调用参数不符合 schema——缺了必填字段 file_path。
+  corpus: detector-demos/showcase
+  instance_id: sft__tool_401_tool_call_args_invalid__claude_code__demo
+  turn: 2
+runtime:
+  entrypoint: detect_tool_401_tool_call_args_invalid:Tool401ToolCallArgsInvalidDetector
+  applicable_data_types:
+  - trajectory
+  detector_type: rule
+  tags:
+  - coding_agent
+  - tool_use
+  - schema_violation
+  behavior_version: 1.2.0

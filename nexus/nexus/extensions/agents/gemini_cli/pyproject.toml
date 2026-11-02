@@ -1,0 +1,13 @@
+[project]
+name = "gemini_cli"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { gemini_cli = "nexus.extensions.agents.gemini_cli.agent" }

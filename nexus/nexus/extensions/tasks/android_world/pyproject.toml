@@ -1,0 +1,15 @@
+[project]
+name = "android_world"
+version = "0.1.0"
+authors = [
+    { name = "richardlai" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+
+[tool.nexus.tasks]
+"android_world" = "nexus.extensions.tasks.android_world.task"

@@ -1,0 +1,13 @@
+[project]
+name = "nl2repo"
+version = "0.1.0"
+authors = [
+    { name = "rachelleli" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { nl2repo_task = "nexus.extensions.tasks.nl2repo.task" }

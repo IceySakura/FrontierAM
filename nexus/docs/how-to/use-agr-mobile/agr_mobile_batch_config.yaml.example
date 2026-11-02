@@ -1,0 +1,87 @@
+imports:
+  - nexus.extensions.agents.main
+  - nexus.extensions.projects.android_demo.tools
+  - nexus.extensions.projects.android_demo
+  - nexus.extensions.openai_clients
+
+task_name: "agr_mobile_agent_e2e"
+task_config:
+  output_dir: "docs/how-to/use-agr-mobile/agr-mobile-output"  # final path becomes <output_dir>/<mode>/<timestamp>/
+  apk_dir: "tests/e2e/apk"
+  agent_max_iterations: 3
+  agent_inference_timeout: 60
+  agent_observation_timeout: 30
+  agent_system_prompt: |
+    You are an Android GUI verification agent.
+    Your only job is to judge the current Android screen state after the task has already launched App Store (应用宝).
+    Do not try to recover the app state. Do not navigate. Do not relaunch the app.
+    Base your conclusion primarily on the screenshot you capture at the beginning.
+  agent_user_prompt: |
+    The task has already finished the fixed preparation steps for you:
+    - connected to the sandbox
+    - uploaded and installed App Store (应用宝)
+    - granted permissions
+    - launched App Store
+
+    Now you must only verify whether App Store is visibly open.
+
+    Required workflow:
+    1. Call `android/screenshot` first.
+    2. Optionally call `android/device_info` once if you need extra confirmation.
+    3. Do not call any other tool.
+    4. Then stop and answer whether App Store is successfully open on screen.
+
+    Judgement rules:
+    - If the screenshot clearly shows App Store main UI, answer success.
+    - If the screenshot shows the welcome page, onboarding page, privacy agreement page, or any page containing text such as `欢迎使用应用宝`, that already counts as App Store successfully opened. In that case answer success.
+    - If the screenshot shows an agreement dialog with buttons such as `同意` or `不同意`, but the page background/header/body is clearly App Store, that still counts as success because the app itself has already opened.
+    - If the screenshot only shows a pure splash/loading/blank transitional page and no App Store content is visible yet, answer that App Store is not fully open yet.
+    - If the screenshot shows home screen or another app, answer failure.
+
+    Decision priority:
+    - Visible App Store content beats activity name.
+    - Do not rely only on `SplashActivity` from device info if the screenshot already shows App Store welcome or agreement content.
+
+    Final answer format:
+    - `visible: yes|no`
+    - one short sentence describing the strongest visual evidence
+
+runtime_provider_name: "agr_mobile"
+runtime_provider_config:
+  api_key: "<E2B_API_KEY>"
+  domain: "ap-guangzhou.tencentags.com"
+  sandbox_template: "mobile-hunyuan-persistent"
+  template_timeout: 1800
+  request_timeout: 1800
+  ready_timeout: 120
+
+agent_name: "main_agent"
+agent_config: {}
+
+openai_clients:
+  main:
+    name: "openai"
+    config:
+      client_args:
+        api_key: "<MODEL_API_KEY>"
+        base_url: "https://api.agrun.woa.com/v1"
+        max_retries: 1
+      request_args:
+        model: "venus/gpt-4o-mini"
+
+processors:
+  agent_metrics:
+    name: "main_agent_metrics"
+  chat:
+    name: "chat_tracker"
+
+batch:
+  mode: "template_create"
+  count: 5
+  sandbox_ids: []
+
+  # Existing sandbox mode example:
+  # mode: "existing_sandbox_ids"
+  # sandbox_ids:
+  #   - "sandbox-id-1"
+  #   - "sandbox-id-2"

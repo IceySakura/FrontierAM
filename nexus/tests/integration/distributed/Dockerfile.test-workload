@@ -1,0 +1,10 @@
+ARG NEXUS_WORKLOAD_BASE_IMAGE=nexus-distributed-workload-base:dynamic-local
+FROM ${NEXUS_WORKLOAD_BASE_IMAGE}
+
+ENV PYTHONPATH=/app
+
+COPY tests ./tests
+
+RUN chmod -R a+rX /app
+
+ENTRYPOINT ["python", "-m", "nexus.cli.main"]

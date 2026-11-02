@@ -1,0 +1,5 @@
+*.png filter=lfs diff=lfs merge=lfs -text
+*.cast filter=lfs diff=lfs merge=lfs -text
+*.sqlite filter=lfs diff=lfs merge=lfs -text
+nexus/extensions/tasks/waa/assets/history_empty.sqlite -filter -diff -merge text
+docs/how-to/use-runtime/browser-executor.ipynb filter=lfs diff=lfs merge=lfs -text

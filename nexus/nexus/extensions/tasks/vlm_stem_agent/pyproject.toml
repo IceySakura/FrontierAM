@@ -1,0 +1,19 @@
+[project]
+name = "vlm_stem_agent"
+version = "0.1.0"
+authors = [
+    { name = "calehu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "pillow>=10.0",
+    # The shared evaluators come from search_stateful, and its reward_system
+    # client resolves the service address through Polaris.
+    "polaris-cpp-py",
+]
+runtime = []
+
+[tool.nexus]
+tasks = { vlm_stem_agent = "nexus.extensions.tasks.vlm_stem_agent.task" }

@@ -1,0 +1,84 @@
+# Generated complete RunInput; regenerate after changing task/dataset/provisioning settings.
+imports:
+- nexus.extensions.tasks.os_world
+- nexus.extensions.agents.cua.cua_gpt_agent.agent
+- nexus.extensions.openai_clients.openai_responses
+task_name: os_world
+task_config:
+  domain: vlc
+  task_id: 8f080098-ddb1-424c-b438-4e96e5e4786e
+  observation_type: screenshot
+  action_space: pyautogui
+  run_setup: true
+  run_evaluator: true
+  unsupported_evaluator_policy: fail
+  skip_gui_start: true
+  command_as_user: false
+  client_password: password
+  cache_dir: ''
+  wedata_key: ${oc.env:WEDATA_KEY}
+tool_configs: {}
+task_files:
+  type: zip
+  path: blobs/8f080098-ddb1-424c-b438-4e96e5e4786e.zip
+  sha256: 2a2d76030b665691152ce98add4ba31de8d11d804e75f3acdca56345b0797236
+  size: 16107641
+  remote:
+    namespace: hy_gui_eval
+    dataset: osworld
+    version: v1.1.1
+    split: test
+run_id: vlc__8f080098-ddb1-424c-b438-4e96e5e4786e
+runtime_provider_name: ags
+runtime_provider_config:
+  domain: ap-guangzhou.tencentags.com
+  interface_mode: nexus
+  osworld_cdp_proxy_mode: auto
+  request_timeout: 1800.0
+  instance_ready_timeout: 600.0
+  secret_id: ${oc.env:AGS_SECRET_ID}
+  secret_key: ${oc.env:AGS_SECRET_KEY}
+  region: ap-guangzhou
+  purpose: eval
+runtime_configs:
+  main:
+    runtime_kind: osworld
+    timeout: 15300
+    tunnel_port: 32000
+    tool_type: osworld
+    tool_id: ${oc.env:AGS_OSWORLD_TOOL_ID}
+    skip_tool_lookup: true
+    provision_mode: control_plane
+agent_name: cua_gpt_agent
+agent_config:
+  max_iterations: 50
+  reasoning_effort: xhigh
+  client_password: password
+  sleep_after_execution: 0.5
+  step_pause: 1.0
+  pyautogui_execution_mode: run_command
+  pyautogui_timeout: 30.0
+openai_clients:
+  main:
+    name: openai_responses
+    config:
+      client_args:
+        base_url: ${oc.env:NEXUS_BASE_URL}
+        api_key: ${oc.env:NEXUS_API_KEY}
+        ensure_v1_path: true
+        capture_raw_io: true
+        max_retries: 5
+      request_args:
+        model: ${oc.env:NEXUS_MODEL}
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      tools_mode: branch_last
+gateway_trajectory_observers: {}
+runner:
+  hooks:
+    output_contract:
+      name: osworld_output_contract
+      args: {}
+workflow_states: {}

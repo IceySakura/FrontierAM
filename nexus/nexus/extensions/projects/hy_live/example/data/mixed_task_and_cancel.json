@@ -1,0 +1,51 @@
+{
+  "case": "mixed_task_and_cancel",
+  "prompt": "你能做什么",
+  "user_simulator": {
+    "type": "scripted",
+    "turns": [
+      "你能做什么",
+      "查一下上海今天的温度",
+      "写一个贪吃蛇",
+      {
+        "content": "再写一个俄罗斯方块",
+        "gate": "after_delivery"
+      },
+      {
+        "content": "都允许",
+        "gate": "after_delivery"
+      },
+      "取消贪吃蛇",
+      "都允许",
+      "贪吃蛇继续"
+    ]
+  },
+  "task_config": {
+    "user_place": {
+      "country": "中国",
+      "province": "上海",
+      "city": "上海"
+    },
+    "user_now": "2026-10-09T13:00:00+08:00",
+    "web_search_provider": "yuanbao",
+    "max_user_turns": 16,
+    "task_delivery_timeout": 1800,
+    "hold_next_user_until_permission": false,
+    "default_budget": {
+      "timeout_s": 2400
+    },
+    "work_agent_configs": {
+      "codebuddy": {
+        "working_dir": "/workspace",
+        "skip_permissions": false,
+        "permission_policy": "defer",
+        "npm_registry": "http://mirrors.tencent.com/npm/"
+      },
+      "workbuddy": {
+        "workbuddy": {
+          "permission_mode": "default"
+        }
+      }
+    }
+  }
+}

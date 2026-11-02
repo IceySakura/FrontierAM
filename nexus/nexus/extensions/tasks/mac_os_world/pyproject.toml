@@ -1,0 +1,24 @@
+[project]
+name = "mac_os_world"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+host = ["rapidfuzz>=3.0.0", "fastapi>=0.121.3", "uvicorn>=0.34.0"]
+runtime = []
+
+[tool.nexus]
+
+[tool.nexus.tools]
+"desktop/computer_13" = "nexus.extensions.tools.desktop.tools"
+"desktop/pyautogui" = "nexus.extensions.tools.desktop.tools"
+"desktop/fixed_marker" = "nexus.extensions.tasks.os_world.execution.tools"
+
+[tool.nexus.tasks]
+"mac_os_world" = "nexus.extensions.tasks.mac_os_world.task"
+
+[tool.nexus.openai_clients]
+macosworld_openai = "nexus.extensions.tasks.mac_os_world.clients"
+macosworld_openai_responses = "nexus.extensions.tasks.mac_os_world.clients"
+macosworld_infer_proxy = "nexus.extensions.tasks.mac_os_world.clients"
+macosworld_anthropic_messages = "nexus.extensions.tasks.mac_os_world.clients"

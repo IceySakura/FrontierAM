@@ -1,0 +1,15 @@
+[project]
+name = "audio_relisten"
+version = "0.1.0"
+authors = [
+    { name = "kumohu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["numpy>=1.24", "librosa>=0.10"]
+runtime = []
+
+[tool.nexus]
+tasks = { audio_relisten = "nexus.extensions.projects.audio_relisten.task" }
+tools = { "audio_relisten/audio_relisten_tool" = "nexus.extensions.projects.audio_relisten.tools" }

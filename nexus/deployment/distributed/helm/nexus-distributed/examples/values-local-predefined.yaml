@@ -1,0 +1,76 @@
+fullnameOverride: nexus-dist
+
+controlImage:
+  repository: nexus-distributed-universal
+  tag: local
+  pullPolicy: IfNotPresent
+
+workloadImage:
+  repository: nexus-distributed-workload
+  tag: local
+  pullPolicy: IfNotPresent
+
+builderImage:
+  repository: nexus-distributed-builder
+  tag: local
+  pullPolicy: IfNotPresent
+
+secrets:
+  create: false
+  existingSecret: nexus-dist-secrets
+
+configStore:
+  required: false
+
+mysql:
+  enabled: true
+  persistence:
+    enabled: false
+
+dbInit:
+  enabled: true
+
+controlGateway:
+  replicas: 2
+  port: 8081
+
+applicationGateway:
+  replicas: 1
+  port: 8082
+
+scheduler:
+  replicas: 3
+
+reconciler:
+  replicas: 1
+
+instanceManager:
+  replicas: 2
+  port: 8091
+  capacity: 1
+  executor: asyncio
+  forceReplace: true
+  autoInstall: true
+  environmentId: predefined-local
+  poolId: interactive
+  labels:
+    region: local
+
+batchManager:
+  enabled: true
+  replicas: 1
+  port: 8091
+  capacity: 1
+  executor: asyncio
+  forceReplace: true
+  autoInstall: true
+  environmentId: predefined-local
+  poolId: orchestration
+  workload: orchestration
+  labels:
+    region: local
+
+fakeRuntime:
+  enabled: true
+  replicas: 1
+  port: 8080

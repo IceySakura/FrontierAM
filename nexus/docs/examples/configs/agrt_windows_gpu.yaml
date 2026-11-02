@@ -1,0 +1,17 @@
+# Requires AGRT_API_KEY. Set AGRT_TEMPLATE to the current platform template.
+# Run with docs/examples/scripts/test_agrt_windows_gpu.py --config <this file>.
+runtime_provider_name: agrt
+runtime_provider_config:
+  api_key: ${oc.env:AGRT_API_KEY}
+  domain: ${oc.env:AGRT_DOMAIN,agrt.nano.woa.com}
+  template: ${oc.env:AGRT_TEMPLATE,win-hunyuan-v1}
+  interface_mode: nexus
+  timeout: 30m
+  token_ttl_seconds: 1800
+  instance_ready_timeout: 600
+  service_ready_timeout: 180
+  request_timeout: 60
+  poll_interval: 5
+
+runtime_configs:
+  main: {}

@@ -1,0 +1,98 @@
+# SWE-Any Issue — single-run config (write a non-leaking problem statement per feature).
+#
+#   uv run nexus run-single nexus/extensions/tasks/swe_any/config/stage/issue.yaml \
+#       -o ./outputs/swe_any/issue_result.json
+#
+# Prereq: mask.jsonl (swe_any_mask) and eval.jsonl (swe_any_eval) under SWE_ANY_OUTPUT_DIR
+# (plus parse_graph.json + select.jsonl for entry names / the one-line description). For each
+# feature usable in BOTH Mask and Eval, the host git-applies feature_mask_patch + test_mask_patch
+# (fully masked tree) and a Claude Code pass writes {problem_statement}, archived to
+# output_dir/<repo>/sgNN/issue_agentic.json + issue_agentic.jsonl and the unified issue.jsonl.
+#
+# Agentic-only stage (no heuristic half). Secrets come from the environment via ${oc.env:...}.
+#
+# Also the batch default: generator/stage/issue.py deep-merges SWE_ANY_CONFIG_PATCH over it, applies the
+# backend patch, then injects per-instance fields.
+
+imports:
+  - nexus.extensions.tasks.swe_any
+  - nexus.extensions.agents.claude_code
+
+task_name: "swe_any_issue"
+
+instances:
+  path: "${oc.env:SWE_ANY_INSTANCES,}"
+  ids: "${oc.env:SWE_ANY_INSTANCE_IDS,}"
+  language: "${oc.env:SWE_ANY_LANGUAGE,python}"
+  skip: "${oc.decode:${oc.env:SWE_ANY_SKIP,0}}"
+  limit: "${oc.decode:${oc.env:SWE_ANY_LIMIT,0}}"
+
+task_config:
+  instance_path: "${oc.env:SWE_ANY_INSTANCE_PATH,}"
+  repo_name: "${oc.env:SWE_ANY_REPO_NAME,repo}"
+  # Host inputs. Empty = default to output_dir/<repo>/{select.jsonl,mask.jsonl,eval.jsonl}.
+  select_path: "${oc.env:SWE_ANY_SELECT_PATH,}"
+  mask_path: "${oc.env:SWE_ANY_MASK_PATH,}"
+  eval_path: "${oc.env:SWE_ANY_EVAL_PATH,}"
+  output_dir: "${oc.env:SWE_ANY_OUTPUT_DIR,./outputs/swe_any}"
+
+  # Baked per-repo WORKLOAD image (SWE-Env `image`).
+  image: "${oc.env:SWE_ANY_IMAGE,}"
+  repo_dir: "${oc.env:SWE_ANY_REPO_DIR,/testbed}"
+
+  # Optional exact feature indices for prompt iteration, e.g. SWE_ANY_FEATURE_INDICES='[9]'.
+  feature_indices: "${oc.decode:${oc.env:SWE_ANY_FEATURE_INDICES,[]}}"
+  # Cap on the filtered features to write issues for (0 = every masked+oracled feature).
+  max_features: "${oc.env:SWE_ANY_MAX_FEATURES,0}"
+  # Must remain 1 until Claude Code shares one LLM handler per runtime.
+  max_workers: "${oc.env:SWE_ANY_MAX_WORKERS,1}"
+
+  agent_timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+  # Host ceiling on each in-sandbox git op (masked-state setup / cleanup).
+  request_timeout: "${oc.env:SWE_ANY_ISSUE_REQUEST_TIMEOUT,900.0}"
+  release_runtime: "${oc.decode:${oc.env:SWE_ANY_RELEASE_RUNTIME,false}}"
+
+agent_name: "claude_code"
+agent_config:
+  working_dir: "${oc.env:CLAUDE_CODE_WORKING_DIR,${oc.env:SWE_ANY_REPO_DIR,/testbed}}"
+  timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+  version: "${oc.env:CLAUDE_CODE_VERSION,latest}"
+  extra_env:
+    ANTHROPIC_MODEL: "${oc.env:ANTHROPIC_MODEL,'claude-opus-4-8[1m]'}"
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+  thinking_preset: "${oc.env:SWE_ANY_THINKING_PRESET,bedrock-claude}"
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}"
+  token: "${oc.env:GONGFENG_TOKEN}"
+  # Gongfeng scheduling label (prod/eval/test); independent of the API hostname.
+  purpose: "${oc.env:GONGFENG_PURPOSE,test}"
+  runtime_image: "current"
+  request_timeout: "${oc.env:SWE_ANY_PROVIDER_REQUEST_TIMEOUT,86400.0}"
+  resource_spec: { cpu: 2, memory: 8 }
+
+runtime_configs:
+  main:
+    # The masked-state setup / cleanup run in-sandbox via runtime.invoke (run_apply / reset_repo),
+    # so ship the nexus wheel (incl. swe_any) into the worker venv. Same pattern as Parse/Mask/Eval.
+    worker_venv:
+      modules: ["swe_any"]
+
+openai_clients:
+  main:
+    name: "${oc.env:OPENAI_CLIENT_NAME,litellm}"
+    config:
+      client_args:
+        api_key: "${oc.env:OPENAI_API_KEY}"
+        base_url: "${oc.env:OPENAI_BASE_URL,http://trpc-gpt-eval.production.polaris:8080}"
+        cache_control_enabled: "${oc.decode:${oc.env:SWE_ANY_CACHE_CONTROL_ENABLED,true}}"
+        cache_control_strategy: "${oc.env:SWE_ANY_CACHE_CONTROL_STRATEGY,claude_code}"
+      request_args:
+        model: "${oc.env:OPENAI_MODEL,bedrock/anthropic.claude-opus-4-8}"
+
+processors:
+  chat:
+    name: "chat_tracker"
+    args:
+      tools_mode: "${oc.env:SWE_ANY_TOOLS_MODE,branch_last}"

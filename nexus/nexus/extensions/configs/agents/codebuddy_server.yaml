@@ -1,0 +1,58 @@
+# CodeBuddy agent-server Profile（npm 安装 agent-server，HTTP + SSE 驱动）
+#
+# 与 codebuddy_eval.yaml / codebuddy_rollout.yaml 的区别：
+#   codebuddy 跑的是 CLI，这份跑常驻 agent-server，Nexus 通过 /api/v1/<mode>/completions 下发任务
+#
+# 环境变量：
+#   必填: 无
+#   可选:
+#       AGENT_VERSION
+#       AGENT_WORKING_DIR
+#       AGENT_TIMEOUT
+#       AGENT_MAX_ITERATIONS
+#
+# 使用示例：
+#   AGENT_CONFIG=codebuddy_server
+#
+# 组合约束：
+#   agents/ 下的 Profile 互斥，同一次运行只选择一个
+
+body:
+  imports:
+    - nexus.extensions.agents.codebuddy_server
+  agent_name: codebuddy_server
+
+  agent_config:
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/testbed}
+    # oc.env 一律返回字符串，数值和布尔值都要套 oc.decode 还原类型。
+    timeout: ${oc.decode:${oc.env:AGENT_TIMEOUT,14400}}
+    version: ${oc.env:AGENT_VERSION,0.0.23-beta}
+    npm_registry: 'http://mirrors.tencent.com/npm/'
+    # swe 走 SWE-Bench 补丁流程，craft 是通用代码生成。
+    mode: swe
+    # 安装后 patch 进 agent-server 的 maxStepLimit；0 表示改写成 999999。
+    max_step_limit: ${oc.decode:${oc.env:AGENT_MAX_ITERATIONS,500}}
+    server_startup_timeout: 120
+    # 以 reasoningParams 随 completions 请求下发，仅 swe mode 生效。
+    reasoning_params:
+      effort: high
+      summary: detailed
+    extra_env:
+      # agent-server 自己不派生超时，要显式给
+      OPENAI_TIMEOUT: ${oc.env:AGENT_TIMEOUT,14400}
+      AWS_EC2_METADATA_DISABLED: 'true'
+
+  # What this scaffold does with each model family. The llm file states the facts,
+  # this file decides which of them it uses. Families it says nothing about get nothing.
+  agent_config_by_llm:
+    claude:
+      extra_env:
+        ANTHROPIC_MODEL: '${llm:anthropic_model}'
+    hunyuan:
+      extra_env:
+        ANTHROPIC_MODEL: '${llm:anthropic_model}'
+
+merge:
+  imports: append_unique
+
+source: codebuddy-server

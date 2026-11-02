@@ -1,0 +1,22 @@
+[project]
+name = "terminus2"
+version = "0.1.0"
+authors = [
+    { name = "yeszhou" },
+    { name = "maxluxchen" },
+    { name = "echoclchen" },
+    { name = "tarschen" },
+]
+maintainers = [
+    { name = "yeszhou" },
+    { name = "maxluxchen" },
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["litellm>=1.83.14,<2"]
+runtime = []
+
+[tool.nexus]
+agents = { terminus2 = "nexus.extensions.agents.terminus2.agent" }

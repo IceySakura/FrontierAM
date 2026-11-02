@@ -1,0 +1,17 @@
+[project]
+name = "cc_search_agent_whitebox"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+host = ["filelock>=3.13", "ipykernel>=6.29.0", "jupyter-client>=8.6.0"]
+runtime = []
+
+[tool.nexus]
+agents = { cc_search_agent_whitebox = "nexus.extensions.agents.cc_search_agent_whitebox.agent" }
+
+[tool.nexus.tools]
+"cc_search_agent_whitebox/web_search" = "nexus.extensions.agents.cc_search_agent_whitebox.tools"
+"cc_search_agent_whitebox/web_fetch" = "nexus.extensions.agents.cc_search_agent_whitebox.tools"
+"cc_search_agent_whitebox/bash" = "nexus.extensions.agents.cc_search_agent_whitebox.tools"
+"cc_search_agent_whitebox/execute_code" = "nexus.extensions.agents.cc_search_agent_whitebox.tools"

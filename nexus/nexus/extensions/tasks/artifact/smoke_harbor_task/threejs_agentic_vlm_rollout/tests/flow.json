@@ -1,0 +1,127 @@
+{
+  "task_type": "3d",
+  "type_basis": "需求要求用 three.js 对参考图 car.png 做三维建模复刻，产物是 WebGL 三维场景，不是平面 SVG 或普通网页，按 3d 归类。",
+  "thin_request": false,
+  "notes": "R1 拆成 F1（three.js 实现）与 F2（画面真的渲出三维物体）——只引库不渲染是常见半成品。R2 由 F3 验主体是一辆车的形态。R4 的自评分要求落在 F5：产物里得有 agent 自己给出的打分结果。R3 的 serve+截图对比属于 agent 的工作过程，不留在产物里，无法从产物侧验证，记入 unverifiable。美学由独立评分阶段处理，不重复设 flow。",
+  "requirement_atoms": [
+    {
+      "rid": "R1",
+      "quote": "用threejs来做一个这个图片的复刻建模",
+      "demand": "用 three.js 做三维建模，并在页面上渲染出来"
+    },
+    {
+      "rid": "R2",
+      "quote": "查看当前workspace目录下的图片car.png",
+      "demand": "建模对象是参考图里的那辆小车"
+    },
+    {
+      "rid": "R3",
+      "quote": "自己serve这个网页，然后用playwright来截图观察对比情况",
+      "demand": "agent 自己起服务、截图并与参考图对比"
+    },
+    {
+      "rid": "R4",
+      "quote": "输出一个你自己对自己作品的打分结果",
+      "demand": "产出一份 agent 对自己作品的打分结果"
+    },
+    {
+      "rid": "R5",
+      "quote": "输出index.html",
+      "demand": "入口文件是 index.html"
+    }
+  ],
+  "flows": [
+    {
+      "fid": "F1",
+      "title": "用 three.js 实现",
+      "criterion": "源码里引入了 three.js（script 标签引 three.min.js/three.module.js，或 import 'three'），并实际调用了它的 API 构建场景——至少能看到 Scene、Camera、Renderer 三者的创建，以及往场景里加入几何体（Mesh/BoxGeometry/Group 之类）。只引库不建场景不算通过。",
+      "check_via": "source_code",
+      "steps": [
+        "读 index.html 及其引用的 js 源码",
+        "确认引入了 three.js",
+        "确认创建了 Scene / Camera / Renderer",
+        "确认有 Mesh 或 Geometry 被加进场景"
+      ],
+      "covers": [
+        "R1"
+      ],
+      "tier": "core",
+      "source": "explicit",
+      "evidence_kind": "functional"
+    },
+    {
+      "fid": "F2",
+      "title": "页面真的渲出三维物体",
+      "criterion": "打开页面，画面上能看到一个立体的三维物体，有明暗/透视/遮挡关系，不是纯色背景、不是空白页、不是报错页。canvas 区域有实际绘制内容。",
+      "check_via": "browser",
+      "steps": [
+        "打开页面，等待渲染完成",
+        "截一张首屏图",
+        "确认画面上有立体物体而非空白或纯色"
+      ],
+      "covers": [
+        "R1"
+      ],
+      "tier": "core",
+      "source": "explicit",
+      "evidence_kind": "visual"
+    },
+    {
+      "fid": "F3",
+      "title": "看得出是一辆车",
+      "criterion": "画面上的三维物体能认出是一辆小汽车：至少能看出车身块体和轮子。造型简陋、比例不准都算通过，只要能认出「这是一辆车」。",
+      "check_via": "browser",
+      "steps": [
+        "看首屏截图",
+        "判断主体是否可辨认为一辆车",
+        "确认能看出车身与轮子"
+      ],
+      "covers": [
+        "R2"
+      ],
+      "tier": "core",
+      "source": "explicit",
+      "evidence_kind": "visual"
+    },
+    {
+      "fid": "F4",
+      "title": "入口是 index.html",
+      "criterion": "产物根目录下存在 index.html，且它就是承载三维场景的页面。",
+      "check_via": "source_code",
+      "steps": [
+        "列出产物文件",
+        "确认存在 index.html",
+        "确认 index.html 里有三维场景的初始化代码或对其脚本的引用"
+      ],
+      "covers": [
+        "R5"
+      ],
+      "tier": "constraint",
+      "source": "explicit",
+      "evidence_kind": "functional"
+    },
+    {
+      "fid": "F5",
+      "title": "留下了自评分结果",
+      "criterion": "产物里能找到 agent 对自己作品的打分结果：可以是单独的文件（如 score.md / selfscore.json / README 里的评分段落），也可以是页面上可见的评分区块。内容里要有明确的分数或评级，不只是「完成了」这类口号。",
+      "check_via": "source_code",
+      "steps": [
+        "列出产物文件，找评分类文件",
+        "若无独立文件，读 index.html 看是否有可见的评分区块",
+        "确认其中含明确的分数或评级"
+      ],
+      "covers": [
+        "R4"
+      ],
+      "tier": "feature",
+      "source": "explicit",
+      "evidence_kind": "functional"
+    }
+  ],
+  "unverifiable": [
+    {
+      "rid": "R3",
+      "reason": "「自己 serve 页面并用 playwright 截图对比」是 agent 的工作过程，不在最终产物里留下可检证据。判分只看产物，无法区分它是真截图对比过还是直接写完就交。"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+[project]
+name = "lean4_proof"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+host = []
+runtime = []
+
+[tool.nexus]
+tasks = { lean4_proof = "nexus.extensions.tasks.lean4_proof.task" }

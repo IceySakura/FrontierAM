@@ -1,0 +1,51 @@
+# Terminus2 Agent Profile。
+#
+# 用途：
+#   通过 tmux 终端观察、发送按键并循环调用模型，完成命令行环境中的自主操作任务。
+#
+# 适用任务：
+#   终端操作、系统管理、调试和不依赖专用 installed-agent CLI 的 Harbor 任务。
+#
+# Harbor 运行时注入：
+#   user_prompt。Terminus2 没有 working_dir 输入字段；它通过 ExecutionContext 的 main
+#   Runtime 操作 task.toml 已配置的工作目录，parser_name 决定模型输出协议。
+#
+# 环境变量：
+#   必填：无。
+#   可选：无；model_name 直接引用最终 LLM Profile。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/agents/terminus2.yaml
+
+# body 是合并进最终 RunInput 的部分配置。
+body:
+  # 导入后注册 terminus2 Agent。
+  imports:
+    - nexus.extensions.agents.terminus2
+  # 选择已注册的 Terminus2 Agent。
+  agent_name: terminus2
+  # Terminus2Input 的全部可配置字段。
+  agent_config:
+    # 最大 Agent 循环步数；到达后以 max_iterations 状态结束。
+    max_iterations: 250
+    # tmux 终端宽度和高度，影响返回给模型的终端画面。
+    tmux_pane_width: 160
+    tmux_pane_height: 40
+    # 模型输出解析协议：json 或 xml。 必须与所用 Prompt/模型能力匹配。
+    parser_name: json
+    # 接近上下文上限时是否启用历史摘要。
+    enable_summarize: false
+    # 剩余 token 低于该值时主动摘要；仅在 enable_summarize=true 时生效。
+    proactive_summarization_threshold: 8000
+    # 从最终 LLM Profile 读取，用于查询 tokenizer 和上下文限制；缺失时回退自动检测。
+    model_name: ${oc.select:openai_clients.main.config.request_args.model,""}
+    # 显式上下文上限。 null 表示先由 LiteLLM 检测，失败时回退到 200000。
+    context_limit: null
+
+# imports 是列表，append_unique 表示保留已有模块并去重追加，而不是整体覆盖。
+merge:
+  imports: append_unique
+
+# source 只用于 Compose 日志、错误定位和审计，不进入 RunInput。
+source: harbor-terminus2

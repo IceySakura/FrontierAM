@@ -1,0 +1,13 @@
+[project]
+name = "file_editor"
+version = "0.1.0"
+authors = [
+    { name = "echoclchen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = ["binaryornot>=0.4.4", "cachetools>=6.2.2", "charset-normalizer>=3.0.0"]
+
+[tool.nexus]
+tools = { str_replace_editor = "nexus.extensions.tools.file_editor.tool" }

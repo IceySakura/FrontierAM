@@ -1,0 +1,22 @@
+[project]
+name = "artifact"
+version = "0.1.0"
+authors = [
+    { name = "mghaoyang" },
+]
+# litellm 的区间需与根 [tool.uv] override-dependencies 相容，否则解析不出版本，
+# worker venv 创建阶段会失败。
+dependencies = [
+    "requests",
+    "boto3",
+    "beautifulsoup4",
+    "litellm>=1.80.0,<1.82.7",
+    "playwright>=1.57.0",
+    "cos-python-sdk-v5",
+]
+
+[project.optional-dependencies]
+runtime = ["playwright>=1.57.0"]
+
+[tool.nexus]
+tasks = { artifact_task = "nexus.extensions.tasks.artifact.task" }

@@ -1,0 +1,11 @@
+[project]
+name = "cb-insiders"
+version = "0.1.0"
+authors = [{ name = "kechizhang" }]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { "cb-insiders" = "nexus.extensions.agents.cb_insiders.agent" }

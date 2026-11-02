@@ -1,0 +1,59 @@
+# Claude Code on a DevCloud macOS sandbox through the native LLM bridge.
+#
+# The sandbox runs Claude Code natively (no full Nexus runtime server); a lightweight
+# LLM bridge (embedded-Python macOS bundle) is uploaded and launched inside the sandbox,
+# and LLM calls are proxied back to the host OpenAI client over Socket.IO with RSIO
+# fault tolerance.
+#
+# Required env: DEVCLOUD_APP_ID, DEVCLOUD_APP_TOKEN, AI_HUB_API_KEY
+# Run:          uv run nexus run-single -o result.json docs/examples/configs/claude_code_native_bridge_devcloud_macos.yaml
+
+task_name: identity
+task_config: {}
+
+runtime_provider_name: devcloud
+runtime_provider_config:
+  app_id: ${oc.env:DEVCLOUD_APP_ID}
+  app_token: ${oc.env:DEVCLOUD_APP_TOKEN}
+  sandbox_api_base_url: ${oc.env:DEVCLOUD_SANDBOX_API_BASE_URL,"http://21.6.221.82:18800"}
+  lease_time: ${oc.env:DEVCLOUD_LEASE_TIME,900}
+  server_port: 5000
+  request_timeout: ${oc.env:DEVCLOUD_REQUEST_TIMEOUT,1800}
+  instance_ready_timeout: ${oc.env:DEVCLOUD_INSTANCE_READY_TIMEOUT,300}
+
+runtime_configs:
+  main: {}
+
+agent_name: claude_code_native_bridge
+agent_config:
+  user_prompt: |
+    用当前系统可用的 shell 写并运行一个快速排序脚本，对 9 4 6 2 7 1 5 3 8 排序，
+    输出必须精确包含：sorted: 1 2 3 4 5 6 7 8 9。
+  working_dir: /tmp/nexus-claude-quicksort
+  timeout: 3600
+  # macOS ships npm but not Claude Code; install it from npm when not already present.
+  ensure_claude: true
+  npm_registry: https://registry.npmmirror.com
+  # Scripts run in order inside the sandbox before Claude starts (bash or python).
+  pre_start_scripts:
+    - interpreter: bash
+      code: |
+        echo "[pre-start] preparing workspace at $(pwd)"
+        echo ok > pre_start_ready.txt
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB_API_KEY}?provider=deepseek&model=deepseek-v4-pro&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/v1"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"deepseek-v4-pro"}
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 4200

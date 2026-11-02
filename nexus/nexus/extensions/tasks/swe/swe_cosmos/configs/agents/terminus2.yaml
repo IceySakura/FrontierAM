@@ -1,0 +1,45 @@
+# Terminus2 Agent Profile
+#
+# 与其他 Profile 的区别：
+#   模型不调工具，只输出 keystrokes；能不能跑通取决于 parser_name 与模型输出格式是否一致
+#
+# 环境变量：
+#   必填: 无
+#   可选:
+#       AGENT_MAX_ITERATIONS
+#       AGENT_PARSER
+#       AGENT_ENABLE_SUMMARIZE
+#       AGENT_CONTEXT_LIMIT
+#
+# 使用示例：
+#   AGENT_CONFIG=terminus2
+#   AGENT_PARSER=xml AGENT_CONFIG=terminus2
+#
+# 组合约束：
+#   agents/ 下的 Profile 互斥，同一次运行只选择一个
+
+body:
+  imports:
+    - nexus.extensions.agents.terminus2
+  agent_name: terminus2
+
+  agent_config:
+    # oc.env 一律返回字符串，数值和布尔值都要套 oc.decode 还原类型。
+    max_iterations: ${oc.decode:${oc.env:AGENT_MAX_ITERATIONS,500}}
+    tmux_pane_width: 160
+    tmux_pane_height: 40
+    # 模型输出解析协议，只接受 json 或 xml；换档会同时换掉 system prompt 模板。
+    # 只有 xml parser 能从超长被截断的回复里抢救出可用指令。
+    parser_name: ${oc.env:AGENT_PARSER,xml}
+    enable_summarize: ${oc.decode:${oc.env:AGENT_ENABLE_SUMMARIZE,false}}
+    # 剩余 token 低于该值时主动摘要，仅 enable_summarize=true 时生效。
+    proactive_summarization_threshold: 8000
+    # 查 tokenizer 和上下文上限用，直接读最终 LLM Profile 的模型名。
+    model_name: ${oc.select:openai_clients.main.config.request_args.model,""}
+    # 显式上下文上限；缺省时先让 litellm 猜，猜不到回退 200000。
+    context_limit: ${oc.decode:${oc.env:AGENT_CONTEXT_LIMIT,null}}
+
+merge:
+  imports: append_unique
+
+source: terminus2

@@ -1,0 +1,12 @@
+{
+  "redis_port": 16379,
+  "cluster_bus_port": 26379,
+  "primary_count": null,
+  "replicas_per_primary": 0,
+  "extra_replicas": 0,
+  "remote_dir": "/tmp/hykv-redis-cluster",
+  "appendonly": true,
+  "cluster_node_timeout_ms": 5000,
+  "health_check_interval_seconds": 30,
+  "healthy_log_every_checks": 10
+}

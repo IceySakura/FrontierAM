@@ -1,0 +1,58 @@
+# Tool smoke, and the template loaded by swe_generator.py.
+imports:
+  - nexus.extensions
+  - nexus.extensions.agents.workbuddy
+
+task_name: echo
+task_config:
+  message: Hello, Nexus!
+  run_oracle: false
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: http://hyrl-sandbox.prod.woa.com:8052
+  token: ${oc.env:GONGFENG_RUNTIME_TOKEN}
+  runtime_image: current
+  purpose: ${oc.env:GONGFENG_PURPOSE,test}
+  request_timeout: 1800
+  resource_spec:
+    cpu: 4
+    memory: 16
+
+runtime_configs:
+  main:
+    image: mirrors.tencent.com/hunyuan_yanguan/ubuntu:24.04
+    worker_venv:
+      modules: []
+
+agent_name: workbuddy
+agent_config:
+  working_dir: /workspace
+  timeout: 1800
+  version: ${oc.env:WORKBUDDY_VERSION,latest}
+  npm_registry: ${oc.env:SWE_NPM_REGISTRY,"http://mirrors.tencent.com/npm/"}
+  npm_username: ${oc.env:WORKBUDDY_NPM_USERNAME}
+  npm_token: ${oc.env:WORKBUDDY_NPM_TOKEN}
+  model_id: ${oc.env:OPENAI_MODEL,deepseek-flash}
+  preset: code
+  effort: low
+  json_output: true
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:OPENAI_API_KEY}
+        base_url: ${oc.env:OPENAI_BASE_URL,"http://api.aihub.woa.com/standard/v1"}
+        timeout: 300
+      request_args:
+        model: ${oc.env:OPENAI_MODEL,deepseek-flash}
+        max_tokens: 8192
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 3600

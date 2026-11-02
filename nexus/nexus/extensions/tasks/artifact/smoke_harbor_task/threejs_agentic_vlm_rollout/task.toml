@@ -1,0 +1,77 @@
+version = "T3-RL-v1.0"
+
+[topic]
+L1 = "Agent"
+L2 = "CodeAgent"
+L3 = "Frontend"
+
+[metadata]
+author_name = "mghaoyang"
+# 题目唯一 ID，必须等于目录名，且在 Dataset 内唯一。
+instance_id = "threejs_agentic_vlm_rollout"
+# Task 名称，当前只接受四种，svg、3d、web、fullstack
+task = "3d"
+# 线上日志、采买、合成
+source = "smoke fixture"
+# 源仓库，前端填""
+source_repo = ""
+# instructon.md的主要语言 zh、en
+language = "zh"
+# 编程语言，前端填""
+programming_language = ""
+prompt_creation_time = "2026-09-22"
+
+[environment]
+docker_image = "mirrors.tencent.com/hunyuan_yanguan/webenv.claudecode.testset:v1-frontend_rl"
+workdir = "/workspace"
+# environment/workspace/ 的内容会原样铺到 workdir，目录结构保留，workspace 这层本身
+# 不出现。默认是 true（不铺），所以带素材的任务必须显式关掉。
+# 加素材只需往 environment/workspace/ 丢文件，不用改这里。
+skip_upload = false
+cpus = 8
+memory_mb = 16384
+network_mode = "public"
+enable_dind = false
+
+[agent]
+timeout_sec = 8000.0
+
+[verifier]
+timeout_sec = 3600.0
+environment_mode = "shared"
+
+[verifier.env]
+# judge strategy的注册名称
+T3_JUDGE_NAME = "web_judger"
+# 同metadata里面的instance_id
+T3_INSTANCE_ID = "threejs_agentic_vlm_rollout"
+# Match verifier.timeout_sec; the judge reserves its own finalization headroom.
+T3_VERIFIER_TIMEOUT_SEC = "3600"
+# judge: api key for aihub2.0 sk-xxx
+JUDGE_API_KEY = "${JUDGE_API_KEY}"
+# Render Service launches the deployed page under this Gongfeng account/quota.
+GONGFENG_RUNTIME_TOKEN = "${GONGFENG_RUNTIME_TOKEN}"
+# Persist local evidence and upload its archive; reward.json carries the locator.
+T3_JUDGE_EVIDENCE = "1"
+T3_JUDGE_EVIDENCE_UPLOAD = "1"
+
+# Reference targets, not measured scores from this probabilistic judge.
+[rollout_baseline.oracle]
+reward = 1.0
+
+[rollout_baseline.nop]
+reward = 0.0
+
+[judge]
+type = "agent"
+reward_kind = "continuous"
+
+[other]
+original_dataset = "smoke"
+# 手写 fixture，不是从 jsonl 转的，故留空。
+original_source_file = ""
+original_line_no = 0
+original_category = "3d"
+original_bucket = "simple"
+conversion_status = "v3"
+pipeline_name = "web_judger"

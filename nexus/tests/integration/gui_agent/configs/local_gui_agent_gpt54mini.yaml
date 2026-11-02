@@ -1,0 +1,79 @@
+imports:
+  - nexus.extensions
+
+task_name: 'identity'
+task_config: {}
+
+runtime_provider_name: 'docker'
+runtime_provider_config:
+  runtime_image: 'current'
+  force_rebuild: false
+  print_port_mappings: true
+
+runtime_configs:
+  main:
+    image: ${oc.env:NEXUS_UBUNTU_SESSION_IMAGE,"nexus-ubuntu-session:latest"}
+    exposed_ports: [5900, 6080]
+    extra_args:
+      - '--tmpfs'
+      - '/run'
+      - '--tmpfs'
+      - '/run/lock'
+      - '-e'
+      - 'GTK_A11Y=none'
+      - '-e'
+      - 'NEXUS_GUI_REQUIRE_SYSTEM_DBUS=1'
+
+agent_name: 'main_agent'
+agent_config:
+  system_prompt: 'You are a precise assistant. Follow the requested desktop GUI steps exactly and stop when the task is done.'
+  user_prompt: |
+    Use the desktop GUI tools to complete this task in order:
+    1. Call the desktop/start tool with {"desktop_session":"gnome-session","session_options":{"gnome_session_name":"ubuntu"}} to start the Ubuntu desktop session.
+    2. Call the desktop/screen_size tool to confirm the desktop resolution.
+    3. Launch the app command: xterm -title NexusPrimary -geometry 86x24+80+70 -fa Monospace -fs 12
+    4. Call desktop/screenshot.
+    5. Call desktop/computer_13 with action_type CLICK and parameters {"x":220,"y":170}.
+    6. Call desktop/computer_13 with action_type TYPING and parameters {"text":"printf %s 'hello from nexus desktop gui agent' > /tmp/nexus_gui_agent_demo.txt"}.
+    7. Call desktop/computer_13 with action_type PRESS and parameters {"key":"enter"}.
+    8. Call desktop/bash with command: cat /tmp/nexus_gui_agent_demo.txt and confirm the content matches exactly.
+    9. Launch the app command: xterm -title NexusSecondary -geometry 78x20+560+110 -fa Monospace -fs 12
+    10. Call desktop/computer_13 with action_type CLICK and parameters {"x":690,"y":190}.
+    11. Call desktop/computer_13 with action_type TYPING and parameters {"text":"printf %s 'hello from nexus secondary desktop window' > /tmp/nexus_gui_agent_secondary_demo.txt"}.
+    12. Call desktop/computer_13 with action_type PRESS and parameters {"key":"enter"}.
+    13. Call desktop/bash with command: cat /tmp/nexus_gui_agent_secondary_demo.txt and confirm the content matches exactly.
+    14. Launch the app command: xmessage -buttons Close:0 -geometry 300x110+420+300 'Nexus GUI dialog A'
+    15. Launch the app command: xmessage -buttons Close:0 -geometry 300x110+760+340 'Nexus GUI dialog B'
+    16. Call desktop/screenshot again and confirm multiple desktop windows are visible.
+    17. Close the first dialog with desktop/close_app using app=Nexus GUI dialog A.
+    18. Close the second dialog with desktop/close_app using app=Nexus GUI dialog B.
+    19. Close the secondary xterm with desktop/close_app using app=NexusSecondary.
+    20. Close the primary xterm with desktop/close_app using app=NexusPrimary.
+    21. Call desktop/screenshot one final time.
+    22. Reply with a short summary and stop calling tools.
+  max_iterations: 30
+  tools:
+    - desktop/start
+    - desktop/screen_size
+    - desktop/screenshot
+    - desktop/launch_app
+    - desktop/close_app
+    - desktop/computer_13
+    - desktop/bash
+  parallel_tool_calls: false
+
+openai_clients:
+  main:
+    name: 'openai'
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=azure_openai&model=${oc.env:NEXUS_MODEL,"gpt-5.5"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"60"}
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"gpt-5.5"}
+
+processors:
+  chat:
+    name: 'chat_tracker'
+  agent_metrics:
+    name: 'main_agent_metrics'

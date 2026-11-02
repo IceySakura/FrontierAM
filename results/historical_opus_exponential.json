@@ -1,0 +1,12 @@
+{
+  "model": "claude-opus-5-5",
+  "task": "exponential",
+  "architecture": "arm64",
+  "historical_attempt_not_migration_trial": true,
+  "requested_budget_seconds": 1800,
+  "status": "success",
+  "score": 37.54684102883686,
+  "valid_runs": 69,
+  "total_runs": 69,
+  "source_result_sha256": "bcb36d0da39f7a78d9e4b60de87abe0a324579b5bc65e22015f6f003b26e1c3a"
+}

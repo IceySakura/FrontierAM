@@ -1,0 +1,3 @@
+{
+  "allowed_openai_params": ["reasoning_effort"]
+}

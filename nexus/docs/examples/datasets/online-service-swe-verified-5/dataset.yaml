@@ -1,0 +1,13 @@
+schema_version: 1
+name: online-service-swe-verified-5
+authors: []
+maintainers: []
+default_split: test
+splits:
+  test:
+    items:
+      - items/astropy__astropy-12907/item.yaml
+      - items/astropy__astropy-13033/item.yaml
+      - items/astropy__astropy-13236/item.yaml
+      - items/astropy__astropy-13398/item.yaml
+      - items/astropy__astropy-13453/item.yaml

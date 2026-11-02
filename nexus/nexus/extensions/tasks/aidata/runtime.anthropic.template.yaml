@@ -1,0 +1,74 @@
+# aidata Claude case 的运行时模板 —— Anthropic 原生 passthrough 版本。
+#
+# 除了 `openai_clients` 块以外，跟 runtime.template.yaml 完全一致：
+# Claude 走复用的 `vertex_anthropic` 客户端指向 Bedrock InvokeModel 网关，
+# 天然支持原生 prompt （前缀）缓存和可选的 extended thinking 。 编排器
+# 会为 Claude 模型选中这个模板（见 aidata_orchestrator.py ）。 除
+# `openai_clients` 外，其他所有字段都必须与 runtime.template.yaml 保持同步。
+
+imports:
+  - nexus.extensions
+  - nexus.runtime.providers.gongfeng
+
+task_name: "aidata"
+task_config:
+  case_id: "{{CASE_ID}}"
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL}"
+  token: "${oc.env:GONGFENG_TOKEN}"
+  # 注意： `image:` 有意不在 provider 层声明。 gongfeng 的
+  # `_acquire_impl` 用 `image = self.image or merged.get('image')` ——
+  # 如果这里设了它，就会强制覆盖每个 per-runtime 的 `configure(...)`
+  # 调用，破坏由 cases/<id>/(task|case).yaml::services[].image
+  # 声明的 per-service 镜像选择。 每个 runtime 通过下面的
+  # `runtime_configs.<name>.image` 单独拿镜像，或者由引擎代码
+  # （见 engine/services.py::setup_services ）通过
+  # `provider.configure(runtime_name, image=...)` 传入。
+  resource_spec: {cpu: 4, memory: 8}
+  request_timeout: 600.0
+
+runtime_configs:
+  main:
+    # aio-agent-rc （nexus-base + /opt/aio-deps/.venv + Playwright + Node 22 ）。
+    # 路径布局敏感的常量（MCP_PY / PDF_TOOLS_BIN / shell PATH ）默认
+    # 使用这个镜像；若需重新指向 legacy 2.1 布局，参见 engine/paths.py
+    # 的 env-driven 覆盖方式（NEXUS_AIDATA_MCP_PY / … ）。
+    image: "mirrors.tencent.com/aidata-rl-env/aio-agent-rc:v0.7-dev-skills"
+
+agent_name: "main_agent"
+# ``tools`` 有意留空 —— engine/task.py 会由 ``base/finish`` 加上
+# task.yaml::agent_tools ，再加上 ``ctx.load_mcp_tools`` 之后
+# ``ctx.mcp_tools`` 里剩下的东西拼起来，然后按 case 传给 ``run_agent`` 。
+agent_config:
+  max_iterations: 180
+  parallel_tool_calls: false
+  tool_output_truncation: 32768
+  # 为 false （默认）时，任何不可恢复的 tool-call 错误（无法解析的
+  # 参数、错误的 tool name/args 、tool 抛异常）会以 TOOL_ERROR /
+  # FORMAT_ERROR 终止本次 run 。 设为 true 则将错误作为 tool observation
+  # 反馈回 agent 让其自行纠错。 可通过 NEXUS_MAIN_AGENT_TOOL_ERROR_CONTINUE
+  # env var 在运行时覆盖。
+  tool_error_continue: true
+
+# LLM 客户端 —— Anthropic 原生 passthrough ，走 Bedrock InvokeModel 网关，
+# 复用现有的 `vertex_anthropic` 客户端（无需新增专用客户端）。 endpoint
+# 由 SEARCH_OPENAI_BASE_URL + 模型 id 拼出；api_key query 中的
+# `provider=aws_third&model=<SEARCH_OPENAI_MODEL>` 选择 Bedrock 预算池和模型；
+# cache_control 打开原生 prefix 缓存（已验证：重复调用
+# 时能拿到 cache_read ）。 需要 extended thinking 时，把
+# `thinking: {type: adaptive}` + `reasoning_effort` 加到 request_args 即可。
+openai_clients:
+  main:
+    name: "vertex_anthropic"
+    config:
+      client_args:
+        api_key: "${oc.env:SEARCH_OPENAI_API_KEY}?provider=aws_third&model=${oc.env:SEARCH_OPENAI_MODEL}"
+        base_url: "${oc.env:SEARCH_OPENAI_BASE_URL}"
+        endpoint: "${oc.env:SEARCH_OPENAI_BASE_URL}/model/${oc.env:SEARCH_OPENAI_MODEL}/invoke"
+        cache_control_enabled: true
+        cache_control_strategy: "claude_code"
+      request_args:
+        model: "${oc.env:SEARCH_OPENAI_MODEL}"
+        anthropic_version: "bedrock-2023-05-31"

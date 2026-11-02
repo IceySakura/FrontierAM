@@ -1,0 +1,136 @@
+#!/nix/runtime/nix-env/bin/python3
+"""Bidirectional TCP/Unix-socket relay used by Compose-hosted Agents."""
+
+from __future__ import annotations
+
+import argparse
+import contextlib
+import os
+import socket
+import tempfile
+import threading
+
+from collections.abc import Callable
+from pathlib import Path
+
+
+def _parse_tcp(value: str) -> tuple[str, int]:
+    host, separator, raw_port = value.rpartition(':')
+    if not separator or not host:
+        raise argparse.ArgumentTypeError(f'invalid TCP address: {value!r}')
+    try:
+        port = int(raw_port)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f'invalid TCP port: {raw_port!r}') from exc
+    if not 0 <= port <= 65535:
+        raise argparse.ArgumentTypeError(f'TCP port out of range: {port}')
+    return host, port
+
+
+def _connect_tcp(host: str, port: int) -> socket.socket:
+    result = socket.create_connection((host, port), timeout=30)
+    result.settimeout(None)
+    return result
+
+
+def _relay(source: socket.socket, destination: socket.socket) -> None:
+    try:
+        while data := source.recv(65536):
+            destination.sendall(data)
+        destination.shutdown(socket.SHUT_WR)
+    except OSError:
+        pass
+
+
+def _handle(client: socket.socket, connector: Callable[[], socket.socket]) -> None:
+    upstream: socket.socket | None = None
+    try:
+        upstream = connector()
+        left = threading.Thread(target=_relay, args=(client, upstream), daemon=True)
+        right = threading.Thread(target=_relay, args=(upstream, client), daemon=True)
+        left.start()
+        right.start()
+        left.join()
+        right.join()
+    finally:
+        client.close()
+        if upstream is not None:
+            upstream.close()
+
+
+def _write_ready_file(path: str, port: int) -> None:
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix=f'.{destination.name}.', dir=destination.parent)
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as handle:
+            handle.write(f'{os.getpid()} {port}\n')
+        os.chmod(temporary, 0o666)
+        os.replace(temporary, destination)
+    finally:
+        with contextlib.suppress(FileNotFoundError):
+            os.unlink(temporary)
+
+
+def _serve(listener: socket.socket, connector: Callable[[], socket.socket]) -> None:
+    while True:
+        client, _ = listener.accept()
+        threading.Thread(target=_handle, args=(client, connector), daemon=True).start()
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--version', action='version', version='nexus-socket-bridge 1')
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--unix-listen')
+    mode.add_argument('--tcp-listen', type=_parse_tcp)
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument('--unix-target')
+    target.add_argument('--tcp-target', type=_parse_tcp)
+    parser.add_argument('--ready-file')
+    args = parser.parse_args()
+
+    unix_listener: str | None = None
+    if args.unix_listen:
+        unix_listener = args.unix_listen
+        Path(unix_listener).parent.mkdir(parents=True, exist_ok=True)
+        with contextlib.suppress(FileNotFoundError):
+            os.unlink(unix_listener)
+        listener = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        listener.bind(unix_listener)
+        os.chmod(unix_listener, 0o666)
+        listen_port = 0
+    else:
+        listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listener.bind(args.tcp_listen)
+        listen_port = listener.getsockname()[1]
+    listener.listen(64)
+
+    if args.ready_file:
+        _write_ready_file(args.ready_file, listen_port)
+
+    if args.unix_target:
+
+        def connector() -> socket.socket:
+            result = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            result.connect(args.unix_target)
+            return result
+
+    else:
+        host, port = args.tcp_target
+
+        def connector() -> socket.socket:
+            return _connect_tcp(host, port)
+
+    try:
+        _serve(listener, connector)
+    finally:
+        listener.close()
+        if unix_listener is not None:
+            with contextlib.suppress(FileNotFoundError):
+                os.unlink(unix_listener)
+
+
+if __name__ == '__main__':
+    main()

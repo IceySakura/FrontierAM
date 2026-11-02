@@ -1,0 +1,130 @@
+# Replace all three digests with images built from the same release commit.
+fullnameOverride: runner-prod
+
+controlImage:
+  repository: mirrors.tencent.com/nexus_utopia/nexus-distributed-universal
+  tag: ""
+  digest: sha256:REPLACE_WITH_RELEASE_DIGEST
+  pullPolicy: IfNotPresent
+
+workloadImage:
+  repository: mirrors.tencent.com/nexus_utopia/nexus-distributed-workload
+  tag: ""
+  digest: sha256:REPLACE_WITH_RELEASE_DIGEST
+  pullPolicy: IfNotPresent
+
+builderImage:
+  repository: mirrors.tencent.com/nexus_utopia/nexus-distributed-builder
+  tag: ""
+  digest: sha256:REPLACE_WITH_RELEASE_DIGEST
+  pullPolicy: IfNotPresent
+
+secrets:
+  create: false
+  existingSecret: runner-prod-nexus-database
+  databaseUrlKey: database-url
+
+configStore:
+  required: true
+
+liveCompatibility:
+  enabled: true
+
+mysql:
+  enabled: false
+
+dbInit:
+  enabled: true
+  backoffLimit: 3
+  waitTimeoutSeconds: 300
+
+controlGateway:
+  replicas: 3
+  port: 8081
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: "4"
+      memory: 16Gi
+    limits:
+      cpu: "4"
+      memory: 16Gi
+
+applicationGateway:
+  replicas: 3
+  port: 8082
+  uploadSpoolSizeLimit: 20Gi
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: "4"
+      memory: 8Gi
+    limits:
+      cpu: "4"
+      memory: 8Gi
+
+scheduler:
+  replicas: 4
+  resources:
+    requests:
+      cpu: "4"
+      memory: 8Gi
+    limits:
+      cpu: "4"
+      memory: 8Gi
+
+reconciler:
+  replicas: 1
+  resources:
+    requests:
+      cpu: "4"
+      memory: 8Gi
+    limits:
+      cpu: "4"
+      memory: 8Gi
+
+# TKEx providers are configured in the DB and do not need Kubernetes RBAC.
+dynamicEnvironment:
+  enabledProviders: []
+  namespace: ns-prjftdbn-300007534-production
+
+instanceManager:
+  enabled: true
+  replicas: 4
+  port: 8091
+  capacity: 50
+  executor: asyncio
+  forceReplace: true
+  autoInstall: false
+  environmentId: predefined-local
+  cacheSizeLimit: 20Gi
+  tmpSizeLimit: 4Gi
+  persistence:
+    enabled: true
+    size: 20Gi
+    accessModes:
+      - ReadWriteOnce
+  poolId: interactive
+  workload: execution
+  labels:
+    region: production
+  resources:
+    requests:
+      cpu: "4"
+      memory: 8Gi
+    limits:
+      cpu: "4"
+      memory: 8Gi
+
+batchManager:
+  enabled: false
+
+fakeRuntime:
+  enabled: false
+
+# Manager Pod IPs may be routed from other clusters, so keep this disabled
+# until a cross-cluster allowlist has been verified.
+networkPolicy:
+  enabled: false

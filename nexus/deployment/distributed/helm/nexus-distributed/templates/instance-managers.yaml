@@ -1,0 +1,165 @@
+{{- define "nexus-distributed.predefinedManager" -}}
+{{- $root := index . 0 -}}
+{{- $manager := index . 1 -}}
+{{- $component := index . 2 -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list $root $component) }}
+  labels:
+    {{- include "nexus-distributed.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: {{ $component }}
+spec:
+  serviceName: {{ include "nexus-distributed.componentName" (list $root $component) }}
+  replicas: {{ $manager.replicas }}
+  {{- if $manager.persistence.enabled }}
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "nexus-distributed.selectorLabels" $root | nindent 6 }}
+      app.kubernetes.io/component: {{ $component }}
+  template:
+    metadata:
+      labels:
+        {{- include "nexus-distributed.selectorLabels" $root | nindent 8 }}
+        app.kubernetes.io/component: {{ $component }}
+      {{- with $root.Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: {{ $component }}
+          image: {{ include "nexus-distributed.workloadImage" $root }}
+          imagePullPolicy: {{ $root.Values.workloadImage.pullPolicy }}
+          command: ["sh", "-c"]
+          args:
+            - |
+              exec python -m nexus.cli.main distributed instance-manager \
+                --host 0.0.0.0 \
+                --port {{ $manager.port }} \
+                --instance-manager-id "${HOSTNAME}" \
+                --capacity {{ $manager.capacity }} \
+                --executor {{ $manager.executor }} \
+                --environment-id {{ $manager.environmentId }} \
+                --pool-id {{ $manager.poolId }} \
+                --workload {{ $manager.workload }} \
+                --label workload={{ $manager.workload }} \
+                {{- range $key, $value := $manager.labels }}
+                {{- if ne $key "workload" }}
+                --label {{ $key }}={{ $value }} \
+                {{- end }}
+                {{- end }}
+                {{- if $manager.forceReplace }}
+                --force-replace
+                {{- end }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- if $manager.clusterName }}
+            - name: NEXUS_DIST_CLUSTER_NAME
+              value: {{ $manager.clusterName | quote }}
+            {{- end }}
+            {{- include "nexus-distributed.processEnv" $root | nindent 12 }}
+            {{- include "nexus-distributed.databaseEnv" $root | nindent 12 }}
+            {{- include "nexus-distributed.otelEnv" (list $root (printf "nexus-distributed-%s" $component) (printf "distributed-%s" $component)) | nindent 12 }}
+            {{- if $manager.autoInstall }}
+            - name: NEXUS_AUTO_INSTALL
+              value: "1"
+            {{- end }}
+            - name: NEXUS_DIST_BATCH_CONTROL_SPOOL_DIR
+              value: /data/nexus-distributed/batch-control
+            - name: TMPDIR
+              value: /tmp
+            - name: TMP
+              value: /tmp
+            - name: TEMP
+              value: /tmp
+          volumeMounts:
+            {{- include "nexus-distributed.databaseSecretVolumeMount" $root | nindent 12 }}
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+          ports:
+            - containerPort: {{ $manager.port }}
+              name: http
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 2
+          {{- with $manager.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+      volumes:
+        {{- include "nexus-distributed.databaseSecretVolume" $root | nindent 8 }}
+        {{- if not $manager.persistence.enabled }}
+        - name: data
+          emptyDir:
+            sizeLimit: {{ $manager.cacheSizeLimit | quote }}
+        {{- end }}
+        - name: tmp
+          emptyDir:
+            sizeLimit: {{ $manager.tmpSizeLimit | quote }}
+      {{- with $root.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $root.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $root.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  {{- if $manager.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          {{- include "nexus-distributed.selectorLabels" $root | nindent 10 }}
+          app.kubernetes.io/component: {{ $component }}
+      spec:
+        accessModes:
+          {{- toYaml $manager.persistence.accessModes | nindent 10 }}
+        {{- if $manager.persistence.storageClassName }}
+        storageClassName: {{ $manager.persistence.storageClassName | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ $manager.persistence.size | quote }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.instanceManager.enabled }}
+{{ include "nexus-distributed.predefinedManager" (list . .Values.instanceManager "instance-manager") }}
+{{- end }}
+{{- if .Values.batchManager.enabled }}
+---
+{{ include "nexus-distributed.predefinedManager" (list . .Values.batchManager "batch-manager") }}
+{{- end }}

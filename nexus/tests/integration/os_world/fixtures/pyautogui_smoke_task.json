@@ -1,0 +1,34 @@
+{
+  "id": "nexus-osworld-pyautogui-smoke",
+  "snapshot": "os",
+  "instruction": "Complete this task using desktop/pyautogui. Call desktop/pyautogui with Python code that opens a terminal using pyautogui.hotkey('ctrl', 'alt', 't'), waits briefly, types this exact command into the terminal, and presses Enter: printf pyautogui-ok > /tmp/nexus_osworld_pyautogui_result.txt . After the command has run, call desktop/fixed_marker with marker DONE.",
+  "source": "nexus",
+  "config": [
+    {
+      "type": "execute",
+      "parameters": {
+        "command": "rm -f /tmp/nexus_osworld_pyautogui_result.txt",
+        "shell": true
+      }
+    }
+  ],
+  "trajectory": "trajectories/",
+  "related_apps": ["os"],
+  "evaluator": {
+    "func": "exact_match",
+    "result": {
+      "type": "vm_command_line",
+      "command": "cat /tmp/nexus_osworld_pyautogui_result.txt",
+      "shell": true
+    },
+    "expected": {
+      "type": "rule",
+      "rules": {
+        "expected": "pyautogui-ok"
+      }
+    }
+  },
+  "proxy": false,
+  "fixed_ip": false,
+  "possibility_of_env_change": "low"
+}

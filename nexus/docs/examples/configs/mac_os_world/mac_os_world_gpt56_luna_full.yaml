@@ -1,0 +1,12 @@
+# Full remote Dataset split; reuses the validated model/runtime settings.
+# Run from the repository root with credentials configured:
+# nexus run-batch docs/examples/configs/mac_os_world/mac_os_world_gpt56_luna_full.yaml \
+#   --database outputs/macosworld-full-test.db --max-concurrent 1
+# Run the remaining 29 safety cases using the same file and --split safety,
+# with a separate database (outputs/macosworld-full-safety.db).
+# Omit --limit for all cases; CLI --limit 0 creates an empty batch.
+compose:
+  - data:
+      uri: macosworld/macosworld@v1.0.0
+      split: test
+  - use: ./mac_os_world_gpt56_luna_devcloud_test.yaml

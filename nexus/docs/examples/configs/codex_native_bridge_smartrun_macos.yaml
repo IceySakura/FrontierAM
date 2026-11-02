@@ -1,0 +1,42 @@
+# Required env: SMARTRUN_TOKEN, AI_HUB2_API_KEY
+# COS object: cos://hy-llm-1367471603/runtime/codex/0.146.1/darwin-arm64/codex-darwin-arm64.tar.gz
+# COS signed URL expires at 2029-10-21T06:24:40+00:00
+agent_config:
+  pre_start_scripts:
+  - code: uname -sm; mkdir -p .; rm -f proof.py answer.txt
+    interpreter: bash
+  timeout: 600
+  use_azure_provider: false
+  user_prompt: '使用 shell 创建 proof.py，用 Python 对 [9,4,6,2,7,1,5,3,8] 排序并输出 sorted:
+    1 2 3 4 5 6 7 8 9。实际执行脚本，将输出写入 answer.txt，再用 shell 读取两个文件并计算 SHA-256。最终给出实际执行输出和
+    SMARTRUN_NATIVE_BRIDGE_OK。'
+  version: 0.146.1
+  binary_url: "https://hy-llm-1367471603.cos.ap-guangzhou.myqcloud.com/runtime/codex/0.146.1/darwin-arm64/codex-darwin-arm64.tar.gz?q-sign-algorithm=sha1&q-ak=AKIDMJ5e0xjIeny51rbUEm7GEza1FIwOgmhR&q-sign-time=1792563820%3B1887258280&q-key-time=1792563820%3B1887258280&q-header-list=host&q-url-param-list=&q-signature=db9319025556202d5699ebe6bcf3348f50a724d6"
+  binary_checksum: e78f310cc871f89752d5d27c2f9ddf7b6710b13908ed71f3ba7e6b87f126945b
+  working_dir: /tmp/nexus-smartrun-codex-proof
+agent_name: codex_native_bridge
+openai_clients:
+  main:
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB2_API_KEY}
+        base_url: http://api.aihub.woa.com/standard/v1
+      request_args:
+        model: deepseek-flash
+    name: openai
+processors:
+  chat:
+    name: chat_tracker
+runner:
+  timeout: 1500
+runtime_configs:
+  main: {}
+runtime_provider_config:
+  duration: 1800
+  model: Virtual Mac
+  platform: macos
+  request_timeout: 180
+  token: ${oc.env:SMARTRUN_TOKEN}
+runtime_provider_name: smartrun
+task_config: {}
+task_name: identity

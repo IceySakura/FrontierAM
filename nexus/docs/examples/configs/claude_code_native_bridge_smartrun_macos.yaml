@@ -1,0 +1,41 @@
+# Required env: SMARTRUN_TOKEN, AI_HUB2_API_KEY
+# COS object: cos://hy-llm-1367471603/runtime/claude-code/2.1.285/darwin-arm64/claude-code-darwin-arm64.tar.gz
+# COS signed URL expires at 2029-10-21T06:24:41+00:00
+runtime_provider_name: smartrun
+runtime_provider_config:
+  token: ${oc.env:SMARTRUN_TOKEN}
+  platform: macos
+  model: Virtual Mac
+  duration: 1800
+  request_timeout: 180
+runtime_configs:
+  main: {}
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB2_API_KEY}
+        base_url: http://api.aihub.woa.com/standard/v1
+      request_args:
+        model: deepseek-flash
+processors:
+  chat:
+    name: chat_tracker
+task_name: identity
+task_config: {}
+agent_name: claude_code_native_bridge
+agent_config:
+  user_prompt: '使用 shell 创建 proof.py，用 Python 对 [9,4,6,2,7,1,5,3,8] 排序并输出 sorted:
+    1 2 3 4 5 6 7 8 9。实际执行脚本，将输出写入 answer.txt，再用 shell 读取两个文件并计算 SHA-256。最终给出实际执行输出和
+    SMARTRUN_NATIVE_BRIDGE_OK。'
+  working_dir: /tmp/nexus-smartrun-claude-code-proof
+  timeout: 600
+  pre_start_scripts:
+  - interpreter: bash
+    code: uname -sm; mkdir -p .; rm -f proof.py answer.txt
+  version: 2.1.285
+  binary_url: "https://hy-llm-1367471603.cos.ap-guangzhou.myqcloud.com/runtime/claude-code/2.1.285/darwin-arm64/claude-code-darwin-arm64.tar.gz?q-sign-algorithm=sha1&q-ak=AKIDMJ5e0xjIeny51rbUEm7GEza1FIwOgmhR&q-sign-time=1792563821%3B1887258281&q-key-time=1792563821%3B1887258281&q-header-list=host&q-url-param-list=&q-signature=6a906703ab981211467e6f1e32a18c822529afaf"
+  binary_checksum: 22c50acd45f2492547732ca81cbd39c17eb5f45d590ccadd7d131d596496d6b2
+runner:
+  timeout: 1500

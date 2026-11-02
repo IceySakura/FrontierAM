@@ -1,0 +1,108 @@
+# tau3 benchmark configuration example.
+#
+# Runs test split across all 4 domains by default:
+#   airline (20), retail (40), telecom (40), banking_knowledge (97) = 197 tasks.
+# Users only need to modify api_key, base_url, model to run the full benchmark.
+#
+# Usage:
+#   nexus run -c nexus/extensions/tasks/tau3/config.example.yaml
+#
+# Batch mode (generator reads env vars for task data):
+#   TAU3_DOMAIN=all TAU3_TASK_SPLIT=test \
+#   TAU3_AGENT_API_KEY=... TAU3_AGENT_BASE_URL=... TAU3_AGENT_MODEL=... \
+#   TAU3_USER_API_KEY=... TAU3_USER_BASE_URL=... TAU3_USER_MODEL=... \
+#   nexus run-batch -g nexus/extensions/tasks/tau3/generator.py -d ./outputs/tau3.db --max-concurrent 64
+
+imports:
+  - nexus.extensions.tasks.tau3
+
+task_name: "tau3"
+task_config:
+  # Supported: airline, retail, telecom, banking_knowledge, all, or comma-separated.
+  domain: "all"
+  # Task split: test | train | base (default: test). None for all tasks.
+  # test split: airline(20) + retail(40) + telecom(40) + banking_knowledge(97) = 197 tasks
+  # base split: airline(50) + retail(114) + telecom(114) + banking_knowledge(97) = 375 tasks
+  task_split: "test"
+  task_data: {}      # Filled by generator in batch mode
+  solo_mode: false
+  # Named client in openai_clients used for NL_ASSERTION evaluation.
+  # Defaults to "eval"; task code falls back to user/main if "eval" is absent.
+  eval_client_name: "eval"
+  # Retrieval config for banking_knowledge domain (other domains ignore this).
+  # golden_retrieval: uses ground truth docs, isolates agent ability from retrieval quality.
+  # Other options: bm25, bm25_grep, openai_embeddings_grep, qwen_embeddings_grep, etc.
+  retrieval_config: "golden_retrieval"
+  # retrieval_config_kwargs: {}              # Extra kwargs for custom strategies
+
+agent_name: "tau3_agent"
+agent_config: {}
+
+openai_clients:
+  # --- OpenAI-compatible client (default) ---
+  main:
+    name: "openai"
+    config:
+      client_args:
+        api_key: "YOUR_API_KEY_HERE"
+        base_url: "http://litellm-cn.woa.com"
+      request_args:
+        model: "deepseek-v3.2"
+  user:
+    name: "openai"
+    config:
+      client_args:
+        api_key: "YOUR_API_KEY_HERE"
+        base_url: "http://litellm-sgp.woa.com"
+      request_args:
+        model: "gpt-5.2"
+  eval:
+    name: "openai"
+    config:
+      client_args:
+        api_key: "YOUR_API_KEY_HERE"
+        base_url: "http://litellm-sgp.woa.com"
+      request_args:
+        model: "gpt-5.2"
+
+  # --- Taiji client (uncomment to use) ---
+  # main:
+  #   name: "taiji"
+  #   config:
+  #     client_args:
+  #       model: "your-taiji-model-name"
+  #       namespace: "Production"
+  #       service: "stream-server-online-sbs-11644"
+  #       authorization: "Bearer 7auGXNATFSKl7dF"
+  #       wsid: "11644"
+  #       url_pattern: "openapi"
+  #       timeout: 120
+  #       enable_thinking: false
+  #     request_args:
+  #       temperature: 0.7
+  #       top_p: 1.0
+  # user:
+  #   name: "openai"
+  #   config:
+  #     client_args:
+  #       api_key: "YOUR_API_KEY_HERE"
+  #       base_url: "http://litellm-sgp.woa.com"
+  #     request_args:
+  #       model: "gpt-5.2"
+  # eval:
+  #   name: "taiji"
+  #   config:
+  #     client_args:
+  #       model: "your-eval-model-name"
+  #       namespace: "Production"
+  #       service: "stream-server-online-sbs-11644"
+  #       authorization: "Bearer 7auGXNATFSKl7dF"
+  #       wsid: "11644"
+  #       url_pattern: "openapi"
+  #       timeout: 120
+  #       enable_thinking: false
+  #     request_args: {}
+
+processors:
+  chat:
+    name: "chat_tracker"

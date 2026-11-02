@@ -1,0 +1,58 @@
+# Taiji HY3 Offline LLM Profile。
+#
+# 用途：
+#   通过太极内部 OpenAI Chat Completions 接口调用 HY3 Offline 模型。
+#
+# 协议与路由：
+#   Client=infer_proxy；Endpoint=http://api.taiji.woa.com/openapi/inner/v2/chat/completions；
+#   Model=hy3-offline。
+#
+# 推理配置：
+#   reasoning_effort 默认 high，可选 low/high；max_tokens 默认 32768。网关当前不接受
+#   no_think/none，因此 Profile 不提供关闭 thinking 的默认值。
+#
+# 环境变量：
+#   必填：OPENAI_API_KEY。
+#   可选：TAIJI_HY3_BASE_URL、TAIJI_HY3_REASONING_EFFORT、TAIJI_HY3_MAX_TOKENS。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/llm/taiji-hy3.yaml
+#
+# 组合约束：
+#   llm/ 下的 Profile 互斥，同一次运行只选择一个。
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.infer_proxy
+
+  # Use the Hunyuan converter for HY3 reasoning/tag semantics.
+  agent_config:
+    thinking_preset: hunyuan
+    extra_env:
+      ANTHROPIC_MODEL: hy3-offline
+
+  openai_clients:
+    main:
+      name: infer_proxy
+      config:
+        client_args:
+          # Resolved immediately before execution, so the key is not stored in Batch DB.
+          api_key__env: OPENAI_API_KEY
+          # AsyncOpenAI appends /chat/completions to this base URL.
+          base_url: ${oc.env:TAIJI_HY3_BASE_URL,http://api.taiji.woa.com/openapi/inner/v2}
+          timeout: 600
+          max_retries: 1
+
+        request_args:
+          model: hy3-offline
+          max_tokens: ${oc.decode:${oc.env:TAIJI_HY3_MAX_TOKENS,32768}}
+          reasoning_effort: ${oc.env:TAIJI_HY3_REASONING_EFFORT,high}
+        # Harbor 明确固定输出预算；普通 request_args 仍是可覆盖的默认值。
+        enforced_request_args:
+          max_tokens: ${oc.select:openai_clients.main.config.request_args.max_tokens,null}
+
+merge:
+  imports: append_unique
+
+source: harbor-taiji-hy3

@@ -1,0 +1,7 @@
+[project]
+name = "golden_eval"
+version = "0.1.0"
+dependencies = []
+
+[tool.nexus.tasks]
+golden_eval = "nexus.extensions.tasks.golden_eval.task"

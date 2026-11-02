@@ -1,0 +1,88 @@
+{{- if .Values.fakeRuntime.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list . "fake-runtime") }}
+  labels:
+    {{- include "nexus-distributed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: fake-runtime
+spec:
+  selector:
+    {{- include "nexus-distributed.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: fake-runtime
+  ports:
+    - name: http
+      port: {{ .Values.fakeRuntime.port }}
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nexus-distributed.componentName" (list . "fake-runtime") }}
+  labels:
+    {{- include "nexus-distributed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: fake-runtime
+spec:
+  replicas: {{ .Values.fakeRuntime.replicas }}
+  selector:
+    matchLabels:
+      {{- include "nexus-distributed.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: fake-runtime
+  template:
+    metadata:
+      labels:
+        {{- include "nexus-distributed.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: fake-runtime
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: fake-runtime
+          image: {{ include "nexus-distributed.controlImage" . }}
+          imagePullPolicy: {{ .Values.controlImage.pullPolicy }}
+          command: ["python", "-u", "-c"]
+          args:
+            - |
+              from aiohttp import web
+
+              async def ping(request):
+                  return web.json_response({"pong": True, "source": "k8s-fake-runtime"})
+
+              async def gui(request):
+                  return web.Response(
+                      text="<html><body><h1>Nexus Distributed Fake Runtime</h1></body></html>",
+                      content_type="text/html",
+                  )
+
+              app = web.Application()
+              app.router.add_get("/ping", ping)
+              app.router.add_get("/debug/gui", gui)
+              web.run_app(app, host="0.0.0.0", port={{ .Values.fakeRuntime.port }})
+          ports:
+            - containerPort: {{ .Values.fakeRuntime.port }}
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 2
+          {{- with .Values.fakeRuntime.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

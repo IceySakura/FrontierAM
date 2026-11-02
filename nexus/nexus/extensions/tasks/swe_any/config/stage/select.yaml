@@ -1,0 +1,132 @@
+# SWE-Any Select — single-run config (layered BFS × N + Claude Code agentic pass).
+#
+#   uv run nexus run-single nexus/extensions/tasks/swe_any/config/stage/select.yaml \
+#       -o ./outputs/swe_any/select_result.json
+#
+# Prereq: a parse_graph.json from swe_any_parse (SWE_ANY_GRAPH_PATH). Samples one seed per
+# slice (SWE_ANY_MAX_SUBGRAPHS split across components), runs heuristic+agentic under SWE_ANY_MAX_WORKERS,
+# and writes output_dir/<repo>/sgNN/{select_heuristic,select_agentic}.json plus repo-level
+# {select_heuristic,select_agentic}.jsonl and the unified select.jsonl (Mask reads this; it
+# carries the per-item status too). Agent traces go through processors (chat_tracker);
+# the agentic pass writes per-slice JSON in the sandbox.
+#
+# Secrets come from the environment via ${oc.env:...}; never hard-code tokens.
+#
+# This file is also the batch default: generator/stage/select.py deep-merges
+# SWE_ANY_CONFIG_PATCH over it (task knobs), then applies the backend patch for
+# the merged openai_clients.main.name, then injects per-instance fields. Export
+# any ${oc.env:...} below to override a default in either entry point.
+
+imports:
+  - nexus.extensions.tasks.swe_any
+  - nexus.extensions.agents.claude_code
+
+task_name: "swe_any_select"
+
+# Batch-only: which instances run-batch iterates (source jsonl + filters + paging).
+# The generators lift this block out before building RunInput; run-single ignores
+# it and runs task_config.instance_path below. Defaults read the SWE_ANY_* env
+# twins here, and a SWE_ANY_CONFIG_PATCH may override any field.
+instances:
+  # Source .jsonl (one instance per line). Required for run-batch.
+  path: "${oc.env:SWE_ANY_INSTANCES,}"
+  # Curated subset: comma string or path to a JSON list of ids. Empty = all.
+  ids: "${oc.env:SWE_ANY_INSTANCE_IDS,}"
+  # scip-python indexes Python only; "all" disables the filter.
+  language: "${oc.env:SWE_ANY_LANGUAGE,python}"
+  # Paging over the filtered instances (0 = no limit).
+  skip: "${oc.decode:${oc.env:SWE_ANY_SKIP,0}}"
+  limit: "${oc.decode:${oc.env:SWE_ANY_LIMIT,0}}"
+
+task_config:
+  instance_path: "${oc.env:SWE_ANY_INSTANCE_PATH,}"
+  repo_name: "${oc.env:SWE_ANY_REPO_NAME,repo}"
+  graph_path: "${oc.env:SWE_ANY_GRAPH_PATH,}"
+  output_dir: "${oc.env:SWE_ANY_OUTPUT_DIR,./outputs/swe_any}"
+
+  # Baked per-repo WORKLOAD image (SWE-Env `image`) — not the nexus runtime image.
+  image: "${oc.env:SWE_ANY_IMAGE,}"
+  repo_dir: "${oc.env:SWE_ANY_REPO_DIR,/testbed}"
+
+  # Seed sampler: unset (null) draws fresh seeds each run; set an int to reproduce.
+  rng_seed: "${oc.decode:${oc.env:SWE_ANY_RNG_SEED,null}}"
+
+  # Repo-level slice budget, apportioned across components (each capped at
+  # ceil(component size / max_bfs_nodes)).
+  max_subgraphs: "${oc.env:SWE_ANY_MAX_SUBGRAPHS,20}"
+  # Must remain 1 until Claude Code shares one LLM handler per runtime.
+  max_workers: "${oc.env:SWE_ANY_MAX_WORKERS,1}"
+
+  # Heuristic: layered BFS (these knobs carry `bfs` in the middle of their name).
+  max_bfs_nodes: "${oc.env:SWE_ANY_MAX_BFS_NODES,100}"
+  drop_bfs_prob: "${oc.env:SWE_ANY_DROP_BFS_PROB,0.3}"
+  min_bfs_per_depth: "${oc.env:SWE_ANY_MIN_BFS_PER_DEPTH,1}"
+  max_bfs_per_depth: "${oc.env:SWE_ANY_MAX_BFS_PER_DEPTH,8}"
+  include_tests: "${oc.decode:${oc.env:SWE_ANY_INCLUDE_TESTS,true}}"
+  include_external: "${oc.decode:${oc.env:SWE_ANY_INCLUDE_EXTERNAL,false}}"
+
+  # Seed pool: components are sized AFTER dropping Parse's excluded paths.
+  # Leave the ceiling alone unless you know the repo splits — a real repo has one
+  # large component plus dust, so a low ceiling empties the pool.
+  min_component_nodes: "${oc.env:SWE_ANY_MIN_COMPONENT_NODES,20}"
+  max_component_nodes: "${oc.env:SWE_ANY_MAX_COMPONENT_NODES,1000000000}"
+
+  # How many functions the agent's `feature_node_ids` list may hold. Stated in the prompt and
+  # enforced on the returned agentic output; the ceiling defaults to max_bfs_nodes.
+  min_final_nodes: "${oc.env:SWE_ANY_MIN_FINAL_NODES,1}"
+  max_final_nodes: "${oc.env:SWE_ANY_MAX_FINAL_NODES,100}"
+
+  agent_timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+  release_runtime: "${oc.decode:${oc.env:SWE_ANY_RELEASE_RUNTIME,false}}"
+
+agent_name: "claude_code"
+agent_config:
+  working_dir: "${oc.env:CLAUDE_CODE_WORKING_DIR,${oc.env:SWE_ANY_REPO_DIR,/testbed}}"
+  timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+  version: "${oc.env:CLAUDE_CODE_VERSION,latest}"
+  extra_env:
+    # CLI-internal model id; requests still route to OPENAI_MODEL. The default is
+    # single-quoted because OmegaConf's grammar treats bare [1m] brackets as
+    # interpolation syntax.
+    ANTHROPIC_MODEL: "${oc.env:ANTHROPIC_MODEL,'claude-opus-4-8[1m]'}"
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+  thinking_preset: "${oc.env:SWE_ANY_THINKING_PRESET,bedrock-claude}"
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}"
+  token: "${oc.env:GONGFENG_TOKEN}"
+  # Gongfeng scheduling label (prod/eval/test); independent of the API hostname.
+  purpose: "${oc.env:GONGFENG_PURPOSE,test}"
+  runtime_image: "current"
+  # Broad transport ceiling shared by every stage; the agent_timeout is the effective limit.
+  request_timeout: "${oc.env:SWE_ANY_PROVIDER_REQUEST_TIMEOUT,86400.0}"
+  resource_spec: { cpu: 2, memory: 8 }
+
+runtime_configs:
+  main:
+    # reset_repo / apply_check_sequence run in-sandbox via runtime.invoke, so ship the nexus
+    # wheel (incl. swe_any) into the worker venv — the workload image has no nexus/swe_any. Same
+    # pattern as Parse/Mask/Eval; without it default_venv_id stays None, the invoke hits the Base
+    # process where those targets don't exist, and the strict base_commit reset fails the stage.
+    worker_venv:
+      modules: ["swe_any"]
+
+openai_clients:
+  main:
+    # Host LLM for Claude Code: litellm → Bedrock Anthropic (not OpenAI GPT).
+    name: "${oc.env:OPENAI_CLIENT_NAME,litellm}"
+    config:
+      client_args:
+        api_key: "${oc.env:OPENAI_API_KEY}"
+        base_url: "${oc.env:OPENAI_BASE_URL,http://trpc-gpt-eval.production.polaris:8080}"
+        cache_control_enabled: "${oc.decode:${oc.env:SWE_ANY_CACHE_CONTROL_ENABLED,true}}"
+        cache_control_strategy: "${oc.env:SWE_ANY_CACHE_CONTROL_STRATEGY,claude_code}"
+      request_args:
+        model: "${oc.env:OPENAI_MODEL,bedrock/anthropic.claude-opus-4-8}"
+
+processors:
+  chat:
+    name: "chat_tracker"
+    args:
+      tools_mode: "${oc.env:SWE_ANY_TOOLS_MODE,branch_last}"

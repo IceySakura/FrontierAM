@@ -1,0 +1,167 @@
+# Codex Agent Profile（CLI 0.160.0，GPT-6 系列，tool_mode=direct）。
+#
+# 目标是产出好训 HY 模型的轨迹，不是忠实复刻 codex 官方 catalog。下面这组 catalog 值刻意和
+# codex 自带的默认值不同，对齐前端 rollout 实际在用的 `gpt6_v7` profile
+# （frontend/scaffold/nexus/extensions/agents/codex/runtime_setup.py 的
+# _override_tool_mode_in_catalog，catalog_profile == 'gpt6_v7' 那一支）：
+#
+#   字段                            本文件 / gpt6_v7      codex 0.160.0 自带
+#   use_responses_lite              false                 true
+#   context_window                  1000000               272000
+#   max_context_window              1000000               872000
+#   auto_compact_token_limit        900000                （不带这个字段）
+#   apply_patch_tool_type           freeform              freeform（一致）
+#   supports_search_tool            false                 true
+#   supports_image_detail_original  false                 true
+#   default_reasoning_level         max                   medium
+#   experimental_supported_tools    []                    [send_user_message_async, clock]
+#   multi_agent_version             v2                    v2（一致）
+#   supports_parallel_tool_calls    true                  （不带这个字段）
+#
+# 用 model_catalog_overrides（MR !1535）而不是整份 model_catalog_json：override 是浅合并到
+# codex 自己那条 entry 上，所以上面这些值按我们的来，其余（persona / model_messages 整块、
+# truncation_policy、supported_reasoning_levels…）吃 codex 当前版本自带的，codex 升级提示词
+# 不需要我们手动跟。旧版是整份手写 614 行克隆，persona 已经和 0.160.0 自带的不一致了。
+#
+# 前端用的是 catalog_profile='gpt6_v7' 这个开关，但 catalog_profile / tool_mode 两个字段只在
+# frontend/scaffold 那份 codex 扩展上有，main 的 CodexInput 没有（实测），所以这里把 profile
+# 的字段逐条写进 model_catalog_overrides。等那两个字段合进 main，可以换成一行 catalog_profile。
+#
+# 旧版整份手写 614 行 catalog 已删除——override 机制上线后它只用来对照，没有代码再读，
+# 留着是过时文档的负资产。
+#
+# Provider 模式：
+#   use_azure_provider（store=true + 远端 /v1/responses/compact）不是 GPT 家族统一的事实——同是
+#   family=gpt，gpt-56-sol 走 aihub2 标准端点、不是真 Azure 部署；gpt-6-sol/gpt-61-sol/gpt-6-astra
+#   才是真 Azure 部署。所以这个键按『llm 文件事实』处理：llm 文件在 `llm.use_azure_provider`
+#   里声明，这里的 `agent_config_by_llm.gpt` 只是把那条事实接上来，不猜测、不按家族硬编码。
+#   CODEX_USE_AZURE_PROVIDER 还留着当兜底：llm 文件没声明这个事实时才生效（给 smoke/调试开
+#   口子）；一旦 llm 文件声明了，以 llm 文件为准，env var 不能覆盖它——写错了会破坏真实行为，
+#   不该是一个能被忘记设置的开关。
+#
+# Web search：
+#   ResponsesProxy 没有搜索后端，CLI 侧和 catalog 侧都关掉，模型就不会对外宣称有这个工具。
+#
+# 子代理：
+#   multi_agent_version=v2 会挂出 collaboration__* 工具，这里刻意保持开启（features.multi_agent_v2 压不住它，catalog 元数据优先级更高）。
+#   要关掉，把 CODEX_EXTRA_CONFIG_TOML 设成含 [agents] enabled = false 的内容——前端 rollout 默认就是关的。
+#
+# tool_mode：
+#   本文件 direct。前端 rollout 的默认值是 code_mode_only，那个用 codex_0.160.0_codemode.yaml，
+#   两份文件只差这一个键。
+#
+# 环境变量：
+#   必填: 无
+#   可选:
+#       AGENT_VERSION
+#       AGENT_WORKING_DIR
+#       AGENT_TIMEOUT
+#       NPM_REGISTRY
+#       CODEX_USE_AZURE_PROVIDER
+#       CODEX_WRAP_PLAINTEXT_REASONING   走 Responses/原生 reasoning_items 的模型设 false
+#       CODEX_CONTEXT_WINDOW             同时写 catalog 的 context_window/max_context_window 和 config.toml 的 model_context_window
+#       CODEX_AUTO_COMPACT_LIMIT         codex 实际触发点是 min(本值, context_window*90%)
+#       CODEX_MULTI_AGENT_VERSION
+#       CODEX_MULTI_AGENT_REASONING_EFFORT
+#       CODEX_EXTRA_CONFIG_TOML
+#
+# 使用示例：
+#   AGENT_CONFIG=codex_0.160.0_toolmode LLM_CONFIG=gpt-6-sol.openai_responses
+
+body:
+  imports:
+    - nexus.extensions.agents.codex
+  agent_name: codex
+
+  agent_config:
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/testbed}
+    # oc.env 一律返回字符串，数值和布尔值都要套 oc.decode 还原类型。
+    timeout: ${oc.decode:${oc.env:AGENT_TIMEOUT,14400}}
+    version: ${oc.env:AGENT_VERSION,0.160.0}
+    npm_registry: ${oc.env:NPM_REGISTRY,http://mirrors.tencent.com/npm/}
+    model: ${oc.select:openai_clients.main.config.request_args.model,null}
+    use_azure_provider: ${oc.decode:${oc.env:CODEX_USE_AZURE_PROVIDER,false}}
+    # 实时档位（CLI -c model_reasoning_effort），直接读 LLM profile 声明的协议无关 fact
+    # （llm.reasoning_effort）。这样 scaffold 不需要知道底层是 reasoning.effort（openai_responses）
+    # 还是 output_config.effort（litellm/Anthropic）——两种拼法都由 llm 文件自己管。
+    # llm 文件没声明这个 fact 时，这个键被省略，不传 -c model_reasoning_effort，档位由 catalog 的
+    # default_reasoning_level 决定（不是 xhigh）。目前所有 llm 文件都声明了（test_every_llm_file_declares_a_reasoning_effort_matching_its_wire 守着）。
+    reasoning_effort: ${llm:reasoning_effort?}
+    # 兜底值跟生产一致（生产的 codex agent yaml 也是 true，codex Input 的 Python 默认值同样是 True）。
+    # 真正决定它的是 wire 有没有原生 reasoning_items，所以事实声明在 llm 文件里，下面
+    # agent_config_by_llm 把它接上来；llm 文件没声明时这里的默认值/env var 才生效。
+    # 这不是家族事实：false 只对"走 Responses、有原生 reasoning_items"的 wire 成立。
+    # 曾经在这里扁平写死 false，那是错的——当时只查了实验 input（确实没人覆盖这个键），
+    # 漏了生产是由 llm profile 覆盖的：生产 25 份 llm 文件里只有 4 份 openai_responses
+    # 声明 false，其余 13 份 claude/hunyuan 一律吃 true 的默认值。扁平 false 会让
+    # claude / hunyuan 这些只有纯文本 reasoning_content 的 wire 不再被铸成 reasoning item，
+    # 推理信号直接丢掉（runtime_setup.py:414 写明了这个行为），而 SFT 要的就是这个信号。
+    wrap_plaintext_reasoning_content: ${oc.decode:${oc.env:CODEX_WRAP_PLAINTEXT_REASONING,true}}
+    # config.toml 的 model_context_window / model_auto_compact_token_limit，和下面 catalog 里的
+    # 同名字段一起给：codex 把触发点算成 min(limit, context_window*90%)，只调一个不生效。
+    model_context_window: ${oc.decode:${oc.env:CODEX_CONTEXT_WINDOW,1000000}}
+    auto_compact_token_limit: ${oc.decode:${oc.env:CODEX_AUTO_COMPACT_LIMIT,900000}}
+    # remote_compaction_v2：ResponsesProxy 没有远端压缩后端。子代理默认放开，见文件头。
+    extra_config_toml: ${oc.env:CODEX_EXTRA_CONFIG_TOML,'[features]
+
+      remote_compaction_v2 = false'}
+    experimental_use_freeform_apply_patch: true
+    extra_cli_args:
+      - -c
+      - web_search="disabled"
+    # 对齐前端 rollout 的 gpt6_v7 profile，逐条见文件头的对照表。slug 不能在这里写
+    # （runtime_setup.py 显式拒绝覆盖 slug），由 agent_config.model 决定。
+    model_catalog_overrides:
+      use_responses_lite: false
+      apply_patch_tool_type: freeform
+      supports_search_tool: false
+      supports_image_detail_original: false
+      default_reasoning_level: max
+      context_window: ${oc.decode:${oc.env:CODEX_CONTEXT_WINDOW,1000000}}
+      max_context_window: ${oc.decode:${oc.env:CODEX_CONTEXT_WINDOW,1000000}}
+      auto_compact_token_limit: ${oc.decode:${oc.env:CODEX_AUTO_COMPACT_LIMIT,900000}}
+      experimental_supported_tools: []
+      supports_parallel_tool_calls: true
+      multi_agent_version: ${oc.env:CODEX_MULTI_AGENT_VERSION,v2}
+      multi_agent_reasoning_effort: ${oc.env:CODEX_MULTI_AGENT_REASONING_EFFORT,xhigh}
+      tool_mode: direct
+
+  agent_config_by_llm:
+    gpt:
+      # Not a family fact (see header): pulled from whichever specific llm file is selected.
+      # Absent on non-azure gpt wires (e.g. gpt-56-sol) -- top-level default/env var stands.
+      use_azure_provider: ${llm:use_azure_provider?}
+      # Also per-wire, not per-family: it tracks whether the wire has native reasoning_items,
+      # which is a property of the protocol. Every gpt wire we have is openai_responses, so
+      # all 7 declare false -- but do not fold that coincidence into a family default, the
+      # same way use_azure_provider looked family-wide until gpt-56-sol disproved it.
+      wrap_plaintext_reasoning_content: ${llm:wrap_plaintext_reasoning_content?}
+    claude:
+      # Not a family fact either: it's a per-model hard limit, not something claude models
+      # share as a family. Real sandbox run against claude-opus-5.litellm hit a 400
+      # the moment this stayed at the gpt-oriented 1000000 default -- codex sends
+      # max_output_tokens straight from this catalog value, and the backend rejects anything
+      # over claude-opus-5's real 128000-token output cap ("max_tokens: 1000000 > 128000,
+      # which is the maximum allowed number of output tokens for anthropic.claude-opus-5").
+      # Declared as an llm fact (like use_azure_provider) rather than hardcoded here, since a
+      # different claude model could have a different real cap. Absent on llm files that
+      # don't declare it (e.g. every gpt file, and claude files not paired with codex) --
+      # top-level default/env var stands.
+      model_context_window: ${llm:context_window?}
+      auto_compact_token_limit: ${llm:auto_compact_token_limit?}
+      model_catalog_overrides:
+        context_window: ${llm:context_window?}
+        max_context_window: ${llm:context_window?}
+        auto_compact_token_limit: ${llm:auto_compact_token_limit?}
+      # Same per-wire fact as in the gpt section. None of our claude wires are
+      # openai_responses today (they are litellm / openai chat / vertex_anthropic, all of
+      # which deliver reasoning as plaintext reasoning_content and so need the default true),
+      # so none declares it and this stays absent. It is wired up anyway because the fact
+      # belongs to the wire: a claude.openai_responses wire would declare false and must be
+      # honoured without editing this file.
+      wrap_plaintext_reasoning_content: ${llm:wrap_plaintext_reasoning_content?}
+
+merge:
+  imports: append_unique
+
+source: codex

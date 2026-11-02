@@ -1,0 +1,31 @@
+# meta.yaml — HY hashed tool 协议泄漏，三通道同一规则。
+canonical_name: tool_call_protocol_leak_hy
+symptom_cluster: tool_call_leak
+display_name: HY Tool Call 泄漏
+namespace: core.format.tool_call_leak
+description: assistant 的 content、reasoning_content 或 tool_call 参数中出现带 :8hex 的 HY 具名 tool 协议标签（tool_call / tool_calls / arg_key / arg_value 等）。裸标签和任意 <word:8hex> 不报。
+definition: |-
+  检测对象：每个 assistant 消息的 content、reasoning_content，以及结构化 tool_call 参数字符串。
+  命中条件：HY_HASHED_TOOL_TOKEN_RE，仅具名 HY DSL 后紧接冒号和恰好 8 位十六进制：tool_call、tool_calls、tool_sep、arg_key、arg_value、tool_response。例如 <tool_call:6124c78e>、<arg_key:deadbeef>。任意 <word:8hex>、<think:hex>、裸 <tool_call> 不命中。
+  三通道同一规则，不再按字段做 precision gate。裸标签留给友商 Tool Call 泄漏。
+  归因：think 协议标签由 think_protocol_leak_hy 或友商 Think 泄漏报告。hashed 具名 HY tool 标签只由本算子报告；裸 <tool_call> 由友商 Tool Call 泄漏报告。
+  输出粒度：每个命中的 assistant turn 一条 Finding；detail 记录命中字段和各字段 token。
+detection_tier: programmable
+channel:
+- content
+- reasoning
+- tool_call
+data_requirement:
+- any
+verification: verified
+example:
+  synthetic: true
+  caption: 任一 assistant 字段出现 <tool_call:8hex> 一类 HY 具名 hashed 协议标签。
+runtime:
+  entrypoint: detect_tool_call_protocol_leak_hy:ToolCallProtocolLeakHyDetector
+  applicable_data_types:
+  - trajectory
+  detector_type: rule
+  tags:
+  - taxonomy_0706
+  behavior_version: 1.1.0

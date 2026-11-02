@@ -1,0 +1,22 @@
+[project]
+name = "terminal"
+version = "0.1.0"
+description = "Stateful interactive terminal sessions via single PTY + patched-bash capture (--wrap=execute_command/readline)"
+dependencies = []
+authors = [
+    { name = "tarschen" },
+    { name = "elliotluo" },
+]
+
+[project.optional-dependencies]
+runtime = ["pyte>=0.8.2", "wcwidth"]
+
+[tool.nexus.executors]
+create_terminal_session = "nexus.runtime.executors.terminal"
+destroy_terminal_session = "nexus.runtime.executors.terminal"
+run_command_in_terminal_session = "nexus.runtime.executors.terminal"
+start_command_in_terminal_session = "nexus.runtime.executors.terminal"
+query_terminal_command_status = "nexus.runtime.executors.terminal"
+send_keys_to_terminal_session = "nexus.runtime.executors.terminal"
+capture_terminal_pane = "nexus.runtime.executors.terminal"
+terminate_terminal_session_processes = "nexus.runtime.executors.terminal"

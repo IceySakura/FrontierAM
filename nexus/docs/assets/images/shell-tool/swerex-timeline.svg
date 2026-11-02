@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 520">
+  <defs>
+    <marker id="srArrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+    <marker id="srArrowBlue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#1976d2"/>
+    </marker>
+    <marker id="srArrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4caf50"/>
+    </marker>
+    <marker id="srArrowOrange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#ff9800"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="375" y="28" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#333">SWE-ReX 进程时间线</text>
+  <text x="375" y="48" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#666">Python + pexpect，持久会话模式</text>
+
+  <!-- Time axis (vertical) -->
+  <line x1="60" y1="70" x2="60" y2="480" stroke="#333" stroke-width="2" marker-end="url(#srArrow)"/>
+  <text x="55" y="500" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#333">时间</text>
+
+  <!-- Process columns header -->
+  <text x="170" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#1565c0">Agent 进程</text>
+  <text x="350" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#4caf50">Bash 进程</text>
+  <text x="530" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#e65100">命令进程</text>
+
+  <!-- Agent process (continuous vertical bar) -->
+  <rect x="140" y="100" width="60" height="380" rx="4" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
+
+  <!-- PTY channel indicator -->
+  <rect x="205" y="115" width="110" height="365" rx="4" fill="#f3e5f5" fill-opacity="0.3" stroke="#7b1fa2" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="260" y="135" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#7b1fa2">PTY 通道</text>
+
+  <!-- Bash process (continuous, starts at spawn arrow) -->
+  <rect x="320" y="115" width="60" height="365" rx="4" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+  <text x="350" y="300" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#2e7d32" transform="rotate(-90, 350, 300)">持久运行</text>
+
+  <!-- Command process 1 -->
+  <rect x="500" y="180" width="60" height="60" rx="4" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+  <text x="530" y="215" text-anchor="middle" font-family="monospace" font-size="9" fill="#e65100">cmd1</text>
+
+  <!-- Command process 2 -->
+  <rect x="500" y="340" width="60" height="60" rx="4" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+  <text x="530" y="375" text-anchor="middle" font-family="monospace" font-size="9" fill="#e65100">cmd2</text>
+
+  <!-- Spawn bash -->
+  <line x1="200" y1="115" x2="315" y2="115" stroke="#1976d2" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#srArrowBlue)"/>
+  <text x="257" y="108" text-anchor="middle" font-family="monospace" font-size="8" fill="#1976d2">pexpect.spawn()</text>
+
+  <!-- Agent activity indicators -->
+  <rect x="145" y="155" width="50" height="18" rx="2" fill="#bbdefb"/>
+  <text x="170" y="168" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#1565c0">sendline</text>
+
+  <rect x="145" y="245" width="50" height="18" rx="2" fill="#ffcdd2"/>
+  <text x="170" y="258" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#c62828">expect</text>
+
+  <rect x="145" y="275" width="50" height="18" rx="2" fill="#bbdefb"/>
+  <text x="170" y="288" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#1565c0">echo $?</text>
+
+  <rect x="145" y="315" width="50" height="18" rx="2" fill="#bbdefb"/>
+  <text x="170" y="328" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#1565c0">sendline</text>
+
+  <rect x="145" y="405" width="50" height="18" rx="2" fill="#ffcdd2"/>
+  <text x="170" y="418" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#c62828">expect</text>
+
+  <!-- Sendline arrow 1 -->
+  <line x1="200" y1="164" x2="315" y2="180" stroke="#1976d2" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#srArrowBlue)"/>
+
+  <!-- Fork command 1 -->
+  <line x1="380" y1="180" x2="495" y2="180" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#srArrowGreen)"/>
+  <text x="437" y="173" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#4caf50">fork</text>
+
+  <!-- Command 1 exit -->
+  <line x1="500" y1="240" x2="385" y2="240" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#srArrowOrange)"/>
+  <text x="442" y="233" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#ff9800">exit</text>
+  <circle cx="530" cy="240" r="5" fill="#c62828"/>
+
+  <!-- PS1 output 1 -->
+  <rect x="325" y="245" width="50" height="16" rx="2" fill="#c8e6c9" stroke="#4caf50" stroke-width="1"/>
+  <text x="350" y="257" text-anchor="middle" font-family="monospace" font-size="7" fill="#2e7d32">PS1 ▸</text>
+
+  <!-- PS1 to agent (horizontal arrow) -->
+  <line x1="320" y1="253" x2="200" y2="253" stroke="#4caf50" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#srArrowGreen)"/>
+
+  <!-- Sendline arrow 2 -->
+  <line x1="200" y1="324" x2="315" y2="340" stroke="#1976d2" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#srArrowBlue)"/>
+
+  <!-- Fork command 2 -->
+  <line x1="380" y1="340" x2="495" y2="340" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#srArrowGreen)"/>
+  <text x="437" y="333" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#4caf50">fork</text>
+
+  <!-- Command 2 exit -->
+  <line x1="500" y1="400" x2="385" y2="400" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#srArrowOrange)"/>
+  <text x="442" y="393" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#ff9800">exit</text>
+  <circle cx="530" cy="400" r="5" fill="#c62828"/>
+
+  <!-- PS1 output 2 -->
+  <rect x="325" y="405" width="50" height="16" rx="2" fill="#c8e6c9" stroke="#4caf50" stroke-width="1"/>
+  <text x="350" y="417" text-anchor="middle" font-family="monospace" font-size="7" fill="#2e7d32">PS1 ▸</text>
+
+  <!-- PS1 to agent 2 (horizontal arrow) -->
+  <line x1="320" y1="413" x2="200" y2="413" stroke="#4caf50" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#srArrowGreen)"/>
+
+  <!-- Annotation box -->
+  <rect x="600" y="100" width="135" height="130" rx="4" fill="#fafafa" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="610" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#333">边界检测</text>
+  <text x="610" y="138" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">1. sendline(cmd)</text>
+  <text x="610" y="155" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">2. expect(PS1)</text>
+  <text x="610" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">   阻塞等待</text>
+  <text x="610" y="189" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">3. PS1 出现</text>
+  <text x="610" y="206" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">   → 命令完成</text>
+  <text x="610" y="223" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">4. echo $? 取码</text>
+
+  <!-- Limitation box -->
+  <rect x="600" y="250" width="135" height="70" rx="4" fill="#ffebee" stroke="#e53935" stroke-width="1"/>
+  <text x="610" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#c62828">局限性</text>
+  <text x="610" y="288" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">• 输出含 PS1 会误判</text>
+  <text x="610" y="305" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">• 退出码需额外往返</text>
+</svg>

@@ -1,0 +1,17 @@
+[project]
+name = "search_agent"
+version = "0.1.0"
+authors = [
+    { name = "mannaliang" },
+    { name = "clarenceai" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = ["ipykernel>=6.29.0", "jupyter-client>=8.6.0"]
+
+[tool.nexus]
+agents = { search_agent = "nexus.extensions.agents.search_agent.agent" }
+
+[tool.nexus.tools]
+execute_python = "nexus.extensions.agents.search_agent.tools"

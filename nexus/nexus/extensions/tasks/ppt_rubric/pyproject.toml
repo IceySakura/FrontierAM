@@ -1,0 +1,49 @@
+[project]
+name = "ppt_rubric"
+version = "0.1.0"
+authors = [
+    { name = "hongruijia" },
+    { name = "huaiyuli" },
+    { name = "stephenruan" },
+    { name = "alanqwang" },
+    { name = "kumohu" },
+]
+# The slide tools run in the sandbox worker venv (ToolType.RUNTIME), which
+# seeds installs from this module's deps; the host imports the modules too
+# when resolving tool schemas.
+dependencies = ["pillow", "numpy", "scipy", "fonttools"]
+
+[project.optional-dependencies]
+host = []
+# The render stack runs inside the sandbox, next to the deck the agent produced.
+# The `soffice` binary itself is an apt package and cannot be declared here; it
+# must come from the task's container image (runtime_configs.<name>.image).
+runtime = [
+    "python-pptx==1.0.2",
+    "PyMuPDF==1.24.14",
+    "opencv-python-headless==4.10.0.84",
+    "pillow",
+]
+
+[tool.nexus]
+
+[tool.nexus.tasks]
+"ppt_topic" = "nexus.extensions.tasks.ppt_rubric.task"
+
+# The twelve slide tools, thirteen registered names (ppt_run_python is a
+# second spelling of ppt_code_interpreter). The data-row switch is
+# `agent_tools: ["ppt12"]`, expanded by ppt_tools.expand_agent_tools.
+[tool.nexus.tools]
+"visual/ppt_page_info" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.measure_tools"
+"visual/ppt_text_blocks" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.measure_tools"
+"visual/ppt_sample_colour" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.measure_tools"
+"visual/ppt_region_stats" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.measure_tools"
+"visual/ppt_find_edges" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.measure_tools"
+"visual/ppt_identify_font" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.font_tools"
+"visual/ppt_estimate_font_size" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.font_tools"
+"visual/ppt_inspect_region" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.image_tools"
+"visual/ppt_overlay_grid" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.image_tools"
+"visual/ppt_compare_render" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.image_tools"
+"visual/ppt_render_slide" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.compile_tools"
+"visual/ppt_code_interpreter" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.code_tool"
+"visual/ppt_run_python" = "nexus.extensions.tasks.ppt_rubric.ppt_tools.code_tool"

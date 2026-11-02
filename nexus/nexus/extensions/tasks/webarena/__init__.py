@@ -1,0 +1,1 @@
+"""WebArena benchmark task implementation."""

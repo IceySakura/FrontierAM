@@ -1,0 +1,6 @@
+compose:
+  - use: ../../base.yaml
+  - data:
+      uri: yufeihuang/context_agent_l3_clb_v1@v1
+      split: l3_clb_v1
+  - use: ../../remote_taskfiles.yaml

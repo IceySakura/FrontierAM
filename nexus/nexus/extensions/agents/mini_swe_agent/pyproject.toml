@@ -1,0 +1,18 @@
+[project]
+name = "mini_swe_agent"
+version = "0.1.0"
+authors = [
+    { name = "xavierxyxue" },
+]
+dependencies = [
+    "jinja2>=3.0",
+]
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { mini_swe_agent = "nexus.extensions.agents.mini_swe_agent.agent" }
+
+[tool.nexus.tools]
+"mini_swe_agent/bash" = "nexus.extensions.agents.mini_swe_agent.tools"

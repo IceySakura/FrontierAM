@@ -1,0 +1,11 @@
+[project]
+name = "android_world"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+host = []
+runtime = []
+
+[tool.nexus]
+runtime_providers = { android_world = "nexus.runtime.providers.android_world.provider" }

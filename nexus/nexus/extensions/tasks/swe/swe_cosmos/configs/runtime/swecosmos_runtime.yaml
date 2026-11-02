@@ -1,0 +1,75 @@
+# Gongfeng 沙盒 Runtime Profile（SWE-Cosmos 任务）
+#
+# 用途：
+#   把 SWE-Cosmos 的 agent 阶段和 eval 阶段都放进 Gongfeng 沙盒执行
+#
+# 环境变量：
+#   必填：GONGFENG_RUNTIME_TOKEN（或 GONGFENG_TOKEN）
+#   可选：RUNTIME_PROVIDER_NAME
+#         RUNTIME_BASE_URL
+#         RUNTIME_IMAGE
+#         RPC_PROTOCOL
+#         GONGFENG_PURPOSE
+#         RUNTIME_CPU
+#         RUNTIME_MEMORY
+#         RUNTIME_REQUEST_TIMEOUT
+#         RUN_ORACLE
+#         RAISE_ON_RUNTIME_ERROR
+#         EVAL_TIMEOUT_SECONDS
+#         WORKER_VENV
+#
+# 使用示例：
+#   RUNTIME_CONFIG=swecosmos_runtime.yaml
+#
+# 组合约束：
+#   runtime/ 下的 Profile 互斥，同一次运行只选择一个
+
+body:
+  imports:
+    - nexus.extensions.tasks.swe
+    - nexus.trace.processors.chat_tracker
+
+  runtime_provider_name: ${oc.env:RUNTIME_PROVIDER_NAME,gongfeng}
+
+  runtime_provider_config:
+    api_base_url: ${oc.env:RUNTIME_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}
+    token: ${oc.env:GONGFENG_RUNTIME_TOKEN,${oc.env:GONGFENG_TOKEN,''}}
+    # `current` 自动匹配当前 Nexus 版本；复现固定环境时填完整镜像地址，例如: mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:{version}
+    runtime_image: ${oc.env:RUNTIME_IMAGE,current}
+    rpc_protocol: ${oc.env:RPC_PROTOCOL,http}
+    # Gongfeng 资源用途桶：prod、eval 或 test
+    purpose: ${oc.env:GONGFENG_PURPOSE,prod}
+    resource_spec:
+      # oc.env 一律返回字符串，数值和布尔值都要套 oc.decode 还原类型
+      cpu: ${oc.decode:${oc.env:RUNTIME_CPU,2}}
+      memory: ${oc.decode:${oc.env:RUNTIME_MEMORY,10}}
+    # 单次 RPC 的 HTTP 超时，必须包住最长的那一次调用 —— agent 会话或 eval 阶段，二者取大
+    request_timeout: ${oc.decode:${oc.env:RUNTIME_REQUEST_TIMEOUT,18000}}
+
+  task_name: swe_task
+  task_config:
+    run_oracle: ${oc.decode:${oc.env:RUN_ORACLE,false}}
+    raise_on_runtime_error: ${oc.decode:${oc.env:RAISE_ON_RUNTIME_ERROR,true}}
+    eval_timeout_seconds: ${oc.decode:${oc.env:EVAL_TIMEOUT_SECONDS,2000}}
+    enable_anti_hack_prompt: true
+    enable_reward_hacking_detection: true
+    enable_anti_hack: true
+
+  # ChatTracker 记下每个最终分支的最后一次 tools。轨迹在 RunOutput.processor_results.chat.trajectories
+  processors:
+    chat:
+      name: chat_tracker
+      args:
+        tools_mode: branch_last
+
+  # worker_venv 会把当前 nexus wheel 上传进新建 venv，这样 Host 侧那些没打进 runtime 镜像的 dataset handler 也能解析
+  runtime_configs:
+    main:
+      worker_venv: ${oc.decode:${oc.env:WORKER_VENV,true}}
+    eval:
+      worker_venv: ${oc.decode:${oc.env:WORKER_VENV,true}}
+
+merge:
+  imports: append_unique
+
+source: swecosmos-gongfeng-runtime

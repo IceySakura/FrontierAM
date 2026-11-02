@@ -1,0 +1,40 @@
+# SWE-Agent Profile。
+#
+# 用途：
+#   使用 SWE-Agent 的代码检索、编辑和命令执行循环完成仓库级软件工程任务。
+#
+# 适用任务：
+#   代码修复、仓库检索、RepoQA，以及需要模型根据工具错误持续修正的 Harbor 任务。
+#
+# Harbor 运行时注入：
+#   user_prompt 和 working_dir；Agent timeout 由 task.toml [agent].timeout_sec 在 Harbor
+#   Task 外层控制。
+#
+# 环境变量：
+#   必填：无。
+#   可选：无。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/agents/swe-agent.yaml
+
+body:
+  imports:
+    - nexus.extensions.agents.swe_agent
+  agent_name: swe_agent
+  agent_config:
+    max_iterations: 50
+    # HY3 等模型偶尔可能产生无 tool_calls 或无效 JSON，允许重新请求。
+    completion_retry_on_tool_error: 2
+    # 单次工具错误不立即终止，允许模型读取错误并修正。
+    early_stop: false
+    platform_exit_status: false
+    continue_on_tool_timeout: false
+    bash_backend: null
+    # The Harbor task owns the outer Agent timeout.
+    timeout: null
+
+merge:
+  imports: append_unique
+
+source: harbor-swe-agent

@@ -1,0 +1,2 @@
+ARG NEXUS_UNIVERSAL_BASE_IMAGE=nexus-distributed-universal:local
+FROM ${NEXUS_UNIVERSAL_BASE_IMAGE}

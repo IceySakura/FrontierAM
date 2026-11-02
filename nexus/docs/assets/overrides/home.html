@@ -1,0 +1,180 @@
+{% extends "main.html" %}
+
+{% block tabs %}
+  {{ super() }}
+
+  <style>
+    /* Prevent scroll jump on theme toggle */
+    html {
+      scroll-behavior: auto !important;
+      overflow-anchor: none;
+    }
+
+    body {
+      overflow-anchor: none;
+    }
+
+    /* Application header - keep sticky but make transparent */
+    .md-header {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    /* Header elements should be white/light colored (over dark hero) */
+    .md-header .md-header__button,
+    .md-header .md-header__title,
+    .md-header .md-header__topic,
+    .md-header .md-logo {
+      color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .md-header .md-header__button:hover {
+      color: white !important;
+    }
+
+    /* Logo icon color */
+    .md-header .md-logo img,
+    .md-header .md-logo svg {
+      fill: currentColor;
+      filter: brightness(0) invert(1);
+    }
+
+    /* Search input styling - inactive state */
+    .md-search__input {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+      color: white !important;
+    }
+
+    .md-search__input::placeholder {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .md-search__icon {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    /* Search input styling - active/expanded state (white background) */
+    .md-search__form {
+      background-color: transparent !important;
+    }
+
+    [data-md-toggle="search"]:checked ~ .md-header .md-search__input,
+    .md-search__input:focus {
+      background-color: white !important;
+      color: var(--md-default-fg-color) !important;
+    }
+
+    [data-md-toggle="search"]:checked ~ .md-header .md-search__input::placeholder {
+      color: var(--md-default-fg-color--light) !important;
+    }
+
+    [data-md-toggle="search"]:checked ~ .md-header .md-search__icon {
+      color: var(--md-default-fg-color) !important;
+    }
+
+    /* Search result overlay */
+    .md-search__output {
+      color: var(--md-default-fg-color) !important;
+    }
+
+    /* Tabs styling - transparent background */
+    .md-tabs {
+      background: transparent !important;
+    }
+
+    .md-tabs__link {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .md-tabs__link:hover,
+    .md-tabs__link--active {
+      color: white !important;
+    }
+
+    /* Remove spacing, as we cannot hide it completely */
+    .md-main__inner {
+      margin: 0;
+    }
+
+    /* Hide main content for now */
+    .md-content {
+      display: none;
+    }
+
+    /* Hide table of contents */
+    @media screen and (min-width: 60em) {
+      .md-sidebar--secondary {
+        display: none;
+      }
+    }
+
+    /* Hide navigation */
+    @media screen and (min-width: 76.25em) {
+      .md-sidebar--primary {
+        display: none;
+      }
+    }
+  </style>
+
+  <section class="mdx-container mdx-container--fullscreen">
+    <div class="md-grid md-typeset">
+      <div class="mdx-hero">
+        <div class="mdx-hero__content">
+          <h1>Nexus Agent</h1>
+          <p>{{ config.site_description }}</p>
+          <a
+            href="{{ 'get-started/tutorial/' | url }}"
+            title="Get Started"
+            class="md-button md-button--primary"
+          >
+            Get Started
+          </a>
+        </div>
+      </div>
+      <div class="mdx-features mdx-features--floating">
+        <div class="mdx-features__item">
+          <div class="mdx-features__icon">
+            <span class="twemoji">
+              {% include ".icons/material/robot.svg" %}
+            </span>
+          </div>
+          <h2>开箱即用</h2>
+          <p>内置SWE-Agent、Claude Code等主流Agent，支持SWE-Bench、TerminalBench2、WebArena、BrowserComp等评测，开箱即用。</p>
+        </div>
+        <div class="mdx-features__item">
+          <div class="mdx-features__icon">
+            <span class="twemoji">
+              {% include ".icons/material/shield-lock.svg" %}
+            </span>
+          </div>
+          <h2>统一沙盒</h2>
+          <p>统一的沙盒抽象，支持文件、终端、浏览器，兼容任意镜像。 后续扩展手机、虚拟机等环境。</p>
+        </div>
+        <div class="mdx-features__item">
+          <div class="mdx-features__icon">
+            <span class="twemoji">
+              {% include ".icons/material/puzzle.svg" %}
+            </span>
+          </div>
+          <h2>灵活扩展</h2>
+          <p>注册表机制统一管理Agent、Task、Tool、LLM，可在外部仓库轻易扩展。</p>
+        </div>
+        <div class="mdx-features__item">
+          <div class="mdx-features__icon">
+            <span class="twemoji">
+              {% include ".icons/material/api.svg" %}
+            </span>
+          </div>
+          <h2>基础设施完备</h2>
+          <p>内置评估、RL训练接入、Tracing、可视化，开发到上线一站式支持。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% block footer %}
+  {{ super() }}
+{% endblock %}

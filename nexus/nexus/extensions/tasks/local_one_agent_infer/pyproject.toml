@@ -1,0 +1,14 @@
+[project]
+name = "local-one-agent-infer"
+version = "1.0"
+authors = [
+    { name = "jimcjhe" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = []
+runtime = []
+
+[tool.nexus]
+tasks = { local_one_agent_infer = "nexus.extensions.tasks.local_one_agent_infer.task", local_one_agent_infer_ags = "nexus.extensions.tasks.local_one_agent_infer.ags_task" }

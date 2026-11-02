@@ -1,0 +1,46 @@
+{
+  "case": "backend_web_fetch",
+  "prompt": "让后台用原生 WebFetch 读取 https://docs.typesafe.ai/introduction，整理网页实际介绍的 Jev 定义、用途和 Choice、Score、Noul 三种原语，写入 fetch_summary.md，并附原网页链接。不需要搜索，不要用 Bash、curl 或记忆代替 WebFetch；抓取失败就如实报告。",
+  "user_simulator": {
+    "type": "scripted",
+    "turns": [
+      "让后台用原生 WebFetch 读取 https://docs.typesafe.ai/introduction，整理网页实际介绍的 Jev 定义、用途和 Choice、Score、Noul 三种原语，写入 fetch_summary.md，并附原网页链接。不需要搜索，不要用 Bash、curl 或记忆代替 WebFetch；抓取失败就如实报告。",
+      {
+        "content": "这项网页读取工作以后都允许。",
+        "gate": "after_delivery"
+      }
+    ]
+  },
+  "task_config": {
+    "user_place": {
+      "country": "中国",
+      "province": "上海",
+      "city": "上海"
+    },
+    "user_now": "2026-10-15T10:00:00+08:00",
+    "web_search_provider": "none",
+    "max_user_turns": 4,
+    "task_delivery_timeout": 1800,
+    "hold_next_user_until_permission": true,
+    "default_budget": {
+      "timeout_s": 1800
+    },
+    "work_agent_configs": {
+      "codebuddy": {
+        "working_dir": "/workspace",
+        "skip_permissions": false,
+        "permission_policy": "defer",
+        "npm_registry": "http://mirrors.tencent.com/npm/",
+        "extra_env": {
+          "CODEBUDDY_API_KEY__env": "CODEBUDDY_API_KEY",
+          "CODEBUDDY_INTERNET_ENVIRONMENT": "internal"
+        }
+      },
+      "workbuddy": {
+        "workbuddy": {
+          "permission_mode": "default"
+        }
+      }
+    }
+  }
+}

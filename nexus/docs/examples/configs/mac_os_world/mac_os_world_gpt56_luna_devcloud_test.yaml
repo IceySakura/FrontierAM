@@ -1,0 +1,77 @@
+# Nexus Dataset run part. Use: nexus run-single --use docs/examples/configs/mac_os_world/mac_os_world_gpt56_luna_devcloud_test.yaml --data <namespace/dataset@version> --id <item-id> -o output.json
+# Task identity and task_files come from --data; no local task checkout is required.
+body:
+  # macOSWorld test × cua_gpt_agent with GPT-5.6 Luna via AI Hub on DevCloud macOS sandbox.
+  #
+  # Required env vars:
+  #   DEVCLOUD_APP_ID
+  #   DEVCLOUD_APP_TOKEN
+  #   GPT_CUA_API_KEY (or the existing API key fallback variables)
+  # Optional overrides: GPT_CUA_BASE_URL / GPT_CUA_MODEL
+  # Keeps the cua_gpt_agent Responses API transport.
+
+  imports:
+    - nexus.extensions.tasks.mac_os_world
+    - nexus.extensions.agents.cua.macosworld_cua.gpt
+
+  task_name: mac_os_world
+  task_config:
+    wedata_key: ${oc.env:WEDATA_KEY,""}
+    language: ${oc.env:MACOSWORLD_LANGUAGE,en}
+    # Select localized setup from the actual GUI locale by default.
+    environment_language: ${oc.env:MACOSWORLD_ENVIRONMENT_LANGUAGE,auto}
+    observation_type: screenshot
+    action_space: pyautogui
+    run_pre_command: true
+    # Set false for setup-only/grader-only deterministic probes.
+    execute_agent: true
+    run_evaluator: true
+    binary_grading: true
+    client_password: ${oc.env:MACOSWORLD_CLIENT_PASSWORD,password}
+
+  runtime_provider_name: devcloud
+  runtime_provider_config:
+    app_id: ${oc.env:DEVCLOUD_APP_ID}
+    app_token: ${oc.env:DEVCLOUD_APP_TOKEN}
+    sandbox_api_base_url: ${oc.env:DEVCLOUD_SANDBOX_API_BASE_URL,http://21.6.221.82:18800}
+    lease_time: ${oc.env:DEVCLOUD_LEASE_TIME,5400}
+    server_port: ${oc.env:DEVCLOUD_SERVER_PORT,5000}
+    request_timeout: ${oc.env:DEVCLOUD_REQUEST_TIMEOUT,5400}
+    instance_ready_timeout: ${oc.env:DEVCLOUD_INSTANCE_READY_TIMEOUT,600}
+
+  runtime_configs:
+    main:
+      runtime_kind: macosworld_devcloud
+      timeout: ${oc.env:MACOSWORLD_SANDBOX_TIMEOUT,4800}
+
+  openai_clients:
+    main:
+      name: macosworld_openai_responses
+      config:
+        client_args:
+          api_key: '${oc.env:GPT_CUA_API_KEY,${oc.env:OPENAI_API_KEY,${oc.env:MODEL_SERVICE_API_APP_ID,""}:${oc.env:MODEL_SERVICE_API_APP_KEY,""}}}'
+          base_url: '${oc.env:GPT_CUA_BASE_URL,${oc.env:OPENAI_BASE_URL,${oc.env:MODEL_SERVICE_API_BASE_URL,"http://api.aihub.woa.com/standard/v1"}}}'
+          ensure_v1_path: true
+          max_retries: 5
+        request_args:
+          model: '${oc.env:GPT_CUA_MODEL,${oc.env:NEXUS_MODEL,"gpt-5.6-luna"}}'
+
+  agent_name: macosworld_cua_gpt
+  agent_config:
+    max_iterations: ${oc.env:MACOSWORLD_MAX_ITERATIONS,30}
+    reasoning_effort: ${oc.env:MACOSWORLD_REASONING_EFFORT,high}
+    client_password: ${oc.env:MACOSWORLD_CLIENT_PASSWORD,password}
+    sleep_after_execution: 1.0
+    step_pause: 2.0
+    pyautogui_execution_mode: run_command
+    pyautogui_timeout: ${oc.env:MACOSWORLD_PYAUTOGUI_TIMEOUT,120}
+    platform_name: macos
+
+  processors:
+    chat:
+      name: chat_tracker
+
+  runner:
+    timeout: ${oc.env:MACOSWORLD_RUNNER_TIMEOUT,4800}
+merge:
+  imports: append_unique

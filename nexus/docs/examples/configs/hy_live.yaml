@@ -1,0 +1,90 @@
+imports:
+  - nexus.extensions.projects.hy_live
+  - nexus.extensions.openai_clients.openai
+
+task_name: hy-live
+agent_name: hy-live
+agent_config: {}
+task_config:
+  # 未配置 user_simulator 时，prompt 会退化为单轮 scripted user。
+  prompt: "在 /workspace 中完成任务 A。"
+  # 多轮数据也可以直接写在样本配置中：
+  # user_simulator:
+  #   type: scripted
+  #   turns:
+  #     - "先完成任务 A，受理后告诉我"
+  #     - "现在再完成任务 B"
+  external_client_name: external
+  policy_client_name: main
+  backend_adapter: workbuddy
+  default_budget:
+    timeout_s: 1800
+  work_agent_configs:
+    workbuddy:
+      working_dir: /workspace
+      # Live task progress; needs runtime_image to support it (nexus/extensions/projects/hy_live/docs/impl/runtime_image.md).
+      relay_updates: true
+      # NOTE(wallyshi): Native WebSearch needs a real key for either backend; the proxy key is model-only.
+      # extra_env:
+      #   CODEBUDDY_API_KEY__env: CODEBUDDY_API_KEY
+      #   CODEBUDDY_INTERNET_ENVIRONMENT: internal
+    #   extra_cli_args: ["--max-turns", "20"]
+    #   skip_permissions: true
+    #   permission_policy: defer
+    #   config_file_patches:
+    #     - path: ~/.codebuddy/settings.json
+    #       content: {}
+
+openai_clients:
+  # HyTuner 会把 main 覆盖为当前可训练 policy；这里的配置用于直接执行 Nexus 示例。
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: "${oc.env:LIVE_AGENT_POLICY_API_KEY,EMPTY}"
+        base_url: "${oc.env:LIVE_AGENT_POLICY_BASE_URL,http://127.0.0.1:8000/v1}"
+      request_args:
+        model: "${oc.env:LIVE_AGENT_POLICY_MODEL,policy-model}"
+  # working agent 的模型调用由 task 临时路由到这个固定外部服务。
+  external:
+    name: openai
+    config:
+      client_args:
+        api_key: "${oc.env:LIVE_AGENT_EXTERNAL_API_KEY}"
+        base_url: "${oc.env:LIVE_AGENT_EXTERNAL_BASE_URL,http://infer-api.taiji.woa.com/api/v1}"
+        timeout: 600
+        max_retries: 5
+      request_args:
+        model: "${oc.env:LIVE_AGENT_EXTERNAL_MODEL,GLM-5.3-Flash-H20-Template-test-nexus}"
+        temperature: 0.7
+        top_p: 0.6
+        max_tokens: 1024
+        extra_headers:
+          X-Request-Id: "${oc.env:LIVE_AGENT_REQUEST_ID,hy-live}"
+        extra_body:
+          top_k: 20
+          beam_size: 1
+          repetition_penalty: 1.05
+      enforced_request_args:
+        model: "${oc.env:LIVE_AGENT_EXTERNAL_MODEL,GLM-5.3-Flash-H20-Template-test-nexus}"
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}"
+  token__env: GONGFENG_RUNTIME_TOKEN
+  # tag 唯一来源：nexus/extensions/projects/hy_live/docs/impl/runtime_image.md
+  runtime_image: "${oc.env:NEXUS_RUNTIME_IMAGE,mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:1.8.21-hylive-992fb888-wb8da3c28fa1-py312-slim}"
+  python_version: "3.12"
+  runtime_provider: gongfeng
+  resource_spec: {cpu: 4, memory: 16}
+  request_timeout: 7200
+  rpc_protocol: http
+runtime_configs:
+  main:
+    image: "${oc.env:LIVE_AGENT_RUNTIME_IMAGE,mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:claude-code-hle}"
+    working_dir: /workspace
+    worker_venv: false
+    # Keep the platform-injected proxy variables; CodeBuddy's web tools need them.
+    environment:
+      UV_CACHE_DIR: /tmp/nexus-uv-cache
+      UV_PYTHON_DOWNLOADS: never

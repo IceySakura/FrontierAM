@@ -1,0 +1,92 @@
+# 潮汐资源 HY4 Preview Offline LLM Profile
+#
+# 协议与路由：
+#   Client=openai（Chat Completions）
+#   Endpoint=http://api.taiji.woa.com/openapi/inner/v2/chat/completions；Model=hy4-preview-offline
+#   Bearer 用专门申请的 OPENAI_API_KEY
+#
+# 环境变量：
+#   必填：OPENAI_API_KEY
+#   可选：
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#
+# 使用示例：
+#   LLM_CONFIG=hy4-preview-offline.openai
+#
+# curl 测试指令:
+# curl -X POST 'http://api.taiji.woa.com/openapi/inner/v2/chat/completions' \
+#   -H "Content-Type: application/json" \
+#   -H "Authorization: Bearer $OPENAI_API_KEY" \
+#   -d '{
+#   "model": "hy4-preview-offline",
+#   "reasoning_effort": "high",
+#   "messages": [
+#     {
+#       "role": "user",
+#       "content": "北京今天天气怎么样 (请深度思考后回答)"
+#     }
+#   ],
+#   "tools": [
+#     {
+#       "type": "function",
+#       "function": {
+#         "name": "get_weather",
+#         "description": "获取指定城市的天气",
+#         "parameters": {
+#           "type": "object",
+#           "properties": {
+#             "city": {
+#               "type": "string",
+#               "description": "城市名称"
+#             }
+#           },
+#           "required": ["city"]
+#         }
+#       }
+#     }
+#   ],
+#   "tool_choice": "auto"
+# }'
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.openai
+
+  # Facts about this model. The scaffold decides what to do with them, in its
+  # agent_config_by_llm section; this file never names a scaffold.
+  llm:
+    family: hunyuan
+    anthropic_model: hy4-preview-offline
+    # 协议无关的推理档位 fact，供 scaffold 读取，scaffold 不必知道这条 wire 怎么拼字段。
+    # 这条 wire 的真实字段是 openai chat 的 reasoning_effort 顶层字段；和下面 request_args 用同一个 env var，不会不一致。
+    reasoning_effort: ${oc.env:REASONING_EFFORT,high}
+
+  openai_clients:
+    main:
+      name: openai
+      config:
+        client_args:
+          api_key: ${oc.env:OPENAI_API_KEY,''}
+          # AsyncOpenAI 会在这个 base 后拼 /chat/completions
+          base_url: 'http://api.taiji.woa.com/openapi/inner/v2'
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,900}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,15}}
+          # 不能放 log_llm_usage 或 cache_control_*：client_args 会原样喂给 AsyncOpenAI
+
+        request_args:
+          model: 'hy4-preview-offline'
+          temperature: 1.0
+          top_p: 1.0
+          max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,32768}}
+          reasoning_effort: ${oc.env:REASONING_EFFORT,high}
+          extra_body:
+            chat_template_kwargs:
+              preserved_thinking: true
+              interleaved_thinking: true
+
+merge:
+  imports: append_unique
+
+source: taiji-hy4-preview-offline-openai

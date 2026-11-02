@@ -1,0 +1,20 @@
+[project]
+name = "search"
+version = "0.1.0"
+authors = [
+    { name = "mannaliang" },
+    { name = "clarenceai" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "dateparser>=1.3.0",
+    "httpx>=0.28.1",
+    "pandas>=2.3.3",
+    "pyarrow",
+]
+runtime = []
+
+[tool.nexus]
+tasks = { search = "nexus.extensions.tasks.search.task" }

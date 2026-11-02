@@ -1,0 +1,17 @@
+[project]
+name = "r2_stem"
+version = "0.1.0"
+authors = [
+    { name = "keithsun" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { mini_swe_agent_stem = "nexus.extensions.projects.r2_stem.agent" }
+tasks = { science_agent_task = "nexus.extensions.projects.r2_stem.task" }
+
+[tool.nexus.tools]
+"mini_swe_agent_stem/bash" = "nexus.extensions.projects.r2_stem.tools"

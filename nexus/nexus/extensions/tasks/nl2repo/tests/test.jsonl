@@ -1,0 +1,1 @@
+{"instance_id": "aiofiles", "gold_git_repo": "https://github.com/Tinche/aiofiles", "start_md_cos_key": "aiofiles/start.md", "test_files": ["tests"], "test_commands": ["pip install -e .", "pytest --continue-on-collection-errors tests"], "test_case_count": 202, "eval_image": "mirrors.tencent.com/hunyuan_yanguan/nl2repobench.eval.aiofiles:1.0"}

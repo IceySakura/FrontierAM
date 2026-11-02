@@ -1,0 +1,31 @@
+{
+  "task_id": "gui-web-form-smoke",
+  "app_type": "mock_web",
+  "instruction": "In the open browser page, type exactly done into the Answer field, then call desktop/fixed_marker with marker DONE.",
+  "config": [
+    {
+      "type": "download",
+      "parameters": {
+        "files": [
+          {
+            "url": "initial_setup.py",
+            "path": "/home/user/initial_setup.py"
+          }
+        ]
+      }
+    },
+    {
+      "type": "execute",
+      "parameters": {
+        "command": [
+          "python3",
+          "/home/user/initial_setup.py"
+        ]
+      }
+    }
+  ],
+  "evaluator": {
+    "type": "python",
+    "path": "reward.py"
+  }
+}

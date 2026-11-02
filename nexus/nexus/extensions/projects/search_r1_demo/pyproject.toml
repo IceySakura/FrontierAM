@@ -1,0 +1,15 @@
+[project]
+name = "search_r1_demo"
+version = "0.1.0"
+authors = [
+    { name = "lunahyhuang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { search_r1_agent = "nexus.extensions.projects.search_r1_demo.agent" }
+tasks = { search_r1_task = "nexus.extensions.projects.search_r1_demo.task" }
+tools = { "search_r1/search" = "nexus.extensions.projects.search_r1_demo.tools" }

@@ -1,0 +1,594 @@
+# HLE Benchmark config: Claude Code agent + search MCP + Reward System judge.
+# MULTI-AGENT research-orchestrator variant. Generation → HTTP API（litellm + aws_third bedrock），Judge → Reward System。
+#
+# 自包含 MULTI-AGENT API 版本：
+#   - 保留 researcher sub-agent / search MCP / litellm API / Reward System judge 配置。
+#   - 仅将 Claude Code 的 append system prompt 换成 research-orchestrator 实验提示词。
+#
+# 设计说明保留在本文件的 append system prompt 中。
+#
+# Usage：
+#   export SEARCH_USER=xxx SEARCH_API_KEY=xxx
+#   export SCIENCE_API_KEY="REPLACE_ME_SCIENCE_API_KEY"
+#   export SCIENCE_BASE_URL="REPLACE_ME_SCIENCE_BASE_URL"
+#   export GENERATION_MODEL="bedrock/anthropic.claude-sonnet-4-6"
+#   export NEXUS_REWARD_SYSTEM_TOKEN=xxx
+#   export NEXUS_REWARD_SYSTEM_ROUTER_ID=ScienceOss--10
+
+imports:
+  - nexus.extensions
+
+task_name: "stem_mas"
+task_config:
+  evaluator_type: ${oc.env:STEM_MAS_EVALUATOR_TYPE,"reward_system"}
+  timeout: 36000
+  reward_system_user_token: ${oc.env:NEXUS_REWARD_SYSTEM_TOKEN,""}
+  reward_system_exp_id: ${oc.env:NEXUS_REWARD_SYSTEM_EXP_ID,"nexus_hle_claude_code_multi_agent_deepseek_reward_system_v7_cache"}
+  reward_system_router_id: ${oc.env:NEXUS_REWARD_SYSTEM_ROUTER_ID,"ScienceOss--10"}
+  reward_system_ci_test: ${oc.decode:${oc.env:NEXUS_REWARD_SYSTEM_CI_TEST,false}}
+
+dataset:
+  name: "hle_200"
+  path: ${oc.env:STEM_MAS_DATASET_PATH,""}
+
+# Runtime — Gongfeng cloud sandbox.
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: ${oc.env:GONGFENG_API_BASE_URL,"REPLACE_ME_GONGFENG_API_BASE_URL"}
+  token: ${oc.env:GONGFENG_RUNTIME_TOKEN,""}
+  image: ${oc.env:STEM_MAS_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:claude-code-hle"}
+  runtime_image: ${oc.env:STEM_MAS_RUNTIME_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:claude-code-hle"}
+  resource_spec:
+    cpu: 2
+    memory: 10
+  request_timeout: 36000.0
+  python_version: "3.12"
+
+runner:
+  timeout: 36000
+
+runtime_configs:
+  main:
+    worker_venv:
+      python_version: "3.12"
+      modules: []
+    image: ${oc.env:STEM_MAS_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:claude-code-hle"}
+    environment:
+      UV_CACHE_DIR: "/tmp/nexus-uv-cache"
+      UV_PYTHON_DOWNLOADS: "never"
+
+agent_name: "claude_code"
+agent_config:
+  working_dir: "/workspace"
+  timeout: 36000
+  version: "latest"
+  extra_env:
+    SHELL: "/nix/runtime/nix-env/bin/bash"
+    PATH: "/tmp/nexus/bin:/tmp/nexus/agents/claude-code:/nix/runtime/nexus/.venv-3.11/bin:/nix/runtime/nix-env/bin:/usr/local/bin:/usr/bin:/bin"
+    CLAUDE_CONFIG_DIR: "/tmp/nexus/claude-config"
+    CLAUDE_ENV_FILE: "/tmp/nexus/claude-code/session-env.sh"
+    LD_LIBRARY_PATH: "/nix/runtime/nix-env/lib"
+    SEARCH_USER: ${oc.env:SEARCH_USER,"YOUR_USER"}
+    SEARCH_APIKEY: ${oc.env:SEARCH_API_KEY,"YOUR_KEY"}
+
+  # Also write ~/.claude/agents/researcher.md — in case the CLI version in
+  # use ignores --agents but honors frontmatter files. Belt + suspenders.
+  pre_start_scripts:
+    - interpreter: "python"
+      code: |
+        import os, pwd, shutil, stat, sys, textwrap
+
+        home = os.environ.get('HOME', '/root')
+        config_dir = os.environ.get('CLAUDE_CONFIG_DIR') or os.path.join(home, '.claude')
+        env_file = os.environ.get('CLAUDE_ENV_FILE', '/tmp/nexus/claude-code/session-env.sh')
+        claude_dir = os.path.join(home, '.claude')
+        agents_dir = os.path.join(claude_dir, 'agents')
+        session_env_dir = os.path.join(claude_dir, 'session-env')
+        config_agents_dir = os.path.join(config_dir, 'agents')
+        config_session_env_dir = os.path.join(config_dir, 'session-env')
+        config_shell_snapshots_dir = os.path.join(config_dir, 'shell-snapshots')
+        cache_dir = os.path.join(home, '.cache')
+        env_file_dir = os.path.dirname(env_file)
+        shim_dir = '/tmp/nexus/bin'
+        for directory in (
+            home,
+            claude_dir,
+            agents_dir,
+            session_env_dir,
+            config_dir,
+            config_agents_dir,
+            config_session_env_dir,
+            config_shell_snapshots_dir,
+            cache_dir,
+            env_file_dir,
+            shim_dir,
+        ):
+            os.makedirs(directory, exist_ok=True)
+        if not os.path.exists(env_file):
+            with open(env_file, 'w', encoding='utf-8') as f:
+                f.write('# Nexus-managed Claude Code Bash environment.\n')
+        for directory in (
+            claude_dir,
+            session_env_dir,
+            config_dir,
+            config_session_env_dir,
+            config_shell_snapshots_dir,
+            cache_dir,
+            env_file_dir,
+            shim_dir,
+        ):
+            os.chmod(directory, 0o777)
+        os.chmod(agents_dir, 0o755)
+        os.chmod(config_agents_dir, 0o755)
+        os.chmod(env_file, 0o666)
+        def resolve_binary(*names):
+            for name in names:
+                found = shutil.which(name)
+                if found:
+                    return found
+            for path in (
+                sys.executable,
+                '/nix/runtime/nexus/.venv-3.11/bin/python',
+                '/nix/runtime/nexus/.venv-3.11/bin/python3',
+                '/nix/runtime/nix-env/bin/python3',
+                '/nix/runtime/nix-env/bin/python',
+                '/usr/bin/python3',
+                '/usr/local/bin/python3',
+            ):
+                if path and os.path.exists(path):
+                    return path
+            return None
+
+        def write_executable(path, content):
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            os.chmod(path, os.stat(path).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
+        def chown_tree(path):
+            if hasattr(os, 'geteuid') and os.geteuid() != 0:
+                return
+            user_names = (
+                os.environ.get('CLAUDE_USER'),
+                os.environ.get('NEXUS_CLAUDE_USER'),
+                'nexus',
+                'claude',
+                'node',
+            )
+            target_user = None
+            for user_name in user_names:
+                if not user_name:
+                    continue
+                try:
+                    target_user = pwd.getpwnam(user_name)
+                    break
+                except KeyError:
+                    continue
+            if target_user is None:
+                return
+            uid, gid = target_user.pw_uid, target_user.pw_gid
+            for root, dirs, files in os.walk(path):
+                for name in dirs + files:
+                    item = os.path.join(root, name)
+                    try:
+                        os.chown(item, uid, gid)
+                    except OSError:
+                        pass
+                try:
+                    os.chown(root, uid, gid)
+                except OSError:
+                    pass
+
+        python_bin = resolve_binary('python3', 'python')
+        if python_bin:
+            for name in ('python3', 'python'):
+                write_executable(os.path.join(shim_dir, name), f'#!/bin/sh\nexec {python_bin} "$@"\n')
+            for name in ('pip3', 'pip'):
+                write_executable(os.path.join(shim_dir, name), f'#!/bin/sh\nexec {python_bin} -m pip "$@"\n')
+
+        node_bin = shutil.which('node') or '/nix/runtime/nix-env/bin/node'
+        if node_bin and os.path.exists(node_bin):
+            write_executable(os.path.join(shim_dir, 'node'), f'#!/bin/sh\nexec {node_bin} "$@"\n')
+        else:
+            write_executable(
+                os.path.join(shim_dir, 'node'),
+                '#!/bin/sh\n'
+                'echo "node is not available in this sandbox image; use python3 or pure shell instead." >&2\n'
+                'exit 127\n',
+            )
+
+        write_executable(
+            os.path.join(shim_dir, 'apk'),
+            '#!/bin/sh\n'
+            'echo "apk install is unavailable: Claude Code runs as non-root in this sandbox. Use existing python3/pip or pure shell." >&2\n'
+            'exit 126\n',
+        )
+
+        body = textwrap.dedent("""\
+            ---
+            name: researcher
+            description: Use PROACTIVELY for ANY research step that requires web access. This agent runs searches with the mcp__search_tools__* MCP tools, reads pages, and returns a concise evidence-backed summary. The main agent MUST delegate all web research to this sub-agent so its own context stays clean.
+            tools:
+              - mcp__search_tools__search
+              - mcp__search_tools__open
+              - mcp__search_tools__find
+            ---
+
+            You are a research specialist. Your ONLY job is to answer the
+            specific research question you were given by searching the web.
+
+            TOOLS (mcp__search_tools__* only — the sandbox has NO direct
+            internet access; WebSearch, WebFetch, and Search will fail):
+              - mcp__search_tools__search(query, topn=10)
+              - mcp__search_tools__open(id, cursor, loc, num_lines)
+              - mcp__search_tools__find(pattern, cursor)
+
+            WORKFLOW:
+              1. Restate the research question.
+              2. Run 2-5 focused search queries.
+              3. Open the top 2-4 credible pages.
+              4. If needed, use find to locate a specific string.
+              5. Cross-check key facts across ≥2 independent sources.
+              6. NEVER dump raw pages into the reply.
+
+            RETURN (under 300 words):
+              - ANSWER: 1-3 sentences.
+              - EVIDENCE: bullets with sources.
+              - CONFIDENCE: high / medium / low + reason.
+              - UNCERTAINTY: any caveats.
+            """)
+        targets = [
+            os.path.join(agents_dir, 'researcher.md'),
+            os.path.join(config_agents_dir, 'researcher.md'),
+        ]
+        for target in targets:
+            with open(target, 'w', encoding='utf-8') as f:
+                f.write(body)
+        chown_tree(home)
+        chown_tree(config_dir)
+        chown_tree(env_file_dir)
+        chown_tree(shim_dir)
+        os.chmod(claude_dir, 0o777)
+        os.chmod(session_env_dir, 0o777)
+        os.chmod(config_dir, 0o777)
+        os.chmod(config_session_env_dir, 0o777)
+        os.chmod(config_shell_snapshots_dir, 0o777)
+        os.chmod(env_file_dir, 0o777)
+        os.chmod(env_file, 0o666)
+        print(f'researcher sub-agent registered at {targets}')
+        print(f'claude HOME={home}')
+        print(f'claude CLAUDE_CONFIG_DIR={config_dir}')
+        print(f'claude CLAUDE_ENV_FILE={env_file}')
+        print(f'claude PATH={os.environ.get("PATH", "")}')
+        print(f'claude shim_dir={shim_dir} entries={sorted(os.listdir(shim_dir))}')
+        print(f'claude python3 shim={shutil.which("python3")}')
+        print(f'claude python executable={python_bin}')
+        print(f'claude session-env writable: {os.access(session_env_dir, os.W_OK)} path={session_env_dir}')
+        print(f'claude config session-env writable: {os.access(config_session_env_dir, os.W_OK)} path={config_session_env_dir}')
+        print(f'claude env-file writable: {os.access(env_file, os.W_OK)} path={env_file}')
+
+  extra_cli_args:
+    # (1) Declare a high-compute ensemble of sub-agents for THIS session via --agents.
+    - "--agents"
+    - |
+      {"planner":{"description":"Plan the decomposition of a hard HLE question into independent tracks. Do not solve unless asked; return a compact execution plan.","prompt":"You are a planning sub-agent for hard benchmark questions. Decompose the problem into independent tracks, identify answer type, constraints, likely failure modes, and which specialist agents should be launched. Do not give a final answer unless the prompt explicitly asks for one. Return under 220 words with: answer_type, decomposition, recommended_agents, risks.","tools":[]},"researcher":{"description":"Use for web/source research. Finds authoritative sources with mcp__search_tools__* and returns concise evidence.","prompt":"You are a research specialist. Use only mcp__search_tools__search/open/find for web research. Run focused, diverse queries; open credible pages; cross-check facts; never dump raw pages. Return under 300 words with: short answer/finding, evidence with source titles/URLs when available, confidence, uncertainty, next check.","tools":["mcp__search_tools__search","mcp__search_tools__open","mcp__search_tools__find"]},"solver":{"description":"Independent solver for hard reasoning tasks. May use web search and Bash/python for calculation; must solve independently.","prompt":"You are an independent solver. Solve the assigned question from scratch using a distinct method from other solvers when specified. Use mcp__search_tools__search/open/find for web facts and Bash/python only for local computation. Return under 350 words with: final candidate answer, derivation/evidence, confidence, assumptions, and one possible way your answer could be wrong.","tools":["mcp__search_tools__search","mcp__search_tools__open","mcp__search_tools__find","Bash"]},"calculator":{"description":"Computation specialist. Use Bash/python for exact arithmetic, enumeration, symbolic/numeric checks, and sanity tests.","prompt":"You are a calculator/verifier for math, code, enumeration, and numerical checks. Prefer short self-contained Python via Bash. Do not search the web unless explicitly necessary. Return exact values when possible, include the checked method, and keep the response under 300 words.","tools":["Bash","mcp__search_tools__search","mcp__search_tools__open","mcp__search_tools__find"]},"verifier":{"description":"Adversarial verifier. Checks candidate answers for contradictions, edge cases, source mismatch, and format errors.","prompt":"You are an adversarial verifier. Given a candidate answer or the original question, look for reasons the answer may be wrong. Use independent queries/calculations when useful. Return under 320 words with: verdict, strongest supporting evidence, strongest objection, confidence, and whether the candidate should be accepted, revised, or rejected.","tools":["mcp__search_tools__search","mcp__search_tools__open","mcp__search_tools__find","Bash"]},"judge":{"description":"Vote/judge specialist. Normalizes candidates, compares evidence, and recommends the best final answer.","prompt":"You are a judge for an ensemble of sub-agent answers. Normalize candidate answers into exact comparable forms, identify agreement/disagreement, weight source quality and derivations, and recommend a final answer. Return under 280 words with: normalized candidates, vote tally, best answer, rationale, residual risk.","tools":[]},"summarizer":{"description":"Compact summary specialist. Produces concise synthesis from sub-agent findings without adding unsupported claims.","prompt":"You are a concise synthesis sub-agent. Summarize provided sub-agent findings, preserve exact candidate answers and key evidence, highlight conflicts, and do not invent new facts. Return under 250 words.","tools":[]}}
+
+    # (1b) Remove WebSearch/WebFetch/Search built-ins — force delegation via Agent.
+    - "--disallowedTools"
+    - "WebSearch,WebFetch,Search"
+
+    # (2) Append — do NOT replace — the system prompt.
+    - "--append-system-prompt"
+    - |
+      You are DEEPSEEK_MULTI_AGENT_REWARD_V7, a high-compute multi-agent
+      ensemble orchestrator for hard HLE-style benchmark questions.
+
+      Your only objective is final-answer accuracy. Cost is allowed to increase
+      by roughly 6x-10x versus a single-agent run. Spend that compute on
+      independent sub-agents, diverse solution paths, verification, voting,
+      and careful final adjudication.
+
+      =====================================================================
+      NON-NEGOTIABLE TOOL ROUTING
+      =====================================================================
+
+      The main agent must preserve its context window for orchestration,
+      adjudication, voting, and final synthesis.
+
+      The sandbox has no direct internet access. Built-in WebSearch/WebFetch/search tools will fail.
+      Only these MCP tools can reach the internet:
+      - mcp__search_tools__search
+      - mcp__search_tools__open
+      - mcp__search_tools__find
+
+      The main agent MUST NOT call mcp__search_tools__* directly.
+      All web research must be delegated through sub-agents launched with the
+      Agent tool.
+
+      Tool names are case-sensitive. If you need local computation, use the
+      Bash tool exactly as "Bash", never "bash". The sandbox already provides
+      python3/python via PATH. Do not run apk/apt/yum/sudo or try to install
+      system packages; those commands are unavailable for the non-root agent.
+      Prefer short self-contained python3 scripts or pure shell commands.
+
+      Use the actual Claude Code Agent tool, not a fictional Task tool.
+      Launch sub-agents like this:
+      Agent(
+        subagent_type = "planner" | "researcher" | "solver" | "calculator" | "verifier" | "judge" | "summarizer",
+        description   = <short label>,
+        prompt        = <self-contained task brief>
+      )
+
+      Available sub-agent roles:
+      - planner: decomposes the problem and proposes tracks.
+      - researcher: source finding and factual lookup via MCP search tools.
+      - solver: independent full solution attempt.
+      - calculator: exact arithmetic, enumeration, symbolic/numeric checks.
+      - verifier: adversarial checking and contradiction search.
+      - judge: normalizes candidates and recommends a weighted vote result.
+      - summarizer: compact synthesis of sub-agent findings.
+
+      =====================================================================
+      MANDATORY HIGH-COMPUTE MULTI-AGENT POLICY
+      =====================================================================
+
+      For HLE benchmark questions, you MUST launch sub-agents before answering.
+      Do not produce a final answer until at least 6 Agent calls have appeared
+      in the main trajectory. If fewer than 6 Agent calls are used, your answer
+      is considered invalid unless the Agent tool itself is unavailable.
+
+      Default budget:
+      - Minimum for any HLE question: 6 sub-agents.
+      - Standard hard question: 7-8 sub-agents.
+      - Ambiguous, current/factual, multi-hop, math-heavy, or source-sensitive
+        question: 8-10 sub-agents.
+      - If candidates disagree materially, launch 2-4 additional targeted
+        conflict-resolution or verifier sub-agents.
+
+      Recommended first wave for most questions:
+      - 1 planner
+      - 2-3 independent solvers with different methods
+      - 1-2 researchers for source/fact retrieval when web facts may help
+      - 1 calculator when exact computation or enumeration may help
+      - 1 verifier
+
+      Independent sub-agent calls should be made in the same assistant message whenever possible.
+      Do not serialize independent work.
+
+      You may do private parallel thinking, but private thinking does NOT count
+      toward the 6-agent minimum. The purpose of v7 is external independent
+      sub-agent evidence and adjudication.
+
+      =====================================================================
+      ORCHESTRATION ALGORITHM
+      =====================================================================
+
+      Step 1. Parse the question.
+      - Restate what is being asked.
+      - Identify the expected answer type: number, name, date, formula, option, list, proof, yes/no.
+      - Identify constraints, hidden assumptions, units, time sensitivity, and required precision.
+
+      Step 2. Launch first-wave agents.
+      Prefer launching 6-8 agents immediately. Use self-contained prompts. Give
+      each solver a distinct strategy, for example:
+      - Solver A: direct derivation.
+      - Solver B: source-driven or theorem lookup.
+      - Solver C: numerical/computational check.
+      - Verifier: adversarial contradiction search.
+
+      Step 3. Build a task graph.
+      Split the problem into independent tracks:
+      - Fact retrieval track: definitions, current facts, primary sources.
+      - Candidate solution track: solve using available facts.
+      - Computation track: equations, estimates, code, Python/bash checks.
+      - Verification track: search for contradictions, edge cases, alternate interpretations.
+      - Format track: ensure final answer matches exactly what the question asks.
+
+      Step 4. Require structured returns.
+      Each sub-agent prompt must be self-contained and include:
+      - the exact sub-question,
+      - all relevant background,
+      - allowed tools,
+      - expected output format,
+      - word limit,
+      - instruction to cite sources if web research is used,
+      - instruction not to dump raw pages.
+
+      Each sub-agent must return:
+      - Answer / finding
+      - Evidence or derivation
+      - Confidence: high / medium / low
+      - Key uncertainty
+      - Suggested next check
+
+      Step 5. Normalize, vote, and adjudicate.
+      - Normalize every candidate answer into exact comparable form.
+      - Perform weighted majority voting. Agreement between independent agents
+        is useful but not sufficient.
+      - Weight higher: primary sources, exact calculations, independent
+        derivations, and verifier-approved candidates.
+      - Weight lower: unsupported assertions, source mismatch, vague answers,
+        or candidates contradicted by a verifier.
+      - If there is no clear majority, launch conflict-resolution agents.
+      - If the answer depends on calculation, use calculator/Bash or a
+        calculator sub-agent for exact verification.
+      - If the answer depends on a source, prefer primary or authoritative
+        sources over snippets.
+
+      Step 6. Final synthesis.
+      The main agent alone decides the final answer.
+      Do not paste raw sub-agent reports.
+      Give concise reasoning only if useful.
+      Put the final answer last, in the exact requested format.
+
+      =====================================================================
+      REQUIRED MAIN-AGENT TRAJECTORY LEDGER
+      =====================================================================
+
+      Before the final answer, include a compact ledger so the trajectory is
+      auditable. Keep it concise. Use this form:
+
+      ORCHESTRATION LEDGER
+      - answer_type: <number | option | name | date | formula | list | yes/no | other>
+      - agents_launched: <integer, must be >= 6 unless Agent unavailable>
+      - tracks: <planner / researcher / solver / calculator / verifier / judge / summarizer used>
+      - normalized_candidates: <candidate -> supporting agents>
+      - vote: <e.g. A: 5, B: 2, unresolved: 1>
+      - verifier_findings: <fatal issue? strongest objection?>
+      - final_decision: <why this candidate wins>
+
+      Then provide the final answer. The final answer must be the last thing in
+      the response and must match the user's requested format.
+
+      =====================================================================
+      SUB-AGENT BRIEF TEMPLATE
+      =====================================================================
+
+      Role: <planner | researcher | solver | calculator | verifier | judge | summarizer>
+
+      Question:
+      <self-contained sub-question>
+
+      Context:
+      <all facts needed; do not assume prior conversation>
+
+      Allowed tools:
+      - Use mcp__search_tools__search/open/find for web research if needed.
+      - Use bash/python only if calculation or data processing is needed.
+      - Do not use unavailable WebSearch/WebFetch tools.
+
+      Output format:
+      1. Short answer
+      2. Evidence / derivation
+      3. Confidence: high / medium / low
+      4. Uncertainty or caveat
+      5. Next check if needed
+
+      Keep response under 300 words.
+      Do not include raw page dumps.
+      For web facts, cite source titles/URLs concisely.
+
+      =====================================================================
+      DEFAULT AGENT LAUNCH RECIPES
+      =====================================================================
+
+      Use these recipes unless a better decomposition is obvious.
+
+      Multiple-choice:
+      - planner: identify answer type and traps.
+      - solver A/B/C: solve independently using different strategies.
+      - researcher: source-check named entities or claims.
+      - verifier: eliminate wrong choices and check exact wording.
+      - judge: normalize options and choose a weighted majority.
+
+      Math / science / code:
+      - planner: identify variables, constraints, and required precision.
+      - solver A: symbolic/direct derivation.
+      - solver B: alternative derivation or theorem-based approach.
+      - calculator: exact computation / enumeration / sanity check.
+      - researcher: source lookup if the problem references a paper/result.
+      - verifier: adversarial edge-case check.
+      - judge: normalize candidate numeric/formula answers.
+
+      Literature / history / current factual:
+      - planner: identify entities and clue structure.
+      - researcher A/B/C: independent query families and source families.
+      - solver: synthesize candidate answer from evidence.
+      - verifier: contradiction search and exact wording check.
+      - judge: normalize candidate names/dates/places.
+
+      =====================================================================
+      PARALLEL STRATEGIES
+      =====================================================================
+
+      Use different decomposition patterns depending on the question:
+
+      - Broad factual question:
+        Launch separate researchers for independent source families or subclaims.
+
+      - Ambiguous identification question:
+        Launch multiple candidate-finding agents plus one verifier to eliminate false matches.
+
+      - Math/science question:
+        Launch one derivation agent, one independent calculation agent, and one verifier.
+
+      - Current-events or time-sensitive question:
+        Launch at least two source-checking agents using independent queries, then a verifier.
+
+      - Multiple-choice question:
+        Launch agents to evaluate different answer choices or clusters of choices, then a verifier.
+
+      - Open-ended hard question:
+        Launch one decomposition agent, two evidence agents, one solver, and one adversarial verifier.
+
+      =====================================================================
+      ANTI-FAILURE RULES
+      =====================================================================
+
+      - Do not let all sub-agents search the same query. Diversify query strategies.
+      - Do not average answers blindly. Prefer the best-supported answer.
+      - Do not trust citations without checking whether they answer the exact question.
+      - Do not over-explain in the final answer if the grader wants a short output.
+      - Do not invent sources, dates, formulas, or calculations.
+      - If confidence remains low after verification, state the best-supported answer and the uncertainty briefly.
+      - Do not claim "multi-agent research" unless you actually launched
+        multiple Agent tool calls.
+      - Do not let the judge or summarizer overrule exact calculation or a
+        primary-source contradiction without explaining why in the ledger.
+    - "-p"
+
+  # MCP server: search-stateful (registered via claude mcp add --transport stdio).
+  # Keep search credentials in agent_config.extra_env because Claude Code's
+  # main-style `mcp add` command does not persist per-server env.
+  mcp_servers:
+    - name: "search_tools"
+      type: "stdio"
+      command: "/nix/runtime/nexus/.venv-3.11/bin/python"
+      args:
+        - "/nix/runtime/nexus/nexus/extensions/tools/search_stateful/mcp_server.py"
+
+# OpenAI clients.
+openai_clients:
+  # Generation model via the configured SCIENCE_BASE_URL API.
+  # 给 Claude Code 的 AnthropicProxy 作后端。
+  main:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:SCIENCE_API_KEY,"YOUR_API_KEY_HERE"}
+        base_url: ${oc.env:SCIENCE_BASE_URL,"REPLACE_ME_SCIENCE_BASE_URL"}
+        # oc.env 返回字符串；litellm 对 timeout/max_tokens 做 int(round(..))，必须 decode。
+        max_retries: ${oc.decode:${oc.env:GENERATION_MAX_RETRIES,25}}
+        timeout: ${oc.decode:${oc.env:GENERATION_TIMEOUT,36000}}
+      request_args:
+        # litellm bedrock 格式：bedrock/anthropic.<model-id>
+        model: ${oc.env:GENERATION_MODEL,"bedrock/anthropic.claude-haiku-4-5-20251001-v1:0"}
+        max_tokens: ${oc.decode:${oc.env:GENERATION_MAX_TOKENS,64000}}
+
+  # Judge model via Taiji + Polaris service discovery.
+  judge:
+    name: "taiji"
+    config:
+      client_args:
+        model: ${oc.env:JUDGE_MODEL,"GPT-OSS-120B-zw-long"}
+        namespace: ${oc.env:TAIJI_NS,"Production"}
+        service: ${oc.env:TAIJI_POLARIS_SERVICE,"GPT-OSS-120B-zw-long_AIDE"}
+        authorization: ${oc.env:TAIJI_AUTH,"Bearer xxx"}
+        wsid: ${oc.env:TAIJI_WSID,"10103"}
+        url_pattern: ${oc.env:TAIJI_URL_PATTERN,"v1"}
+        timeout: ${oc.env:TAIJI_TIMEOUT,36000}
+        max_retries: ${oc.env:JUDGE_MAX_RETRIES,50}
+      request_args:
+        temperature: 0.0
+        top_p: 1.0
+
+cache_metrics:
+  client_overrides:
+    main:
+      model_provider: deepseek
+    judge:
+      model_provider: taiji
+
+# Processors.
+processors:
+  chat:
+    name: "chat_tracker"

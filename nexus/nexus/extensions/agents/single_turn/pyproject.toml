@@ -1,0 +1,13 @@
+[project]
+name = "single_turn"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { single_turn = "nexus.extensions.agents.single_turn.agent" }

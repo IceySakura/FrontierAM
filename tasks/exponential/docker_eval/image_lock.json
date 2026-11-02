@@ -1,0 +1,11 @@
+{
+  "image_tag": "frontieram-exponential:pilot-v2",
+  "image_id": "sha256:f203391e0381bdca377548961998bbbcac9bfd2212cfd00ffb77c4b31ed230f2",
+  "architecture": "arm64",
+  "os": "linux",
+  "build_context_sha256": {
+    "Dockerfile": "910191c75683433d859a383f46e74eba93f2faf253636111ed68c720b0ae62f7",
+    "requirements-linux.txt": "01953c5ada9c64f86c39cb68d5f1c29e0aaa2efb3398442e5afcd931ac1c339e",
+    "supervisor.py": "62c3722738fe48199381b74d42ef5063876e390f0a7e094df18716e7a6e820ea"
+  }
+}

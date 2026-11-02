@@ -1,0 +1,14 @@
+.runtime/
+artifacts/
+outputs/
+**/.venv/
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+**/.ruff_cache/
+.env
+.env.*
+*.key
+*.pem
+*.sqlite*
+.DS_Store

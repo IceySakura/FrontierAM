@@ -1,0 +1,118 @@
+# Claude Code Agent Profile。
+#
+# 用途：
+#   在任务 Runtime 中安装并运行 Claude Code CLI，完成代码检索、修改、终端操作和工具调用。
+#
+# 适用任务：
+#   通用 CodeAgent、Cyber、SRE、RepoQA，以及需要无人值守 Claude Code 的 Harbor Batch。
+#
+# Harbor 运行时注入：
+#   user_prompt、working_dir、timeout 和 task.toml 声明的 MCP。no-thinking 与 Haiku 路由
+#   引用最终 LLM Profile 的主模型，避免在 Agent Profile 中重复定义。
+#
+# 默认无人值守 Hook：
+#   enable_unattended_interaction_hooks=true。ExitPlanMode 自动获准继续执行计划；
+#   AskUserQuestion 不等待真人输入，而是选择每个问题的第一个选项并将结果反馈给 Claude，
+#   避免无人值守 Batch 卡在交互确认直到超时。
+#
+# 环境变量：
+#   必填：无。
+#   可选：CLAUDE_CODE_VERSION、CLAUDE_CODE_NPM_REGISTRY、CLAUDE_CODE_TIMEOUT、
+#         AGENT_WORKING_DIR、ANTHROPIC_MODEL、API_FORCE_IDLE_TIMEOUT、API_TIMEOUT_MS、
+#         CLAUDE_STREAM_IDLE_TIMEOUT_MS。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/agents/claude-code.yaml
+
+# body 是合并进最终 RunInput 的部分配置。
+body:
+  # 导入后注册 claude_code Agent。 未导入时 agent_name 无法从 Registry 解析。
+  imports:
+    - nexus.extensions.agents.claude_code
+  # 选择已注册的 Claude Code Agent。
+  agent_name: claude_code
+  # ClaudeCodeInput 的配置。 user_prompt 和 working_dir 会由 Harbor Task 在运行时覆盖。
+  agent_config:
+    # Claude Code npm 包版本。 latest 每次都会检查最新版本；生产复现建议固定版本号。
+    version: ${oc.env:CLAUDE_CODE_VERSION,latest}
+    # npm 安装源。 Sandbox 无法访问该地址时，可切换到可达镜像。
+    npm_registry: ${oc.env:CLAUDE_CODE_NPM_REGISTRY,https://registry.npmmirror.com/}
+    # Agent 进程总超时，单位为秒。 Harbor Task 会在运行时用 task.toml 的
+    # [agent].timeout_sec 覆盖它，这里只是非 Harbor 场景的兜底。
+    timeout: ${oc.env:CLAUDE_CODE_TIMEOUT,7200}
+    # 默认工作目录示例。 Harbor Task 会用 task.toml 解析出的 workdir 覆盖它。
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/app}
+    # 可选二进制直装地址。 null 表示使用 npm；设置后会绕过 npm 安装。
+    binary_url: null
+    # binary_url 文件的可选 SHA-256。 使用自定义二进制时建议同时设置。
+    binary_checksum: null
+    # Anthropic 与 OpenAI 消息转换规则。 bedrock-claude 保留 Bedrock thinking block 语义。
+    thinking_preset: bedrock-claude
+    # 转换器日志级别：DEBUG、INFO、WARNING、ERROR。 ERROR 避免批量日志过大。
+    conversion_log_level: ERROR
+    # Claude Code 明确发起非 thinking 请求时使用的请求参数。
+    no_thinking_request_args:
+      # 从最终 openai_clients.main 读取，不在 Agent Profile 重复声明模型。
+      model: ${oc.select:openai_clients.main.config.request_args.model,null}
+      max_tokens: ${oc.select:openai_clients.main.config.request_args.max_tokens,null}
+    # Harbor 显式继承 LLM Profile 的 provider 路由字段；通用 Agent 默认 replace。
+    no_thinking_request_args_mode: inherit
+    # 默认让 Haiku 级轻量请求也使用最终 LLM Profile 的主模型。
+    # 如果需要独立 Haiku 路由，请在实验 input/--set 中显式覆盖。
+    haiku_model: ${oc.select:openai_clients.main.config.request_args.model,null}
+    # 启动前合并到 Runtime 内 JSON 文件的补丁。 非空示例：
+    #   - path: ~/.claude/settings.json
+    #     content: {permissions: {defaultMode: bypassPermissions}}
+    config_file_patches: []
+    # 调用方自定义 pre-start 保持为空；Harbor hooks 由下方开关在 Host 侧自动上传，
+    # 并在调用方脚本之后执行，不依赖 Runtime 镜像包含 Harbor 模块。
+    pre_start_scripts: []
+    enable_unattended_interaction_hooks: true
+    # 任务提供的 Skills 目录，会复制到 Agent HOME 的 .claude/skills。
+    # null 表示不注入；Harbor Trial 的 skills 能力会在运行时覆盖它。
+    skills_dir: null
+    # Nexus 标准 MCPServerSpec；Agent 会转换成 Claude Code 原生 mcpServers。
+    # Harbor task.toml 声明的 MCP 会在运行时动态传入，因此通用 Profile 保持为空。
+    mcp_servers: []
+    # Harbor 由 Host 转换并上传独占 MCP 文件，兼容旧 Runtime，同时避免镜像预置工具
+    # 改变 benchmark 能力边界。通用 Claude Code 默认仍是 additive。
+    mcp_servers_mode: strict_file
+    # 已由镜像 boot/sidecar 启动的 MCP，值采用 Claude Code 原生 mcpServers 格式。
+    # 通用 Profile 保持为空；任务声明的 MCP 统一通过上面的 mcp_servers 运行时参数传入。
+    mcp_config_servers: {}
+    # mcp_config_servers 注入方式：cli、file 或 both。
+    mcp_config_mode: cli
+    # 追加到 Claude Code 命令行、位于任务 prompt 之前的参数。
+    extra_cli_args:
+      - --output-format
+      - json
+      - --verbose
+    # 注入 Claude Code 进程及其子进程的环境变量。
+    extra_env:
+      # 禁止在提交信息等输出中添加 Claude Code attribution。
+      CLAUDE_CODE_ATTRIBUTION_HEADER: "0"
+      # 禁止遥测、更新检查等非必要网络流量。
+      CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+      # 禁止 Claude Code 自动启用实验性 beta header。
+      CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: "1"
+      # 使用 Nexus 本地代理时跳过 Claude Code 自己的 Bedrock 凭证检查。
+      CLAUDE_CODE_SKIP_BEDROCK_AUTH: "1"
+      # Claude Code 自身感知的模型名，决定它启用哪些模型特定行为。Opus 4.8
+      # 只是通用兜底；Opus 5、HY4 等实验由 LLM Profile 或实验 input 显式覆盖。
+      ANTHROPIC_MODEL: ${oc.env:ANTHROPIC_MODEL,claude-opus-4-8}
+      # 0 表示禁用 Claude Code 固定的流式空闲中断。
+      API_FORCE_IDLE_TIMEOUT: ${oc.env:API_FORCE_IDLE_TIMEOUT,0}
+      # Claude Code API 请求总超时，单位为毫秒；默认 60 分钟。
+      API_TIMEOUT_MS: ${oc.env:API_TIMEOUT_MS,3600000}
+      # Nexus Claude 流读取 watchdog，单位为毫秒；默认 30 分钟。
+      CLAUDE_STREAM_IDLE_TIMEOUT_MS: ${oc.env:CLAUDE_STREAM_IDLE_TIMEOUT_MS,1800000}
+      # 是否启用bare极简模式
+      CLAUDE_CODE_SIMPLE: ${oc.env:CLAUDE_CODE_SIMPLE,0}
+
+# imports 是列表，append_unique 表示保留已有模块并去重追加，而不是整体覆盖。
+merge:
+  imports: append_unique
+
+# source 只用于 Compose 日志、错误定位和审计，不进入 RunInput。
+source: harbor-claude-code

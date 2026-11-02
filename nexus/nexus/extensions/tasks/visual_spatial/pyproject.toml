@@ -1,0 +1,25 @@
+[project]
+name = "visual_spatial"
+version = "0.1.0"
+authors = [
+    { name = "lucasssyan" },
+    { name = "alanqwang" },
+    { name = "taugerren" },
+    { name = "stephenruan" },
+    { name = "huaiyuli" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+
+[tool.nexus.tasks]
+"visual_spatial" = "nexus.extensions.tasks.visual_spatial.task"
+
+[tool.nexus.tools]
+"visual/query_locate" = "nexus.extensions.tasks.visual_spatial.tools"
+"visual/query_depth" = "nexus.extensions.tasks.visual_spatial.tools"
+"visual/query_pose" = "nexus.extensions.tasks.visual_spatial.tools"
+"visual/query_segment" = "nexus.extensions.tasks.visual_spatial.tools"

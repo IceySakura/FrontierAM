@@ -1,0 +1,81 @@
+# Reuse an AGS WindowsAgentArena sandbox selected from an AccountPool by tag.
+#
+# Pool requirement:
+# - pool: gui-sandbox
+# - tags: [waa]
+# - credentials: {"instance_id": "<running AGS instance id>"}
+#
+# The 300-second AccountPool lease is renewed automatically while the runtime is
+# in use. Releasing the runtime only detaches it and returns the account to idle;
+# it does not stop the persistent AGS instance.
+#
+# Required env: AGS_SECRET_ID, AGS_SECRET_KEY, AI_HUB_API_KEY
+# Optional env: NEXUS_ACCOUNT_POOL_ENDPOINT (defaults to the production Polaris endpoint)
+# Run: uv run nexus run-single -o result.json docs/examples/configs/claude_code_native_bridge_waa_account_pool.yaml
+
+task_name: identity
+task_config: {}
+
+runtime_provider_name: ags
+runtime_provider_config:
+  secret_id: ${oc.env:AGS_SECRET_ID}
+  secret_key: ${oc.env:AGS_SECRET_KEY}
+  region: ${oc.env:AGS_REGION,"ap-guangzhou"}
+  domain: ${oc.env:AGS_DOMAIN,"${oc.env:AGS_REGION,ap-guangzhou}.tencentags.com"}
+  interface_mode: nexus
+  request_timeout: 900
+  instance_ready_timeout: 300
+
+runtime_configs:
+  main:
+    provision_mode: control_plane
+    launch_mode: native
+    runtime_kind: waa
+    tool_type: waa
+    interface_mode: nexus
+    runtime_pool:
+      name: gui-sandbox
+      lease_ttl_seconds: 300
+      tags:
+        - waa
+
+agent_name: claude_code_native_bridge
+agent_config:
+  user_prompt: |
+    请按以下顺序操作：
+    1. 检查当前工作目录是否存在 account-pool-check.txt。
+    2. 如果存在，先读取并完整输出旧文件内容，标记为 previous content。
+    3. 获取当前时间和计算机名。
+    4. 使用当前时间和计算机名更新 account-pool-check.txt；如果不存在则创建。
+    5. 再次读取并完整输出文件内容，标记为 current content。
+    6. 最终回答必须包含原样字符串：runtime account pool reuse verified
+  working_dir: '%TEMP%\nexus-account-pool'
+  timeout: 3600
+  ensure_claude: false
+  npm_registry: https://registry.npmmirror.com
+  extra_env:
+    CLAUDE_CODE_ATTRIBUTION_HEADER: '0'
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1'
+    CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: '1'
+  pre_start_scripts:
+    - interpreter: powershell
+      code: |
+        Write-Output "[pre-start] preparing account-pool workspace"
+        New-Item -ItemType Directory -Path $env:TEMP\nexus-account-pool -Force | Out-Null
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB_API_KEY}?provider=deepseek&model=deepseek-v4-pro&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/v1"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"deepseek-v4-pro"}
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 4200

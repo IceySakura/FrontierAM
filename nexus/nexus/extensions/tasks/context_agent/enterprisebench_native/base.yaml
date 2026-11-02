@@ -1,0 +1,155 @@
+# Nexus-native EnterpriseBench (Syntara enterprise-office) on Gongfeng.
+#
+# The Native dataset item carries everything task-shaped (instruction, Judge
+# criteria, boot command/env, healthcheck, uploads, MCP servers, and image).
+# This file supplies only what an item cannot: the agent module import, the
+# sandbox provider, and the model client.
+#
+# Shape: this is a compose RunPart (`body` + `merge`), not a bare config and not
+# a positional config. run-single rejects a positional config combined with
+# --data, and a bare config fails RunPart/RunInput validation, so it must be a
+# `body` mapping passed via --use.
+#
+# Ordering: parts merge in command-line order, so --use must come AFTER --data.
+# `enterprisebench_native.eval` already does that. For a one-off:
+#
+#   nexus run-single --data <dataset> --use \
+#     nexus/extensions/tasks/context_agent/enterprisebench_native/base.yaml \
+#     --id <task_id> -o out.json
+#
+# Prerequisites:
+#   1. The six `mirrors.tencent.com/hunyuan_yanguan/syntara-<world>:v2` images.
+#      Do not use v1: it boots the world but cannot grade (no opencode/rewardkit).
+#   2. GONGFENG_TOKEN or ~/.nexus/auth/gongfeng/key, with `test` quota.
+#   3. CTXAGENT_POLICY_API_KEY=<token>?provider=aws_third for Claude Opus 4.8.
+#   4. CTXAGENT_JUDGE_API_KEY=<APP_ID>:<APP_KEY> for the GPT-5.6 judge.
+
+merge:
+  # deep_merge REPLACES lists by default. The dataset item declares only
+  # the EnterpriseBench task module, so a plain merge would silently drop the
+  # agent/client modules below. Union the two lists instead.
+  imports: append_unique
+
+body:
+  task_name: "context_agent_enterprisebench_native_task"
+
+  imports:
+    - nexus.extensions
+    - nexus.extensions.tasks.context_agent.enterprisebench_native.task
+    - nexus.extensions.tasks.context_agent.cache_clients
+    - nexus.trace.processors.token_counter
+    - nexus.extensions.agents.context_agent.general_agent
+    - nexus.extensions.agents.context_agent.tools.general.runtime_tools
+
+  runtime_provider_name: "gongfeng"
+  runtime_provider_config:
+    api_base_url: ${oc.env:GONGFENG_API_BASE_URL,"http://hyrl-sandbox.prod.woa.com:8052"}
+    # `token` is deliberately absent: the provider resolves GONGFENG_TOKEN or
+    # ~/.nexus/auth/gongfeng/key on its own, so the secret never enters this file.
+    # "current" resolves to nexus-runtime:<installed package version>.
+    runtime_image: ${oc.env:NEXUS_GONGFENG_RUNTIME_IMAGE,"current"}
+    # EnterpriseBench is self-contained after sandbox creation:
+    # - task files are materialized by the Runner and uploaded over Runtime RPC;
+    # - world tools are served at localhost:8900;
+    # - policy calls happen on the Runner;
+    # - the OpenCode judge reaches the host Judge client through Nexus's
+    #   Runtime-local Responses proxy.
+    # Deny all sandbox egress so neither the Agent nor Judge can reach the
+    # public network. A non-empty network policy makes Gongfeng use its suanli
+    # scheduling path, where this policy is enforced.
+    network_policy:
+      default_action: deny
+      egress: []
+    # Required; must be one of prod/eval/test or init raises ValueError. Quota is
+    # granted per purpose — asking for a purpose this token does not carry fails
+    # at /runtime/start with code=260400.
+    purpose: ${oc.env:NEXUS_PURPOSE,"test"}
+    request_timeout: 7200.0
+    print_port_mappings: true
+
+  # No agent_config here on purpose. The dataset item already carries the
+  # rollout controls (enabled_tools, tool_search.defer_all_mcp, and mcp_servers
+  # pointing at http://localhost:8900/mcp). The task passes its workdir to the
+  # Agent explicitly, so agent_config does not duplicate it. Repeating the
+  # config here also risks a merge that drops mcp_servers. The world can expose
+  # more than Azure's 128-tool ceiling, so defer_all_mcp is load-bearing.
+
+  task_config:
+    # Optional task-scoped credential for downloading remote Dataset Taskfiles.
+    # Empty preserves WEDATA_KEY / WEDATA_KEY_FILE / ~/.nexus/auth/wedata/key fallback.
+    WEDATA_KEY: ${oc.env:WEDATA_KEY,""}
+    # Orchestration deadlines belong to the run, not to individual rubrics.
+    boot_timeout: 7200.0
+    healthcheck_retries: 240
+    healthcheck_interval_sec: 3.0
+    healthcheck_timeout_sec: 5.0
+    healthcheck_start_period_sec: 5.0
+    agent_timeout: 7200
+    judge_timeout: 2400
+    judge_max_consecutive_failures: 3
+    judge_max_consecutive_rate_limits: 3
+    judge_no_progress_timeout: 600  # Seconds; 0 disables only the progress guard.
+    test_timeout: 7200.0
+    reward_mode: sample_acc
+
+  openai_clients:
+    main:
+      name: "context_agent_vertex"
+      config:
+        client_args:
+          protocol: "anthropic"
+          api_key: ${oc.env:CTXAGENT_POLICY_API_KEY}
+          cache_task_id_prefix: ${oc.env:CTXAGENT_POLICY_CACHE_TASK_ID_PREFIX,"enterprisebench-opus48"}
+          endpoint: "http://api.aihub.woa.com/model/anthropic.claude-opus-4-8/invoke"
+          timeout: 7200
+          max_retries: 10
+          cache_control_enabled: true
+          cache_control_strategy: claude_code
+        request_args:
+          model: "anthropic.claude-opus-4-8"
+          anthropic_version: "bedrock-2023-05-31"
+          thinking:
+            type: adaptive
+            display: summarized
+          output_config:
+            effort: ${oc.env:CTXAGENT_POLICY_REASONING_EFFORT,medium}
+          max_tokens: 128000
+          drop_forced_tool_choice_with_thinking: true
+    judge:
+      name: "context_agent_openai_responses"
+      config:
+        client_args:
+          api_key: "${oc.env:CTXAGENT_JUDGE_API_KEY}?provider=azure&timeout=7200"
+          # The shared Context Agent wrapper creates one unique cache id per Run.
+          # All Judge rounds share it; rerunning the same Case gets another id.
+          cache_task_id_prefix: ${oc.env:CTXAGENT_JUDGE_CACHE_TASK_ID_PREFIX,"enterprisebench-gpt56-judge"}
+          endpoint: "http://api.aihub.woa.com/openai/v1/responses"
+          timeout: 7200
+          max_retries: 2
+          capture_raw_io: true
+        request_args:
+          model: "gpt-5.6-sol"
+          reasoning:
+            effort: ${oc.env:CTXAGENT_JUDGE_REASONING_EFFORT,high}
+            summary: auto
+            context: all_turns
+          include:
+            - reasoning.encrypted_content
+          store: false
+          max_output_tokens: 32768
+
+  processors:
+    chat:
+      name: "chat_tracker"
+      args:
+        tools_mode: branch_last
+    tokens:
+      name: "token_counter"
+      args:
+        client_keys:
+          - main
+          - judge
+
+  runner:
+    # The outer task timeout must cover world boot + Agent + verifier/Judge.
+    timeout: 21600

@@ -1,0 +1,15 @@
+[project]
+name = "vita"
+version = "0.1.0"
+authors = [
+    { name = "fangzlong" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["deepdiff>=8.6.1", "docstring-parser>=0.17.0", "holidays>=0.93", "json-repair>=0.58.6", "pandas>=2.3.3", "thefuzz>=0.22.1"]
+runtime = []
+
+[tool.nexus]
+agents = { vita_agent = "nexus.extensions.tasks.vita.agent" }
+tasks = { vita_task = "nexus.extensions.tasks.vita.task" }

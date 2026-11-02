@@ -1,0 +1,27 @@
+[project]
+name = "aidata"
+version = "0.1.0"
+authors = [
+    { name = "calebcao" },
+]
+# Direct dependencies of the aidata extension (kept here, not at repo root,
+# so the extension stays self-contained and downstream consumers that don't
+# load aidata don't pay the cost):
+#
+# - jmespath: structured query language used by the v4.2 ``state_equals``
+#   jmespath shape (see engine/rubric.py::_eval_state_equals_jmespath +
+#   RUBRIC.md §2.1b). BSD-licensed, AWS CLI's query engine; ships built-in
+#   aggregates (length / sum / avg / min / max) so rubric authors can write
+#   one-liner state assertions without predicate gymnastics.
+dependencies = ["jmespath>=1.0.0"]
+
+[project.optional-dependencies]
+host = ["fastapi>=0.110", "uvicorn>=0.29", "pyyaml>=6.0"]
+runtime = []
+# dev deps live here (not at repo root) so the aidata test suite can be
+# installed as an extension-local extra. pytest-xdist drives the parallel
+# gongfeng fan-out in tests/test_cases_startup.py.
+dev = ["pytest-xdist>=3.6"]
+
+[tool.nexus]
+tasks = { aidata = "nexus.extensions.tasks.aidata.engine.task" }

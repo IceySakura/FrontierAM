@@ -1,0 +1,45 @@
+# Example SWE_ANY_CONFIG_PATCH — a small, cheap smoke run.
+#
+# Bare names resolve under this config/custom/ dir, so just:
+#   SWE_ANY_CONFIG_PATCH=smoke.yaml \
+#     bash nexus/extensions/tasks/swe_any/scripts/run_batch.swe_any_select.sh
+#
+# Or chain all stages via the outer driver (each stage inherits the patch):
+#   SWE_ANY_CONFIG_PATCH=smoke.yaml,vertex.yaml bash nexus/extensions/tasks/swe_any/scripts/run_swe_any.sh
+#
+# A patch is deep-merged over config/stage/{parse,select,mask,eval}.yaml (RFC 7386:
+# dicts recurse, null deletes a key, lists/scalars replace), then the backend
+# patch config/client/<name>.yaml is layered on top. Put only task-level knobs
+# here plus the top-level `instances` block; per-instance fields (image /
+# repo_dir / graph_path / timeout floors) are injected by the generator.
+#
+# SWE_ANY_CONFIG_PATCH is comma-separated and applied left to right (later wins),
+# so single-axis patches compose by permutation — e.g. `smoke.yaml,vertex.yaml`
+# runs this cheap budget on the vertex backend.
+
+# Which instances to run. Every field is optional and, written as
+# ${oc.env:VAR,default} below, still honors an exported env var — so
+# `SWE_ANY_LIMIT=1 bash run_batch...sh` overrides the 2 here without editing this
+# file. Drop a field (or the whole block) to fall back entirely to its env twin.
+instances:
+  # Source .jsonl (one instance per line). Falls back to SWE_ANY_INSTANCES.
+  path: "${oc.env:SWE_ANY_INSTANCES,debug/swe_env/python/swe_any_batch_smoke.jsonl}"
+  # scip-python indexes Python only; "all" disables the filter.
+  language: "${oc.env:SWE_ANY_LANGUAGE,python}"
+  # Curated subset: a YAML list, or a comma string / path to a JSON list of ids.
+  # ids: ["swe-env.v1.finos__symphony-bdk-python-284"]
+  # Paging over the filtered instances (0 = no limit).
+  skip: "${oc.decode:${oc.env:SWE_ANY_SKIP,0}}"
+  limit: "${oc.decode:${oc.env:SWE_ANY_LIMIT,2}}"
+
+# Task-level knobs (merged into task_config). Select reads the BFS / subgraph
+# knobs; Mask / Eval read max_features, while only Mask has a use_agent flag. Harmless
+# keys on a stage that doesn't use them are ignored by its task input, so one
+# smoke patch can serve all four stages.
+task_config:
+  # Cheap slice budget per repo (product default is 20). Select only.
+  max_subgraphs: "${oc.decode:${oc.env:SWE_ANY_MAX_SUBGRAPHS,4}}"
+  # Cap features Mask / Eval process (0 = every resolved / masked feature).
+  max_features: "${oc.decode:${oc.env:SWE_ANY_MAX_FEATURES,0}}"
+  # Reproducible seed draw (omit to draw fresh each run). Select only.
+  rng_seed: 3407

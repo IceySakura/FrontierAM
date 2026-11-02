@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 820">
+  <defs>
+    <marker id="rtArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#455a64"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1320" height="820" fill="#fbfcfe"/>
+
+  <text x="660" y="38" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="700" fill="#203040">
+    Nexus Runtime System
+  </text>
+  <text x="660" y="66" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#546e7a">
+    ExecutionContext 管理生命周期，RuntimeProvider 决定“去哪拿环境”，Runtime 决定“如何对环境说话”
+  </text>
+
+  <rect x="32" y="108" width="220" height="84" rx="14" fill="#eef4ff" stroke="#4f83cc" stroke-width="2"/>
+  <text x="142" y="140" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="#1e4f91">
+    Task / Agent / Tool
+  </text>
+  <text x="142" y="166" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#365f95">
+    业务逻辑只关心“做什么”
+  </text>
+
+  <rect x="32" y="232" width="220" height="194" rx="14" fill="#ecfbf7" stroke="#27a089" stroke-width="2"/>
+  <text x="142" y="266" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="#0f6b5d">
+    ExecutionContext
+  </text>
+  <text x="52" y="300" font-family="monospace" font-size="12" fill="#145d52">ctx.get_runtime(name, **params)</text>
+  <text x="52" y="326" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#245c55">按 name 懒加载并缓存 runtime</text>
+  <text x="52" y="352" font-family="monospace" font-size="12" fill="#145d52">async with ctx:</text>
+  <text x="52" y="378" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#245c55">退出时统一 release_all()</text>
+  <text x="52" y="404" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#245c55">同名 runtime 在一次 run 内复用</text>
+
+  <rect x="292" y="92" width="322" height="650" rx="18" fill="#f5f9ff" stroke="#5b8bd3" stroke-width="2.5"/>
+  <text x="453" y="124" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" fill="#2557a7">
+    Provider Layer
+  </text>
+  <text x="453" y="148" text-anchor="middle" font-family="monospace" font-size="12" fill="#4f6f9b">
+    configure() / acquire() / release()
+  </text>
+
+  <rect x="314" y="174" width="278" height="74" rx="12" fill="#ffffff" stroke="#7aa4e1" stroke-width="1.5"/>
+  <text x="334" y="203" font-family="monospace" font-size="15" font-weight="700" fill="#234c8c">local</text>
+  <text x="334" y="226" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#526b87">当前 Python 进程，不做远端隔离</text>
+
+  <rect x="314" y="266" width="278" height="74" rx="12" fill="#ffffff" stroke="#7aa4e1" stroke-width="1.5"/>
+  <text x="334" y="295" font-family="monospace" font-size="15" font-weight="700" fill="#234c8c">docker</text>
+  <text x="334" y="318" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#526b87">本地容器 + runtime injection</text>
+
+  <rect x="314" y="358" width="278" height="74" rx="12" fill="#ffffff" stroke="#7aa4e1" stroke-width="1.5"/>
+  <text x="334" y="387" font-family="monospace" font-size="15" font-weight="700" fill="#234c8c">gongfeng</text>
+  <text x="334" y="410" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#526b87">远端沙箱调度，可选 HTTP / Socket.IO RPC</text>
+
+  <rect x="314" y="450" width="278" height="74" rx="12" fill="#ffffff" stroke="#7aa4e1" stroke-width="1.5"/>
+  <text x="334" y="479" font-family="monospace" font-size="15" font-weight="700" fill="#234c8c">android_websocket</text>
+  <text x="334" y="502" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#526b87">Android WebSocket 沙箱</text>
+
+  <rect x="314" y="542" width="278" height="74" rx="12" fill="#ffffff" stroke="#7aa4e1" stroke-width="1.5"/>
+  <text x="334" y="571" font-family="monospace" font-size="15" font-weight="700" fill="#234c8c">android_cloudtest</text>
+  <text x="334" y="594" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#526b87">CloudTest 真机云设备</text>
+
+  <rect x="314" y="634" width="278" height="88" rx="12" fill="#fffaf1" stroke="#e6a94f" stroke-width="1.8"/>
+  <text x="334" y="664" font-family="monospace" font-size="15" font-weight="700" fill="#8a5406">ags</text>
+  <text x="334" y="688" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#815b25">control_plane / template</text>
+  <text x="334" y="708" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#815b25">generic RPC 与 native service 共存</text>
+
+  <rect x="650" y="92" width="346" height="650" rx="18" fill="#f4fbf5" stroke="#57a76a" stroke-width="2.5"/>
+  <text x="823" y="124" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" fill="#2c7b3f">
+    Runtime Layer
+  </text>
+  <text x="823" y="148" text-anchor="middle" font-family="monospace" font-size="12" fill="#4f8a5e">
+    call_function() / call_tool() / call_executor()
+  </text>
+
+  <rect x="674" y="174" width="298" height="116" rx="14" fill="#ffffff" stroke="#78bb86" stroke-width="1.5"/>
+  <text x="694" y="202" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#2b6d3a">通用 Runtime</text>
+  <text x="694" y="228" font-family="monospace" font-size="13" fill="#305f3a">LocalRuntime</text>
+  <text x="694" y="250" font-family="monospace" font-size="13" fill="#305f3a">HttpRuntime</text>
+  <text x="694" y="272" font-family="monospace" font-size="13" fill="#305f3a">SocketIoRuntime</text>
+
+  <rect x="674" y="314" width="298" height="92" rx="14" fill="#ffffff" stroke="#78bb86" stroke-width="1.5"/>
+  <text x="694" y="342" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#2b6d3a">Android Runtime</text>
+  <text x="694" y="368" font-family="monospace" font-size="13" fill="#305f3a">WebSocketAndroidRuntime</text>
+  <text x="694" y="390" font-family="monospace" font-size="13" fill="#305f3a">CloudTestAndroidRuntime</text>
+
+  <rect x="674" y="430" width="298" height="118" rx="14" fill="#ffffff" stroke="#78bb86" stroke-width="1.5"/>
+  <text x="694" y="458" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#2b6d3a">AGS Nexus-style Runtime</text>
+  <text x="694" y="484" font-family="monospace" font-size="13" fill="#305f3a">AGSBrowserRuntime</text>
+  <text x="694" y="506" font-family="monospace" font-size="13" fill="#305f3a">AGSCodeInterpreterRuntime</text>
+  <text x="694" y="528" font-family="monospace" font-size="13" fill="#305f3a">AGSOSWorldRuntime</text>
+
+  <rect x="674" y="572" width="298" height="150" rx="14" fill="#fffdf6" stroke="#d6af59" stroke-width="1.8"/>
+  <text x="694" y="600" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#8a5b08">AGS Raw Runtime</text>
+  <text x="694" y="626" font-family="monospace" font-size="12.5" fill="#6f561d">AGSRawRuntime</text>
+  <text x="694" y="648" font-family="monospace" font-size="12.5" fill="#6f561d">AGSRawBrowserRuntime</text>
+  <text x="694" y="670" font-family="monospace" font-size="12.5" fill="#6f561d">AGSRawCodeInterpreterRuntime</text>
+  <text x="694" y="692" font-family="monospace" font-size="12.5" fill="#6f561d">AGSRawOSWorldRuntime</text>
+  <text x="694" y="714" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7a632d">保留原始 HTTP / CDP / OSWorld 表面</text>
+
+  <rect x="1032" y="92" width="256" height="650" rx="18" fill="#fff8f1" stroke="#dc9142" stroke-width="2.5"/>
+  <text x="1160" y="124" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" fill="#a85a0f">
+    Transport / Protocol
+  </text>
+  <text x="1160" y="148" text-anchor="middle" font-family="monospace" font-size="12" fill="#a17237">
+    真正与环境通信的一层
+  </text>
+
+  <rect x="1056" y="174" width="208" height="90" rx="14" fill="#ffffff" stroke="#e2aa6d" stroke-width="1.5"/>
+  <text x="1076" y="202" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#8a4d12">Local Process</text>
+  <text x="1076" y="228" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7e684f">executor registry</text>
+  <text x="1076" y="248" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7e684f">tool import + direct call</text>
+
+  <rect x="1056" y="288" width="208" height="126" rx="14" fill="#ffffff" stroke="#e2aa6d" stroke-width="1.5"/>
+  <text x="1076" y="316" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#8a4d12">Nexus Runtime Server</text>
+  <text x="1076" y="342" font-family="monospace" font-size="11.5" fill="#7e684f">/api/v1/call_function</text>
+  <text x="1076" y="364" font-family="monospace" font-size="11.5" fill="#7e684f">/api/v1/call_tool</text>
+  <text x="1076" y="386" font-family="monospace" font-size="11.5" fill="#7e684f">/api/v1/call_executor</text>
+
+  <rect x="1056" y="438" width="208" height="102" rx="14" fill="#ffffff" stroke="#e2aa6d" stroke-width="1.5"/>
+  <text x="1076" y="466" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#8a4d12">Android Protocols</text>
+  <text x="1076" y="492" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7e684f">WebSocket action protocol</text>
+  <text x="1076" y="514" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7e684f">CloudTest API</text>
+
+  <rect x="1056" y="564" width="208" height="132" rx="14" fill="#fffdf7" stroke="#d6af59" stroke-width="1.8"/>
+  <text x="1076" y="592" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#8a5b08">AGS Native Surfaces</text>
+  <text x="1076" y="618" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7f6632">CDP / /execute / OSWorld HTTP</text>
+  <text x="1076" y="640" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7f6632">X-Access-Token + instance domain</text>
+  <text x="1076" y="662" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7f6632">template 或 control_plane 都会汇聚到这里</text>
+
+  <line x1="142" y1="192" x2="142" y2="226" stroke="#455a64" stroke-width="2.5" marker-end="url(#rtArrow)"/>
+  <text x="158" y="214" font-family="monospace" font-size="11" fill="#546e7a">require_context()</text>
+
+  <line x1="252" y1="328" x2="292" y2="328" stroke="#455a64" stroke-width="2.5" marker-end="url(#rtArrow)"/>
+  <text x="270" y="316" text-anchor="middle" font-family="monospace" font-size="11" fill="#546e7a">get_runtime()</text>
+
+  <line x1="614" y1="418" x2="650" y2="418" stroke="#455a64" stroke-width="2.5" marker-end="url(#rtArrow)"/>
+  <text x="632" y="406" text-anchor="middle" font-family="monospace" font-size="11" fill="#546e7a">acquire()</text>
+
+  <line x1="972" y1="224" x2="1056" y2="224" stroke="#455a64" stroke-width="2.2" marker-end="url(#rtArrow)"/>
+  <line x1="972" y1="248" x2="1056" y2="348" stroke="#455a64" stroke-width="2.2" marker-end="url(#rtArrow)"/>
+  <line x1="972" y1="360" x2="1056" y2="490" stroke="#455a64" stroke-width="2.2" marker-end="url(#rtArrow)"/>
+  <line x1="972" y1="490" x2="1056" y2="622" stroke="#455a64" stroke-width="2.2" marker-end="url(#rtArrow)"/>
+  <line x1="972" y1="648" x2="1056" y2="640" stroke="#8a5b08" stroke-width="2.2" marker-end="url(#rtArrow)"/>
+
+  <rect x="32" y="452" width="220" height="144" rx="14" fill="#ffffff" stroke="#c2d4d9" stroke-width="1.6"/>
+  <text x="52" y="482" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#37515b">关键边界</text>
+  <text x="52" y="510" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#4e6570">1. Provider 管生命周期</text>
+  <text x="52" y="534" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#4e6570">2. Runtime 管交互语义</text>
+  <text x="52" y="558" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#4e6570">3. ExecutorMixin 只提供 typed wrapper</text>
+  <text x="52" y="582" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#4e6570">4. 具体能力仍取决于 call_executor()</text>
+
+  <rect x="300" y="760" width="988" height="34" rx="10" fill="#eef3f5" stroke="#c3d2d8" stroke-width="1.2"/>
+  <text x="794" y="782" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12.5" fill="#50666f">
+    AGS 是当前唯一既能返回通用 RPC runtime，又能返回 specialized / raw runtime 的 provider
+  </text>
+</svg>

@@ -1,0 +1,18 @@
+[project]
+name = "visual"
+version = "0.1.0"
+authors = [
+    { name = "lucasssyan" },
+    { name = "alanqwang" },
+    { name = "stephenruan" },
+    { name = "huaiyuli" },
+    { name = "kumohu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["polaris-cpp-py"]
+runtime = []
+
+[tool.nexus]
+tasks = { visual = "nexus.extensions.tasks.visual.task" }

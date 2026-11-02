@@ -1,0 +1,21 @@
+# Agent profile: code_mt agent, tool_call loop. This profile imports+selects the
+# agent and sets safe defaults (tools/call_mode/limits) that get BAKED into the
+# parquet nexus blob at compose time. instruction/working_dir come from the
+# t3-harbor dataset item at runtime. NOTE: tools/call_mode are sourced from THIS
+# profile (not the harbor task.toml) — the non-SWE task.toml stays byte-faithful
+# to 0808/0811 and must not carry tool contracts.
+body:
+  imports:
+    - nexus.extensions.projects.code_mt.agent.agent
+  agent_name: code_mt
+  agent_config:
+    call_mode: tool_call
+    max_iterations: 300
+    max_terminal_output: 16384   # text_parse terminal capture cap (>=16k, never below 10k)
+    tools:
+      - code_mt/bash
+      - code_mt/str_replace_editor
+      - code_mt/submit
+merge:
+  imports: append_unique
+source: harbor-code-mt

@@ -1,0 +1,17 @@
+services:
+  main:
+    depends_on:
+      api:
+        condition: service_healthy
+  api:
+    image: python:3.12-alpine
+    command:
+      - sh
+      - -c
+      - mkdir -p /srv && printf 'hello-from-sidecar\n' > /srv/index.html && exec python3 -m http.server 8000 --directory /srv
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import socket; s=socket.create_connection(('localhost', 8000), timeout=2); s.close()"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+      start_period: 2s

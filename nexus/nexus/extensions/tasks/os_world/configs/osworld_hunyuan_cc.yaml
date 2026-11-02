@@ -1,0 +1,101 @@
+# Complete RunInput; native Claude Code with explicit OSWorld execution policy.
+imports:
+- nexus.extensions.tasks.os_world
+- nexus.extensions.agents.claude_code.agent
+- nexus.extensions.openai_clients.infer_proxy
+task_name: os_world
+task_config:
+  domain: chrome
+  task_id: bb5e4c0d-f964-439c-97b6-bdb9747de3f4
+  observation_type: screenshot
+  action_space: pyautogui
+  run_setup: true
+  run_evaluator: true
+  unsupported_evaluator_policy: fail
+  skip_gui_start: true
+  command_as_user: false
+  client_password: password
+  cache_dir: ''
+  wedata_key: ${oc.env:WEDATA_KEY}
+tool_configs: {}
+task_files:
+  type: zip
+  path: blobs/bb5e4c0d-f964-439c-97b6-bdb9747de3f4.zip
+  sha256: ce23af43f9a3be940aeb4eb879f12d37d7bfe65563c96b0e9fcfc898c8c5fe0a
+  size: 1737
+  remote:
+    namespace: hy_gui_eval
+    dataset: osworld
+    version: v1.1.1
+    split: test
+run_id: chrome__bb5e4c0d-f964-439c-97b6-bdb9747de3f4
+runtime_provider_name: ags
+runtime_provider_config:
+  domain: ap-guangzhou.tencentags.com
+  interface_mode: nexus
+  osworld_cdp_proxy_mode: auto
+  request_timeout: 1800.0
+  instance_ready_timeout: 600.0
+  secret_id: ${oc.env:AGS_SECRET_ID}
+  secret_key: ${oc.env:AGS_SECRET_KEY}
+  region: ap-guangzhou
+  purpose: eval
+runtime_configs:
+  main:
+    runtime_kind: osworld
+    timeout: 15300
+    tunnel_port: 32000
+    tool_type: osworld
+    tool_id: ${oc.env:AGS_OSWORLD_TOOL_ID}
+    skip_tool_lookup: true
+    provision_mode: control_plane
+agent_name: claude_code_native_bridge
+agent_config:
+  execution_profile: osworld
+  timeout: 1800.0
+  max_turns: 100
+  execution_options:
+    runtime_name: main
+    guide_version: v2
+    thinking_preset: auto
+    cc_model: claude-opus-4-8
+    disallowed_tools: ''
+    extra_env:
+      ANTHROPIC_MODEL: claude-opus-4-8
+      CLAUDE_CODE_ATTRIBUTION_HEADER: '0'
+      CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1'
+      CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: '1'
+      API_TIMEOUT_MS: '600000'
+    expected_claude_code_version: 2.1.205
+openai_clients:
+  main:
+    name: infer_proxy
+    config:
+      client_args:
+        api_key: ${oc.env:HUNYUAN_API_KEY,unused}
+        base_url: ${oc.env:HUNYUAN_BASE_URL}
+        timeout: 600.0
+        max_retries: 5
+      request_args:
+        model: ${oc.env:HUNYUAN_MODEL}
+        reasoning_effort: high
+        stream: false
+        extra_headers:
+          StrategyType: ConsistentHash
+          SessionID: ${oc.env:HUNYUAN_SESSION_ID,osworld-bb5e4c0d-f964-439c-97b6-bdb9747de3f4}
+      enforced_request_args:
+        extra_headers:
+          StrategyType: ConsistentHash
+          SessionID: ${oc.env:HUNYUAN_SESSION_ID,osworld-bb5e4c0d-f964-439c-97b6-bdb9747de3f4}
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      tools_mode: branch_last
+gateway_trajectory_observers: {}
+runner:
+  hooks:
+    output_contract:
+      name: osworld_output_contract
+      args: {}
+workflow_states: {}

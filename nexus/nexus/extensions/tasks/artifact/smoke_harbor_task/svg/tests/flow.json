@@ -1,0 +1,55 @@
+{
+  "task_type": "svg",
+  "type_basis": "单页内联 SVG，无交互要求。",
+  "thin_request": true,
+  "notes": "F1 检查视觉内容，F2 检查内联 SVG 实现。美学由独立评分阶段处理。",
+  "requirement_atoms": [
+    {
+      "rid": "R1",
+      "quote": "画一只骑自行车的鹦鹉",
+      "demand": "页面上能看到一只鹦鹉骑着自行车"
+    },
+    {
+      "rid": "R2",
+      "quote": "内联 SVG",
+      "demand": "画面是内联 SVG 矢量图形，不是外链图片"
+    }
+  ],
+  "flows": [
+    {
+      "fid": "F1",
+      "title": "看得到鹦鹉骑自行车",
+      "criterion": "打开页面，画面上能看出一只鸟（有喙、有眼睛，像鹦鹉）骑在一辆自行车上（能看出两个轮子和车架）。造型简陋也算通过，只要能认出「一只鸟 + 一辆车 + 鸟在车上」这三件事。页面不是空白、不是报错页。",
+      "check_via": "browser",
+      "steps": [
+        "打开页面，等待加载完成",
+        "截一张首屏图",
+        "看图上有没有鸟和自行车，鸟是否在车上"
+      ],
+      "covers": [
+        "R1"
+      ],
+      "tier": "core",
+      "source": "explicit",
+      "evidence_kind": "visual"
+    },
+    {
+      "fid": "F2",
+      "title": "画面是内联 SVG",
+      "criterion": "页面主体画面由内联 <svg> 元素绘制，不是 <img> 引入的外部图片、也不是 canvas。页面 HTML 源码里能看到 <svg> 标签及其内部的图形元素（path/circle/ellipse/rect/polygon 之类）。",
+      "check_via": "source_code",
+      "steps": [
+        "读 index.html 源码",
+        "确认存在 <svg> 标签且内部有图形元素",
+        "确认主体画面不是 <img> 或 <canvas>"
+      ],
+      "covers": [
+        "R2"
+      ],
+      "tier": "core",
+      "source": "explicit",
+      "evidence_kind": "functional"
+    }
+  ],
+  "unverifiable": []
+}

@@ -1,0 +1,46 @@
+{
+  "case": "single_snake",
+  "prompt": "写一个贪吃蛇",
+  "user_simulator": {
+    "type": "scripted",
+    "turns": [
+      "写一个贪吃蛇",
+      {
+        "content": "都允许",
+        "gate": "after_delivery"
+      },
+      {
+        "content": "速度有点快",
+        "gate": "after_delivery"
+      }
+    ]
+  },
+  "task_config": {
+    "user_place": {
+      "country": "中国",
+      "province": "上海",
+      "city": "上海"
+    },
+    "user_now": "2026-10-09T12:55:00+08:00",
+    "web_search_provider": "yuanbao",
+    "max_user_turns": 10,
+    "task_delivery_timeout": 1800,
+    "hold_next_user_until_permission": false,
+    "default_budget": {
+      "timeout_s": 2400
+    },
+    "work_agent_configs": {
+      "codebuddy": {
+        "working_dir": "/workspace",
+        "skip_permissions": false,
+        "permission_policy": "defer",
+        "npm_registry": "http://mirrors.tencent.com/npm/"
+      },
+      "workbuddy": {
+        "workbuddy": {
+          "permission_mode": "default"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,331 @@
+
+[project]
+name = "nexus-agent"
+version = "1.8.25"
+description = ""
+readme = "README.md"
+authors = [
+    { name = "tarschen" }
+]
+requires-python = ">=3.12,<3.15"
+dependencies = [
+    "aiofiles>=25.1.0",
+    "aiohttp>=3.9",
+    "aiosqlite>=0.21.0",
+    "filelock",
+    "mcp>=1.26.0,<2",
+    "numpy>=1.26.0",
+    "omegaconf>=2.3.0",
+    "openai>=2.8.0",
+    "packaging>=24.0",
+    "pip>=25.3",
+    "psutil>=7.1.3",
+    "pydantic>=2.12.0",
+    "PyYAML>=6.0",
+    "python-socketio[asyncio_client]>=5.11.0",
+    "rich>=14.2.0",
+    "tenacity>=9.1.2",
+    "textual>=1.0.0",
+]
+
+[project.scripts]
+nexus = "nexus.cli.main:main"
+
+[project.entry-points.opentelemetry_instrumentor]
+nexus-hyway = "nexus.utils.otel.hyway:NexusHywayInstrumentor"
+nexus-subprocess = "nexus.utils.otel.subprocess:NexusSubprocessInstrumentor"
+
+[project.optional-dependencies]
+runtime = [
+    "aiomonitor>=0.7.1",
+    # Keep FastAPI/Uvicorn server extras explicit. fastapi-cli depends on
+    # uvicorn[standard], which would pull upstream uvloop alongside uvloop-snapshot.
+    "colorama>=0.4; sys_platform == 'win32'",
+    "email-validator>=2.0.0",
+    "fastapi>=0.121.3",
+    "httptools>=0.6.3",
+    "httpx>=0.23.0",
+    "jinja2>=3.1.5",
+    "pillow>=10.0.0",
+    "pydantic-extra-types>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "pyautogui>=0.9.54",
+    "python-dotenv>=0.13",
+    "python-multipart>=0.0.18",
+    "uvicorn>=0.34.0",
+    "uvloop-snapshot==0.22.1.post1; sys_platform != 'win32'",
+    "watchfiles>=0.13",
+    "websockets>=10.4",
+]
+otel = [
+    "opentelemetry-distro>=0.51b0",
+    "opentelemetry-exporter-otlp-proto-http>=1.30.0",
+    "opentelemetry-instrumentation-asgi>=0.51b0",
+    "opentelemetry-instrumentation-fastapi>=0.51b0",
+    "opentelemetry-instrumentation-aiohttp-client>=0.51b0",
+    "opentelemetry-instrumentation-aiohttp-server>=0.51b0",
+    "opentelemetry-instrumentation-httpx>=0.51b0",
+    "opentelemetry-instrumentation-requests>=0.51b0",
+    "opentelemetry-instrumentation-logging>=0.51b0",
+    "opentelemetry-instrumentation-sqlalchemy>=0.51b0",
+    "opentelemetry-instrumentation-redis>=0.51b0",
+    "opentelemetry-instrumentation-mysql>=0.51b0",
+]
+workload = []
+builder = [
+    "auditwheel>=6.5.0,<7.0.0",
+    "build>=1.3.0,<2.0.0",
+    "setuptools>=80.9.0,<81.0.0",
+    "wheel>=0.46.3,<1.0.0",
+]
+cloud = [
+    "orjson>=3.10.0",
+    "pathspec>=0.12.1,<2.0.0",
+    "zstandard>=0.23.0",
+]
+distributed = [
+    "aiomonitor>=0.7.1",
+    "aiomysql>=0.3.2,<0.4",
+    "alembic>=1.16.0",
+    "asyncmy>=0.2.14",
+    "cryptography>=46.0.0",
+    "opentelemetry-api>=1.30.0",
+    "opentelemetry-sdk>=1.30.0",
+    "opentelemetry-exporter-otlp-proto-http>=1.30.0",
+    "pathspec>=0.12.1,<2.0.0",
+    "py-spy>=0.4.0",
+    "sqlalchemy>=2.0.55",
+    "zstandard>=0.23.0",
+    "tencentcloud-sdk-python-common>=3.1.148,<4.0.0",
+    "tencentcloud-sdk-python-dcdb>=3.1.125,<4.0.0",
+    "tencentcloud-sdk-python-tdmysql>=3.1.170,<4.0.0",
+]
+distributed-db-shell = [
+    "mycli>=1.30.0,<1.32.0",
+]
+redis = [
+    "redis>=8.1,<9",
+    "pyzmq>=25",
+    "pyarrow>=21",
+]
+garnet = [
+    "redis>=8.1,<9",
+    "setuptools>=80.9,<81",
+    "pybind11>=3.0.1,<4",
+]
+redis-fs = [
+    "redis>=8.1,<9",
+    "pyzmq>=25",
+    "pyarrow>=21",
+]
+dev = [
+    "opentelemetry-distro>=0.51b0",
+    "opentelemetry-exporter-otlp-proto-http>=1.30.0",
+    "opentelemetry-instrumentation-aiohttp-server>=0.51b0",
+    "ruff==0.15.8",
+    "pre-commit>=3.7.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-cov>=6.1.1",
+    # OSWorld metric tests import URL, audio metadata and PDF helpers.
+    "tldextract>=5.0.0",
+    "mutagen>=1.47.0",
+    "pdfplumber>=0.11.0",
+    # Test-only: the artifact web_judger tests build real PNG fixtures with
+    # Pillow. It ships in the `runtime` extra for the agents that use it, so a
+    # `--extra dev` checkout skipped those two tests with an import error that
+    # reads like a broken test rather than a missing optional dependency.
+    "pillow>=10.0.0",
+    "ty==0.0.14",
+    "mkdocs>=1.6.1,<2.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocs-minify-plugin>=0.8.0",
+    "mkdocs-awesome-pages-plugin>=2.10.1",
+    "mkdocs-jupyter==0.25.1",
+    "mkdocs-open-in-new-tab>=1.0.8",
+]
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/build", "/dist", "*.so", "*.pyd", "*.o", "*.obj", "*.a", "*.lib", "__pycache__", "*.pyc"]
+artifacts = [
+    "nexus/gateway/trajectory_store_backends/native/build.py",
+    "nexus/gateway/trajectory_store_backends/native/*.cpp",
+    "nexus/gateway/trajectory_store_backends/native/vendor/hiredis/*.c",
+    "nexus/gateway/trajectory_store_backends/native/vendor/hiredis/*.h",
+    "nexus/gateway/trajectory_store_backends/native/vendor/hiredis/COPYING",
+    "nexus/gateway/trajectory_store_backends/native/vendor/hiredis/PROVENANCE.json",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["nexus"]
+dev-mode-dirs = ["."]
+artifacts = [
+    "nexus/gateway/trajectory_store_backends/native/build.py",
+    "nexus/gateway/trajectory_store_backends/native/*.cpp",
+    "nexus/gateway/trajectory_store_backends/native/vendor/hiredis/*.c",
+    "nexus/gateway/trajectory_store_backends/native/vendor/hiredis/*.h",
+    "nexus/gateway/trajectory_store_backends/native/vendor/hiredis/COPYING",
+    "nexus/gateway/trajectory_store_backends/native/vendor/hiredis/PROVENANCE.json",
+    "nexus/extensions/agents/swe_setup_agent/**/*.md",
+    "nexus/extensions/tasks/hitl/assets/**/*.md",
+    "nexus/extensions/tasks/hitl/assets/**/*.json",
+    "nexus/extensions/tasks/hitl/user_agent/skills/**/*.md",
+]
+
+[tool.hatch.build.targets.wheel.force-include]
+"nexus/gateway/trajectory_store_backends/native/vendor/hiredis/COPYING" = "nexus/gateway/trajectory_store_backends/native/vendor/hiredis/COPYING"
+"nexus/gateway/trajectory_store_backends/redis_store/redis_server_cluster.json" = "nexus/gateway/trajectory_store_backends/redis_store/redis_server_cluster.json"
+"nexus/gateway/trajectory_store_backends/redis_store/redis_server_launcher_prepare.sh" = "nexus/gateway/trajectory_store_backends/redis_store/redis_server_launcher_prepare.sh"
+"deployment/docker/Dockerfile.runtime" = "nexus/_bundle/deployment/docker/Dockerfile.runtime"
+"deployment/runtime/start.sh" = "nexus/_bundle/deployment/runtime/start.sh"
+"deployment/runtime/gui_stack.sh" = "nexus/_bundle/deployment/runtime/gui_stack.sh"
+"deployment/runtime/docker-bootstrap.sh" = "nexus/_bundle/deployment/runtime/docker-bootstrap.sh"
+"deployment/runtime/dind-runc.sh" = "nexus/_bundle/deployment/runtime/dind-runc.sh"
+"deployment/docker/runtime-bin" = "nexus/_bundle/deployment/docker/runtime-bin"
+"deployment/runtime/flake.nix" = "nexus/_bundle/deployment/runtime/flake.nix"
+"deployment/runtime/flake.lock" = "nexus/_bundle/deployment/runtime/flake.lock"
+"deployment/runtime/bash/bc_common.c" = "nexus/_bundle/deployment/runtime/bash/bc_common.c"
+"deployment/runtime/bash/bc_common.h" = "nexus/_bundle/deployment/runtime/bash/bc_common.h"
+"deployment/runtime/bash/cmd_wrap.c" = "nexus/_bundle/deployment/runtime/bash/cmd_wrap.c"
+"deployment/runtime/bash/readline_wrap.c" = "nexus/_bundle/deployment/runtime/bash/readline_wrap.c"
+"pyproject.toml" = "nexus/_bundle/pyproject.toml"
+"uv.lock" = "nexus/_bundle/uv.lock"
+"README.md" = "nexus/_bundle/README.md"
+"nexus/runtime/server/debug.html" = "nexus/runtime/server/debug.html"
+"nexus/runtime/bridge/requirements.txt" = "nexus/runtime/bridge/requirements.txt"
+"nexus/runner/live/static/index.html" = "nexus/runner/live/static/index.html"
+"nexus/extensions/tasks/aidata/engine/confine" = "nexus/extensions/tasks/aidata/mock_servers/confine"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+fix = true
+src = ["nexus", "services/apps/*/src", "services/packages/*/src"]
+extend-exclude = [
+    "tests/*",
+    "docs/*",
+    "*.md",
+    "nexus/extensions/tasks/ace/ACEBench/**",
+    "nexus/extensions/tasks/waa/metrics/**",
+    # Vendored snapshot from Bad-Pattern-Operator; preserve upstream source verbatim.
+    "nexus/extensions/harbor_bridge/bad_pattern_operator/bpo_v20260924/**",
+    # PPT12 algorithm snapshots: keep their adapters linted, never the vendored trees.
+    "nexus/extensions/tasks/ppt_rubric/ppt_tools/_mx/**",
+    "nexus/extensions/tasks/ppt_rubric/ppt_tools/bx/**",
+    "nexus/extensions/tasks/ppt_rubric/ppt_tools/fontid/**",
+    "nexus/extensions/tasks/ppt_rubric/ppt_tools/sizeid/**",
+]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I", "UP", "N", "B", "A", "C4", "T20", "PT", "RET", "SIM", "TCH"]
+ignore = [
+    # Keep the minimum-version bump separate from repository-wide syntax modernization.
+    "UP017", "UP035", "UP040", "UP041", "UP042", "UP046", "UP047",
+    "T201",   # print
+    "E501",   # line too long
+    "B008",   # flask Depends call
+    "SIM117", # combine with statements
+    "TCH",    # do not move unused imports to if TYPE_CHECKING
+    "A005",   # module shadows standard library (using full import paths)
+]
+fixable = ["A", "B", "C", "E", "F", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+
+[tool.ruff.lint.per-file-ignores]
+# BFCL handler method names must match BaseHandler's API (e.g. _query_FC).
+"nexus/extensions/tasks/bfclv4/handler.py" = ["N802", "B905"]
+# swe_builder eval uses UPPER_CASE regex constants inside functions for readability.
+"nexus/extensions/tasks/swe_builder/eval.py" = ["N806", "E402"]
+# swe_setup_agent tools uses UPPER_CASE constants and single-char loop vars.
+"nexus/extensions/agents/swe_setup_agent/tools.py" = ["N806", "E741"]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+lines-between-types = 1
+force-single-line = false
+order-by-type = true
+relative-imports-order = "closest-to-furthest"
+case-sensitive = true
+known-first-party = ["nexus", "label", "infra"]
+
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:.*Jupyter is migrating.*:DeprecationWarning",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
+]
+markers = [
+    "e2e: end-to-end tests that may require external services",
+    "integration: integration tests that may require local Docker or external runtime services",
+    "gui: GUI desktop runtime tests",
+    "gongfeng: Gongfeng remote runtime tests",
+    "llm: tests that call an LLM service",
+]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ty.src]
+exclude = [
+    # Upstream OSWorld scoring implementations, matching the WAA boundary.
+    "nexus/extensions/tasks/os_world/metrics/official/**",
+    # Vendored from Bad-Pattern-Operator at a pinned source commit.
+    "nexus/extensions/harbor_bridge/bad_pattern_operator/bpo_v20260924/**",
+    "nexus/extensions/tasks/mcp_benchmark/image/helpers/**",
+    "nexus/extensions/tasks/ace/ACEBench/**",
+    "nexus/extensions/tasks/waa/metrics/**",
+    # PPT12 algorithm snapshots: keep their adapters type-checked, never the vendored trees.
+    "nexus/extensions/tasks/ppt_rubric/ppt_tools/_mx/**",
+    "nexus/extensions/tasks/ppt_rubric/ppt_tools/bx/**",
+    "nexus/extensions/tasks/ppt_rubric/ppt_tools/fontid/**",
+    "nexus/extensions/tasks/ppt_rubric/ppt_tools/sizeid/**",
+]
+
+[tool.ty.rules]
+unresolved-import = "ignore"
+unused-ignore-comment = "ignore"
+
+[tool.coverage.run]
+source = ["nexus"]
+omit = ["tests/*", "workspace/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+]
+
+[[tool.uv.index]]
+name = "tencent-internal"
+url = "https://mirrors.tencent.com/repository/pypi/tencent_pypi/simple"
+
+[tool.uv.workspace]
+members = [
+    "services/apps/*",
+    "services/packages/*",
+]
+
+[tool.uv]
+constraint-dependencies = [
+    "requests>=2.33.1",  # chardet 7.x compat (requests <2.33 hardcodes chardet<6)
+    "websockets>=10.4,<16",  # Harbor's supabase/realtime host dependency requires websockets<16
+]
+# Gemini/Codex CoT replay fix: 1.105.1 contains upstream thoughtSignature
+# deduplication (#35004). Keep the override version-based so uv resolves the
+# matching artifact for the current platform instead of pinning one wheel URL.
+override-dependencies = [
+    "litellm==1.105.1",
+]
+
+[tool.uv.sources]
+cloudtestapi = { index = "tencent-internal" }

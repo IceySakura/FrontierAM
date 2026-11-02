@@ -1,0 +1,101 @@
+# Gongfeng 沙盒 Runtime Profile（SWE 生产 rollout 与评测共用）
+#
+# 用途：
+#   和 SWE 生产 rollout 对齐。值逐项取自当时在用的生产配置，换 agent / llm 时这份不动：
+#     沙盒   scaffold_agent/configs/runtime/gongfeng-swe.yaml
+#     判分   scaffold_agent/configs/policies/swe-anti-hack.yaml（anti-hack 全开，钉死，不给环境变量开关）
+#     超时   swe/prod/buses/1010/rollout/launch_cell.sh（runner.timeout 12900，agent 12000）
+#
+#   **生产和评测共用这一份。** 原来拆成 swe_prod_runtime / swe_eval_runtime 两份，但去掉注释后
+#   两者只差 runner.timeout 一行，另外 84 行逐字节相同，所以合并了，差的那个值走 RUNNER_TIMEOUT。
+#   （前端那两份不一样：镜像、CPU、rpc_protocol、task_config 键都不同，仍然是两份。）
+#
+# runner.timeout 怎么定：
+#   它只是外层保险丝 —— 正常路径上 agent 先于 runner 结束，这个值不影响行为，只决定
+#   agent 卡死时 runner 等多久才强杀。必须满足：
+#       AGENT_TIMEOUT < runner.timeout < request_timeout(15000)
+#   默认 14500 取的是安全侧：agent 轴不设 AGENT_TIMEOUT 时默认 14400，14500 刚好让 agent 先超时
+#   100 秒、拿到干净的 agent 侧终止。**跑生产要显式设 RUNNER_TIMEOUT=12900 才和生产一致。**
+#
+# 环境变量：
+#   必填：GONGFENG_RUNTIME_TOKEN（或 GONGFENG_TOKEN）
+#         LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY —— 生产要求一定有轨迹，没设直接报错
+#   可选：RUNNER_TIMEOUT（默认 14500；生产设 12900）
+#         RUNTIME_CPU / RUNTIME_MEMORY（默认 4 / 16，即生产 runbook 那组值）
+#         RUNTIME_BASE_URL、RUNTIME_IMAGE、GONGFENG_PURPOSE、LANGFUSE_BASE_URL、LANGFUSE_SESSION_ID、LANGFUSE_TAGS
+#
+# 使用示例：
+#   生产：RUNTIME_CONFIG=swe_prod_runtime RUNNER_TIMEOUT=12900 AGENT_TIMEOUT=12000
+#   评测：RUNTIME_CONFIG=swe_prod_runtime
+
+body:
+  imports:
+    - nexus.extensions.tasks.swe
+    - nexus.trace.processors.chat_tracker
+    - nexus.trace.processors.langfuse_tracker
+
+  runtime_provider_name: gongfeng
+
+  runtime_provider_config:
+    api_base_url: ${oc.env:RUNTIME_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}
+    # 和 swecosmos_runtime.yaml 一致（MR !1609）：GONGFENG_TOKEN 作回退，hyway 上只设了它也能跑
+    token: ${oc.env:GONGFENG_RUNTIME_TOKEN,${oc.env:GONGFENG_TOKEN,''}}
+    runtime_image: ${oc.env:RUNTIME_IMAGE,current}
+    rpc_protocol: http
+    purpose: ${oc.env:GONGFENG_PURPOSE,prod}
+    resource_spec:
+      # 和 swe_runtime.yaml / 前端那两份保持一致：环境变量包一层，别让人为了调资源去改文件。
+      # 默认值就是 kechizhang 生产 runbook 里那份（SWE_CPU=4 / SWE_MEMORY=16），那份 runbook
+      # 本身就是把它当可调项导出的（swe_opus48_8scaffold_production.md:143-144、526-530）。
+      cpu: ${oc.decode:${oc.env:RUNTIME_CPU,4}}
+      memory: ${oc.decode:${oc.env:RUNTIME_MEMORY,16}}
+    request_timeout: ${oc.decode:${oc.env:RUNTIME_REQUEST_TIMEOUT,15000}}
+
+  runner:
+    # 保险丝，不是行为开关；见文件头。默认取安全侧 14500，生产设 RUNNER_TIMEOUT=12900。
+    timeout: ${oc.decode:${oc.env:RUNNER_TIMEOUT,14500}}
+
+  task_name: swe_task
+  task_config:
+    run_oracle: false
+    raise_on_runtime_error: true
+    eval_timeout_seconds: ${oc.decode:${oc.env:EVAL_TIMEOUT_SECONDS,2000}}
+    enable_anti_hack_prompt: true
+    enable_reward_hacking_detection: true
+    enable_anti_hack: true
+    hack_reward_override: 0.0
+    # 跑 agent 前清掉 /tmp（保留 nexus 自己的几个目录）和编辑器历史，防止上一轮残留被当成线索。
+    # task 会对每条做 str.format(**instance)，所以 find 的 {} 要写成 {{}}。
+    pre_agent_script:
+      - >-
+        find /tmp -mindepth 1 -maxdepth 1 \( -name 'nexus' -o -name 'nexus-agent'
+        -o -name 'nexus-llm-bridge' -o -name 'nexus-compose-start-gate' \)
+        -prune -o -exec rm -rf {{}} + 2>/dev/null || true
+      - rm -rf /tmp/nexus/tools/editor-history 2>/dev/null || true
+
+  processors:
+    chat:
+      name: chat_tracker
+      args:
+        tools_mode: branch_last
+    langfuse:
+      name: langfuse_tracker
+      args:
+        public_key: ${oc.env:LANGFUSE_PUBLIC_KEY}
+        secret_key: ${oc.env:LANGFUSE_SECRET_KEY}
+        host: ${oc.env:LANGFUSE_BASE_URL,'http://langfuse-taiji-api.woa.com'}
+        session_id: ${oc.env:LANGFUSE_SESSION_ID,''}
+        # 不设 LANGFUSE_TRACE_NAME 时，generator 按实例把 trace_name 填成 instance_id，并补 trace_metadata
+        trace_name: ${oc.env:LANGFUSE_TRACE_NAME,''}
+        tags: ${oc.decode:${oc.env:LANGFUSE_TAGS,'[]'}}
+
+  runtime_configs:
+    main:
+      worker_venv: true
+    eval:
+      worker_venv: true
+
+merge:
+  imports: append_unique
+
+source: swe-prod-gongfeng-runtime

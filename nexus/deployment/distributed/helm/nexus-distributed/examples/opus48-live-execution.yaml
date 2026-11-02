@@ -1,0 +1,106 @@
+execution_id: opus48-live
+mode: live
+spec_type: nexus_live
+instance_mode: asyncio
+route_status: cached
+slot_cost: 1
+max_attempts: 1
+placement:
+  environment: predefined-local
+  pool: interactive
+  labels:
+    region: local
+spec:
+  run_id: null
+  imports:
+    - nexus.extensions
+    - nexus.extensions.openai_clients.litellm
+    - nexus.extensions.tasks.frontend
+    - nexus.extensions.agents.hycode_dynamicagent
+
+  openai_config_path: null
+
+  runtime_provider_name: gongfeng
+  runtime_provider_config:
+    api_base_url: http://hyrl-sandbox.online.prod.woa.com:8052
+    image: mirrors.tencent.com/hunyuan_yanguan/nexus-ubuntu-session:1.4.1
+    request_timeout: 2400
+    resource_spec:
+      cpu: 4
+      memory: 16
+    runtime_image: current
+    runtime_provider: gongfeng
+    token: "${oc.env:GONGFENG_TOKEN}"
+
+  runtime_configs:
+    main:
+      environment:
+        HYCODE_LIBC: musl
+        UV_CACHE_DIR: /tmp/nexus-uv-cache
+        XDG_CACHE_HOME: /tmp/nexus-cache
+      use_new_cache_proxy: true
+      worker_venv:
+        modules: []
+
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          api_key: "${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=aws_third&model=${oc.env:NEXUS_MODEL,\"anthropic.claude-opus-4-8\"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,\"60\"}"
+          base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL}
+          log_llm_usage: true
+          max_retries: 3
+          stream: true
+        request_args:
+          model: ${oc.env:NEXUS_MODEL,"anthropic.claude-opus-4-8"}
+
+  tool_configs: {}
+
+  task_name: frontend_task
+  task_config:
+    instance_id: codex-current-opus48
+    is_identity_task: true
+    prompt: 随机写个静态页面，包含标题、三块内容和一点 CSS。
+    run_oracle: false
+    skip_infer_patch_eval: true
+
+  agent_name: hycode_dynamicagent_multiturn
+  agent_config:
+    conversion_log_level: INFO
+    enable_user_input_hooks: true
+    extra_cli_args:
+      - --agent
+      - code-arena-react
+    extra_env:
+      CLAUDE_CODE_ATTRIBUTION_HEADER: "0"
+      CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: "1"
+      CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+      CLAUDE_CODE_USE_NATIVE_FILE_SEARCH: "1"
+      CODE_ARENA_ROOT: /workspace
+    include_hook_events: true
+    include_partial_messages: true
+    is_identity_task: true
+    max_turns: 20
+    npm_registry: https://mirrors.tencent.com/npm/
+    pre_start_scripts:
+      - code: mkdir -p '/workspace'
+    record_trace_events: true
+    timeout: 900
+    version: "0.1.15"
+    working_dir: /workspace
+
+  processors:
+    chat:
+      name: chat_tracker
+      args:
+        tools_mode: branch_last
+
+  runner:
+    timeout: 1200
+    hold_after_task: null
+    early_output_path: null
+    cache: null
+
+  live:
+    working_dir: /workspace

@@ -1,0 +1,37 @@
+run_id: online-main-agent-gateway-01
+
+task_name: identity
+task_config: {}
+
+agent_name: main_agent
+agent_config:
+  user_prompt: Reply with exactly NEXUS_GATEWAY_ONLINE_SERVICE_OK.
+  tools: []
+  max_iterations: 1
+
+openai_clients:
+  main:
+    name: gateway
+    config:
+      client_args:
+        scaffold_policy: nexus_main_agent
+        openai_client:
+          name: openai
+          config:
+            client_args:
+              api_key: '${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=ali&model=${oc.env:NEXUS_MODEL,"deepseek-v4-flash-0731"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"60"}&cache_task_id=${oc.env:MODEL_SERVICE_CACHE_TASK_ID,"f253081cf56e2e654659d294f0d58a92"}'
+              base_url: '${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/compatible-mode/v1"}'
+      request_args:
+        model: '${oc.env:NEXUS_MODEL,"deepseek-v4-flash-0731"}'
+      enforced_request_args:
+        stream: false
+        n: 1
+
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      tools_mode: branch_last
+
+runner:
+  timeout: 300

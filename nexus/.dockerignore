@@ -1,0 +1,42 @@
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+wheels/
+dist/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+
+# Testing & Coverage
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+
+# Project specific
+debug/
+logs/
+outputs/
+workspace/
+nexus/extensions/tasks/mcp_benchmark/image/.build/
+*.db
+*.log
+*.http
+.env
+
+# MkDocs
+site/

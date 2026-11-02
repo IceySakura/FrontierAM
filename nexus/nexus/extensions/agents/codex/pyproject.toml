@@ -1,0 +1,13 @@
+[project]
+name = "codex"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = ["pyte>=0.8.2,<0.9"]
+
+[tool.nexus]
+agents = { codex = "nexus.extensions.agents.codex.agent", codex_native_bridge = "nexus.extensions.agents.codex.agent", codex_interactive = "nexus.extensions.agents.codex.agent", macosworld_codex_native_bridge = "nexus.extensions.agents.codex.macosworld.agent" }

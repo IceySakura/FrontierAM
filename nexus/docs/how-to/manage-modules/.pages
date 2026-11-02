@@ -1,0 +1,4 @@
+title: Manage Modules
+nav:
+  - module-cli.md
+  - create-module.md

@@ -1,0 +1,24 @@
+[project]
+name = "context_agent"
+version = "0.1.0"
+description = "Path-native Context Agent backend"
+dependencies = []
+
+[project.optional-dependencies]
+host = []
+# Model-authored Python runs in the main sandbox image. Dependencies promised
+# to the model must be installed there, not in the Nexus Runtime/Worker env.
+runtime = []
+
+[tool.nexus.agents]
+context_agent_general = "nexus.extensions.agents.context_agent.general_agent"
+
+[tool.nexus.tools]
+"context_agent_general/curl" = "nexus.extensions.agents.context_agent.tools.general.runtime_tools"
+"context_agent_general/bash" = "nexus.extensions.agents.context_agent.tools.general.runtime_tools"
+"context_agent_general/python" = "nexus.extensions.agents.context_agent.tools.general.runtime_tools"
+"context_agent_general/file_search_msearch" = "nexus.extensions.agents.context_agent.tools.general.runtime_tools"
+"context_agent_general/file_search_mclick" = "nexus.extensions.agents.context_agent.tools.general.runtime_tools"
+"context_agent_general/grep" = "nexus.extensions.agents.context_agent.tools.general.runtime_tools"
+"context_agent_general/read_lines" = "nexus.extensions.agents.context_agent.tools.general.runtime_tools"
+"context_agent_general/_cleanup" = "nexus.extensions.agents.context_agent.tools.general.runtime_tools"

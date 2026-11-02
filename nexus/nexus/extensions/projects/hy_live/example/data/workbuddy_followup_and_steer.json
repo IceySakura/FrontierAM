@@ -1,0 +1,50 @@
+{
+  "case": "workbuddy_followup_and_steer",
+  "prompt": "写一个俄罗斯方块。先检查工作目录，再按 HTML、CSS、JavaScript 分文件实现开始/暂停、下一块预览、暂存、幽灵落点、等级加速和键盘/触屏操作；最后逐项检查操作并修正问题。完成后通过原生产物展示能力将 index.html 作为主产物展示并打开预览，不要只在回复里写文件路径。",
+  "user_simulator": {
+    "type": "scripted",
+    "turns": [
+      "写一个俄罗斯方块。先检查工作目录，再按 HTML、CSS、JavaScript 分文件实现开始/暂停、下一块预览、暂存、幽灵落点、等级加速和键盘/触屏操作；最后逐项检查操作并修正问题。完成后通过原生产物展示能力将 index.html 作为主产物展示并打开预览，不要只在回复里写文件路径。",
+      {
+        "content": "都允许",
+        "gate": "after_delivery"
+      },
+      {
+        "content": "问问它准备怎样处理旋转踢墙，为什么选这个方案？让它用两句话解释，不只是汇报进度。",
+        "gate": "immediate"
+      },
+      {
+        "content": "现在就改掉正在做的计分规则，不要等这版做完：加一个计分板，消一行固定加 100 分。",
+        "gate": "after_delivery"
+      },
+      {
+        "content": "好的，打开看看",
+        "gate": "after_delivery"
+      }
+    ]
+  },
+  "task_config": {
+    "user_place": {
+      "country": "中国",
+      "province": "上海",
+      "city": "上海"
+    },
+    "user_now": "2026-10-14T15:00:00+08:00",
+    "max_user_turns": 10,
+    "task_delivery_timeout": 1800,
+    "hold_next_user_until_permission": false,
+    "default_budget": {
+      "timeout_s": 2400
+    },
+    "work_agent_configs": {
+      "workbuddy": {
+        "working_dir": "/workspace",
+        "skip_permissions": false,
+        "permission_policy": "defer",
+        "workbuddy": {
+          "permission_mode": "default"
+        }
+      }
+    }
+  }
+}

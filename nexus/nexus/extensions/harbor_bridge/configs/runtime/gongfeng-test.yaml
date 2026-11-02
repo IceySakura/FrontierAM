@@ -1,0 +1,34 @@
+# Gongfeng 测试资源池 Profile。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/runtime/gongfeng-test.yaml
+#
+# 必填环境变量：
+#   GONGFENG_RUNTIME_TOKEN='<sandbox token>'
+# 可选环境变量：
+#   GONGFENG_API_BASE_URL='http://hyrl-sandbox.prod.woa.com:8052'
+#   GONGFENG_RUNTIME_IMAGE='current'
+
+# body 是合并进最终 RunInput 的部分配置。
+body:
+  # 选择 Nexus Host 侧的 Gongfeng RuntimeProvider 实现。
+  runtime_provider_name: gongfeng
+  # 下面的字段传给 GongfengRuntimeProvider 构造函数；任务自身的镜像、
+  # CPU、内存、网络和 workdir 由 Dataset Item 的 runtime_configs 提供。
+  runtime_provider_config:
+    # Gongfeng Sandbox API 地址。 ${oc.env:NAME,default} 表示读取环境变量，
+    # 环境变量不存在时使用逗号后的默认值。
+    api_base_url: ${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}
+    # 执行前从环境变量读取，避免 Token 明文写入 Batch DB。
+    token__env: GONGFENG_RUNTIME_TOKEN
+    # 注入 Sandbox 的 Nexus Runtime 镜像。 current 会自动匹配当前 Nexus 版本；
+    # 如需复现固定环境，可通过环境变量改成完整镜像地址。
+    runtime_image: ${oc.env:GONGFENG_RUNTIME_IMAGE,current}
+    # 单次 start/get/stop API 请求超时，单位为秒；不是任务执行超时，也不是排队总时长。
+    request_timeout: 24000
+    # Gongfeng 资源用途桶：prod、eval 或 test。 test 适合离线调试，但高峰期可能排队更久。
+    purpose: test
+
+# source 只用于 Compose 日志、错误定位和审计，不进入 RunInput。
+source: harbor-gongfeng-test

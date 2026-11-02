@@ -1,0 +1,14 @@
+[project]
+name = "mcp_benchmark"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["pandas>=2.3.3"]
+runtime = []
+
+[tool.nexus]
+tasks = { mcp_benchmark = "nexus.extensions.tasks.mcp_benchmark.task" }

@@ -1,0 +1,12 @@
+ARG NEXUS_WORKLOAD_BASE_IMAGE=nexus-distributed-workload:dynamic-local
+FROM ${NEXUS_WORKLOAD_BASE_IMAGE}
+
+COPY tests/__init__.py /workspace/tests/__init__.py
+COPY tests/integration/__init__.py /workspace/tests/integration/__init__.py
+COPY tests/integration/distributed/image_mode_fixture.py /workspace/tests/integration/distributed/image_mode_fixture.py
+
+ENV PYTHONPATH=/workspace
+
+RUN chmod -R a+rX /workspace
+
+ENTRYPOINT ["python", "-m", "nexus.cli.main"]

@@ -1,0 +1,49 @@
+{
+  "case": "ask_user_question",
+  "prompt": "让后台写个游戏。先检查工作目录，再让后台问我想做哪一种游戏（贪吃蛇、俄罗斯方块、扫雷）；收到我的答复后再开始做。",
+  "user_simulator": {
+    "type": "scripted",
+    "turns": [
+      "让后台写个游戏。先检查工作目录，再让后台问我想做哪一种游戏（贪吃蛇、俄罗斯方块、扫雷）；收到我的答复后再开始做。",
+      {
+        "content": "都允许",
+        "gate": "after_delivery"
+      },
+      {
+        "content": "做贪吃蛇",
+        "gate": "after_delivery"
+      },
+      {
+        "content": "好的，打开看看吧",
+        "gate": "after_delivery"
+      }
+    ]
+  },
+  "task_config": {
+    "user_place": {
+      "country": "中国",
+      "province": "上海",
+      "city": "上海"
+    },
+    "user_now": "2026-10-09T16:00:00+08:00",
+    "max_user_turns": 8,
+    "task_delivery_timeout": 1800,
+    "hold_next_user_until_permission": false,
+    "default_budget": {
+      "timeout_s": 2400
+    },
+    "work_agent_configs": {
+      "codebuddy": {
+        "working_dir": "/workspace",
+        "skip_permissions": false,
+        "permission_policy": "defer",
+        "npm_registry": "http://mirrors.tencent.com/npm/"
+      },
+      "workbuddy": {
+        "workbuddy": {
+          "permission_mode": "default"
+        }
+      }
+    }
+  }
+}

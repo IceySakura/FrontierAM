@@ -1,0 +1,43 @@
+task_name: identity
+
+task_config:
+  user_inputs:
+    - 'This is the second turn. Confirm that you remember the first request.'
+
+runtime_provider_name: docker
+runtime_configs:
+  main:
+    # The default DSH version uses a prebuilt npm tree. Custom versions without
+    # a matching artifact fall back to npm and need make plus a C++ compiler.
+    image: ${oc.env:NEXUS_DSH_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/ubuntu:24.04"}
+    worker_venv: true
+
+agent_name: dsh
+agent_config:
+  user_prompt: 'Remember the phrase blue heron, then acknowledge it.'
+  working_dir: /workspace
+  version: '0.1.0-rc.6'
+  acp_version: '0.1.0-rc.6'
+  max_turns: 2
+  permission_mode: workspace-write
+  permission_policy: allow
+  timeout: 300
+
+openai_clients:
+  main:
+    name: litellm
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=azure_openai&model=${oc.env:NEXUS_MODEL,"gpt-5.5"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"300"}
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"gpt-5.5"}
+
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      tools_mode: branch_last
+
+runner:
+  timeout: 600

@@ -1,0 +1,13 @@
+[project]
+name = "mm_search_agent"
+version = "0.1.0"
+authors = [
+    { name = "shitaoxiao" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { mm_search_agent = "nexus.extensions.agents.mm_search_agent.agent" }

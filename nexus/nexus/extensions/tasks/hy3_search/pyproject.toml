@@ -1,0 +1,15 @@
+[project]
+name = "hy3_search"
+version = "0.1.0"
+authors = [
+    { name = "ericsqin" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["dateparser>=1.3.0", "pandas>=2.3.3"]
+runtime = []
+
+[tool.nexus]
+agents = { hy3_search = "nexus.extensions.tasks.hy3_search.agent" }
+tasks = { hy3_search = "nexus.extensions.tasks.hy3_search.task" }

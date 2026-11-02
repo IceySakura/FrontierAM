@@ -1,0 +1,63 @@
+# SWE-Any Export — single-run config (assemble → execution-grade → Harbor emit).
+#
+#   uv run nexus run-single nexus/extensions/tasks/swe_any/config/stage/export.yaml \
+#       -o ./outputs/swe_any/export_result.json
+#
+# Prereq: mask.jsonl + eval.jsonl + issue.jsonl under SWE_ANY_OUTPUT_DIR. For each feature usable in
+# all three, the host execution-grades it in the baked image (run the oracle tests pregold/postgold
+# → FAIL_TO_PASS / PASS_TO_PASS) and, when valid (non-empty F2P, no regression), writes a Harbor task
+# under SWE_ANY_OUTPUT_DIR/harbor/<instance_id>/. Writes the unified export.jsonl too.
+#
+# DETERMINISTIC stage: NO LLM (no agent_name / openai_clients), so generator/stage/export.py does NOT apply a
+# config/client backend patch. Secrets: GONGFENG_TOKEN only (sandbox token).
+
+imports:
+  - nexus.extensions.tasks.swe_any
+
+task_name: "swe_any_export"
+
+instances:
+  path: "${oc.env:SWE_ANY_INSTANCES,}"
+  ids: "${oc.env:SWE_ANY_INSTANCE_IDS,}"
+  language: "${oc.env:SWE_ANY_LANGUAGE,python}"
+  skip: "${oc.decode:${oc.env:SWE_ANY_SKIP,0}}"
+  limit: "${oc.decode:${oc.env:SWE_ANY_LIMIT,0}}"
+
+task_config:
+  instance_path: "${oc.env:SWE_ANY_INSTANCE_PATH,}"
+  repo_name: "${oc.env:SWE_ANY_REPO_NAME,repo}"
+  # Host inputs. Empty = default to output_dir/<repo>/{mask.jsonl,eval.jsonl,issue.jsonl}.
+  mask_path: "${oc.env:SWE_ANY_MASK_PATH,}"
+  eval_path: "${oc.env:SWE_ANY_EVAL_PATH,}"
+  issue_path: "${oc.env:SWE_ANY_ISSUE_PATH,}"
+  output_dir: "${oc.env:SWE_ANY_OUTPUT_DIR,./outputs/swe_any}"
+
+  # Baked per-repo WORKLOAD image (SWE-Env `image`) — where the oracle tests run.
+  image: "${oc.env:SWE_ANY_IMAGE,}"
+  repo_dir: "${oc.env:SWE_ANY_REPO_DIR,/testbed}"
+
+  max_features: "${oc.env:SWE_ANY_MAX_FEATURES,0}"
+  max_workers: "${oc.env:SWE_ANY_MAX_WORKERS,1}"
+
+  # Reserved hack-check hook (not implemented; true only records a warning).
+  use_hack_check: "${oc.decode:${oc.env:SWE_ANY_USE_HACK_CHECK,false}}"
+  # Host ceiling on each in-sandbox grade invoke (two pytest runs).
+  grade_timeout: "${oc.env:SWE_ANY_GRADE_TIMEOUT,1800.0}"
+  release_runtime: "${oc.decode:${oc.env:SWE_ANY_RELEASE_RUNTIME,false}}"
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}"
+  token: "${oc.env:GONGFENG_TOKEN}"
+  # Gongfeng scheduling label (prod/eval/test); independent of the API hostname.
+  purpose: "${oc.env:GONGFENG_PURPOSE,test}"
+  runtime_image: "current"
+  request_timeout: "${oc.env:SWE_ANY_PROVIDER_REQUEST_TIMEOUT,86400.0}"
+  resource_spec: { cpu: 2, memory: 8 }
+
+runtime_configs:
+  main:
+    # run_grade runs in-sandbox via runtime.invoke, so ship the nexus wheel (incl. swe_any) into the
+    # worker venv. Same pattern as Parse/Mask/Eval.
+    worker_venv:
+      modules: ["swe_any"]

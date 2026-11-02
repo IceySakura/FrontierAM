@@ -1,0 +1,68 @@
+replicaCount: 1
+
+image:
+  repository: nexus-label
+  tag: local
+  pullPolicy: IfNotPresent
+
+service:
+  # ClusterIP（默认，集群内访问）或 NodePort（本地调试，免去 port-forward）
+  type: ClusterIP
+  port: 8080
+  # 仅 type=NodePort 时生效；留空则由集群自动分配。
+  # kind 集群需选用 kind-cluster.yaml 中已映射的端口（30080-30090、30443）
+  nodePort: ""
+
+# 健康探针间隔。默认保持较灵敏的间隔以保证故障检测及时。
+#
+# 代价权衡：探针每次成功都会打一条 uvicorn.access 日志，间隔过短会把有用日志
+# 冲掉（5s 间隔时实测 200 行里 195 行是探针）；但放宽间隔会让故障检测变慢——
+# 最坏情况需 periodSeconds * failureThreshold 才会重启容器（liveness）或摘掉
+# 流量（readiness），默认 failureThreshold=3，故 60s 意味着最长约 3 分钟才
+# 发现进程卡死。
+#
+# 因此默认值按生产取向保守设置，本地/联调环境如需降噪，在各自的
+# values.<env>.yaml 中覆盖。
+probes:
+  liveness:
+    periodSeconds: 10
+  readiness:
+    periodSeconds: 5
+
+# 日志。始终输出 stdout（保证 kubectl logs 可用）；file 非空时额外滚动落盘，
+# 便于进容器 tail/grep 排查历史问题。按小时滚动，切分文件带
+# .YYYY-MM-DD_HH 后缀；backupCount 为保留份数，168 份即 7 天。
+# 注意按时间滚动不封顶单文件大小，磁盘紧张时应调小 backupCount 或限制卷容量。
+logging:
+  # 留空则只输出 stdout，不落盘
+  file: ""
+  backupCount: 168
+  # 关闭时用 emptyDir（Pod 删除即丢）；开启则申请 PVC 跨重启保留
+  persistence:
+    enabled: false
+    size: 2Gi
+    storageClass: ""
+
+# OpenTelemetry 追踪。enabled=true 时注入 NEXUS_OTEL_ENABLED、OTEL_SERVICE_NAME 与
+# OTLP endpoint，其余 OTEL_* 参数可通过 extraEnv 补充。serviceName 留空时默认取 chart 名。
+otel:
+  enabled: false
+  endpoint: ""
+  serviceName: ""
+
+# 额外注入的普通环境变量（非敏感），如自定义 OTEL_* 或业务开关。
+extraEnv: []
+
+# 七彩石配置中心。provider 业务配置（AGS/DevCloud/SmartRun 凭据）全部由七彩石下发，
+# 不再通过环境变量注入；拉取失败时服务降级到 model 默认值。
+rainbow:
+  enabled: false
+  appId: ""
+  group: ""
+  envName: ""
+  # 本地/无北极星环境用 http 域名直连；北极星寻址串形如 65026305:65536
+  connectStr: "http://api.rainbow.woa.com:8080"
+  userId: ""
+  secretKey: ""
+  # 配置变更热更新：启用后监听七彩石变更并在进程内重建配置，无需重启 Pod
+  watch: true

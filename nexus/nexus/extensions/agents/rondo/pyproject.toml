@@ -1,0 +1,13 @@
+[project]
+name = "rondo"
+version = "0.1.0"
+authors = [
+    { name = "mannaliang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { rondo_agent = "nexus.extensions.agents.rondo.agent" }

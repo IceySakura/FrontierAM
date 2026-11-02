@@ -1,0 +1,125 @@
+# Math benchmark: Codex without Lean MCP, A20B Taiji route.
+
+imports:
+  - nexus.extensions
+  - nexus.extensions.openai_clients
+  - nexus.extensions.tasks.stem_mas
+  - nexus.extensions.tasks.stem_mas.patches.codex_responses
+
+task_name: "stem_mas"
+solver_strategy: "codex"
+task_config:
+  evaluator_none_score: 0.0
+  lean4_verifier_url: ${oc.env:LEAN4_VERIFIER_URL,"http://lean4-verifier-v0d2d0.production.polaris:8080"}
+  lean4_verifier_timeout_seconds: ${oc.decode:${oc.env:LEAN4_VERIFIER_TIMEOUT_SECONDS,7200}}
+  lean4_verifier_forbid_sorry: ${oc.decode:${oc.env:LEAN4_VERIFIER_FORBID_SORRY,true}}
+  timeout: ${oc.decode:${oc.env:STEM_MAS_TASK_TIMEOUT,7200}}
+
+dataset:
+  name: ${oc.env:STEM_MAS_DATASET_NAME,"minif2f"}
+  path: ${oc.env:STEM_MAS_DATASET_PATH,""}
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: ${oc.env:GONGFENG_API_BASE_URL,"REPLACE_ME_GONGFENG_API_BASE_URL"}
+  token: ${oc.env:GONGFENG_RUNTIME_TOKEN,""}
+  image: ${oc.env:STEM_MAS_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:claude-code-hle"}
+  runtime_image: ${oc.env:STEM_MAS_RUNTIME_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:claude-code-hle"}
+  resource_spec:
+    cpu: 2
+    memory: 10
+  request_timeout: ${oc.decode:${oc.env:GONGFENG_REQUEST_TIMEOUT,7800.0}}
+  python_version: "3.12"
+
+runner:
+  timeout: ${oc.decode:${oc.env:STEM_MAS_RUNNER_TIMEOUT,7800}}
+
+runtime_configs:
+  main:
+    worker_venv:
+      python_version: "3.12"
+      modules: []
+    image: ${oc.env:STEM_MAS_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:claude-code-hle"}
+    environment:
+      UV_CACHE_DIR: "/tmp/nexus-uv-cache"
+      UV_PYTHON_DOWNLOADS: "never"
+      HTTP_PROXY: ""
+      HTTPS_PROXY: ""
+      http_proxy: ""
+      https_proxy: ""
+      NO_PROXY: "localhost,127.0.0.1,.woa.com,woa.com,llm-api.model-eval.woa.com,api.model-eval.woa.com"
+      no_proxy: "localhost,127.0.0.1,.woa.com,woa.com,llm-api.model-eval.woa.com,api.model-eval.woa.com"
+
+agent_name: "stem_mas_codex"
+agent_config:
+  working_dir: "/workspace"
+  timeout: ${oc.decode:${oc.env:CODEX_TIMEOUT,7200}}
+  version: ${oc.env:CODEX_VERSION,"0.131.0-alpha.22"}
+  model: ${oc.env:CODEX_MODEL,"gpt-5"}
+  npm_registry: ${oc.env:CODEX_NPM_REGISTRY,"http://mirrors.tencent.com/npm/"}
+  extra_cli_args:
+    - "--json"
+  developer_instructions: |
+    You are a Codex math benchmark solver. Use Codex native sub-agents when
+    they are available, but follow the exact tool schemas shown by Codex.
+    Follow the benchmark prompt's final-answer contract exactly. If it asks
+    for a <final_proof></final_proof> block, output only the requested proof
+    body or proof term inside that block. If it asks for a final ```lean4
+    fenced block, output the complete Lean code in the last fenced block. Do
+    not mix the two formats. No Lean MCP verifier is configured in this
+    baseline, so do not claim the proof compiles.
+  extra_config_toml: |
+    approval_policy = "never"
+    sandbox_mode = "danger-full-access"
+    history.persistence = "none"
+
+openai_clients:
+  main:
+    name: "taiji"
+    config:
+      client_args:
+        model: ${oc.env:GENERATION_MODEL,"A20B-High-260609-V5-step320-192K"}
+        namespace: ${oc.env:TAIJI_NS,"Production"}
+        service: ${oc.env:GENERATION_TAIJI_POLARIS_SERVICE,"A20B-High-260609-V5-step320-192K_AIDE"}
+        authorization: ${oc.env:TAIJI_AUTH,"Bearer xxx"}
+        wsid: ${oc.env:TAIJI_WSID,"10103"}
+        url_pattern: ${oc.env:TAIJI_URL_PATTERN,"v1"}
+        timeout: ${oc.decode:${oc.env:GENERATION_TIMEOUT,7200}}
+        max_retries: ${oc.decode:${oc.env:GENERATION_MAX_RETRIES,25}}
+        enable_thinking: true
+        chat_template_kwargs:
+          interleaved_thinking: true
+          reasoning_effort: ${oc.env:GENERATION_REASONING_EFFORT,"high"}
+      request_args:
+        temperature: ${oc.decode:${oc.env:GENERATION_TEMPERATURE,0.2}}
+        top_p: ${oc.decode:${oc.env:GENERATION_TOP_P,1.0}}
+        max_tokens: ${oc.decode:${oc.env:GENERATION_MAX_TOKENS,131072}}
+        top_k: -1
+        repetition_penalty: 1
+
+  judge:
+    name: "taiji"
+    config:
+      client_args:
+        model: ${oc.env:JUDGE_MODEL,"GPT-OSS-120B-zw-long"}
+        namespace: ${oc.env:TAIJI_NS,"Production"}
+        service: ${oc.env:TAIJI_POLARIS_SERVICE,"GPT-OSS-120B-zw-long_AIDE"}
+        authorization: ${oc.env:TAIJI_AUTH,"Bearer xxx"}
+        wsid: ${oc.env:TAIJI_WSID,"10103"}
+        url_pattern: ${oc.env:TAIJI_URL_PATTERN,"v1"}
+        timeout: ${oc.decode:${oc.env:JUDGE_TIMEOUT,7200}}
+        max_retries: ${oc.decode:${oc.env:JUDGE_MAX_RETRIES,25}}
+      request_args:
+        temperature: 0.0
+        top_p: 1.0
+
+cache_metrics:
+  client_overrides:
+    main:
+      model_provider: taiji
+    judge:
+      model_provider: taiji
+
+processors:
+  chat:
+    name: "chat_tracker"

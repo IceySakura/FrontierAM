@@ -1,0 +1,15 @@
+[project]
+name = "mnist"
+version = "0.1.0"
+authors = [
+    { name = "arlenxu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["pillow>=10.0.0"]
+runtime = []
+
+[tool.nexus]
+tasks = { mnist_task = "nexus.extensions.projects.mnist.task" }
+tools = { "mnist/decode" = "nexus.extensions.projects.mnist.tools", "mnist/calculate" = "nexus.extensions.projects.mnist.tools" }

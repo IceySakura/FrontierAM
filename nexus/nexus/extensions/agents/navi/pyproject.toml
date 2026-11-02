@@ -1,0 +1,13 @@
+[project]
+name = "navi"
+version = "0.1.0"
+description = "Navi agent integration for WindowsAgentArena runtimes"
+dependencies = [
+    "pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { navi_agent = "nexus.extensions.agents.navi.agent" }

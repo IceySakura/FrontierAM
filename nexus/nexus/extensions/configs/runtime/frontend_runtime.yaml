@@ -1,0 +1,88 @@
+# Gongfeng 沙盒 + frontend_task（前端，通用 / smoke）
+#
+# 前端这个 topic 自己维护的 runtime。agent 和 llm 直接选共享的，不用复制。
+# 要和生产 rollout / 评测对齐，用 frontend_prod_runtime / frontend_eval_runtime。
+#
+# 和 SWE 的 runtime 差在任务本身：
+#   task_name      frontend_task，不是 swe_task
+#   working_dir    /workspace。generator_frontend_template.py 会把它同步到 agent_config.working_dir，
+#                  所以 agent yaml 里 SWE 的默认值 /testbed 不会漏进来
+#   image          webenv 镜像，带 Node 和浏览器
+#   cpu / memory   8 / 16（SWE 是 2 / 10）
+#   没有 anti-hack 前端题没有隐藏的 oracle patch，也没有 grader 分
+#
+# 环境变量：
+#   必填：GONGFENG_RUNTIME_TOKEN（或 GONGFENG_TOKEN）
+#   可选：FRONTEND_IMAGE           webenv 镜像。生产给 codebuddy / dsh / handy / pi / workbuddy 用 node22 镜像
+#                                  mirrors.tencent.com/g_kechizhang/webenv.claudecode.testset-node22:20260606
+#         AGENT_WORKING_DIR        默认 /workspace
+#         RUNTIME_CPU / RUNTIME_MEMORY / RUNTIME_REQUEST_TIMEOUT
+#         FRONTEND_RUN_EVAL        默认 false；只有题目带 task_dir（tests/test.sh）时才有意义
+#         FRONTEND_TEST_TIMEOUT
+#         LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY / LANGFUSE_BASE_URL（缺一个就禁用，不报错）
+#   注意：agent 的时限是 agent 轴的 AGENT_TIMEOUT（默认 14400），必须小于 RUNTIME_REQUEST_TIMEOUT（默认 10000），
+#         所以跑前端要显式设 AGENT_TIMEOUT，例如 7200。
+#
+# 使用示例：
+#   RUNTIME_CONFIG=frontend_runtime AGENT_CONFIG=kilo LLM_CONFIG=gpt-6-sol.openai_responses \
+#   AGENT_TIMEOUT=7200 DATASET_PATH=./cases.jsonl \
+#   nexus run-batch -g nexus/extensions/configs/generator_frontend_template.py -d rollout.db
+#
+# 互斥约束：runtime 轴一次只选一个。
+
+body:
+  imports:
+    - nexus.extensions.tasks.frontend
+    - nexus.trace.processors.chat_tracker
+    - nexus.trace.processors.langfuse_tracker
+
+  runtime_provider_name: ${oc.env:RUNTIME_PROVIDER_NAME,gongfeng}
+  runtime_provider_config:
+    api_base_url: ${oc.env:RUNTIME_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}
+    # 和 swecosmos_runtime.yaml 一致（MR !1609）：GONGFENG_TOKEN 作回退，hyway 上只设了它也能跑
+    token: ${oc.env:GONGFENG_RUNTIME_TOKEN,${oc.env:GONGFENG_TOKEN,''}}
+    # webenv 镜像自带 Node 和浏览器。SWE 的 runtime 没有 image 这一项，
+    # 因为 SWE 用的是题目自带的 testbed 镜像。
+    image: ${oc.env:FRONTEND_IMAGE,mirrors.tencent.com/hunyuan_yanguan/webenv.claudecode.testset:v4}
+    runtime_image: ${oc.env:RUNTIME_IMAGE,current}
+    rpc_protocol: ${oc.env:RPC_PROTOCOL,http}
+    purpose: ${oc.env:GONGFENG_PURPOSE,prod}
+    resource_spec:
+      # 前端要跑 dev server 和浏览器，8/16；SWE 是 2/10。
+      cpu: ${oc.decode:${oc.env:RUNTIME_CPU,8}}
+      memory: ${oc.decode:${oc.env:RUNTIME_MEMORY,16}}
+    request_timeout: ${oc.decode:${oc.env:RUNTIME_REQUEST_TIMEOUT,10000}}
+
+  task_name: frontend_task
+  task_config:
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/workspace}
+    # rollout 默认不判分：判分要题目自带 test.sh，评测包才打开。
+    run_eval: ${oc.decode:${oc.env:FRONTEND_RUN_EVAL,false}}
+    test_timeout: ${oc.decode:${oc.env:FRONTEND_TEST_TIMEOUT,600}}
+    run_oracle: ${oc.decode:${oc.env:RUN_ORACLE,false}}
+
+  processors:
+    chat:
+      name: chat_tracker
+      args:
+        tools_mode: branch_last
+    # Langfuse 默认开，缺 key 时只 warning 并自我禁用，不中断任务
+    langfuse:
+      name: langfuse_tracker
+      args:
+        public_key: ${oc.env:LANGFUSE_PUBLIC_KEY,''}
+        secret_key: ${oc.env:LANGFUSE_SECRET_KEY,''}
+        host: ${oc.env:LANGFUSE_BASE_URL,''}
+        session_id: ${oc.env:LANGFUSE_SESSION_ID,''}
+        trace_name: ${oc.env:LANGFUSE_TRACE_NAME,''}
+        # 叉乘时用来区分格子，例：LANGFUSE_TAGS='["agent=kilo","llm=gpt-6-sol"]'
+        tags: ${oc.decode:${oc.env:LANGFUSE_TAGS,'[]'}}
+
+  runtime_configs:
+    main:
+      worker_venv: ${oc.decode:${oc.env:WORKER_VENV,true}}
+
+merge:
+  imports: append_unique
+
+source: frontend-gongfeng-runtime

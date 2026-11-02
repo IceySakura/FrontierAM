@@ -1,0 +1,16 @@
+[project]
+name = "base"
+version = "0.1.0"
+authors = [
+    { name = "mannaliang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+
+[tool.nexus.tools]
+"base/write_todos" = "nexus.extensions.agents.base.tools"
+"base/finish" = "nexus.extensions.agents.base.tools"

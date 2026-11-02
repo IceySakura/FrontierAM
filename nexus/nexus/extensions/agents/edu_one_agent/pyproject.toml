@@ -1,0 +1,18 @@
+[project]
+name = "edu_one_agent"
+version = "0.1.0"
+authors = [
+    { name = "jasonwrwang" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = []
+runtime = []
+
+[tool.nexus]
+agents = { edu_one_agent = "nexus.extensions.agents.edu_one_agent.agent" }
+
+[tool.nexus.tools]
+"edu_one_agent/edu_search" = "nexus.extensions.agents.edu_one_agent.tools.edu_search_tool"
+"edu_one_agent/web_search" = "nexus.extensions.agents.edu_one_agent.tools.web_search_tool"

@@ -1,0 +1,34 @@
+# meta.yaml — 友商 Tool Call 泄漏，扫全部 assistant 通道。
+canonical_name: tool_call_protocol_leak_all_family
+symptom_cluster: tool_call_leak
+display_name: 友商 Tool Call 泄漏
+namespace: core.format.tool_call_protocol
+description: assistant 的 content、reasoning_content 或 tool_call 参数中出现各家 tool 协议标签（含裸 HY XML 与 Qwen/MiniMax/Seed/DeepSeek/Kimi 等）。带 :8hex 的 HY 标签不报。
+definition: |-
+  检测对象：每个 assistant 消息的 content、reasoning_content，以及结构化 tool_call 参数字符串。
+  命中条件：PROTOCOL_TOOL_TOKEN_RE，含原 GLM/hy3 白名单（不含 :8hex），以及 function=/parameter=/invoke name=/namespaced XML/DeepSeek ｜tool…｜/Kimi <|tool_call_*|>/InternLM action/Kimi K3 <|open|>call 等。裸 <function>、<parameter>、<tools>、<tool> 不命中。HY hashed <word:8hex> 不命中。
+  XML 属性只接受同一行内的 name=value 形式；小写 <parameters> 保留为协议标签，C++ 常见的 <Parameters> 不命中。
+  content/reasoning 中 fenced/inline code 内的标签仅记 nonissue evidence。Write/Edit 文件内容参数不整体豁免：
+  只有位于值末尾的协议关闭标签才报告 issue，中间的模板类型、grep 字面量等仅记 nonissue evidence。
+  Shell 命令单/双引号内的标签字面量同样仅记 nonissue evidence。
+  归因：think 协议标签由 think_protocol_leak_all_family 报告。HY hashed <tool_call:hex> 由 tool_call_protocol_leak_hy 报告；裸 <tool_call> 只由本算子报告。
+  输出粒度：每个命中的 assistant turn 一条 Finding；detail 记录命中字段和各字段 token。
+detection_tier: programmable
+channel:
+- content
+- reasoning
+- tool_call
+data_requirement:
+- any
+verification: unverified
+example:
+  synthetic: true
+  caption: 任一 assistant 字段出现各家 tool 协议标签。
+runtime:
+  entrypoint: detect_tool_call_protocol_leak_all_family:ToolCallProtocolLeakDetector
+  applicable_data_types:
+  - trajectory
+  detector_type: rule
+  tags:
+  - taxonomy_0706
+  behavior_version: 1.2.0

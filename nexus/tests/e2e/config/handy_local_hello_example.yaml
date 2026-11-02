@@ -1,0 +1,32 @@
+imports:
+  - nexus.extensions
+
+task_name: "echo"
+task_config:
+  message: "Hello, Nexus!"
+  run_oracle: false
+
+runtime_provider_name: "docker"
+runtime_provider_config:
+  runtime_image: "current"
+  force_rebuild: true
+
+agent_name: "handy"
+agent_config:
+  working_dir: "/workspace"
+  timeout: 3600
+  version: ${oc.env:HANDY_VERSION,"0.1.14"}
+
+openai_clients:
+  main:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:HANDY_E2E_API_KEY,"YOUR_API_KEY_HERE"}
+        base_url: ${oc.env:HANDY_E2E_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080"}
+      request_args:
+        model: ${oc.env:HANDY_E2E_MODEL,"anthropic.claude-sonnet-4-6"}
+
+processors:
+  chat:
+    name: "chat_tracker"

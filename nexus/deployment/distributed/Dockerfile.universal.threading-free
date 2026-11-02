@@ -1,0 +1,66 @@
+FROM mirrors.tencent.com/tlinux/tlinux4.0-minimal@sha256:9314bb5aa4696df4dfef9331c334b317dc944cfa345366f60e40442d820494ef AS runtime-base
+
+ARG NEXUS_PYTHON_VERSION=3.14.8t
+ARG NEXUS_PIP_VERSION=25.3
+ARG NEXUS_UV_VERSION=0.13.1
+ARG NEXUS_PYPI_INDEX_URL=https://mirrors.tencent.com/pypi/simple/
+ARG NEXUS_BUILD_REVISION=unknown
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_INDEX_URL=${NEXUS_PYPI_INDEX_URL} \
+    UV_INDEX_URL=${NEXUS_PYPI_INDEX_URL} \
+    UV_PYTHON_INSTALL_DIR=/opt/uv-python \
+    UV_CACHE_DIR=/tmp/uv-cache \
+    PATH=/opt/nexus-venv/bin:/opt/uv-bootstrap/bin:/root/.local/bin:$PATH
+
+LABEL org.opencontainers.image.revision="${NEXUS_BUILD_REVISION}" \
+      io.nexus.python.version="${NEXUS_PYTHON_VERSION}" \
+      io.nexus.pypi.index="${NEXUS_PYPI_INDEX_URL}"
+
+WORKDIR /app
+
+COPY deployment/distributed/rpm/universal.txt /tmp/universal.txt
+
+RUN dnf -y install $(cat /tmp/universal.txt) \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf /tmp/universal.txt \
+    && python3 -m venv /opt/uv-bootstrap \
+    && /opt/uv-bootstrap/bin/python -m pip install --no-cache-dir \
+        "pip==${NEXUS_PIP_VERSION}" "uv==${NEXUS_UV_VERSION}" \
+    && /opt/uv-bootstrap/bin/uv python install --install-dir /opt/uv-python "${NEXUS_PYTHON_VERSION}" \
+    && PYTHON_BIN="$(/opt/uv-bootstrap/bin/uv python find "${NEXUS_PYTHON_VERSION}")" \
+    && /opt/uv-bootstrap/bin/uv venv /opt/nexus-venv --python "${PYTHON_BIN}" \
+    && /opt/nexus-venv/bin/python --version \
+    && /opt/nexus-venv/bin/python -c "import sys, sysconfig; assert sysconfig.get_config_var('Py_GIL_DISABLED') == 1; assert not sys._is_gil_enabled()"
+
+FROM runtime-base AS build
+
+COPY deployment/distributed/rpm/builder.txt /tmp/builder.txt
+RUN dnf -y install $(cat /tmp/builder.txt) \
+    && dnf clean all \
+    && rm /tmp/builder.txt
+
+COPY pyproject.toml uv.lock README.md ./
+RUN uv export --quiet --frozen --no-dev --no-emit-project --extra distributed --extra otel \
+        --output-file /tmp/nexus-requirements.txt \
+    && uv pip install --python /opt/nexus-venv/bin/python --no-cache --no-config --no-deps --require-hashes \
+        --requirement /tmp/nexus-requirements.txt \
+    && rm /tmp/nexus-requirements.txt
+
+COPY nexus ./nexus
+COPY deployment ./deployment
+
+RUN uv pip install --python /opt/nexus-venv/bin/python --no-cache --no-deps . \
+    && chmod -R a+rX /app /opt/nexus-venv /opt/uv-bootstrap /opt/uv-python \
+    && rm -rf /tmp/uv-cache
+
+FROM runtime-base
+
+COPY --from=build /opt/nexus-venv /opt/nexus-venv
+COPY --from=build /app /app
+
+# Verify native imports without forcing unsupported extensions to run without the GIL.
+RUN python -c "import nexus.cli.main, nexus.distributed.gateways.application.app; import asyncmy, greenlet, cryptography, pydantic_core, zstandard; import sys; assert not sys._is_gil_enabled(), 'Distributed dependencies enabled the GIL'"
+
+ENTRYPOINT ["python", "-m", "nexus.cli.main"]

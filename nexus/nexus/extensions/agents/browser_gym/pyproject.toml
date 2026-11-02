@@ -1,0 +1,15 @@
+[project]
+name = "browser_gym"
+version = "0.1.0"
+authors = [
+    { name = "jusewang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["tiktoken>=0.12.0"]
+runtime = []
+
+[tool.nexus]
+agents = { browser_gym_agent = "nexus.extensions.agents.browser_gym.agent" }
+tools = { "browser_gym/submit_result" = "nexus.extensions.agents.browser_gym.tools" }

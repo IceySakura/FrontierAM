@@ -1,0 +1,54 @@
+# AIHub 2.0 GPT-5.6 SOL LLM Profile。
+#
+# 用途：
+#   通过 AIHub 2.0 标准 OpenAI Responses 接口调用 GPT-5.6 SOL。
+#
+# 协议与路由：
+#   Client=openai_responses；Endpoint=http://api.aihub.woa.com/standard/v1/responses；
+#   Model=gpt-5.6-sol；当前实测由 AIHub 路由到 azure/gpt-5.6-sol，无需 provider query。
+#
+# 推理配置：
+#   reasoning.effort=max、temperature=1、max_output_tokens 默认 32768。Responses 协议已实测
+#   支持 max；tools、tool_choice、parallel_tool_calls 和 text.format 由 Agent/任务动态传入。
+#
+# 环境变量：
+#   必填：OPENAI_API_KEY（该 Azure 路由当前不需要 provider query）。
+#   可选：AIHUB2_GPT56_SOL_BASE_URL、AIHUB2_GPT56_SOL_MODEL、
+#         AIHUB2_GPT56_SOL_REASONING_EFFORT、AIHUB2_GPT56_SOL_MAX_OUTPUT_TOKENS。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/llm/gpt56-sol-aihub-2.0.yaml
+#
+# 组合约束：
+#   llm/ 下的 Profile 互斥，同一次运行只选择一个。不要在通用 Profile 中固定
+#   response_format 或 prompt_cache_key；如任务需要，应通过 Agent 或 --set 单独传入。
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.openai_responses
+
+  openai_clients:
+    main:
+      name: openai_responses
+      config:
+        client_args:
+          api_key__env: OPENAI_API_KEY
+          base_url: ${oc.env:AIHUB2_GPT56_SOL_BASE_URL,http://api.aihub.woa.com/standard/v1}
+          timeout: 3660
+          max_retries: 3
+
+        request_args:
+          model: ${oc.env:AIHUB2_GPT56_SOL_MODEL,gpt-5.6-sol}
+          max_output_tokens: ${oc.decode:${oc.env:AIHUB2_GPT56_SOL_MAX_OUTPUT_TOKENS,32768}}
+          reasoning:
+            effort: ${oc.env:AIHUB2_GPT56_SOL_REASONING_EFFORT,max}
+          temperature: 1.0
+
+        enforced_request_args:
+          max_output_tokens: ${oc.select:openai_clients.main.config.request_args.max_output_tokens,null}
+
+merge:
+  imports: append_unique
+
+source: harbor-aihub2-gpt56-sol

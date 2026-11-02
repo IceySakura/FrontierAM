@@ -1,0 +1,17 @@
+[project]
+name = "stem_mas"
+version = "0.1.0"
+authors = [
+    { name = "felixjjiang" },
+    { name = "adamwzhang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["huggingface-hub", "pandas>=2.3.3", "polaris-cpp-py", "pyarrow"]
+runtime = []
+
+[tool.nexus]
+agents = { stem_mas_codex = "nexus.extensions.tasks.stem_mas.patches.codex_responses" }
+tasks = { stem_mas = "nexus.extensions.tasks.stem_mas.task" }
+run_parts = { stem_mas_benchmark = "nexus.extensions.tasks.stem_mas.run_parts" }

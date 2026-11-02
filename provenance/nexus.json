@@ -1,0 +1,9 @@
+{
+  "origin": "git@git.woa.com:nexus-agent/nexus.git",
+  "commit": "75409ac247b1c46cedd3466f4b860b5f30e5ce07",
+  "vendored": true,
+  "local_extensions": [
+    "frontieram_offline",
+    "frontieram_conic"
+  ]
+}

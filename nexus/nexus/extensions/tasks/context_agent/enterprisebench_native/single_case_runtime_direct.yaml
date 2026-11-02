@@ -1,0 +1,18 @@
+# Experimental: OpenCode -> runtime-local native Responses relay -> AIHub.
+# This changes sandbox egress for the entire runtime, including the Agent phase.
+compose:
+  - data:
+      uri: yufeihuang/enterprisebench_native_eval_75@v1
+      split: enterprisebench_native_eval_75
+      id: copyworks_1790752c
+  - use: base.yaml
+  - input:
+      task_config:
+        judge_execution_mode: runtime_direct
+        artifact_root: ''
+      runtime_provider_config:
+        network_policy:
+          default_action: deny
+          egress:
+            - action: allow
+              target: api.aihub.woa.com

@@ -1,0 +1,18 @@
+[project]
+name = "harbor_trial"
+version = "0.1.0"
+authors = [
+    { name = "nexus-agent" }
+]
+description = "Run Harbor-native trials with Nexus Agents and Runtimes"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "harbor==0.23.0",
+]
+runtime = []
+
+[tool.nexus]
+tasks = { harbor_trial_task = "nexus.extensions.harbor_trial.task" }

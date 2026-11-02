@@ -1,0 +1,52 @@
+# Standalone mock/smoke case derived from the earlier GDPpdf500 workspace
+# example. It does not require a Nexus Dataset or --id.
+compose:
+  - use: ../../base.yaml
+  - input:
+      run_id: gdppdf500-single-example
+      task_config:
+        context_question: |-
+          I am currently considering reshaping/on-shoring a medium-sized manufacturing business, given the current state of international trade, shipping costs, and continued issues with supply quality from non-domestic businesses within the chain. The business deals mainly with machinery pieces and equipment.
+
+          I have pulled some information from the NIST site (attached) and I would like you to provide a step-by-step process in which I could start to consider re-shoring my business to be completely domestic. I have particular concerns about how the process works, specifically, finding others within my supply chain that are domestic, and whether or not there is funding or government grants available to assist with this process.
+
+          If you could please provide me with the above information first, and then provide any statistics within the material that show support for changing the structure of the business to be completely domestic. - ideally from 2023 onwards. Approach this as if you were pitching the idea to me using the material provided. I notice there were charts covering the statistics within the industry from a stakeholder perspective, could you please identify the percent change within the pitch.
+
+          Lastly, I would like to be able to identify opportunities within the domestic markets, if shown. If not shown, please indicate how I would locate or source potential opportunities within the markets.
+
+          Alternatively, if the material suggests that on-shoring my businesses is not the correct option, please identify reasons why and create a pitch against it.
+        context_files:
+          - name: How_U.S._Manufacturers_Can_Take_Advantage_of_Reshoring_508_Compliant.pdf
+            uri: https://projects-uploaded-files.s3.us-east-2.amazonaws.com/production/item_response_files/a9db0f1e-fd39-4d45-9a3d-1a3163c5e079.pdf
+        dataset_name: GDPpdf
+        metadata:
+          task_id: 9a8ab03d-6cb7-451d-9096-e97d0f04dc29
+          task_response_id: f0b23aa0-171b-4a69-893c-d3178bff8901
+          dataset_name: GDPpdf
+          delivery: TCT-ID186
+          language: en
+          preprocess: surge_raw_url_reference_v1
+          domain: Manufacturing/Supply Chains
+          pdf_type: Native
+          multi_hop: multi-hop
+          multi_hop_ranges: 6 - 9
+          numerical_extraction: 'TRUE'
+          final_source_url: https://www.nist.gov/system/files/documents/2025/02/04/How%20U.S.%20Manufacturers%20Can%20Take%20Advantage%20of%20Reshoring%20508%20Compliant.pdf
+        answer: ''
+        language: en
+        rubrics:
+          - 'The response should provide detailed step-by-step instructions on how to begin the re-shoring process. For example, it could list steps such as: 1) Making the decision to re-shore, 2) Total Cost of Ownership, 3) What to Consider in Re-Shoring Evaluations, and 4) Reaching Out to Local MEPs.'
+          - "The response should indicate how the user can locate domestic suppliers and manufacturers when re-shoring. For example, it could mention leveraging the MEP National Network's Supplier Scouting process to evaluate suppliers based on capabilities rather than just parts."
+          - "The response should provide the information about finding others within the user's supply chain and funding or government grants before providing the statistics and the pitch."
+          - 'The response should state that funding programs are available for the re-shoring of a business. For example, it could mention that local MEPs are able to assist with researching available government grants, loans, and tax incentives.'
+          - 'The response should provide statistics from the material that show support for businesses re-shoring. For example, it could cite metrics from the CEOs Business Case for Reshoring/Nearshoring, such as increased sales (63%), improved total landed cost (59%), improved fill rates (58%), reduced time to market (52%), reduced working capital (46%), improved resiliency (44%), and improved sustainability (40%).'
+          - 'The response should state the following percentage changes for the Stakeholder Perspective charts from 2021 to 2023: Board of Directors (+37%), Employees (+19%), Industry Organization (+29%), and Local/State/Federal Government (+20%).'
+          - 'The response should include a pitch that argues in favour of transitioning the business to be completely domestic.'
+          - "The response should explicitly link its advice or identified specific domestic market opportunities to the user's specific industry: machinery and equipment. For example, it could point out that the text identifies machinery as one of the critical industries currently undergoing a domestic manufacturing boom."
+          - "The response should avoid identifying opportunities in industries unrelated to machinery and equipment manufacturing. For example, it should not suggest opportunities in hydrogen infrastructure, battery manufacturing, or renewable energy systems as domestic market opportunities for the user's business."
+          - 'The response should avoid stating reasons not to reshore or creating a pitch against reshoring.'
+      runtime_provider_config:
+        network_policy:
+          egress:
+            - action: allow
+              target: projects-uploaded-files.s3.us-east-2.amazonaws.com:443

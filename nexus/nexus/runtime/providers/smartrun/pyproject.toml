@@ -1,0 +1,14 @@
+[project]
+name = "smartrun"
+version = "0.1.0"
+authors = [
+    { name = "elliotluo" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = []
+runtime = []
+
+[tool.nexus]
+runtime_providers = { smartrun = "nexus.runtime.providers.smartrun.provider" }

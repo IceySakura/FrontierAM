@@ -1,0 +1,37 @@
+# OpenClaw Agent Profile。
+#
+# 版本默认值：推荐版本 2026.5.28, 2026.6.5
+#
+# 超时：
+#   onboard 是 agent 循环之前的一次性串行设置，和 timeout 共用同一个 RPC 预算，所以 runtime Profile 的 request_timeout 必须大于 timeout + onboard_timeout。
+#
+# 环境变量：
+#   必填: 无
+#   可选:
+#       AGENT_VERSION
+#       AGENT_WORKING_DIR
+#       AGENT_TIMEOUT
+#       NPM_REGISTRY
+#       OPENCLAW_ONBOARD_TIMEOUT
+#
+# 使用示例：
+#   AGENT_CONFIG=openclaw
+
+body:
+  imports:
+    - nexus.extensions.agents.openclaw
+  agent_name: openclaw
+
+  agent_config:
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/testbed}
+    # oc.env 一律返回字符串，数值和布尔值都要套 oc.decode 还原类型
+    timeout: ${oc.decode:${oc.env:AGENT_TIMEOUT,14400}}
+    version: ${oc.env:AGENT_VERSION,2026.5.28}
+    npm_registry: ${oc.env:NPM_REGISTRY,http://mirrors.tencent.com/npm/}
+    onboard_timeout: ${oc.decode:${oc.env:OPENCLAW_ONBOARD_TIMEOUT,900}}
+    model: ${oc.select:openai_clients.main.config.request_args.model,null}
+
+merge:
+  imports: append_unique
+
+source: openclaw

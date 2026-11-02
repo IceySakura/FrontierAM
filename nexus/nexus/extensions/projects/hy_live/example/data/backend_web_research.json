@@ -1,0 +1,103 @@
+{
+  "case": "backend_web_research",
+  "prompt": "让后台调研一下 Typesafe 的 JEV，先联网搜索查清对应的项目，再打开并读取至少两篇来源页面，优先官方文档和代码仓库。整理它是什么、主要用途、核心设计、使用示例和当前维护情况，写成 research.md 报告并附来源链接。名称可能有拼写问题，请查证后说明，不要只凭记忆回答。",
+  "user_simulator": {
+    "type": "llm",
+    "client_name": "user_simulator",
+    "initial_prompt": "让后台调研一下 Typesafe 的 JEV，先联网搜索查清对应的项目，再打开并读取至少两篇来源页面，优先官方文档和代码仓库。整理它是什么、主要用途、核心设计、使用示例和当前维护情况，写成 research.md 报告并附来源链接。名称可能有拼写问题，请查证后说明，不要只凭记忆回答。",
+    "scenario": {
+      "meta": {
+        "script_id": "backend_web_research",
+        "topic_id": "hy-live-example-backend-web-research",
+        "expected_turns": [
+          3,
+          6
+        ]
+      },
+      "topic": "让后台联网调研 Typesafe 的 JEV 并写成报告",
+      "user": {
+        "background": "你在做技术选型，听人提过 Typesafe 的 JEV，想让助手联网查清它到底是什么。",
+        "style": "A",
+        "habits": [
+          "说话简短"
+        ]
+      },
+      "goal": "让后台调研 Typesafe 的 JEV：先联网搜索查清对应的项目，再读至少两篇来源页面，优先官方文档和代码仓库，整理它是什么、主要用途、核心设计、使用示例和当前维护情况，写成附来源链接的 research.md 报告；名称可能有拼写问题，要查证后说明。",
+      "required_nodes": [
+        {
+          "type": "D1",
+          "when": "开场",
+          "action": "把上面的调研要求完整交给它。"
+        }
+      ],
+      "event_plan": {
+        "permission": {
+          "types": [
+            "P2"
+          ],
+          "response": "说「这项调研以后都允许」。"
+        },
+        "question": {
+          "types": [
+            "I1"
+          ],
+          "response": "被问到名称不明确时说「按 Typesafe JEV 搜索，也检查相近名称，查证后说明对应项目，不必等我确认」。"
+        },
+        "failure": {
+          "types": [
+            "D7"
+          ],
+          "stance": "giveup",
+          "response": "助手明确说执行失败或联网失败且无法继续时，说「好的，先到这里」。"
+        }
+      },
+      "constraints": [
+        "不新增任务，也不重发已经交代过的调研"
+      ],
+      "ending": {
+        "normal": "听到助手明确说 research.md 调研报告已经完成，并说过「好的，谢谢」。",
+        "early": "助手明确说执行失败或联网失败且无法继续，并说过「好的，先到这里」。"
+      }
+    },
+    "decision_interval_s": 30,
+    "progress_interval_s": 90,
+    "max_elapsed_s": 1800,
+    "max_turns": 12,
+    "request_args": {
+      "temperature": 0,
+      "reasoning_effort": "low"
+    }
+  },
+  "task_config": {
+    "user_place": {
+      "country": "中国",
+      "province": "上海",
+      "city": "上海"
+    },
+    "user_now": "2026-10-15T10:00:00+08:00",
+    "web_search_provider": "none",
+    "max_user_turns": 16,
+    "task_delivery_timeout": 1800,
+    "hold_next_user_until_permission": false,
+    "default_budget": {
+      "timeout_s": 2400
+    },
+    "work_agent_configs": {
+      "codebuddy": {
+        "working_dir": "/workspace",
+        "skip_permissions": false,
+        "permission_policy": "defer",
+        "npm_registry": "http://mirrors.tencent.com/npm/",
+        "extra_env": {
+          "CODEBUDDY_API_KEY__env": "CODEBUDDY_API_KEY",
+          "CODEBUDDY_INTERNET_ENVIRONMENT": "internal"
+        }
+      },
+      "workbuddy": {
+        "workbuddy": {
+          "permission_mode": "default"
+        }
+      }
+    }
+  }
+}

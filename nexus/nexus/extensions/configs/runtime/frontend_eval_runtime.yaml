@@ -1,0 +1,75 @@
+# Gongfeng 沙盒 + frontend_task（前端评测）
+#
+# 用途：
+#   和前端评测常驻包对齐。值取自 frontend/eval/runs/humaneval_cbc/generator.py 和
+#   frontend/eval/runs/frontend_common.sh。和生产 rollout 的差别：镜像 v3（生产 v4）、4 CPU（生产 8）、
+#   request_timeout 13500（生产 12900）、显式 rpc_protocol http、显式 run_eval false。
+#
+# 没法在这里对齐：
+#   - 21 道评测题（frontend/eval/questions/）的格式是 turns / assets / repo，prompt 要按题拼、
+#     附件和仓库要用 pre_start_scripts 注入。这是逐题的动态逻辑，generator_frontend_template.py
+#     只读单段 prompt，要跑这 21 题得在 generator 里补这段转换。
+#   - 现有评测包用 swe/scaffold 检出跑；前端评测按约定应该用 frontend/scaffold，那份 frontend_task
+#     和 main 上的不是同一份实现。
+#
+# 环境变量：
+#   必填：GONGFENG_RUNTIME_TOKEN（或 GONGFENG_TOKEN）
+#         LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY —— 评测包缺 key 直接报错，这里一样
+#   可选：FRONTEND_IMAGE、RUNTIME_BASE_URL、RUNTIME_IMAGE、GONGFENG_PURPOSE、
+#         LANGFUSE_BASE_URL、LANGFUSE_SESSION_ID、LANGFUSE_TAGS
+#   建议：AGENT_TIMEOUT=12000 —— 评测给 agent 的时限，在 agent 轴读；必须小于 request_timeout(13500)。
+#
+# 使用示例：
+#   RUNTIME_CONFIG=frontend_eval_runtime AGENT_TIMEOUT=12000
+
+body:
+  imports:
+    - nexus.extensions.tasks.frontend
+    - nexus.trace.processors.chat_tracker
+    - nexus.trace.processors.langfuse_tracker
+
+  runtime_provider_name: gongfeng
+  runtime_provider_config:
+    api_base_url: ${oc.env:RUNTIME_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}
+    # 和 swecosmos_runtime.yaml 一致（MR !1609）：GONGFENG_TOKEN 作回退，hyway 上只设了它也能跑
+    token: ${oc.env:GONGFENG_RUNTIME_TOKEN,${oc.env:GONGFENG_TOKEN,''}}
+    image: ${oc.env:FRONTEND_IMAGE,mirrors.tencent.com/hunyuan_yanguan/webenv.claudecode.testset:v3}
+    runtime_image: ${oc.env:RUNTIME_IMAGE,current}
+    rpc_protocol: http
+    purpose: ${oc.env:GONGFENG_PURPOSE,prod}
+    resource_spec:
+      # 见 frontend_prod_runtime.yaml 同一处注释：真实生产 rollout 的 generator 默认给 16/32，
+      # 比这里写死的 4/16 高，但那份脚本的来源不够确定，没有直接抬默认值；补上环境变量开关。
+      cpu: ${oc.decode:${oc.env:RUNTIME_CPU,4}}
+      memory: ${oc.decode:${oc.env:RUNTIME_MEMORY,16}}
+    request_timeout: ${oc.decode:${oc.env:RUNTIME_REQUEST_TIMEOUT,13500}}
+
+  task_name: frontend_task
+  task_config:
+    working_dir: /workspace
+    run_eval: false
+
+  processors:
+    chat:
+      name: chat_tracker
+      args:
+        tools_mode: branch_last
+    langfuse:
+      name: langfuse_tracker
+      args:
+        public_key: ${oc.env:LANGFUSE_PUBLIC_KEY}
+        secret_key: ${oc.env:LANGFUSE_SECRET_KEY}
+        host: ${oc.env:LANGFUSE_BASE_URL,'http://langfuse-taiji-api.woa.com'}
+        session_id: ${oc.env:LANGFUSE_SESSION_ID,''}
+        # 不设 LANGFUSE_TRACE_NAME 时，generator 按实例把 trace_name 填成 instance_id，并补 trace_metadata
+        trace_name: ${oc.env:LANGFUSE_TRACE_NAME,''}
+        tags: ${oc.decode:${oc.env:LANGFUSE_TAGS,'[]'}}
+
+  runtime_configs:
+    main:
+      worker_venv: true
+
+merge:
+  imports: append_unique
+
+source: frontend-eval-gongfeng-runtime

@@ -1,0 +1,82 @@
+# Claude Computer Use on macOSWorld via the shared Anthropic Messages client.
+# Required: DEVCLOUD_APP_ID, DEVCLOUD_APP_TOKEN, CLAUDE_CUA_API_KEY,
+# CLAUDE_CUA_BASE_URL, CLAUDE_CUA_MODEL. Optional: DEVCLOUD_PROXY_URL, WEDATA_KEY.
+# nexus run-single --use docs/examples/configs/mac_os_world/mac_os_world_claudecua_devcloud.yaml --data <namespace/dataset@version> --id <item-id> -o result.json
+# This is a Nexus integration preset, not an exact reproduction of the paper agent.
+body:
+  imports:
+  - nexus.extensions.tasks.mac_os_world
+  - nexus.extensions.agents.cua.macosworld_cua.anthropic
+  - nexus.extensions.tasks.mac_os_world.clients
+  task_name: mac_os_world
+  task_config:
+    wedata_key: ${oc.env:WEDATA_KEY,""}
+    language: ${oc.env:MACOSWORLD_LANGUAGE,en}
+    environment_language: ${oc.env:MACOSWORLD_ENVIRONMENT_LANGUAGE,auto}
+    observation_type: screenshot
+    action_space: pyautogui
+    run_pre_command: true
+    execute_agent: true
+    include_task_context: false
+    run_evaluator: true
+    binary_grading: true
+    client_password: ${oc.env:MACOSWORLD_CLIENT_PASSWORD,password}
+  runtime_provider_name: devcloud
+  runtime_provider_config:
+    app_id: ${oc.env:DEVCLOUD_APP_ID}
+    app_token: ${oc.env:DEVCLOUD_APP_TOKEN}
+    sandbox_api_base_url: ${oc.env:DEVCLOUD_SANDBOX_API_BASE_URL,http://21.6.221.82:18800}
+    lease_time: ${oc.env:DEVCLOUD_LEASE_TIME,5400}
+    server_port: ${oc.env:DEVCLOUD_SERVER_PORT,5000}
+    request_timeout: ${oc.env:DEVCLOUD_REQUEST_TIMEOUT,5400}
+    instance_ready_timeout: ${oc.env:DEVCLOUD_INSTANCE_READY_TIMEOUT,600}
+    proxy_url: ${oc.env:DEVCLOUD_PROXY_URL,null}
+    execute_mode: async
+    control_request_timeout: 120
+    release_timeout: 120
+  runtime_configs:
+    main:
+      runtime_kind: macosworld_devcloud
+      timeout: ${oc.env:MACOSWORLD_SANDBOX_TIMEOUT,4800}
+  openai_clients:
+    main:
+      name: macosworld_anthropic_messages
+      config:
+        client_args:
+          api_key: ${oc.env:CLAUDE_CUA_API_KEY}
+          base_url: ${oc.env:CLAUDE_CUA_BASE_URL}
+          api_style: ${oc.env:CLAUDE_CUA_API_STYLE,messages}
+          provider: ${oc.env:CLAUDE_CUA_PROVIDER,null}
+          auto_provider: false
+          timeout: 180
+          max_retries: 3
+        request_args:
+          model: ${oc.env:CLAUDE_CUA_MODEL}
+  agent_name: macosworld_cua_anthropic
+  agent_config:
+    platform_name: macos
+    transport: client
+    client_name: main
+    computer_only: true
+    computer_tool_schema: ${oc.env:CLAUDE_CUA_TOOL_SCHEMA,auto}
+    auto_screen_size: true
+    model_display_width: 1024
+    model_display_height: 768
+    max_iterations: ${oc.env:MACOSWORLD_MAX_ITERATIONS,30}
+    max_tokens: 4096
+    no_thinking: ${oc.env:CLAUDE_CUA_NO_THINKING,false}
+    effort: ${oc.env:CLAUDE_CUA_EFFORT,high}
+    only_n_most_recent_images: 3
+    strict_image_window: true
+    max_screenshots: 15
+    sleep_after_execution: 1.0
+    step_pause: 2.0
+    pyautogui_execution_mode: run_command
+    pyautogui_timeout: 120
+  processors:
+    chat:
+      name: chat_tracker
+  runner:
+    timeout: ${oc.env:MACOSWORLD_RUNNER_TIMEOUT,4800}
+merge:
+  imports: append_unique

@@ -1,0 +1,22 @@
+# HY3 Search Task Benchmark Configuration
+# Copy to benchmarks.yaml and customize paths
+#
+# Usage:
+#   python run_benchmarks.py --config benchmarks.yaml
+#   python run_benchmarks.py -c benchmarks.yaml -b sealqa gaia
+
+benchmarks:
+  # Simple format: name: path
+  sealqa: /data/workspace/dataset/sealqa_seal_0_no_credentials.parquet
+  gaia: /data/workspace/dataset/gaia_validation_text_only_no_credentials.parquet
+  frames: /data/workspace/dataset/frames_test_no_credentials.parquet
+  facts_search: /data/workspace/dataset/facts_search_no_credentials.parquet
+  
+  # Extended benchmarks
+  browse_comp: /data/workspace/dataset/browse_comp_test_set_decrypted_subset_150.parquet
+  hle: /data/workspace/dataset/hle_text_only_subset_150.parquet
+  finsearchcomp: /data/workspace/dataset/finsearchcomp_t3_train.parquet
+
+  # Dict format also supported:
+  # my_benchmark:
+  #   dataset_path: /path/to/dataset.parquet

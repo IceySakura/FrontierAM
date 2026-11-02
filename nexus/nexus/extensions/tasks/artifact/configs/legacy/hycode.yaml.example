@@ -1,0 +1,143 @@
+# 历史 ArtifactCfg 模板 —— hycode；旧 JSONL 跑批入口已退役。
+# 仅供参考，不是 Harbor Compose profile，run_harbor_test.sh 不加载此模板。
+# 本地 *.yaml / *.yml 由此目录 .gitignore 忽略；不要把真实凭据填入 .example 或强制加入 Git。
+# 当前配置入口见 artifact/CLAUDE.md 第 4 节。
+#
+# **每个 key 的路径就是 config.py 里的字段路径**（hycode.version ↔ cfg.hycode.version），
+# 没有名字映射。 写错的 key 不会被静默忽略，载入时报 unknown config key。
+# 省掉某个 key = 用 config.py 的默认值（那里每个字段都有一句 docstring 说明）。
+
+data:
+  # 历史 JSONL 样例（裁到 3 个 flow），不是 Harbor Task 输入。
+  dataset_path: nexus/extensions/tasks/artifact/configs/legacy/sample_dataset.jsonl
+  instance_ids: []              # 只跑这几个 id；空 = 全跑
+  skip: 0
+  limit: null                   # null / 0 = 不限
+  skip_infer: false             # true + infer_db = 跳过生成，只判分已有产物
+  skip_eval: false              # true = 只生成产物，稍后再判
+  infer_db: ''
+  # 业务容器（agent 在里面写代码、judge 在里面部署+截图）。 这里写了就**覆盖数据集每行
+  # 自己的 image 字段**；留 '' 才用行里的。 和 runtime.runtime_image 是两个不同的镜像，
+  # 两个都得对 —— 那个是沙箱运行时，这个是业务环境。
+  image: mirrors.tencent.com/hunyuan_yanguan/webenv.claudecode.testset:v1-frontend_rl
+
+runtime:
+  agent_name: hycode            # 这份 profile 跑 hycode；claude_code 见 claude_code.yaml
+  # 下面两个名字像，但不是一回事：
+  provider_name: gongfeng       # 用哪个 provider 类起沙箱（gongfeng | docker | local …）
+  provider: gongfeng            # gongfeng 后端内部的资源调度策略（gongfeng | suanli | '' 自动选）
+                                # 只在 provider_name=gongfeng 时被读；换沙箱改上面那行，不是这行
+  gongfeng_token: '<沙箱 token>'
+  # 沙箱运行时镜像，要写完整仓库前缀 —— 少了 mirrors.tencent.com/hunyuan_yanguan/
+  # containerd 会去 docker.io 拉，报 ErrImagePull / pull access denied。
+  # hycode 需要带 Anthropic proxy 协议转换能力的镜像，默认 'current' 不含该能力。
+  runtime_image: mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:feat-cc-support-proxy-convert
+  runtime_timeout: 4000         # 沙箱墙钟；必须 > agent_timeout（validate 会查）
+  agent_timeout: 1800
+  infer_conversion_log_level: INFO   # 两个 harness 共用
+
+# ── infer harness ────────────────────────────────────────────────────────────
+hycode:
+  version: 0.1.8                # 必须是 @tencent/hycode 的版本；填 claude_code 的会 npm ETARGET
+  npm_registry: https://mirrors.tencent.com/npm/
+  thinking_preset: ''           # '' = 跟随该行模型 provider 推导
+  allow_plan_mode: false        # 开了 agent 会写完 plan 等人批，archive 0 文件
+  allow_native_web: false       # 开了 rollout 依赖 live 页面
+  extra_cli_args: []            # 追加在内置 flags 之后
+
+# ── 模型 ─────────────────────────────────────────────────────────────────────
+# table 里每个 alias 都会注册成一个可用 client；数据行 / judge dict 用
+# openai_client_name 点名（这就是能按行、按 judge 换模型做对比的机制）。
+# 下面三个角色字段是「行里没点名时用哪个」。
+#
+# table 为空时回落去扫 M_<alias>_* env（老 .env 仍能用）；两者不混合。
+models:
+  # gemini35 在 hycode infer 路径上被网关拒(401 x-goog-api-key not exists);
+  # opus47 也不能用 —— 网关按 cache_task_id 做亲和路由，后端池里约 16% 的账号缺
+  # claude-opus-4-7 权限(explicit deny)，命中就稳定 403，重试无用。
+  infer_alias: opus48
+  judge_alias: gemini35
+  vlm_alias: gemini35
+
+  table:
+    gemini35:
+      provider: gemini          # hy3|opus|openai|gemini|vertex|openai_responses|doubao
+      model: openai/google/gemini-3.5-flash
+      base: <网关地址>
+      key: '<key>'
+      effort: low
+    opus48:
+      provider: opus
+      model: bedrock/anthropic.claude-opus-4-8
+      base: <网关地址>
+      key: '<key>?provider=aws_third&timeout=3000'
+      effort: max
+
+  max_tokens: null              # null = 各 provider spec 自己的默认
+  openapi_temp: 0.9
+  enable_thinking: true
+  summarized_thinking: true
+  # ⚠ 写出 litellm_timeout 会被视为「显式设置」，从而把 vertex provider 的历史默认
+  # 900s 也一并覆盖成这个值（clients.py 按 provenance 判断是否显式设过）。
+  # 想保留 vertex 的 900s 就把这行注释掉。
+  litellm_timeout: 1800
+  litellm_stream: false
+  llm_router_enable: false      # 把 no-thinking 辅助调用路由到便宜模型
+  no_thinking_model: ''
+  haiku_model: ''
+  vertex_anthropic_version: vertex-2023-10-16
+  vertex_thinking_type: adaptive
+  vertex_thinking_budget_tokens: null
+
+# ── judge ────────────────────────────────────────────────────────────────────
+# judge 恒用 claude_code，版本写死在 claude_config.DEFAULT_CLAUDE_CODE_VERSION。
+# 跑哪些 judge = 数据行的 pipeline_name；带不带浏览器/skill 由 pipeline 代码决定。
+judge:
+  # agent 型 judge 的默认预算（general_agent / baseline_check / code_quality）。
+  # **web_judger 不吃这两个值** —— 它的 flow2code 在 web_judger/executor.py 里显式传
+  # FLOW2CODE_TIMEOUT=900 / FLOW2CODE_MAX_TURNS=40（要同时处理多条 flow + 读源码）。
+  # 要改 web_judger 的预算得改那两个常量。
+  timeout: 7200
+  max_turns: 200
+  working_dir: /workspace
+  conversion_log_level: DEBUG
+  # 美学 prompt 路由。空/省略 = 所有品类共用 webjudger_aesthetic.md；
+  # by_type = 按 flow.task_type 分流到 webjudger_aesthetic_<type>.md；
+  # 也可填死 web/game/3d/svg 做单变量消融。判分结果的 prompt_variant 记录实际用了哪份。
+  aesthetic_prompt: ''
+
+  aesthetic_mode: absolute
+  # absolute = VLM 逐维 0-5 绝对打分；pairwise = 与数据行的 anchor_screenshot 比出
+  # win/tie/lose（1.0/0.5/0.0），缺 anchor 直接判 config_error。
+  # 数据行的 aesthetic_mode 优先于本项；RL 走 parquet 读不到本文件，要开 pairwise
+  # 必须写在数据行里（见 build_rl_parquet）。
+
+deploy:
+  expired_time: 3600            # 部署存活；必须 > poll_timeout
+  poll_timeout: 300
+  poll_interval: 5
+
+cos:
+  enabled: true                 # archive 备份到 COS；bucket/region/secret 在 cos_io.py 里写死
+
+obs:
+  langfuse_public_key: '<key>'
+  langfuse_secret_key: '<key>'
+  langfuse_host: http://langfuse-taiji-api.woa.com
+  langfuse_disabled: false
+  langfuse_experiment: artifact
+  run_tag: ''
+  save_screenshots_dir: ''      # '' = 不落盘（debug 时开）
+
+budget:
+  batch_timeout: 0              # 0 = 不限；非 0 时 run.sh 自动传给 --timeout
+
+# ── run-batch CLI 参数 ───────────────────────────────────────────────────────
+# 由 run.sh 读出来拼成命令行 flag（generator 拿不到：nexus 在 load generator 之前
+# 就用 argv 构造好 BatchConfig 了）。
+batch:
+  worker_processes: 8           # 真子进程数；每进程并发控制在 32–64
+  max_concurrent: 512           # 总并发，框架自动平分到各分片（512/8 = 64）
+  db: ./outputs/artifact_eval_batch.db
+  export_path: ./outputs/artifact_eval/batch_results.jsonl
+  retry_failed: 1

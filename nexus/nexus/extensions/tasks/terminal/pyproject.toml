@@ -1,0 +1,14 @@
+[project]
+name = "terminal"
+version = "0.1.0"
+authors = [
+    { name = "yeszhou" },
+    { name = "jianbpeng" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { terminal_task = "nexus.extensions.tasks.terminal.task" }

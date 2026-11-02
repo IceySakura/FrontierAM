@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 620">
+  <defs>
+    <marker id="nxArrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+    <marker id="nxArrowBlue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#1976d2"/>
+    </marker>
+    <marker id="nxArrowPurple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#7b1fa2"/>
+    </marker>
+    <marker id="nxArrowOrange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#ff9800"/>
+    </marker>
+    <marker id="nxArrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4caf50"/>
+    </marker>
+    <marker id="nxArrowBrown" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#795548"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="425" y="28" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#333">Nexus 进程时间线</text>
+  <text x="425" y="48" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#666">定制 Bash + tmux，内核钩子检测边界</text>
+
+  <!-- Time axis (vertical) -->
+  <line x1="60" y1="70" x2="60" y2="580" stroke="#333" stroke-width="2" marker-end="url(#nxArrow)"/>
+  <text x="55" y="600" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#333">时间</text>
+
+  <!-- Process columns header -->
+  <text x="140" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#1565c0">Agent 进程</text>
+  <text x="270" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#7b1fa2">tmux</text>
+  <text x="400" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#e65100">nexus_bash</text>
+  <text x="530" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#4caf50">命令进程</text>
+  <text x="650" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#795548">status.json</text>
+
+  <!-- Agent process (continuous vertical bar) -->
+  <rect x="110" y="100" width="60" height="480" rx="4" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
+
+  <!-- tmux server process -->
+  <rect x="240" y="115" width="60" height="465" rx="4" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+  <text x="270" y="350" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6a1b9a" transform="rotate(-90, 270, 350)">tmux server</text>
+
+  <!-- nexus_bash process -->
+  <rect x="370" y="115" width="60" height="465" rx="4" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+
+  <!-- status.json (file) -->
+  <rect x="620" y="115" width="60" height="465" rx="4" fill="#efebe9" stroke="#795548" stroke-width="2"/>
+  <text x="650" y="350" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#795548" transform="rotate(-90, 650, 350)">文件系统</text>
+
+  <!-- Command process 1 -->
+  <rect x="500" y="180" width="60" height="70" rx="4" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+  <text x="530" y="220" text-anchor="middle" font-family="monospace" font-size="9" fill="#2e7d32">cmd1</text>
+
+  <!-- Command process 2 -->
+  <rect x="500" y="380" width="60" height="70" rx="4" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+  <text x="530" y="420" text-anchor="middle" font-family="monospace" font-size="9" fill="#2e7d32">cmd2</text>
+
+  <!-- Create tmux session -->
+  <line x1="170" y1="115" x2="235" y2="115" stroke="#1976d2" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#nxArrowBlue)"/>
+  <text x="202" y="108" text-anchor="middle" font-family="monospace" font-size="7" fill="#1976d2">create</text>
+
+  <!-- tmux spawns nexus_bash (horizontal) -->
+  <line x1="300" y1="115" x2="365" y2="115" stroke="#7b1fa2" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#nxArrowPurple)"/>
+
+  <!-- Agent activity indicators -->
+  <rect x="115" y="150" width="50" height="18" rx="2" fill="#bbdefb"/>
+  <text x="140" y="163" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#1565c0">send_keys</text>
+
+  <rect x="115" y="260" width="50" height="18" rx="2" fill="#c8e6c9"/>
+  <text x="140" y="273" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#2e7d32">read file</text>
+
+  <rect x="115" y="350" width="50" height="18" rx="2" fill="#bbdefb"/>
+  <text x="140" y="363" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#1565c0">send_keys</text>
+
+  <rect x="115" y="460" width="50" height="18" rx="2" fill="#c8e6c9"/>
+  <text x="140" y="473" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#2e7d32">read file</text>
+
+  <!-- nexus_bash hook indicators -->
+  <rect x="375" y="165" width="50" height="16" rx="2" fill="#ffcc80"/>
+  <text x="400" y="177" text-anchor="middle" font-family="monospace" font-size="7" fill="#e65100">preexec</text>
+
+  <rect x="375" y="245" width="50" height="16" rx="2" fill="#a5d6a7"/>
+  <text x="400" y="257" text-anchor="middle" font-family="monospace" font-size="7" fill="#2e7d32">precmd</text>
+
+  <rect x="375" y="365" width="50" height="16" rx="2" fill="#ffcc80"/>
+  <text x="400" y="377" text-anchor="middle" font-family="monospace" font-size="7" fill="#e65100">preexec</text>
+
+  <rect x="375" y="445" width="50" height="16" rx="2" fill="#a5d6a7"/>
+  <text x="400" y="457" text-anchor="middle" font-family="monospace" font-size="7" fill="#2e7d32">precmd</text>
+
+  <!-- send_keys arrow 1 -->
+  <line x1="170" y1="159" x2="235" y2="159" stroke="#1976d2" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowBlue)"/>
+  <line x1="300" y1="165" x2="365" y2="170" stroke="#7b1fa2" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowPurple)"/>
+
+  <!-- preexec writes status -->
+  <line x1="430" y1="173" x2="615" y2="173" stroke="#ff9800" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowOrange)"/>
+
+  <!-- Status file update 1 - running -->
+  <rect x="625" y="168" width="50" height="16" rx="2" fill="#ffcc80" stroke="#ff9800" stroke-width="1"/>
+  <text x="650" y="180" text-anchor="middle" font-family="monospace" font-size="6" fill="#e65100">running</text>
+
+  <!-- Fork command 1 -->
+  <line x1="430" y1="180" x2="495" y2="180" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#nxArrowOrange)"/>
+  <text x="462" y="173" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#ff9800">fork</text>
+
+  <!-- Command 1 exit -->
+  <line x1="500" y1="250" x2="435" y2="250" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#nxArrowGreen)"/>
+  <text x="467" y="243" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#4caf50">exit</text>
+  <circle cx="530" cy="250" r="5" fill="#c62828"/>
+
+  <!-- precmd writes status -->
+  <line x1="430" y1="253" x2="615" y2="253" stroke="#4caf50" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowGreen)"/>
+
+  <!-- Status file update 1 - finished -->
+  <rect x="625" y="248" width="50" height="16" rx="2" fill="#a5d6a7" stroke="#4caf50" stroke-width="1"/>
+  <text x="650" y="260" text-anchor="middle" font-family="monospace" font-size="6" fill="#2e7d32">finished</text>
+
+  <!-- Agent reads status 1 -->
+  <line x1="620" y1="268" x2="170" y2="268" stroke="#795548" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowBrown)"/>
+
+  <!-- send_keys arrow 2 -->
+  <line x1="170" y1="359" x2="235" y2="359" stroke="#1976d2" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowBlue)"/>
+  <line x1="300" y1="365" x2="365" y2="370" stroke="#7b1fa2" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowPurple)"/>
+
+  <!-- preexec writes status 2 -->
+  <line x1="430" y1="373" x2="615" y2="373" stroke="#ff9800" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowOrange)"/>
+
+  <!-- Status file update 2 - running -->
+  <rect x="625" y="368" width="50" height="16" rx="2" fill="#ffcc80" stroke="#ff9800" stroke-width="1"/>
+  <text x="650" y="380" text-anchor="middle" font-family="monospace" font-size="6" fill="#e65100">running</text>
+
+  <!-- Fork command 2 -->
+  <line x1="430" y1="380" x2="495" y2="380" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#nxArrowOrange)"/>
+  <text x="462" y="373" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#ff9800">fork</text>
+
+  <!-- Command 2 exit -->
+  <line x1="500" y1="450" x2="435" y2="450" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#nxArrowGreen)"/>
+  <text x="467" y="443" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#4caf50">exit</text>
+  <circle cx="530" cy="450" r="5" fill="#c62828"/>
+
+  <!-- precmd writes status 2 -->
+  <line x1="430" y1="453" x2="615" y2="453" stroke="#4caf50" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowGreen)"/>
+
+  <!-- Status file update 2 - finished -->
+  <rect x="625" y="448" width="50" height="16" rx="2" fill="#a5d6a7" stroke="#4caf50" stroke-width="1"/>
+  <text x="650" y="460" text-anchor="middle" font-family="monospace" font-size="6" fill="#2e7d32">finished</text>
+
+  <!-- Agent reads status 2 -->
+  <line x1="620" y1="468" x2="170" y2="468" stroke="#795548" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#nxArrowBrown)"/>
+
+  <!-- Annotation box -->
+  <rect x="700" y="100" width="135" height="145" rx="4" fill="#fafafa" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="710" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#333">边界检测</text>
+  <text x="710" y="138" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">1. preexec 钩子</text>
+  <text x="710" y="153" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">   命令开始前触发</text>
+  <text x="710" y="170" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">2. precmd 钩子</text>
+  <text x="710" y="185" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">   命令结束后触发</text>
+  <text x="710" y="202" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">3. 钩子更新文件</text>
+  <text x="710" y="219" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">4. Agent 读取状态</text>
+  <text x="710" y="236" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">   获取完成信息</text>
+
+  <!-- Advantage box -->
+  <rect x="700" y="260" width="135" height="90" rx="4" fill="#e8f5e9" stroke="#4caf50" stroke-width="1"/>
+  <text x="710" y="278" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#2e7d32">特点</text>
+  <text x="710" y="298" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">• 瞬间触发（无延迟）</text>
+  <text x="710" y="315" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">• 不依赖输出匹配</text>
+  <text x="710" y="332" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">• 退出码直接获取</text>
+
+  <!-- Tradeoff box -->
+  <rect x="700" y="365" width="135" height="70" rx="4" fill="#fff3e0" stroke="#ff9800" stroke-width="1"/>
+  <text x="710" y="383" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#e65100">代价</text>
+  <text x="710" y="403" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">• 需定制 Bash</text>
+  <text x="710" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#333">• 代码侵入性高</text>
+</svg>

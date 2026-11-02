@@ -1,0 +1,66 @@
+# Google Vertex Claude Opus 5 LLM Profile。
+#
+# 用途：
+#   通过 AIHub Google Vertex 渠道和 LiteLLM Chat Completions 调用 Claude Opus 5。
+#
+# 协议与路由：
+#   Client=litellm；Endpoint=http://llm-api.model-eval.woa.com/v1/chat/completions；
+#   Model=api_google_claude-opus-5；custom_llm_provider=openai 仅表示网关协议。
+#
+# 推理配置：
+#   adaptive thinking、summarized display、effort=max、max_tokens=128000，并启用 prompt cache。
+#
+# 环境变量：
+#   必填：OPENAI_API_KEY，值需包含 provider=google、model=claude-opus-5、
+#         api=claude_api 和足够长的 timeout。
+#   可选：AIHUB_GOOGLE_OPUS5_BASE_URL、AIHUB_GOOGLE_OPUS5_MODEL。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/llm/gcp-opus5-litellm.yaml
+#
+# 组合约束：
+#   llm/ 下的 Profile 互斥，同一次运行只选择一个。
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.litellm
+
+  agent_config:
+    thinking_preset: bedrock-claude
+    extra_env:
+      ANTHROPIC_MODEL: claude-opus-5
+
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          api_key__env: OPENAI_API_KEY
+          base_url: ${oc.env:AIHUB_GOOGLE_OPUS5_BASE_URL,http://llm-api.model-eval.woa.com/v1}
+          max_retries: 3
+          timeout: 3660
+          log_llm_usage: true
+          cache_control_enabled: true
+          cache_control_strategy: claude_code
+          cache_task_id_from_run_id: true
+
+        request_args:
+          model: ${oc.env:AIHUB_GOOGLE_OPUS5_MODEL,api_google_claude-opus-5}
+          custom_llm_provider: openai
+          max_tokens: 128000
+          # OpenAI SDK 将 extra_body 原样合并到 Chat Completions JSON。
+          extra_body:
+            thinking:
+              type: adaptive
+              display: summarized
+            output_config:
+              effort: max
+        # Harbor 明确固定输出预算；普通 request_args 仍是可覆盖的默认值。
+        enforced_request_args:
+          max_tokens: ${oc.select:openai_clients.main.config.request_args.max_tokens,null}
+
+merge:
+  imports: append_unique
+
+source: harbor-gcp-opus5-litellm

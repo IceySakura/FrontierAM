@@ -1,0 +1,29 @@
+# EnterpriseBench Native single-case example with DSV4 Flash as the Agentic Judge.
+# The policy model and Runtime settings come from base.yaml; this file replaces
+# only the Judge client and the artifact output directory.
+compose:
+  - data:
+      uri: yufeihuang/enterprisebench_native_eval_75@v1
+      split: enterprisebench_native_eval_75
+      id: copyworks_1790752c
+  - use: base.yaml
+  - input:
+      task_config:
+        artifact_root: ${oc.env:ENTERPRISEBENCH_ARTIFACT_ROOT,"workspace/enterprisebench_single_native_ds_v4_judge/artifacts"}
+      openai_clients:
+        judge:
+          name: context_agent_openai_responses
+          config:
+            client_args:
+              api_key: "${oc.env:CTXAGENT_JUDGE_API_KEY}?provider=deepseek&timeout=7200"
+              cache_task_id_prefix: ${oc.env:CTXAGENT_JUDGE_CACHE_TASK_ID_PREFIX,"enterprisebench-native-dsv4flash-judge"}
+              endpoint: http://api.aihub.woa.com/v1/responses
+              timeout: 7200
+              max_retries: 2
+              capture_raw_io: true
+            request_args:
+              model: deepseek-v4.1-flash-expires-on-0910
+              reasoning:
+                effort: high
+              store: false
+              max_output_tokens: 65536

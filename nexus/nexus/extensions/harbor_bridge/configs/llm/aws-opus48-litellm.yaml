@@ -1,0 +1,83 @@
+# AWS Bedrock Claude Opus 4.8 LLM Profile。
+#
+# 用途：
+#   通过 Polaris passthrough 和 LiteLLM 的 Bedrock adapter 调用 Claude Opus 4.8。
+#
+# 协议与路由：
+#   Client=litellm；Endpoint=http://trpc-gpt-eval.production.polaris:8080；
+#   Model=bedrock/anthropic.claude-opus-4-8。
+#
+# 推理配置：
+#   adaptive thinking、summarized display、effort=xhigh、max_tokens=128000，并启用 prompt cache。
+#
+# 环境变量：
+#   必填：OPENAI_API_KEY（Polaris credential，通常包含 ?provider=aws_third&timeout=3600）。
+#   可选：AWS_OPUS48_BASE_URL、AWS_OPUS48_MODEL。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/llm/aws-opus48-litellm.yaml
+#
+# 组合约束：
+#   llm/ 下的 Profile 互斥，同一次运行只选择一个；不要叠加不同 Client 的 Profile。
+
+# body 是合并进最终 RunInput 的部分配置。
+body:
+  # 导入后注册 litellm OpenAI-compatible Client。
+  imports:
+    - nexus.extensions.openai_clients.litellm
+
+  agent_config:
+    thinking_preset: bedrock-claude
+    extra_env:
+      ANTHROPIC_MODEL: claude-opus-4-8
+
+  # OpenAI Client 可以有多个命名实例；Agent 默认使用 main。
+  openai_clients:
+    main:
+      # Registry 中的 Client 名称。
+      name: litellm
+      # config 分为 Client 初始化参数和每次模型请求参数。
+      config:
+        client_args:
+          # 执行前读取 Polaris 鉴权串，避免 APP ID/Key 明文写入 Batch DB。
+          # 值可以携带 provider、timeout 等 query 参数。
+          api_key__env: OPENAI_API_KEY
+          # Polaris AWS 原生协议网关根地址，不带 /v1。
+          base_url: ${oc.env:AWS_OPUS48_BASE_URL,http://trpc-gpt-eval.production.polaris:8080}
+          # LiteLLM 调用失败后的最大重试次数。
+          max_retries: 3
+          timeout: 3660
+          # 在 Runtime 日志中记录 input/output/cache token usage，不记录密钥。
+          log_llm_usage: true
+          # 向支持 Anthropic cache_control 的请求写入 ephemeral cache marker。
+          cache_control_enabled: true
+          # claude_code 会缓存 tools 前缀，并标记最后一条可缓存 user/tool 消息。
+          cache_control_strategy: claude_code
+          # Compose 完成后由 Runner 以 run_id + model 派生稳定 cache_task_id；
+          # 该控制字段会在创建 LiteLLM Client 前移除，不会传给网关。
+          cache_task_id_from_run_id: true
+        # 每次 completion 的默认参数；Agent 单次调用参数仍可覆盖它们。
+        request_args:
+          # LiteLLM 模型路由名。
+          model: ${oc.env:AWS_OPUS48_MODEL,bedrock/anthropic.claude-opus-4-8}
+          # 单次最大输出 token；Bedrock Opus 4.8 上限为 128000。
+          max_tokens: 128000
+          # Bedrock Claude thinking 配置。 adaptive 让模型按问题动态使用推理预算。
+          thinking:
+            type: adaptive
+            # summarized 返回摘要推理；省略或关闭会改变轨迹中 thinking 的可见性。
+            display: summarized
+          # Bedrock 输出配置。 xhigh 请求最高推理强度。
+          output_config:
+            effort: xhigh
+        # 只有显式 policy 才覆盖 Claude Code 自带的输出预算。
+        enforced_request_args:
+          max_tokens: ${oc.select:openai_clients.main.config.request_args.max_tokens,null}
+
+# imports 是列表，append_unique 表示保留已有模块并去重追加，而不是整体覆盖。
+merge:
+  imports: append_unique
+
+# source 只用于 Compose 日志、错误定位和审计，不进入 RunInput。
+source: harbor-aws-opus48-litellm

@@ -1,0 +1,170 @@
+{
+  "version": 3,
+  "scope": "agent-visible repaired harness pilot",
+  "files": {
+    "INSTRUCTION.md": {
+      "sha256": "25d62560ea0a763b6fbf23799d366e8a50548b2effae80a6730914008cb3d6ad",
+      "bytes": 7132
+    },
+    "API.md": {
+      "sha256": "a312b27e735ef2f84fe8bdfce6c564ba5d3b53725cf384b013526e83ab86629d",
+      "bytes": 2019
+    },
+    "ENVIRONMENT.md": {
+      "sha256": "790755a72070e33d10f24768216bab314337d77d2cc0ed4d9218f493c70fe225",
+      "bytes": 1276
+    },
+    "RULES.json": {
+      "sha256": "514435a29cf7e94b9885d18e6cdef86d1722882617b360f6ea1311b16d43083a",
+      "bytes": 3323
+    },
+    "sdk/wire.py": {
+      "sha256": "cc0116987c57d8d546ff372bd8fff5acefb713a99c86e09fb5a0b8408089dd10",
+      "bytes": 6791
+    },
+    "starter/solve.py": {
+      "sha256": "bdd322f45a59d24500157444a77e243cd55a0fe44b239d28c7107ae3a1ceafcb",
+      "bytes": 925
+    },
+    "tools/run_local.py": {
+      "sha256": "00ff61ef0e31ddca22901819f1f8b6097a6db6a045beede48518a35796ccc01a",
+      "bytes": 18473
+    },
+    "tools/scoring.py": {
+      "sha256": "182386804a8ca159d780e33dca2ed6348922f27efc3b43043befb0bf993ab0ad",
+      "bytes": 13570
+    },
+    "dev/manifest.json": {
+      "sha256": "e3155f2b9537567dcf7422c3181adb8b655ca119f09bcc5bca30721e50398f00",
+      "bytes": 11227
+    },
+    "dev/mesh12_p4_k1.npz": {
+      "sha256": "0192b56aa6b358e74a82d8a6d6687c1b5ee0bf08f78716ca8fdb2f17ce82fe76",
+      "bytes": 15142
+    },
+    "dev/mesh12_p4_k16.npz": {
+      "sha256": "f0a41c1521118584b1871d8b7054078945a1a8d85c9fdd90db0cbc50aa22f8f2",
+      "bytes": 66982
+    },
+    "dev/mesh12_p7_k1.npz": {
+      "sha256": "9e3c49c19a995f223eb12f46a626f5bfec929cd00c309c8221cdcb3b176af5f2",
+      "bytes": 15142
+    },
+    "dev/mesh12_p7_k16.npz": {
+      "sha256": "9d3b6c427b30be8eb39a80cd60f909eff5be6fb02f078ca698f995da7d94bd3a",
+      "bytes": 66982
+    },
+    "dev/mesh12_p10_k1.npz": {
+      "sha256": "70d17b953289a520fd6d08a90260a9738e94e3ae186b2ccf493f74e95792e63a",
+      "bytes": 15142
+    },
+    "dev/mesh12_p10_k16.npz": {
+      "sha256": "f0c70d7bbf713efed8c51683707397cc9bad3dda51d9726e9bd0a938e0d1524f",
+      "bytes": 66982
+    },
+    "dev/mesh48_p4_k1.npz": {
+      "sha256": "f8e7fbf6d8ea55017bbbc11e16ec5793bc822d2a2adff0ab9a531cf57f026d59",
+      "bytes": 212134
+    },
+    "dev/mesh48_p4_k16.npz": {
+      "sha256": "a5f349b104f336867cd600333c403eceebd4a638ad63b287fc9544d8c34c63e9",
+      "bytes": 1041574
+    },
+    "dev/mesh48_p7_k1.npz": {
+      "sha256": "8b906ab75d16b93c2e39a80ee132e645ce1c4015deb075e14a314d02df57e0c6",
+      "bytes": 212134
+    },
+    "dev/mesh48_p7_k16.npz": {
+      "sha256": "965ff475c39a440dbeda2607c7ac1c4a9c4298934c61fc343d1bde7f2aab7b48",
+      "bytes": 1041574
+    },
+    "dev/mesh48_p10_k1.npz": {
+      "sha256": "ddf388698d05dd9360f1a4160ce50f8692370dc9d11427aa67e119f6348cd6c6",
+      "bytes": 212134
+    },
+    "dev/mesh48_p10_k16.npz": {
+      "sha256": "db38673d2fd24fe50dd74faed9e25cbebe089b20d857c755495e2234b3594893",
+      "bytes": 1041574
+    },
+    "dev/geometry192_p4_k1.npz": {
+      "sha256": "6d3d69abafcfddcb2dc9808b0ffbef7e1a5ae8128a67e600574b5cb642343ce6",
+      "bytes": 27358
+    },
+    "dev/geometry192_p4_k16.npz": {
+      "sha256": "6800fbe3ee728ed72c811c3ffda396749cda65eefa01da5f7ee72b4c3b6c966d",
+      "bytes": 96478
+    },
+    "dev/geometry192_p7_k1.npz": {
+      "sha256": "8b9074ce356eda8cf84d88b56dd9dfc85aa360a279107d30900c93ac10a46597",
+      "bytes": 27358
+    },
+    "dev/geometry192_p7_k16.npz": {
+      "sha256": "b5577499b0a84df7c12069bda32966dc7c79aafae54ff7be47efba7f95082af5",
+      "bytes": 96478
+    },
+    "dev/geometry192_p10_k1.npz": {
+      "sha256": "f718f0853ea80eae668f098cb092c03031e63604edd7bdc239b2aa7d2a57bf73",
+      "bytes": 27358
+    },
+    "dev/geometry192_p10_k16.npz": {
+      "sha256": "1acdc294c091a3470c394c17eef26e43269c1e44164141652ae5a0854475d288",
+      "bytes": 96478
+    },
+    "dev/network256_p4_k1.npz": {
+      "sha256": "59f0068a7c362bdc23c895de2231624644c5b81775daa5cbaddacc3c9b0df92b",
+      "bytes": 21174
+    },
+    "dev/network256_p4_k16.npz": {
+      "sha256": "31ab7c39d18dc943d8d8d5732384bb346c37bed04f159e6eebd30e01e2994da4",
+      "bytes": 113334
+    },
+    "dev/network256_p7_k1.npz": {
+      "sha256": "5a32b3e10599d5cddce2222b45789de503c1a0429be46cffe380878da42fa0df",
+      "bytes": 21174
+    },
+    "dev/network256_p7_k16.npz": {
+      "sha256": "d7141c57f133c19af896b0b3f4d73865605c605d48a8c17677b76298866d90bc",
+      "bytes": 113334
+    },
+    "dev/network256_p10_k1.npz": {
+      "sha256": "99b077134bc3c151dccea7a7453fd9619ca65e3b3c095ba5abfdbb47bc2e6b75",
+      "bytes": 21174
+    },
+    "dev/network256_p10_k16.npz": {
+      "sha256": "00721df528c075c987439c214cd525859b7d16fddefcd48a7914cf6dce2f336f",
+      "bytes": 113334
+    },
+    "dev/control_zero.npz": {
+      "sha256": "d0d2a42b48efcb13fc3c6a12f2486e2ed36ef9eae18149b793fa8e7ba6e030f9",
+      "bytes": 2566
+    },
+    "dev/control_time_zero.npz": {
+      "sha256": "5dc17a5809eee48dd02537e2bd1cb004bacff34f11cfdc6fee44da541f5c31ea",
+      "bytes": 2582
+    },
+    "dev/control_diagonal.npz": {
+      "sha256": "0c2242915f6d99e42f5664f5bbd6c69b239331ec1d3fc66c21bbf42154dfffc6",
+      "bytes": 2546
+    },
+    "dev/control_positive_offdiag.npz": {
+      "sha256": "7834feabff7ef21b944b1da839231f6826642a75dded2d87e6f3d5c649cd8e91",
+      "bytes": 2582
+    },
+    "dev/control_reuse_control.npz": {
+      "sha256": "176610894ce732b8acf3dfdabd6f7cac2811a158da9d914cb4f4bc5e8c82dd99",
+      "bytes": 3302
+    },
+    "PUBLIC_DISTRIBUTION.json": {
+      "sha256": "1b09cbbf1ea2a5f83dfb4ca2b04ac8fb2676c10e17fde3f8e1f450c090f4a6be",
+      "bytes": 773
+    },
+    "PILOT.md": {
+      "sha256": "d80fd946752e9214acf43276e12812aa2f69e90de8147ee09a62b9dc18fd5381",
+      "bytes": 5370
+    },
+    "HARNESS.json": {
+      "sha256": "112a9e6c5068a02c6139b790c54723e70d6c1c1c810b80bc713a0f4144e5c4ca",
+      "bytes": 1164
+    }
+  }
+}

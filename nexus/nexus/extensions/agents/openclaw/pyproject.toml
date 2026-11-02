@@ -1,0 +1,14 @@
+[project]
+name = "openclaw"
+version = "0.1.0"
+authors = [
+    { name = "felixxxi" },
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { openclaw = "nexus.extensions.agents.openclaw.agent" }

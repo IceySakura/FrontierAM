@@ -1,0 +1,14 @@
+[project]
+name = "maze"
+version = "0.1.0"
+authors = [
+    { name = "luxyhliu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { maze_task = "nexus.extensions.projects.maze.task" }
+tools = { "maze/act" = "nexus.extensions.projects.maze.tools" }

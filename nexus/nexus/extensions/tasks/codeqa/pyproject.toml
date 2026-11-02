@@ -1,0 +1,13 @@
+[project]
+name = "codeqa"
+version = "0.1.0"
+authors = [
+    { name = "rongbao" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { codeqa_file = "nexus.extensions.tasks.codeqa.task" }

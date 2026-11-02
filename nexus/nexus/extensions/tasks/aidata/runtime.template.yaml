@@ -1,0 +1,78 @@
+# Runtime template for any aidata case.
+#
+# run-case.sh substitutes {{CASE_ID}} below and writes the resulting yaml
+# to a per-run tempfile (outside the repo) before invoking `nexus run-single`.
+# Adjust resource_spec / timeouts / model here if you need a different profile;
+# per-case prompt + context live in cases/<id>/task.yaml (preferred) or
+# cases/<id>/case.yaml (legacy), NOT here.
+
+imports:
+  - nexus.extensions
+  - nexus.runtime.providers.gongfeng
+
+task_name: "aidata"
+task_config:
+  case_id: "{{CASE_ID}}"
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL}"
+  token: "${oc.env:GONGFENG_TOKEN}"
+  # NOTE: `image:` intentionally NOT declared at provider level. Gongfeng's
+  # `_acquire_impl` uses `image = self.image or merged.get('image')` — if
+  # we set it here, it would FORCE-override every per-runtime `configure(...)`
+  # call, which breaks per-service image selection declared in
+  # cases/<id>/(task|case).yaml::services[].image. Instead, each runtime gets its
+  # own image via `runtime_configs.<name>.image` below, or via
+  # `provider.configure(runtime_name, image=...)` invoked by engine code
+  # (see engine/services.py::setup_services).
+  resource_spec: {cpu: 4, memory: 8}
+  request_timeout: 600.0
+
+runtime_configs:
+  main:
+    # aio-agent-rc (nexus-base + /opt/aio-deps/.venv + Playwright + Node 22).
+    # Path-layout sensitive constants (MCP_PY / PDF_TOOLS_BIN / shell PATH)
+    # default to this image; see engine/paths.py for env-driven overrides
+    # (NEXUS_AIDATA_MCP_PY / …) if you need to retarget the legacy 2.1 layout.
+    image: "mirrors.tencent.com/aidata-rl-env/aio-agent-rc:v0.7-dev-skills"
+
+agent_name: "main_agent"
+# ``tools`` is left unset on purpose — engine/task.py builds the list from
+# ``base/finish`` plus task.yaml::agent_tools plus whatever ``ctx.mcp_tools``
+# ends up holding after ``ctx.load_mcp_tools`` and forwards it to ``run_agent``
+# per-case.
+agent_config:
+  max_iterations: 180
+  parallel_tool_calls: false
+  tool_output_truncation: 32768
+  # When false (default) any unrecoverable tool-call error (unparseable args,
+  # bad tool name/args, tool exception) aborts the run as TOOL_ERROR /
+  # FORMAT_ERROR. Set true to instead feed the error back as a tool observation
+  # so the agent can self-correct. Overridable at runtime via the
+  # NEXUS_MAIN_AGENT_TOOL_ERROR_CONTINUE env var.
+  tool_error_continue: true
+
+# LLM client — OpenAI /v1/chat/completions compatible (litellm). This is the
+# default/non-Claude profile. Claude models run through the Anthropic-native
+# passthrough instead: see the sibling `runtime.anthropic.template.yaml`, which
+# the orchestrator selects per model (aidata_orchestrator.py::MODELS). Keep
+# everything ABOVE this block in sync between the two templates.
+openai_clients:
+  main:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: "${oc.env:SEARCH_OPENAI_API_KEY}"
+        base_url: "${oc.env:SEARCH_OPENAI_BASE_URL}"
+      request_args:
+        model: "openai/${oc.env:SEARCH_OPENAI_MODEL}"
+        # NOTE: do NOT put `wsid:` here. It's only meaningful for the internal
+        # Hunyuan (HY3) proxy and must be sent as an HTTP header, not as a
+        # body param. litellm/openai validate the request body and reject
+        # unknown fields with `wsid: Extra inputs are not permitted`, breaking
+        # every non-HY3 BASE_URL (e.g. the default account-B
+        # http://llm-api.model-eval.woa.com/v1). If you switch SEARCH_OPENAI_*
+        # back to the HY3 proxy and actually need wsid, inject it via the
+        # client's extra_headers (see extensions/openai_clients/taiji.py for
+        # the canonical pattern).

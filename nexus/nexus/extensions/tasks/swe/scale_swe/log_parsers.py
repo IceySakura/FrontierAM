@@ -1,0 +1,424 @@
+# Copied from swe_bench/log_parsers.py with custom log_parser support
+# The only addition is get_log_parser function that supports custom log_parser_code from instance
+
+import re
+
+from nexus.extensions.tasks.swe.t3build_repolaunch_midtrain.constants import TestStatus
+from nexus.extensions.tasks.swe.t3build_repolaunch_midtrain.test_spec import TestSpec
+
+
+def parse_log_pytest(log: str, test_spec: 'TestSpec') -> dict[str, str]:
+    """
+    Parser for test logs generated with PyTest framework
+
+    Args:
+        log (str): log content
+    Returns:
+        dict: test case to test status mapping
+    """
+    test_status_map = {}
+    for line in log.split('\n'):
+        if any(line.startswith(x.value) for x in TestStatus):
+            # Additional parsing for FAILED status
+            if line.startswith(TestStatus.FAILED.value):
+                line = line.replace(' - ', ' ')
+            test_case = line.split()
+            if len(test_case) <= 1:
+                continue
+            test_status_map[test_case[1]] = test_case[0]
+    return test_status_map
+
+
+def parse_log_pytest_options(log: str, test_spec: 'TestSpec') -> dict[str, str]:
+    """
+    Parser for test logs generated with PyTest framework with options
+
+    Args:
+        log (str): log content
+    Returns:
+        dict: test case to test status mapping
+    """
+    option_pattern = re.compile(r'(.*?)\[(.*)\]')
+    test_status_map = {}
+    for line in log.split('\n'):
+        if any(line.startswith(x.value) for x in TestStatus):
+            # Additional parsing for FAILED status
+            if line.startswith(TestStatus.FAILED.value):
+                line = line.replace(' - ', ' ')
+            test_case = line.split()
+            if len(test_case) <= 1:
+                continue
+            has_option = option_pattern.search(test_case[1])
+            if has_option:
+                main, option = has_option.groups()
+                if option.startswith('/') and not option.startswith('//') and '*' not in option:
+                    option = '/' + option.split('/')[-1]
+                test_name = f'{main}[{option}]'
+            else:
+                test_name = test_case[1]
+            test_status_map[test_name] = test_case[0]
+    return test_status_map
+
+
+def parse_log_django(log: str, test_spec: 'TestSpec') -> dict[str, str]:
+    """
+    Parser for test logs generated with Django tester framework
+
+    Args:
+        log (str): log content
+    Returns:
+        dict: test case to test status mapping
+    """
+    test_status_map = {}
+    lines = log.split('\n')
+
+    prev_test = None
+    for line in lines:
+        line = line.strip()
+
+        # This isn't ideal but the test output spans multiple lines
+        if '--version is equivalent to version' in line:
+            test_status_map['--version is equivalent to version'] = TestStatus.PASSED.value
+
+        # Log it in case of error
+        if ' ... ' in line:
+            prev_test = line.split(' ... ')[0]
+
+        pass_suffixes = (' ... ok', ' ... OK', ' ...  OK')
+        for suffix in pass_suffixes:
+            if line.endswith(suffix):
+                # TODO: Temporary, exclusive fix for django__django-7188
+                # The proper fix should involve somehow getting the test results to
+                # print on a separate line, rather than the same line
+                if line.strip().startswith('Applying sites.0002_alter_domain_unique...test_no_migrations'):
+                    line = line.split('...', 1)[-1].strip()
+                test = line.rsplit(suffix, 1)[0]
+                test_status_map[test] = TestStatus.PASSED.value
+                break
+        if ' ... skipped' in line:
+            test = line.split(' ... skipped')[0]
+            test_status_map[test] = TestStatus.SKIPPED.value
+        if line.endswith(' ... FAIL'):
+            test = line.split(' ... FAIL')[0]
+            test_status_map[test] = TestStatus.FAILED.value
+        if line.startswith('FAIL:'):
+            test = line.split()[1].strip()
+            test_status_map[test] = TestStatus.FAILED.value
+        if line.endswith(' ... ERROR'):
+            test = line.split(' ... ERROR')[0]
+            test_status_map[test] = TestStatus.ERROR.value
+        if line.startswith('ERROR:'):
+            test = line.split()[1].strip()
+            test_status_map[test] = TestStatus.ERROR.value
+
+        if line.lstrip().startswith('ok') and prev_test is not None:
+            # It means the test passed, but there's some additional output (including new lines)
+            # between "..." and "ok" message
+            test = prev_test
+            test_status_map[test] = TestStatus.PASSED.value
+
+    # TODO: This is very brittle, we should do better
+    # There's a bug in the django logger, such that sometimes a test output near the end gets
+    # interrupted by a particular long multiline print statement.
+    # We have observed this in one of 3 forms:
+    # - "{test_name} ... Testing against Django installed in {*} silenced.\nok"
+    # - "{test_name} ... Internal Server Error: \/(.*)\/\nok"
+    # - "{test_name} ... System check identified no issues (0 silenced).\nok"
+    patterns = [
+        r'^(.*?)\s\.\.\.\sTesting\ against\ Django\ installed\ in\ ((?s:.*?))\ silenced\)\.\nok$',
+        r'^(.*?)\s\.\.\.\sInternal\ Server\ Error:\ \/(.*)\/\nok$',
+        r'^(.*?)\s\.\.\.\sSystem check identified no issues \(0 silenced\)\nok$',
+    ]
+    for pattern in patterns:
+        for match in re.finditer(pattern, log, re.MULTILINE):
+            test_name = match.group(1)
+            test_status_map[test_name] = TestStatus.PASSED.value
+    return test_status_map
+
+
+def parse_log_pytest_v2(log: str, test_spec: 'TestSpec') -> dict[str, str]:
+    """
+    Parser for test logs generated with PyTest framework (Later Version)
+
+    Args:
+        log (str): log content
+    Returns:
+        dict: test case to test status mapping
+    """
+    test_status_map = {}
+    escapes = ''.join([chr(char) for char in range(1, 32)])
+    for line in log.split('\n'):
+        line = re.sub(r'\[(\d+)m', '', line)
+        translator = str.maketrans('', '', escapes)
+        line = line.translate(translator)
+        if any(line.startswith(x.value) for x in TestStatus):
+            # Split only on the first whitespace so that test names containing spaces
+            # (e.g. parameterised tests like test_foo[a b c]) are captured in full.
+            parts = line.split(None, 1)
+            if len(parts) < 2:
+                continue
+            status, rest = parts[0], parts[1]
+            # FAILED lines look like: FAILED test_name - reason
+            # Split on the first ' - ' to separate test name from the failure reason.
+            if status == TestStatus.FAILED.value and ' - ' in rest:
+                test_name = rest[: rest.index(' - ')].strip()
+            else:
+                test_name = rest.strip()
+            test_status_map[test_name] = status
+        # Support older pytest versions where the format is: test_name STATUS
+        elif any(line.endswith(x.value) for x in TestStatus):
+            # Split from the right once so spaces in the test name are preserved.
+            parts = line.rsplit(None, 1)
+            if len(parts) >= 2:
+                test_status_map[parts[0].strip()] = parts[1]
+    return test_status_map
+
+
+def parse_log_seaborn(log: str, test_spec: 'TestSpec') -> dict[str, str]:
+    """
+    Parser for test logs generated with seaborn testing framework
+
+    Args:
+        log (str): log content
+    Returns:
+        dict: test case to test status mapping
+    """
+    test_status_map = {}
+    for line in log.split('\n'):
+        if line.startswith(TestStatus.FAILED.value):
+            test_case = line.split()[1]
+            test_status_map[test_case] = TestStatus.FAILED.value
+        elif f' {TestStatus.PASSED.value} ' in line:
+            parts = line.split()
+            if parts[1] == TestStatus.PASSED.value:
+                test_case = parts[0]
+                test_status_map[test_case] = TestStatus.PASSED.value
+        elif line.startswith(TestStatus.PASSED.value):
+            parts = line.split()
+            test_case = parts[1]
+            test_status_map[test_case] = TestStatus.PASSED.value
+    return test_status_map
+
+
+def parse_log_sympy(log: str, test_spec: 'TestSpec') -> dict[str, str]:
+    """
+    Parser for test logs generated with Sympy framework
+
+    Args:
+        log (str): log content
+    Returns:
+        dict: test case to test status mapping
+    """
+    test_status_map = {}
+    pattern = r'(_*) (.*)\.py:(.*) (_*)'
+    matches = re.findall(pattern, log)
+    for match in matches:
+        test_case = f'{match[1]}.py:{match[2]}'
+        test_status_map[test_case] = TestStatus.FAILED.value
+    for line in log.split('\n'):
+        line = line.strip()
+        if line.startswith('test_'):
+            if line.endswith(' E'):
+                test = line.split()[0]
+                test_status_map[test] = TestStatus.ERROR.value
+            if line.endswith(' F'):
+                test = line.split()[0]
+                test_status_map[test] = TestStatus.FAILED.value
+            if line.endswith(' ok'):
+                test = line.split()[0]
+                test_status_map[test] = TestStatus.PASSED.value
+    return test_status_map
+
+
+def parse_log_matplotlib(log: str, test_spec: 'TestSpec') -> dict[str, str]:
+    """
+    Parser for test logs generated with PyTest framework
+
+    Args:
+        log (str): log content
+    Returns:
+        dict: test case to test status mapping
+    """
+    test_status_map = {}
+    for line in log.split('\n'):
+        line = line.replace('MouseButton.LEFT', '1')
+        line = line.replace('MouseButton.RIGHT', '3')
+        if any(line.startswith(x.value) for x in TestStatus):
+            # Additional parsing for FAILED status
+            if line.startswith(TestStatus.FAILED.value):
+                line = line.replace(' - ', ' ')
+            test_case = line.split()
+            if len(test_case) <= 1:
+                continue
+            test_status_map[test_case[1]] = test_case[0]
+    return test_status_map
+
+
+parse_log_astroid = parse_log_pytest
+parse_log_flask = parse_log_pytest
+parse_log_marshmallow = parse_log_pytest
+parse_log_pvlib = parse_log_pytest
+parse_log_pyvista = parse_log_pytest
+parse_log_sqlfluff = parse_log_pytest
+parse_log_xarray = parse_log_pytest
+
+parse_log_pydicom = parse_log_pytest_options
+parse_log_requests = parse_log_pytest_options
+parse_log_pylint = parse_log_pytest_options
+
+parse_log_astropy = parse_log_pytest_v2
+parse_log_scikit = parse_log_pytest_v2
+parse_log_sphinx = parse_log_pytest_v2
+
+
+MAP_REPO_TO_PARSER_PY = {
+    'astropy/astropy': parse_log_astropy,
+    'django/django': parse_log_django,
+    'marshmallow-code/marshmallow': parse_log_marshmallow,
+    'matplotlib/matplotlib': parse_log_matplotlib,
+    'mwaskom/seaborn': parse_log_seaborn,
+    'pallets/flask': parse_log_flask,
+    'psf/requests': parse_log_requests,
+    'pvlib/pvlib-python': parse_log_pvlib,
+    'pydata/xarray': parse_log_xarray,
+    'pydicom/pydicom': parse_log_pydicom,
+    'pylint-dev/astroid': parse_log_astroid,
+    'pylint-dev/pylint': parse_log_pylint,
+    'pytest-dev/pytest': parse_log_pytest,
+    'pyvista/pyvista': parse_log_pyvista,
+    'scikit-learn/scikit-learn': parse_log_scikit,
+    'sqlfluff/sqlfluff': parse_log_sqlfluff,
+    'sphinx-doc/sphinx': parse_log_sphinx,
+    'sympy/sympy': parse_log_sympy,
+}
+
+MAP_REPO_TO_PARSER = {
+    **MAP_REPO_TO_PARSER_PY,
+}
+
+# Map log_parser name to parser function
+MAP_LOG_PARSER_NAME_TO_PARSER = {
+    'pytest': parse_log_pytest,
+    'pytest_v2': parse_log_pytest_v2,
+    'pytest_options': parse_log_pytest_options,
+    'django': parse_log_django,
+    'seaborn': parse_log_seaborn,
+    'sympy': parse_log_sympy,
+    'matplotlib': parse_log_matplotlib,
+    'astropy': parse_log_astropy,
+    'scikit': parse_log_scikit,
+    'sphinx': parse_log_sphinx,
+    'astroid': parse_log_astroid,
+    'flask': parse_log_flask,
+    'marshmallow': parse_log_marshmallow,
+    'pvlib': parse_log_pvlib,
+    'pyvista': parse_log_pyvista,
+    'sqlfluff': parse_log_sqlfluff,
+    'xarray': parse_log_xarray,
+    'pydicom': parse_log_pydicom,
+    'requests': parse_log_requests,
+    'pylint': parse_log_pylint,
+}
+
+
+def get_log_parser_by_instance(instance):
+    """
+        Get the log parser for a given instance.
+
+        Standard format priority:
+    1. spec_dict.log_parser_name (standard t3build_repolaunch_midtrain format)
+        2. Built-in parser from MAP_REPO_TO_PARSER (by repo name)
+        3. Default to parse_log_pytest_v2
+
+        Args:
+            instance: SWEbenchInstance dict containing instance data
+        Returns:
+            Callable: log parser function with signature (log, test_spec) -> dict
+    """
+    # Priority 1: spec_dict.log_parser_name (standard t3build_repolaunch_midtrain format)
+    spec_dict = instance.get('spec_dict') if instance else None
+    if spec_dict:
+        log_parser_name = spec_dict.get('log_parser_name', '')
+
+        if log_parser_name:
+            # Check if it's a named parser
+            if log_parser_name in MAP_LOG_PARSER_NAME_TO_PARSER:
+                return MAP_LOG_PARSER_NAME_TO_PARSER[log_parser_name]
+
+            # Custom code execution (when log_parser_name='custom')
+            if log_parser_name == 'custom':
+                log_parser_code = spec_dict.get('log_parser_code')
+                if log_parser_code:
+                    return _create_custom_parser(log_parser_code)
+
+    # Priority 2: Fallback to repo-based parser
+    repo = instance.get('repo', '')
+    if repo in MAP_REPO_TO_PARSER:
+        return MAP_REPO_TO_PARSER[repo]
+
+    # Priority 3: Default parser
+    return parse_log_pytest_v2
+
+
+def _extract_function_name(log_parser_code: str) -> str | None:
+    """
+    Extract the first function name from the log parser code using regex.
+
+    Args:
+        log_parser_code: Python code string
+    Returns:
+        str | None: The function name if found, None otherwise
+    """
+    pattern = r'def\s+([a-zA-Z_]\w*)\s*\('
+    match = re.search(pattern, log_parser_code)
+    if match:
+        return match.group(1)
+    return None
+
+
+def _create_custom_parser(log_parser_code: str):
+    """
+    Create a custom log parser from code string.
+
+    Args:
+        log_parser_code: Python code string that defines a parser function
+    Returns:
+        Callable: wrapped custom parser function
+    """
+    # Extract function name from code using regex
+    func_name = _extract_function_name(log_parser_code)
+    if not func_name:
+        return parse_log_pytest_v2
+
+    # Execute custom parser code with builtins and shared namespace
+    # Use the same dict for both globals and locals so that helper functions
+    # defined at module level (like map_status, parse_text_log) are visible
+    # when parser() calls them
+    import builtins
+
+    namespace = {'__builtins__': builtins}
+    exec(log_parser_code, namespace, namespace)
+    custom_parser = namespace.get(func_name)
+    if custom_parser:
+
+        def wrapped_custom_parser(log: str, test_spec: 'TestSpec | None' = None) -> dict[str, str]:
+            result = custom_parser(log)
+
+            normalized = {}
+            for k, v in result.items():
+                if isinstance(v, str):
+                    v_upper = v.upper()
+                    if v_upper in ('PASS', 'PASSED', 'OK'):
+                        normalized[k] = TestStatus.PASSED.value
+                    elif v_upper in ('FAIL', 'FAILED', 'ERROR'):
+                        normalized[k] = TestStatus.FAILED.value
+                    elif v_upper in ('SKIP', 'SKIPPED'):
+                        normalized[k] = TestStatus.SKIPPED.value
+                    else:
+                        normalized[k] = v.upper()
+                else:
+                    normalized[k] = str(v).upper()
+            return normalized
+
+        return wrapped_custom_parser
+    return parse_log_pytest_v2

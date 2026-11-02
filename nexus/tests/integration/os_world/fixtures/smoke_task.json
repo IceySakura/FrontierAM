@@ -1,0 +1,34 @@
+{
+  "id": "nexus-osworld-smoke",
+  "snapshot": "os",
+  "instruction": "This is a Nexus smoke task. Call desktop/fixed_marker with marker DONE.",
+  "source": "nexus",
+  "config": [
+    {
+      "type": "execute",
+      "parameters": {
+        "command": "printf true > /tmp/nexus_osworld_smoke_result.txt",
+        "shell": true
+      }
+    }
+  ],
+  "trajectory": "trajectories/",
+  "related_apps": ["os"],
+  "evaluator": {
+    "func": "exact_match",
+    "result": {
+      "type": "vm_command_line",
+      "command": "cat /tmp/nexus_osworld_smoke_result.txt",
+      "shell": true
+    },
+    "expected": {
+      "type": "rule",
+      "rules": {
+        "expected": "true"
+      }
+    }
+  },
+  "proxy": false,
+  "fixed_ip": false,
+  "possibility_of_env_change": "low"
+}

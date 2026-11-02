@@ -1,0 +1,109 @@
+# SWE-Any additive pipeline: one manifest row, one sandbox, all agentic stages.
+#
+# Batch concurrency is controlled only by run-batch's MAX_CONCURRENT.  Every
+# stage is serial inside this task (max_workers=1) and reuses runtime "main".
+
+imports:
+  - nexus.extensions.tasks.swe_any
+  - nexus.extensions.agents.claude_code
+
+task_name: "swe_any_pipeline_feature"
+
+task_config:
+  # The feature generator replaces these placeholders from one manifest row.
+  instance: {}
+  repo_name: "${oc.env:SWE_ANY_REPO_NAME,repo}"
+  index: "${oc.decode:${oc.env:SWE_ANY_FEATURE_INDEX,0}}"
+  graph_path: "${oc.env:SWE_ANY_GRAPH_PATH,''}"
+  heuristic_row: {}
+  heuristic_error: null
+  manifest_path: "${oc.env:SWE_ANY_FEATURE_MANIFEST,''}"
+  output_dir: "${oc.env:SWE_ANY_OUTPUT_DIR,./outputs/swe_any}"
+  image: "${oc.env:SWE_ANY_IMAGE,''}"
+  repo_dir: "${oc.env:SWE_ANY_REPO_DIR,/testbed}"
+  runtime_name: "main"
+  release_runtime: true
+
+  # Overrides are validated against the existing stage TaskInput models.  The
+  # pipeline task supplies the manifest row and prior stage rows separately.
+  stage_configs:
+    select:
+      max_workers: 1
+      include_external: "${oc.decode:${oc.env:SWE_ANY_INCLUDE_EXTERNAL,false}}"
+      min_final_nodes: "${oc.env:SWE_ANY_MIN_FINAL_NODES,1}"
+      max_final_nodes: "${oc.env:SWE_ANY_MAX_FINAL_NODES,100}"
+      agent_timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+      release_runtime: false
+    mask:
+      max_features: 1
+      max_workers: 1
+      use_agent: "${oc.decode:${oc.env:SWE_ANY_MASK_USE_AGENT,true}}"
+      agent_timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+      request_timeout: "${oc.env:SWE_ANY_MASK_REQUEST_TIMEOUT,900.0}"
+      release_runtime: false
+    eval:
+      max_features: 1
+      max_workers: 1
+      # Every feature runs oracle author/refine, then the independent categorical verifier.
+      include_feature_tests: "${oc.decode:${oc.env:SWE_ANY_EVAL_INCLUDE_FEATURE_TESTS,true}}"
+      agent_timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+      request_timeout: "${oc.env:SWE_ANY_EVAL_REQUEST_TIMEOUT,900.0}"
+      release_runtime: false
+    issue:
+      max_features: 1
+      max_workers: 1
+      agent_timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+      request_timeout: "${oc.env:SWE_ANY_ISSUE_REQUEST_TIMEOUT,900.0}"
+      release_runtime: false
+    export:
+      max_features: 1
+      max_workers: 1
+      use_hack_check: "${oc.decode:${oc.env:SWE_ANY_USE_HACK_CHECK,false}}"
+      grade_timeout: "${oc.env:SWE_ANY_GRADE_TIMEOUT,1800.0}"
+      release_runtime: false
+
+agent_name: "claude_code"
+agent_config:
+  working_dir: "${oc.env:CLAUDE_CODE_WORKING_DIR,${oc.env:SWE_ANY_REPO_DIR,/testbed}}"
+  timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+  version: "${oc.env:CLAUDE_CODE_VERSION,latest}"
+  extra_env:
+    ANTHROPIC_MODEL: "${oc.env:ANTHROPIC_MODEL,'claude-opus-4-8[1m]'}"
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+  thinking_preset: "${oc.env:SWE_ANY_THINKING_PRESET,bedrock-claude}"
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}"
+  token: "${oc.env:GONGFENG_TOKEN}"
+  # A feature cannot switch scheduling purpose while reusing one sandbox.
+  purpose: "${oc.env:GONGFENG_PURPOSE,test}"
+  runtime_image: "current"
+  request_timeout: "${oc.env:SWE_ANY_PROVIDER_REQUEST_TIMEOUT,86400.0}"
+  resource_spec: { cpu: 2, memory: 8 }
+
+runtime_configs:
+  main:
+    worker_venv:
+      modules: ["swe_any"]
+
+openai_clients:
+  main:
+    name: "${oc.env:OPENAI_CLIENT_NAME,litellm}"
+    config:
+      client_args:
+        api_key: "${oc.env:OPENAI_API_KEY}"
+        base_url: "${oc.env:OPENAI_BASE_URL,http://trpc-gpt-eval.production.polaris:8080}"
+        cache_control_enabled: "${oc.decode:${oc.env:SWE_ANY_CACHE_CONTROL_ENABLED,true}}"
+        cache_control_strategy: "${oc.env:SWE_ANY_CACHE_CONTROL_STRATEGY,claude_code}"
+      request_args:
+        model: "${oc.env:OPENAI_MODEL,bedrock/anthropic.claude-opus-4-8}"
+
+processors:
+  chat:
+    name: "chat_tracker"
+    args:
+      tools_mode: "${oc.env:SWE_ANY_TOOLS_MODE,branch_last}"
+
+runner:
+  timeout: "${oc.env:SWE_ANY_FEATURE_TIMEOUT,21600.0}"

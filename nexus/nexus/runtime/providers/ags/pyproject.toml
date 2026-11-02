@@ -1,0 +1,21 @@
+[project]
+name = "ags"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "e2b-code-interpreter>=2.4.1",
+    # e2b-code-interpreter pulls in e2b. New e2b-prefixed API keys are compatible;
+    # keep e2b<2.25.0 for legacy ark-prefixed API keys.
+    "e2b<2.25.0",
+    "playwright>=1.57.0",
+    "tencentcloud-sdk-python>=3.0.1388",
+]
+runtime = []
+
+[tool.nexus]
+runtime_providers = { ags = "nexus.runtime.providers.ags.provider" }

@@ -1,0 +1,46 @@
+# pi Agent Profile（npm 安装 pi CLI，模型走 Host OpenAI 兼容代理）
+#
+# 环境变量：
+#   必填: 无
+#   可选:
+#       AGENT_VERSION
+#       AGENT_WORKING_DIR
+#       AGENT_TIMEOUT
+#       AGENT_THINKING
+#       AGENT_MAX_OUTPUT_TOKENS
+#       AGENT_CONTEXT_WINDOW
+#
+# 使用示例：
+#   AGENT_CONFIG=pi
+#
+# 组合约束：
+#   agents/ 下的 Profile 互斥，同一次运行只选择一个
+
+body:
+  imports:
+    - nexus.extensions.agents.pi_agent
+  agent_name: pi
+
+  agent_config:
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/testbed}
+    # oc.env 一律返回字符串，数值和布尔值都要套 oc.decode 还原类型
+    timeout: ${oc.decode:${oc.env:AGENT_TIMEOUT,14400}}
+    version: ${oc.env:AGENT_VERSION,0.85.1}
+    npm_registry: 'http://mirrors.tencent.com/npm/'
+    context_window: ${oc.decode:${oc.env:AGENT_CONTEXT_WINDOW,200000}}
+    max_tokens: ${oc.decode:${oc.env:AGENT_MAX_OUTPUT_TOKENS,32768}}
+    # thinking 需要 reasoning=true 才生效；合法值 off/minimal/low/medium/high/xhigh/max
+    reasoning: true
+    thinking: ${oc.env:AGENT_THINKING,max}
+    # json 模式才有 JSONL 事件流：pi 结束码恒为 0，成败只能从 trace.stop_reason 判断
+    output_format: json
+    # 两者都关掉，避免 AGENTS.md 和 .pi/ 里的项目设置混进 benchmark
+    load_context_files: false
+    trust_project_files: false
+    extra_env:
+      AWS_EC2_METADATA_DISABLED: 'true'
+
+merge:
+  imports: append_unique
+
+source: pi

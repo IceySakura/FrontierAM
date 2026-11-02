@@ -1,0 +1,49 @@
+# Rollout batch settings for RL pre-rollout runs.
+#
+# Everything that used to be a pile of --set flags on the command line lives
+# here instead, so the launcher script only deals with data paths and resume.
+# Combine it with an agent profile and an LLM profile:
+#
+#   nexus run batch --data t3-harbor://<tasks> \
+#     --use harbor_bridge:mode=agent \
+#     --use nexus/extensions/harbor_bridge/configs/runtime/gongfeng-prod.yaml \
+#     --use nexus/extensions/tasks/artifact/configs/agents/hycode-rl-0922.yaml \
+#     --use nexus/extensions/tasks/artifact/configs/llm/hy4-preview-offline-taiji.yaml \
+#     --use nexus/extensions/tasks/artifact/configs/rollout-batch.yaml
+#
+# Timeouts are ordered outside-in and must stay consistent: runner.timeout is
+# the host-side wall clock for a whole run, and it has to exceed the agent
+# timeout in the agent profile plus the verifier timeout in task.toml, or the
+# inner limits never take effect.
+
+body:
+  imports:
+    - nexus.trace.processors.chat_tracker
+
+  # Records the final conversation branch per run. Needed to count agent steps
+  # after the fact: hycode's own num_turns disagrees with the transcript on most
+  # rollouts, so the trajectory is the only trustworthy source.
+  processors:
+    chat:
+      name: chat_tracker
+      args:
+        tools_mode: branch_last
+
+  runner:
+    # 4 hours per run, covering agent (8000s budget) plus verifier (3600s).
+    timeout: 14400
+
+  runtime_provider_config:
+    runtime_provider: gongfeng
+    purpose: prod
+    # Sandbox start/get/stop RPC ceiling, not the task execution budget.
+    request_timeout: 12000
+    ttl: 6h
+    # 0 refills a slot the moment one frees up. Raise only if the control plane
+    # cannot absorb the start burst at high concurrency.
+    startup_jitter_max: 0
+
+merge:
+  imports: append_unique
+
+source: artifact-rollout-batch

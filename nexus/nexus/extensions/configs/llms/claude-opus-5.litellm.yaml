@@ -1,0 +1,74 @@
+# Claude Opus 5，走 litellm + AIHub standard endpoint。
+#
+# 协议与路由：
+#   Client=litellm
+#   Endpoint=http://api.aihub.woa.com/standard
+#   Model=anthropic/claude-opus-5（litellm要求的格式）
+#   Anthropic 专有字段直接放 request_args 顶层，不需要 extra_body
+#   key 钉 ?provider=aws_third：标准协议不钉厂商时每个请求自己挑厂商（生产的 claude-opus-5.openai
+#   记过会被路由到 google-vertex）。litellm 走 x-api-key，2026-10-19 实测这个 query 在 x-api-key 上
+#   同样生效（钉 anthropic 500、钉不存在的厂商 401、钉 aws_third 200）。
+#
+# 环境变量：
+#   必填：HR_API_KEY
+#   可选：
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#       THINKING_TYPE
+#       THINKING_EFFORT
+#
+# 使用示例：
+#   LLM_CONFIG=claude-opus-5.litellm
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.litellm
+
+  # Facts about this model. The scaffold decides what to do with them, in its
+  # agent_config_by_llm section; this file never names a scaffold.
+  llm:
+    family: claude
+    anthropic_model: 'claude-opus-5'
+    # 输出上限 128000（claude-opus-4-8 / claude-opus-5 在 litellm 成本表里都是 128000）。
+    # 有的 scaffold 会把这两个事实写进自己的 catalog 的 context_window，并直接拿它当
+    # max_tokens 发请求，默认的 1000000 会被 litellm 这条线拒掉（claude-opus-5.litellm 真沙盒实测 400：
+    # max_tokens: 1000000 > 128000）。同一个 litellm client、同一条路径的 opus-4.8 文件一并声明。
+    # 只有 litellm 这条线声明：claude-opus-5.openai 在默认值下已真沙盒跑通，不要为了"一致"去改它。
+    context_window: 128000
+    auto_compact_token_limit: 115000
+    # 协议无关的档位，给 scaffold 读。这条 wire 是
+    # litellm/Anthropic 原生，字段名是 output_config.effort，与 openai_responses 的
+    # reasoning.effort 不同——声明在这里，scaffold 就不用知道两种拼法。和下面的 output_config
+    # 用同一个 env var，两者不会不一致。
+    reasoning_effort: ${oc.env:THINKING_EFFORT,max}
+
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          api_key: '${oc.env:HR_API_KEY}?provider=aws_third'
+          base_url: 'http://api.aihub.woa.com/standard'
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,12000}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,32}}
+
+        request_args:
+          model: 'anthropic/claude-opus-5'
+          max_tokens: ${oc.decode:${oc.env:MAX_TOKENS,128000}}
+          stream: false
+          # codex 的 CLI 会在请求里带 verbosity，but litellm 的 anthropic provider 直接拒绝
+          # （实测 400：anthropic does not support parameters: ['verbosity']）。用
+          # additional_drop_params 让 litellm 在发请求前丢掉它——和 aws_third 那份 opus-4.8
+          # 丢 reasoning_effort/temperature 是同一个办法。
+          additional_drop_params: ['verbosity']
+          thinking:
+            type: ${oc.env:THINKING_TYPE,adaptive}
+            display: summarized
+          output_config:
+            effort: ${oc.env:THINKING_EFFORT,max}
+
+merge:
+  imports: append_unique
+
+source: aihub2-opus5-litellm

@@ -1,0 +1,17 @@
+[project]
+name = "yb_search"
+version = "0.1.0"
+authors = [
+    { name = "wallyshi" },
+]
+maintainers = [
+    { name = "wallyshi" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { yb_one_agent_toolproxy = "nexus.extensions.projects.yb_search.agent" }
+tasks = { yb_one_agent_toolproxy = "nexus.extensions.projects.yb_search.task" }

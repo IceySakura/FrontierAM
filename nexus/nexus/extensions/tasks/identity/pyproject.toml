@@ -1,0 +1,13 @@
+[project]
+name = "identity"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { identity = "nexus.extensions.tasks.identity.task" }

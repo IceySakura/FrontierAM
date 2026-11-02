@@ -1,0 +1,26 @@
+[project]
+name = "harbor_bridge"
+version = "0.2.0"
+authors = [
+    { name = "xiaochencai" }
+]
+description = "Harbor-Nexus Bridge: run harbor benchmarks (80+ datasets) through nexus"
+requires-python = ">=3.12"
+dependencies = [
+    "jsonschema>=4.20,<5",
+]
+
+[project.optional-dependencies]
+# Host 侧依赖：harbor 框架核心（Verifier、Task 模型、BaseEnvironment）
+# Harbor 0.20.0 requires Python >= 3.12.
+host = [
+    "harbor==0.20.0",
+]
+# Runtime 侧无额外依赖（沙盒内不需要 harbor）
+runtime = []
+
+[tool.nexus]
+tasks = { harbor_bridge_task = "nexus.extensions.harbor_bridge.task" }
+openai_clients = { noauth_openai = "nexus.extensions.harbor_bridge.noauth_client" }
+run_parts = { harbor_bridge = "nexus.extensions.harbor_bridge.run_parts" }
+dataset_sources = { t3-harbor = "nexus.extensions.harbor_bridge.dataset_source" }

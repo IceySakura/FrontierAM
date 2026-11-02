@@ -1,0 +1,15 @@
+[project]
+name = "cua"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+host = ["Pillow>=10.0.0", "httpx>=0.27.0"]
+runtime = []
+
+[tool.nexus.agents]
+cua_gpt_agent = "nexus.extensions.agents.cua.cua_gpt_agent.agent"
+cua_anthropic_agent = "nexus.extensions.agents.cua.cua_anthropic_agent.agent"
+macosworld_cua_gpt = "nexus.extensions.agents.cua.macosworld_cua.gpt"
+macosworld_cua_anthropic = "nexus.extensions.agents.cua.macosworld_cua.anthropic"
+macosworld_vlm = "nexus.extensions.agents.cua.macosworld_vlm.agent"

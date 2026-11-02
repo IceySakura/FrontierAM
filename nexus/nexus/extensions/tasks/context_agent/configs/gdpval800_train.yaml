@@ -1,0 +1,10 @@
+compose:
+  - use: ../base.yaml
+  - data:
+      uri: /apdcephfs_gy6/share_303171455/yufeihuang/align/ctx_agent_data/nexus_context_agent_eval
+      split: gdpval800_train
+  - input:
+      task_config:
+        evaluate: true
+        judge_backend: deliverable
+        artifact_root: outputs/context_agent/gdpval800_train

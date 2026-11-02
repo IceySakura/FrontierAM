@@ -1,0 +1,41 @@
+[project]
+name = "code_mt"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+# Host 侧依赖合并自原 agents/code_mt + tasks/code_mt 两个包(迁入 projects/ 后
+# 单一 pyproject):
+#   - litellm: agent loop(tool_call / text_parse)顶层依赖。
+#   - harbor : task.py 顶层 import harbor_bridge.environment / .task,二者又顶层
+#     import harbor。故声明 harbor host 依赖,否则干净 host env import
+#     projects.code_mt.task 直接 ModuleNotFoundError: harbor(沙盒 runtime 侧不需要)。
+#     版本钉死 ==0.20.0:即当前 host/workenv 实装并验证过的 harbor(与
+#     harbor_bridge 运行的同一版本),避免解析器拉到不兼容的新版 Verifier/Task 模型。
+host = [
+    "litellm>=1.83.14,<2",
+    "harbor==0.20.0",
+]
+# Runtime 侧:agent tools.py 顶层 `from nexus.extensions.tools.file_editor import
+# FileEditor`(str_replace_editor 工具的实现)。file_editor 的这三个依赖声明在它
+# 自己的 runtime extras 里,而 code_mt 的 tool 注册名全部指向 code_mt.agent.tools
+# (不含 file_editor 模块),故模块依赖解析器按 code_mt 选模块时不会跟随 python import
+# 把它们拉进 worker venv → FileEditor(...) 会 ModuleNotFoundError: cachetools。
+# 显式在此声明,保证独立安装 code_mt runtime 即可用 str_replace_editor。
+runtime = [
+    "binaryornot>=0.4.4",
+    "cachetools>=6.2.2",
+    "charset-normalizer>=3.0.0",
+]
+
+# code_mt 是一个自包含 project(agent + task 深度耦合、专为彼此设计),迁入
+# extensions/projects/ 后 agent 代码在 ./agent/,task 代码在 ./task/。注册名
+# (registry key)保持迁移前不变 —— code_mt(agent)/ code_mt_task(task)/ code_mt/*
+# (tools)—— 只有 import 路径改为 projects.code_mt.{agent,task}.*,故已生成
+# task.toml 的 tools=[...] 仍原样解析,parquet 侧 imports 由 build 脚本重写。
+[tool.nexus]
+agents = { code_mt = "nexus.extensions.projects.code_mt.agent.agent", ch_code_mt = "nexus.extensions.projects.code_mt.agent.agent" }
+tasks = { code_mt_task = "nexus.extensions.projects.code_mt.task.task" }
+# 所有工具名指向同一 agent 工具模块,导入任一即触发全部注册(含 SWE 用的
+# code_mt/submit_patch、RepoQA/QA 用的 code_mt/submit_answer)。
+tools = { "code_mt/bash" = "nexus.extensions.projects.code_mt.agent.tools", "code_mt/str_replace_editor" = "nexus.extensions.projects.code_mt.agent.tools", "code_mt/submit" = "nexus.extensions.projects.code_mt.agent.tools", "code_mt/submit_answer" = "nexus.extensions.projects.code_mt.agent.tools", "code_mt/submit_patch" = "nexus.extensions.projects.code_mt.agent.tools", "code_mt/switch_runtime_image" = "nexus.extensions.projects.code_mt.agent.tools" }

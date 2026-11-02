@@ -1,0 +1,78 @@
+# Codex with an MCP server on AGS WindowsAgentArena through the native LLM bridge.
+#
+# Codex is downloaded directly from the signed binary URL and verified with SHA256.
+# On Windows, launch npx through cmd /c so the npm batch shim is resolved correctly.
+#
+# Required env: AGS_SECRET_ID, AGS_SECRET_KEY, AGS_WAA_TOOL_ID, AI_HUB_API_KEY
+# Run:          uv run nexus run-single -o result.json docs/examples/configs/codex_native_bridge_waa_mcp.yaml
+
+task_name: identity
+task_config: {}
+
+runtime_provider_name: ags
+runtime_provider_config:
+  secret_id: ${oc.env:AGS_SECRET_ID}
+  secret_key: ${oc.env:AGS_SECRET_KEY}
+  region: ${oc.env:AGS_REGION,"ap-guangzhou"}
+  domain: ${oc.env:AGS_DOMAIN,"${oc.env:AGS_REGION,ap-guangzhou}.tencentags.com"}
+  interface_mode: nexus
+  request_timeout: 900
+  instance_ready_timeout: 300
+
+runtime_configs:
+  main:
+    provision_mode: control_plane
+    launch_mode: native
+    runtime_kind: waa
+    tool_type: waa
+    tool_id: ${oc.env:AGS_WAA_TOOL_ID}
+    interface_mode: nexus
+    timeout: ${oc.env:WAA_TIMEOUT,"900s"}
+
+agent_name: codex_native_bridge
+agent_config:
+  version: "0.146.1"
+  binary_url: "https://hy-llm-gui-1367471603.cos-internal.ap-guangzhou.tencentcos.cn/native-llm-bridge/codex/0.146.1/win32-x64/codex.exe?q-sign-algorithm=sha1&q-ak=AKIDJciaOzKRO6apvvlOn23rSwDKMO8gASWN&q-sign-time=1787727964%3B1882336024&q-key-time=1787727964%3B1882336024&q-header-list=host&q-url-param-list=&q-signature=b2359ea2284c4f7bab0e0057fed24e54759bae4c"
+  binary_checksum: "ae9d865f3d346a1a2a60c4e84775622d74e3e7ef53e0dede9c68b81eab306cca"
+  model: deepseek-v4-pro
+  user_prompt: |
+    使用已配置的 everything MCP server 的 echo 工具发送文本：
+    nexus native bridge mcp verified on ags waa
+    最终回复 MCP 工具返回的原始文本。不要使用 PowerShell 模拟 echo 结果。
+  working_dir: '%TEMP%\nexus-codex-mcp-waa'
+  timeout: 600
+  npm_registry: https://registry.npmjs.org
+  use_azure_provider: false
+  mcp_servers:
+    - name: everything
+      command: cmd
+      args:
+        - /c
+        - npx
+        - -y
+        - "@modelcontextprotocol/server-everything"
+      env:
+        NPM_CONFIG_REGISTRY: "https://registry.npmjs.org/"
+      startup_timeout_sec: 300
+      tool_timeout_sec: 300
+      enabled_tools:
+        - echo
+      omit_tools_from:
+        - deferred
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:AI_HUB_API_KEY}?provider=deepseek&model=deepseek-v4-pro&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080/v1"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"deepseek-v4-pro"}
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 4200

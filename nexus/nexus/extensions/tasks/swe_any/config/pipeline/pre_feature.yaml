@@ -1,0 +1,72 @@
+# SWE-Any additive pipeline: repo-level Parse + heuristic Select.
+#
+# This task intentionally has no agent/client configuration: it creates the
+# graph and feature_manifest.jsonl without LLM work.  The feature batch is the
+# only agentic portion of the new pipeline.
+
+imports:
+  - nexus.extensions.tasks.swe_any
+
+task_name: "swe_any_pipeline_pre_feature"
+
+instances:
+  path: "${oc.env:SWE_ANY_INSTANCES,''}"
+  ids: "${oc.env:SWE_ANY_INSTANCE_IDS,''}"
+  language: "${oc.env:SWE_ANY_LANGUAGE,python}"
+  skip: "${oc.decode:${oc.env:SWE_ANY_SKIP,0}}"
+  limit: "${oc.decode:${oc.env:SWE_ANY_LIMIT,0}}"
+
+task_config:
+  instance_path: "${oc.env:SWE_ANY_INSTANCE_PATH,''}"
+  repo_name: "${oc.env:SWE_ANY_REPO_NAME,repo}"
+  output_dir: "${oc.env:SWE_ANY_OUTPUT_DIR,./outputs/swe_any}"
+  image: "${oc.env:SWE_ANY_IMAGE,''}"
+  repo_dir: "${oc.env:SWE_ANY_REPO_DIR,/testbed}"
+  runtime_name: "main"
+  release_runtime: true
+
+  # These mappings are overrides for the existing stage TaskInput models.
+  # The future pipeline task must merge orchestration-owned instance/path/runtime
+  # fields after these mappings, so one repo stays on one sandbox.
+  stage_configs:
+    parse:
+      project_name: "${oc.env:SWE_ANY_PROJECT_NAME,null}"
+      install_scip_python: "${oc.decode:${oc.env:SWE_ANY_INSTALL_SCIP_PYTHON,true}}"
+      index_timeout: "${oc.env:SWE_ANY_INDEX_TIMEOUT,3600.0}"
+      npm_install_timeout: "${oc.env:SWE_ANY_NPM_INSTALL_TIMEOUT,600.0}"
+      request_timeout: "${oc.env:SWE_ANY_PARSE_REQUEST_TIMEOUT,5400.0}"
+      download: true
+      release_runtime: false
+    select:
+      rng_seed: "${oc.decode:${oc.env:SWE_ANY_RNG_SEED,null}}"
+      max_subgraphs: "${oc.env:SWE_ANY_MAX_SUBGRAPHS,20}"
+      max_workers: 1
+      max_bfs_nodes: "${oc.env:SWE_ANY_MAX_BFS_NODES,100}"
+      drop_bfs_prob: "${oc.env:SWE_ANY_DROP_BFS_PROB,0.3}"
+      min_bfs_per_depth: "${oc.env:SWE_ANY_MIN_BFS_PER_DEPTH,1}"
+      max_bfs_per_depth: "${oc.env:SWE_ANY_MAX_BFS_PER_DEPTH,8}"
+      include_tests: "${oc.decode:${oc.env:SWE_ANY_INCLUDE_TESTS,true}}"
+      include_external: "${oc.decode:${oc.env:SWE_ANY_INCLUDE_EXTERNAL,false}}"
+      min_component_nodes: "${oc.env:SWE_ANY_MIN_COMPONENT_NODES,20}"
+      max_component_nodes: "${oc.env:SWE_ANY_MAX_COMPONENT_NODES,1000000000}"
+      release_runtime: false
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}"
+  token: "${oc.env:GONGFENG_TOKEN}"
+  # Parse/heuristic Select are construction stages, matching their legacy defaults.
+  purpose: "${oc.env:GONGFENG_PURPOSE,test}"
+  runtime_image: "current"
+  request_timeout: "${oc.env:SWE_ANY_PROVIDER_REQUEST_TIMEOUT,86400.0}"
+  resource_spec:
+    cpu: "${oc.decode:${oc.env:SWE_ANY_PARSE_CPU,4}}"
+    memory: "${oc.decode:${oc.env:SWE_ANY_PARSE_MEMORY,16}}"
+
+runtime_configs:
+  main:
+    worker_venv:
+      modules: ["swe_any"]
+
+runner:
+  timeout: "${oc.env:SWE_ANY_PRE_FEATURE_TIMEOUT,10800.0}"

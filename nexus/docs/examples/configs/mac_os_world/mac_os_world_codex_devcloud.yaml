@@ -1,0 +1,72 @@
+# Harness run part; Dataset macosworld/macosworld@v1.2.0, split test.
+body:
+  imports:
+  - nexus.extensions.tasks.mac_os_world
+  - nexus.extensions.agents.codex.macosworld.agent
+  - nexus.extensions.tasks.mac_os_world.clients
+  task_name: mac_os_world
+  task_config:
+    wedata_key: ${oc.env:WEDATA_KEY}
+    language: en
+    environment_language: auto
+    observation_type: screenshot
+    action_space: pyautogui
+    run_pre_command: true
+    execute_agent: true
+    run_evaluator: true
+    binary_grading: true
+    include_task_context: false
+    prepare_screen_capture: true
+    agent_mode: harness
+  runtime_provider_name: devcloud
+  runtime_provider_config:
+    app_id: ${oc.env:DEVCLOUD_APP_ID}
+    app_token: ${oc.env:DEVCLOUD_APP_TOKEN}
+    sandbox_api_base_url: http://21.6.221.82:18800
+    lease_time: 5400
+    server_port: 5000
+    request_timeout: 5400
+    instance_ready_timeout: 600
+    proxy_url: ${oc.env:DEVCLOUD_PROXY_URL,null}
+    control_request_timeout: 120
+    release_timeout: 120
+    execute_mode: async
+  runtime_configs:
+    main:
+      runtime_kind: macosworld_devcloud
+      timeout: ${oc.env:MACOSWORLD_SANDBOX_TIMEOUT,4800}
+  openai_clients:
+    main:
+      name: macosworld_openai_responses
+      config:
+        client_args:
+          api_key: ${oc.env:GPT_CUA_API_KEY}
+          base_url: http://api.aihub.woa.com/standard/v1
+          timeout: 180
+          max_retries: 3
+          ensure_v1_path: true
+        request_args:
+          model: ${oc.env:NEXUS_MODEL,gpt-5.4}
+  agent_name: macosworld_codex_native_bridge
+  agent_config:
+    working_dir: /tmp/macosworld-harness
+    timeout: 3600
+    npm_registry: https://registry.npmjs.org
+    version: 0.154.0
+    model: ${oc.env:NEXUS_MODEL,gpt-5.4}
+    use_azure_provider: false
+    emit_json_trace: true
+    extra_config_toml: 'model_reasoning_effort = "high"
+
+      [features]
+
+      remote_compaction_v2 = false
+
+      '
+  processors:
+    chat:
+      name: chat_tracker
+  runner:
+    timeout: 4800
+merge:
+  imports: append_unique

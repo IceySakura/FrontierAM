@@ -1,0 +1,159 @@
+# HLE config: main_agent + thinking，Generation 走 HTTP API，Judge 走 Reward System。
+# 自包含 API 版本，区别：
+#   1. openai_clients.main 从 "taiji" 切换到 "litellm"（通过 aws_third 访问 claude 系列）。
+#   2. task_config 默认使用 Reward System evaluator。
+#
+# Usage：
+#   export CODE_INTERPRETER="jupyter"
+#   # Generation (API)
+#   export SCIENCE_API_KEY="REPLACE_ME_SCIENCE_API_KEY"
+#   export SCIENCE_BASE_URL="REPLACE_ME_SCIENCE_BASE_URL"
+#   export GENERATION_MODEL="api_aws_third_anthropic.claude-sonnet-4-6"
+#   # Judge (Reward System)
+#   export NEXUS_REWARD_SYSTEM_TOKEN=xxx
+#   export NEXUS_REWARD_SYSTEM_ROUTER_ID=ScienceOss--10
+
+imports:
+  - nexus.extensions
+  - nexus.extensions.openai_clients
+  - nexus.extensions.tasks.stem_mas
+  - nexus.extensions.agents.main
+  - nexus.extensions.tools.search_stateful
+  - nexus.extensions.tools.code_interpreter
+
+task_name: "stem_mas"
+task_config:
+  evaluator_type: ${oc.env:STEM_MAS_EVALUATOR_TYPE,"reward_system"}
+  timeout: 600
+  reward_system_user_token: ${oc.env:NEXUS_REWARD_SYSTEM_TOKEN,""}
+  reward_system_exp_id: ${oc.env:NEXUS_REWARD_SYSTEM_EXP_ID,"nexus_hle_main_agent_deepseek_reward_system_cache"}
+  reward_system_router_id: ${oc.env:NEXUS_REWARD_SYSTEM_ROUTER_ID,"ScienceOss--10"}
+  reward_system_ci_test: ${oc.decode:${oc.env:NEXUS_REWARD_SYSTEM_CI_TEST,false}}
+
+dataset:
+  name: "hle_200"
+  path: ${oc.env:STEM_MAS_DATASET_PATH,""}
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: ${oc.env:GONGFENG_API_BASE_URL,"REPLACE_ME_GONGFENG_API_BASE_URL"}
+  token: ${oc.env:GONGFENG_RUNTIME_TOKEN,""}
+  image: ${oc.env:STEM_MAS_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+  runtime_image: ${oc.env:STEM_MAS_RUNTIME_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+  resource_spec:
+    cpu: 2
+    memory: 10
+  request_timeout: 1800.0
+  python_version: "3.12"
+
+runtime_configs:
+  main:
+    worker_venv:
+      python_version: "3.12"
+      modules:
+        - "code_interpreter"
+    image: ${oc.env:STEM_MAS_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+    environment:
+      UV_CACHE_DIR: "/tmp/nexus-uv-cache"
+      UV_PYTHON_DOWNLOADS: "never"
+
+# Agent config — main_agent.
+agent_name: "main_agent"
+agent_config:
+  system_prompt: |
+    You are a helpful AI assistant that conducts thorough internet research to provide accurate answers.
+
+    IMPORTANT:
+    - Use only the provided tools to perform actual information retrieval without fabricating answers.
+    - Explore different aspects and refine your approach until comprehensive information is gathered.
+    - Synthesize information from diverse, credible sources. Cross-check facts to validate accuracy and reliability.
+    - When done, stop calling tools and provide your final answer directly.
+  max_iterations: 1000
+  tools:
+    - search_stateful/search
+    - search_stateful/open
+    - search_stateful/find
+    - jupyter_code_interpreter
+  parallel_tool_calls: false
+  tool_call_error_retries: 1
+  oom_runtime_recovery: true
+  tool_overrides:
+    - tool_name: search_stateful/search
+      name: search
+      description: "Use this tool to search the web for information using Google. Returns relevant web pages with titles, links, and snippets."
+    - tool_name: search_stateful/open
+      name: open
+      description: "Opens the link id from the page indicated by cursor starting at line number loc, showing num_lines lines. Valid link ids are displayed with the formatting: 【{id}†.*】. If cursor is not provided, the most recent page is implied. If id is a string, it is treated as a fully qualified URL associated with source. If loc is not provided, the viewport will be positioned at the beginning of the document or centered on the most relevant passage, if available. Use this function without id to scroll to a new location of an opened page."
+    - tool_name: search_stateful/find
+      name: find
+      description: "Finds exact matches of pattern in the current page, or the page given by cursor."
+    - tool_name: jupyter_code_interpreter
+      name: python
+      description: "Use this tool to execute Python code. The code will not be shown to the user. This tool should be used for internal reasoning, but not for code that is intended to be visible to the user (e.g. when creating plots, tables, or files). When you send a message containing Python code to python, it will be executed in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after configured timeout."
+
+tool_configs:
+  search_stateful:
+    user: ${oc.env:SEARCH_USER,"YOUR_USER_ID"}
+    apikey: ${oc.env:SEARCH_API_KEY,"YOUR_API_KEY"}
+    max_search_results: 10
+
+  jupyter_code_interpreter:
+    timeout: 600
+
+# OpenAI client config.
+openai_clients:
+  # Generation model via trpc-gpt-eval API（litellm + aws_third provider）。
+  main:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:SCIENCE_API_KEY,"YOUR_API_KEY_HERE"}
+        base_url: ${oc.env:SCIENCE_BASE_URL,"REPLACE_ME_SCIENCE_BASE_URL"}
+        # NOTE: oc.env 读到的 env 值永远是字符串，litellm 会对 timeout/max_tokens 做 int(round(..))
+        # 所以这里用 oc.decode 把字符串 parse 成 int。
+        max_retries: ${oc.decode:${oc.env:GENERATION_MAX_RETRIES,25}}
+        timeout: ${oc.decode:${oc.env:GENERATION_TIMEOUT,1200}}
+      request_args:
+        # NOTE: litellm 里 api_key 的 provider=aws_third 会被转成 bedrock provider，
+        # 所以 model 必须是 litellm bedrock 格式：bedrock/anthropic.<model-id>
+        # 对应 del.sh 里验证 OK 的 api_aws_third_anthropic.claude-sonnet-4-6 → bedrock/anthropic.claude-sonnet-4-6
+        model: ${oc.env:GENERATION_MODEL,"bedrock/anthropic.claude-haiku-4-5-20251001-v1:0"}
+        max_tokens: ${oc.decode:${oc.env:GENERATION_MAX_TOKENS,64000}}
+        # NOTE: 走 trpc-gpt-eval bedrock 转发时，后端严格校验请求体，不接受 extra_body / 额外 header
+        # （会报 "extra_body: Extra inputs are not permitted"），因此这里不挂 reasoning_effort /
+        # anthropic-beta。Claude 4.6 默认已开 thinking；如需更精细控制改成 litellm 标准 thinking 字段，
+        # 例如：
+        # thinking:
+        #   type: enabled
+        #   budget_tokens: 16000
+
+  # Judge model via Taiji + Polaris service discovery.
+  judge:
+    name: "taiji"
+    config:
+      client_args:
+        model: ${oc.env:JUDGE_MODEL,"gpt-oss-120b-sci-128k-new_daisyyi_for_RL_R2_zwfy_tp4"}
+        namespace: ${oc.env:TAIJI_NS,"Production"}
+        service: ${oc.env:TAIJI_POLARIS_SERVICE,"taiji-stream-server-online-openapi-prod"}
+        authorization: ${oc.env:TAIJI_AUTH,"Bearer xxx"}
+        wsid: ${oc.env:TAIJI_WSID,"10103"}
+        url_pattern: ${oc.env:TAIJI_URL_PATTERN,"v1"}
+        timeout: ${oc.env:TAIJI_TIMEOUT,1200}
+        max_retries: ${oc.env:JUDGE_MAX_RETRIES,50}
+      request_args:
+        temperature: 0.0
+        top_p: 1.0
+
+cache_metrics:
+  client_overrides:
+    main:
+      model_provider: deepseek
+    judge:
+      model_provider: taiji
+
+# Trace processors.
+processors:
+  agent_metrics:
+    name: "main_agent_metrics"
+  chat:
+    name: "chat_tracker"

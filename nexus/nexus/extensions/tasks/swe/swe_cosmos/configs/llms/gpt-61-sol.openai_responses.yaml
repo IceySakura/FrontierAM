@@ -1,0 +1,63 @@
+# AIHub GPT-6.1 SOL LLM Profile
+#
+# 协议与路由：
+#   Client=openai_responses（不是 chat 的 openai）
+#   Endpoint=http://api.aihub.woa.com/openai/v1/responses
+#   Bearer 必须带 ?provider=azure
+#
+# 推理配置：
+#   reasoning.effort 默认 xhigh
+#   reasoning.summary 默认 auto（detailed 也可用）
+#   reasoning.mode 刻意不发
+#   store=false、include=[reasoning.encrypted_content]、max_output_tokens=128000
+#
+# 环境变量：
+#   必填：
+#       HR_API_KEY      裸 key，由本文件补上 ?provider=azure
+#   可选：
+#       OPENAI_API_KEY  整串覆盖，自带 query 时不再拼 provider
+#       MAX_TOKENS
+#       LLM_TIMEOUT
+#       LLM_MAX_RETRIES
+#       REASONING_EFFORT
+#       REASONING_SUMMARY
+#
+# 使用示例：
+#   LLM_CONFIG=gpt-61-sol.openai_responses
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.openai_responses
+
+  agent_config:
+    wrap_plaintext_reasoning_content: false
+
+  openai_clients:
+    main:
+      name: openai_responses
+      config:
+        client_args:
+          api_key: '${oc.env:HR_API_KEY}?provider=azure'
+          endpoint: 'http://api.aihub.woa.com/openai/v1/responses'
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,12000}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,32}}
+          capture_raw_io: true
+          cache_task_id_from_run_id: true
+
+        request_args:
+          model: 'gpt-6.1-sol'
+          store: false
+          stream: false
+          max_output_tokens: ${oc.decode:${oc.env:MAX_TOKENS,128000}}
+          reasoning_effort: ${oc.env:REASONING_EFFORT,xhigh}
+          reasoning:
+            effort: ${oc.env:REASONING_EFFORT,xhigh}
+            summary: ${oc.env:REASONING_SUMMARY,auto}
+          parallel_tool_calls: true
+          include:
+            - reasoning.encrypted_content
+
+merge:
+  imports: append_unique
+
+source: aihub-azure-gpt61-sol-openai-responses

@@ -1,0 +1,76 @@
+[project]
+name = "os_world_v2"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "aiohttp>=3.10",
+    "requests>=2.31",
+    "playwright>=1.40",
+    "PyDrive>=1.3.1",
+    "Pillow>=10",
+    "numpy>=1.24",
+    "pandas>=2",
+    "python-docx>=1",
+    "python-pptx>=0.6",
+    "openpyxl>=3.1",
+    "lxml>=5",
+    "cssselect>=1.2",
+    "rapidfuzz>=3",
+    "formulas>=1.2",
+    "PyMuPDF>=1.23",
+    "PyPDF2>=3",
+    "pdfplumber>=0.11",
+    "requests-toolbelt>=1",
+    "python-dotenv>=1",
+    "python-gitlab>=4.5",
+    "websockets>=13",
+    "icalendar>=6.3,<8",
+    "recurring-ical-events>=3.8,<4",
+    "fpdf2>=2.8",
+    "bibtexparser>=1.4",
+    "boto3>=1.34",
+    # Host Controller/evaluator dependencies audited against OSWorld-V2/main
+    # acdd3493808e716825975b0f0208194bb2faf3c3 (pyproject.toml is authoritative;
+    # requirements.txt only contains -e .). Keep GUI/provider/agent stacks out.
+    # The isolated worker uses this interpreter, NOT the packages in the AGS VM.
+    "xmltodict>=0.13",
+    "tldextract>=5.3",
+    "odfpy>=1.4",
+    "opencv-python-headless>=4.8",
+    "scikit-image>=0.21",
+    "imageio-ffmpeg==0.6.0",
+    "imagehash>=4.3",
+    "scipy>=1.11",
+    "beautifulsoup4>=4.12",
+    "pypdf>=4",
+    "mutagen>=1.47",
+    "pyacoustid>=1.3",
+    "librosa>=0.10",
+    "fastdtw>=0.3.4",
+    "soundfile>=0.12",
+    "websocket-client>=1.8",
+    "pyparsing>=3",
+    "pytz>=2024.1",
+    "borb>=2.1,<3",
+    "anthropic",
+    "google-genai",
+    "scikit-learn",
+    "chardet",
+    # Optional OCR in official docs metrics; its models/system prerequisites
+    # still require separate preflight. Installing this does not prefetch weights.
+    "easyocr",
+]
+# Upstream osworld-ffmpeg==7.0.2.post1 is a LOCAL uv source under
+# packages/osworld-ffmpeg, not a verified registry distribution. It cannot be
+# copied as a bare requirement here. Provision its pinned ffmpeg/ffprobe wheel
+# in the HOST image/environment separately; imageio-ffmpeg supplies no ffprobe.
+runtime = []
+
+[tool.nexus]
+run_parts = { osworld_v2 = "nexus.extensions.tasks.os_world_v2.generators.run_parts" }
+run_hooks = { osworld_v2_output_contract = "nexus.extensions.tasks.os_world_v2.adapter.outputs" }
+
+[tool.nexus.tasks]
+os_world_v2 = "nexus.extensions.tasks.os_world_v2.task"

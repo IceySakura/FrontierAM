@@ -1,0 +1,14 @@
+[project]
+name = "android_cloudtest"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["cloudtestapi"]
+runtime = []
+
+[tool.nexus]
+runtime_providers = { android_cloudtest = "nexus.runtime.providers.android_cloudtest.provider" }

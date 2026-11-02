@@ -1,0 +1,13 @@
+body:
+  runtime_provider_config:
+    network_policy:
+      egress:
+        # Remote TaskFiles are signed from inside Runtime, then read from COS.
+        - action: allow
+          target: auth.tdw.oa.com:80
+        - action: allow
+          target: taiji-nexus-dataset-io-dev.woa.com:8080
+        - action: allow
+          target: rakanxue-test-1258344703.cos-internal.ap-guangzhou.tencentcos.cn:443
+merge:
+  runtime_provider_config.network_policy.egress: append_unique

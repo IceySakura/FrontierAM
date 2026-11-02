@@ -1,0 +1,67 @@
+# Claude Code Agent Profile（非交互 --print 模式）
+#
+# 用途：
+#   在任务 Runtime 中安装并运行 Claude Code CLI，并完成用户指定的任务
+#
+# 无人值守 Hook: enable_unattended_interaction_hooks=true
+#   1. ExitPlanMode 自动获准继续执行计划；
+#   2. AskUserQuestion 自动选择第一个选项并把答案反馈给 Claude，避免无人值守批次卡在交互确认直到超时。Host 侧上传 installer，不要求 Runtime 镜像预置任何模块
+#
+# 与 LLM Profile 的分工：
+#   thinking_preset, no_thinking_request_args, extra_env.ANTHROPIC_MODEL 由 llm config 写入，本文件不重复定义
+#   haiku_model 优先 HAIKU_MODEL，否则 oc.select 主模型，再否则 null
+#
+# 环境变量：
+#   必填: 无
+#   可选:
+#       AGENT_VERSION
+#       AGENT_WORKING_DIR
+#       AGENT_TIMEOUT
+#       NPM_REGISTRY
+#       HAIKU_MODEL
+#
+# 使用示例：
+#   AGENT_CONFIG=claude_code
+#
+# 组合约束：
+#   agents/ 下的 Profile 互斥，同一次运行只选择一个
+
+body:
+  imports:
+    - nexus.extensions.agents.claude_code
+  agent_name: claude_code
+
+  agent_config:
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/testbed}
+    # oc.env 一律返回字符串，数值和布尔值都要套 oc.decode 还原类型
+    # agent 总超时（秒）14400s = 4h，必须小于 runtime Profile 的 request_timeout
+    timeout: ${oc.decode:${oc.env:AGENT_TIMEOUT,14400}}
+    version: ${oc.env:AGENT_VERSION,2.1.267}
+    npm_registry: ${oc.env:NPM_REGISTRY,http://mirrors.tencent.com/npm/}
+    # --print 非交互；stream-json 便于 nexus 解析 tool calls / thinking
+    # WebSearch/WebFetch 关闭，保持 benchmark 能力边界
+    extra_cli_args:
+      - --print
+      - --output-format
+      - stream-json
+      - --verbose
+      - --disallowedTools
+      - WebSearch
+      - WebFetch
+    extra_env:
+      CLAUDE_CODE_ATTRIBUTION_HEADER: '0'
+      CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1'
+      CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: '1'
+      # 关掉每轮插入的 <total_tokens>N tokens left</total_tokens> 系统消息
+      CLAUDE_CODE_TOTAL_TOKENS_REMINDER: 'off'
+      # 若要开启 ToolSearch 功能，需要配置下面两个参数:
+      # CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: '0'
+      # ENABLE_TOOL_SEARCH: '1'
+    enable_unattended_interaction_hooks: true
+    # 轻量 haiku 请求：HAIKU_MODEL → 主模型 → null
+    haiku_model: ${oc.env:HAIKU_MODEL,${oc.select:openai_clients.main.config.request_args.model,null}}
+
+merge:
+  imports: append_unique
+
+source: claude-code

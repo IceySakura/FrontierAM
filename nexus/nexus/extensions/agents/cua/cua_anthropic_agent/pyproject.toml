@@ -1,0 +1,11 @@
+[project]
+name = "cua_anthropic_agent"
+version = "0.1.0"
+authors = [{ name = "dericwang" }]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { cua_anthropic_agent = "nexus.extensions.agents.cua.cua_anthropic_agent.agent" }

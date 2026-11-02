@@ -1,0 +1,38 @@
+[project]
+name = "hitl"
+version = "0.1.0"
+dependencies = [
+    "dataclasses-json",
+    "langfuse",
+    "unidiff",
+]
+
+[project.optional-dependencies]
+# pyte is declared runtime-only by agents/claude_code, whose sandbox side parses
+# the terminal. The PTY worker manager parses it on the host as well: importing
+# actor/ reaches agents/claude_code/interactive/screen.py, so every generator in
+# this module needs pyte host-side too. Stated on both sides rather than left to
+# the other module's declaration, which describes its own use and not ours.
+#
+# The file_editor extras are the same case: tools/file_editor declares them
+# runtime-only, and `read` builds a FileEditor to view a file, so a host that
+# imports this module needs them too. FileEditor raises on construction without
+# cachetools, which is before any path is read.
+host = [
+    "pyte>=0.8.2,<0.9",
+    "binaryornot>=0.4.4",
+    "cachetools>=6.2.2",
+    "charset-normalizer>=3.0.0",
+]
+runtime = [
+    "pyte>=0.8.2,<0.9",
+    "binaryornot>=0.4.4",
+    "cachetools>=6.2.2",
+    "charset-normalizer>=3.0.0",
+]
+
+[tool.nexus.agents]
+"hitl/agent_with_user" = "nexus.extensions.tasks.hitl.agents.agent_with_user"
+
+[tool.nexus.tasks]
+"hitl/swe_chain_v2_task" = "nexus.extensions.tasks.hitl.recipe.swe_chain_v2.task"

@@ -1,0 +1,72 @@
+# Math benchmark: direct single-turn LLM baseline, DeepSeek Flash distillation route.
+
+imports:
+  - nexus.extensions
+  - nexus.extensions.openai_clients
+  - nexus.extensions.tasks.stem_mas
+  - nexus.extensions.agents.single_turn
+
+task_name: "stem_mas"
+solver_strategy: "no_agent"
+task_config:
+  evaluator_none_score: 0.0
+  lean4_verifier_url: ${oc.env:LEAN4_VERIFIER_URL,"http://lean4-verifier-v0d2d0.production.polaris:8080"}
+  lean4_verifier_timeout_seconds: ${oc.decode:${oc.env:LEAN4_VERIFIER_TIMEOUT_SECONDS,7200}}
+  lean4_verifier_forbid_sorry: ${oc.decode:${oc.env:LEAN4_VERIFIER_FORBID_SORRY,true}}
+  needs_runtime: false
+  timeout: ${oc.decode:${oc.env:STEM_MAS_TASK_TIMEOUT,7200}}
+
+dataset:
+  name: ${oc.env:STEM_MAS_DATASET_NAME,"minif2f"}
+  path: ${oc.env:STEM_MAS_DATASET_PATH,""}
+
+runner:
+  timeout: ${oc.decode:${oc.env:STEM_MAS_RUNNER_TIMEOUT,7800}}
+
+agent_name: "single_turn"
+agent_config: {}
+
+openai_clients:
+  main:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:SCIENCE_API_KEY,"YOUR_API_KEY_HERE"}
+        base_url: ${oc.env:SCIENCE_BASE_URL,"REPLACE_ME_SCIENCE_BASE_URL"}
+        max_retries: ${oc.decode:${oc.env:GENERATION_MAX_RETRIES,25}}
+        timeout: ${oc.decode:${oc.env:GENERATION_TIMEOUT,7200}}
+      request_args:
+        model: ${oc.env:GENERATION_MODEL,"openai/api_deepseek_deepseek-v4-flash"}
+        extra_body:
+          thinking:
+            type: ${oc.env:GENERATION_THINKING_TYPE,"enabled"}
+          enable_thinking: ${oc.decode:${oc.env:GENERATION_ENABLE_THINKING,true}}
+          reasoning_effort: ${oc.env:GENERATION_REASONING_EFFORT,"max"}
+        max_tokens: ${oc.decode:${oc.env:GENERATION_MAX_TOKENS,131072}}
+        temperature: ${oc.decode:${oc.env:GENERATION_TEMPERATURE,0.2}}
+        top_p: ${oc.decode:${oc.env:GENERATION_TOP_P,1.0}}
+
+  judge:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:SCIENCE_API_KEY,"YOUR_API_KEY_HERE"}
+        base_url: ${oc.env:SCIENCE_BASE_URL,"REPLACE_ME_SCIENCE_BASE_URL"}
+        max_retries: ${oc.decode:${oc.env:JUDGE_MAX_RETRIES,25}}
+        timeout: ${oc.decode:${oc.env:JUDGE_TIMEOUT,7200}}
+      request_args:
+        model: ${oc.env:JUDGE_MODEL,"openai/api_deepseek_deepseek-v4-flash"}
+        max_tokens: ${oc.decode:${oc.env:JUDGE_MAX_TOKENS,8192}}
+        temperature: 0.0
+        top_p: 1.0
+
+cache_metrics:
+  client_overrides:
+    main:
+      model_provider: deepseek
+    judge:
+      model_provider: deepseek
+
+processors:
+  chat:
+    name: "chat_tracker"

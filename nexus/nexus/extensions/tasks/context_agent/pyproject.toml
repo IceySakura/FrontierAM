@@ -1,0 +1,13 @@
+[project]
+name = "context_agent"
+version = "0.1.0"
+description = "Unified Context Agent tasks, evaluators, generators, and reward scoring"
+dependencies = []
+
+[project.optional-dependencies]
+host = []
+runtime = []
+
+[tool.nexus.tasks]
+context_agent_general_task = "nexus.extensions.tasks.context_agent.general_task"
+context_agent_enterprisebench_native_task = "nexus.extensions.tasks.context_agent.enterprisebench_native.task"

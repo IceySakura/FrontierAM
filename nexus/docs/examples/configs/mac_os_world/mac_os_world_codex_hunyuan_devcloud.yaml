@@ -1,0 +1,88 @@
+# Harness run part for a HY Chat Completions service.
+# The CLI model label selects its tool protocol; HUNYUAN_MODEL pins the actual upstream model.
+# On Taiji ONE_STOP_SERVICE, use mac_os_world_codex_hunyuan_platform_params.json
+# as model parameters: bridge_litellm needs explicit permission to forward Codex's
+# reasoning_effort for this custom HY model. Do not pass that LiteLLM-only option
+# to the local infer_proxy/OpenAI SDK client.
+body:
+  imports:
+  - nexus.extensions.tasks.mac_os_world
+  - nexus.extensions.agents.codex.macosworld.agent
+  - nexus.extensions.tasks.mac_os_world.clients
+  task_name: mac_os_world
+  task_config:
+    wedata_key: ${oc.env:WEDATA_KEY}
+    language: en
+    environment_language: auto
+    observation_type: screenshot
+    action_space: pyautogui
+    run_pre_command: true
+    execute_agent: true
+    run_evaluator: true
+    binary_grading: true
+    include_task_context: false
+    prepare_screen_capture: true
+    agent_mode: harness
+  runtime_provider_name: devcloud
+  runtime_provider_config:
+    app_id: ${oc.env:DEVCLOUD_APP_ID}
+    app_token: ${oc.env:DEVCLOUD_APP_TOKEN}
+    sandbox_api_base_url: http://21.6.221.82:18800
+    lease_time: 5400
+    server_port: 5000
+    request_timeout: 5400
+    instance_ready_timeout: 600
+    proxy_url: ${oc.env:DEVCLOUD_PROXY_URL,null}
+    control_request_timeout: 120
+    release_timeout: 120
+    execute_mode: async
+  runtime_configs:
+    main:
+      runtime_kind: macosworld_devcloud
+      timeout: ${oc.env:MACOSWORLD_SANDBOX_TIMEOUT,4800}
+  openai_clients:
+    main:
+      name: macosworld_infer_proxy
+      config:
+        client_args:
+          api_key: ${oc.env:HUNYUAN_API_KEY}
+          base_url: ${oc.env:HUNYUAN_BASE_URL,http://infer-api.taiji.woa.com/api/v1}
+          timeout: 600
+          max_retries: 3
+          normalize_image_detail: true
+        request_args:
+          model: ${oc.env:HUNYUAN_MODEL}
+          temperature: 0.9
+          top_p: 1
+          extra_body:
+            top_k: -1
+            repetition_penalty: 1
+            chat_template_kwargs:
+              reasoning_effort: high
+        enforced_request_args:
+          model: ${oc.env:HUNYUAN_MODEL}
+  agent_name: macosworld_codex_native_bridge
+  agent_config:
+    api_protocol: responses-chat
+    working_dir: /tmp/macosworld-harness
+    timeout: 3600
+    npm_registry: https://registry.npmjs.org
+    version: 0.154.0
+    model: gpt-5.4
+    use_azure_provider: false
+    emit_json_trace: true
+    retain_json_events_stdout: true
+    extra_config_toml: 'model_reasoning_effort = "high"
+
+      [features]
+
+      remote_compaction_v2 = false
+
+      '
+  processors:
+    chat:
+      name: chat_tracker
+  runner:
+    timeout: 4800
+merge:
+  imports: append_unique

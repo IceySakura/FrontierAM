@@ -1,0 +1,10 @@
+[project]
+name = "reward-system-task"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+host = ["polaris-cpp-py", "pillow>=10.0"]
+
+[tool.nexus]
+tasks = { reward_system = "nexus.extensions.tasks.reward_system.task" }

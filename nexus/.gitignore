@@ -1,0 +1,112 @@
+debug/
+logs/
+outputs/
+/output/
+/performance/
+/code/rollout/output/
+workspace
+swe_scripts/
+evals/
+/scripts/
+!docs/examples/scripts/
+docs/examples/scripts/output/
+task.md
+/test.yaml
+
+.claude
+.codebuddy/
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+.build/
+wheels/
+*.egg-info
+nexus/gateway/trajectory_store_backends/_garnet_native*.so
+nexus/gateway/trajectory_store_backends/_garnet_native*.pyd
+
+# Virtual environments
+.venv*
+
+.idea/
+.DS_Store
+
+# Coverage reports
+.coverage
+coverage.xml
+htmlcov/
+
+*.db
+*.db-shm
+*.db-wal
+*.log
+*.http
+.run.env
+
+.env
+.env.*
+.worktrees/
+tests/e2e/config/*.yaml
+!tests/e2e/config/*example.yaml
+/venv/
+
+dist/
+node_modules/
+.playwright-cli/
+/output/playwright/
+.ruff_cache/
+.pytest_cache/
+.tmp/
+.hykvstore/
+
+# MkDocs
+site/
+
+.claude-trace
+.vscode/
+
+# AgentRuntime Mobile files
+tests/e2e/agr_mobile_output/
+tests/e2e/apk/
+docs/how-to/use-agr-mobile/agr_mobile_batch_config.yaml
+docs/how-to/use-agr-mobile/agr-mobile-output/
+/.cache/
+
+# Superpowers workflow artifacts (design specs / implementation plans)
+docs/superpowers/
+
+# Local secrets / credentials (never commit)
+
+# Local/dev Helm values containing real secrets (never commit)
+values.dev.yaml
+values.*.local.yaml
+
+# Taiji Replay data & results
+episodes/dataset.json
+episodes/dataset.parquet
+results/
+
+# Local secrets
+.agent
+
+secret/
+
+# Local experiment runs (run-batch dbs, rollout dumps, screenshots). Hundreds of GB
+# of untracked output -- keeping it out of `git add -A` / `git stash -u` reach also
+# keeps `git status` usable.
+experiments/
+
+# artifact run profiles: local config carrying plaintext gateway keys / tokens.
+# Committed templates are *.yaml.example.
+nexus/extensions/tasks/artifact/profiles/*.yaml
+!nexus/extensions/tasks/artifact/profiles/*.yaml.example
+# Keep the complete vendored LiteLLM package in source uploads.
+!/litellm/
+!/litellm/**
+!/litellm-*.dist-info/
+!/litellm-*.dist-info/**
+
+# Keep generated Python bytecode out of the vendored package.
+/litellm/**/__pycache__/
+/litellm/**/*.py[oc]
+.fix-context/

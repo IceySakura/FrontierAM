@@ -1,0 +1,24 @@
+[project]
+name = "android_demo"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+    { name = "yuehuazhang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { android_gui_agent = "nexus.extensions.projects.android_demo.agent" }
+tasks = { android_set_alarm_task = "nexus.extensions.projects.android_demo.task", agr_mobile_agent_e2e = "nexus.extensions.projects.android_demo.agr_mobile_agent_e2e", agr_mobile_api_e2e = "nexus.extensions.projects.android_demo.agr_mobile_api_e2e", agr_mobile_identity = "nexus.extensions.projects.android_demo.agr_mobile_identity" }
+
+[tool.nexus.tools]
+"android/launch_app" = "nexus.extensions.projects.android_demo.tools"
+"android/long_press" = "nexus.extensions.projects.android_demo.tools"
+"android/press_key" = "nexus.extensions.projects.android_demo.tools"
+"android/screenshot" = "nexus.extensions.projects.android_demo.tools"
+"android/swipe" = "nexus.extensions.projects.android_demo.tools"
+"android/tap" = "nexus.extensions.projects.android_demo.tools"
+"android/type_text" = "nexus.extensions.projects.android_demo.tools"

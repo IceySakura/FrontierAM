@@ -1,0 +1,10 @@
+[project]
+name = "handy"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { handy = "nexus.extensions.agents.handy.agent" }

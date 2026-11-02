@@ -1,0 +1,31 @@
+# meta.yaml — 友商 Think 泄漏，扫全部 assistant 通道。
+canonical_name: think_protocol_leak_all_family
+symptom_cluster: think_tag
+display_name: 友商 Think 泄漏
+namespace: core.format.think_protocol
+description: assistant 的 content、reasoning_content 或 tool_call 参数中出现各家 think 协议分隔符（含裸 HY <think> 与 Seed / LongCat / Kimi K3 /think_on）。带 :hex / _hex 的 HY 标签不报。
+definition: |-
+  检测对象：每个 assistant 消息的 content、reasoning_content，以及结构化 tool_call 参数字符串。
+  命中条件：PROTOCOL_THINK_TAG，含原小写裸 <think>，以及 <seed:think>、<longcat_think>、空白锚定的 /think_on /think_off、Kimi K3 <|open|>think<|sep|>。裸 /think 不命中。带 :hex / _hex 的 HY <think> 不命中。
+  不做通道 precision gate：句中 plain <think>、tool 参数里的源码字面量、structured tool_calls 非空都仍然报告。
+  归因：tool 协议标签由 tool_call_protocol_leak_all_family 报告。HY hashed <think:hex> 由 think_protocol_leak_hy 报告；裸 <think> 只由本算子报告。
+  输出粒度：每个命中的 assistant turn 一条 Finding；detail 记录命中字段和各字段 token。
+detection_tier: programmable
+channel:
+- content
+- reasoning
+- tool_call
+data_requirement:
+- any
+verification: unverified
+example:
+  synthetic: true
+  caption: 任一 assistant 字段出现各家 think 协议分隔符。
+runtime:
+  entrypoint: detect_think_protocol_leak_all_family:ThinkProtocolLeakDetector
+  applicable_data_types:
+  - trajectory
+  detector_type: rule
+  tags:
+  - taxonomy_0706
+  behavior_version: 1.1.0

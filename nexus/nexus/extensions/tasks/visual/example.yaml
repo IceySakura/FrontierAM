@@ -1,0 +1,53 @@
+# Visual task inputs and reusable visual_agent policies are configured separately.
+# Requires Docker, a model with tool calls, and an image with Python/ipykernel.
+# Replace /data/example.png with a readable local image before running:
+# uv run nexus run-single nexus/extensions/tasks/visual/example.yaml -o visual-output.json
+imports:
+  - nexus.extensions
+
+task_name: visual
+task_config:
+  user_prompt:
+    - type: text
+      text: Read all text in this image. Use Python to crop and inspect small details if needed.
+    - type: image_url
+      image_url:
+        url: /data/example.png
+  history: []
+  # None delegates scoring outside Nexus; HyTuner must enable async reward workers.
+  reward_system_router_id: null
+
+agent_name: visual_agent
+agent_config:
+  max_iterations: 30
+  show_image_dimensions: true
+
+runtime_provider_name: docker
+runtime_provider_config:
+  runtime_image: current
+
+runtime_configs:
+  main:
+    image: ${oc.env:VISUAL_AGENT_IMAGE}
+    worker_venv: true
+
+tool_configs:
+  code_interpreter:
+    python_path: ${oc.env:VISUAL_AGENT_PYTHON_PATH,"python3"}
+    work_dir: /tmp/jupyter_work
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_API_KEY}
+        base_url: ${oc.env:MODEL_BASE_URL}
+      request_args:
+        model: ${oc.env:MODEL_NAME}
+
+processors:
+  chat:
+    name: chat_tracker
+  agent_metrics:
+    name: main_agent_metrics

@@ -1,0 +1,13 @@
+[project]
+name = "pinchbench"
+version = "0.1.0"
+authors = [
+    { name = "felixxxi" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { pinchbench = "nexus.extensions.tasks.pinchbench.task" }

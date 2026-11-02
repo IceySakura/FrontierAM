@@ -1,0 +1,14 @@
+[project]
+name = "science_agent"
+version = "0.1.0"
+authors = [
+    { name = "adamwzhang" },
+    { name = "felixjjiang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { science_agent = "nexus.extensions.agents.science_agent.agent" }

@@ -1,0 +1,56 @@
+task_name: "identity"
+
+task_config:
+  user_inputs:
+    - "approve"
+
+runtime_provider_name: "docker"
+runtime_configs:
+  main:
+    image: mirrors.tencent.com/hunyuan_yanguan/ubuntu:24.04
+    worker_venv: true
+
+agent_name: "claude_code_multiturn"
+agent_config:
+  pre_start_scripts:
+    - code: mkdir -p /workspace
+  user_prompt: "Create a short plan and exit plan mode."
+  working_dir: "/workspace"
+  version: "2.1.153"
+  max_turns: 2
+  timeout: 120
+  enable_user_input_hooks: true
+  no_thinking_request_args:
+    model: "mock-model"
+
+openai_clients:
+  main:
+    name: "mock"
+    config:
+      client_args:
+        responses:
+          - "title"
+          - content: "I will switch to plan mode."
+            tool_calls:
+              - id: "tooluse_enter_plan_1"
+                function:
+                  name: "EnterPlanMode"
+                  arguments: "{}"
+          - content: "Here is the plan."
+            tool_calls:
+              - id: "tooluse_exit_plan_1"
+                function:
+                  name: "ExitPlanMode"
+                  arguments: '{"plan":"1. Inspect the files. 2. Make the minimal change. 3. Run tests."}'
+          - "Plan approved, continuing."
+      request_args:
+        model: "mock-model"
+
+processors:
+  chat:
+    name: "chat_tracker"
+    args:
+      tools_mode: "branch_last"
+
+runner:
+  timeout: 180

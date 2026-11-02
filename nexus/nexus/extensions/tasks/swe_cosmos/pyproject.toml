@@ -1,0 +1,8 @@
+[project]
+name = "swe_cosmos"
+version = "0.6.0"
+description = "Run the SWE-Cosmos bugmaker pipeline at scale via nexus run-batch."
+dependencies = []
+
+[tool.nexus.tasks]
+swecosmos_bugmaker_pipeline = "nexus.extensions.tasks.swe_cosmos.task"

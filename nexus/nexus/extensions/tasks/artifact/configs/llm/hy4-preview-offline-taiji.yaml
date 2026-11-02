@@ -1,0 +1,71 @@
+# HY4 Preview Offline inference profile for Artifact Harbor runs.
+#
+# Required environment:
+#   OPENAI_API_KEY
+#
+# Optional environment:
+#   TAIJI_HY4_OFFLINE_BASE_URL        Default: http://api.taiji.woa.com/openapi/inner/v2
+#   TAIJI_HY4_OFFLINE_MODEL           Default: hy4-preview-offline
+#   TAIJI_HY4_OFFLINE_MAX_TOKENS      Default: 65536
+#   TAIJI_HY4_OFFLINE_TIMEOUT         Default: 1800 seconds
+#   TAIJI_HY4_OFFLINE_MAX_RETRIES     Default: 1
+#   TAIJI_HY4_OFFLINE_REASONING_EFFORT Default: high
+#
+# The LiteLLM client is intentional: it supports Nexus's per-run affinity
+# controls. The runner derives one stable ID from run_id + model and LiteLLM
+# forwards it as:
+#
+#   StrategyType: ConsistentHash
+#   SessionID: <derived stable ID>
+#
+# The Taiji offline gateway accepts these headers. They are routing hints only;
+# the gateway may still share prefix cache entries independently of SessionID.
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.litellm
+
+  agent_config:
+    thinking_preset: hunyuan
+    no_thinking_request_args:
+      model: openai/${oc.env:TAIJI_HY4_OFFLINE_MODEL,hy4-preview-offline}
+      max_tokens: ${oc.decode:${oc.env:TAIJI_HY4_OFFLINE_MAX_TOKENS,65536}}
+      temperature: 0.9
+      extra_body:
+        chat_template_kwargs:
+          reasoning_effort: no_think
+    no_thinking_request_args_mode: inherit
+    haiku_model: null
+
+  openai_clients:
+    main:
+      name: litellm
+      config:
+        client_args:
+          api_key__env: OPENAI_API_KEY
+          base_url: ${oc.env:TAIJI_HY4_OFFLINE_BASE_URL,http://api.taiji.woa.com/openapi/inner/v2}
+          timeout: ${oc.decode:${oc.env:TAIJI_HY4_OFFLINE_TIMEOUT,1800}}
+          max_retries: ${oc.decode:${oc.env:TAIJI_HY4_OFFLINE_MAX_RETRIES,1}}
+          log_llm_usage: true
+          nexus_trace_id_from_run_id: true
+          nexus_llm_lb_strategy: ConsistentHash
+
+        request_args:
+          # LiteLLM requires the provider prefix and sends the bare model name
+          # to the OpenAI-compatible Taiji endpoint.
+          model: openai/${oc.env:TAIJI_HY4_OFFLINE_MODEL,hy4-preview-offline}
+          drop_params: true
+          max_tokens: ${oc.decode:${oc.env:TAIJI_HY4_OFFLINE_MAX_TOKENS,65536}}
+          reasoning_effort: ${oc.env:TAIJI_HY4_OFFLINE_REASONING_EFFORT,high}
+          extra_body:
+            chat_template_kwargs:
+              reasoning_effort: ${oc.env:TAIJI_HY4_OFFLINE_REASONING_EFFORT,high}
+              preserved_thinking: true
+        enforced_request_args:
+          model: ${oc.select:openai_clients.main.config.request_args.model}
+          max_tokens: ${oc.select:openai_clients.main.config.request_args.max_tokens}
+
+merge:
+  imports: append_unique
+
+source: artifact-hy4-preview-offline-taiji

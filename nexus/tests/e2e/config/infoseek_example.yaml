@@ -1,0 +1,66 @@
+# Nexus task config - InfoSeek Stateful Agent (E2E)
+# Uses stateful search tools (search/open/find) to answer a question
+
+imports:
+  - nexus.extensions
+  - nexus.extensions.agents.science_agent.agent
+  - nexus.extensions.tasks.search_stateful
+  - nexus.extensions.tools.search_stateful
+  - nexus.extensions.tools.code_interpreter
+
+task_name: "search_stateful"
+task_config:
+  question: "Please call ${oc.env:CODE_INTERPRETER_TOOL} to execute `print(1+1)` and report the output."
+  answer: "2"  # Reference answer (optional)
+  run_oracle: false
+
+runtime_provider_name: "docker"
+runtime_provider_config:
+  image: "nexus-runtime:dev"
+  runtime_image: "nexus-runtime:dev"
+  force_rebuild: false
+
+agent_name: "science_agent"
+agent_config:
+  max_iterations: 10  # Max tool call iterations
+
+tool_configs:
+  search_stateful:
+    # API credentials (required)
+    user: ${oc.env:SEARCH_API_USER}
+    apikey: ${oc.env:SEARCH_API_KEY}
+
+    # Optional settings
+    max_search_results: 10  # Max number of search results
+    # testset_name_to_filter_file: "custom/path"  # Testset filter file
+    # url_block_list_file: "custom/path"  # URL block list file
+
+
+openai_clients:
+  main:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:OPENAI_API_KEY}
+        base_url: "http://api.model-eval.woa.com/v1"
+        max_retries: 5
+      request_args:
+        model: "deepseek/deepseek-reasoner"
+
+  judge:  # Some tasks require a judge client for answer evaluation
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:OPENAI_API_KEY}
+        base_url: "http://api.model-eval.woa.com/v1"
+        max_retries: 5
+      request_args:
+        model: "deepseek/deepseek-reasoner"
+
+processors:
+  chat:
+    name: "chat_tracker"
+  trace:
+    name: "json_line"
+    args:
+      file_path: "workspace/research/trace_infoseek.jsonl"

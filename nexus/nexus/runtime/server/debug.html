@@ -1,0 +1,2493 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nexus Debugger</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --surface: #eef2f6;
+      --text: #182230;
+      --muted: #667085;
+      --border: #d0d7e2;
+      --border-soft: #e6ebf1;
+      --accent: #1d6fdc;
+      --accent-soft: #e9f2ff;
+      --green: #16845b;
+      --yellow: #a86100;
+      --red: #b42318;
+      --code: #101828;
+      --shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101418;
+        --panel: #181d24;
+        --panel-soft: #202632;
+        --surface: #151a22;
+        --text: #eef2f6;
+        --muted: #98a2b3;
+        --border: #343d4a;
+        --border-soft: #26303d;
+        --accent: #77a7ff;
+        --accent-soft: #14253d;
+        --green: #71d0a4;
+        --yellow: #f2b454;
+        --red: #ff8a80;
+        --code: #f2f4f7;
+        --shadow: none;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    html,
+    body {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      min-height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+
+    button:hover:not(:disabled) {
+      border-color: var(--accent);
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    button.danger {
+      border-color: color-mix(in srgb, var(--red) 45%, var(--border));
+      color: var(--red);
+    }
+
+    button.icon {
+      width: 28px;
+      height: 28px;
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-radius: 5px;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 8px 9px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 96px;
+      line-height: 1.45;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    pre,
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--code);
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .app {
+      height: 100dvh;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: 42px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .tabbar {
+      display: flex;
+      align-items: stretch;
+      gap: 4px;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 6px 8px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .tab {
+      flex: 0 0 auto;
+      max-width: 260px;
+      display: inline-grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, auto);
+      align-items: center;
+      gap: 2px;
+      min-height: 36px;
+      border: 1px solid var(--border);
+      border-bottom: 0;
+      border-radius: 6px 6px 0 0;
+      background: var(--panel-soft);
+      color: var(--muted);
+      padding: 0 5px 0 10px;
+    }
+
+    .tab.active {
+      background: var(--panel);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    .tab-title {
+      min-width: 0;
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0 6px 0 0;
+      text-align: left;
+      font-weight: 650;
+    }
+
+    .tab-title:hover {
+      border-color: transparent;
+    }
+
+    .tab .icon {
+      border-color: transparent;
+      background: transparent;
+      color: inherit;
+    }
+
+    .tab .icon svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .workspace {
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+      background: var(--panel);
+    }
+
+    .panel {
+      position: absolute;
+      inset: 0;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      background: var(--panel);
+    }
+
+    .panel[hidden] {
+      display: none;
+    }
+
+    .startup {
+      height: 100%;
+      overflow: auto;
+      padding: 18px;
+    }
+
+    .startup-inner {
+      max-width: 1220px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 6px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      font-size: 26px;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    h3 {
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 820px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .info-item,
+    .tool-card,
+    .empty-state,
+    .result-box,
+    .subpanel {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+    }
+
+    .info-item {
+      padding: 11px 12px;
+      min-width: 0;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+    }
+
+    .tool-card {
+      min-height: 148px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      text-align: left;
+      overflow: hidden;
+    }
+
+    .tool-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow);
+    }
+
+    .tool-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .tool-card-top > span:first-child {
+      min-width: 0;
+    }
+
+    .tool-icon {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-soft);
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .tool-description {
+      flex: 1 1 auto;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.42;
+      font-size: 13px;
+    }
+
+    .implementation {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .tool-shell {
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      background: var(--panel);
+    }
+
+    .launch-screen {
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: var(--panel);
+    }
+
+    .launch-card {
+      width: min(620px, 100%);
+      display: grid;
+      gap: 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .launch-card h2 {
+      font-size: 18px;
+    }
+
+    .launch-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .launch-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .launch-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .iframe-only {
+      position: relative;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .tool-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel-soft);
+    }
+
+    .tool-title {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .tool-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tool-actions,
+    .row,
+    .inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .tool-body {
+      min-height: 0;
+      overflow: auto;
+      padding: 14px;
+    }
+
+    .iframe-tool {
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(100px, 150px) auto auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .controls.single-action {
+      grid-template-columns: minmax(180px, 1fr) auto auto;
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .field span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .status.ok {
+      color: var(--green);
+    }
+
+    .status.warn {
+      color: var(--yellow);
+    }
+
+    .status.error {
+      color: var(--red);
+      font-weight: 650;
+    }
+
+    .iframe-box {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    iframe.debug-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #ffffff;
+    }
+
+    .empty-state {
+      height: 100%;
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      text-align: center;
+      background: var(--panel-soft);
+    }
+
+    .empty-state-inner {
+      max-width: 480px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .empty-state p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .loading {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--muted);
+      padding: 4px 8px;
+      font-size: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .result-box {
+      min-height: 120px;
+      max-height: 280px;
+      overflow: auto;
+      padding: 10px;
+      background: var(--panel-soft);
+    }
+
+    .tool-grid-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+      gap: 12px;
+      min-height: 100%;
+    }
+
+    .tool-grid-layout.file-manager-layout {
+      grid-template-columns: minmax(320px, 440px) minmax(0, 1fr);
+    }
+
+    .subpanel {
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .subpanel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel-soft);
+      font-weight: 650;
+    }
+
+    .subpanel-body {
+      min-height: 0;
+      overflow: auto;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .path-bar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .file-tree {
+      min-height: 260px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: auto;
+      background: var(--panel-soft);
+    }
+
+    .file-row {
+      width: 100%;
+      min-height: 34px;
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      border: 0;
+      border-bottom: 1px solid var(--border-soft);
+      border-radius: 0;
+      background: transparent;
+      padding: 7px 9px;
+      color: var(--text);
+      text-align: left;
+    }
+
+    .file-row:last-child {
+      border-bottom: 0;
+    }
+
+    .file-row:hover,
+    .file-row.active {
+      background: var(--accent-soft);
+    }
+
+    .file-icon {
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .file-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .file-meta {
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .selected-path {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border-soft);
+      border-radius: 6px;
+      background: var(--panel-soft);
+      color: var(--muted);
+      padding: 7px 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .executor-list {
+      display: grid;
+      gap: 3px;
+    }
+
+    .executor-item {
+      width: 100%;
+      min-height: 30px;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      padding: 7px 8px;
+      border-radius: 5px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    .executor-item:hover,
+    .executor-item.active {
+      background: var(--accent-soft);
+    }
+
+    .schema-field {
+      display: grid;
+      grid-template-columns: minmax(140px, 200px) minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .schema-field:last-child {
+      border-bottom: 0;
+    }
+
+    .schema-name {
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    .schema-description {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .image-result {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .image-result img {
+      display: block;
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      background: #ffffff;
+    }
+
+    .image-caption {
+      padding: 7px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: 12px;
+      min-height: 100%;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        min-height: 100%;
+        height: auto;
+      }
+
+      .workspace {
+        min-height: calc(100vh - 42px);
+      }
+
+      .info-grid,
+      .tool-grid-layout,
+      .split,
+      .controls,
+      .controls.single-action {
+        grid-template-columns: 1fr;
+      }
+
+      .schema-field {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <nav class="tabbar" id="tabbar" aria-label="Nexus Debugger tabs"></nav>
+    <main class="workspace" id="workspace"></main>
+  </div>
+
+  <script>
+    const STARTUP_TAB = {
+      id: "startup",
+      type: "startup",
+      title: "Nexus Debugger",
+      closable: false,
+      singletonKey: "startup",
+      createdAt: 0,
+      state: {},
+    };
+
+    const TOOL_CARDS = [
+      {
+        id: "web-ide",
+        type: "web-ide",
+        title: "Web IDE",
+        description: "VS Code 风格的在线编辑器，用于查看文件、编辑代码和终端调试。",
+        implementation: "code-server",
+        icon: "IDE",
+        singleton: true,
+      },
+      {
+        id: "sandbox-desktop",
+        type: "sandbox-desktop",
+        title: "沙盒桌面",
+        description: "在浏览器中操作当前沙盒的图形界面，适合调试浏览器、GUI 应用和桌面环境。",
+        implementation: "noVNC / VNC",
+        icon: "GUI",
+        singleton: true,
+      },
+      {
+        id: "code-console",
+        type: "code-console",
+        title: "交互式代码控制台",
+        shortTitle: "代码控制台",
+        description: "基于 Jupyter Kernel 的多轮代码执行环境，适合快速验证代码、检查环境和调试逻辑。",
+        implementation: "Jupyter Kernel / IPython Kernel",
+        icon: "PY",
+        singleton: true,
+      },
+      {
+        id: "site-preview",
+        type: "site-preview",
+        title: "站点预览",
+        description: "选择沙盒内任意目录，临时启动 HTTP 服务，并预览 agent 生成的网站或 HTML 页面。",
+        implementation: "Static HTTP Server + iframe",
+        icon: "WEB",
+        singleton: true,
+      },
+      {
+        id: "mcp-debugger",
+        type: "mcp-debugger",
+        title: "MCP 调试台",
+        description: "启动 MCP 服务，查看可用工具，检查参数、日志和返回结果。",
+        implementation: "MCP streamable HTTP proxy",
+        icon: "MCP",
+        singleton: true,
+      },
+      {
+        id: "file-manager",
+        type: "file-manager",
+        title: "文件管理",
+        description: "上传、下载和管理沙盒内文件，方便导入测试数据或取回运行产物。",
+        implementation: "upload_file / download_file executor",
+        icon: "FILE",
+        singleton: true,
+      },
+      {
+        id: "executor-debugger",
+        type: "executor-debugger",
+        title: "执行器调试台",
+        description: "手动触发沙盒内的执行器，查看输入参数、运行日志、执行状态和返回结果。",
+        implementation: "runtime executor registry",
+        icon: "EXEC",
+        singleton: true,
+      },
+    ];
+
+    const TOOL_BY_TYPE = new Map(TOOL_CARDS.map(tool => [tool.type, tool]));
+    const TAB_TYPES = new Set(["startup", ...TOOL_CARDS.map(tool => tool.type)]);
+
+    const state = {
+      tabs: [STARTUP_TAB],
+      activeTabId: "startup",
+      panels: new Map(),
+      autostartAttempts: new Set(),
+      executors: [],
+      selectedExecutor: null,
+      executorFields: new Map(),
+      health: null,
+    };
+
+    const els = {
+      tabbar: document.getElementById("tabbar"),
+      workspace: document.getElementById("workspace"),
+    };
+
+    function cloneStartupTab() {
+      return { ...STARTUP_TAB, state: {} };
+    }
+
+    function runtimeBasePath() {
+      const proxyMatch = location.pathname.match(/^(.*\/runs\/[^/]+\/runtimes\/[^/]+\/proxy)(?:\/.*)?$/);
+      if (proxyMatch) {
+        return `${proxyMatch[1]}/`;
+      }
+      return location.pathname.endsWith("/") ? location.pathname : `${location.pathname}/`;
+    }
+
+    function runtimeUrl(path) {
+      return `${runtimeBasePath()}${String(path || "").replace(/^\/+/, "")}`;
+    }
+
+    function sandboxContextId() {
+      const match = location.pathname.match(/\/runs\/([^/]+)\/runtimes\/([^/]+)\/proxy\/?/);
+      if (match) return `${match[1]}:${match[2]}`;
+      return `${location.origin}${runtimeBasePath()}`;
+    }
+
+    function storageKey() {
+      return `nexus.debugger.workspace.v1:${sandboxContextId()}`;
+    }
+
+    function normalizeTab(raw) {
+      if (!raw || typeof raw !== "object" || !TAB_TYPES.has(raw.type)) return null;
+      if (raw.type === "startup") return cloneStartupTab();
+      const tool = TOOL_BY_TYPE.get(raw.type);
+      if (!tool) return null;
+      return {
+        id: typeof raw.id === "string" && raw.id ? raw.id : `${raw.type}-${Date.now()}`,
+        type: raw.type,
+        title: tool.shortTitle || tool.title,
+        closable: true,
+        singletonKey: raw.singletonKey || raw.type,
+        createdAt: Number(raw.createdAt || Date.now()),
+        state: raw.state && typeof raw.state === "object" ? raw.state : {},
+      };
+    }
+
+    function normalizeTabs(tabs) {
+      const output = [cloneStartupTab()];
+      const seen = new Set(["startup"]);
+      for (const raw of Array.isArray(tabs) ? tabs : []) {
+        const tab = normalizeTab(raw);
+        if (!tab || tab.type === "startup" || seen.has(tab.id)) continue;
+        output.push(tab);
+        seen.add(tab.id);
+      }
+      return output;
+    }
+
+    function loadWorkspace() {
+      try {
+        const raw = localStorage.getItem(storageKey());
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        state.tabs = normalizeTabs(parsed.tabs);
+        state.activeTabId = state.tabs.some(tab => tab.id === parsed.activeTabId) ? parsed.activeTabId : "startup";
+      } catch {
+        state.tabs = [cloneStartupTab()];
+        state.activeTabId = "startup";
+      }
+    }
+
+    function saveWorkspace() {
+      const tabs = state.tabs.map(tab => ({
+        id: tab.id,
+        type: tab.type,
+        title: tab.title,
+        closable: tab.closable,
+        singletonKey: tab.singletonKey,
+        createdAt: tab.createdAt,
+        state: tab.state || {},
+      }));
+      localStorage.setItem(storageKey(), JSON.stringify({ tabs, activeTabId: state.activeTabId }));
+    }
+
+    function activeTab() {
+      return state.tabs.find(tab => tab.id === state.activeTabId) || state.tabs[0];
+    }
+
+    function setActiveTab(tabId) {
+      if (!state.tabs.some(tab => tab.id === tabId)) return;
+      state.activeTabId = tabId;
+      saveWorkspace();
+      renderTabBar();
+      syncPanels();
+    }
+
+    function openTool(type) {
+      const tool = TOOL_BY_TYPE.get(type);
+      if (!tool) return;
+      if (tool.singleton) {
+        const existing = state.tabs.find(tab => tab.singletonKey === type);
+        if (existing) {
+          setActiveTab(existing.id);
+          maybeAutostart(existing.id);
+          return;
+        }
+      }
+      const tab = {
+        id: `${type}-${Date.now()}`,
+        type,
+        title: tool.shortTitle || tool.title,
+        closable: true,
+        singletonKey: tool.singleton ? type : undefined,
+        createdAt: Date.now(),
+        state: {},
+      };
+      state.tabs.push(tab);
+      state.activeTabId = tab.id;
+      saveWorkspace();
+      renderTabBar();
+      syncPanels();
+      maybeAutostart(tab.id);
+    }
+
+    function closeTab(tabId) {
+      const index = state.tabs.findIndex(tab => tab.id === tabId);
+      if (index <= 0) return;
+      const panel = state.panels.get(tabId);
+      if (panel) {
+        panel.remove();
+        state.panels.delete(tabId);
+      }
+      state.tabs.splice(index, 1);
+      if (state.activeTabId === tabId) {
+        const next = state.tabs[index] || state.tabs[index - 1] || state.tabs[0];
+        state.activeTabId = next.id;
+      }
+      saveWorkspace();
+      renderTabBar();
+      syncPanels();
+    }
+
+    function updateTabState(tabId, patch) {
+      const tab = state.tabs.find(item => item.id === tabId);
+      if (!tab) return null;
+      tab.state = { ...(tab.state || {}), ...patch };
+      saveWorkspace();
+      renderTabBar();
+      return tab;
+    }
+
+    function getExternalOpenUrl(tab) {
+      if (!tab || tab.type === "startup") return "";
+      if (tab.type === "web-ide" || tab.type === "sandbox-desktop" || tab.type === "site-preview") {
+        return typeof tab.state?.url === "string" ? tab.state.url : "";
+      }
+      return "";
+    }
+
+    function canRefreshFromTabBar(tab) {
+      return tab?.type === "site-preview" && typeof tab.state?.url === "string" && tab.state.url;
+    }
+
+    function iconSvg(name) {
+      if (name === "external") {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"></path></svg>';
+      }
+      if (name === "refresh") {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"></path><path d="M3 12A9 9 0 0 1 18.5 5.8"></path><path d="M18 2v4h4"></path><path d="M6 22v-4H2"></path></svg>';
+      }
+      return "";
+    }
+
+    function openExternal(url) {
+      if (!url || typeof url !== "string") return;
+      let parsed;
+      try {
+        parsed = new URL(url, location.href);
+      } catch {
+        return;
+      }
+      window.open(parsed.href, "_blank", "noopener,noreferrer");
+    }
+
+    function refreshTab(tabId) {
+      const tab = state.tabs.find(item => item.id === tabId);
+      if (!tab || tab.type === "startup") {
+        loadHealth();
+        return;
+      }
+      const panel = state.panels.get(tabId);
+      const iframe = panel?.querySelector("iframe.debug-frame");
+      if (iframe && iframe.src) {
+        const src = iframe.src;
+        iframe.removeAttribute("src");
+        window.setTimeout(() => {
+          iframe.src = src;
+        }, 20);
+        setPanelStatus(tabId, "刷新中...", "warn");
+        return;
+      }
+      renderPanel(tab, panel, { force: true });
+    }
+
+    function renderTabBar() {
+      els.tabbar.innerHTML = "";
+      for (const tab of state.tabs) {
+        const tabEl = document.createElement("div");
+        tabEl.className = `tab${tab.id === state.activeTabId ? " active" : ""}`;
+        tabEl.dataset.tabId = tab.id;
+
+        const title = document.createElement("button");
+        title.type = "button";
+        title.className = "tab-title";
+        title.textContent = tab.title;
+        title.title = tab.title;
+        title.addEventListener("click", () => setActiveTab(tab.id));
+        tabEl.appendChild(title);
+
+        if (canRefreshFromTabBar(tab)) {
+          const refresh = document.createElement("button");
+          refresh.type = "button";
+          refresh.className = "icon";
+          refresh.innerHTML = iconSvg("refresh");
+          refresh.title = "刷新";
+          refresh.setAttribute("aria-label", `刷新 ${tab.title}`);
+          refresh.addEventListener("click", event => {
+            event.stopPropagation();
+            refreshTab(tab.id);
+          });
+          tabEl.appendChild(refresh);
+        }
+
+        const externalUrl = getExternalOpenUrl(tab);
+        if (externalUrl) {
+          const external = document.createElement("button");
+          external.type = "button";
+          external.className = "icon";
+          external.innerHTML = iconSvg("external");
+          external.title = "在浏览器新标签页打开";
+          external.setAttribute("aria-label", `在浏览器新标签页打开 ${tab.title}`);
+          external.addEventListener("click", event => {
+            event.stopPropagation();
+            openExternal(externalUrl);
+          });
+          tabEl.appendChild(external);
+        }
+
+        if (tab.closable) {
+          const close = document.createElement("button");
+          close.type = "button";
+          close.className = "icon";
+          close.textContent = "×";
+          close.title = "关闭";
+          close.setAttribute("aria-label", `关闭 ${tab.title}`);
+          close.addEventListener("click", event => {
+            event.stopPropagation();
+            closeTab(tab.id);
+          });
+          tabEl.appendChild(close);
+        }
+
+        els.tabbar.appendChild(tabEl);
+      }
+    }
+
+    function syncPanels() {
+      const ids = new Set(state.tabs.map(tab => tab.id));
+      for (const [id, panel] of state.panels.entries()) {
+        if (!ids.has(id)) {
+          panel.remove();
+          state.panels.delete(id);
+        }
+      }
+      for (const tab of state.tabs) {
+        let panel = state.panels.get(tab.id);
+        if (!panel) {
+          panel = document.createElement("section");
+          panel.className = "panel";
+          panel.dataset.tabId = tab.id;
+          els.workspace.appendChild(panel);
+          state.panels.set(tab.id, panel);
+          renderPanel(tab, panel);
+          maybeAutostart(tab.id);
+        }
+        panel.hidden = tab.id !== state.activeTabId;
+      }
+    }
+
+    function renderPanel(tab, panel, options = {}) {
+      if (!panel || (!options.force && panel.dataset.rendered === "1")) return;
+      panel.dataset.rendered = "1";
+      panel.innerHTML = "";
+      if (tab.type === "startup") renderStartup(panel);
+      if (tab.type === "web-ide") renderWebIdePanel(tab, panel);
+      if (tab.type === "sandbox-desktop") renderSandboxDesktopPanel(tab, panel);
+      if (tab.type === "site-preview") renderSitePreviewPanel(tab, panel);
+      if (tab.type === "code-console") renderCodeConsolePanel(tab, panel);
+      if (tab.type === "mcp-debugger") renderMcpDebuggerPanel(tab, panel);
+      if (tab.type === "file-manager") renderFileManagerPanel(tab, panel);
+      if (tab.type === "executor-debugger") renderExecutorDebuggerPanel(tab, panel);
+    }
+
+    function renderToolShell(panel, tab, subtitle, implementation, innerHtml) {
+      panel.innerHTML = `
+        <div class="tool-shell">
+          <div class="tool-header">
+            <div class="tool-title">
+              <h2>${escapeHtml(tab.title)}</h2>
+              <div class="tool-subtitle">${escapeHtml(subtitle)} · 技术实现：${escapeHtml(implementation)}</div>
+            </div>
+            <div class="tool-actions">
+              <span class="status" data-role="status">未启动</span>
+              <button class="secondary" data-action="refresh" type="button">刷新</button>
+            </div>
+          </div>
+          <div class="tool-body">${innerHtml}</div>
+        </div>
+      `;
+      panel.querySelector('[data-action="refresh"]')?.addEventListener("click", () => refreshTab(tab.id));
+    }
+
+    function renderStartup(panel) {
+      const cards = TOOL_CARDS.map(tool => `
+        <button class="tool-card" type="button" data-tool="${escapeAttr(tool.type)}">
+          <span class="tool-card-top">
+            <span>
+              <h3>${escapeHtml(tool.title)}</h3>
+              <span class="implementation">技术实现：${escapeHtml(tool.implementation || "runtime")}</span>
+            </span>
+            <span class="tool-icon">${escapeHtml(tool.icon || "DBG")}</span>
+          </span>
+          <p class="tool-description">${escapeHtml(tool.description)}</p>
+          <span class="inline" style="justify-content: space-between; margin-top: auto;">
+            <span class="implementation">${tool.singleton ? "单实例工具" : "可多实例工具"}</span>
+            <span class="primary" style="border-radius: 6px; padding: 6px 10px; background: var(--accent); color: #fff;">打开</span>
+          </span>
+        </button>
+      `).join("");
+      panel.innerHTML = `
+        <div class="startup">
+          <div class="startup-inner">
+            <div class="hero">
+              <h1>Nexus Debugger</h1>
+              <p class="lead">统一的沙盒调试工作台，用于打开代码、桌面、文件、MCP、执行器和站点预览工具。</p>
+            </div>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="label">Sandbox</span>
+                <div class="value" title="${escapeAttr(sandboxContextId())}">${escapeHtml(sandboxContextId())}</div>
+              </div>
+              <div class="info-item">
+                <span class="label">Runtime Proxy</span>
+                <div class="value" title="${escapeAttr(runtimeBasePath())}">${escapeHtml(runtimeBasePath())}</div>
+              </div>
+              <div class="info-item">
+                <span class="label">API</span>
+                <div class="value">${escapeHtml(runtimeUrl("api/v1/call_executor"))}</div>
+              </div>
+              <div class="info-item">
+                <span class="label">Health</span>
+                <div class="value" id="health-value">Loading</div>
+              </div>
+            </div>
+            <div>
+              <h2 style="margin-bottom: 10px;">调试工具</h2>
+              <div class="tool-grid">${cards}</div>
+            </div>
+          </div>
+        </div>
+      `;
+      for (const card of panel.querySelectorAll("[data-tool]")) {
+        card.addEventListener("click", () => openTool(card.dataset.tool));
+      }
+      updateHealthView();
+      loadHealth();
+    }
+
+    function renderLaunchPanel(panel, tab, { description, fields, buttonText }) {
+      panel.innerHTML = `
+        <div class="launch-screen">
+          <form class="launch-card" data-role="launch-form">
+            <div>
+              <h2>${escapeHtml(tab.title)}</h2>
+              <p>${escapeHtml(description)}</p>
+            </div>
+            <div class="launch-form">${fields}</div>
+            <div class="launch-actions">
+              <span class="status ${escapeAttr(tab.state?.statusKind || "")}" data-role="status">${escapeHtml(tab.state?.statusText || "未启动")}</span>
+              <button class="primary" data-action="start" type="submit">${escapeHtml(buttonText)}</button>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    function renderIframeOnlyPanel(panel, tab) {
+      const url = tab.state?.url || "";
+      panel.innerHTML = `
+        <div class="iframe-only" data-role="iframe-box">
+          <div class="loading" data-role="loading">加载中...</div>
+          <iframe class="debug-frame" title="${escapeAttr(tab.title)}" src="${escapeAttr(url)}"></iframe>
+        </div>
+      `;
+      const loading = panel.querySelector('[data-role="loading"]');
+      panel.querySelector("iframe.debug-frame")?.addEventListener("load", () => {
+        if (loading) loading.hidden = true;
+      }, { once: true });
+    }
+
+    function setIframeUrl(tabId, url) {
+      const panel = state.panels.get(tabId);
+      const iframe = panel?.querySelector("iframe.debug-frame");
+      const empty = panel?.querySelector('[data-role="empty"]');
+      const loading = panel?.querySelector('[data-role="loading"]');
+      if (!iframe) return;
+      if (!url) {
+        iframe.hidden = true;
+        iframe.removeAttribute("src");
+        if (empty) empty.hidden = false;
+        if (loading) loading.hidden = true;
+        return;
+      }
+      if (empty) empty.hidden = true;
+      iframe.hidden = false;
+      if (loading) loading.hidden = false;
+      iframe.addEventListener("load", () => {
+        if (loading) loading.hidden = true;
+        setPanelStatus(tabId, "已加载", "ok");
+      }, { once: true });
+      if (iframe.getAttribute("src") !== url) iframe.setAttribute("src", url);
+    }
+
+    function setPanelStatus(tabId, text, kind = "") {
+      const status = state.panels.get(tabId)?.querySelector('[data-role="status"]');
+      if (!status) return;
+      status.textContent = text;
+      status.className = `status ${kind}`.trim();
+    }
+
+    function renderWebIdePanel(tab, panel) {
+      const workingDir = tab.state?.workingDir || "/workspace";
+      if (tab.state?.url) {
+        renderIframeOnlyPanel(panel, tab);
+        return;
+      }
+      renderLaunchPanel(panel, tab, {
+        description: "启动 VS Code 风格的在线编辑器。端口留空时会在沙盒内随机选择一个可用端口。",
+        buttonText: "启动 Web IDE",
+        fields: `
+          <label class="field"><span>工作目录</span><input data-role="working-dir" value="${escapeAttr(workingDir)}" /></label>
+          <label class="field"><span>端口</span><input data-role="port" type="number" min="1" max="65535" placeholder="随机可用" value="${escapeAttr(tab.state?.port || "")}" /></label>
+        `,
+      });
+      panel.querySelector('[data-role="launch-form"]').addEventListener("submit", event => {
+        event.preventDefault();
+        startWebIde(tab.id);
+      });
+    }
+
+    function renderSandboxDesktopPanel(tab, panel) {
+      if (tab.state?.url) {
+        renderIframeOnlyPanel(panel, tab);
+        return;
+      }
+      renderLaunchPanel(panel, tab, {
+        description: "启动沙盒图形桌面，并在当前标签页内打开 noVNC 访问入口。",
+        buttonText: "启动沙盒桌面",
+        fields: `
+          <label class="field"><span>桌面会话</span><input data-role="desktop-session" value="${escapeAttr(tab.state?.desktopSession || "gnome-session")}" /></label>
+        `,
+      });
+      panel.querySelector('[data-role="launch-form"]').addEventListener("submit", event => {
+        event.preventDefault();
+        startSandboxDesktop(tab.id);
+      });
+    }
+
+    function renderSitePreviewPanel(tab, panel) {
+      const directory = tab.state?.directory || "/workspace";
+      if (tab.state?.url) {
+        renderIframeOnlyPanel(panel, tab);
+        return;
+      }
+      renderLaunchPanel(panel, tab, {
+        description: "选择沙盒内目录并启动 Python http.server。端口留空时会随机选择一个可用端口。",
+        buttonText: "启动预览",
+        fields: `
+          <label class="field"><span>目录</span><input data-role="directory" value="${escapeAttr(directory)}" /></label>
+          <label class="field"><span>端口</span><input data-role="port" type="number" min="1" max="65535" placeholder="随机可用" value="${escapeAttr(tab.state?.port || "")}" /></label>
+        `,
+      });
+      panel.querySelector('[data-role="launch-form"]').addEventListener("submit", event => {
+        event.preventDefault();
+        startSitePreview(tab.id);
+      });
+    }
+
+    function renderCodeConsolePanel(tab, panel) {
+      const code = tab.state?.code || "print('hello from Nexus runtime')";
+      renderToolShell(
+        panel,
+        tab,
+        "多轮代码执行环境，适合检查环境和快速验证逻辑",
+        "Jupyter Kernel / IPython Kernel",
+        `
+          <div class="split">
+            <div class="subpanel">
+              <div class="subpanel-head"><span>Kernel</span><span class="status" data-role="kernel-status">${escapeHtml(tab.state?.sessionId || "未创建")}</span></div>
+              <div class="subpanel-body">
+                <label class="field"><span>Python 可执行文件</span><input data-role="python" placeholder="默认 Python" value="${escapeAttr(tab.state?.python || "")}" /></label>
+                <button class="primary" data-action="create-kernel" type="button">创建 Kernel</button>
+                <button data-action="destroy-kernel" type="button">销毁 Kernel</button>
+                <p class="status">执行结果来自真实 runtime executor；如果镜像缺少 ipykernel，会显示 executor 返回的错误。</p>
+              </div>
+            </div>
+            <div class="subpanel">
+              <div class="subpanel-head"><span>代码执行</span><button data-action="execute" type="button">执行</button></div>
+              <div class="subpanel-body">
+                <textarea data-role="code" style="min-height: 180px;">${escapeHtml(code)}</textarea>
+                <div class="result-box"><pre data-role="result">${escapeHtml(tab.state?.result || "No result yet.")}</pre></div>
+              </div>
+            </div>
+          </div>
+        `,
+      );
+      panel.querySelector('[data-action="create-kernel"]').addEventListener("click", () => createKernel(tab.id));
+      panel.querySelector('[data-action="destroy-kernel"]').addEventListener("click", () => destroyKernel(tab.id));
+      panel.querySelector('[data-action="execute"]').addEventListener("click", () => executeKernelCode(tab.id));
+      setPanelStatus(tab.id, tab.state?.statusText || "未创建 Kernel", tab.state?.statusKind || "");
+    }
+
+    function renderMcpDebuggerPanel(tab, panel) {
+      const client = tab.state?.client || `{
+  "transport": "stdio",
+  "command": "python3",
+  "args": ["-m", "your_mcp_server"]
+}`;
+      renderToolShell(
+        panel,
+        tab,
+        "启动 MCP 服务并查看工具信息",
+        "MCP streamable HTTP proxy",
+        `
+          <div class="tool-grid-layout">
+            <div class="subpanel">
+              <div class="subpanel-head"><span>MCP server 启动区</span><button class="primary" data-action="start-mcp" type="button">启动</button></div>
+              <div class="subpanel-body">
+                <label class="field"><span>Client JSON</span><textarea data-role="client" style="min-height: 220px;">${escapeHtml(client)}</textarea></label>
+                <button data-action="stop-mcp" type="button">停止当前 Proxy</button>
+                <p class="status">V1 支持启动 MCP proxy 并展示返回的 tools。手动调用工具需要后续接入 MCP 协议客户端。</p>
+              </div>
+            </div>
+            <div class="subpanel">
+              <div class="subpanel-head"><span>Tools / Logs</span><span class="status" data-role="proxy-id">${escapeHtml(tab.state?.proxyId || "未启动")}</span></div>
+              <div class="subpanel-body">
+                <div class="result-box" style="max-height: none;"><pre data-role="result">${escapeHtml(tab.state?.result || "No MCP proxy started.")}</pre></div>
+              </div>
+            </div>
+          </div>
+        `,
+      );
+      panel.querySelector('[data-action="start-mcp"]').addEventListener("click", () => startMcpProxy(tab.id));
+      panel.querySelector('[data-action="stop-mcp"]').addEventListener("click", () => stopMcpProxy(tab.id));
+      setPanelStatus(tab.id, tab.state?.statusText || "未启动", tab.state?.statusKind || "");
+    }
+
+    function renderFileEntries(entries, selectedPath) {
+      if (!Array.isArray(entries)) {
+        return '<div class="empty-state" style="min-height: 260px;"><div class="empty-state-inner"><h3>尚未读取目录</h3><p>输入路径后点击“打开”开始浏览。</p></div></div>';
+      }
+      if (!entries.length) {
+        return '<div class="empty-state" style="min-height: 260px;"><div class="empty-state-inner"><h3>空目录</h3><p>当前目录没有可展示的文件。</p></div></div>';
+      }
+      return entries.map(entry => {
+        const type = entry.type || "file";
+        const icon = type === "directory" ? "D" : type === "symlink" ? "L" : "F";
+        const size = type === "directory" ? "dir" : formatBytes(entry.size);
+        const suffix = entry.error ? ` · ${entry.error}` : entry.target ? ` -> ${entry.target}` : "";
+        const meta = `${type}${suffix} · ${size}`;
+        return `
+          <button class="file-row${entry.path === selectedPath ? " active" : ""}" type="button"
+            data-file-path="${escapeAttr(entry.path)}" data-file-type="${escapeAttr(type)}"
+            title="${escapeAttr(entry.path)}">
+            <span class="file-icon">${escapeHtml(icon)}</span>
+            <span class="file-name">${escapeHtml(entry.name || entry.path)}</span>
+            <span class="file-meta">${escapeHtml(meta)}</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderFileManagerPanel(tab, panel) {
+      const browsePath = tab.state?.browsePath || "/workspace";
+      const selectedPath = tab.state?.selectedPath || "";
+      const selectedType = tab.state?.selectedType || "";
+      const downloadPath = tab.state?.downloadPath || selectedPath || "/workspace/README.md";
+      const uploadPath = tab.state?.uploadPath || selectedPath || "/workspace/nexus-debug-upload.txt";
+      renderToolShell(
+        panel,
+        tab,
+        "浏览、上传、下载和管理沙盒内文件",
+        "runtime executor + upload_file / download_file",
+        `
+          <div class="tool-grid-layout file-manager-layout">
+            <div class="subpanel">
+              <div class="subpanel-head">
+                <span>路径浏览</span>
+                <button data-action="refresh-tree" type="button">刷新</button>
+              </div>
+              <div class="subpanel-body">
+                <div class="path-bar">
+                  <input data-role="browse-path" value="${escapeAttr(browsePath)}" aria-label="浏览路径" />
+                  <button class="primary" data-action="browse" type="button">打开</button>
+                </div>
+                <div class="inline">
+                  <button data-action="parent" type="button">上级</button>
+                  <span class="status">${escapeHtml(tab.state?.treeStatus || "选择目录或文件进行浏览。")}</span>
+                </div>
+                <div class="file-tree" data-role="file-tree">
+                  ${renderFileEntries(tab.state?.entries, selectedPath)}
+                </div>
+              </div>
+            </div>
+            <div class="subpanel">
+              <div class="subpanel-head"><span>文件操作</span><button data-action="clear" type="button">清空结果</button></div>
+              <div class="subpanel-body">
+                <label class="field"><span>当前选择</span><div class="selected-path mono" data-role="selected-path">${escapeHtml(selectedPath || "未选择文件")}</div></label>
+                <label class="field"><span>下载路径</span><input data-role="download-path" value="${escapeAttr(downloadPath)}" /></label>
+                <button class="primary" data-action="download" type="button">下载文件</button>
+                <button data-action="preview" type="button"${selectedType === "directory" ? " disabled" : ""}>预览文本</button>
+                <label class="field"><span>上传路径</span><input data-role="upload-path" value="${escapeAttr(uploadPath)}" /></label>
+                <label class="field"><span>上传文本</span><textarea data-role="upload-content">${escapeHtml(tab.state?.uploadContent || "")}</textarea></label>
+                <button data-action="upload" type="button">上传文本</button>
+                <div class="result-box" style="max-height: none;"><pre data-role="result">${escapeHtml(tab.state?.result || "No result yet.")}</pre></div>
+              </div>
+            </div>
+          </div>
+        `,
+      );
+      panel.querySelector('[data-action="browse"]').addEventListener("click", () => browseFiles(tab.id));
+      panel.querySelector('[data-action="refresh-tree"]').addEventListener("click", () => browseFiles(tab.id, browsePath));
+      panel.querySelector('[data-action="parent"]').addEventListener("click", () => browseFiles(tab.id, dirname(browsePath)));
+      panel.querySelector('[data-role="browse-path"]').addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          browseFiles(tab.id);
+        }
+      });
+      panel.querySelectorAll("[data-file-path]").forEach(button => {
+        button.addEventListener("click", () => {
+          const path = button.dataset.filePath || "";
+          const type = button.dataset.fileType || "file";
+          if (type === "directory") {
+            browseFiles(tab.id, path);
+          } else {
+            selectFilePath(tab.id, path, type);
+          }
+        });
+      });
+      panel.querySelector('[data-action="download"]').addEventListener("click", () => downloadFile(tab.id));
+      panel.querySelector('[data-action="preview"]').addEventListener("click", () => previewFile(tab.id));
+      panel.querySelector('[data-action="upload"]').addEventListener("click", () => uploadFile(tab.id));
+      panel.querySelector('[data-action="clear"]').addEventListener("click", () => {
+        setResult(tab.id, "No result yet.");
+        updateTabState(tab.id, { result: "No result yet." });
+      });
+      setPanelStatus(tab.id, tab.state?.statusText || "就绪", tab.state?.statusKind || "");
+    }
+
+    function renderExecutorDebuggerPanel(tab, panel) {
+      renderToolShell(
+        panel,
+        tab,
+        "手动触发沙盒内执行器并查看返回结果",
+        "runtime executor registry",
+        `
+          <div class="tool-grid-layout">
+            <div class="subpanel">
+              <div class="subpanel-head"><span>Executors</span><span class="status" data-role="executor-count"></span></div>
+              <div class="subpanel-body">
+                <input data-role="executor-search" placeholder="Filter executors" autocomplete="off" />
+                <div class="executor-list" data-role="executor-list"></div>
+              </div>
+            </div>
+            <div class="subpanel">
+              <div class="subpanel-head">
+                <span data-role="selected-name">Select an executor</span>
+                <span class="inline"><button data-action="reset" type="button">Reset</button><button class="primary" data-action="run" type="button">Run</button></span>
+              </div>
+              <div class="subpanel-body">
+                <form data-role="executor-form"></form>
+                <div class="result-box"><pre data-role="payload">{}</pre></div>
+                <div class="image-grid" data-role="images"></div>
+                <div class="result-box" style="max-height: none;"><pre data-role="result">No result yet.</pre></div>
+              </div>
+            </div>
+          </div>
+        `,
+      );
+      const search = panel.querySelector('[data-role="executor-search"]');
+      search.addEventListener("input", () => renderExecutorList(tab.id));
+      panel.querySelector('[data-action="reset"]').addEventListener("click", () => state.selectedExecutor && selectExecutor(tab.id, state.selectedExecutor));
+      panel.querySelector('[data-action="run"]').addEventListener("click", () => runSelectedExecutor(tab.id));
+      setPanelStatus(tab.id, "Loading executors...");
+      loadExecutors().then(() => {
+        renderExecutorList(tab.id);
+        if (state.executors[0] && !state.selectedExecutor) selectExecutor(tab.id, state.executors[0]);
+        setPanelStatus(tab.id, "就绪", "ok");
+      }).catch(error => {
+        setPanelStatus(tab.id, error.message, "error");
+      });
+    }
+
+    function maybeAutostart(tabId) {
+      void tabId;
+    }
+
+    async function requestJson(url, options = {}) {
+      const response = await fetch(url, options);
+      const contentType = response.headers.get("content-type") || "";
+      const result = contentType.includes("application/json") ? await response.json() : await response.text();
+      if (!response.ok) {
+        throw new Error(typeof result === "string" ? result : result.detail || result.error || "request failed");
+      }
+      return result;
+    }
+
+    async function callExecutor(executorName, arg) {
+      return await requestJson(runtimeUrl("api/v1/call_executor"), {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ executor_name: executorName, arg }),
+      });
+    }
+
+    async function runCommand(command, { cwd = "/", timeout = 60 } = {}) {
+      return await callExecutor("run_command", { command, cwd, timeout });
+    }
+
+    function shellQuote(value) {
+      return `'${String(value).replace(/'/g, `'\"'\"'`)}'`;
+    }
+
+    function commandSucceeded(result) {
+      return String(result.status || "") === "Finished" && Number(result.return_code || 0) === 0;
+    }
+
+    function commandDetails(result) {
+      return [result.stdout, result.stderr].filter(Boolean).join("\n").trim() || JSON.stringify(result, null, 2);
+    }
+
+    function dirname(path) {
+      const clean = String(path || "/").replace(/\/+$/, "") || "/";
+      if (clean === "/") return "/";
+      const index = clean.lastIndexOf("/");
+      return index <= 0 ? "/" : clean.slice(0, index);
+    }
+
+    function formatBytes(value) {
+      const bytes = Number(value);
+      if (!Number.isFinite(bytes) || bytes < 0) return "-";
+      if (bytes < 1024) return `${bytes} B`;
+      const units = ["KB", "MB", "GB", "TB"];
+      let size = bytes / 1024;
+      let index = 0;
+      while (size >= 1024 && index < units.length - 1) {
+        size /= 1024;
+        index += 1;
+      }
+      return `${size >= 10 ? size.toFixed(0) : size.toFixed(1)} ${units[index]}`;
+    }
+
+    function fileListCommand(path) {
+      return [
+        "set -eu",
+        `NEXUS_BROWSE_PATH=${shellQuote(path || "/workspace")}`,
+        "export NEXUS_BROWSE_PATH",
+        'PYTHON_BIN=/nix/runtime/nix-env/bin/python3',
+        'if [ ! -x "$PYTHON_BIN" ]; then PYTHON_BIN="$(command -v python3 || true)"; fi',
+        '[ -n "$PYTHON_BIN" ] || { echo "python3 is required to browse files" >&2; exit 127; }',
+        '"$PYTHON_BIN" - <<\'PY\'',
+        "import json",
+        "import os",
+        "import stat",
+        "",
+        "def file_type(st):",
+        "    mode = st.st_mode",
+        "    if stat.S_ISDIR(mode):",
+        "        return 'directory'",
+        "    if stat.S_ISLNK(mode):",
+        "        return 'symlink'",
+        "    if stat.S_ISREG(mode):",
+        "        return 'file'",
+        "    return 'other'",
+        "",
+        "def make_entry(name, path):",
+        "    try:",
+        "        st = os.lstat(path)",
+        "        item = {",
+        "            'name': name,",
+        "            'path': path,",
+        "            'type': file_type(st),",
+        "            'size': st.st_size,",
+        "            'mode': oct(stat.S_IMODE(st.st_mode)),",
+        "            'mtime': int(st.st_mtime),",
+        "        }",
+        "        if stat.S_ISLNK(st.st_mode):",
+        "            try:",
+        "                item['target'] = os.readlink(path)",
+        "            except OSError:",
+        "                pass",
+        "        return item",
+        "    except OSError as exc:",
+        "        return {'name': name, 'path': path, 'type': 'error', 'error': str(exc)}",
+        "",
+        "requested = os.environ.get('NEXUS_BROWSE_PATH') or '/workspace'",
+        "path = os.path.abspath(requested)",
+        "data = {'path': path, 'type': 'missing', 'entries': [], 'exists': False}",
+        "try:",
+        "    st = os.lstat(path)",
+        "    current_type = file_type(st)",
+        "    data.update({'type': current_type, 'exists': True, 'size': st.st_size, 'mode': oct(stat.S_IMODE(st.st_mode)), 'mtime': int(st.st_mtime)})",
+        "    if current_type == 'directory':",
+        "        names = os.listdir(path)",
+        "        def sort_key(name):",
+        "            child = os.path.join(path, name)",
+        "            try:",
+        "                child_type = file_type(os.lstat(child))",
+        "            except OSError:",
+        "                child_type = 'error'",
+        "            return (0 if child_type == 'directory' else 1, name.lower())",
+        "        data['entries'] = [make_entry(name, os.path.join(path, name)) for name in sorted(names, key=sort_key)]",
+        "except Exception as exc:",
+        "    data['error'] = f'{type(exc).__name__}: {exc}'",
+        "print(json.dumps(data, ensure_ascii=False, separators=(',', ':')))",
+        "PY",
+      ].join("\n");
+    }
+
+    function parseCommandJson(result) {
+      const lines = String(result.stdout || "").trim().split(/\r?\n/).filter(Boolean);
+      for (let index = lines.length - 1; index >= 0; index -= 1) {
+        try {
+          return JSON.parse(lines[index]);
+        } catch (_error) {
+          // Keep scanning because run_command can include diagnostic lines.
+        }
+      }
+      throw new Error(`command did not return JSON: ${commandDetails(result)}`);
+    }
+
+    function codeServerStartCommand({ requestedPort, workingDir, waitSeconds }) {
+      const attempts = Math.max(1, Math.ceil(waitSeconds * 2));
+      return [
+        "set -eu",
+        `REQUESTED_PORT=${shellQuote(requestedPort || "")}`,
+        `WORKSPACE=${shellQuote(workingDir)}`,
+        `ATTEMPTS=${attempts}`,
+        'PYTHON_BIN=/nix/runtime/nix-env/bin/python3',
+        'if [ ! -x "$PYTHON_BIN" ]; then PYTHON_BIN="$(command -v python3 || true)"; fi',
+        '[ -n "$PYTHON_BIN" ] || { echo "python3 is required to choose a random Web IDE port" >&2; exit 127; }',
+        'if [ -n "$REQUESTED_PORT" ] && [ "$REQUESTED_PORT" != "0" ]; then',
+        '  PORT="$REQUESTED_PORT"',
+        "else",
+        "  PORT=$(\"$PYTHON_BIN\" - <<'PY'",
+        "import socket",
+        "s = socket.socket()",
+        "s.bind(('127.0.0.1', 0))",
+        "print(s.getsockname()[1])",
+        "s.close()",
+        "PY",
+        "  )",
+        "fi",
+        'LOG="/tmp/nexus-code-server-${PORT}.log"',
+        'mkdir -p "$WORKSPACE" "$HOME/.config/code-server"',
+        'CODE_SERVER_BIN="$(command -v code-server || true)"',
+        'if [ -z "$CODE_SERVER_BIN" ] && [ -x /nix/runtime/nix-env/bin/code-server ]; then CODE_SERVER_BIN=/nix/runtime/nix-env/bin/code-server; fi',
+        'if [ -z "$CODE_SERVER_BIN" ]; then echo "code-server is not installed in this runtime image" >&2; exit 127; fi',
+        'if ! pgrep -f "code-server.*127.0.0.1:${PORT}" >/dev/null 2>&1; then',
+        '  rm -f "$LOG"',
+        '  nohup "$CODE_SERVER_BIN" --bind-addr "127.0.0.1:${PORT}" --auth none --disable-telemetry --disable-update-check "$WORKSPACE" > "$LOG" 2>&1 &',
+        "fi",
+        "READY=0",
+        "i=1",
+        'while [ "$i" -le "$ATTEMPTS" ]; do',
+        '  if (: > /dev/tcp/127.0.0.1/"$PORT") >/dev/null 2>&1; then READY=1; break; fi',
+        "  sleep 0.5",
+        "  i=$((i + 1))",
+        "done",
+        'cat "$LOG" 2>/dev/null || true',
+        'if [ "$READY" != "1" ]; then echo "code-server did not become ready on 127.0.0.1:${PORT}" >&2; exit 1; fi',
+        'echo "NEXUS_WEB_IDE_PORT=${PORT}"',
+      ].join("\n");
+    }
+
+    async function startWebIde(tabId) {
+      const panel = state.panels.get(tabId);
+      const workingDir = panel?.querySelector('[data-role="working-dir"]')?.value.trim() || "/workspace";
+      const requestedPort = panel?.querySelector('[data-role="port"]')?.value.trim() || "";
+      setPanelStatus(tabId, "启动中...", "warn");
+      try {
+        const result = await runCommand(codeServerStartCommand({ requestedPort, workingDir, waitSeconds: 20 }), { cwd: "/", timeout: 35 });
+        if (!commandSucceeded(result)) throw new Error(commandDetails(result));
+        const match = String(result.stdout || "").match(/NEXUS_WEB_IDE_PORT=(\d+)/);
+        if (!match) throw new Error(`Web IDE started but port marker was missing: ${commandDetails(result)}`);
+        const port = Number(match[1]);
+        const url = `${runtimeUrl(`debug/ports/${port}/`)}?folder=${encodeURIComponent(workingDir)}`;
+        const tab = updateTabState(tabId, { workingDir, port, url, statusText: "已就绪", statusKind: "ok" });
+        renderPanel(tab, panel, { force: true });
+      } catch (error) {
+        updateTabState(tabId, { workingDir, port: requestedPort, statusText: error.message, statusKind: "error" });
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    async function startSandboxDesktop(tabId) {
+      const panel = state.panels.get(tabId);
+      const desktopSession = panel?.querySelector('[data-role="desktop-session"]')?.value.trim() || "gnome-session";
+      setPanelStatus(tabId, "启动中...", "warn");
+      try {
+        let result = await callExecutor("gui_start", {
+          desktop_session: desktopSession,
+          session_options: { gnome_session_name: "ubuntu" },
+        });
+        const missingGnome = [result.error, result.stderr, result.stdout].filter(Boolean).join("\n").includes("gnome-session was not found");
+        if (result.success === false && missingGnome) {
+          result = await callExecutor("gui_start", {});
+        }
+        if (result.success === false) throw new Error(result.error || result.stderr || "gui_start failed");
+        const websocketPath = runtimeUrl("debug/gui/vnc/websockify");
+        const url = `${runtimeUrl("debug/gui/vnc/vnc.html")}?autoconnect=1&resize=remote&path=${encodeURIComponent(websocketPath)}`;
+        const tab = updateTabState(tabId, { desktopSession, url, statusText: "已就绪", statusKind: "ok" });
+        renderPanel(tab, panel, { force: true });
+      } catch (error) {
+        updateTabState(tabId, { desktopSession, statusText: error.message, statusKind: "error" });
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    function sitePreviewStartCommand({ directory, requestedPort, waitSeconds }) {
+      const attempts = Math.max(1, Math.ceil(waitSeconds * 2));
+      return [
+        "set -eu",
+        `DIRECTORY=${shellQuote(directory)}`,
+        `REQUESTED_PORT=${shellQuote(requestedPort || "")}`,
+        `ATTEMPTS=${attempts}`,
+        '[ -d "$DIRECTORY" ] || { echo "directory does not exist: $DIRECTORY" >&2; exit 2; }',
+        'PYTHON_BIN=/nix/runtime/nix-env/bin/python3',
+        'if [ ! -x "$PYTHON_BIN" ]; then PYTHON_BIN="$(command -v python3 || true)"; fi',
+        '[ -n "$PYTHON_BIN" ] || { echo "python3 is required for site preview" >&2; exit 127; }',
+        'if [ -n "$REQUESTED_PORT" ] && [ "$REQUESTED_PORT" != "0" ]; then',
+        '  PORT="$REQUESTED_PORT"',
+        "else",
+        "  PORT=$(\"$PYTHON_BIN\" - <<'PY'",
+        "import socket",
+        "s = socket.socket()",
+        "s.bind(('127.0.0.1', 0))",
+        "print(s.getsockname()[1])",
+        "s.close()",
+        "PY",
+        "  )",
+        "fi",
+        'PIDFILE="/tmp/nexus-site-preview-${PORT}.pid"',
+        'LOG="/tmp/nexus-site-preview-${PORT}.log"',
+        'if [ -f "$PIDFILE" ]; then',
+        '  OLD_PID="$(cat "$PIDFILE" 2>/dev/null || true)"',
+        '  if [ -n "$OLD_PID" ] && kill -0 "$OLD_PID" >/dev/null 2>&1; then kill "$OLD_PID" >/dev/null 2>&1 || true; fi',
+        "fi",
+        'rm -f "$LOG"',
+        'cd "$DIRECTORY"',
+        'nohup "$PYTHON_BIN" -m http.server "$PORT" --bind 127.0.0.1 > "$LOG" 2>&1 &',
+        'echo "$!" > "$PIDFILE"',
+        "READY=0",
+        "i=1",
+        'while [ "$i" -le "$ATTEMPTS" ]; do',
+        '  if (: > /dev/tcp/127.0.0.1/"$PORT") >/dev/null 2>&1; then READY=1; break; fi',
+        "  sleep 0.5",
+        "  i=$((i + 1))",
+        "done",
+        'cat "$LOG" 2>/dev/null || true',
+        'if [ "$READY" != "1" ]; then echo "site preview did not become ready on 127.0.0.1:${PORT}" >&2; exit 1; fi',
+        'echo "NEXUS_SITE_PREVIEW_PORT=${PORT}"',
+        'echo "NEXUS_SITE_PREVIEW_DIRECTORY=${DIRECTORY}"',
+      ].join("\n");
+    }
+
+    async function startSitePreview(tabId) {
+      const panel = state.panels.get(tabId);
+      const directory = panel?.querySelector('[data-role="directory"]')?.value.trim() || "/workspace";
+      const requestedPort = panel?.querySelector('[data-role="port"]')?.value.trim() || "";
+      setPanelStatus(tabId, "启动中...", "warn");
+      try {
+        const result = await runCommand(sitePreviewStartCommand({ directory, requestedPort, waitSeconds: 12 }), { cwd: "/", timeout: 25 });
+        if (!commandSucceeded(result)) throw new Error(commandDetails(result));
+        const match = String(result.stdout || "").match(/NEXUS_SITE_PREVIEW_PORT=(\d+)/);
+        if (!match) throw new Error(`preview started but port marker was missing: ${commandDetails(result)}`);
+        const port = Number(match[1]);
+        const url = runtimeUrl(`debug/ports/${port}/`);
+        const tab = updateTabState(tabId, { directory, port, url, statusText: `运行中：${directory}`, statusKind: "ok" });
+        renderPanel(tab, panel, { force: true });
+      } catch (error) {
+        updateTabState(tabId, { directory, port: requestedPort, statusText: error.message, statusKind: "error" });
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    function reloadIframe(tabId) {
+      const iframe = state.panels.get(tabId)?.querySelector("iframe.debug-frame");
+      if (!iframe || !iframe.src) return;
+      const src = iframe.src;
+      iframe.removeAttribute("src");
+      iframe.addEventListener("load", () => {
+        setPanelStatus(tabId, "已加载", "ok");
+      }, { once: true });
+      window.setTimeout(() => {
+        iframe.src = src;
+      }, 20);
+      setPanelStatus(tabId, "刷新中...", "warn");
+    }
+
+    async function createKernel(tabId) {
+      const panel = state.panels.get(tabId);
+      const python = panel?.querySelector('[data-role="python"]')?.value.trim() || "";
+      setPanelStatus(tabId, "创建 Kernel...", "warn");
+      try {
+        const result = await callExecutor("create_ipython_session", { python_executable: python || null });
+        updateTabState(tabId, { python, sessionId: result.session_id, statusText: "Kernel 已创建", statusKind: "ok" });
+        panel.querySelector('[data-role="kernel-status"]').textContent = result.session_id;
+        setPanelStatus(tabId, "Kernel 已创建", "ok");
+      } catch (error) {
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    async function executeKernelCode(tabId) {
+      const tab = state.tabs.find(item => item.id === tabId);
+      const panel = state.panels.get(tabId);
+      const code = panel?.querySelector('[data-role="code"]')?.value || "";
+      if (!tab?.state?.sessionId) {
+        setPanelStatus(tabId, "请先创建 Kernel", "error");
+        return;
+      }
+      setPanelStatus(tabId, "执行中...", "warn");
+      try {
+        const result = await callExecutor("execute_ipython", { session_id: tab.state.sessionId, code, timeout: 180 });
+        const text = JSON.stringify(result, null, 2);
+        panel.querySelector('[data-role="result"]').textContent = text;
+        updateTabState(tabId, { code, result: text, statusText: result.status || "执行完成", statusKind: result.status === "ok" ? "ok" : "warn" });
+        setPanelStatus(tabId, result.status || "执行完成", result.status === "ok" ? "ok" : "warn");
+      } catch (error) {
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    async function destroyKernel(tabId) {
+      const tab = state.tabs.find(item => item.id === tabId);
+      if (!tab?.state?.sessionId) return;
+      setPanelStatus(tabId, "销毁 Kernel...", "warn");
+      try {
+        await callExecutor("destroy_ipython_session", { session_id: tab.state.sessionId });
+        updateTabState(tabId, { sessionId: "", statusText: "Kernel 已销毁", statusKind: "ok" });
+        state.panels.get(tabId).querySelector('[data-role="kernel-status"]').textContent = "未创建";
+        setPanelStatus(tabId, "Kernel 已销毁", "ok");
+      } catch (error) {
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    async function startMcpProxy(tabId) {
+      const panel = state.panels.get(tabId);
+      const clientText = panel?.querySelector('[data-role="client"]')?.value || "";
+      setPanelStatus(tabId, "启动 MCP proxy...", "warn");
+      try {
+        const client = JSON.parse(clientText);
+        const result = await callExecutor("mcp_start_proxy", { client });
+        const text = JSON.stringify(result, null, 2);
+        updateTabState(tabId, {
+          client: clientText,
+          proxyId: result.proxy_id,
+          result: text,
+          statusText: "MCP proxy 已启动",
+          statusKind: "ok",
+        });
+        panel.querySelector('[data-role="proxy-id"]').textContent = result.proxy_id;
+        panel.querySelector('[data-role="result"]').textContent = text;
+        setPanelStatus(tabId, "MCP proxy 已启动", "ok");
+      } catch (error) {
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    async function stopMcpProxy(tabId) {
+      const tab = state.tabs.find(item => item.id === tabId);
+      if (!tab?.state?.proxyId) return;
+      setPanelStatus(tabId, "停止 MCP proxy...", "warn");
+      try {
+        const result = await callExecutor("mcp_stop_proxy", { proxy_id: tab.state.proxyId });
+        const text = JSON.stringify(result, null, 2);
+        updateTabState(tabId, { proxyId: "", result: text, statusText: "MCP proxy 已停止", statusKind: "ok" });
+        const panel = state.panels.get(tabId);
+        panel.querySelector('[data-role="proxy-id"]').textContent = "未启动";
+        panel.querySelector('[data-role="result"]').textContent = text;
+        setPanelStatus(tabId, "MCP proxy 已停止", "ok");
+      } catch (error) {
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    async function browseFiles(tabId, pathOverride) {
+      const panel = state.panels.get(tabId);
+      const inputPath = panel?.querySelector('[data-role="browse-path"]')?.value.trim();
+      const path = pathOverride || inputPath || "/workspace";
+      setPanelStatus(tabId, `读取路径：${path}`, "warn");
+      try {
+        const result = await runCommand(fileListCommand(path), { cwd: "/", timeout: 20 });
+        if (!commandSucceeded(result)) throw new Error(commandDetails(result));
+        const data = parseCommandJson(result);
+        if (data.error) throw new Error(data.error);
+        const entries = Array.isArray(data.entries) ? data.entries : [];
+        const isDirectory = data.type === "directory";
+        const patch = {
+          browsePath: data.path || path,
+          entries,
+          treeStatus: isDirectory ? `${entries.length} item(s)` : `${data.type || "path"} selected`,
+          statusText: isDirectory ? "目录已读取" : "路径已选择",
+          statusKind: "ok",
+        };
+        if (!isDirectory && data.path) {
+          patch.selectedPath = data.path;
+          patch.selectedType = data.type || "file";
+          patch.downloadPath = data.path;
+          patch.uploadPath = data.path;
+        }
+        const tab = updateTabState(tabId, patch);
+        if (tab) renderPanel(tab, state.panels.get(tabId), { force: true });
+        setPanelStatus(tabId, patch.statusText, "ok");
+      } catch (error) {
+        updateTabState(tabId, { statusText: error.message, statusKind: "error", treeStatus: error.message });
+        setPanelStatus(tabId, error.message, "error");
+        setResult(tabId, String(error.stack || error.message || error));
+      }
+    }
+
+    function selectFilePath(tabId, path, type) {
+      const tab = updateTabState(tabId, {
+        selectedPath: path,
+        selectedType: type,
+        downloadPath: path,
+        uploadPath: path,
+        statusText: `已选择：${path}`,
+        statusKind: "ok",
+      });
+      const panel = state.panels.get(tabId);
+      if (!panel || !tab) return;
+      panel.querySelectorAll(".file-row").forEach(row => {
+        row.classList.toggle("active", row.dataset.filePath === path);
+      });
+      const selected = panel.querySelector('[data-role="selected-path"]');
+      if (selected) selected.textContent = path;
+      const downloadInput = panel.querySelector('[data-role="download-path"]');
+      if (downloadInput) downloadInput.value = path;
+      const uploadInput = panel.querySelector('[data-role="upload-path"]');
+      if (uploadInput) uploadInput.value = path;
+      const previewButton = panel.querySelector('[data-action="preview"]');
+      if (previewButton) previewButton.disabled = type === "directory";
+      setPanelStatus(tabId, `已选择：${path}`, "ok");
+    }
+
+    async function previewFile(tabId) {
+      const panel = state.panels.get(tabId);
+      const path = panel?.querySelector('[data-role="download-path"]')?.value.trim();
+      if (!path) return;
+      setPanelStatus(tabId, `读取文件：${path}`, "warn");
+      try {
+        const result = await callExecutor("download_file", { files: [{ path, encoding: "utf8" }] });
+        const file = result.files?.[0];
+        if (file?.content == null) throw new Error(result.errors?.[0]?.message || "download_file returned no content");
+        const text = `# ${file.path || path}\n\n${file.content}`;
+        setResult(tabId, text);
+        updateTabState(tabId, {
+          selectedPath: file.path || path,
+          selectedType: "file",
+          downloadPath: file.path || path,
+          result: text,
+          statusText: "预览完成",
+          statusKind: "ok",
+        });
+        setPanelStatus(tabId, "预览完成", "ok");
+      } catch (error) {
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    async function downloadFile(tabId) {
+      const panel = state.panels.get(tabId);
+      const path = panel?.querySelector('[data-role="download-path"]')?.value.trim();
+      if (!path) return;
+      setPanelStatus(tabId, `下载中：${path}`, "warn");
+      try {
+        const result = await callExecutor("download_file", { files: [{ path, encoding: "base64" }] });
+        const file = result.files?.[0];
+        if (!file?.content) throw new Error(result.errors?.[0]?.message || "download_file returned no content");
+        const bytes = Uint8Array.from(atob(file.content), char => char.charCodeAt(0));
+        const blob = new Blob([bytes]);
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = path.split("/").filter(Boolean).pop() || "download";
+        link.click();
+        URL.revokeObjectURL(link.href);
+        const text = JSON.stringify(redactFileContent(result), null, 2);
+        setResult(tabId, text);
+        updateTabState(tabId, { downloadPath: path, result: text, statusText: "下载完成", statusKind: "ok" });
+        setPanelStatus(tabId, "下载完成", "ok");
+      } catch (error) {
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    async function uploadFile(tabId) {
+      const panel = state.panels.get(tabId);
+      const path = panel?.querySelector('[data-role="upload-path"]')?.value.trim();
+      const content = panel?.querySelector('[data-role="upload-content"]')?.value || "";
+      if (!path) return;
+      setPanelStatus(tabId, `上传中：${path}`, "warn");
+      try {
+        const result = await callExecutor("upload_file", {
+          files: [{ path, content, encoding: "utf8" }],
+          overwrite: true,
+        });
+        const text = JSON.stringify(result, null, 2);
+        setResult(tabId, text);
+        updateTabState(tabId, { uploadPath: path, uploadContent: content, result: text, statusText: "上传完成", statusKind: "ok" });
+        setPanelStatus(tabId, "上传完成", "ok");
+      } catch (error) {
+        setPanelStatus(tabId, error.message, "error");
+      }
+    }
+
+    function setResult(tabId, text) {
+      const result = state.panels.get(tabId)?.querySelector('[data-role="result"]');
+      if (result) result.textContent = text;
+    }
+
+    async function loadExecutors() {
+      if (state.executors.length) return;
+      const payload = await requestJson(runtimeUrl("api/v1/debug/executors"));
+      state.executors = payload.executors || [];
+    }
+
+    function renderExecutorList(tabId) {
+      const panel = state.panels.get(tabId);
+      if (!panel) return;
+      const query = panel.querySelector('[data-role="executor-search"]').value.toLowerCase().trim();
+      const list = panel.querySelector('[data-role="executor-list"]');
+      const count = panel.querySelector('[data-role="executor-count"]');
+      list.innerHTML = "";
+      const filtered = state.executors.filter(item => item.name.toLowerCase().includes(query));
+      for (const executor of filtered) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "executor-item";
+        button.dataset.name = executor.name;
+        button.textContent = executor.name;
+        button.addEventListener("click", () => selectExecutor(tabId, executor));
+        list.appendChild(button);
+      }
+      count.textContent = `${filtered.length}/${state.executors.length}`;
+      updateExecutorActiveRows(panel);
+    }
+
+    function updateExecutorActiveRows(panel) {
+      panel.querySelectorAll(".executor-item").forEach(button => {
+        button.classList.toggle("active", button.dataset.name === state.selectedExecutor?.name);
+      });
+    }
+
+    function selectExecutor(tabId, executor) {
+      const panel = state.panels.get(tabId);
+      if (!panel) return;
+      state.selectedExecutor = executor;
+      state.executorFields.clear();
+      panel.querySelector('[data-role="selected-name"]').textContent = executor.name;
+      const form = panel.querySelector('[data-role="executor-form"]');
+      form.innerHTML = "";
+      const schema = executor.request_schema || {};
+      const properties = schema.properties || {};
+      const required = new Set(schema.required || []);
+      Object.keys(properties).forEach(name => {
+        form.appendChild(renderExecutorField(tabId, name, properties[name], required.has(name), schema));
+      });
+      updateExecutorActiveRows(panel);
+      updatePayloadPreview(tabId);
+    }
+
+    function resolveRef(schema, rootSchema) {
+      if (!schema || !schema.$ref) return schema;
+      const parts = schema.$ref.replace(/^#\//, "").split("/");
+      return parts.reduce((value, part) => value && value[part], rootSchema) || schema;
+    }
+
+    function normalizeSchema(schema, rootSchema) {
+      schema = resolveRef(schema || {}, rootSchema);
+      const variants = schema.anyOf || schema.oneOf;
+      if (!variants) return { schema, nullable: schema.type === "null" };
+      const nonNull = variants.map(item => resolveRef(item, rootSchema)).filter(item => item.type !== "null");
+      return { schema: nonNull[0] || schema, nullable: variants.length !== nonNull.length };
+    }
+
+    function fieldDefault(schema, required) {
+      if (schema.default !== undefined) return schema.default;
+      if (required) {
+        if (schema.type === "boolean") return false;
+        if (schema.type === "number" || schema.type === "integer") return 0;
+        if (schema.type === "array") return [];
+        if (schema.type === "object") return {};
+        return "";
+      }
+      return undefined;
+    }
+
+    function exampleFor(schema) {
+      if (schema.default !== undefined) return schema.default;
+      if (schema.type === "array") return [];
+      if (schema.type === "object") return {};
+      return null;
+    }
+
+    function renderExecutorField(tabId, name, rawSchema, required, rootSchema) {
+      const normalized = normalizeSchema(rawSchema, rootSchema);
+      const schema = normalized.schema;
+      const defaultValue = fieldDefault(schema, required);
+      const row = document.createElement("div");
+      row.className = "schema-field";
+
+      const labelWrap = document.createElement("div");
+      const label = document.createElement("div");
+      label.className = "schema-name";
+      label.textContent = required ? `${name} *` : name;
+      labelWrap.appendChild(label);
+      if (schema.description) {
+        const desc = document.createElement("div");
+        desc.className = "schema-description";
+        desc.textContent = schema.description;
+        labelWrap.appendChild(desc);
+      }
+
+      let input;
+      const enumValues = schema.enum || [];
+      if (enumValues.length) {
+        input = document.createElement("select");
+        if (!required) input.appendChild(new Option("(unset)", ""));
+        enumValues.forEach(value => input.appendChild(new Option(String(value), String(value))));
+        if (defaultValue !== undefined) input.value = String(defaultValue);
+      } else if (schema.type === "boolean") {
+        input = document.createElement("select");
+        if (!required && defaultValue === undefined) input.appendChild(new Option("(unset)", ""));
+        input.appendChild(new Option("true", "true"));
+        input.appendChild(new Option("false", "false"));
+        if (defaultValue !== undefined) input.value = String(defaultValue);
+      } else if (schema.type === "integer" || schema.type === "number") {
+        input = document.createElement("input");
+        input.type = "number";
+        input.step = schema.type === "integer" ? "1" : "any";
+        if (defaultValue !== undefined) input.value = String(defaultValue);
+      } else if (schema.type === "string") {
+        input = document.createElement("input");
+        input.type = "text";
+        if (defaultValue !== undefined) input.value = String(defaultValue);
+      } else {
+        input = document.createElement("textarea");
+        input.placeholder = JSON.stringify(exampleFor(schema), null, 2);
+        if (defaultValue !== undefined) input.value = JSON.stringify(defaultValue, null, 2);
+      }
+      input.dataset.name = name;
+      input.dataset.type = schema.type || "json";
+      input.dataset.required = required ? "true" : "false";
+      input.addEventListener("input", () => updatePayloadPreview(tabId));
+      input.addEventListener("change", () => updatePayloadPreview(tabId));
+      row.appendChild(labelWrap);
+      row.appendChild(input);
+      state.executorFields.set(name, input);
+      return row;
+    }
+
+    function valueFromInput(input) {
+      const name = input.dataset.name;
+      const type = input.dataset.type;
+      const required = input.dataset.required === "true";
+      const raw = input.value;
+      if (!required && raw === "") return { name, include: false };
+      if (type === "boolean") return { name, include: true, value: raw === "true" };
+      if (type === "integer") return { name, include: true, value: Number.parseInt(raw, 10) };
+      if (type === "number") return { name, include: true, value: Number.parseFloat(raw) };
+      if (type === "object" || type === "array" || type === "json") {
+        if (!required && raw.trim() === "") return { name, include: false };
+        return { name, include: true, value: JSON.parse(raw) };
+      }
+      return { name, include: true, value: raw };
+    }
+
+    function collectExecutorArg() {
+      const arg = {};
+      for (const input of state.executorFields.values()) {
+        const parsed = valueFromInput(input);
+        if (parsed.include) arg[parsed.name] = parsed.value;
+      }
+      return arg;
+    }
+
+    function updatePayloadPreview(tabId) {
+      const panel = state.panels.get(tabId);
+      try {
+        const arg = collectExecutorArg();
+        panel.querySelector('[data-role="payload"]').textContent = JSON.stringify({ executor_name: state.selectedExecutor?.name || "", arg }, null, 2);
+        setPanelStatus(tabId, "就绪", "ok");
+        return arg;
+      } catch (error) {
+        panel.querySelector('[data-role="payload"]').textContent = String(error.message || error);
+        setPanelStatus(tabId, "Invalid JSON field", "error");
+        return null;
+      }
+    }
+
+    async function runSelectedExecutor(tabId) {
+      if (!state.selectedExecutor) return;
+      const arg = updatePayloadPreview(tabId);
+      if (arg === null) return;
+      setPanelStatus(tabId, "执行中...", "warn");
+      try {
+        const result = await callExecutor(state.selectedExecutor.name, arg);
+        showExecutorResult(tabId, result, 200);
+        setPanelStatus(tabId, "执行完成", "ok");
+      } catch (error) {
+        const panel = state.panels.get(tabId);
+        panel.querySelector('[data-role="images"]').innerHTML = "";
+        panel.querySelector('[data-role="result"]').textContent = String(error.stack || error.message || error);
+        setPanelStatus(tabId, "执行失败", "error");
+      }
+    }
+
+    function isLikelyBase64Image(value) {
+      return typeof value === "string" && value.length > 80 && /^[A-Za-z0-9+/=\s]+$/.test(value);
+    }
+
+    function collectImages(value, path = [], out = []) {
+      if (Array.isArray(value)) {
+        value.forEach((item, index) => collectImages(item, path.concat(index), out));
+        return out;
+      }
+      if (!value || typeof value !== "object") return out;
+      Object.entries(value).forEach(([key, child]) => {
+        if ((key === "screenshot" || key === "image" || key.endsWith("_image")) && isLikelyBase64Image(child)) {
+          const media = value.media_type || (value.format ? `image/${value.format}` : "image/png");
+          out.push({ path: path.concat(key).join("."), media, data: child });
+        } else {
+          collectImages(child, path.concat(key), out);
+        }
+      });
+      return out;
+    }
+
+    function redactImageData(value) {
+      if (Array.isArray(value)) return value.map(redactImageData);
+      if (!value || typeof value !== "object") return value;
+      const result = {};
+      Object.entries(value).forEach(([key, child]) => {
+        if ((key === "screenshot" || key === "image" || key.endsWith("_image")) && isLikelyBase64Image(child)) {
+          result[key] = `[base64 image, ${child.length} chars]`;
+        } else {
+          result[key] = redactImageData(child);
+        }
+      });
+      return result;
+    }
+
+    function showExecutorResult(tabId, result, statusCode) {
+      const panel = state.panels.get(tabId);
+      const imagesEl = panel.querySelector('[data-role="images"]');
+      const resultEl = panel.querySelector('[data-role="result"]');
+      const images = collectImages(result);
+      imagesEl.innerHTML = "";
+      images.forEach(image => {
+        const item = document.createElement("div");
+        item.className = "image-result";
+        const img = document.createElement("img");
+        img.src = `data:${image.media};base64,${image.data}`;
+        const caption = document.createElement("div");
+        caption.className = "image-caption";
+        caption.textContent = `${image.path} (${image.media})`;
+        item.appendChild(img);
+        item.appendChild(caption);
+        imagesEl.appendChild(item);
+      });
+      resultEl.textContent = JSON.stringify({ status_code: statusCode, result: redactImageData(result) }, null, 2);
+    }
+
+    async function loadHealth() {
+      try {
+        state.health = await requestJson(runtimeUrl("health"));
+      } catch (error) {
+        state.health = { status: "error", error: error.message };
+      }
+      updateHealthView();
+    }
+
+    function updateHealthView() {
+      const el = document.getElementById("health-value");
+      if (!el) return;
+      if (!state.health) {
+        el.textContent = "Loading";
+        return;
+      }
+      if (state.health.status === "ok") {
+        el.textContent = `ok · idle ${state.health.idle_seconds}s`;
+      } else {
+        el.textContent = state.health.error || "error";
+      }
+    }
+
+    function redactFileContent(result) {
+      return {
+        ...result,
+        files: (result.files || []).map(file => ({
+          ...file,
+          content: file.content ? `[${file.encoding || "content"}, ${file.content.length} chars]` : file.content,
+        })),
+      };
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+
+    loadWorkspace();
+    renderTabBar();
+    syncPanels();
+  </script>
+</body>
+</html>

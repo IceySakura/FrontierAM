@@ -1,0 +1,13 @@
+[project]
+name = "opencc"
+version = "0.1.0"
+authors = [
+    { name = "kechizhang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { opencc = "nexus.extensions.agents.opencc.agent" }

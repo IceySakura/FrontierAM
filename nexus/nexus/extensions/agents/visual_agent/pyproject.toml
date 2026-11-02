@@ -1,0 +1,23 @@
+[project]
+name = "visual_agent"
+version = "0.1.0"
+authors = [
+    { name = "lucasssyan" },
+    { name = "alanqwang" },
+    { name = "stephenruan" },
+    { name = "huaiyuli" },
+    { name = "kumohu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { visual_agent = "nexus.extensions.agents.visual_agent.agent" }
+
+# Optional implementations are loaded only when requested by registry name.
+[tool.nexus.tools]
+# HTTP service tools.
+
+# Local analysis and rendering tools.

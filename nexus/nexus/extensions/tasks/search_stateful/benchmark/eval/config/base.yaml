@@ -1,0 +1,100 @@
+# HLE base config (template, no secrets).
+# Fill in API keys before use.
+
+imports:
+  - nexus.extensions
+  - nexus.extensions.tasks.search_stateful
+  - nexus.extensions.agents.science_agent.agent
+  - nexus.extensions.tools.search_stateful
+  - nexus.extensions.tools.code_interpreter
+
+# Task config (task_config is filled per item by the generator).
+# Changed from "hle" to "search_stateful" to use LLM judge
+task_name: "search_stateful"
+task_config:
+  task_id: ""
+  question: ""
+  answer: ""  # search_stateful uses "answer" instead of "ground_truth"
+  timeout: 600
+
+# Runtime config (Gongfeng sandbox).
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  # Sandbox API base URL.
+  api_base_url: "http://hyrl-sandbox.prod.woa.com:8052"
+
+  # Main container image.
+  image: ${oc.env:HLE_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+
+  # Runtime image (provides /nix).
+  runtime_image: ${oc.env:HLE_RUNTIME_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+
+  # Empty = auto scheduling.
+  runtime_provider: ""
+
+  # Resource spec.
+  resource_spec:
+    cpu: 2      # Range: 0-4
+    memory: 10  # GB, range: 0-12
+
+  # Request timeout (seconds).
+  request_timeout: 1800.0
+
+  # Python version.
+  python_version: "3.12"
+
+runtime_configs:
+  main:
+    image: ${oc.env:HLE_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:latest"}
+
+# Agent config.
+agent_name: "science_agent"
+agent_config:
+  max_iterations: 1000
+  # Required: set via CODE_INTERPRETER env ("none" | "python" | "jupyter").
+  code_interpreter: ${oc.env:CODE_INTERPRETER,null}
+  enable_search: true
+
+# Tool config.
+tool_configs:
+  search_stateful:
+    # Required credentials.
+    user: ${oc.env:SEARCH_USER,"YOUR_USER_ID"}
+    apikey: ${oc.env:SEARCH_API_KEY,"YOUR_API_KEY"}
+
+    # Search result count.
+    max_search_results: 10
+
+    # Optional overrides (absolute paths if used).
+    # url_block_list_file: "/path/to/your/url_block_list.txt"
+    # testset_name_to_filter_file: "/path/to/your/testset_filter.txt"
+
+  jupyter_code_interpreter:
+    timeout: 600
+
+# OpenAI client config.
+openai_clients:
+  main:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:SCIENCE_API_KEY,"YOUR_API_KEY_HERE"}
+        base_url: ${oc.env:SCIENCE_BASE_URL,"http://api.model-eval.woa.com/v1"}
+        max_retries: ${oc.env:SCIENCE_MAX_RETRIES,25}
+      request_args:
+        model: ${oc.env:SCIENCE_MODEL,"deepseek/deepseek-reasoner"}
+
+  judge:
+    name: "litellm"
+    config:
+      client_args:
+        api_key: ${oc.env:SCIENCE_API_KEY,"YOUR_API_KEY_HERE"}
+        base_url: ${oc.env:SCIENCE_BASE_URL,"http://api.model-eval.woa.com/v1"}
+        max_retries: ${oc.env:SCIENCE_MAX_RETRIES,25}
+      request_args:
+        model: ${oc.env:SCIENCE_MODEL,"deepseek/deepseek-reasoner"}
+
+# Trace processors.
+processors:
+  chat:
+    name: "chat_tracker"

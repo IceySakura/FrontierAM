@@ -1,0 +1,26 @@
+[project]
+name = "swe"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+    { name = "felixhshi" },
+]
+dependencies = ["dataclasses-json>=0.6.7", "unidiff>=0.7.5"]
+
+[project.optional-dependencies]
+
+[tool.nexus.agents]
+agentless = "nexus.extensions.tasks.swe.agentless"
+swe_agent_rubrics = "nexus.extensions.tasks.swe.swe_agent_rubrics.agent"
+
+[tool.nexus.tasks]
+swe_task = "nexus.extensions.tasks.swe.task"
+superswe_task = "nexus.extensions.tasks.swe.superswe"
+swe_rubric_task = "nexus.extensions.tasks.swe.rubrics.agentic_patch.task"
+swe_rubric_gen_task = "nexus.extensions.tasks.swe.rubrics.agentic_patch.gen_task"
+swe_rubric_eval_task = "nexus.extensions.tasks.swe.rubrics.agentic_patch.eval_task"
+
+[tool.nexus.tools]
+"swe_agent_rubrics/bash" = "nexus.extensions.tasks.swe.swe_agent_rubrics.tools"
+"swe_agent_rubrics/str_replace_editor" = "nexus.extensions.tasks.swe.swe_agent_rubrics.tools"
+"swe_agent_rubrics/review_submit" = "nexus.extensions.tasks.swe.swe_agent_rubrics.tools"

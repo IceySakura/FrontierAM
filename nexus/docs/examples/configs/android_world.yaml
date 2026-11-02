@@ -1,0 +1,39 @@
+imports:
+  - nexus.extensions.tasks.android_world
+
+task_name: android_world
+task_config:
+  task_type: ${oc.env:ANDROID_WORLD_TASK_TYPE,"ContactsAddContact"}
+  seed: 0
+  run_evaluator: true
+  step_pause: 2.0
+
+runtime_provider_name: android_world
+runtime_provider_config:
+  host: ${oc.env:ANDROID_WORLD_HOST,"http://api.cloudtest.woa.com"}
+  api_key: ${oc.env:ANDROID_WORLD_API_KEY}
+
+runtime_configs:
+  android:
+    device_id: ${oc.env:ANDROID_WORLD_DEVICE_ID}
+
+agent_name: main_agent
+agent_config:
+  max_iterations: 50
+  parallel_tool_calls: false
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=azure_openai&model=${oc.env:NEXUS_MODEL,"gpt-5.5"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"60"}
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"gpt-5.5"}
+
+processors:
+  chat:
+    name: chat_tracker
+  agent_metrics:
+    name: main_agent_metrics

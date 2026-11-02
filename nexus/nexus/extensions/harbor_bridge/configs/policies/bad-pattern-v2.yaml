@@ -1,0 +1,138 @@
+# Opt-in Host-side tool-call quality checks for Harbor Agent runs.
+#
+# Only patterns listed below with enabled=true are evaluated. Each detected
+# pattern can independently opt out of score suppression with penalize=false.
+# One fixed penalty is deducted when any penalizable pattern appears, after the
+# Harbor Verifier has produced its raw reward. Multiple patterns never stack.
+# The raw reward/rewards fields are preserved; only the training-facing task
+# score is reduced.
+#
+# Set the policy-level penalty to 0.0 to monitor without affecting score.
+# `penalize` defaults to true.
+
+body:
+  task_config:
+    tool_call_bad_pattern_policy:
+      id: bad-pattern-v2
+      # BigRun counterfactuals show that zeroing every positive hit
+      # (penalty=1.0, threshold=0.1) reverses the late-step score trend on T3.
+      # This midpoint removes half the reward from materially successful bad
+      # trajectories while preserving enough task signal for learning.
+      penalty: 0.5
+      reward_threshold: 0.5
+      max_hits: 3
+      # Backward-compatible name: all tool/think protocol findings on the
+      # truncated final assistant turn are monitor-only, balanced or not.
+      ignore_incomplete_final_assistant: true
+      patterns:
+        edit_call_failure:
+          enabled: true
+          penalize: true
+        edit_call_never_recovered:
+          enabled: true
+          penalize: true
+        edit_noop_call:
+          enabled: true
+          penalize: true
+        final_turn_language:
+          enabled: true
+          penalize: true
+        final_turn_language_ch:
+          # Replaces final_turn_language only when the selected Agent is ch_code_mt.
+          # The detector supplies a 0.1-step penalty capped by this 0.5 value.
+          enabled: true
+          penalize: true
+          penalty: 0.5
+        harness_format_rejection:
+          enabled: true
+          penalize: true
+        mojibake:
+          enabled: true
+          penalize: true
+        punct_flood:
+          enabled: true
+          penalize: true
+        reasoning_filler_loop:
+          # Replaced by the BPO density-based reasoning_selftalk_flood rule.
+          enabled: false
+          penalize: false
+        reasoning_selftalk_flood:
+          # BPO 0.3.0 OR thinking-only HyX checkpoint_reasoning_flood@1.
+          enabled: true
+          penalize: true
+        reasoning_repetition_loop:
+          enabled: true
+          penalize: true
+          penalty: 0.3
+          reward_threshold: 0.5
+        reasoning_word_stutter:
+          # Detector 2.1.1: at least three context-qualified adjacent runs (2-3 repeats per word)
+          # of 20 tracked words such as maybe/perhaps/need/likely across thinking turns.
+          enabled: true
+          penalize: true
+          penalty: 0.3
+          reward_threshold: 0.5
+        single_turn_thinking_too_long:
+          enabled: true
+          penalize: false
+          # Strictly greater than this many characters in one assistant thinking turn.
+          max_thinking_chars: 100000
+        repetition_tool_call:
+          enabled: true
+          penalize: true
+        terminus_tool_parse_fail:
+          enabled: true
+          penalize: true
+        trajectory_truncation:
+          # Penalize the trajectory outcome itself. Findings caused only by an
+          # incomplete final turn remain suppressed as monitor-only evidence.
+          enabled: true
+          penalize: true
+          penalty: 0.1
+          reward_threshold: 0.0
+        think_tag_content:
+          # Replaced by think_protocol_leak_hy/all_family.
+          enabled: false
+          penalize: false
+        think_tag_reasoning:
+          enabled: false
+          penalize: false
+        think_tag_tool_call:
+          enabled: false
+          penalize: false
+        think_protocol_leak_hy:
+          enabled: true
+          penalize: true
+        think_protocol_leak_all_family:
+          enabled: true
+          penalize: false
+        tool_call_args_invalid:
+          enabled: true
+          penalize: true
+        tool_call_hallucination:
+          enabled: true
+          penalize: true
+        tool_call_leak_content:
+          # Replaced by tool_call_protocol_leak_hy/all_family.
+          enabled: false
+          penalize: false
+        tool_call_leak_reasoning:
+          enabled: false
+          penalize: false
+        tool_call_leak_tool_call:
+          enabled: false
+          penalize: false
+        tool_call_protocol_leak_hy:
+          enabled: true
+          penalize: true
+        tool_call_protocol_leak_all_family:
+          enabled: true
+          penalize: false
+
+  processors:
+    harbor_agent_trajectory:
+      name: harbor_agent_trajectory_tracker
+      args:
+        tools_mode: branch_last
+
+source: bad-pattern-v2

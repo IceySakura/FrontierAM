@@ -1,0 +1,10 @@
+[project]
+name = "dsh"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[tool.nexus]
+agents = { dsh = "nexus.extensions.agents.dsh.agent" }

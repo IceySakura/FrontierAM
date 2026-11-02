@@ -1,0 +1,12 @@
+[project]
+name = "mnist_v2"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+host = ["pillow>=10.0.0"]
+runtime = []
+
+[tool.nexus]
+tasks = { mnist_v2_task = "nexus.extensions.projects.mnist_v2.task" }
+tools = { "mnist_v2/dissect" = "nexus.extensions.projects.mnist_v2.tools", "mnist_v2/calculator" = "nexus.extensions.projects.mnist_v2.tools" }

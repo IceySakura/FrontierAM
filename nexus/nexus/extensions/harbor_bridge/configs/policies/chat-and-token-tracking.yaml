@@ -1,0 +1,44 @@
+# Chat 轨迹与 Token 用量观测 Policy Profile。
+#
+# 用途：
+#   为每条任务记录最终对话分支、工具定义和 main LLM Client 的 Token 用量。
+#
+# 输出位置：
+#   processor_results.chat 保存 ChatTracker trajectories；
+#   processor_results.token_counter 保存 prompt/completion/reasoning/cache Token 和调用次数。
+#
+# 默认策略：
+#   ChatTracker 使用 branch_last，为每个最终分支保留最后一次 tools；
+#   TokenCounter 统计所有 LLM Client，包括 main、summary、judge 和无法识别 key 的请求。
+#   如只需统计 main，可在下方 token_counter 配置中增加：
+#     args:
+#       client_keys:
+#         - main
+#
+# 注意：
+#   ChatTracker 可能包含完整 Prompt、工具参数和工具结果，会增大数据库/JSONL，并可能携带
+#   任务内部敏感信息。因此本 Profile 保持可选，不应无条件加入所有生产 Batch。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/policies/chat-and-token-tracking.yaml \
+#     --export-format jsonl \
+#     --export-path result.jsonl
+
+body:
+  imports:
+    - nexus.trace.processors.chat_tracker
+    - nexus.trace.processors.token_counter
+
+  processors:
+    chat:
+      name: chat_tracker
+      args:
+        tools_mode: branch_last
+    token_counter:
+      name: token_counter
+
+merge:
+  imports: append_unique
+
+source: harbor-chat-and-token-tracking

@@ -1,0 +1,54 @@
+fullnameOverride: nexus-dist
+
+controlImage:
+  repository: nexus-distributed-universal
+  tag: local
+  pullPolicy: IfNotPresent
+
+workloadImage:
+  repository: nexus-distributed-workload
+  tag: local
+  pullPolicy: IfNotPresent
+
+builderImage:
+  repository: nexus-distributed-builder
+  tag: local
+  pullPolicy: IfNotPresent
+
+secrets:
+  create: false
+  existingSecret: nexus-dist-secrets
+
+configStore:
+  required: false
+
+dynamicEnvironment:
+  enabledProviders: [kubernetes]
+  namespace: nexus-dist-dynamic
+
+mysql:
+  enabled: true
+  persistence:
+    enabled: false
+
+dbInit:
+  enabled: true
+
+controlGateway:
+  replicas: 1
+
+applicationGateway:
+  replicas: 1
+
+scheduler:
+  replicas: 1
+
+reconciler:
+  replicas: 1
+
+instanceManager:
+  enabled: false
+
+fakeRuntime:
+  enabled: true
+  replicas: 1

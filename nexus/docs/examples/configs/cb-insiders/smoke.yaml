@@ -1,0 +1,81 @@
+# Run from the Nexus checkout with the current runtime image and worker wheel.
+imports:
+  - nexus.extensions.agents.cb_insiders
+  - nexus.extensions.openai_clients.vertex
+  - nexus.trace.processors.langfuse_tracker
+
+task_name: identity
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: http://hyrl-sandbox.prod.woa.com:8052
+  token: ${oc.env:GONGFENG_RUNTIME_TOKEN}
+  runtime_image: current
+  purpose: prod
+  request_timeout: 1500
+  resource_spec:
+    cpu: 4
+    memory: 16
+
+runtime_configs:
+  main:
+    image: mirrors.tencent.com/hunyuan_yanguan/ubuntu:24.04
+    use_new_cache_proxy: true
+    worker_venv:
+      modules: []
+
+agent_name: cb-insiders
+agent_config:
+  working_dir: /workspace
+  user_prompt: >-
+    Create calc.py with a function add(a, b) that returns the sum.
+    Run a Python assertion that add(2, 3) == 5, then reply with CB_INSIDERS_OK.
+  version: 5.0.0-40236426.983c1e09
+  npm_registry: ${oc.env:CB_INSIDERS_NPM_REGISTRY,"http://mirrors.tencent.com/npm/"}
+  npm_username: ${oc.env:CB_INSIDERS_NPM_USERNAME}
+  npm_token: ${oc.env:CB_INSIDERS_NPM_TOKEN}
+  model_id: nexus
+  effort: low
+  max_output_tokens: 4096
+  timeout: 900
+  permission_mode: bypassPermissions
+  auto_install_system_deps: true
+
+openai_clients:
+  main:
+    name: vertex
+    config:
+      client_args:
+        protocol: openai
+        endpoint: http://api.aihub.woa.com/standard/v1/chat/completions
+        api_key: ${oc.env:OPENAI_API_KEY}
+        timeout: 180
+        max_retries: 2
+        capture_raw_io: true
+      request_args: &model_args
+        model: glm-5.3-flashx
+        max_tokens: 4096
+        reasoning_effort: low
+        temperature: 1
+        top_p: 0.95
+        stream: false
+      enforced_request_args: *model_args
+
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      tools_mode: branch_last
+  langfuse:
+    name: langfuse_tracker
+    args:
+      public_key: ${oc.env:LANGFUSE_PUBLIC_KEY}
+      secret_key: ${oc.env:LANGFUSE_SECRET_KEY}
+      host: ${oc.env:LANGFUSE_BASE_URL}
+      trace_name: cb-insiders-tool-smoke
+      tags: [cb-insiders, tool-smoke, glm-5.3-flashx]
+      max_tool_chars: 0
+      record_provider_call: true
+
+runner:
+  timeout: 1800

@@ -1,0 +1,11 @@
+GPQA
+ HLE
+Humanity's Last Exam
+BrowseComp
+xbench
+SimpleQA
+WebWalkerQA
+FrontierMath
+T_v2
+frontierscience
+FrontierScience

@@ -1,0 +1,40 @@
+# Generic Hyness App profile. Supply HYNESS_PACKAGES as a JSON list of exact
+# package specs and HYNESS_APP_CONFIG as an installed-package or runtime path.
+# Harness, tools and execution policy belong to the selected App; this profile
+# does not inherit OpenCC restrictions, background or compaction settings.
+
+body:
+  imports:
+    - nexus.extensions.agents.hyness
+  agent_name: hyness
+  agent_config:
+    packages: ${oc.decode:${oc.env:HYNESS_PACKAGES}}
+    app_config: ${oc.env:HYNESS_APP_CONFIG}
+    # Decode null after the shared run-part merge, where YAML null means deletion.
+    app_config_overlay: ${oc.decode:${oc.env:HYNESS_APP_CONFIG_OVERLAY,null}}
+    harness_id: ${oc.decode:${oc.env:HYNESS_HARNESS_ID,null}}
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/testbed}
+    timeout: ${oc.decode:${oc.env:AGENT_TIMEOUT,14400}}
+    max_turns: ${oc.decode:${oc.env:AGENT_MAX_TURNS,600}}
+    npm_registry: ${oc.env:NPM_REGISTRY,https://mirrors.tencent.com/npm/}
+    stop_on_tool_error: ${oc.decode:${oc.env:HYNESS_STOP_ON_TOOL_ERROR,false}}
+    extra_cli_args:
+      - --setting-sources
+      - user
+
+  agent_config_by_llm:
+    claude:
+      thinking_preset: bedrock-claude
+      no_thinking_request_args: ${llm:no_thinking_request_args?}
+      extra_env:
+        ANTHROPIC_MODEL: '${llm:anthropic_model}'
+    hunyuan:
+      thinking_preset: hunyuan
+      no_thinking_request_args: ${llm:no_thinking_request_args?}
+      extra_env:
+        ANTHROPIC_MODEL: '${llm:anthropic_model}'
+
+merge:
+  imports: append_unique
+
+source: hyness

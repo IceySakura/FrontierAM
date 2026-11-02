@@ -1,0 +1,8 @@
+[project]
+name = "multi-agent-math"
+version = "0.1.0"
+dependencies = []
+
+[tool.nexus]
+tasks = { multi_agent_math_task = "nexus.extensions.projects.multi_agent_math.task" }
+tools = { "multi_agent_math/compute_at" = "nexus.extensions.projects.multi_agent_math.tools", "multi_agent_math/compute_dollar" = "nexus.extensions.projects.multi_agent_math.tools" }

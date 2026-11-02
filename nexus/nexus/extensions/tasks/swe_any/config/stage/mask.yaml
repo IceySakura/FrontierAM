@@ -1,0 +1,108 @@
+# SWE-Any Mask — single-run config (per-feature draft mask + Claude Code refine).
+#
+#   uv run nexus run-single nexus/extensions/tasks/swe_any/config/stage/mask.yaml \
+#       -o ./outputs/swe_any/mask_result.json
+#
+# Prereq: a select.jsonl from swe_any_select (its resolved features) and the
+# parse_graph.json from swe_any_parse, both under SWE_ANY_OUTPUT_DIR. For each resolved
+# feature the task invokes run_mask in-sandbox (draft patch) and runs a Claude Code refine
+# pass, writing output_dir/<repo>/sgNN/{mask_heuristic,mask_agentic}.json plus repo-level
+# {mask_heuristic,mask_agentic}.jsonl and the unified mask.jsonl (chosen patch per feature;
+# carries the per-item status too).
+#
+# Secrets come from the environment via ${oc.env:...}; never hard-code tokens.
+#
+# This file is also the batch default: generator/stage/mask.py deep-merges SWE_ANY_CONFIG_PATCH
+# over it (task knobs), then applies the backend patch for the merged
+# openai_clients.main.name, then injects per-instance fields. Export any
+# ${oc.env:...} below to override a default in either entry point.
+
+imports:
+  - nexus.extensions.tasks.swe_any
+  - nexus.extensions.agents.claude_code
+
+task_name: "swe_any_mask"
+
+# Batch-only: which instances run-batch iterates (source jsonl + filters + paging).
+# The generator lifts this block out before building RunInput; run-single ignores
+# it and runs task_config.instance_path below.
+instances:
+  path: "${oc.env:SWE_ANY_INSTANCES,}"
+  ids: "${oc.env:SWE_ANY_INSTANCE_IDS,}"
+  language: "${oc.env:SWE_ANY_LANGUAGE,python}"
+  skip: "${oc.decode:${oc.env:SWE_ANY_SKIP,0}}"
+  limit: "${oc.decode:${oc.env:SWE_ANY_LIMIT,0}}"
+
+task_config:
+  instance_path: "${oc.env:SWE_ANY_INSTANCE_PATH,}"
+  repo_name: "${oc.env:SWE_ANY_REPO_NAME,repo}"
+  # Host inputs from Parse (graph) and Select (resolved features). Empty = default
+  # to output_dir/<repo>/{parse_graph.json,select.jsonl}.
+  graph_path: "${oc.env:SWE_ANY_GRAPH_PATH,}"
+  select_path: "${oc.env:SWE_ANY_SELECT_PATH,}"
+  output_dir: "${oc.env:SWE_ANY_OUTPUT_DIR,./outputs/swe_any}"
+
+  # Baked per-repo WORKLOAD image (SWE-Env `image`) — not the nexus runtime image.
+  image: "${oc.env:SWE_ANY_IMAGE,}"
+  repo_dir: "${oc.env:SWE_ANY_REPO_DIR,/testbed}"
+
+  # Cap on features to mask (0 = every resolved feature from Select).
+  max_features: "${oc.env:SWE_ANY_MAX_FEATURES,0}"
+  # Must remain 1 until Claude Code shares one LLM handler per runtime.
+  max_workers: "${oc.env:SWE_ANY_MAX_WORKERS,1}"
+  # Run the Claude Code refine pass over each draft mask patch; false keeps only
+  # the deterministic draft. Eval does not expose an equivalent disable switch.
+  use_agent: "${oc.decode:${oc.env:SWE_ANY_MASK_USE_AGENT,true}}"
+
+  agent_timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+  # Host ceiling on each in-sandbox run_mask invoke (deterministic, fast).
+  request_timeout: "${oc.env:SWE_ANY_MASK_REQUEST_TIMEOUT,900.0}"
+  release_runtime: "${oc.decode:${oc.env:SWE_ANY_RELEASE_RUNTIME,false}}"
+
+agent_name: "claude_code"
+agent_config:
+  working_dir: "${oc.env:CLAUDE_CODE_WORKING_DIR,${oc.env:SWE_ANY_REPO_DIR,/testbed}}"
+  timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+  version: "${oc.env:CLAUDE_CODE_VERSION,latest}"
+  extra_env:
+    ANTHROPIC_MODEL: "${oc.env:ANTHROPIC_MODEL,'claude-opus-4-8[1m]'}"
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+  thinking_preset: "${oc.env:SWE_ANY_THINKING_PRESET,bedrock-claude}"
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}"
+  token: "${oc.env:GONGFENG_TOKEN}"
+  # Gongfeng scheduling label (prod/eval/test); independent of the API hostname.
+  purpose: "${oc.env:GONGFENG_PURPOSE,test}"
+  runtime_image: "current"
+  # Broad transport ceiling shared by every stage; the agent_timeout is the effective limit.
+  request_timeout: "${oc.env:SWE_ANY_PROVIDER_REQUEST_TIMEOUT,86400.0}"
+  resource_spec: { cpu: 2, memory: 8 }
+
+runtime_configs:
+  main:
+    # run_mask runs in-sandbox via runtime.invoke, so ship the nexus wheel (incl.
+    # swe_any) + its runtime deps (networkx) into the worker venv — the workload
+    # image has no nexus/swe_any. Same pattern as Parse.
+    worker_venv:
+      modules: ["swe_any"]
+
+openai_clients:
+  main:
+    # Host LLM for Claude Code: litellm → Bedrock Anthropic (not OpenAI GPT).
+    name: "${oc.env:OPENAI_CLIENT_NAME,litellm}"
+    config:
+      client_args:
+        api_key: "${oc.env:OPENAI_API_KEY}"
+        base_url: "${oc.env:OPENAI_BASE_URL,http://trpc-gpt-eval.production.polaris:8080}"
+        cache_control_enabled: "${oc.decode:${oc.env:SWE_ANY_CACHE_CONTROL_ENABLED,true}}"
+        cache_control_strategy: "${oc.env:SWE_ANY_CACHE_CONTROL_STRATEGY,claude_code}"
+      request_args:
+        model: "${oc.env:OPENAI_MODEL,bedrock/anthropic.claude-opus-4-8}"
+
+processors:
+  chat:
+    name: "chat_tracker"
+    args:
+      tools_mode: "${oc.env:SWE_ANY_TOOLS_MODE,branch_last}"

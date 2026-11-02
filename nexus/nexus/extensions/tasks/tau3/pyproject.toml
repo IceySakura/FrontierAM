@@ -1,0 +1,21 @@
+[project]
+name = "tau3"
+version = "0.1.0"
+authors = [
+    { name = "taimingfu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "tau2 @ git+https://github.com/sierra-research/tau2-bench.git ; python_version >= '3.12'",
+    "litellm>=1.83.14,<2",
+    "loguru>=0.7.0",
+    "polaris-cpp-py",
+    "audioop-lts"
+]
+runtime = []
+
+[tool.nexus]
+agents = { tau3_agent = "nexus.extensions.tasks.tau3.agent" }
+tasks = { tau3 = "nexus.extensions.tasks.tau3.task" }

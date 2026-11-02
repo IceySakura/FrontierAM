@@ -1,0 +1,114 @@
+# White-box CC Search Agent Profile。
+#
+# 用途：
+#   运行 White-box CC Search Agent，组合 Host 侧 web_search/web_fetch 与 Runtime 侧
+#   bash/execute_code，完成需要联网检索、网页阅读和代码执行的任务。
+#
+# 适用任务：
+#   Agent、WorkAgent、Search 类任务，以及 Verifier 通过 T3AgentResult 读取最终答案的任务。
+#
+# Harbor 运行时注入：
+#   user_prompt、workdir 和 timeout。本 Profile 不设置答案文件路径；Search Verifier 通过
+#   T3_AGENT_RESULT_PATH 读取标准 AgentResult。判分凭证由 task.toml [verifier.env] 注入。
+#
+# 环境变量：
+#   必填：SERPER_APP_ID、SERPER_APP_KEY（web_search）；
+#         JINA_APP_ID、JINA_APP_KEY（web_fetch）；
+#         SUMMARY_OPENAI_API_KEY（网页正文摘要模型）。
+#   可选：MAX_ITERATIONS、SERPER_URL、JINA_URL、JINA_PROVIDER、CC_SEARCH_CACHE_DIR、
+#         JUPYTER_PYTHON_PATH、SUMMARY_OPENAI_BASE_URL、SUMMARY_OPENAI_MODEL。
+#   必填项缺失时 __env 会在启动前明确报错，不会静默运行成 0 分。
+#
+# 使用示例：
+#   nexus run batch \
+#     --data 't3-harbor:///absolute/path/to/search/tasks?flat=true&workers=32' \
+#     --use harbor_bridge \
+#     --use nexus/extensions/harbor_bridge/configs/runtime/gongfeng-prod.yaml \
+#     --use nexus/extensions/harbor_bridge/configs/agents/cc-search-whitebox.yaml \
+#     --use nexus/extensions/harbor_bridge/configs/llm/aihub-hy3.yaml \
+#     -d output/search.db
+
+body:
+  imports:
+    # 注册 cc_search_agent_whitebox 及其 web_search / web_fetch / bash / execute_code 工具。
+    - nexus.extensions.agents.cc_search_agent_whitebox
+    # summary client 使用 litellm。
+    - nexus.extensions.openai_clients.litellm
+
+  agent_name: cc_search_agent_whitebox
+
+  # CCSearchAgentWhiteboxInput 的字段。user_prompt 由 Harbor Task 在运行时传入。
+  agent_config:
+    # Think-Act 轮数上限；到达后以 max_iterations 状态结束。
+    max_iterations: ${oc.env:MAX_ITERATIONS,100}
+    # 显式钉住工具面，避免依赖 agent 内部默认值。WebSearch / WebFetch 是 host 侧
+    # LOCAL 工具，Bash / ExecuteCode 是 RUNTIME 工具（在沙箱内的 nexus-runtime 进程里执行，
+    # 所以任务镜像和 runtime 镜像都要能满足它们）。
+    tools:
+      - cc_search_agent_whitebox/web_search
+      - cc_search_agent_whitebox/web_fetch
+      - cc_search_agent_whitebox/bash
+      - cc_search_agent_whitebox/execute_code
+    # 同一轮里的多个 tool_calls 并发执行。
+    parallel_tool_calls: true
+    # 单个工具结果进入历史前的截断长度。搜索类轨迹很长，42000 与训练分布一致。
+    tool_output_truncation: 42000
+    # 模型给出非法 tool-args JSON 时重新请求的次数。
+    invalid_tool_args_retries: 10
+    # 单次工具调用遇到瞬时运行时错误的重试次数。
+    tool_call_error_retries: 10
+    # 工具报错不终止整轮，把错误作为观测回灌给模型自行纠正。
+    tool_error_continue: true
+
+  # 本 Agent 私有工具的凭证与端点。注意 key 是【被委托工具】的注册名：
+  # execute_code 只是壳，实际转调 jupyter_code_interpreter，配置查的是后者。
+  #
+  # ⚠ tool_configs 是自由字典，工具直接消费它，没有 pydantic 强转：布尔值绝不能写成
+  #   ${oc.env:...}，因为那会解析成字符串，而 backend 用裸 bool() 判断 —— bool('false')
+  #   是 True，于是"关掉"会静默变成"打开"。布尔一律写字面量，需要改用
+  #   --set tool_configs.'cc_search_agent_whitebox/web_search'.use_cache=false
+  #   （--set 会按 YAML 解析标量，得到真正的布尔）。字符串走 ${oc.env:...} 没问题。
+  tool_configs:
+    cc_search_agent_whitebox/web_search:
+      serper_url: ${oc.env:SERPER_URL,http://trpc-gpt-eval.production.polaris:8080/search}
+      serper_app_id__env: SERPER_APP_ID
+      serper_app_key__env: SERPER_APP_KEY
+      # 把 huggingface.co / hf.co 从 Serper organic 结果里滤掉，避免模型看到榜单页泄漏答案。
+      block_huggingface: true
+      use_cache: true
+      cache_dir: ${oc.env:CC_SEARCH_CACHE_DIR,/tmp/cc_search_cache}
+    cc_search_agent_whitebox/web_fetch:
+      jina_url: ${oc.env:JINA_URL,http://trpc-gpt-eval.production.polaris:8080/api/jina_ai/search}
+      jina_app_id__env: JINA_APP_ID
+      jina_app_key__env: JINA_APP_KEY
+      jina_provider: ${oc.env:JINA_PROVIDER,aws_jina}
+      # 拒绝抓取 huggingface.co 的 datasets / spaces 路径（会泄漏 benchmark 答案）；
+      # 与 web_search 的同名开关相互独立。
+      block_huggingface: true
+      use_cache: true
+      cache_dir: ${oc.env:CC_SEARCH_CACHE_DIR,/tmp/cc_search_cache}
+    jupyter_code_interpreter:
+      # execute_code 的 Jupyter kernel 解释器。不设会回落到沙箱内 nexus-runtime 自己的
+      # Python（site-packages 不同），而不是任务镜像的 Python。任务换镜像时要跟着改，
+      # 长期应下沉到 task.toml [environment.env].JUPYTER_PYTHON_PATH。
+      python_path: ${oc.env:JUPYTER_PYTHON_PATH,/usr/local/bin/python3.12}
+
+  # web_fetch 抽取网页正文用的轻量模型。它随 agent 变化（换成 claude_code 就不存在），
+  # 不随 policy 模型变化，所以属于本文件而不是 llm/ Profile；只增加 summary 这个具名
+  # client，不触碰 llm/ Profile 的 main。
+  openai_clients:
+    summary:
+      name: litellm
+      config:
+        client_args:
+          base_url: ${oc.env:SUMMARY_OPENAI_BASE_URL,http://llm-api.model-eval.woa.com/v1}
+          api_key__env: SUMMARY_OPENAI_API_KEY
+          # client_args 同样没有强转，数值也写字面量。
+          max_retries: 5
+        request_args:
+          model: ${oc.env:SUMMARY_OPENAI_MODEL,openai/api_naci_default_deepseek-v4-flash}
+
+merge:
+  imports: append_unique
+
+source: harbor-cc-search-whitebox

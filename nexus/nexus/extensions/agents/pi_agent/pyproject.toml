@@ -1,0 +1,10 @@
+[project]
+name = "pi-agent"
+version = "0.1.0"
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { pi = "nexus.extensions.agents.pi_agent.agent" }

@@ -1,0 +1,78 @@
+# Math benchmark: direct single-turn LLM baseline, A20B Taiji route.
+
+imports:
+  - nexus.extensions
+  - nexus.extensions.openai_clients
+  - nexus.extensions.tasks.stem_mas
+  - nexus.extensions.agents.single_turn
+
+task_name: "stem_mas"
+solver_strategy: "no_agent"
+task_config:
+  evaluator_none_score: 0.0
+  lean4_verifier_url: ${oc.env:LEAN4_VERIFIER_URL,"http://lean4-verifier-v0d2d0.production.polaris:8080"}
+  lean4_verifier_timeout_seconds: ${oc.decode:${oc.env:LEAN4_VERIFIER_TIMEOUT_SECONDS,7200}}
+  lean4_verifier_forbid_sorry: ${oc.decode:${oc.env:LEAN4_VERIFIER_FORBID_SORRY,true}}
+  needs_runtime: false
+  timeout: ${oc.decode:${oc.env:STEM_MAS_TASK_TIMEOUT,7200}}
+
+dataset:
+  name: ${oc.env:STEM_MAS_DATASET_NAME,"minif2f"}
+  path: ${oc.env:STEM_MAS_DATASET_PATH,""}
+
+runner:
+  timeout: ${oc.decode:${oc.env:STEM_MAS_RUNNER_TIMEOUT,7800}}
+
+agent_name: "single_turn"
+agent_config: {}
+
+openai_clients:
+  main:
+    name: "taiji"
+    config:
+      client_args:
+        model: ${oc.env:GENERATION_MODEL,"A20B-High-260609-V5-step320-192K"}
+        namespace: ${oc.env:TAIJI_NS,"Production"}
+        service: ${oc.env:GENERATION_TAIJI_POLARIS_SERVICE,"A20B-High-260609-V5-step320-192K_AIDE"}
+        authorization: ${oc.env:TAIJI_AUTH,"Bearer xxx"}
+        wsid: ${oc.env:TAIJI_WSID,"10103"}
+        url_pattern: ${oc.env:TAIJI_URL_PATTERN,"v1"}
+        timeout: ${oc.decode:${oc.env:GENERATION_TIMEOUT,7200}}
+        max_retries: ${oc.decode:${oc.env:GENERATION_MAX_RETRIES,25}}
+        enable_thinking: true
+        chat_template_kwargs:
+          interleaved_thinking: true
+          reasoning_effort: ${oc.env:GENERATION_REASONING_EFFORT,"high"}
+      request_args:
+        temperature: ${oc.decode:${oc.env:GENERATION_TEMPERATURE,0.2}}
+        top_p: ${oc.decode:${oc.env:GENERATION_TOP_P,1.0}}
+        max_tokens: ${oc.decode:${oc.env:GENERATION_MAX_TOKENS,131072}}
+        top_k: -1
+        repetition_penalty: 1
+
+  judge:
+    name: "taiji"
+    config:
+      client_args:
+        model: ${oc.env:JUDGE_MODEL,"GPT-OSS-120B-zw-long"}
+        namespace: ${oc.env:TAIJI_NS,"Production"}
+        service: ${oc.env:TAIJI_POLARIS_SERVICE,"GPT-OSS-120B-zw-long_AIDE"}
+        authorization: ${oc.env:TAIJI_AUTH,"Bearer xxx"}
+        wsid: ${oc.env:TAIJI_WSID,"10103"}
+        url_pattern: ${oc.env:TAIJI_URL_PATTERN,"v1"}
+        timeout: ${oc.decode:${oc.env:JUDGE_TIMEOUT,7200}}
+        max_retries: ${oc.decode:${oc.env:JUDGE_MAX_RETRIES,25}}
+      request_args:
+        temperature: 0.0
+        top_p: 1.0
+
+cache_metrics:
+  client_overrides:
+    main:
+      model_provider: taiji
+    judge:
+      model_provider: taiji
+
+processors:
+  chat:
+    name: "chat_tracker"

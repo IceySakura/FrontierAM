@@ -1,0 +1,14 @@
+[project]
+name = "claw_eval"
+version = "0.1.0"
+authors = [
+    { name = "felixxxi" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["pillow>=10.0.0"]
+runtime = []
+
+[tool.nexus]
+tasks = { claw_eval = "nexus.extensions.tasks.claw_eval.task" }

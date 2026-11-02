@@ -1,0 +1,55 @@
+# Visual task with spatial tools. Inputs, upload and optional scoring match the visual task.
+# Requires Docker, a model with tool calls, an image with Python/ipykernel, and network access
+# from this host to the spatial services. Replace /data/example.png with a readable local image:
+# uv run nexus run-single nexus/extensions/tasks/visual_spatial/example.yaml -o visual-spatial-output.json
+imports:
+  - nexus.extensions
+
+task_name: visual_spatial
+task_config:
+  user_prompt:
+    - type: text
+      text: Locate the objects in this image and say which one is closest to the camera.
+    - type: image_url
+      image_url:
+        url: /data/example.png
+  history: []
+  reward_system_router_id: null
+
+agent_name: visual_agent
+agent_config:
+  max_iterations: 30
+  show_image_dimensions: true
+
+runtime_provider_name: docker
+runtime_provider_config:
+  runtime_image: current
+
+runtime_configs:
+  main:
+    image: ${oc.env:VISUAL_AGENT_IMAGE}
+    worker_venv: true
+
+tool_configs:
+  code_interpreter:
+    python_path: ${oc.env:VISUAL_AGENT_PYTHON_PATH,"python3"}
+    work_dir: /tmp/jupyter_work
+  spatial:
+    base_url: ${oc.env:SPATIAL_BASE_URL,"http://29.177.195.212"}
+    timeout: 150.0
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_API_KEY}
+        base_url: ${oc.env:MODEL_BASE_URL}
+      request_args:
+        model: ${oc.env:MODEL_NAME}
+
+processors:
+  chat:
+    name: chat_tracker
+  agent_metrics:
+    name: main_agent_metrics

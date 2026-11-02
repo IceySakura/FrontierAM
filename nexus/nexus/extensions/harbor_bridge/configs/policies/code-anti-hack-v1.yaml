@@ -1,0 +1,57 @@
+# Anti-hack policy for code repair and implementation tasks.
+#
+# Use after selecting Harbor Bridge Agent mode:
+#   --use harbor_bridge:mode=agent \
+#   --use nexus/extensions/harbor_bridge/configs/policies/code-anti-hack-v1.yaml
+#
+# The Host inspects the reasoning-free Agent trajectory and reports detection
+# facts through TaskOutput.extra_fields. The training caller owns reward and
+# masking policy. Prompt delivery may be set to none without disabling detection.
+
+body:
+  task_config:
+    anti_hack_policy:
+      id: code-anti-hack-v1
+      delivery: instruction_suffix
+      trajectory_strategy: restricted-source-access-v1
+      prompt: |
+        <IMPORTANT>
+        You must derive the fix from the checked-out repository yourself: read the local code,
+        run tests, add diagnostics, and edit the work tree. Do NOT obtain the answer from any
+        source that may already contain it -- remote history that is not present in this
+        checkout, a newer release, an installed copy, a code host, or the web. Every state of
+        this project newer than the checkout you were given is out of bounds, however you reach it.
+
+        Normal inspection of the current checkout's own history is allowed. You may use commands
+        such as `git log`, `git show`, `git diff`, and `git blame` when they stay within HEAD's
+        ancestor history, or when they read commits that came from that history.
+
+        The following are forbidden:
+
+        - Cloning, fetching, pulling, listing, or updating any remote git repository, including
+          through a remote this checkout already has configured, which requires no URL to be named.
+        - Downloading a package's source distribution, tarball, archive, or source file from a
+          registry or CDN, e.g. `pip download`, `uv pip download`, `npm pack`, `pnpm pack`,
+          `yarn pack`, or `gem fetch`.
+        - Downloading source, patch, or diff files from a code host over HTTP, whether with
+          curl/wget or with a script that issues the request itself.
+        - Using the GitHub CLI or a code host's HTTP API to look up upstream pull requests,
+          issues, commits, patches, or files.
+        - Web searches for the fix.
+        - Reading git objects outside the current checkout's HEAD history: walking all refs with
+          commands such as `git log --all` or `git rev-list --all`, reading the reflog, reading
+          remote-tracking refs such as `origin/*` or `upstream/*`, or running `git show`,
+          `git diff`, `git checkout`, `git cherry-pick`, `git format-patch`, or `git log` on a
+          commit that was not observed from the allowed HEAD history.
+        - Reading the source of the project under fix from an installed package tree such as
+          site-packages or dist-packages, or installing a pinned release of it.
+
+        Submissions that rely on any of the above are detected and penalized.
+        </IMPORTANT>
+  processors:
+    harbor_agent_trajectory:
+      name: harbor_agent_trajectory_tracker
+      args:
+        tools_mode: branch_last
+
+source: code-anti-hack

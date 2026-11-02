@@ -1,0 +1,13 @@
+[project]
+name = "codebuddy_server"
+version = "0.1.0"
+authors = [
+    { name = "kechizhang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = ["langfuse"]
+
+[tool.nexus]
+agents = { codebuddy_server = "nexus.extensions.agents.codebuddy_server.agent" }

@@ -1,0 +1,40 @@
+{
+  "active_task_version": "0.3.0",
+  "scoring_version": "success-v2",
+  "new_archive_sha256": "adc05437b14f5dd045afa5d43baa5fdfc5643fcaf84334be87c850f2eb2a2da1",
+  "previous_archive_retained": true,
+  "changed_files": 12,
+  "added_files": 2,
+  "unchanged_files": 840,
+  "changes": {
+    "objective": "success rate only",
+    "runtime": "fixed per-case 1–300 seconds replaces uniform 1000 seconds",
+    "time_score_removed": true,
+    "mapping": "0–10 piecewise; baseline p_B at 5; <=0.9*p_B at 0; p=1 at 10",
+    "full_suite_cases": 650,
+    "public_cases": 163,
+    "repeats": 3,
+    "precision": 1e-08
+  },
+  "pilot": {
+    "cases": 20,
+    "selection": "4 per group by fixed hash order, frozen before conic model attempts",
+    "score": null,
+    "formal_score": false,
+    "report": "success counts/rates, per-group counts/rates, diagnostic elapsed times; no G and no full-suite anchor mapping"
+  },
+  "validation": {
+    "packaged_hashes": 662,
+    "contract_checks": "success_v2_contract_checks.json",
+    "nexus_unit_tests_passed": 146,
+    "docker_end_to_end": "passed: original updated verifier, 20 cases x 3 repeats, 60 boundary assertions",
+    "public_archive_boundary_checked": true,
+    "all_813_input_hashes_unchanged": true,
+    "model_calls_for_validation": 0,
+    "boundary_report": "/Users/iceysakura/Projects/nexus/outputs/20261102_two_task_probe/conic_validation_v2/boundary_proof.json",
+    "completed_at": "2026-11-02T15:44:46.753161+08:00",
+    "static_type_check": "passed",
+    "adapter_type_binding_test": "passed"
+  },
+  "ongoing_exponential_campaign": "unchanged; active attempt not interrupted"
+}

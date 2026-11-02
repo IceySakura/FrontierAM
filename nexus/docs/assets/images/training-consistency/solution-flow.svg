@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 710">
+  <defs>
+    <linearGradient id="promptGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#bbdefb"/>
+      <stop offset="100%" style="stop-color:#90caf9"/>
+    </linearGradient>
+    <linearGradient id="responseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c8e6c9"/>
+      <stop offset="100%" style="stop-color:#a5d6a7"/>
+    </linearGradient>
+    <linearGradient id="newGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffe0b2"/>
+      <stop offset="100%" style="stop-color:#ffcc80"/>
+    </linearGradient>
+    <linearGradient id="firstPartGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f8bbd0"/>
+      <stop offset="100%" style="stop-color:#f48fb1"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#666"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2e7d32"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#e65100"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="28" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#333">HyTunerClient：Text 级增量 Tokenization 流程</text>
+
+  <!-- ==================== Step 1: Round n Result ==================== -->
+  <text x="30" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="#1565c0">第 n 轮结束后 → 保存 last_tokens</text>
+
+  <rect x="30" y="80" width="840" height="70" rx="8" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+
+  <!-- last_tokens visualization -->
+  <text x="50" y="105" font-family="monospace" font-size="11" fill="#666">last_tokens =</text>
+
+  <!-- interleaved prompt and response tokens -->
+  <rect x="160" y="90" width="55" height="35" rx="4" fill="url(#promptGrad)" stroke="#1976d2" stroke-width="1"/>
+  <text x="187" y="112" text-anchor="middle" font-family="monospace" font-size="10" fill="#0d47a1">p₁</text>
+
+  <rect x="220" y="90" width="55" height="35" rx="4" fill="url(#responseGrad)" stroke="#4caf50" stroke-width="1"/>
+  <text x="247" y="112" text-anchor="middle" font-family="monospace" font-size="10" fill="#1b5e20">r₁</text>
+
+  <rect x="280" y="90" width="55" height="35" rx="4" fill="url(#promptGrad)" stroke="#1976d2" stroke-width="1"/>
+  <text x="307" y="112" text-anchor="middle" font-family="monospace" font-size="10" fill="#0d47a1">p₂</text>
+
+  <rect x="340" y="90" width="55" height="35" rx="4" fill="url(#responseGrad)" stroke="#4caf50" stroke-width="1"/>
+  <text x="367" y="112" text-anchor="middle" font-family="monospace" font-size="10" fill="#1b5e20">r₂</text>
+
+  <text x="410" y="112" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#666">...</text>
+
+  <rect x="430" y="90" width="55" height="35" rx="4" fill="url(#promptGrad)" stroke="#1976d2" stroke-width="1"/>
+  <text x="457" y="112" text-anchor="middle" font-family="monospace" font-size="10" fill="#0d47a1">pₙ</text>
+
+  <rect x="490" y="90" width="55" height="35" rx="4" fill="url(#responseGrad)" stroke="#4caf50" stroke-width="1"/>
+  <text x="517" y="112" text-anchor="middle" font-family="monospace" font-size="10" fill="#1b5e20">rₙ</text>
+
+  <text x="420" y="140" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#666">前 n 轮交替的 prompt + response tokens</text>
+
+  <!-- ==================== Step 2: New messages come in ==================== -->
+  <text x="30" y="185" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="#2e7d32">第 n+1 轮开始 → 新消息到来</text>
+
+  <rect x="30" y="200" width="840" height="80" rx="8" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+
+  <text x="50" y="228" font-family="monospace" font-size="11" fill="#666">messages =</text>
+
+  <!-- 历史消息部分 -->
+  <rect x="160" y="213" width="55" height="28" rx="4" fill="#e3f2fd" stroke="#1976d2" stroke-width="1"/>
+  <text x="187" y="232" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1565c0">user₁</text>
+
+  <rect x="220" y="213" width="55" height="28" rx="4" fill="#e8f5e9" stroke="#4caf50" stroke-width="1"/>
+  <text x="247" y="232" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#2e7d32">asst₁</text>
+
+  <rect x="280" y="213" width="55" height="28" rx="4" fill="#e3f2fd" stroke="#1976d2" stroke-width="1"/>
+  <text x="307" y="232" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1565c0">user₂</text>
+
+  <rect x="340" y="213" width="55" height="28" rx="4" fill="#e8f5e9" stroke="#4caf50" stroke-width="1"/>
+  <text x="367" y="232" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#2e7d32">asst₂</text>
+
+  <text x="410" y="232" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#666">...</text>
+
+  <rect x="430" y="213" width="55" height="28" rx="4" fill="#e3f2fd" stroke="#1976d2" stroke-width="1"/>
+  <text x="457" y="232" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1565c0">userₙ</text>
+
+  <rect x="490" y="213" width="55" height="28" rx="4" fill="#e8f5e9" stroke="#4caf50" stroke-width="1"/>
+  <text x="517" y="232" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#2e7d32">asstₙ</text>
+
+  <!-- 分隔线 -->
+  <line x1="557" y1="208" x2="557" y2="275" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+  <!-- 新增消息部分 -->
+  <rect x="570" y="213" width="80" height="28" rx="4" fill="#fff3e0" stroke="#ff9800" stroke-width="1.5"/>
+  <text x="610" y="232" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#e65100">tool_result</text>
+
+  <rect x="655" y="213" width="80" height="28" rx="4" fill="#fff3e0" stroke="#ff9800" stroke-width="1.5"/>
+  <text x="695" y="232" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#e65100">new_user</text>
+
+  <!-- 对应关系标注 -->
+  <text x="350" y="260" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#666">↑ 历史消息 (对应 last_tokens 中的 p₁,r₁,p₂,r₂...pₙ,rₙ)</text>
+  <text x="650" y="260" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#e65100">↑ 新增消息</text>
+
+  <!-- 连线标注对应关系 -->
+  <line x1="187" y1="125" x2="187" y2="213" stroke="#1976d2" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+  <line x1="247" y1="125" x2="247" y2="213" stroke="#4caf50" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+  <line x1="307" y1="125" x2="307" y2="213" stroke="#1976d2" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+  <line x1="367" y1="125" x2="367" y2="213" stroke="#4caf50" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+  <line x1="457" y1="125" x2="457" y2="213" stroke="#1976d2" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+  <line x1="517" y1="125" x2="517" y2="213" stroke="#4caf50" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+
+  <!-- ==================== Step 3: Text-level incremental tokenization ==================== -->
+  <text x="30" y="305" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="#c2185b">Text 级增量 Tokenization 核心步骤</text>
+  <text x="30" y="320" font-family="monospace" font-size="9" fill="#888">_find_common_prefix(messages, last_messages) → can_reuse_prefix = True, cached_tokens = last_tokens</text>
+
+  <!-- first_part_text -->
+  <rect x="30" y="332" width="840" height="60" rx="8" fill="#fce4ec" stroke="#e91e63" stroke-width="1"/>
+
+  <text x="50" y="352" font-family="monospace" font-size="10" fill="#880e4f">first_part_text = apply_chat_template(messages[:prefix_len], ..., add_generation_prompt=False)</text>
+
+  <text x="50" y="378" font-family="monospace" font-size="11" fill="#666">first_part_text =</text>
+  <rect x="195" y="363" width="380" height="25" rx="4" fill="url(#firstPartGrad)" stroke="#e91e63" stroke-width="1.5"/>
+  <text x="385" y="381" text-anchor="middle" font-family="monospace" font-size="10" font-style="italic" fill="#880e4f">user₁ · asst₁ · user₂ · asst₂ · … · asstₙ</text>
+  <text x="600" y="381" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#888">← 旧消息渲染的文本 (str)</text>
+
+  <!-- full_text -->
+  <rect x="30" y="422" width="840" height="60" rx="8" fill="#e8f5e9" stroke="#4caf50" stroke-width="1"/>
+
+  <text x="50" y="442" font-family="monospace" font-size="10" fill="#1b5e20">full_text = apply_chat_template(messages, ..., is_first_msg=False)</text>
+
+  <text x="50" y="468" font-family="monospace" font-size="11" fill="#666">full_text =</text>
+  <rect x="195" y="453" width="380" height="25" rx="4" fill="url(#firstPartGrad)" stroke="#e91e63" stroke-width="1.5"/>
+  <text x="385" y="471" text-anchor="middle" font-family="monospace" font-size="10" font-style="italic" fill="#880e4f">user₁ · asst₁ · user₂ · asst₂ · … · asstₙ</text>
+  <rect x="580" y="453" width="160" height="25" rx="4" fill="url(#newGrad)" stroke="#ff9800" stroke-width="1.5"/>
+  <text x="660" y="471" text-anchor="middle" font-family="monospace" font-size="10" font-style="italic" fill="#e65100">tool_res · new_user</text>
+  <text x="760" y="471" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#888">← 完整文本 (str)</text>
+
+  <!-- Verification annotation between first_part_text and full_text -->
+  <line x1="195" y1="390" x2="195" y2="450" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="575" y1="390" x2="575" y2="450" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <path d="M 195 418 L 575 418" fill="none" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="385" y="413" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="bold" fill="#2e7d32">✓ 验证: full_text.startswith(first_part_text)</text>
+
+  <!-- ==================== Step 4: Extract new_text and tokenize ==================== -->
+  <rect x="30" y="494" width="840" height="72" rx="8" fill="#fff3e0" stroke="#ff9800" stroke-width="1"/>
+
+  <text x="50" y="514" font-family="monospace" font-size="10" fill="#e65100">new_text = full_text[len(first_part_text):]</text>
+  <text x="50" y="529" font-family="monospace" font-size="10" fill="#e65100">new_tokens = tokenizer.encode(new_text, add_special_tokens=False)</text>
+
+  <!-- Visual: text bar → encode → token blocks -->
+  <text x="50" y="554" font-family="monospace" font-size="11" fill="#666">new_text =</text>
+  <rect x="140" y="540" width="160" height="22" rx="4" fill="url(#newGrad)" stroke="#ff9800" stroke-width="1.5"/>
+  <text x="220" y="556" text-anchor="middle" font-family="monospace" font-size="9" font-style="italic" fill="#e65100">tool_res · new_user</text>
+
+  <line x1="310" y1="551" x2="370" y2="551" stroke="#e65100" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+  <text x="340" y="543" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#e65100">encode</text>
+
+  <text x="380" y="554" font-family="monospace" font-size="10" fill="#666">new_tokens =</text>
+  <rect x="478" y="540" width="130" height="22" rx="4" fill="url(#newGrad)" stroke="#ff9800" stroke-width="1.5"/>
+  <text x="543" y="556" text-anchor="middle" font-family="monospace" font-size="9" fill="#e65100">new₁ new₂ ... newₓ</text>
+  <text x="628" y="556" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#888">← 仅对增量文本 tokenize</text>
+
+  <!-- ==================== Step 5: Final concatenation ==================== -->
+  <text x="30" y="590" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="#1565c0">最终拼接 → 使用缓存的 cached_tokens，不重新 tokenize 历史</text>
+
+  <rect x="30" y="605" width="840" height="90" rx="8" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
+
+  <text x="50" y="628" font-family="monospace" font-size="10" fill="#0d47a1">prompt_ids = cached_tokens + new_tokens</text>
+
+  <text x="50" y="663" font-family="monospace" font-size="11" fill="#666">prompt_ids =</text>
+
+  <!-- Final token sequence - interleaved style matching last_tokens -->
+  <rect x="160" y="648" width="50" height="28" rx="4" fill="url(#promptGrad)" stroke="#1976d2" stroke-width="1"/>
+  <text x="185" y="667" text-anchor="middle" font-family="monospace" font-size="9" fill="#0d47a1">p₁</text>
+
+  <rect x="215" y="648" width="50" height="28" rx="4" fill="url(#responseGrad)" stroke="#4caf50" stroke-width="1"/>
+  <text x="240" y="667" text-anchor="middle" font-family="monospace" font-size="9" fill="#1b5e20">r₁</text>
+
+  <text x="280" y="667" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#666">...</text>
+
+  <rect x="305" y="648" width="50" height="28" rx="4" fill="url(#promptGrad)" stroke="#1976d2" stroke-width="1"/>
+  <text x="330" y="667" text-anchor="middle" font-family="monospace" font-size="9" fill="#0d47a1">pₙ</text>
+
+  <rect x="360" y="648" width="50" height="28" rx="4" fill="url(#responseGrad)" stroke="#4caf50" stroke-width="1"/>
+  <text x="385" y="667" text-anchor="middle" font-family="monospace" font-size="9" fill="#1b5e20">rₙ</text>
+
+  <text x="425" y="667" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#666">+</text>
+
+  <rect x="445" y="648" width="120" height="28" rx="4" fill="url(#newGrad)" stroke="#ff9800" stroke-width="1.5"/>
+  <text x="505" y="667" text-anchor="middle" font-family="monospace" font-size="9" fill="#e65100">new₁...newₓ</text>
+
+  <!-- Labels under final sequence -->
+  <text x="285" y="687" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#666">来自 cached_tokens (即 last_tokens，不重新 tokenize)</text>
+  <text x="505" y="687" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#e65100">来自 tokenizer.encode(new_text)</text>
+
+  <!-- Key insight -->
+  <rect x="755" y="623" width="105" height="55" rx="6" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="807" y="643" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="bold" fill="#1b5e20">关键保证</text>
+  <text x="807" y="660" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#2e7d32">历史 tokens</text>
+  <text x="807" y="673" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#2e7d32">完全不变</text>
+
+</svg>

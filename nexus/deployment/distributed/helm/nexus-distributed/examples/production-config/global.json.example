@@ -1,0 +1,114 @@
+{
+  "production_mode": true,
+  "auth_mode": "required",
+  "tai_trust_x_rio_app_id": true,
+  "admin_users": [
+    "lawrentwang"
+  ],
+  "cors_origins": [
+    "https://control.runner.nexus-agent.woa.com",
+    "https://cloud.nexus-agent.woa.com"
+  ],
+  "control_public_base_url": "https://control-runner-nexus-agent.mcp.woa.com",
+  "console_public_base_url": "https://cloud.nexus-agent.woa.com",
+  "application_public_base_url": "https://application-runner-nexus-agent.mcp.woa.com",
+  "console_application_base_url": "https://application.runner.nexus-agent.woa.com",
+  "application_internal_base_url": "http://application.runner.nexus-agent.woa.com",
+  "shard_count": 64,
+  "scheduler_lease_ttl": 20,
+  "scheduler_lease_renew_interval": 5.0,
+  "scheduler_shard_ownership_limit": 0,
+  "scheduler_poll_interval": 0.1,
+  "scheduler_scan_limit": 250,
+  "scheduler_max_assignments": 250,
+  "scheduler_manager_lock_limit": 64,
+  "reconciler_poll_interval": 1.0,
+  "reconciler_batch_size": 500,
+  "reconciler_lease_ttl": 20,
+  "reconciler_lease_renew_interval": 5.0,
+  "reconciler_shard_ownership_limit": 0,
+  "reconciler_core_max_batches_per_tick": 4,
+  "reconciler_core_time_budget": 2.0,
+  "environment_reconcile_worker_count": 4,
+  "dependency_build_reconcile_worker_count": 4,
+  "artifact_maintenance_worker_count": 2,
+  "batch_lifecycle_worker_count": 4,
+  "manager_heartbeat_interval": 5.0,
+  "manager_healthy_ttl": 15,
+  "manager_self_fence_timeout": 30,
+  "manager_dead_ttl": 45,
+  "manager_start_batch_size": 20,
+  "batch_submit_batch_size": 2000,
+  "batch_lifecycle_page_size": 500,
+  "batch_lifecycle_parent_limit": 50,
+  "artifact_store_provider": "generic_repository",
+  "artifact_generic_base_url": "https://mirrors.tencent.com/repository/generic",
+  "artifact_generic_repository": "nexus-agent",
+  "artifact_upload_ticket_current_key_id": "v1",
+  "artifact_upload_total_concurrency": 24,
+  "artifact_upload_input_concurrency": 8,
+  "artifact_upload_result_concurrency": 16,
+  "artifact_download_total_concurrency": 64,
+  "artifact_download_input_concurrency": 48,
+  "artifact_download_result_concurrency": 16,
+  "submit_token_current_key_id": "v1",
+  "environment_enabled_providers": [
+    "tkex"
+  ],
+  "environment_base_image": "mirrors.tencent.com/nexus_utopia/nexus-distributed-workload@sha256:REPLACE_WITH_RELEASE_DIGEST",
+  "environment_builder_image": "mirrors.tencent.com/nexus_utopia/nexus-distributed-builder@sha256:REPLACE_WITH_RELEASE_DIGEST",
+  "environment_image_pull_secrets": [
+    "release-secrets"
+  ],
+  "environment_namespace": "ns-prjftdbn-300007534-production",
+  "environment_release_name": "runner-prod",
+  "environment_app_name": "nexus-distributed",
+  "environment_database_url_secret_name": "runner-prod-nexus-database",
+  "environment_database_url_secret_key": "database-url",
+  "environment_db_pool_size": 1,
+  "environment_db_max_overflow": 0,
+  "environment_orchestration_db_pool_size": 4,
+  "environment_orchestration_db_max_overflow": 2,
+  "dependency_builder_index_url": "https://mirrors.tencent.com/pypi/simple/",
+  "run_trace_sinks": {
+    "tdsql": {
+      "kind": "tdsql",
+      "displayName": "Production Trace Database",
+      "description": "Production distributed run traces",
+      "userSelectable": true,
+      "sinkClass": "nexus.runner.trace.tdsql::TDSQLTraceSink",
+      "sourceClass": "nexus.runner.trace.tdsql::TDSQLTraceSource",
+      "config": {
+        "host": "21.188.137.152",
+        "port": 3306,
+        "user": "nexus_dev",
+        "db": "runner"
+      },
+      "secretConfig": {
+        "password": "tdsql-writer-password"
+      }
+    }
+  },
+  "default_run_trace_sinks": [
+    "tdsql"
+  ],
+  "batch_task_store_backend": "tdsql",
+  "batch_task_store_database": "nexus_runner",
+  "require_principal_run_trace_backend_grant": false,
+  "trace_database_access": {
+    "tdsql": {
+      "read_host": "21.188.137.152",
+      "read_port": 3306,
+      "database": "runner",
+      "maintenance_credential_ref": "tdsql-cloud-maintenance",
+      "account_provider": {
+        "provider_type": "tencent_cloud_dcdb",
+        "region": "ap-nanjing",
+        "instance_id": "tdsqlshard-lu0c3wfhxp",
+        "api_endpoint": "dcdb.tencentcloudapi.com",
+        "account_host": "%"
+      },
+      "enabled": true
+    }
+  }
+}

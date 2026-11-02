@@ -1,0 +1,33 @@
+imports:
+  - nexus.extensions.tasks.identity
+  - nexus.extensions.agents.main
+  - nexus.extensions.openai_clients.openai
+  - nexus.trace.processors.chat_tracker
+
+task_name: identity
+task_config: {}
+
+agent_name: main_agent
+agent_config:
+  user_prompt: Reply with exactly NEXUS_ONLINE_SERVICE_OK.
+  tools: []
+  max_iterations: 1
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: '${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=azure_openai&model=${oc.env:NEXUS_MODEL,"gpt-5.5"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"60"}'
+        base_url: '${oc.env:MODEL_SERVICE_API_BASE_URL}'
+      request_args:
+        model: '${oc.env:NEXUS_MODEL,"gpt-5.5"}'
+
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      tools_mode: branch_last
+
+runner:
+  timeout: 300

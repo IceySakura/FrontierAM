@@ -1,0 +1,129 @@
+# Shared Context Agent profile for Claude Opus 4.8.
+#
+# This is a model/runtime run part, like base.yaml. It can be composed with:
+# - the local Nexus dataset and any split under configs/;
+# - a remote yufeihuang/context_agent_<split>@v1 dataset;
+# - an inline/mock item.
+#
+# The Vertex Anthropic adapter preserves each native response's ordered
+# `anthropic_content` blocks. The append-only Context Agent loop replays those
+# blocks verbatim, including signed thinking blocks, on every later tool turn.
+imports:
+  - nexus.extensions
+  - nexus.extensions.tasks.context_agent.cache_clients
+  - nexus.trace.processors.token_counter
+  - nexus.extensions.agents.context_agent.general_agent
+  - nexus.extensions.tasks.context_agent.general_task
+  - nexus.extensions.agents.context_agent.tools.general.runtime_tools
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: "http://hyrl-sandbox.prod.woa.com:8052"
+  token: ${oc.env:CTXAGENT_GONGFENG_TOKEN}
+  image: "mirrors.tencent.com/hunyuan_yanguan/context-agent:v1.2"
+  runtime_image: "current"
+  runtime_provider: "suanli"
+  network_policy:
+    default_action: deny
+    egress:
+      # Required when the selected item uses remote ZIP TaskFiles. Local
+      # TaskFiles do not use these endpoints, so keeping the allowlist here
+      # makes this base usable for both local and remote datasets.
+      - action: allow
+        target: auth.tdw.oa.com:80
+      - action: allow
+        target: taiji-nexus-dataset-io-dev.woa.com:8080
+      - action: allow
+        target: rakanxue-test-1258344703.cos-internal.ap-guangzhou.tencentcos.cn:443
+  request_timeout: 1800.0
+  rpc_protocol: http
+  resource_spec:
+    cpu: 2
+    memory: 10
+
+runtime_configs:
+  main:
+    worker_venv:
+      modules: []
+
+task_name: context_agent_general_task
+task_config:
+  max_tool_rounds: 999
+  max_parallel_calls: 0
+  file_search_top_k: 5
+  file_search_chunk_lines: 50
+  python_timeout: 120
+  curl_timeout: 180
+  artifact_root: null
+  evaluate: true
+  # A non-empty task-scoped key takes priority for remote TaskFiles. Empty
+  # preserves the existing WEDATA_KEY / WEDATA_KEY_FILE / default-file fallback.
+  WEDATA_KEY: "${oc.env:WEDATA_KEY,''}"
+
+agent_name: context_agent_general
+
+openai_clients:
+  main:
+    name: context_agent_vertex
+    config:
+      client_args:
+        protocol: anthropic
+        # Use the complete Authorization token accepted by the AIHub endpoint,
+        # including `?provider=aws_third` when required.
+        api_key: ${oc.env:CTXAGENT_POLICY_API_KEY}
+        # Empty by default: no cache_task_id is sent unless explicitly enabled.
+        cache_task_id_prefix: ${oc.env:CTXAGENT_POLICY_CACHE_TASK_ID_PREFIX,""}
+        endpoint: "http://api.aihub.woa.com/model/anthropic.claude-opus-4-8/invoke"
+        timeout: 1800
+        max_retries: 5
+        # Add Anthropic ephemeral cache breakpoints to the latest user/tool
+        # message and the final tool schema. Without these markers the gateway
+        # reports zero cache creation/read tokens on every turn.
+        cache_control_enabled: true
+        cache_control_strategy: claude_code
+      request_args:
+        model: "anthropic.claude-opus-4-8"
+        anthropic_version: "bedrock-2023-05-31"
+        thinking:
+          type: adaptive
+          display: summarized
+        output_config:
+          effort: xhigh
+        max_tokens: 128000
+        # Anthropic rejects forced tool choice while extended thinking is on.
+        drop_forced_tool_choice_with_thinking: true
+  judge:
+    name: context_agent_openai_responses
+    config:
+      client_args:
+        api_key: "${oc.env:CTXAGENT_JUDGE_API_KEY}?provider=azure&timeout=1800"
+        cache_task_id_prefix: ${oc.env:CTXAGENT_JUDGE_CACHE_TASK_ID_PREFIX,""}
+        endpoint: "http://api.aihub.woa.com/openai/v1/responses"
+        timeout: 1800
+        max_retries: 1
+      request_args:
+        model: "gpt-5.6-sol"
+        reasoning:
+          effort: high
+          summary: auto
+          context: all_turns
+        include:
+          - reasoning.encrypted_content
+        store: false
+        max_output_tokens: 128000
+
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      # Keep the Policy and agentic-Judge tool schemas on their own branches.
+      tools_mode: branch_last
+  tokens:
+    name: token_counter
+    args:
+      client_keys:
+        - main
+        - judge
+
+runner:
+  timeout: 3600

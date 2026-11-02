@@ -1,0 +1,25 @@
+[project]
+name = "search_s2t_rl_yb_glue"
+version = "0.1.0"
+authors = [
+    { name = "bertcai" },
+]
+maintainers = [
+    { name = "claudecao" },
+    { name = "novateurji" },
+    { name = "wallyshi" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+# httpx ships with nexus core; listed here for host-side standalone use of the
+# vendored search_api_client.py. polaris-cpp-py backs the Reward_system GRM
+# transport's Polaris service discovery (reward/grm_transport.py via
+# nexus.utils.reward_system), matching nexus/extensions/tools/yb_search.
+host = ["httpx>=0.27", "polaris-cpp-py"]
+runtime = []
+
+[tool.nexus]
+agents = { search_s2t_agent_yb_glue = "nexus.extensions.projects.search_s2t_rl_yb_glue.agent" }
+tasks = { search_s2t_task_yb_glue = "nexus.extensions.projects.search_s2t_rl_yb_glue.task" }
+tools = { "search_s2t_yb_glue/search" = "nexus.extensions.projects.search_s2t_rl_yb_glue.tools" }

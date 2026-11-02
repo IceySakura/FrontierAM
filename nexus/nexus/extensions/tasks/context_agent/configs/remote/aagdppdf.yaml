@@ -1,0 +1,6 @@
+compose:
+  - use: ../../base.yaml
+  - data:
+      uri: yufeihuang/context_agent_aagdppdf@v1
+      split: aagdppdf
+  - use: ../../remote_taskfiles.yaml

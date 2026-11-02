@@ -1,0 +1,110 @@
+imports:
+- nexus.extensions.tasks.os_world
+- nexus.extensions.agents.codex.agent
+- nexus.extensions.openai_clients.openai_responses
+task_name: os_world
+task_config:
+  domain: chrome
+  task_id: bb5e4c0d-f964-439c-97b6-bdb9747de3f4
+  observation_type: screenshot
+  action_space: pyautogui
+  run_setup: true
+  run_evaluator: true
+  unsupported_evaluator_policy: fail
+  skip_gui_start: true
+  command_as_user: false
+  client_password: password
+  cache_dir: ''
+  wedata_key: ${oc.env:WEDATA_KEY}
+tool_configs: {}
+task_files:
+  type: zip
+  path: blobs/bb5e4c0d-f964-439c-97b6-bdb9747de3f4.zip
+  sha256: ce23af43f9a3be940aeb4eb879f12d37d7bfe65563c96b0e9fcfc898c8c5fe0a
+  size: 1737
+  remote:
+    namespace: hy_gui_eval
+    dataset: osworld
+    version: v1.1.1
+    split: test
+run_id: chrome__bb5e4c0d-f964-439c-97b6-bdb9747de3f4
+runtime_provider_name: ags
+runtime_provider_config:
+  domain: ap-guangzhou.tencentags.com
+  interface_mode: nexus
+  osworld_cdp_proxy_mode: auto
+  request_timeout: 1800.0
+  instance_ready_timeout: 600.0
+  secret_id: ${oc.env:AGS_SECRET_ID}
+  secret_key: ${oc.env:AGS_SECRET_KEY}
+  region: ap-guangzhou
+  purpose: eval
+runtime_configs:
+  main:
+    runtime_kind: osworld
+    timeout: 15300
+    tunnel_port: 32000
+    tool_type: osworld
+    tool_id: ${oc.env:AGS_OSWORLD_TOOL_ID}
+    skip_tool_lookup: true
+    provision_mode: control_plane
+agent_name: codex_native_bridge
+agent_config:
+  execution_profile: osworld
+  execution_options:
+    runtime_name: main
+    osworld_task_id: ''
+    osworld_domain: ''
+    model: gpt-6-astra
+    version: 0.154.0
+    timeout: 5400.0
+    working_dir: /home/user
+    guide_version: v1
+    model_catalog_preset: gpt6_catalog_v8
+    binary_url: null
+    binary_checksum: null
+    npm_registry: http://mirrors.tencent.com/npm/
+    auto_compact_token_limit: 194048
+    reasoning_effort: none
+    extra_config_toml: 'model_reasoning_summary = "none"
+
+      [tools]
+
+
+      [tools.update_plan]
+
+      enabled = true
+
+
+      [features]
+
+      remote_compaction_v2 = false
+
+      unified_image_budget = true'
+openai_clients:
+  main:
+    name: openai_responses
+    config:
+      client_args:
+        base_url: ${oc.env:NEXUS_BASE_URL}
+        api_key: ${oc.env:NEXUS_API_KEY}
+        timeout: 3600.0
+        max_retries: 5
+        prompt_cache_task_id: /bb5e4c0d-f964-439c-97b6-bdb9747de3f4
+      request_args:
+        model: ${oc.env:NEXUS_MODEL}
+        reasoning:
+          effort: none
+        max_output_tokens: 64000
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      tools_mode: branch_last
+gateway_trajectory_observers: {}
+runner:
+  hooks:
+    output_contract:
+      name: osworld_output_contract
+      args: {}
+workflow_states: {}

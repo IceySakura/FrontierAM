@@ -1,0 +1,10 @@
+[project]
+name = "agrt"
+version = "0.1.0"
+authors = [
+    { name = "kendricwang" },
+]
+dependencies = []
+
+[tool.nexus]
+runtime_providers = { agrt = "nexus.runtime.providers.agrt.provider" }

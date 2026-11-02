@@ -1,0 +1,20 @@
+# Extend the deployed CAD grader, never replace its FreeCAD/system Python.
+ARG BASE_IMAGE=mirrors.tencent.com/osworld_v2/1019@sha256:e1b77968708b6ee0dde437c3b5ad453a18a1717e4db4ea056116e69f3de5d683
+FROM ${BASE_IMAGE}
+
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tesseract-ocr tesseract-ocr-eng python3-venv \
+    && python3 -m venv /opt/nexus-pdf-grader \
+    && /opt/nexus-pdf-grader/bin/pip install --no-cache-dir \
+       PyMuPDF==1.26.7 numpy==2.2.6 Pillow==11.3.0 pypdf==6.1.3 \
+    && useradd --create-home --user-group --shell /usr/sbin/nologin nexus-pdf-grader \
+    && dpkg-query -W > /opt/pdf-packages.txt \
+    && /opt/nexus-pdf-grader/bin/pip freeze > /opt/pdf-python-packages.txt \
+    && PYTHONPATH=/usr/lib/freecad/lib:/usr/lib/freecad-python3/lib \
+       python3 -c "import FreeCAD, Part, numpy, scipy; print(FreeCAD.Version(), Part.OCC_VERSION)" \
+    && /opt/nexus-pdf-grader/bin/python -c "import fitz, numpy, PIL, pypdf" \
+    && tesseract --list-langs | grep -x eng \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+# Inherit the original /opt/cad-server.py entrypoint, ports and control user.

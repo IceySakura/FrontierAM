@@ -1,0 +1,51 @@
+imports:
+  - nexus.extensions.tasks.os_world
+
+task_name: os_world
+task_config:
+  task_file: ${oc.env:OSWORLD_SMOKE_TASK_FILE,"tests/integration/os_world/fixtures/smoke_task.json"}
+  observation_type: screenshot
+  action_space: computer_13
+  run_setup: true
+  run_evaluator: true
+  unsupported_evaluator_policy: fail
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: ${oc.env:GONGFENG_API_BASE_URL,"http://hyrl-sandbox.prod.woa.com:8052"}
+  token: ${oc.env:GONGFENG_TOKEN}
+  runtime_image: ${oc.env:NEXUS_GONGFENG_RUNTIME_IMAGE,"current"}
+  runtime_provider: ${oc.env:GONGFENG_RUNTIME_PROVIDER,"gongfeng"}
+  resource_spec:
+    cpu: 4
+    memory: 16
+  print_port_mappings: true
+
+runtime_configs:
+  main:
+    image: ${oc.env:NEXUS_GONGFENG_DESKTOP_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/nexus-ubuntu-session:latest"}
+    exposed_ports: [5900, 6080]
+    environment:
+      GTK_A11Y: 'none'
+      NEXUS_GUI_REQUIRE_SYSTEM_DBUS: '1'
+
+agent_name: main_agent
+agent_config:
+  max_iterations: 6
+  parallel_tool_calls: false
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=azure_openai&model=${oc.env:NEXUS_MODEL,"gpt-5.5"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"60"}
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"gpt-5.5"}
+
+processors:
+  chat:
+    name: chat_tracker
+  agent_metrics:
+    name: main_agent_metrics

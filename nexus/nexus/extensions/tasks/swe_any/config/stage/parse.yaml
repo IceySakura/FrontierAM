@@ -1,0 +1,122 @@
+# SWE-Any Parse — single-run config (SCIP index → parse_graph.json → seed policy).
+#
+#   uv run nexus run-single nexus/extensions/tasks/swe_any/config/stage/parse.yaml \
+#       -o ./outputs/swe_any/parse_result.json
+#
+# The repo source comes from a baked per-repo image (SWE-Env style): point
+# SWE_ANY_IMAGE at the instance's `image` and SWE_ANY_REPO_DIR at its
+# `workdir` (default /testbed). scip-python indexing + graph build run in-sandbox
+# (worker_venv ships swe_any and installs its deps), and parse_graph.json is downloaded
+# to the host. Note: scip-python indexes Python only.
+#
+# A second, agentic pass then has Claude Code classify repo paths and write
+# parse_seed_policy.json, which Select reads to keep seeds out of generated code.
+#
+# Secrets come from the environment via ${oc.env:...}; never hard-code tokens.
+#
+# This file is also the batch default: generator/stage/parse.py deep-merges
+# SWE_ANY_CONFIG_PATCH over it (task knobs), then applies the backend patch for
+# the merged openai_clients.main.name, then injects per-instance fields. Export
+# any ${oc.env:...} below to override a default in either entry point.
+
+imports:
+  - nexus.extensions.tasks.swe_any
+  - nexus.extensions.agents.claude_code
+
+task_name: "swe_any_parse"
+
+# Batch-only: which instances run-batch iterates (source jsonl + filters + paging).
+# The generators lift this block out before building RunInput; run-single ignores
+# it and runs task_config.instance_path below. Defaults read the SWE_ANY_* env
+# twins here, and a SWE_ANY_CONFIG_PATCH may override any field.
+instances:
+  # Source .jsonl (one instance per line). Required for run-batch.
+  path: "${oc.env:SWE_ANY_INSTANCES,}"
+  # Curated subset: comma string or path to a JSON list of ids. Empty = all.
+  ids: "${oc.env:SWE_ANY_INSTANCE_IDS,}"
+  # scip-python indexes Python only; "all" disables the filter.
+  language: "${oc.env:SWE_ANY_LANGUAGE,python}"
+  # Paging over the filtered instances (0 = no limit).
+  skip: "${oc.decode:${oc.env:SWE_ANY_SKIP,0}}"
+  limit: "${oc.decode:${oc.env:SWE_ANY_LIMIT,0}}"
+
+task_config:
+  instance_path: "${oc.env:SWE_ANY_INSTANCE_PATH,}"
+  repo_name: "${oc.env:SWE_ANY_REPO_NAME,repo}"
+  output_dir: "${oc.env:SWE_ANY_OUTPUT_DIR,./outputs/swe_any}"
+
+  # Baked per-repo image (the SWE-Env instance's `image`); the task configures the runtime with it.
+  # This is the WORKLOAD image — do NOT default it to "current" (that is the nexus runtime image).
+  image: "${oc.env:SWE_ANY_IMAGE,}"
+  # Sandbox path to the repo source inside that image (SWE-Env `workdir`).
+  repo_dir: "${oc.env:SWE_ANY_REPO_DIR,/testbed}"
+
+  install_scip_python: "${oc.decode:${oc.env:SWE_ANY_INSTALL_SCIP_PYTHON,true}}"
+  index_timeout: "${oc.env:SWE_ANY_INDEX_TIMEOUT,3600.0}"
+  npm_install_timeout: "${oc.env:SWE_ANY_NPM_INSTALL_TIMEOUT,600.0}"
+
+  # Agentic seed-policy pass. Soft: a failure keeps parse_graph.json and leaves Select
+  # unfiltered, so it never costs a re-index.
+  agent_timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+
+  # Host-side ceiling; the task raises it to index + npm install + 300s when needed.
+  request_timeout: "${oc.env:SWE_ANY_PARSE_REQUEST_TIMEOUT,5400.0}"
+  # Keep the sandbox alive for a following Select/Mask stage.
+  release_runtime: "${oc.decode:${oc.env:SWE_ANY_RELEASE_RUNTIME,false}}"
+
+agent_name: "claude_code"
+agent_config:
+  working_dir: "${oc.env:CLAUDE_CODE_WORKING_DIR,${oc.env:SWE_ANY_REPO_DIR,/testbed}}"
+  timeout: "${oc.env:CLAUDE_CODE_TIMEOUT,3600}"
+  version: "${oc.env:CLAUDE_CODE_VERSION,latest}"
+  extra_env:
+    # CLI-internal model id; requests still route to OPENAI_MODEL. The default is
+    # single-quoted because OmegaConf's grammar treats bare [1m] brackets as
+    # interpolation syntax.
+    ANTHROPIC_MODEL: "${oc.env:ANTHROPIC_MODEL,'claude-opus-4-8[1m]'}"
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+  thinking_preset: "${oc.env:SWE_ANY_THINKING_PRESET,bedrock-claude}"
+
+runtime_provider_name: "gongfeng"
+runtime_provider_config:
+  api_base_url: "${oc.env:GONGFENG_API_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}"
+  token: "${oc.env:GONGFENG_TOKEN}"
+  # Gongfeng scheduling label (prod/eval/test); independent of the API hostname.
+  purpose: "${oc.env:GONGFENG_PURPOSE,test}"
+  # Neutral default; the real per-repo image is set on the task (task_config.image).
+  runtime_image: "current"
+  # Broad transport ceiling shared by every stage; task_config.request_timeout is the effective limit.
+  request_timeout: "${oc.env:SWE_ANY_PROVIDER_REQUEST_TIMEOUT,86400.0}"
+  # Parse-only: scip-python (Node) OOMs indexing the largest repos, so run_parse raises V8's
+  # old-space to 8 GiB — give the container 16 GiB (heap ~= container/2, leaving room for node's
+  # non-old-space + external protobuf buffers) and more CPU. Other stages keep their smaller default.
+  resource_spec:
+    cpu: "${oc.decode:${oc.env:SWE_ANY_PARSE_CPU,4}}"
+    memory: "${oc.decode:${oc.env:SWE_ANY_PARSE_MEMORY,16}}"
+
+runtime_configs:
+  main:
+    # Ship the nexus wheel (incl. swe_any) and install swe_any's runtime deps
+    # (networkx, protobuf) into the worker venv, so run_parse can build the graph
+    # in-sandbox without a custom baked image. Iterate here rather than rebuilding.
+    worker_venv:
+      modules: ["swe_any"]
+
+openai_clients:
+  main:
+    # Host LLM for Claude Code: litellm → Bedrock Anthropic (not OpenAI GPT).
+    name: "${oc.env:OPENAI_CLIENT_NAME,litellm}"
+    config:
+      client_args:
+        api_key: "${oc.env:OPENAI_API_KEY}"
+        base_url: "${oc.env:OPENAI_BASE_URL,http://trpc-gpt-eval.production.polaris:8080}"
+        cache_control_enabled: "${oc.decode:${oc.env:SWE_ANY_CACHE_CONTROL_ENABLED,true}}"
+        cache_control_strategy: "${oc.env:SWE_ANY_CACHE_CONTROL_STRATEGY,claude_code}"
+      request_args:
+        model: "${oc.env:OPENAI_MODEL,bedrock/anthropic.claude-opus-4-8}"
+
+processors:
+  chat:
+    name: "chat_tracker"
+    args:
+      tools_mode: "${oc.env:SWE_ANY_TOOLS_MODE,branch_last}"

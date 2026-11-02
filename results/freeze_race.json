@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "simultaneous_freeze_callers": 4,
+  "actual_docker_already_paused_errors": 3,
+  "frozen_source_preserved": true,
+  "no_model_calls": true
+}

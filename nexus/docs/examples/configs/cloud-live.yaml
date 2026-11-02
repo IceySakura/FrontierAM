@@ -1,0 +1,10 @@
+imports:
+  - nexus.extensions.tasks.identity
+  - docs.examples.configs.cloud_live
+
+task_name: identity
+agent_name: cloud_live_collect_inputs
+agent_config: {}
+
+runner:
+  timeout: 600

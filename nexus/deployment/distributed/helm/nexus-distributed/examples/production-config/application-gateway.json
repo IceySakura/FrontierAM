@@ -1,0 +1,6 @@
+{
+  "db_pool_size": 16,
+  "db_max_overflow": 16,
+  "db_pool_timeout": 30,
+  "db_pool_recycle": 300
+}

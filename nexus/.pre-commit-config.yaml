@@ -1,0 +1,21 @@
+# Pre-commit hooks for Nexus.
+#
+# Activate:    make install-hooks      (runs `pre-commit install`)
+# Run manually: uv run pre-commit run --all-files
+# Bypass once:  git commit --no-verify
+#
+# The hook runs `make check` (ruff format + ruff lint + ty typecheck) for
+# both the core package and `services/` workspace packages.
+# `make check` auto-fixes via ruff; if a fix touches a staged file, the
+# pre-commit framework detects the modification and blocks the commit so the
+# fixes get re-staged instead of silently dropped.
+repos:
+  - repo: local
+    hooks:
+      - id: make-check
+        name: make check (ruff format + lint + ty typecheck)
+        entry: make check
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]

@@ -1,0 +1,14 @@
+[project]
+name = "toolathlon_gym"
+version = "0.1.0"
+authors = [
+    { name = "zexiongma" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = []
+runtime = []
+
+[tool.nexus]
+tasks = { toolathlon_gym = "nexus.extensions.tasks.toolathlon_gym.task" }

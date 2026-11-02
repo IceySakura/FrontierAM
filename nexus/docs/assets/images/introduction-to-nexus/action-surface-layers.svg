@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="layer1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e8f5e9"/>
+      <stop offset="100%" style="stop-color:#c8e6c9"/>
+    </linearGradient>
+    <linearGradient id="layer2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e3f2fd"/>
+      <stop offset="100%" style="stop-color:#bbdefb"/>
+    </linearGradient>
+    <linearGradient id="layer3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#fff3e0"/>
+      <stop offset="100%" style="stop-color:#ffe0b2"/>
+    </linearGradient>
+    <linearGradient id="layer4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#fce4ec"/>
+      <stop offset="100%" style="stop-color:#f8bbd9"/>
+    </linearGradient>
+    <linearGradient id="layer5" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f3e5f5"/>
+      <stop offset="100%" style="stop-color:#e1bee7"/>
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="bold" fill="#333">Agent 产品按操作层级分类</text>
+
+  <!-- Layer 1: Tool / API -->
+  <rect x="50" y="60" width="800" height="75" rx="8" fill="url(#layer1)" stroke="#4caf50" stroke-width="2"/>
+  <text x="70" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#2e7d32">1. Tool / API 层</text>
+  <text x="70" y="115" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#555">调用结构化工具 (WebSearch, MCP, Code Executor)</text>
+  <rect x="580" y="75" width="250" height="50" rx="6" fill="#fff" stroke="#4caf50" stroke-width="1.5"/>
+  <text x="705" y="95" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#333">OpenAI Deep Research</text>
+  <text x="705" y="112" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#666">Perplexity, Search Agents</text>
+
+  <!-- Layer 2: Browser DOM -->
+  <rect x="50" y="145" width="800" height="75" rx="8" fill="url(#layer2)" stroke="#2196f3" stroke-width="2"/>
+  <text x="70" y="175" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#1565c0">2. Browser DOM 层</text>
+  <text x="70" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#555">操作浏览器页面 (Playwright, CDP, Selenium)</text>
+  <rect x="580" y="160" width="250" height="50" rx="6" fill="#fff" stroke="#2196f3" stroke-width="1.5"/>
+  <text x="705" y="180" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#333">browser-use, Manus</text>
+  <text x="705" y="197" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#666">OpenAI Operator</text>
+
+  <!-- Layer 3: Shell / FS -->
+  <rect x="50" y="230" width="800" height="90" rx="8" fill="url(#layer3)" stroke="#ff9800" stroke-width="2"/>
+  <text x="70" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#e65100">3. Shell / FS 层</text>
+  <text x="70" y="285" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#555">操作文件系统 + 执行终端命令 (Coding Agent 主战场)</text>
+  <rect x="420" y="245" width="130" height="65" rx="6" fill="#fff" stroke="#ff9800" stroke-width="1.5"/>
+  <text x="485" y="266" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#333">CLI</text>
+  <text x="485" y="282" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">Claude Code</text>
+  <text x="485" y="296" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">Codex, Aider</text>
+  <rect x="560" y="245" width="130" height="65" rx="6" fill="#fff" stroke="#ff9800" stroke-width="1.5"/>
+  <text x="625" y="266" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#333">IDE</text>
+  <text x="625" y="282" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">Cursor, Cline</text>
+  <text x="625" y="296" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">Copilot Agent</text>
+  <rect x="700" y="245" width="130" height="65" rx="6" fill="#fff" stroke="#ff9800" stroke-width="1.5"/>
+  <text x="765" y="266" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#333">Cloud Devbox</text>
+  <text x="765" y="282" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">Devin</text>
+  <text x="765" y="296" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">OpenHands</text>
+
+  <!-- Layer 4: OS GUI -->
+  <rect x="50" y="330" width="800" height="85" rx="8" fill="url(#layer4)" stroke="#e91e63" stroke-width="2"/>
+  <text x="70" y="360" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#c2185b">4. OS GUI 层</text>
+  <text x="70" y="385" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#555">截图理解 + 鼠标键盘注入 (跨应用桌面/手机自动化)</text>
+  <rect x="480" y="345" width="170" height="60" rx="6" fill="#fff" stroke="#e91e63" stroke-width="1.5"/>
+  <text x="565" y="364" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#333">Desktop</text>
+  <text x="565" y="380" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">GLM-PC, UI-TARS</text>
+  <text x="565" y="394" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">macOS / Windows / Linux</text>
+  <rect x="660" y="345" width="170" height="60" rx="6" fill="#fff" stroke="#e91e63" stroke-width="1.5"/>
+  <text x="745" y="364" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#333">Mobile</text>
+  <text x="745" y="380" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">豆包手机助手</text>
+  <text x="745" y="394" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#666">Android</text>
+
+  <!-- Layer 5: Hardware I/O -->
+  <rect x="50" y="425" width="800" height="75" rx="8" fill="url(#layer5)" stroke="#9c27b0" stroke-width="2"/>
+  <text x="70" y="455" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#7b1fa2">5. Hardware I/O 层</text>
+  <text x="70" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#555">电话、蓝牙、传感器、NFC 等硬件能力 (需要真机)</text>
+  <rect x="580" y="440" width="250" height="50" rx="6" fill="#fff" stroke="#9c27b0" stroke-width="1.5"/>
+  <text x="705" y="460" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#333">iOS 系统级 Agent</text>
+  <text x="705" y="477" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#666">豆包手机助手 (高保真)</text>
+
+  <!-- Environment Labels on the right -->
+  <rect x="860" y="60" width="30" height="160" rx="4" fill="#4caf50"/>
+  <text x="875" y="148" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#fff" transform="rotate(-90, 875, 148)">应用</text>
+
+  <rect x="860" y="230" width="30" height="90" rx="4" fill="#ff9800"/>
+  <text x="875" y="282" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#fff" transform="rotate(-90, 875, 282)">容器</text>
+
+  <rect x="860" y="330" width="30" height="85" rx="4" fill="#e91e63"/>
+  <text x="875" y="378" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="bold" fill="#fff" transform="rotate(-90, 875, 378)">虚拟机</text>
+
+  <rect x="860" y="425" width="30" height="75" rx="4" fill="#9c27b0"/>
+  <text x="875" y="468" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#fff" transform="rotate(-90, 875, 468)">真机</text>
+
+  <!-- Arrow indicating increasing cost (pointing downward) -->
+  <line x1="30" y1="60" x2="30" y2="500" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="25" y="280" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#666" transform="rotate(-90, 25, 280)">虚拟化成本递增</text>
+</svg>

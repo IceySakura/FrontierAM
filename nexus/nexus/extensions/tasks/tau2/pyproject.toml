@@ -1,0 +1,15 @@
+[project]
+name = "tau2"
+version = "0.1.0"
+authors = [
+    { name = "peijieyu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["litellm>=1.83.14,<2", "tau2"]
+runtime = []
+
+[tool.nexus]
+agents = { tau2_agent = "nexus.extensions.tasks.tau2.agent" }
+tasks = { tau2 = "nexus.extensions.tasks.tau2.task" }

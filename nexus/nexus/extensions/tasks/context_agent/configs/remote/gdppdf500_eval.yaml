@@ -1,0 +1,6 @@
+compose:
+  - use: ../../base.yaml
+  - data:
+      uri: yufeihuang/context_agent_gdppdf500_eval@v2
+      split: gdppdf500_eval
+  - use: ../../remote_taskfiles.yaml

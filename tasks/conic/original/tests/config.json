@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "runtime_version": "standard-v1",
+  "scoring_version": "success-v2",
+  "mode": "candidate",
+  "case_ids": null
+}

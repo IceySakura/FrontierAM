@@ -1,0 +1,175 @@
+# Default values are intentionally local-development friendly. Production uses
+# an existing database URL Secret and stores platform configuration in MySQL.
+
+nameOverride: ""
+fullnameOverride: ""
+
+controlImage:
+  repository: nexus-distributed-universal
+  tag: local
+  digest: ""
+  pullPolicy: IfNotPresent
+
+workloadImage:
+  repository: nexus-distributed-workload
+  tag: local
+  digest: ""
+  pullPolicy: IfNotPresent
+
+builderImage:
+  repository: nexus-distributed-builder
+  tag: local
+  digest: ""
+  pullPolicy: IfNotPresent
+
+# OTEL is process bootstrap configuration because Nexus auto-instrumentation is
+# initialized at import time. Its optional credential Secret is independent of
+# the Nexus application database Secret.
+otel:
+  enabled: false
+  endpoint: ""
+  protocol: http/protobuf
+  tracesExporter: otlp_proto_http
+  tracesSampler: always_on
+  existingSecret: ""
+  resourceAttributesKey: otel-resource-attributes
+  exporterHeadersKey: otel-exporter-headers
+
+# The only Nexus application Secret mounted into long-lived components.
+secrets:
+  create: true
+  existingSecret: ""
+  databaseUrlKey: database-url
+  databaseUrl: ""
+
+# Production deployments fail closed until the */* ordinary and secret
+# configuration baselines have been imported into the database.
+configStore:
+  required: true
+
+liveCompatibility:
+  enabled: false
+
+database:
+  # When empty, the local bundled MySQL URL is generated from mysql.auth.
+  url: ""
+  name: nexus_dist
+
+mysql:
+  enabled: true
+  image:
+    repository: mysql
+    tag: "8.0"
+    pullPolicy: IfNotPresent
+  service:
+    port: 3306
+  auth:
+    existingSecret: ""
+    rootPasswordKey: mysql-root-password
+    rootPassword: nexus_dist_local
+  persistence:
+    enabled: false
+    size: 20Gi
+    storageClassName: ""
+  resources: {}
+
+dbInit:
+  enabled: true
+  backoffLimit: 3
+  waitTimeoutSeconds: 120
+
+controlGateway:
+  replicas: 2
+  port: 8081
+  service:
+    type: ClusterIP
+  resources: {}
+
+applicationGateway:
+  replicas: 2
+  port: 8082
+  uploadSpoolSizeLimit: 4Gi
+  service:
+    type: ClusterIP
+    annotations: {}
+    externalTrafficPolicy: ""
+  resources: {}
+
+scheduler:
+  replicas: 3
+  resources: {}
+
+reconciler:
+  replicas: 1
+  extraVolumeMounts: []
+  extraVolumes: []
+  resources: {}
+
+# These fields only control chart RBAC and namespace-scoped NetworkPolicy.
+# Provider endpoints, images, credentials and runtime limits live in the DB.
+dynamicEnvironment:
+  enabledProviders: []
+  namespace: ""
+
+instanceManager:
+  enabled: true
+  replicas: 2
+  port: 8091
+  capacity: 1
+  executor: asyncio
+  forceReplace: true
+  autoInstall: false
+  environmentId: predefined-local
+  clusterName: ""
+  cacheSizeLimit: 4Gi
+  tmpSizeLimit: 2Gi
+  persistence:
+    enabled: true
+    size: 20Gi
+    storageClassName: ""
+    accessModes:
+      - ReadWriteOnce
+  poolId: interactive
+  workload: execution
+  labels:
+    region: local
+  resources: {}
+
+batchManager:
+  enabled: false
+  replicas: 1
+  port: 8091
+  capacity: 1
+  executor: asyncio
+  forceReplace: true
+  autoInstall: false
+  environmentId: predefined-local
+  clusterName: ""
+  cacheSizeLimit: 4Gi
+  tmpSizeLimit: 2Gi
+  persistence:
+    enabled: true
+    size: 20Gi
+    storageClassName: ""
+    accessModes:
+      - ReadWriteOnce
+  poolId: orchestration
+  workload: orchestration
+  labels:
+    region: local
+  resources: {}
+
+fakeRuntime:
+  enabled: true
+  replicas: 1
+  port: 8080
+  resources: {}
+
+networkPolicy:
+  enabled: false
+  additionalIngressFrom: []
+
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

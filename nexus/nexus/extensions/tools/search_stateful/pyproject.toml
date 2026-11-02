@@ -1,0 +1,23 @@
+[project]
+name = "search_stateful"
+version = "0.1.0"
+authors = [
+    { name = "adamwzhang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = ["html2text>=2024.2.26", "jieba>=0.42.1", "lxml>=5.0.0", "tiktoken>=0.12.0"]
+# Runtime-side is needed when this tool runs inside a sandbox (e.g. as an MCP
+# server spawned by Claude Code). The same modules are required because
+# page_contents.py, state.py, find.py all import html2text/jieba/lxml/tiktoken
+# at module load time.
+runtime = ["html2text>=2024.2.26", "jieba>=0.42.1", "lxml>=5.0.0", "tiktoken>=0.12.0"]
+
+[tool.nexus]
+
+[tool.nexus.tools]
+"search_stateful/find" = "nexus.extensions.tools.search_stateful.find"
+"search_stateful/open" = "nexus.extensions.tools.search_stateful.open"
+"search_stateful/search" = "nexus.extensions.tools.search_stateful.search"
+"search_stateful/visit" = "nexus.extensions.tools.search_stateful.visit"

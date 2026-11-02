@@ -1,0 +1,38 @@
+# Install the host-side game dependencies first:
+#   uv run nexus modules install litellm pong
+#
+# The task starts one local stdio MCP subprocess per execution. No Runtime
+# provider or sandbox is required.
+
+task_name: pong
+task_config:
+  seed: 42
+  max_decisions: 300
+  initial_noop_steps: 3
+  frame_width: 480
+  frame_height: 630
+
+agent_name: main_agent
+agent_config:
+  max_iterations: 320
+  invalid_tool_args_retries: 1
+  tool_call_error_retries: 1
+  tool_error_continue: true
+  image_history_limit: 4
+
+openai_clients:
+  main:
+    name: litellm
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=aws_third&timeout=3600
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080"}
+      request_args:
+        model: anthropic.claude-sonnet-5
+
+processors:
+  chat:
+    name: chat_tracker
+
+runner:
+  timeout: 1800

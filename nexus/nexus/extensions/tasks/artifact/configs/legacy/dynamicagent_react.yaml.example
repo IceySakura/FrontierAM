@@ -1,0 +1,44 @@
+# Historical ArtifactCfg template — hycode_dynamicagent / code-arena-react.
+# The JSONL launcher is retired; this is not a Harbor Compose profile.
+# Local *.yaml / *.yml are ignored by this directory's .gitignore; never put credentials in .example or force-add them.
+# See artifact/CLAUDE.md section 4 for the current entrypoint.
+# React bootstrap adds ~60s npm install; timeout bumped accordingly.
+
+runtime:
+  agent_name: hycode_dynamicagent
+  runtime_image: 'current'
+  provider_name: gongfeng
+  provider: gongfeng
+  gongfeng_token: ''          # FILL: sandbox API token
+  agent_timeout: 5000
+  runtime_timeout: 5600
+
+data:
+  dataset_path: ''            # FILL: path to JSONL
+  skip_eval: false
+  image: 'mirrors.tencent.com/hunyuan_yanguan/webenv.claudecode.testset:v3'
+
+dynamicagent:
+  version: '0.1.20'
+  default_preset: 'code-arena-react'
+  bootstrap_templates: true
+  tee_log_dir: ''
+  image_gen_app_id: ''        # FILL
+  image_gen_app_key: ''       # FILL
+
+models:
+  enable_thinking: true
+  infer_alias: opus48
+  table:
+    opus48:
+      provider: hy3
+      model: bedrock/anthropic.claude-opus-4-8
+      base: 'http://trpc-gpt-eval.production.polaris:8080'
+      key: ''                 # FILL
+      effort: xhigh
+
+batch:
+  worker_processes: 8
+  max_concurrent: 128
+  db: './outputs/dynamicagent_react.db'
+  export_path: './outputs/dynamicagent_react/results.jsonl'

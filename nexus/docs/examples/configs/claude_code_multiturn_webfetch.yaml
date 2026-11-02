@@ -1,0 +1,39 @@
+task_name: identity
+
+task_config:
+  user_inputs:
+    - 'Give the page title and mention whether you had to fetch the URL again.'
+
+runtime_provider_name: docker
+runtime_configs:
+  main:
+    image: ${oc.env:NEXUS_BASE_IMAGE,"mirrors.tencent.com/hunyuan_yanguan/ubuntu:24.04"}
+    worker_venv: true
+
+agent_name: claude_code_multiturn
+agent_config:
+  pre_start_scripts:
+    - code: mkdir -p /workspace
+  user_prompt: 'Fetch and summarize the content from https://example.com in exactly 2 bullet points.'
+  working_dir: /workspace
+  version: ${oc.env:CLAUDE_CODE_VERSION,"2.1.114"}
+  max_turns: 2
+
+openai_clients:
+  main:
+    name: litellm
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=${oc.env:MODEL_SERVICE_PROVIDER,"aws_third"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"3600"}
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL,"http://trpc-gpt-eval.production.polaris:8080"}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"anthropic.claude-sonnet-4-6"}
+
+processors:
+  chat:
+    name: chat_tracker
+    args:
+      tools_mode: branch_last
+
+runner:
+  timeout: 300

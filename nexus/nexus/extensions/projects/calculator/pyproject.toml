@@ -1,0 +1,15 @@
+[project]
+name = "calculator"
+version = "0.1.0"
+authors = [
+    { name = "tarschen" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+agents = { calculator_agent = "nexus.extensions.projects.calculator.agent" }
+tasks = { calculator_task = "nexus.extensions.projects.calculator.task" }
+tools = { "calculator/calculate" = "nexus.extensions.projects.calculator.tools" }

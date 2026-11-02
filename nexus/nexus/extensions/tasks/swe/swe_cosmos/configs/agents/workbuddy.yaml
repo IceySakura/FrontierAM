@@ -1,0 +1,64 @@
+# WorkBuddy Agent Profile
+#
+# 私有包 ``@tencent/nexus-wb-cli``。安装源二选一：
+#   1. WORKBUDDY_NPM_USERNAME + WORKBUDDY_NPM_TOKEN（优先，走私有 registry）
+#   2. WORKBUDDY_TARBALL（宿主机未压缩平台包路径，开发兜底）
+#
+# 环境变量：
+#   必填（安装源二选一）:
+#       WORKBUDDY_NPM_USERNAME / WORKBUDDY_NPM_TOKEN
+#       或 WORKBUDDY_TARBALL
+#   可选:
+#       AGENT_VERSION
+#       REASONING_EFFORT          # wb --effort，默认 xhigh，和 llm profile 一致
+#       WORKBUDDY_PRESET          # wb --preset，默认 code
+#       WORKBUDDY_SHELL           # Bash 工具用的 shell，默认 /bin/bash
+#       WORKBUDDY_PERMISSION_MODE            # 默认 fullAccess
+#       WORKBUDDY_COMPAT_PERMISSION_PATCH    # 默认 true（已在 5.7.0 / 5.9.0 核对锚点）
+#       AGENT_WORKING_DIR
+#       AGENT_TIMEOUT
+#       NPM_REGISTRY
+#
+# 使用示例：
+#   AGENT_CONFIG=workbuddy
+#
+# 组合约束：
+#   agents/ 下的 Profile 互斥，同一次运行只选择一个
+
+body:
+  imports:
+    - nexus.extensions.agents.workbuddy
+  agent_name: workbuddy
+
+  agent_config:
+    working_dir: ${oc.env:AGENT_WORKING_DIR,/testbed}
+    # oc.env 一律返回字符串，数值和布尔值都要套 oc.decode 还原类型。
+    timeout: ${oc.decode:${oc.env:AGENT_TIMEOUT,14400}}
+    version: ${oc.env:AGENT_VERSION,5.9.0}
+    npm_registry: ${oc.env:NPM_REGISTRY,http://mirrors.tencent.com/npm/}
+    effort: ${oc.select:openai_clients.main.config.request_args.reasoning_effort,${oc.env:REASONING_EFFORT,xhigh}}
+    preset: ${oc.env:WORKBUDDY_PRESET,code}
+    # 子 worker 拿不到 executor 环境变量，凭证必须进 agent_config。
+    # 未设置时为空串，agent 会再读同名环境变量；都没有则走 tarball 兜底。
+    npm_username: ${oc.env:WORKBUDDY_NPM_USERNAME,g_nexus-wb-cli-read}
+    npm_token: ${oc.env:WORKBUDDY_NPM_TOKEN,b9a0c1a4b65911f18f34525400bd71fc}
+    tarball_path: ${oc.env:WORKBUDDY_TARBALL,}
+    # headless 没人回答权限提示，被挂起的审批只有 fullAccess 会自动放行 (bypassPermissions 对 HIGH/CRITICAL 仍然询问 → 拒绝 → 整个 turn 被中断)
+    permission_mode: ${oc.env:WORKBUDDY_PERMISSION_MODE,fullAccess}
+    # wb.js 的包装层不认 --permission-mode，compat 补丁改写压缩产物把它注入进去；锚点是混淆后的字面量，已在 5.7.0 / 5.9.0 上核对过，换其他版本直接报错，需要重新核对锚点
+    compat_permission_mode_patch: ${oc.decode:${oc.env:WORKBUDDY_COMPAT_PERMISSION_PATCH,true}}
+    extra_env:
+      OPENAI_TIMEOUT: ${oc.env:AGENT_TIMEOUT,14400}
+      AWS_EC2_METADATA_DISABLED: 'true'
+      # Bash 工具先看 CODEBUDDY_CODE_SHELL 再看 SHELL，都没有就落到 /bin/sh（dash），模型写的 ${PIPESTATUS[0]} 之类会变成 "eval: Bad substitution"，退出码被污染。这里只能用 SHELL：wb.js 外层 spawn 真正的 agent 进程时按白名单重建环境，CODEBUDDY_ 前缀的变量全部被剥掉
+      SHELL: ${oc.env:WORKBUDDY_SHELL,/bin/bash}
+    config_file_patches:
+      # CODEBUDDY_API_KEY（本地 proxy 的占位串）会被注册成一个永不过期的登录态，每 20s 拿这个非 JWT 去 workbuddy.cn 轮询云端 memory，稳定回 401 刷屏。generateMemoryEnabled=false 让 fetchRemoteProfile 直接短路，完全不发请求；基准测试本来也不该带跨 run 的 memory 个性化。AppConfigService 读的是这个文件，不是 settings.json，且只认 JSON 布尔值。
+      - path: ~/.workbuddy/app/app-config.json
+        content:
+          generateMemoryEnabled: false
+
+merge:
+  imports: append_unique
+
+source: workbuddy

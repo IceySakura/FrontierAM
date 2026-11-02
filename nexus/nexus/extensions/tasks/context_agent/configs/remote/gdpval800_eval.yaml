@@ -1,0 +1,11 @@
+compose:
+  - use: ../../base.yaml
+  - data:
+      uri: yufeihuang/context_agent_gdpval800_eval@v1
+      split: gdpval800_eval
+  - use: ../../remote_taskfiles.yaml
+  - input:
+      task_config:
+        evaluate: true
+        judge_backend: deliverable
+        artifact_root: outputs/context_agent/gdpval800_eval_remote

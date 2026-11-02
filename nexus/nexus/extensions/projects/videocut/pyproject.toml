@@ -1,0 +1,19 @@
+[project]
+name = "videocut"
+version = "0.1.0"
+authors = [
+    { name = "jiachengdu" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+host = [
+    "pillow>=10.0.0",
+    "decord==0.6.0"
+]
+runtime = []
+
+[tool.nexus]
+agents = { videocut_agent = "nexus.extensions.projects.videocut.agent" }
+tasks = { videocut = "nexus.extensions.projects.videocut.task" }
+tools = { "videocut/video_cut_tool" = "nexus.extensions.projects.videocut.tools" }

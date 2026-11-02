@@ -1,0 +1,22 @@
+{
+  "added": [
+    "tests/lib/conic_eval/success_scoring.py",
+    "tests/private/historical/standard-calibration.json"
+  ],
+  "removed": [],
+  "changed": [
+    "environment/public-dev/README.md",
+    "environment/public-dev/examples/README.md",
+    "environment/public-dev/manifest.json",
+    "environment/resources.yaml",
+    "instruction.md",
+    "task.toml",
+    "tests/config.json",
+    "tests/grade.py",
+    "tests/private/current/calibration.json",
+    "tests/private/data/manifest.json",
+    "tests/private/package-lock.json",
+    "tests/private/score-anchor.json"
+  ],
+  "unchanged": 840
+}

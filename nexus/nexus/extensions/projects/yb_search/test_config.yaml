@@ -1,0 +1,122 @@
+# Yb OneAgent 测试配置
+#
+# 使用方式:
+#   nexus run-single nexus/extensions/projects/yb_search/test_config.yaml
+#
+# 环境变量:
+#   OPENAI_API_KEY: LLM API Key
+#   OPENAI_BASE_URL: LLM API Base URL (可选, 默认 https://api.openai.com/v1)
+#   OPENAI_MODEL: 模型名 (可选, 默认 gpt-4)
+#   PAIRWISE_AUTH_TOKEN: pairwise reward 服务鉴权 token（无默认值，使用 pairwise reward 时必填）
+#   GRM_AUTH_TOKEN: GRM reward 服务鉴权 token（无默认值，使用 GRM reward 时必填）
+#   REWARD_SERVICE_TOKEN: HY reward 服务鉴权 token（无默认值，使用 HY reward 时必填）
+#
+# Tool proxy 支持通过北极星服务发现:
+#   tool_proxy_service: trpc.yb_agent.tool_proxy.http  # 北极星 HTTP 服务名
+#   tool_proxy_namespace: Production  # 北极星命名空间 (默认 Production)
+#   tool_proxy_metadata:  # 北极星路由元数据 (可选, 用于匹配路由规则, 如 env tag)
+#     env: test
+#   tool_proxy_src_service: "Production:my-caller"  # 北极星源服务标识 (可选, 格式 namespace:service)
+
+imports:
+  - nexus.extensions
+  - nexus.extensions.projects.yb_search.task
+  - nexus.extensions.projects.yb_search.agent
+
+task_name: "yb_one_agent_toolproxy"
+task_config:
+  messages:
+    - role: user
+      content: "帮我找一下小狗的图片"
+  expected_keywords: []
+
+agent_name: "yb_one_agent_toolproxy"
+agent_config:
+  max_iterations: 5
+  tool_proxy_service: trpc.yb_agent.tool_proxy.http
+  tool_proxy_namespace: Test
+  tool_proxy_metadata:
+    env: ci-742
+  tool_proxy_timeout: 30
+  tool_choice: auto
+  tools:
+    - type: function
+      function:
+        name: web_search
+        version: v1.0
+        description: >-
+          文本搜索工具，基于子任务查询query，在数据库中基于语义执行全文检索，可以返回多条相关的文本结果，为大模型提供参考信息，适用于信息检索、内容丰富等场景。
+        parameters:
+          type: object
+          properties:
+            query:
+              description: >-
+                用于文本检索的子任务查询query，应明确表达单一意图。
+                查询query应使用通用、搜索引擎友好且易于检索的关键词，以提高搜索效率和结果相关性。避免直接使用用户问题中难以有效检索的短语。例如：避免使用相对的术语，如"今天"或"明年"——应改用精确的日期，如"2025年9月3日"。
+                文本搜索工具只承接简单的基于相关性匹配的文档返回，不应包含任何需要进一步思考、筛选需求，例如：查询query中避免使用"第三个作者"这样的term，因为"第三个作者"一般不会直接出现在检索库的文档中，应改用"作者列表"这样更通用的表述。
+                查询query应保持简洁，去除不必要的辅助词、连词和疑问词。主要使用关键词组合（用空格分隔）。理想情况下不应超过15个字。避免使用特殊标点符号。
+              type: array
+              items:
+                type: string
+          required:
+            - query
+    - type: function
+      function:
+        name: picture_search
+        version: v1.0
+        description: >-
+          图片检索工具，基于子任务查询query搜索相关图片，返回匹配的图片结果列表（包含图片URL、标题等元信息）。适用于需要基于文本描述查找视觉内容的场景。
+        parameters:
+          type: object
+          properties:
+            query:
+              description: >-
+                用于图片检索的子任务查询query，应明确表达单一视觉意图。
+                查询query应使用具体、视觉导向且易于检索的关键词，以提高搜索准确性和结果相关性。避免使用抽象或难以视觉化的概念。例如：优先使用"红色跑车"而非"快的东西"；使用"埃菲尔铁塔夜景"而非"巴黎著名地标"。
+                图片搜索工具基于视觉内容匹配，查询query应聚焦于可被图像直接表现的元素，如物体、场景、人物、颜色、构图等。
+                查询query应保持简洁精准，使用核心视觉关键词组合（用空格分隔）。理想情况下不应超过20个字。避免使用特殊标点符号和无关修饰词。
+                如需特定类型图片，可明确指定格式（如示意图、图标、照片、漫画等），例如：太阳能系统工作原理示意图。
+              type: array
+              items:
+                type: string
+          required:
+            - query
+    - type: function
+      function:
+        name: video_search
+        version: v1.0
+        description: >-
+          视频检索工具，基于子任务查询query，在海量视频库中执行语义匹配检索，返回多条相关的视频结果，为大模型提供视频内容参考，适用于媒体检索、内容推荐、视频素材查找等场景。
+        parameters:
+          type: object
+          properties:
+            query:
+              description: >-
+                用于视频检索的子任务查询query，应明确表达单一意图，聚焦于视频内容的主题、对象或场景。
+                查询query应使用通用、易于检索的关键词，优先选择能够直接反映视觉内容或动作的术语，以提高搜索效率和结果相关性。例如：使用"烹饪演示"而非"怎么做饭"，使用"城市夜景延时摄影"而非"好看的夜晚城市视频"。
+                查询query应避免使用抽象的、非视觉化的或需要复杂推理的表述。例如：避免使用"最有趣的片段"这类主观表述，应改用"搞笑集锦"等更具体的描述。
+                查询query应保持简洁，主要使用核心关键词组合（用空格分隔），理想长度不超过15个字。避免使用特殊标点符号和停用词。
+                若涉及时间敏感内容，应使用绝对时间表述，如"2024奥运会开幕式"而非"最近奥运会"。
+              type: array
+              items:
+                type: string
+          required:
+            - query
+
+openai_clients:
+  main:
+    name: "openai"
+    config:
+      client_args:
+        api_key: ${oc.env:OPENAI_API_KEY}
+        base_url: ${oc.env:OPENAI_BASE_URL}
+      request_args:
+        model: ${oc.env:OPENAI_MODEL,ZhipuAI/GLM-5}
+
+processors:
+  chat:
+    name: "chat_tracker"
+  trace:
+    name: "json_line"
+    args:
+      file_path: "workspace/trace.jsonl"

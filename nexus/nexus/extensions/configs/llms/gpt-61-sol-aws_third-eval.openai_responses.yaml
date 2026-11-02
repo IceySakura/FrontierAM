@@ -1,0 +1,66 @@
+# AIHub GPT-6.1 SOL aws_third LLM Profile —— SWE 评测大表（evalmx_gpt61sol_aws_xhigh）的同一份请求
+#
+# 和 gpt-61-sol-aws_third.openai_responses.yaml（前端生产 gpt61sol-high 口径）的差别，只在 reasoning 请求体：
+#   本文件（对齐评测大表）   reasoning={effort: xhigh, mode: standard}，不发 summary
+#   前端口径文件             reasoning={effort: high,  summary: auto}，不发 mode
+# 为什么要有两份：评测大表各列（CC / Codex / mini / CodeBuddy）用的是第一种；新增列（如 WorkBuddy）必须同一请求体，否则分数不可比。
+# 2026-10-16 实测 us.openai.gpt-6.1-sol 在 aws_third 上对 {mode}、{summary:auto}、{summary:detailed}、{effort:xhigh} 的各种组合都返回 200，
+# 所以大表生成器里"gpt-6.1-sol 拒收 summary"的注释和生产 profile 里"detailed 会 400、mode 会被拒"的说法都已过时；是否发 summary 只影响可读思考的产量，不影响通不通。
+#
+# 账号：account_id2 已下线，由 key 查询串里的 per-run cache_task_id 动态调度（iwiki 4031597247），同时复用 KV cache；
+# generator 一次决定这个 id、同时写进 metadata.cache_task_id（见 cache_id.py）。实测只带 per-session cache_task_id、不带任何账号信息，
+# 加密推理回放 0/9 失败；既不带 id 也不钉账号则 8/10 失败。
+#
+# 环境变量：必填 HR_API_KEY；可选 MAX_TOKENS / LLM_TIMEOUT / LLM_MAX_RETRIES / REASONING_EFFORT / REASONING_MODE
+#
+# 使用示例：LLM_CONFIG=gpt-61-sol-aws_third-eval.openai_responses
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.openai_responses
+
+  llm:
+    family: gpt
+    use_azure_provider: false
+    reasoning_effort: ${oc.env:REASONING_EFFORT,xhigh}
+
+    # 这条 wire 走 Responses，推理以原生 reasoning_items 下发，所以 codex 的 Responses
+    # 转换器不该再从纯文本 reasoning_content 另铸一个 reasoning item（会重复）。
+    # 这是 per-wire 事实而不是家族事实：litellm / openai chat / vertex_anthropic /
+    # infer_proxy 只有纯文本 reasoning_content，必须吃 true 的默认值，否则推理信号丢掉。
+    # 生产同样只在 openai_responses 的 llm 文件上声明 false（4/25 份）。
+    wrap_plaintext_reasoning_content: false
+
+  openai_clients:
+    main:
+      name: openai_responses
+      config:
+        client_args:
+          api_key: '${oc.env:HR_API_KEY}?provider=aws_third'
+          endpoint: 'http://api.aihub.woa.com/openai/v1/responses'
+          timeout: ${oc.decode:${oc.env:LLM_TIMEOUT,12000}}
+          max_retries: ${oc.decode:${oc.env:LLM_MAX_RETRIES,32}}
+          capture_raw_io: true
+          # 这条 wire 的 reasoning.effort 下限是 low：脚手架发"不思考"旁路请求时用的 'none'
+          # 会被网关 400 unsupported_value（2026-10-16 实测；'minimal' 同样被拒，而 gpt-6-sol /
+          # gpt-5.6-sol / deepseek 这几条线接受 'none'，所以这是按模型的事实、不是协议事实）。
+          # client 按这个下限把过低的值抬上来，省掉一次必然失败的请求。
+          min_reasoning_effort: low
+          cache_task_id_from_run_id: true
+
+        request_args:
+          model: 'us.openai.gpt-6.1-sol'
+          store: false
+          stream: false
+          max_output_tokens: ${oc.decode:${oc.env:MAX_TOKENS,128000}}
+          reasoning:
+            effort: ${oc.env:REASONING_EFFORT,xhigh}
+            mode: ${oc.env:REASONING_MODE,standard}
+          include:
+            - reasoning.encrypted_content
+          parallel_tool_calls: true
+
+merge:
+  imports: append_unique
+
+source: aihub-aws-third-gpt61-sol-eval-openai-responses

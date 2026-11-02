@@ -1,0 +1,58 @@
+# AIHub Taiji HY3 LLM Profile。
+#
+# 用途：
+#   通过 AIHub 标准 OpenAI Chat Completions 接口和 infer_proxy Client 调用 HY3。
+#
+# 协议与路由：
+#   Client=infer_proxy；Endpoint=http://llm-api.model-eval.woa.com/v1/chat/completions；
+#   Model=api_taiji_hy3。
+#
+# 推理配置：
+#   reasoning_effort 默认 high，支持 no_think/low/high，不支持 medium；max_tokens=128000。
+#
+# 环境变量：
+#   必填：OPENAI_API_KEY（<app-id>:<app-key>，可附加 timeout/cache_task_id query）。
+#   可选：AIHUB_HY3_BASE_URL、HY3_REASONING_EFFORT；CACHE_TASK_ID 可拼入鉴权 query。
+#
+# 使用示例：
+#   nexus run batch ... \
+#     --use nexus/extensions/harbor_bridge/configs/llm/aihub-hy3.yaml
+#
+# 组合约束：
+#   llm/ 下的 Profile 互斥，同一次运行只选择一个。
+
+body:
+  imports:
+    - nexus.extensions.openai_clients.infer_proxy
+
+  # HY3 返回扁平 reasoning_content，不使用 Claude thinking_blocks。
+  agent_config:
+    thinking_preset: hunyuan
+    extra_env:
+      ANTHROPIC_MODEL: api_taiji_hy3
+
+  openai_clients:
+    main:
+      name: infer_proxy
+      config:
+        client_args:
+          # 执行前解析，APP_ID/APP_KEY 不进入 Batch DB。
+          api_key__env: OPENAI_API_KEY
+          base_url: ${oc.env:AIHUB_HY3_BASE_URL,http://llm-api.model-eval.woa.com/v1}
+          timeout: 600
+          max_retries: 3
+
+        request_args:
+          model: api_taiji_hy3
+          # 需要更小输出时使用 --set openai_clients.main.config.request_args.max_tokens=<N>。
+          max_tokens: 128000
+          # 合法值：no_think / low / high。medium 会被 AIHub 返回 400。
+          reasoning_effort: ${oc.env:HY3_REASONING_EFFORT,high}
+        # Harbor 明确固定输出预算；普通 request_args 仍是可覆盖的默认值。
+        enforced_request_args:
+          max_tokens: ${oc.select:openai_clients.main.config.request_args.max_tokens,null}
+
+merge:
+  imports: append_unique
+
+source: harbor-aihub-hy3

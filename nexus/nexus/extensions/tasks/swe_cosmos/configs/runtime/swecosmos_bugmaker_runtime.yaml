@@ -1,0 +1,116 @@
+# Gongfeng 沙盒 Runtime Profile（SWE-Cosmos bugmaker 任务）
+#
+# 用途：
+#   在一个 root 沙盒里跑完整条 bugmaker 流水线（bugmaker → validate → evaluate → issuegen），
+#   流水线自己再按 environment_type 拉起 child 沙盒 / 内层容器
+#
+# 环境变量：
+#   必填：GONGFENG_RUNTIME_TOKEN 或 GONGFENG_TOKEN（root / child 沙盒）
+#   可选（root 沙盒）：RUNTIME_PROVIDER_NAME
+#                     RUNTIME_IMAGE
+#                     GONGFENG_PURPOSE
+#                     RUNTIME_CPU
+#                     RUNTIME_MEMORY
+#                     RUNTIME_REQUEST_TIMEOUT
+#                     SWECOSMOS_IMAGE
+#                     WORKER_VENV
+#   可选（流水线）：OUTPUT_DIR
+#                   SWECOSMOS_PIPELINE_TIMEOUT
+#                   SWECOSMOS_BUGMAKER_STRATEGY
+#                   SWECOSMOS_MAX_BUGS / SWECOSMOS_MAX_WORKERS / SWECOSMOS_SEED
+#                   SWECOSMOS_NUM_RETRIES
+#                   SWECOSMOS_ENTITY_PATH / SWECOSMOS_BUG_DATA_PATH
+#                   SWECOSMOS_NUM_PATCHES / SWECOSMOS_COMPOSE_CRITERIA / SWECOSMOS_CONFLICT_STRATEGY / SWECOSMOS_COMPOSE_MAX_REUSE
+#   可选（child 沙盒）：SWECOSMOS_CHILD_ENVIRONMENT_TYPE
+#                       SWECOSMOS_CHILD_RUNTIME_IMAGE
+#                       SWECOSMOS_CHILD_CPU / SWECOSMOS_CHILD_MEMORY
+#                       GONGFENG_DEBUG
+#   可选（刷新沙盒里的 SWE-Cosmos 源码）：SWECOSMOS_GIT_ARCHIVE_PATH
+#
+# 使用示例：
+#   RUNTIME_CONFIG=swecosmos_bugmaker_runtime
+#
+# 组合约束：
+#   runtime/ 下的 Profile 互斥，同一次运行只选择一个
+#   repo_name / repo_dict_path 由 generator.py 逐 repo 覆盖，这里不写
+
+body:
+  imports:
+    - nexus.extensions.tasks.swe_cosmos
+
+  runtime_provider_name: ${oc.env:RUNTIME_PROVIDER_NAME,gongfeng}
+
+  runtime_provider_config:
+    api_base_url: http://hyrl-sandbox.prod.woa.com:8052
+    token: ${oc.env:GONGFENG_RUNTIME_TOKEN,${oc.env:GONGFENG_TOKEN,''}}
+    # `current` 自动匹配当前 Nexus 版本；复现固定环境时填完整镜像地址，例如: mirrors.tencent.com/hunyuan_yanguan/nexus-runtime:{version}
+    runtime_image: ${oc.env:RUNTIME_IMAGE,current}
+    rpc_protocol: http
+    # Gongfeng 资源用途桶：prod、eval 或 test
+    purpose: ${oc.env:GONGFENG_PURPOSE,prod}
+    resource_spec:
+      # oc.env 一律返回字符串，数值和布尔值都要套 oc.decode 还原类型
+      # docker child backend 下内层容器共用 root 沙盒的资源，要调大的是这两个值
+      cpu: ${oc.decode:${oc.env:RUNTIME_CPU,4}}
+      memory: ${oc.decode:${oc.env:RUNTIME_MEMORY,16}}
+    # 整条流水线跑在一次 invoke 里，这个超时必须明显大于下面的 pipeline_timeout，否则长跑会被中途放弃
+    request_timeout: ${oc.decode:${oc.env:RUNTIME_REQUEST_TIMEOUT,87000}}
+
+  task_name: swecosmos_bugmaker_pipeline
+  task_config:
+    # 每个 repo 一个子目录：<output_dir>/<repo_name>/{run_bugmaker.log, *_instances.jsonl, result.json}
+    output_dir: ${oc.env:OUTPUT_DIR,./outputs/swecosmos_bugmaker}
+    # Host 侧对单个 repo 整体运行时长的上限（秒）。Gongfeng 没有硬 TTL 参数，只能靠它兜底
+    pipeline_timeout: ${oc.decode:${oc.env:SWECOSMOS_PIPELINE_TIMEOUT,86400}}
+
+    # 镜像里的 SWE-Cosmos 源码与输出路径
+    swe_cosmos_dir: /root/workspace/SWE-Cosmos
+    sandbox_output_dir: /root/workspace/SWE-Cosmos/outputs
+
+    # 可选: function_rewrite、function_compose
+    bugmaker_strategy: ${oc.env:SWECOSMOS_BUGMAKER_STRATEGY,function_rewrite}
+    max_bugs: ${oc.decode:${oc.env:SWECOSMOS_MAX_BUGS,100}}
+    max_workers: ${oc.decode:${oc.env:SWECOSMOS_MAX_WORKERS,4}}
+    seed: ${oc.decode:${oc.env:SWECOSMOS_SEED,3407}}
+    # max_tokens 不在这里：响应长度上限由 llms/ 下的 profile 决定（沙盒发来的值会覆盖 profile）
+    # 沙盒侧的 litellm 重试次数，1 = 不重试：重试权威在 host profile 的 max_retries（见 task.py）
+    num_retries: ${oc.decode:${oc.env:SWECOSMOS_NUM_RETRIES,1}}
+
+    # 两个路径都是 str.format 模板，可用占位符 {repo_name} 和 {bugmaker_strategy}，
+    # 也允许一段 /?/ 通配（见 utils.resolve_question_mark_path）。generator 逐 repo 展开成真实路径
+    # function_rewrite 可选的 entity 文件，按 (rel_file_path, line_start, line_end) 三元组筛函数
+    entity_path: ${oc.env:SWECOSMOS_ENTITY_PATH,''}
+    # function_compose 必填的原子 bug 数据文件，每行一条
+    bug_data_path: ${oc.env:SWECOSMOS_BUG_DATA_PATH,''}
+    num_patches: ${oc.decode:${oc.env:SWECOSMOS_NUM_PATCHES,2}}
+    compose_criteria: ${oc.env:SWECOSMOS_COMPOSE_CRITERIA,basic}
+    conflict_strategy: ${oc.env:SWECOSMOS_CONFLICT_STRATEGY,reject}
+    compose_max_reuse: ${oc.decode:${oc.env:SWECOSMOS_COMPOSE_MAX_REUSE,1.33}}
+
+    # 流水线自己跑 repo 测试环境的后端：
+    #   docker —— 在 root 沙盒内起内层容器（task 会自动打开 Docker-in-Docker），共用 root 沙盒资源
+    #   gongfeng —— 每个 worker 单独拉一个 child 沙盒，峰值沙盒数 ≈ MAX_CONCURRENT * (1 + max_workers)
+    environment_type: ${oc.env:SWECOSMOS_CHILD_ENVIRONMENT_TYPE,docker}
+    gongfeng_api_base_url: http://hyrl-sandbox.prod.woa.com:8052
+    gongfeng_api_key: ${oc.env:GONGFENG_RUNTIME_TOKEN,${oc.env:GONGFENG_TOKEN,''}}
+    gongfeng_runtime_image: ${oc.env:SWECOSMOS_CHILD_RUNTIME_IMAGE,current}
+    gongfeng_cpu: ${oc.decode:${oc.env:SWECOSMOS_CHILD_CPU,2}}
+    gongfeng_memory: ${oc.decode:${oc.env:SWECOSMOS_CHILD_MEMORY,8}}
+    # 把 child 沙盒的拉起日志也打进 run_bugmaker.log
+    gongfeng_debug: ${oc.decode:${oc.env:GONGFENG_DEBUG,false}}
+
+    # 覆盖镜像里烘焙的 SWE-Cosmos 源码：只认预打包 tar.gz（沙盒经常连不上 git.woa.com，没有 git fetch 回落）
+    # 留空 = 直接用镜像里的那份 codebase
+    git_archive_path: ${oc.env:SWECOSMOS_GIT_ARCHIVE_PATH,null}
+
+  runtime_configs:
+    main:
+      # SWE-Cosmos root 镜像（源码 + uv 环境已烘焙进去）
+      image: ${oc.env:SWECOSMOS_IMAGE,mirrors.tencent.com/hunyuan_yanguan/petrichorqi.swe-cosmos:latest}
+      # worker_venv 会把当前 nexus wheel 上传进新建 venv，这样改了 nexus/ 下的代码不用重新构建镜像
+      worker_venv: ${oc.decode:${oc.env:WORKER_VENV,true}}
+
+merge:
+  imports: append_unique
+
+source: swecosmos-bugmaker-gongfeng-runtime

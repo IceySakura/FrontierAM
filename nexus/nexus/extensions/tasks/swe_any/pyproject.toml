@@ -1,0 +1,23 @@
+[project]
+name = "swe_any"
+version = "0.1.0"
+description = "SWE-Any: large-scale SWE dataset construction pipeline (Parse → Select → Mask → Eval) integrated into nexus."
+# Base deps (installed on BOTH host and runtime): Parse builds the graph
+# in-sandbox (worker_venv ships these), Select reads/slices it on the host.
+dependencies = [
+    "networkx>=3.0",
+    "protobuf>=4.25",
+]
+
+[project.optional-dependencies]
+host = []
+runtime = []
+
+# Nexus tasks, lazily registered from task.py (imported on first .get()).
+[tool.nexus.tasks]
+swe_any_parse = "nexus.extensions.tasks.swe_any.task"
+swe_any_select = "nexus.extensions.tasks.swe_any.task"
+swe_any_mask = "nexus.extensions.tasks.swe_any.task"
+swe_any_eval = "nexus.extensions.tasks.swe_any.task"
+swe_any_issue = "nexus.extensions.tasks.swe_any.task"
+swe_any_export = "nexus.extensions.tasks.swe_any.task"

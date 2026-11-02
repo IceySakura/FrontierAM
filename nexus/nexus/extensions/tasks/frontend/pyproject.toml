@@ -1,0 +1,7 @@
+[project]
+name = "frontend"
+version = "0.1.0"
+dependencies = []
+
+[tool.nexus.tasks]
+frontend_task = "nexus.extensions.tasks.frontend.task"

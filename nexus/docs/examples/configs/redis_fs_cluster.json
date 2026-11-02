@@ -1,0 +1,10 @@
+{
+  "redis_url": "redis://127.0.0.1:16379/0",
+  "num_data_units": 2,
+  "data_unit_node_ids": null,
+  "controller_node_id": null,
+  "startup_timeout": 60,
+  "request_workers": 8,
+  "ssd_workers": 8,
+  "copy_workers": 8
+}

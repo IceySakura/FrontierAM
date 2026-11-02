@@ -1,0 +1,12 @@
+# Start Redis and FS services with `nexus redis up`; use reachable endpoints below.
+trajectory_store:
+  backend: redis
+  namespace: training-run-1
+  redis:
+    url: redis://127.0.0.1:16379/0
+    key_prefix: nexus:trajectory:training-run-1
+    controller_endpoint:
+      host: 127.0.0.1
+      port: 17000
+    fs_timeout: 120
+    io_workers: 32

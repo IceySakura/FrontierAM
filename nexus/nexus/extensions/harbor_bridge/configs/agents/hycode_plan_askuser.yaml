@@ -1,0 +1,103 @@
+# HyCode unattended agent profile.
+#
+# This is a config-only experiment for HyCode's Claude-compatible hook protocol:
+# - ExitPlanMode is allowed without waiting for approval.
+# - AskUserQuestion selects the first option for every question and lets the tool
+#   run, so its own result carries the answers.
+#
+# HyCode 0.1.11 reads the Claude-compatible ~/.claude/settings.json path. The
+# pre-start script writes an executable, standalone hook helper so the settings
+# command does not depend on `python3` being on PATH.
+body:
+  imports:
+    - nexus.extensions.agents.hycode.agent
+  agent_name: hycode
+  agent_config:
+    version: 0.1.11
+    timeout: 7200.0
+    thinking_preset: hunyuan
+
+    extra_cli_args:
+      - --print
+      - --input-format
+      - text
+      - --output-format
+      - stream-json
+      - --verbose
+      - --no-session-persistence
+      - --allowedTools
+      - ExitPlanMode
+
+    config_file_patches:
+      - path: ~/.claude/settings.json
+        content:
+          hooks:
+            PreToolUse:
+              - matcher: ExitPlanMode
+                hooks:
+                  - type: command
+                    command: >-
+                      echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"allow","updatedInput":{}}}'
+              - matcher: AskUserQuestion
+                hooks:
+                  - type: command
+                    command: ~/.claude/_nexus_hycode_askuser_hook.py
+
+    pre_start_scripts:
+      - interpreter: python
+        timeout: 30.0
+        fail_on_error: true
+        code: |
+          import stat
+          import sys
+          from pathlib import Path
+
+          # Lives next to settings.json rather than in /tmp, which the sandbox may
+          # clear mid-run; the hook would then vanish and AskUserQuestion would go
+          # back to blocking. The matcher references it as ~/.claude/..., which
+          # HyCode expands because command hooks run through a shell.
+          hook_path = Path.home() / '.claude' / '_nexus_hycode_askuser_hook.py'
+          hook_path.parent.mkdir(parents=True, exist_ok=True)
+          hook_source = r'''
+          import json
+          import sys
+
+          # allow + updatedInput lets AskUserQuestion run and render its own result.
+          # deny would also answer, but it sets blockingError alongside the decision,
+          # and HyCode turns that into an extra system-reminder user message reading
+          # "PreToolUse:AskUserQuestion hook blocking error from command: ..." --
+          # context tokens phrased as a failure, which a real user answering never
+          # produces. updatedInput is required: allow on its own falls back to
+          # waiting for a human, since the tool declares requiresUserInteraction.
+          data = json.load(sys.stdin)
+          tool_input = data.get('tool_input') or data.get('toolInput') or {}
+          questions = tool_input.get('questions', [])
+          answers = {}
+          for question in questions:
+              options = question.get('options', [])
+              selected = options[0].get('label', 'first option') if options else 'first option'
+              answers[question.get('question', '?')] = selected
+          output = {
+              'hookSpecificOutput': {
+                  'hookEventName': 'PreToolUse',
+                  'permissionDecision': 'allow',
+                  'updatedInput': {**tool_input, 'answers': answers},
+              }
+          }
+          print(json.dumps(output))
+          '''
+          hook_path.write_text(
+              f'#!{sys.executable}\n' + hook_source.lstrip(),
+              encoding='utf-8',
+          )
+          hook_path.chmod(
+              hook_path.stat().st_mode
+              | stat.S_IXUSR
+              | stat.S_IXGRP
+              | stat.S_IXOTH
+          )
+
+merge:
+  imports: append_unique
+
+source: harbor-hycode-plan-askuser

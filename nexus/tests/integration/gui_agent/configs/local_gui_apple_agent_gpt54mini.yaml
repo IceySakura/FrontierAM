@@ -1,0 +1,66 @@
+imports:
+  - nexus.extensions
+
+task_name: 'identity'
+task_config: {}
+
+runtime_provider_name: 'docker'
+runtime_provider_config:
+  runtime_image: 'current'
+  force_rebuild: false
+  print_port_mappings: true
+
+runtime_configs:
+  main:
+    image: ${oc.env:NEXUS_UBUNTU_SESSION_IMAGE,"nexus-ubuntu-session:latest"}
+    exposed_ports: [5900, 6080]
+    extra_args:
+      - '--tmpfs'
+      - '/run'
+      - '--tmpfs'
+      - '/run/lock'
+      - '-e'
+      - 'GTK_A11Y=none'
+      - '-e'
+      - 'NEXUS_GUI_REQUIRE_SYSTEM_DBUS=1'
+
+agent_name: 'main_agent'
+agent_config:
+  system_prompt: 'You are a precise assistant. Follow the requested desktop GUI steps exactly and stop when the task is done.'
+  user_prompt: |
+    Use the desktop GUI tools to complete this task in order:
+    1. Call the desktop/start tool with {"desktop_session":"gnome-session","screen_width":1280,"screen_height":800,"session_options":{"gnome_session_name":"ubuntu"}} to start the Ubuntu desktop session.
+    2. Call the desktop/screen_size tool to confirm the desktop resolution.
+    3. Launch the app command: rm -rf /tmp/google-chrome-profile; exec google-chrome --no-sandbox --disable-gpu --no-first-run --no-default-browser-check --user-data-dir=/tmp/google-chrome-profile --window-position=0,0 --window-size=1280,800 --start-maximized --new-window https://www.apple.com
+    4. Call desktop/bash with command: sleep 10
+    5. Call desktop/screenshot.
+    6. Click the center of the blue "Learn more" button by calling desktop/computer_13 with action_type CLICK and parameters {"x":555,"y":400}. This coordinate is for the fixed 1280x800 Google Chrome window; do not click the phone image.
+    7. Call desktop/bash with command: sleep 10
+    8. Call desktop/screenshot again to confirm the page after the click.
+    9. Reply with a short summary and stop calling tools.
+    Use desktop/bash only for the requested sleep commands. Google Chrome is already installed in the runtime environment.
+  max_iterations: 12
+  tools:
+    - desktop/start
+    - desktop/screen_size
+    - desktop/screenshot
+    - desktop/launch_app
+    - desktop/computer_13
+    - desktop/bash
+  parallel_tool_calls: false
+
+openai_clients:
+  main:
+    name: 'openai'
+    config:
+      client_args:
+        api_key: ${oc.env:MODEL_SERVICE_API_APP_ID}:${oc.env:MODEL_SERVICE_API_APP_KEY}?provider=azure_openai&model=${oc.env:NEXUS_MODEL,"gpt-5.5"}&timeout=${oc.env:MODEL_SERVICE_API_TIMEOUT,"60"}
+        base_url: ${oc.env:MODEL_SERVICE_API_BASE_URL}
+      request_args:
+        model: ${oc.env:NEXUS_MODEL,"gpt-5.5"}
+
+processors:
+  chat:
+    name: 'chat_tracker'
+  agent_metrics:
+    name: 'main_agent_metrics'

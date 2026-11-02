@@ -1,0 +1,13 @@
+[project]
+name = "browsecomp"
+version = "0.1.0"
+authors = [
+    { name = "jusewang" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+runtime = []
+
+[tool.nexus]
+tasks = { browsecomp = "nexus.extensions.tasks.browsecomp.task" }
