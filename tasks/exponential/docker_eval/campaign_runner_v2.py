@@ -89,12 +89,24 @@ def save(path, data):
     temporary.replace(path)
 
 
-def development_command(prefix, image, name):
+def placement_options(cpuset='0', cgroup_parent=None):
+    """One exclusive CPU from the host slot broker; '0' is the original single-slot layout."""
+    if not re.fullmatch(r'[0-9]{1,4}', str(cpuset)):
+        raise ValueError('a slot must pin exactly one CPU')
+    options = ['--cpus', '1', '--cpuset-cpus', str(cpuset)]
+    if cgroup_parent is not None:
+        if not re.fullmatch(r'[a-z][a-z0-9-]{0,62}\.slice', cgroup_parent):
+            raise ValueError('cgroup parent must be a systemd slice name')
+        options += ['--cgroup-parent', cgroup_parent]
+    return options
+
+
+def development_command(prefix, image, name, cpuset='0', cgroup_parent=None):
     if not re.fullmatch(r'sha256:[0-9a-f]{64}', image):
         raise ValueError('use immutable image ID')
     return list(prefix) + ['create', '--name', name, '--network', 'none', '--read-only',
             '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges:true', '--cgroupns', 'private',
-            '--cpus', '1', '--cpuset-cpus', '0', '--memory', str(MEMORY), '--memory-swap', str(MEMORY),
+            *placement_options(cpuset, cgroup_parent), '--memory', str(MEMORY), '--memory-swap', str(MEMORY),
             '--pids-limit', '32', '--ulimit', 'nofile=128:128', '--ulimit', 'core=0:0', '--ipc', 'none',
             '--tmpfs', f'/tmp:rw,nosuid,nodev,size={SCRATCH},mode=1777',
             '--tmpfs', f'/workspace:rw,exec,nosuid,nodev,size={ARTIFACT},uid=1000,gid=1000,mode=0755',
@@ -102,7 +114,7 @@ def development_command(prefix, image, name):
             '--entrypoint', '/bin/sleep', image, 'infinity']
 
 
-def verify_configuration(info, image):
+def verify_configuration(info, image, cpuset='0', cgroup_parent=None):
     h, config = info['HostConfig'], info['Config']
     caps = lambda value: {item.removeprefix('CAP_') for item in value or []}
     ulimits = {row['Name']: (row['Soft'], row['Hard']) for row in h.get('Ulimits') or []}
@@ -113,7 +125,8 @@ def verify_configuration(info, image):
         'readonly_root': h.get('ReadonlyRootfs') is True,
         'no_host_mounts': not h.get('Binds') and not info.get('Mounts'),
         'memory_no_swap': h.get('Memory') == MEMORY and h.get('MemorySwap') == MEMORY,
-        'one_cpu_pinned': h.get('NanoCpus') == 1000000000 and h.get('CpusetCpus') == '0',
+        'one_cpu_pinned': h.get('NanoCpus') == 1000000000 and h.get('CpusetCpus') == str(cpuset),
+        'slot_cgroup_parent': (h.get('CgroupParent') or None) == cgroup_parent,
         'pids_32': h.get('PidsLimit') == 32,
         'fd_128': ulimits.get('nofile') == (128, 128),
         'no_caps': caps(h.get('CapDrop')) == {'ALL'} and not h.get('CapAdd'),
@@ -132,8 +145,13 @@ def verify_configuration(info, image):
 
 
 class Docker:
-    def __init__(self, binary, host):
+    def __init__(self, binary, host, cpuset='0', cgroup_parent=None):
         self.prefix = [str(Path(binary).resolve()), '--host', host]
+        placement_options(cpuset, cgroup_parent)
+        self.cpuset, self.cgroup_parent = str(cpuset), cgroup_parent
+
+    def verify(self, info, image):
+        return verify_configuration(info, image, self.cpuset, self.cgroup_parent)
 
     def run(self, *args, timeout=30, input=None):
         result = subprocess.run(self.prefix + list(args), input=input, capture_output=True, timeout=timeout)
@@ -145,10 +163,11 @@ class Docker:
         return json.loads(self.run('inspect', name))[0]
 
     def create(self, image, name, public_tar=None, source_tar=None):
-        subprocess.run(development_command(self.prefix, image, name), check=True, capture_output=True, timeout=30)
+        subprocess.run(development_command(self.prefix, image, name, self.cpuset, self.cgroup_parent),
+                       check=True, capture_output=True, timeout=30)
         try:
             self.run('start', name)
-            checks = verify_configuration(self.inspect(name), image)
+            checks = self.verify(self.inspect(name), image)
             self.run('exec', name, '/bin/mkdir', '/workspace/submission')
             archive, directory = (public_tar, '/workspace') if public_tar else (source_tar, '/workspace/submission')
             if archive:
@@ -275,7 +294,7 @@ def freeze(docker, name, output, label):
     process = subprocess.Popen(docker.prefix + ['run', '--rm', '--name', exporter, '--network', 'none',
                                '--pid', 'container:' + name, '--read-only', '--cap-drop', 'ALL',
                                '--security-opt', 'no-new-privileges:true', '--user', '1000:1000',
-                               '--cpus', '1', '--cpuset-cpus', '0', '--memory', str(MEMORY),
+                               *placement_options(docker.cpuset, docker.cgroup_parent), '--memory', str(MEMORY),
                                '--memory-swap', str(MEMORY), '--pids-limit', '32', '--ulimit', 'nofile=128:128',
                                '--ipc', 'none', '--log-driver', 'none', '--entrypoint', 'python3',
                                image, '-c', EXPORT_SCRIPT],
@@ -654,7 +673,10 @@ def evaluation(args, docker, image, run, artifact):
     output = run / 'evaluation.json'
     command = [sys.executable, str(ROOT / 'evaluator/run_docker.py'), '--image', image,
                '--docker', str(wrapper), '--submission', str(artifact), '--command', './run.sh',
-               '--manifest', str(args.manifest), '--output', str(output), '--repeats', '3']
+               '--manifest', str(args.manifest), '--output', str(output), '--repeats', '3',
+               '--cpuset', docker.cpuset]
+    if docker.cgroup_parent is not None:
+        command += ['--cgroup-parent', docker.cgroup_parent]
     with (run / 'evaluator_stdout.log').open('wb') as stdout, (run / 'evaluator_stderr.log').open('wb') as stderr:
         result = subprocess.run(command, stdout=stdout, stderr=stderr, timeout=8 * 3600)
     if result.returncode or not output.exists():

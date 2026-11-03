@@ -62,11 +62,13 @@ class DeadlineWorkspace:
 
     def verify(self) -> dict[str, Any]:
         controller = self.assets.controller
-        docker = controller.Docker(self.lease['docker_path'], self.lease['docker_host'])
+        docker = controller.Docker(
+            self.lease['docker_path'], self.lease['docker_host'], self.lease['cpuset'], self.lease['cgroup_parent']
+        )
         info = docker.inspect(self.lease['container'])
         if info['Id'] != self.lease['container_id']:
             raise RuntimeError('The named container no longer matches its owned lease')
-        checks = controller.verify_configuration(info, self.assets.image_id)
+        checks = docker.verify(info, self.assets.image_id)
         self.workspace.verify()
         return checks
 

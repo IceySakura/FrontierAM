@@ -12,3 +12,5 @@ outputs/
 *.pem
 *.sqlite*
 .DS_Store
+store/
+.runtime.*/

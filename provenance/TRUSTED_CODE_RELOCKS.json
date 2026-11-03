@@ -1,0 +1,30 @@
+{
+  "reason": "Slot placement: the single pinned CPU and its isolated cgroup slice are parameters instead of CPU0.",
+  "relocks": [
+    {
+      "utc": "2026-11-03T07:52:38+00:00",
+      "changes": [
+        {
+          "file": "tasks/exponential/docker_eval/campaign_runner_v2.py",
+          "old": "e0882baa588258ef602fce9bd7565fe176bc63a2b5ea09f488c6016e99faa3df",
+          "new": "9021159821e24c4449b74403ffa9e11d58040e56251eb338cb0f292a2c4ba5d8"
+        },
+        {
+          "file": "tasks/exponential/docker_eval/evaluator/run_docker.py",
+          "old": "621529ed4c0479ca67db0d8edf8d1d8d58aa247453f716cd10746e618cf239da",
+          "new": "a78f21731932aa82b82f3ac4966b029c340f215f5a75f22075cd9154b69ef36a"
+        },
+        {
+          "file": "tasks/conic/original/tests/grade.py",
+          "old": "0618145f676cf3e98968b469deeb429ff167cee8ac10ef58c34b6fc0a8230ff9",
+          "new": "7495a98136c7cdcbae3b10e76cd6c3f28b448c168e12b04cf35a4d8fc9c64dc9"
+        },
+        {
+          "file": "tasks/conic/original/tests/runtime_sandbox.py",
+          "old": "3c062462ad71adbf8e7f4b6e09d3ebf43c7a9e52792d4bdcc0ca04313b679bcc",
+          "new": "64fcaf60107ad431b166eb8288327c1e09a1db5a9cd2f4ef8cd06eb50901d13f"
+        }
+      ]
+    }
+  ]
+}

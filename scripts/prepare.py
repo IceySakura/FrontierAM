@@ -62,6 +62,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--docker', default=shutil.which('docker'))
     parser.add_argument('--docker-host', default=os.environ.get('DOCKER_HOST', 'unix:///var/run/docker.sock'))
+    parser.add_argument(
+        '--grade-docker-host',
+        default='unix:///run/frontieram-grade-docker/docker.sock',
+        help='grading-only daemon created by ./bench host setup; images are copied there by ID',
+    )
     parser.add_argument('--codex', required=True, help='Codex executable or its npm launcher')
     parser.add_argument('--exponential-image', default='frontieram-exponential:port-v1')
     parser.add_argument('--conic-image', default='frontieram-conic:success-v2-port-v1')
@@ -87,6 +92,17 @@ def main():
         images[name] = {'id': image['Id'], 'architecture': image['Architecture']}
     if images['exponential']['architecture'] != images['conic']['architecture']:
         parser.error('The two numerical images must use the same architecture')
+    grade_prefix = [str(docker), '--host', args.grade_docker_host]
+    for name in ('exponential', 'conic'):
+        image_id = images[name]['id']
+        if subprocess.run(grade_prefix + ['image', 'inspect', image_id], capture_output=True).returncode:
+            save = subprocess.Popen(prefix + ['image', 'save', getattr(args, name + '_image')], stdout=subprocess.PIPE)
+            subprocess.run(grade_prefix + ['image', 'load', '--quiet'], stdin=save.stdout, check=True)
+            if save.wait():
+                parser.error('Could not export the numerical image to the grading daemon')
+        loaded = json.loads(subprocess.check_output(grade_prefix + ['image', 'inspect', image_id]))[0]['Id']
+        if loaded != image_id:
+            parser.error('The grading daemon holds a different image under the locked ID')
     server = json.loads(subprocess.check_output(prefix + ['info', '--format', '{{json .}}']))
     native_arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(server['Architecture'], server['Architecture'])
     if native_arch != images['exponential']['architecture']:
@@ -127,7 +143,10 @@ def main():
     asset_path.write_text(code)
     asset_path = extensions / 'frontieram_conic/assets.py'
     asset_path.write_text(asset_path.read_text().replace(OLD_CONIC, images['conic']['id']))
-    task = ROOT / 'tasks/conic/original'
+    # Sealed copies: editing the repository can never change files under a running or queued job.
+    shutil.copytree(ROOT / 'tasks/conic/original', runtime / 'tasks/conic/original')
+    shutil.copytree(ROOT / 'tasks/conic/reference_submission', runtime / 'tasks/conic/reference_submission')
+    task = runtime / 'tasks/conic/original'
     public_tar = runtime / 'conic-public.tar'
     architecture = images['conic']['architecture']
     port_note = (
@@ -136,7 +155,11 @@ def main():
         'The offline time and memory limits, data and mathematical checks remain unchanged. '
         'Host Codex and numerical image hashes are sealed before trials. '
         'Agent CLIs are host-side only; the portable candidate image does not ship authenticated agent CLIs. '
-        'Only the workspace execution tool is available.\n'
+        'Only the workspace execution tool is available. '
+        'Several isolated attempts share this host, each on its own dedicated physical core: wherever the task '
+        'says CPU 0 or CPU0, read "the one CPU this container is pinned to". Its index is assigned per run and may '
+        'differ between development and verification; never hard-code a CPU number, and use the inherited affinity '
+        '(for example os.sched_getaffinity(0)) if you need it.\n'
     )
     resources = json.loads((task / 'environment/resources.yaml').read_text())
     resources['resources'] = [r for r in resources['resources'] if r['id'] != 'agent-clis']
@@ -175,6 +198,8 @@ def main():
         'profile_sha256': sha(runtime / 'conic-profile.json'),
         'docker_path': str(docker),
         'docker_host': args.docker_host,
+        'grade_docker_host': args.grade_docker_host,
+        'conic_reference_root': str(runtime / 'tasks/conic/reference_submission'),
         'codex_path': str(codex),
         'codex_version': version,
         'codex_sha256': sha(codex),

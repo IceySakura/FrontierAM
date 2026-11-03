@@ -85,7 +85,7 @@ async def test_runtime_binds_the_verified_conic_profile_to_its_tool(profile, tmp
     assets = ConicAssets(tmp_path, path, file_sha256(path))
     runtime = ConicRuntime(
         assets=assets,
-        docker=SimpleNamespace(prefix=['docker', '--host', 'unix:///local/socket']),
+        docker=SimpleNamespace(prefix=['docker', '--host', 'unix:///local/socket'], cpuset='0', cgroup_parent=None),
         container='nexus-frontieram-' + 'a' * 32,
         output_dir=tmp_path,
         configuration_checks={},

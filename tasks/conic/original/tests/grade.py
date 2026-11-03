@@ -109,7 +109,7 @@ def phase(config):
     worker.OUTPUT = Path(config['output']) / 'result.npz'
     worker.AUDIT.mkdir(parents=True, mode=0o700, exist_ok=True)
     worker.AUDIT.chmod(0o700)
-    os.sched_setaffinity(0, {0})
+    os.sched_setaffinity(0, {pinned_cpu()})
     # Reap detached candidate children after their original parent exits.
     if ctypes.CDLL(None, use_errno=True).prctl(36, 1, 0, 0, 0):
         raise OSError(ctypes.get_errno(), 'PR_SET_CHILD_SUBREAPER')
@@ -202,11 +202,18 @@ def run_phase(mode, directory, limit):
     return json.loads(path.read_text())
 
 
+def pinned_cpu():
+    """The host slot broker leases exactly one CPU; its index is not part of the contract."""
+    allowed = os.sched_getaffinity(0)
+    if len(allowed) != 1:
+        raise RuntimeError('Verifier must be pinned to exactly one CPU; refusing to choose one silently')
+    return next(iter(allowed))
+
+
 def preflight():
     if sys.platform != 'linux' or os.geteuid() != 0:
         raise RuntimeError('Requires a fresh Linux verifier container with root supervisor')
-    if 0 not in os.sched_getaffinity(0):
-        raise RuntimeError('CPU0 unavailable; refusing to silently change CPU affinity')
+    cpu = pinned_cpu()
     if worker.candidate_processes():
         raise RuntimeError('Verifier already contains candidate UID1000 processes')
     cg = Path('/sys/fs/cgroup')
@@ -225,7 +232,7 @@ def preflight():
     subprocess.run(['/usr/bin/true'], user=1000, group=1000, extra_groups=[],
         preexec_fn=lambda: child_setup(paths, 'solve'), check=True, timeout=10)
     return {'runtime_version': VERSION, 'platform': os.uname()._asdict() if hasattr(os.uname(), '_asdict') else list(os.uname()),
-        'cpu_affinity': [0], 'cpu_max': [quota, period], 'memory_max': int(maximum),
+        'cpu_affinity': [cpu], 'cpu_max': [quota, period], 'memory_max': int(maximum),
         'memory_swap_max': (cg / 'memory.swap.max').read_text().strip(),
         'memory_swap_current': (cg / 'memory.swap.current').read_text().strip(),
         'host_swap_total': next(line.split(':',1)[1].strip() for line in Path('/proc/meminfo').read_text().splitlines() if line.startswith('SwapTotal:')),

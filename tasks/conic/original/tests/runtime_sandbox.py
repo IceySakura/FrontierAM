@@ -187,9 +187,10 @@ def child_setup(paths, mode):
         raise ValueError("Source, tmp and output must be disjoint directories")
     if normalized["input"] and any(Path(normalized["input"]).is_relative_to(p) for p in directories):
         raise ValueError("Input must be outside writable/source directories")
-    if 0 not in os.sched_getaffinity(0):
-        raise RuntimeError("CPU 0 is unavailable; no affinity fallback is permitted")
-    os.sched_setaffinity(0, {0})
+    allowed = os.sched_getaffinity(0)
+    if len(allowed) != 1:
+        raise RuntimeError("Sandbox must inherit exactly one pinned CPU; no affinity fallback is permitted")
+    os.sched_setaffinity(0, allowed)
     for limit, maximum in ((resource.RLIMIT_CORE, 0), (resource.RLIMIT_FSIZE, 2**30),
                            (resource.RLIMIT_NOFILE, 256), (resource.RLIMIT_NPROC, 128)):
         resource.setrlimit(limit, (maximum, maximum))

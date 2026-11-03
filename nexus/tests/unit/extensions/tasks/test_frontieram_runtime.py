@@ -72,6 +72,9 @@ def _offline_runtime(tmp_path):
     )
     docker = SimpleNamespace(
         prefix=['/trusted/docker', '--host', 'unix:///trusted/socket'],
+        cpuset='0',
+        cgroup_parent=None,
+        verify=lambda info, image: controller.verify_configuration(info, image),
         inspect=lambda name: {'Id': 'a' * 64},
         pause=lambda name: events.append('pause'),
         remove=lambda name: events.append('remove'),

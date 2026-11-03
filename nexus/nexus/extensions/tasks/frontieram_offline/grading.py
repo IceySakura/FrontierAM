@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import inspect
 import json
 import os
 import signal
@@ -66,14 +67,18 @@ def worker(config_path: Path) -> None:
     assets.verify_private_data()
     c = assets.controller
     wrapper = root / 'owned-docker'
+    # Every evaluator Docker call passes through this shim; importing the Nexus package here cost seconds per call
+    # and starved concurrent slots, so the shim carries only the reviewed function and the standard library.
     wrapper.write_text(
-        f'#!{sys.executable}\n'
-        'import sys\nfrom pathlib import Path\n'
-        'from nexus.extensions.tasks.frontieram_offline.grading import docker_command\n'
-        f'raise SystemExit(docker_command(Path({str(config_path)!r}), sys.argv[1:]))\n'
+        # A shebang passes everything after the interpreter as one argument, so the flags must be fused.
+        f'#!{sys.executable} -IS\n'
+        'import json, os, subprocess, sys\nfrom pathlib import Path\n'
+        f'OWNER_LABEL = {OWNER_LABEL!r}\n'
+        + inspect.getsource(docker_command)
+        + f'raise SystemExit(docker_command(Path({str(config_path)!r}), sys.argv[1:]))\n'
     )
     wrapper.chmod(0o700)
-    docker = c.Docker(wrapper, config['docker_host'])
+    docker = c.Docker(wrapper, config['docker_host'], config['cpuset'], config['cgroup_parent'])
     try:
         build = c.offline_build(docker, assets.image_id, root)
         report = c.evaluation(
@@ -243,6 +248,8 @@ async def grade(runtime, output_dir: Path, *, timeout: float = 900) -> dict:
         'output_dir': str(output_dir),
         'docker_path': str(runtime.docker.prefix[0]),
         'docker_host': runtime.docker.prefix[2],
+        'cpuset': runtime.docker.cpuset,
+        'cgroup_parent': runtime.docker.cgroup_parent,
         'ledger': str(output_dir / 'grading_owned_resources.jsonl'),
         'owner': uuid.uuid4().hex,
     }

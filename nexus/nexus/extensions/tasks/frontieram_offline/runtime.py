@@ -95,6 +95,8 @@ class OfflineDockerRuntime(Runtime):
             'container': self.container,
             'container_id': info['Id'],
             'image_id': self.assets.image_id,
+            'cpuset': self.docker.cpuset,
+            'cgroup_parent': self.docker.cgroup_parent,
             'deadline_monotonic': None,
             'deadline_unix_for_logging': None,
         }
@@ -104,7 +106,7 @@ class OfflineDockerRuntime(Runtime):
         if self._removed:
             raise RuntimeError('The offline workspace has been released')
         info = await _blocking(self.docker.inspect, self.container)
-        self.assets.controller.verify_configuration(info, self.assets.image_id)
+        self.docker.verify(info, self.assets.image_id)
         return info
 
     async def stage_public(self) -> dict[str, Any]:
@@ -249,7 +251,7 @@ class OfflineDockerRuntime(Runtime):
             # The MCP watchdog can freeze between the controller's inspect and
             # pause calls. Accept only the verified postcondition on this lease.
             info = self.docker.inspect(self.container)
-            self.assets.controller.verify_configuration(info, self.assets.image_id)
+            self.docker.verify(info, self.assets.image_id)
             if (
                 info.get('Id') != self._lease.get('container_id')
                 or info.get('State', {}).get('Running') is not True
@@ -300,6 +302,8 @@ class FrontierAMOfflineProvider(RuntimeProvider):
         source_root: str | Path,
         docker_host: str,
         docker_path: str | Path | None = None,
+        cpuset: str = '0',
+        cgroup_parent: str | None = None,
         **config: Any,
     ) -> None:
         if config:
@@ -309,7 +313,7 @@ class FrontierAMOfflineProvider(RuntimeProvider):
             raise ValueError('Only a local Docker daemon socket is permitted')
         self.assets = LockedAssets(source_root)
         binary = Path(docker_path or self.assets.source_root / 'runtime/bin/docker').resolve(strict=True)
-        self.docker = self.assets.controller.Docker(binary, docker_host)
+        self.docker = self.assets.controller.Docker(binary, docker_host, cpuset, cgroup_parent)
         self._acquiring_names: set[str] = set()
 
     async def acquire(self, name: str, **params: Any) -> OfflineDockerRuntime:

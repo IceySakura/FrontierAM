@@ -6,12 +6,12 @@
 
 ## 服务器要求
 
-- Linux x86_64、Docker Engine 及 Buildx 插件，使用本地 Unix socket；cgroup v2。
-- Docker 可用内存至少 10 GiB；数值评测必须能绑定 CPU0。
+- Linux x86_64、Docker Engine 及 Buildx 插件，使用本地 Unix socket；cgroup v2、systemd（cgroup driver 为 systemd）。
+- Docker 可用内存至少 10 GiB；每个开发/评测 slot 需要一个带 SMT 兄弟线程的完整物理核。
 - 内核须启用 Landlock ABI ≥ 3 和 seccomp（通常需要 Linux 6.2 及以上；以 `smoke` 实测为准）。缺少这些能力时拒绝运行，不降级为弱隔离。
 - `uv`、Python 3.12、兼容的 Codex CLI；使用 npm 安装 CLI 时还需 Node.js/npm。部署和镜像构建阶段可以联网，正式工具/构建/求解阶段断网。
 
-本机已完成 ARM64 上的两题完整验证。x86_64 镜像另行构建，目标服务器仍必须执行下面的 `smoke`；不将模拟运行或 ARM64 的耗时当作 x86_64 性能验证。
+两题原版流水线已在 ARM64 和本 x86_64 服务器（AMD EPYC 7K62，32 vCPU / 62 GiB）上各完整通过一次 smoke；新的并发流水线也已在 x86_64 上通过。不将 ARM64 的耗时当作 x86_64 性能，baseline 必须在评分机器上重测。
 
 ## 首次安装
 
@@ -29,8 +29,9 @@ npm install -g @openai/codex@0.166.0-alpha.5.1
 codex --version
 
 ./scripts/build-images.sh
+sudo ./bench host setup            # CPU 隔离、评测专用 Docker 守护进程、slot 布局（root，可重复执行）
 ./bench prepare --codex "$(command -v codex)"
-./bench smoke --task both --output outputs/first-smoke
+./bench smoke --task both --parallel 2
 ```
 
 Codex 安装采用[官方文档中的 npm 方式](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted)，固定到本机验证版本 `0.166.0-alpha.5.1`；已确认 npm 提供该版本的 Linux x64 包。`prepare` 会检查所需启动选项、定位 npm 包里的原生可执行文件并记录版本及 SHA256；`smoke` 还会实际验证工具限制。更换 Codex 后须重新准备并验证，不能悄悄换版本继续同一轮。
@@ -39,31 +40,47 @@ Codex 安装采用[官方文档中的 npm 方式](https://developers.openai.com/
 
 `prepare` 只生成被 Git 忽略的 `.runtime/`：本机路径、镜像 ID、Codex 哈希、复制后的执行代码与封存 profile。不会修改原题包。已有 `.runtime/` 时拒绝覆盖；更新环境前请保留已有结果，将旧 `.runtime/` 改名，再重新准备。
 
-## 先验证，再评分
+## 机器隔离：slot、守护进程与评测隔离策略
 
-`smoke` 不调用付费模型。它使用本地协议夹具驱动**真实 Codex → Nexus → 离线工具 → 冻结提交 → Docker 裁判**，验证指数传播 69 次验解和优化器 20×3 次裁判执行。优化器夹具故意返回 `unresolved`，预期成功率为 0，同时逐次检查隐藏数据读取、裁判改写、源码改写和 TCP/UDP 均被禁止；这不是模型得分。
+`./bench host setup` 把机器划成互不重叠的部分，写入 `/etc/frontieram/machine.json`（`./bench host plan` 只预览）：
 
-指数传播的时间参考必须在目标机器重新校准：
+- **housekeeping**（默认物理核 0–1）：systemd 下的 `system.slice`、`user.slice` 以及其余顶层 cgroup（监控 agent、编辑器、默认 dockerd/containerd）全部限制在这里，每 30 秒由 `frontieram-isolate.timer` 重新收紧新出现的顶层 cgroup。
+- **`frontieram.slice`** 独占其余 CPU。每个 slot 是一个完整物理核：容器在一个硬件线程，另一个线程只运行该 slot 的宿主侧进程（开发控制器 Codex/Nexus，或评测计时进程），以 `systemd-run` scope 固定。
+- **评测专用 Docker**：`frontieram-grade-docker.service` 加私有 `frontieram-grade-containerd.service`，独占一个核。容器 stdio 经它们中继、位于计时路径上，开发的 `docker exec` 流量走默认 dockerd，不与之共享。
+- `--grade-placement packed|spread` 决定评测核是否挤在同一 L3 域。
+
+slot 租约是机器级的 `flock`（`/run/frontieram/slots/`），持有进程崩溃时自动释放；内存按容器上限计入机器预算，避免无 swap 的 OOM。`./bench host status` 和每个评测任务开始前都会复核隔离，失效时拒绝评测（记为未测）而非在争用下计时。
+
+**并发不是假定安全的，而是实测的**：`./bench interference` 让参考实现在 1/2/4 个评测并发、可选 9 个开发 slot 满载内存带宽压力下重复评测，并按 baseline 计分（理想值恰为 50）。每个题目据此声明 `grade_isolation`：
+
+| 策略 | 评测期间保持空闲 | 用于 |
+| --- | --- | --- |
+| `quiet` | 所有其他评测 slot 和开发 slot（等待进行中的开发结束，暂停新开发） | 指数传播（分数是连续的时间比） |
+| `grade_pool` | 所有其他评测 slot | 优化器（逐例时限内成功即算） |
+| `shared` | 无 | 不计时的题目 |
+
+本机实测结论与数字见 `results/CONCURRENCY.md`。
+
+## 开发与评测是两个独立流程
 
 ```bash
-./bench calibrate --task exponential --output outputs/reference-calibration
+export AIHUB_KEY_FILE=/secure/aihub.key     # 仓库外私有文件，权限 600
+
+# 1. baseline：在评测 slot 上评测冻结参考实现，合格后自动激活为计分锚点
+./bench baseline --task exponential
+./bench baseline --task conic
+
+# 2. 开发：每次尝试独占一个开发 slot；结束即冻结并进入评测队列，开发证据不进入评测
+./bench develop --task exponential --model deepseek-v4-pro --count 2
+
+# 3. 评测：按题目的隔离策略从队列取冻结源码评测，对照 baseline 打分
+./bench grade-worker --drain
+./bench sentinel --task exponential          # 参考实现复测，确认环境未漂移
+./bench leaderboard --task exponential
+./bench status
 ```
 
-校准使用已冻结的作者 KIOPS 实现及统一 `0.01` 容差倍率，不按私有实例重新选算法或调参。只有参考通过全部 69 次验解，才建立本机时间锚点。未校准时仍能验解和记录耗时，但不生成指数传播分数。更换机器、镜像、数据或校准报告会使校准失效。
-
-## 跑一个模型的一次 2 小时尝试
-
-将 AIHub key 放到仓库外的私有文件，权限设为 `600`。仓库不携带任何 API key 或太湖 PAT。
-
-```bash
-export AIHUB_KEY_FILE=/secure/aihub.key
-
-./bench run --task exponential --model claude-opus-5-5 \
-  --output outputs/exponential-opus-attempt1
-
-./bench run --task conic --model claude-opus-5-5 \
-  --output outputs/conic-opus-attempt1
-```
+开发产物存放在 `store/dev-runs/`；只有冻结后的规范 `source.tar` 被复制到 `store/submissions/`，评测时用同一受审查的提取器重新校验后再解包。评测任务以原子重命名认领，同一提交不会被两个 worker 评测；崩溃的 worker 由 `./bench recover` 重新入队并保留残留证据。`./bench submit --source DIR` 可把任意源码目录作为提交入队；`./bench rescore` 在更换 baseline 后用已存的原始测量重算分数。
 
 可用模型字段：`claude-opus-5-5`、`deepseek-v4-pro`、`hy4-preview`、`minimax-m3.1-flash`、`step-5-preview`。
 
@@ -71,17 +88,11 @@ export AIHUB_KEY_FILE=/secure/aihub.key
 
 开发资源统一为单核、4 GiB、禁用 swap、32 个进程/线程、128 个 fd、256 MiB 临时目录、1 GiB 工作目录。数值评测使用题目各自的原定限制：指数传播 4 GiB；优化器 8 GiB，包含裁判开销。
 
-若目标服务器安排多个开发工作槽，可用 `--develop-only` 先冻结，再串行验分：
+原题中的“绑定 CPU0”在本仓库表示“绑定该 slot 的唯一 CPU”：冻结代码中的 CPU 编号改为参数，评测语义不变；改动与新旧哈希记录在 `provenance/TRUSTED_CODE_RELOCKS.json`，由 `scripts/relock.py` 维护。prompt 附注告知模型 CPU 编号按次分配、不得写死。
 
-```bash
-./bench run --task exponential --model deepseek-v4-pro --develop-only \
-  --output outputs/deepseek-development
-./bench grade --task exponential \
-  --submission outputs/deepseek-development/task/source \
-  --output outputs/deepseek-grade
-```
+## 新增题目
 
-一个 Docker host 上的当前 profile 都绑定 CPU0；不要在同一 CPU0 上同时开发和计时验分。需要并行时，为工作槽使用独立 Docker host/profile，保留资源配置记录；数值验分串行执行。
+在 `arena/tasks.py` 实现一个 `Task` 并注册到 `TASKS`：开发配置（公开题包与工作区 runtime）、`grade()`（只接收重新校验后的冻结源码，必须把 `Placement` 传给它创建的每个容器）、`reference_archive()`（冻结参考实现）、`metrics()`、`score(candidate, baseline)`，以及由 `./bench interference` 实测决定的 `grade_isolation`。slot、队列、baseline 管理、隔离复核与排行榜不需要改动。
 
 ## 两题的结果口径
 

@@ -18,7 +18,8 @@ from nexus.extensions.tasks.frontieram_offline.grading import OWNER_LABEL, Owned
 from .assets import ConicAssets
 
 
-def verifier_command(prefix, image, name, owner):
+def verifier_command(prefix, image, name, owner, cpuset='0', cgroup_parent=None):
+    placement = ['--cgroup-parent', cgroup_parent] if cgroup_parent is not None else []
     return [
         *prefix,
         'create',
@@ -33,7 +34,8 @@ def verifier_command(prefix, image, name, owner):
         '--cpus',
         '1',
         '--cpuset-cpus',
-        '0',
+        str(cpuset),
+        *placement,
         '--memory',
         str(8 * 2**30),
         '--memory-swap',
@@ -74,14 +76,15 @@ def verifier_command(prefix, image, name, owner):
     ]
 
 
-def verify_verifier(info, image, owner):
+def verify_verifier(info, image, owner, cpuset='0', cgroup_parent=None):
     h, c = info['HostConfig'], info['Config']
     checks = {
         'owned': (c.get('Labels') or {}).get(OWNER_LABEL) == owner,
         'image': info['Image'] == image,
         'offline': h['NetworkMode'] == 'none',
         'no_host_mounts': not h.get('Binds') and not info.get('Mounts'),
-        'cpu': h['NanoCpus'] == 10**9 and h['CpusetCpus'] == '0',
+        'cpu': h['NanoCpus'] == 10**9 and h['CpusetCpus'] == str(cpuset),
+        'slot_cgroup_parent': (h.get('CgroupParent') or None) == cgroup_parent,
         'memory_no_swap': h['Memory'] == h['MemorySwap'] == 8 * 2**30,
         'private_namespaces': h['CgroupnsMode'] == 'private' and h.get('PidMode') in ('', None),
         'no_devices': not h.get('Privileged') and not h.get('Devices') and not h.get('DeviceRequests'),
@@ -125,13 +128,14 @@ def worker(config_path):
     Path(config['ledger']).write_text(json.dumps({'kind': 'container', 'value': name}) + '\n')
     result = {'exit_status': 'runtime_error_by_env', 'score': None, 'reason': 'grader_not_completed'}
     try:
+        placement = (config['cpuset'], config['cgroup_parent'])
         subprocess.run(
-            verifier_command(docker.prefix, assets.image_id, name, config['owner']),
+            verifier_command(docker.prefix, assets.image_id, name, config['owner'], *placement),
             check=True,
             capture_output=True,
             timeout=30,
         )
-        checks = verify_verifier(docker.inspect(name), assets.image_id, config['owner'])
+        checks = verify_verifier(docker.inspect(name), assets.image_id, config['owner'], *placement)
         (root / 'verifier_configuration.json').write_text(json.dumps(checks, indent=2) + '\n')
         docker.run('cp', str(assets.task_root / 'tests'), name + ':/', timeout=120)
         # Docker cp extracts this trusted tar in a stopped container, never on the host.
@@ -183,6 +187,8 @@ async def grade(runtime, output_dir: Path, *, timeout: float = 28800) -> dict:
         'output_dir': str(output_dir),
         'docker_path': str(runtime.docker.prefix[0]),
         'docker_host': runtime.docker.prefix[2],
+        'cpuset': runtime.docker.cpuset,
+        'cgroup_parent': runtime.docker.cgroup_parent,
         'ledger': str(output_dir / 'grading_owned_resources.jsonl'),
         'owner': uuid.uuid4().hex,
         'grading_timeout': timeout - 180,

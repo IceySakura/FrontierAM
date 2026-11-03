@@ -36,10 +36,10 @@
   "locked_files": {
     "instruction.md": "153051346e8f1155f8cc8c8f7df181871528cd7f4e77d2cb561cd5df3eca1021",
     "task.toml": "8695ec521ae6e4f90c4d52b2af462a0b95e1620e6ac60a5cfd6e0e98eb623554",
-    "tests/runtime_sandbox.py": "3c062462ad71adbf8e7f4b6e09d3ebf43c7a9e52792d4bdcc0ca04313b679bcc",
+    "tests/runtime_sandbox.py": "64fcaf60107ad431b166eb8288327c1e09a1db5a9cd2f4ef8cd06eb50901d13f",
     "tests/config.json": "4e211dc0e2aa30c7d27424642e4c76075725c24901600b34f7563e9cef7ac7e9",
     "tests/test.sh": "c67b281c8a6356028ec4ca8221f59b11527dac2612bc99dcc77cd9e77c404b39",
-    "tests/grade.py": "0618145f676cf3e98968b469deeb429ff167cee8ac10ef58c34b6fc0a8230ff9",
+    "tests/grade.py": "7495a98136c7cdcbae3b10e76cd6c3f28b448c168e12b04cf35a4d8fc9c64dc9",
     "environment/resources.yaml": "4527c0ada9a08e96381c94f31826cfbf4ff53c92f2d075c2757c8272b87919e3",
     "tests/private/score-anchor.json": "44760cf01840413759a2e051fcb89c85ad5861b0a5536c04fbdad6021dc5060c",
     "tests/private/package-lock.json": "ede4bd35f837e0074ed865c6e930df844e097c4eee14dcc4009ebbd3e97b2fc3",

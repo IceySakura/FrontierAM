@@ -92,8 +92,19 @@ def freeze_submission(directory, tar_path, *, max_bytes=ARTIFACT_BYTES):
     return {'sha256': content_digest, 'bytes': total, 'files': hashes}
 
 
+def placement_options(cpuset='0', cgroup_parent=None):
+    if not str(cpuset).isdigit() or len(str(cpuset)) > 4:
+        raise ValueError('a grading slot must pin exactly one CPU')
+    options = ['--cpus', '1', '--cpuset-cpus', str(cpuset)]
+    if cgroup_parent is not None:
+        if not (cgroup_parent.endswith('.slice') and cgroup_parent[:-6].replace('-', '').isalnum()):
+            raise ValueError('cgroup parent must be a systemd slice name')
+        options += ['--cgroup-parent', cgroup_parent]
+    return options
+
+
 def create_command(docker, image, name, command, cpu_seconds, *, memory_bytes=MEMORY_BYTES,
-                   scratch_bytes=SCRATCH_BYTES, pids=32, stderr_bytes=4194304):
+                   scratch_bytes=SCRATCH_BYTES, pids=32, stderr_bytes=4194304, cpuset='0', cgroup_parent=None):
     if not command or any(not isinstance(x, str) or '\x00' in x for x in command):
         raise ValueError('invalid command argv')
     for value, upper, name_ in ((memory_bytes, MEMORY_BYTES, 'memory'), (scratch_bytes, SCRATCH_BYTES, 'scratch'),
@@ -105,7 +116,7 @@ def create_command(docker, image, name, command, cpu_seconds, *, memory_bytes=ME
     return [docker, 'create', '--name', name, '--interactive', '--network', 'none',
             '--read-only', '--cap-drop', 'ALL', '--cap-add', 'SETUID', '--cap-add', 'SETGID', '--cap-add', 'KILL',
             '--security-opt', 'no-new-privileges:true', '--cgroupns', 'private',
-            '--cpus', '1', '--cpuset-cpus', '0', '--memory', str(memory_bytes), '--memory-swap', str(memory_bytes),
+            *placement_options(cpuset, cgroup_parent), '--memory', str(memory_bytes), '--memory-swap', str(memory_bytes),
             '--pids-limit', str(pids), '--ulimit', 'nofile=128:128', '--ulimit', 'core=0:0',
             '--ipc', 'none', '--tmpfs', f'/tmp:rw,nosuid,nodev,size={scratch_bytes},mode=1777',
             '--log-driver', 'none', '--workdir', '/submission', '--user', '0:0',
@@ -164,13 +175,14 @@ def frozen_submission_image(docker, image, submission_tar):
             _docker(docker, 'image', 'rm', frozen)
 
 
-def inspect_configuration(info):
+def inspect_configuration(info, cpuset='0', cgroup_parent=None):
     h = info['HostConfig']
     checks = {
         'network_none': h.get('NetworkMode') == 'none', 'readonly_root': h.get('ReadonlyRootfs') is True,
         'no_binds': not h.get('Binds') and not info.get('Mounts'),
         'memory_swap_equal': h.get('Memory') == h.get('MemorySwap') and 0 < h.get('Memory') <= MEMORY_BYTES,
-        'one_cpu': h.get('NanoCpus') == 1_000_000_000 and h.get('CpusetCpus') == '0',
+        'one_cpu': h.get('NanoCpus') == 1_000_000_000 and h.get('CpusetCpus') == str(cpuset),
+        'slot_cgroup_parent': (h.get('CgroupParent') or None) == cgroup_parent,
         'pids_bounded': 0 < h.get('PidsLimit', 0) <= 32,
         'drop_all_caps': set(h.get('CapDrop') or []) == {'ALL'},
         'supervisor_only_caps': {x.removeprefix('CAP_') for x in h.get('CapAdd') or []} == {'SETUID', 'SETGID', 'KILL'},
@@ -193,7 +205,8 @@ def run_session(command, case_path, *, image, submission_tar, docker='docker', *
 
 def _run_session(command, case_path, *, image, docker='docker', repeat=1,
                 startup_timeout=15, wall_timeout=None, cpu_timeout=None,
-                memory_bytes=MEMORY_BYTES, scratch_bytes=SCRATCH_BYTES, stderr_bytes=4194304):
+                memory_bytes=MEMORY_BYTES, scratch_bytes=SCRATCH_BYTES, stderr_bytes=4194304,
+                cpuset='0', cgroup_parent=None):
     metadata, header, b0, b1, reference = local._load_case(case_path)
     argv = shlex.split(command) if isinstance(command, str) else list(command)
     cap = 60 if metadata['requests'] == 1 else 240
@@ -214,11 +227,12 @@ def _run_session(command, case_path, *, image, docker='docker', repeat=1,
     try:
         result = subprocess.run(create_command(docker, image, name, argv, cpu_timeout,
                                                memory_bytes=memory_bytes, scratch_bytes=scratch_bytes,
-                                               stderr_bytes=stderr_bytes), capture_output=True, timeout=30)
+                                               stderr_bytes=stderr_bytes, cpuset=cpuset, cgroup_parent=cgroup_parent),
+                                capture_output=True, timeout=30)
         if result.returncode:
             raise RuntimeError('evaluator_error:container_create:' + result.stderr.decode(errors='replace')[:1000])
         created = True
-        configuration = inspect_configuration(json.loads(_docker(docker, 'inspect', name))[0])
+        configuration = inspect_configuration(json.loads(_docker(docker, 'inspect', name))[0], cpuset, cgroup_parent)
         launched = time.perf_counter()
         proc = subprocess.Popen([docker, 'start', '--attach', '--interactive', name],
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=0)
@@ -353,6 +367,8 @@ def main(argv=None):
     p.add_argument('--manifest', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--repeats', type=int, default=3)
+    p.add_argument('--cpuset', default='0', help='the one exclusive CPU leased for this grading slot')
+    p.add_argument('--cgroup-parent', default=None, help='isolated systemd slice owning the slot CPUs')
     args = p.parse_args(argv)
     if not 1 <= args.repeats <= 3: p.error('repeats must be 1..3; official aggregates require 3')
     manifest = json.loads(args.manifest.read_text())
@@ -369,7 +385,8 @@ def main(argv=None):
                 raise ValueError('evaluator_error:case_hash_mismatch')
             rows = []
             for repeat in range(1, args.repeats + 1):
-                record = run_session(args.command, file, image=args.image, submission_tar=frozen, docker=args.docker, repeat=repeat)
+                record = run_session(args.command, file, image=args.image, submission_tar=frozen, docker=args.docker,
+                                     repeat=repeat, cpuset=args.cpuset, cgroup_parent=args.cgroup_parent)
                 record['id'] = case['id']; rows.append(record); report['runs'].append(record)
             report['aggregates'][case['id']] = aggregate(rows)
             args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import signal
+import subprocess
 
 from pathlib import Path
 from types import SimpleNamespace
@@ -194,7 +195,7 @@ async def test_cancelled_grader_terminates_its_process_group_and_cleans_ledger(t
     monkeypatch.setattr(grading.os, 'killpg', kill)
     environment = SimpleNamespace(
         assets=SimpleNamespace(source_root=tmp_path / 'frozen'),
-        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket']),
+        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket'], cpuset='0', cgroup_parent=None),
     )
     pending = asyncio.create_task(grading.grade(environment, tmp_path))
     await child.started.wait()
@@ -219,7 +220,7 @@ async def test_timed_out_grader_is_stopped_before_task_classifies_environment_fa
     monkeypatch.setattr(grading.os, 'killpg', kill)
     environment = SimpleNamespace(
         assets=SimpleNamespace(source_root=tmp_path / 'frozen'),
-        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket']),
+        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket'], cpuset='0', cgroup_parent=None),
     )
     with pytest.raises(asyncio.TimeoutError):
         await grading.grade(environment, tmp_path, timeout=0.01)
@@ -335,6 +336,55 @@ def test_docker_shim_adds_owned_label_before_launch(tmp_path, monkeypatch, opera
     assert json.loads(ledger.read_text()) == {'kind': 'container', 'value': 'owned'}
 
 
+def test_generated_docker_shim_runs_as_a_standalone_executable(tmp_path, monkeypatch):
+    recorded = tmp_path / 'argv'
+    fake = tmp_path / 'fake-docker'
+    fake.write_text(f'#!/bin/sh\nprintf "%s\\n" "$@" > {recorded}\n')
+    fake.chmod(0o755)
+    ledger = tmp_path / 'owned.jsonl'
+    config = tmp_path / 'config.json'
+    config.write_text(
+        json.dumps(
+            {
+                'output_dir': str(tmp_path),
+                'source_root': '/unused',
+                'docker_host': 'unix:///unused',
+                'docker_path': str(fake),
+                'cpuset': '0',
+                'cgroup_parent': None,
+                'ledger': str(ledger),
+                'owner': 'run-token',
+            }
+        )
+    )
+
+    def build(docker, image, root):
+        shim = [str(tmp_path / 'owned-docker'), '--host', 'unix:///unused', 'create', '--name', 'owned', 'img']
+        subprocess.run(shim, check=True, timeout=30)
+        raise SubmissionFailure('stop after one real shim call')
+
+    controller = SimpleNamespace(
+        Docker=Mock(),
+        offline_build=build,
+        SubmissionFailure=SubmissionFailure,
+        save=lambda path, value: path.write_text(json.dumps(value)),
+    )
+    locked = SimpleNamespace(controller=controller, verify_private_data=Mock(), image_id='fixture')
+    monkeypatch.setattr(grading, 'LockedAssets', lambda source_root: locked)
+    grading.worker(config)
+    assert recorded.read_text().split('\n')[:-1] == [
+        '--host',
+        'unix:///unused',
+        'create',
+        '--label',
+        'nexus.frontieram.owner=run-token',
+        '--name',
+        'owned',
+        'img',
+    ]
+    assert json.loads(ledger.read_text()) == {'kind': 'container', 'value': 'owned'}
+
+
 @pytest.mark.parametrize(
     ('error', 'expected_status', 'expected_score'),
     [
@@ -351,7 +401,15 @@ def test_grading_worker_distinguishes_submission_and_environment_failures(
 ):
     config = tmp_path / 'config.json'
     config.write_text(
-        json.dumps({'output_dir': str(tmp_path), 'source_root': '/unused', 'docker_host': 'unix:///unused'})
+        json.dumps(
+            {
+                'output_dir': str(tmp_path),
+                'source_root': '/unused',
+                'docker_host': 'unix:///unused',
+                'cpuset': '0',
+                'cgroup_parent': None,
+            }
+        )
     )
     controller = SimpleNamespace(
         Docker=Mock(),
@@ -515,7 +573,7 @@ async def test_repeated_grader_cancellation_waits_for_cleanup_and_keeps_cancel_p
     monkeypatch.setattr(grading, 'cleanup_owned', cleanup)
     environment = SimpleNamespace(
         assets=SimpleNamespace(source_root=tmp_path / 'frozen'),
-        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket']),
+        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket'], cpuset='0', cgroup_parent=None),
     )
     pending = asyncio.create_task(grading.grade(environment, tmp_path))
     await child.started.wait()
@@ -554,7 +612,7 @@ async def test_cancellation_during_process_creation_still_reaps_the_created_work
     monkeypatch.setattr(grading, 'cleanup_owned', cleanup)
     environment = SimpleNamespace(
         assets=SimpleNamespace(source_root=tmp_path / 'frozen'),
-        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket']),
+        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket'], cpuset='0', cgroup_parent=None),
     )
     pending = asyncio.create_task(grading.grade(environment, tmp_path))
     await spawn_started.wait()
@@ -578,7 +636,7 @@ async def test_successful_grader_result_cannot_hide_cleanup_failure(tmp_path, mo
     monkeypatch.setattr(grading, 'cleanup_owned', cleanup)
     environment = SimpleNamespace(
         assets=SimpleNamespace(source_root=tmp_path / 'frozen'),
-        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket']),
+        docker=SimpleNamespace(prefix=['/trusted/docker', '--host', 'unix:///local/socket'], cpuset='0', cgroup_parent=None),
     )
     with pytest.raises(grading.OwnedCleanupError):
         await grading.grade(environment, tmp_path)

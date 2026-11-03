@@ -1,0 +1,308 @@
+"""Task plugins: what the orchestration layer needs to develop, grade, baseline and score one task.
+
+A plugin never decides placement or concurrency. It receives a Placement (one leased CPU, its isolated slice and the
+Docker daemon for that flow) and must pass it to every container it creates. Grading receives only a frozen,
+re-validated source tree; development evidence is never visible to it.
+
+To add a task, implement Task and register it in TASKS. Its grade() must produce per-case raw measurements, and
+score() must compare a candidate's measurements with a baseline measured by the same grade() on this machine.
+"""
+
+from __future__ import annotations
+
+import io
+import json
+import shlex
+import tarfile
+
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from types import SimpleNamespace
+from typing import Any
+
+
+GIB = 2**30
+
+
+@dataclass(frozen=True)
+class Placement:
+    cpuset: str
+    cgroup_parent: str | None
+    docker_host: str
+    slot: str
+
+
+def write(path: Path, data) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n')
+
+
+DEV_POLICY = (
+    ' Use only the offline workspace tool. Put complete source, executable run.sh and README.md in '
+    '/workspace/submission. One attempt, at most 7200 wall-clock seconds including requests, waiting and tools; '
+    'a final turn or deadline freezes this attempt. No hidden feedback or candidate repair after freezing. '
+    'Common inference policy v4: at most 800 actual HTTP attempts including retries, 64000 output tokens '
+    'per response including reasoning, 131072 context setting, provider-default reasoning. Codex compacts '
+    'the conversation automatically near 110000 tokens; compaction requests use the same time and HTTP budget. '
+    'The old 429-only wording is superseded: at most three identical-payload retries for retryable '
+    '429/500/502/503/504 responses; Retry-After first, otherwise full jitter caps of 1/2/4 seconds. '
+    'All retries consume the original deadline. No failover or truncated tool execution. '
+)
+
+
+class Task:
+    name: str
+    nexus_import: str
+    nexus_task: str
+    provider: str
+    instruction: str
+    dev_memory: int = 4 * GIB + GIB // 2
+    grade_memory: int
+    grade_timeout: float = 28800
+    # How much of the machine must stay idle while this task is graded; chosen from measured interference
+    # (store/interference/*.json): 'shared', 'grade_pool' (no other grader) or 'quiet' (no grader, no development).
+    grade_isolation: str = 'grade_pool'
+
+    def provider_config(self, runtime: dict, placement: Placement) -> dict:
+        return {
+            'source_root': runtime['source_root'],
+            'docker_host': placement.docker_host,
+            'docker_path': runtime['docker_path'],
+            'cpuset': placement.cpuset,
+            'cgroup_parent': placement.cgroup_parent,
+        }
+
+    def dev_config(
+        self,
+        runtime: dict,
+        output: Path,
+        placement: Placement,
+        *,
+        model: str,
+        base_url: str,
+        key_file: str | None,
+        smoke: bool,
+    ) -> dict:
+        """One Nexus run that develops and freezes only; grading is a separate job."""
+        return {
+            'imports': [self.nexus_import],
+            'task_name': self.nexus_task,
+            'task_config': {
+                'output_dir': str(output / 'task'),
+                'user_prompt': self.instruction + DEV_POLICY + runtime['architecture_override_prompt'],
+                'evaluate': False,
+                'verification_only': smoke,
+                'grading_timeout': self.grade_timeout,
+            },
+            'runtime_provider_name': self.provider,
+            'runtime_provider_config': self.provider_config(runtime, placement),
+            'agent_name': 'frontieram_codex_offline',
+            'agent_config': {
+                'model': model,
+                'base_url': base_url,
+                'key_file': key_file,
+                'allow_live_endpoint': not smoke,
+                'development_seconds': 60 if smoke else 7200,
+                'max_http_attempts': 8 if smoke else 800,
+                'max_output_tokens': 64000,
+                'auto_compact_token_limit': 110000,
+            },
+            'processors': {'token_counter': {'name': 'token_counter'}},
+            'runner': {'cache': {'enabled': False}, 'timeout': 36600},
+        }
+
+    def assets(self, runtime: dict):
+        raise NotImplementedError
+
+    def docker(self, runtime: dict, placement: Placement):
+        return self.assets(runtime).controller.Docker(
+            runtime['docker_path'], placement.docker_host, placement.cpuset, placement.cgroup_parent
+        )
+
+    def stage(self, runtime: dict, archive: Path, output: Path) -> dict:
+        """Re-validate an untrusted tar with the reviewed extractor into output/source and output/source.tar."""
+        manifest = self.assets(runtime).controller.validate_and_extract(
+            archive, output / 'source', output / 'source.tar'
+        )
+        write(output / 'source_manifest.json', manifest)
+        return manifest
+
+    def reference_archive(self, runtime: dict, output: Path) -> Path:
+        raise NotImplementedError
+
+    async def grade(self, runtime: dict, placement: Placement, output: Path) -> dict:
+        raise NotImplementedError
+
+    def metrics(self, output: Path, raw: dict) -> dict:
+        raise NotImplementedError
+
+    def score(self, runtime: dict, metrics: dict, baseline: dict | None) -> dict:
+        raise NotImplementedError
+
+    def baseline_ok(self, metrics: dict) -> tuple[bool, str]:
+        raise NotImplementedError
+
+
+def tar_directory(source: Path, archive: Path, extra: dict[str, tuple[bytes, int]] | None = None) -> Path:
+    with tarfile.open(archive, 'w') as tar:
+        tar.add(source, arcname='.')
+        for name, (payload, mode) in (extra or {}).items():
+            member = tarfile.TarInfo(f'./{name}')
+            member.size, member.mode = len(payload), mode
+            tar.addfile(member, io.BytesIO(payload))
+    return archive
+
+
+class Exponential(Task):
+    name = 'exponential'
+    nexus_import = 'nexus.extensions.tasks.frontieram_offline'
+    nexus_task = 'frontieram_exponential_offline'
+    provider = 'frontieram_offline'
+    instruction = 'Read /workspace/task/PILOT.md, INSTRUCTION.md and API.md in full. Implement the exponential propagation task.'
+    grade_memory = 4 * GIB + GIB // 2
+    grade_timeout = 8 * 3600
+    # The score is a continuous time ratio: graders sharing an L3 domain cost 5-15 points, dev load about 1.
+    grade_isolation = 'quiet'
+
+    def assets(self, runtime):
+        from nexus.extensions.tasks.frontieram_offline.assets import LockedAssets
+
+        return LockedAssets(runtime['source_root'])
+
+    def reference_archive(self, runtime, output):
+        source = Path(runtime['source_root']) / 'private_pilot/reference_submission'
+        # The frozen reference has no run.sh; the evaluator only starts ./run.sh.
+        command = json.loads((source / 'PROVENANCE.json').read_text())['command']
+        entry = f'#!/bin/sh\nexec {shlex.join(command)}\n'.encode()
+        return tar_directory(source, output / 'incoming.tar', {'run.sh': (entry, 0o755)})
+
+    async def grade(self, runtime, placement, output):
+        from nexus.extensions.tasks.frontieram_offline.grading import grade
+
+        assets = self.assets(runtime)
+        return await grade(
+            SimpleNamespace(assets=assets, docker=self.docker(runtime, placement)), output, timeout=self.grade_timeout
+        )
+
+    def metrics(self, output, raw):
+        report_path = output / 'evaluation.json'
+        report = json.loads(report_path.read_text()) if report_path.exists() else None
+        return {
+            'raw': raw,
+            'valid_runs': raw.get('valid_runs'),
+            'total_runs': raw.get('total_runs'),
+            'aggregates': report['aggregates'] if report else None,
+            'report': str(report_path) if report else None,
+        }
+
+    def baseline_ok(self, metrics):
+        ok = metrics['valid_runs'] == metrics['total_runs'] == 69
+        return ok, 'all 69 reference runs verified' if ok else 'reference did not pass all 69 runs'
+
+    def score(self, runtime, metrics, baseline):
+        raw = metrics['raw']
+        if raw.get('exit_status') != 'finished':
+            return {'status': 'unmeasured', 'score': None, 'reason': raw.get('reason')}
+        if metrics['aggregates'] is None:
+            # Build or archive failure: the frozen protocol scores an invalid submission as zero.
+            return {'status': 'invalid_submission', 'score': 0.0, 'reason': raw.get('reason')}
+        if baseline is None:
+            return {'status': 'baseline_required', 'score': None}
+        assets = self.assets(runtime)
+        cases = json.loads(assets.manifest.read_text())['cases']
+        result = assets.scoring.score_submission(cases, metrics['aggregates'], baseline['metrics']['aggregates'])
+        if raw.get('score') is not None and abs(raw['score'] - result['score']) > 1e-12:
+            raise RuntimeError('Worker and orchestrator scores disagree for the same baseline')
+        return {'status': result.get('status'), 'score': result['score'], 'detail': result}
+
+
+class Conic(Task):
+    name = 'conic'
+    nexus_import = 'nexus.extensions.tasks.frontieram_conic'
+    nexus_task = 'frontieram_conic_success_offline'
+    provider = 'frontieram_conic_offline'
+    instruction = (
+        'Read /workspace/PILOT.md and /workspace/INSTRUCTION.md in full, then inspect /workspace/resources.yaml '
+        'and public-dev. Implement the updated conic solver.'
+    )
+    grade_memory = 8 * GIB + GIB // 2
+
+    def provider_config(self, runtime, placement):
+        return {
+            **super().provider_config(runtime, placement),
+            'profile_path': runtime['profile_path'],
+            'profile_sha256': runtime['profile_sha256'],
+        }
+
+    def assets(self, runtime):
+        from nexus.extensions.tasks.frontieram_conic.assets import ConicAssets
+
+        return ConicAssets(runtime['source_root'], runtime['profile_path'], runtime['profile_sha256'])
+
+    def reference_archive(self, runtime, output):
+        return tar_directory(Path(runtime['conic_reference_root']), output / 'incoming.tar')
+
+    async def grade(self, runtime, placement, output):
+        from nexus.extensions.tasks.frontieram_conic.grading import grade
+
+        assets = self.assets(runtime)
+        return await grade(
+            SimpleNamespace(assets=assets, docker=self.docker(runtime, placement)), output, timeout=self.grade_timeout
+        )
+
+    def metrics(self, output, raw):
+        summary = raw.get('metrics') or {}
+        cases = summary.get('cases') or []
+        return {
+            'raw': {k: v for k, v in raw.items() if k != 'metrics'},
+            'valid_runs': raw.get('valid_runs'),
+            'total_runs': raw.get('total_runs'),
+            'success_rate': summary.get('p'),
+            'groups': summary.get('groups'),
+            'cases': [
+                {
+                    'case_id': c.get('case_id'),
+                    'group': c.get('group'),
+                    'success': c.get('success'),
+                    'status': c.get('status'),
+                    'elapsed_seconds': c.get('elapsed_seconds'),
+                    'time_limit_seconds': c.get('time_limit_seconds'),
+                }
+                for c in cases
+            ],
+            'summary': summary,
+        }
+
+    def baseline_ok(self, metrics):
+        ok = metrics['success_rate'] is not None and metrics['total_runs'] == 60
+        return ok, 'reference completed 20 cases x 3 repeats' if ok else 'reference assessment incomplete'
+
+    def score(self, runtime, metrics, baseline):
+        raw = metrics['raw']
+        if raw.get('exit_status') != 'finished':
+            return {'status': 'unmeasured', 'score': None, 'reason': raw.get('reason')}
+        if raw.get('score') == 0.0 and metrics['success_rate'] is None:
+            return {'status': 'invalid_submission', 'score': 0.0, 'reason': raw.get('reason')}
+        p = metrics['success_rate']
+        result = {'status': 'pilot_success_rate', 'score': p}
+        if baseline is not None:
+            reference = baseline['metrics']['success_rate']
+            by_case = {c['case_id']: c['success'] for c in baseline['metrics']['cases']}
+            result.update(
+                baseline_success_rate=reference,
+                delta_vs_baseline=None if p is None else p - reference,
+                solved_where_baseline_failed=sorted(
+                    c['case_id'] for c in metrics['cases'] if c['success'] and not by_case.get(c['case_id'])
+                ),
+                failed_where_baseline_solved=sorted(
+                    c['case_id'] for c in metrics['cases'] if not c['success'] and by_case.get(c['case_id'])
+                ),
+            )
+        return result
+
+
+TASKS: dict[str, Task] = {task.name: task for task in (Exponential(), Conic())}
+
+
+def placement_record(placement: Placement) -> dict[str, Any]:
+    return asdict(placement)

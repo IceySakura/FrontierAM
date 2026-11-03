@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-exec uv run --project "$root/nexus" --no-sync python "$root/scripts/bench.py" "$@"
+export PYTHONPATH="$root${PYTHONPATH:+:$PYTHONPATH}"
+exec uv run --project "$root/nexus" --no-sync python -m arena.cli "$@"
