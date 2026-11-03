@@ -14,6 +14,7 @@ import uvicorn
 
 from fastapi.responses import JSONResponse
 
+from nexus.runtime.server.services.codex_compaction import classify_codex_compaction
 from nexus.runtime.server.services.responses_proxy import ResponsesProxy
 from nexus.runtime.server.services.responses_proxy.converter import (
     ResponsesProxyConversionError,
@@ -191,10 +192,14 @@ class OfflineResponsesProxy(ResponsesProxy):
                     )
                     continue
                 allowed_tools.append(tool)
-            if len(allowed_tools) != 1:
+            is_compaction = classify_codex_compaction(body) is not None
+            if len(allowed_tools) != 1 and not (is_compaction and not allowed_tools):
                 raise BoundaryError('workspace_tool_count')
-            allowed_names = {tool['function']['name'] for tool in allowed_tools}
-            result['tools'] = allowed_tools
+            allowed_names = {tool['function']['name'] for tool in allowed_tools} or set(_ALLOWED_NAMES)
+            if allowed_tools:
+                result['tools'] = allowed_tools
+            else:
+                result.pop('tools', None)
             choice = result.get('tool_choice')
             if isinstance(choice, dict) and choice.get('function', {}).get('name') not in allowed_names:
                 raise BoundaryError('selected_tool_identity')

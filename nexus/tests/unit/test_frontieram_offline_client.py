@@ -314,7 +314,8 @@ async def test_proxy_auth_compaction_and_length_guards_do_not_leak_payloads():
 
 
 @pytest.mark.asyncio
-async def test_proxy_forwards_local_compaction_within_the_same_budget():
+@pytest.mark.parametrize('with_tools', [True, False])
+async def test_proxy_forwards_local_compaction_within_the_same_budget(with_tools):
     payloads = []
 
     def handler(request):
@@ -324,9 +325,14 @@ async def test_proxy_forwards_local_compaction_within_the_same_budget():
     client = client_for(handler, max_http_attempts=3)
     proxy = OfflineResponsesProxy(client, token=TOKEN)
     body = request_body()
-    body['input'].append(
-        {'type': 'message', 'role': 'user', 'content': 'You are performing a CONTEXT CHECKPOINT COMPACTION.'}
-    )
+    if not with_tools:
+        body['tools'] = []
+        body['tool_choice'] = 'auto'
+    body['input'] += [
+        {'type': 'function_call', 'call_id': 'call-1', 'name': TOOL_NAME, 'arguments': '{"command":"ls"}'},
+        {'type': 'function_call_output', 'call_id': 'call-1', 'output': 'task'},
+        {'type': 'message', 'role': 'user', 'content': 'You are performing a CONTEXT CHECKPOINT COMPACTION.'},
+    ]
     try:
         async with httpx.AsyncClient(
             transport=httpx.ASGITransport(app=proxy.create_app()), base_url='http://local'
@@ -336,6 +342,24 @@ async def test_proxy_forwards_local_compaction_within_the_same_budget():
         assert client.http_attempts == 1
         assert [e['kind'] for e in client.events].count('compaction') == 1
         assert not any(key.startswith('_nexus') for key in payloads[0])
+        assert ('tools' in payloads[0]) is with_tools
+    finally:
+        await client.aclose()
+
+
+@pytest.mark.asyncio
+async def test_proxy_still_requires_the_workspace_tool_outside_compaction():
+    client = client_for(lambda _: httpx.Response(200, json=completion()))
+    proxy = OfflineResponsesProxy(client, token=TOKEN)
+    body = request_body()
+    body['tools'] = []
+    try:
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=proxy.create_app()), base_url='http://local'
+        ) as http:
+            response = await http.post('/v1/responses', headers={'authorization': f'Bearer {TOKEN}'}, json=body)
+        assert response.status_code == 400
+        assert client.http_attempts == 0
     finally:
         await client.aclose()
 
