@@ -4,8 +4,10 @@ import argparse
 import asyncio
 import base64
 import hashlib
+import io
 import json
 import os
+import shlex
 import subprocess
 import sys
 import threading
@@ -226,6 +228,13 @@ async def grade_existing(runtime, args, *, calibrate=False):
     archive = output / 'incoming.tar'
     with tarfile.open(archive, 'w') as tar:
         tar.add(source, arcname='.')
+        if calibrate:
+            # The frozen reference has no run.sh; the evaluator only starts ./run.sh.
+            command = json.loads((source / 'PROVENANCE.json').read_text())['command']
+            entry = f'#!/bin/sh\nexec {shlex.join(command)}\n'.encode()
+            member = tarfile.TarInfo('./run.sh')
+            member.size, member.mode = len(entry), 0o755
+            tar.addfile(member, io.BytesIO(entry))
     manifest = assets.controller.validate_and_extract(archive, output / 'source', output / 'source.tar')
     write(output / 'source_manifest.json', manifest)
     if calibrate and (assets.source_root / 'local_calibration.json').exists():
@@ -246,6 +255,7 @@ async def grade_existing(runtime, args, *, calibrate=False):
                 'manifest_sha256': sha(assets.manifest),
                 'reference_source_sha256': manifest['sha256'],
                 'policy': 'frozen author KIOPS, multiplier 0.01',
+                'entry_adapter': 'run.sh generated from PROVENANCE.json command',
             },
         )
     print(json.dumps({'calibrated': calibrate, **result}, ensure_ascii=False), flush=True)
