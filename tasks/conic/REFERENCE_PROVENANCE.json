@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "source": "conic-reference-submission-20261102.tar.gz (sha256 9c534a3c312374684e70a24f681dd53a43ab275167487cd230962f0dd55abde1)",
+  "role": "private conic baseline submission; never staged into a candidate workspace",
+  "original_files_verified_against": "tasks/conic/original/tests/private/historical/standard-calibration.json reference_files",
+  "original_files": {
+    "README.md": "b224ea891bab35d209194c3953d8b081ebd1f6c1cda09c6d6140e276ea34ba33",
+    "build.sh": "85acae180b95688c2fa0da0c7a2a17bef3de1da865ea71853bb9da9ff7738e29",
+    "conicbench/__init__.py": "348d9bdd83d8d7e5ae00423f72cee6b2809aa5afdca447df800b6c461e5d26ed",
+    "conicbench/baseline.py": "95cb5b432338d1f26509b8d8815ee4fa9afd17690c7a3733556a95cc26cecc67",
+    "conicbench/model.py": "2920f27edabf5e3d9744f7d857b8d8ebd5bcc541ec00c25cab3b41091972ecc7",
+    "dependencies/wheels/cffi-2.0.0-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl": "b21e08af67b8a103c71a250401c78d5e0893beff75e28c53c98f4de42f774062",
+    "dependencies/wheels/clarabel-0.11.1-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl": "e4837b9d0db01e98239f04b1e3526a6cf568529d3c19a8b3f591befdc467f9bb",
+    "dependencies/wheels/pycparser-2.23-py3-none-any.whl": "e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934",
+    "requirements.txt": "0b5d7c14404693060b57948428fc1db0a0ec6de43d4836d02187a63755ce38d0",
+    "run.sh": "f3036a19b9899a730c66e2fa20b21c78342cb3ac8d40801e80d1bdf3545f8993",
+    "source_manifest.json": "4b7ddaf864ced982747fb68a76021dca1460d30d1cfd7c4a7f1c601b78489092"
+  },
+  "conicbench_model_and_init_identical_to_tests_lib": true,
+  "added_for_linux_amd64": {
+    "dependencies/wheels/cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl": "3e17ed538242334bf70832644a32a7aae3d83b57567f9fd60a26257e992b79ba",
+    "dependencies/wheels/clarabel-0.11.1-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": "c8c41aaa6f3f8c0f3bd9d86c3e568dcaee079562c075bd2ec9fb3a80287380ef"
+  },
+  "added_wheels_policy": "Same PyPI releases as the frozen aarch64 wheels (clarabel 0.11.1, cffi 2.0.0); every wheel, original and added, matches the sha256 published by PyPI. pip --find-links selects the wheel for the running architecture; no source or algorithm file changed.",
+  "x86_64_offline_build_check": {
+    "image": "frontieram-conic:success-v2-port-v1",
+    "network": "none",
+    "result": "build.sh passed; native SDP smoke Solved; linear solver qdldl",
+    "versions": {
+      "clarabel": "0.11.1",
+      "cffi": "2.0.0",
+      "pycparser": "2.23",
+      "numpy": "2.3.5",
+      "scipy": "1.16.3"
+    }
+  },
+  "calibration_status": "not yet rerun on this host; p_B=0.789 in score-anchor.json remains a retrospective reclassification"
+}

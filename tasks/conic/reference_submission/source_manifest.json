@@ -1,0 +1,17 @@
+{
+  "description": "Byte-identical copies of the frozen local reference implementation; not a verified paper solver build.",
+  "files": {
+    "conicbench/__init__.py": {
+      "source": "conicbench/__init__.py",
+      "sha256": "348d9bdd83d8d7e5ae00423f72cee6b2809aa5afdca447df800b6c461e5d26ed"
+    },
+    "conicbench/baseline.py": {
+      "source": "conicbench/baseline.py",
+      "sha256": "95cb5b432338d1f26509b8d8815ee4fa9afd17690c7a3733556a95cc26cecc67"
+    },
+    "conicbench/model.py": {
+      "source": "conicbench/model.py",
+      "sha256": "2920f27edabf5e3d9744f7d857b8d8ebd5bcc541ec00c25cab3b41091972ecc7"
+    }
+  }
+}

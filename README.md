@@ -98,6 +98,7 @@ export AIHUB_KEY_FILE=/secure/aihub.key
 
 - `nexus/`：上游固定提交及两题扩展；源提交见 `provenance/nexus.json`。
 - `tasks/`：原始题包、公开数据、私有数据及固定参考。仅运行方可访问完整仓库。
+- `tasks/conic/reference_submission/`：优化器私有参考提交（冻结 Clarabel 0.11.1 实现），原始文件与 `standard-calibration.json` 记录的哈希逐一相同；另补同版本 Linux x86_64 wheel，来源与校验见 `tasks/conic/REFERENCE_PROVENANCE.json`。尚未在本机重跑校准。
 - `docker/`、`scripts/`、`bench`：架构对应镜像、准备、校准、验证和运行入口。
 - `fixtures/`：仅用于连通性回放的冻结提交，不进入真实模型的工作区。
 - `results/VALIDATION.md`：本次验证结论、边界和已知限制。
