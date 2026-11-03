@@ -51,7 +51,7 @@ Codex 安装采用[官方文档中的 npm 方式](https://developers.openai.com/
 
 校准使用已冻结的作者 KIOPS 实现及统一 `0.01` 容差倍率，不按私有实例重新选算法或调参。只有参考通过全部 69 次验解，才建立本机时间锚点。未校准时仍能验解和记录耗时，但不生成指数传播分数。更换机器、镜像、数据或校准报告会使校准失效。
 
-## 跑一个模型的一次 30 分钟尝试
+## 跑一个模型的一次 2 小时尝试
 
 将 AIHub key 放到仓库外的私有文件，权限设为 `600`。仓库不携带任何 API key 或太湖 PAT。
 
@@ -67,7 +67,7 @@ export AIHUB_KEY_FILE=/secure/aihub.key
 
 可用模型字段：`claude-opus-5-5`、`deepseek-v4-pro`、`hy4-preview`、`minimax-m3.1-flash`、`step-5-preview`。
 
-默认网关为 `http://api.aihub.woa.com/standard/v1`，可用 `--base-url` 修改。每次是一个完整 agent 开发会话，可以多次调用工具；“一次尝试”不是只发一个 HTTP 请求。开发上限 1800 秒、200 次实际 HTTP 请求（含重试），每次响应最多 64000 输出 token，context setting 为 131072。网络等待和重试消耗同一原始期限；提前结束或到时后立即冻结，不续跑、不替模型修代码。
+默认网关为 `http://api.aihub.woa.com/standard/v1`，可用 `--base-url` 修改。每次是一个完整 agent 开发会话，可以多次调用工具；“一次尝试”不是只发一个 HTTP 请求。开发上限 7200 秒（与指数传播原题的两小时开发时限一致）、800 次实际 HTTP 请求（含重试和上下文压缩请求），每次响应最多 64000 输出 token，context setting 为 131072，约 110000 token 时由 Codex 自动压缩上下文。网络等待和重试消耗同一原始期限；提前结束或到时后立即冻结，不续跑、不替模型修代码。
 
 开发资源统一为单核、4 GiB、禁用 swap、32 个进程/线程、128 个 fd、256 MiB 临时目录、1 GiB 工作目录。数值评测使用题目各自的原定限制：指数传播 4 GiB；优化器 8 GiB，包含裁判开销。
 

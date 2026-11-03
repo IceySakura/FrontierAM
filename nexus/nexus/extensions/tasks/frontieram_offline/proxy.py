@@ -105,8 +105,13 @@ class _HostBridge:
         return await task
 
     async def _request(self, params: dict[str, Any]) -> dict[str, Any]:
-        if params.get('_nexus_operation') or params.get('_nexus_agent_compaction'):
+        if params.get('_nexus_operation'):
             raise BoundaryError('compaction_disabled')
+        params = dict(params)
+        # Codex's local summary turn shares the run's deadline and HTTP budget.
+        if params.pop('_nexus_agent_compaction', False) is True:
+            self.client.record('compaction', detector=params.get('_nexus_compaction_detector'))
+        params.pop('_nexus_compaction_detector', None)
         try:
             response = await self.client.create_completion(**params)
             result = response.model_dump(mode='json', warnings=False)

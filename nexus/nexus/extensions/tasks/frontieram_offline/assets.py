@@ -19,8 +19,8 @@ CODEX_SHA256 = '58a91f6ea19bea477ae3a2ec48d619f0039afe75d3476260747e11d201fa7cea
 ASSET_SHA256 = {
     'campaign_runner_v2.py': 'e0882baa588258ef602fce9bd7565fe176bc63a2b5ea09f488c6016e99faa3df',
     'harness_resilient/docker_mcp.py': 'd75a609874647c183b66c1e1222b3453afd2356257cd3553b50eff6ef1641106',
-    'public_pilot_v2/public_pilot.tar': '1994908d28ae0e7ffaacf6ff7be8770716dfb0b81771ab1b50050bb2df04e0da',
-    'public_pilot_v2/task/PUBLIC_MANIFEST.json': '3be645fe3474d28d04c3028510ea19c56a61c4f20ca678396ca91dd6953735b4',
+    'public_pilot_v2/public_pilot.tar': '931d071f291720b5dc0f8fc1eb400becc53e7d039e2dd8ecdfc9e7a2043537bb',
+    'public_pilot_v2/task/PUBLIC_MANIFEST.json': '0013e554392033e4bc879df809f8dfaab1f422240b0304550ed31eac7442fb4a',
     'image_lock.json': '8f8c369c53697ec1fcbf490b5c1fe84506a07b225256e4a2fa7b82d36a98897f',
     'private_pilot/dataset_v1/freeze.json': '3d42dbc64de7e87032d166e8eff9efac03f7b000a86c30cbdd24173e0c63c1da',
     'private_pilot/dataset_v1/manifest.json': '958fb28f19e22f129553c66025b03573727aea499652f6b39954297015713b0f',

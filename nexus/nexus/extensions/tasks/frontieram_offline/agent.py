@@ -60,9 +60,10 @@ class OfflineCodexInput(AgentRunInput):
     base_url: str
     key_file: str | None = None
     allow_live_endpoint: bool = False
-    development_seconds: float = Field(default=1800, gt=0, le=1800)
-    max_http_attempts: int = Field(default=200, ge=1, le=200)
+    development_seconds: float = Field(default=7200, gt=0, le=7200)
+    max_http_attempts: int = Field(default=800, ge=1, le=800)
     max_output_tokens: int = Field(default=64000, ge=128, le=64000)
+    auto_compact_token_limit: int = Field(default=110000, ge=1024, lt=131072)
 
 
 class OfflineCodexOutput(AgentRunOutput):
@@ -79,7 +80,9 @@ class OfflineCodexOutput(AgentRunOutput):
     error_categories: list[str] = Field(default_factory=list)
 
 
-def codex_settings(model: str, base_url: str, mcp: dict[str, Any], seconds: float) -> dict[str, Any]:
+def codex_settings(
+    model: str, base_url: str, mcp: dict[str, Any], seconds: float, compact_limit: int = 110000
+) -> dict[str, Any]:
     """The benchmark's narrow tool policy, independent of the user's Codex home."""
     values: dict[str, Any] = {
         'model': model,
@@ -101,7 +104,7 @@ def codex_settings(model: str, base_url: str, mcp: dict[str, Any], seconds: floa
         'check_for_update_on_startup': False,
         'analytics.enabled': False,
         'model_context_window': 131072,
-        'model_auto_compact_token_limit': 1000000,
+        'model_auto_compact_token_limit': compact_limit,
         'mcp_servers.workspace.command': mcp['command'],
         'mcp_servers.workspace.args': mcp['args'],
         'mcp_servers.workspace.required': True,
@@ -289,7 +292,9 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
     finished = asyncio.Event()
     try:
         await proxy.start()
-        settings = codex_settings(value.model, proxy.base_url, mcp, value.development_seconds)
+        settings = codex_settings(
+            value.model, proxy.base_url, mcp, value.development_seconds, value.auto_compact_token_limit
+        )
         command = [
             str(assets.codex_path),
             '--no-daemon',

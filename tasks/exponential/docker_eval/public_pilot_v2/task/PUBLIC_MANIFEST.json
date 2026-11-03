@@ -159,12 +159,12 @@
       "bytes": 773
     },
     "PILOT.md": {
-      "sha256": "d80fd946752e9214acf43276e12812aa2f69e90de8147ee09a62b9dc18fd5381",
-      "bytes": 5370
+      "sha256": "7ec36452e6adef1792bb88f4cce1563e75d0af53ea2be567b3c7c04584ac60be",
+      "bytes": 5560
     },
     "HARNESS.json": {
-      "sha256": "112a9e6c5068a02c6139b790c54723e70d6c1c1c810b80bc713a0f4144e5c4ca",
-      "bytes": 1164
+      "sha256": "8e007f98a8790b2ee79093ae5d716250875a3d85acbac52a43cd1702fe2ba686",
+      "bytes": 1280
     }
   }
 }

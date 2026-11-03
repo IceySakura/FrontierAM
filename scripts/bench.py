@@ -63,10 +63,11 @@ def configuration(runtime, task, output, model, *, key_file=None, base_url=None,
         instruction
         + (
             ' Use only the offline workspace tool. Put complete source, executable run.sh and README.md in '
-            '/workspace/submission. One attempt, at most 1800 wall-clock seconds including requests, waiting and tools; '
+            '/workspace/submission. One attempt, at most 7200 wall-clock seconds including requests, waiting and tools; '
             'a final turn or deadline freezes this attempt. No hidden feedback or candidate repair after freezing. '
-            'Common inference policy v3: at most 200 actual HTTP attempts including retries, 64000 output tokens '
-            'per response including reasoning, 131072 context setting, provider-default reasoning. '
+            'Common inference policy v4: at most 800 actual HTTP attempts including retries, 64000 output tokens '
+            'per response including reasoning, 131072 context setting, provider-default reasoning. Codex compacts '
+            'the conversation automatically near 110000 tokens; compaction requests use the same time and HTTP budget. '
             'The old 429-only wording is superseded: at most three identical-payload retries for retryable '
             '429/500/502/503/504 responses; Retry-After first, otherwise full jitter caps of 1/2/4 seconds. '
             'All retries consume the original deadline. No failover or truncated tool execution. '
@@ -93,12 +94,13 @@ def configuration(runtime, task, output, model, *, key_file=None, base_url=None,
             'base_url': base_url or 'http://api.aihub.woa.com/standard/v1',
             'key_file': str(key_file) if key_file else None,
             'allow_live_endpoint': not smoke,
-            'development_seconds': 60 if smoke else 1800,
-            'max_http_attempts': 8 if smoke else 200,
+            'development_seconds': 60 if smoke else 7200,
+            'max_http_attempts': 8 if smoke else 800,
             'max_output_tokens': 64000,
+            'auto_compact_token_limit': 110000,
         },
         'processors': {'token_counter': {'name': 'token_counter'}},
-        'runner': {'cache': {'enabled': False}, 'timeout': 31200},
+        'runner': {'cache': {'enabled': False}, 'timeout': 36600},
     }
 
 

@@ -314,6 +314,33 @@ async def test_proxy_auth_compaction_and_length_guards_do_not_leak_payloads():
 
 
 @pytest.mark.asyncio
+async def test_proxy_forwards_local_compaction_within_the_same_budget():
+    payloads = []
+
+    def handler(request):
+        payloads.append(json.loads(request.content))
+        return httpx.Response(200, json=completion())
+
+    client = client_for(handler, max_http_attempts=3)
+    proxy = OfflineResponsesProxy(client, token=TOKEN)
+    body = request_body()
+    body['input'].append(
+        {'type': 'message', 'role': 'user', 'content': 'You are performing a CONTEXT CHECKPOINT COMPACTION.'}
+    )
+    try:
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=proxy.create_app()), base_url='http://local'
+        ) as http:
+            response = await http.post('/v1/responses', headers={'authorization': f'Bearer {TOKEN}'}, json=body)
+        assert response.status_code == 200, response.text
+        assert client.http_attempts == 1
+        assert [e['kind'] for e in client.events].count('compaction') == 1
+        assert not any(key.startswith('_nexus') for key in payloads[0])
+    finally:
+        await client.aclose()
+
+
+@pytest.mark.asyncio
 async def test_proxy_does_not_advertise_native_host_tools():
     client = client_for(lambda _: httpx.Response(200, json=completion()))
     proxy = OfflineResponsesProxy(client, token=TOKEN)

@@ -75,7 +75,7 @@ class BoundedOpenAIClient(OpenAIClient):
         *,
         deadline: float,
         retry_policy: dict[str, Any],
-        max_http_attempts: int = 200,
+        max_http_attempts: int = 800,
         audit_path: Path | None = None,
         model: str | None = None,
         max_output_tokens: int = 64000,
@@ -86,7 +86,7 @@ class BoundedOpenAIClient(OpenAIClient):
         sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
         jitter: Callable[[float, float], float] = random.uniform,
     ):
-        if not math.isfinite(deadline) or not 1 <= max_http_attempts <= 200:
+        if not math.isfinite(deadline) or not 1 <= max_http_attempts <= 800:
             raise ValueError('Invalid immutable inference budget')
         if output_parameter not in {'max_tokens', 'max_completion_tokens'} or not 1 <= max_output_tokens <= 64000:
             raise ValueError('Invalid output budget')
