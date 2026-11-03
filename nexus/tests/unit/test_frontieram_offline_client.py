@@ -105,6 +105,40 @@ async def test_native_sdk_retry_is_not_multiplied_and_payload_is_identical():
 
 
 @pytest.mark.asyncio
+async def test_cache_task_id_rides_on_every_attempt_of_one_conversation():
+    authorizations = []
+
+    def handler(request):
+        authorizations.append(request.headers['authorization'])
+        if len(authorizations) == 1:
+            return httpx.Response(500, json={'error': {'code': 3006}})
+        return httpx.Response(200, json=completion())
+
+    client = BoundedOpenAIClient(
+        OpenAIConfig(
+            client_args={
+                'api_key': 'not-a-real-key',
+                'base_url': 'http://fixture.invalid/v1',
+                'cache_task_id': 'frontieram-attempt-1',
+            },
+            request_args={'model': 'fixture-model'},
+        ),
+        deadline=time.monotonic() + 30,
+        retry_policy=POLICY,
+        transport=httpx.MockTransport(handler),
+        jitter=lambda _low, _high: 0.0,
+    )
+    try:
+        await ask(client)
+        await ask(client)
+        assert len(authorizations) == 3
+        assert set(authorizations) == {'Bearer not-a-real-key?cache_task_id=frontieram-attempt-1'}
+        assert client.cache_task_id == 'frontieram-attempt-1'
+    finally:
+        await client.aclose()
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(('status', 'code'), [(500, 1000), (500, 99999), (401, 3006), (400, 3006), (501, 3006)])
 async def test_only_documented_status_and_gateway_code_retries(status, code):
     client = client_for(lambda _: httpx.Response(status, json={'error': {'code': code, 'message': 'private-text'}}))

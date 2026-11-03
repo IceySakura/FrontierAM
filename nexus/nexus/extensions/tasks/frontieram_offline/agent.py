@@ -75,6 +75,7 @@ class OfflineCodexOutput(AgentRunOutput):
     development_seconds: float
     http_attempts: int
     http_retries: int
+    cache_task_id: str | None = None
     model: str
     evidence_dir: str
     error_categories: list[str] = Field(default_factory=list)
@@ -246,11 +247,15 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
         not value.allow_live_endpoint or value.base_url.rstrip('/') != 'http://api.aihub.woa.com/standard/v1'
     ):
         raise ValueError('Live model calls require an explicit live profile and the approved endpoint')
+    client_args: dict[str, Any] = {'base_url': value.base_url}
     if is_fixture:
         if value.key_file:
             raise ValueError('Local fixtures must not read a real credential')
         api_key = 'local-fixture-only'
     else:
+        # AIHub routes by cache_task_id: one value per attempt keeps the whole conversation,
+        # including retries and compaction turns, on one upstream account.
+        client_args['cache_task_id'] = 'frontieram-' + secrets.token_hex(16)
         if not value.key_file:
             raise ValueError('A private credential file is required for a live profile')
         key_path = Path(value.key_file).expanduser()
@@ -268,7 +273,7 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
     deadline_unix = time.time() + value.development_seconds
     mcp = runtime.mcp_config(deadline_monotonic=deadline, deadline_unix=deadline_unix)
     client = BoundedOpenAIClient(
-        OpenAIConfig(client_args={'api_key': api_key, 'base_url': value.base_url}, request_args={'model': value.model}),
+        OpenAIConfig(client_args={'api_key': api_key, **client_args}, request_args={'model': value.model}),
         deadline=deadline,
         retry_policy=retry_policy,
         max_http_attempts=value.max_http_attempts,
@@ -428,6 +433,7 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
         development_seconds=stopped_at - started,
         http_attempts=client.http_attempts,
         http_retries=client.retry_count,
+        cache_task_id=client_args.get('cache_task_id'),
         model=value.model,
         evidence_dir=str(run_dir),
         error_categories=errors,
