@@ -85,14 +85,16 @@ class Store:
 
     def enqueue(
         self, submission_id: str, *, kind: str = 'candidate', note: str | None = None, isolation: str | None = None,
-        extra: dict | None = None,
+        extra: dict | None = None, queue: str = 'pending',
     ) -> str:
         meta = self.submission(submission_id)
         if not (self.submission_dir(submission_id) / 'source.tar').is_file():
             raise ValueError(f'{submission_id} has no frozen source to grade')
         job_id = new_id('job')
+        # 'held' jobs are invisible to workers until moved to pending.
+        (self.root / 'jobs' / queue).mkdir(parents=True, exist_ok=True)
         write_json(
-            self.root / 'jobs/pending' / f'{job_id}.json',
+            self.root / 'jobs' / queue / f'{job_id}.json',
             {
                 'id': job_id,
                 'task': meta['task'],

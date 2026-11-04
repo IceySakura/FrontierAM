@@ -460,10 +460,16 @@ def cmd_suite(args) -> None:
     shards = shard_cases(task.suite(runtime), args.shards)
     suite_id = new_id(f'suite-{task.name}')
     submission = freeze_reference(store, runtime, task, kind='suite') if args.reference else args.submission
+    slots = args.slots.split(',') if args.slots else [None] * len(shards)
+    if len(slots) != len(shards):
+        raise SystemExit('--slots needs one slot per shard')
+    # The same partition and the same shard-to-slot map for every suite put each case on the same slot for the
+    # reference and every candidate, so per-slot conditions apply to both sides alike.
     jobs = [
         store.enqueue(submission, kind='shard', isolation=args.isolation, note=f'{suite_id} shard {i + 1}/{len(shards)}',
-                      extra={'suite': suite_id, 'case_ids': ids})
-        for i, ids in enumerate(shards)
+                      extra={'suite': suite_id, 'case_ids': ids, 'slot': slot},
+                      queue='held' if args.hold else 'pending')
+        for i, (ids, slot) in enumerate(zip(shards, slots))
     ]
     record = {'id': suite_id, 'task': task.name, 'submission': submission, 'reference': args.reference,
               'created_utc': utc(), 'shards': [{'job': j, 'cases': len(ids)} for j, ids in zip(jobs, shards)],
@@ -858,6 +864,8 @@ def main() -> None:
     target.add_argument('--reference', action='store_true')
     suite.add_argument('--shards', type=int, default=4)
     suite.add_argument('--isolation', default='shared', choices=['shared', 'grade_pool', 'quiet'])
+    suite.add_argument('--slots', help='comma-separated grade slot per shard, e.g. grade-06,grade-14,grade-22,grade-30')
+    suite.add_argument('--hold', action='store_true', help='write the shards to jobs/held instead of the queue')
     suite_report = sub.add_parser('suite-report')
     suite_report.add_argument('--suite', required=True)
     sub.add_parser('status')

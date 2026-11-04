@@ -319,15 +319,13 @@ class Conic(Task):
         from nexus.extensions.tasks.frontieram_conic.grading import grade
 
         assets = self.assets(runtime)
-        timeout = self.grade_timeout
+        extra = {'timeout': self.grade_timeout}
         if case_ids:
             limits = {c['id']: c['time_limit_seconds'] for c in self.suite(runtime)}
             # Three repeats at every case's limit, the 1800-second build budget and per-case process overhead.
-            timeout = 3 * sum(limits[i] for i in case_ids) + 1800 + 15 * len(case_ids) + 900
-        return await grade(
-            SimpleNamespace(assets=assets, docker=self.docker(runtime, placement)), output, timeout=timeout,
-            case_ids=case_ids,
-        )
+            extra = {'timeout': 3 * sum(limits[i] for i in case_ids) + 1800 + 15 * len(case_ids) + 900,
+                     'case_ids': case_ids}
+        return await grade(SimpleNamespace(assets=assets, docker=self.docker(runtime, placement)), output, **extra)
 
     def metrics(self, output, raw):
         summary = raw.get('metrics') or {}
