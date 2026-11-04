@@ -84,8 +84,9 @@ class Lease:
 
 
 class Broker:
-    def __init__(self, layout: dict, state: Path = machine.STATE) -> None:
+    def __init__(self, layout: dict, state: Path = machine.STATE, *, dev_drain_after: float = 9000.0) -> None:
         self.layout = layout
+        self.dev_drain_after = dev_drain_after
         self.root = state / 'slots'
         self.root.mkdir(parents=True, exist_ok=True)
         self.slots = {slot['id']: slot for slot in layout['slots']}
@@ -154,8 +155,9 @@ class Broker:
             while True:
                 with self._allocation():
                     used = sum(int(row.get('memory_bytes', 0)) for row in self.leases())
-                    # A waiting quiet grade outranks everything else, or back-to-back gradings starve it.
-                    blocked = isolation != 'quiet' and self._draining()
+                    # A waiting quiet grade blocks new gradings at once (they are minutes long), but new development
+                    # only after dev_drain_after: draining at once would serialise a whole batch of 2-hour attempts.
+                    blocked = isolation != 'quiet' and self._draining(kind)
                     if not blocked and used + memory_bytes <= self.layout['memory_budget_bytes']:
                         lease = self._lock_set(candidates, holds, memory_bytes, owner, isolation)
                         if lease is not None:
@@ -171,14 +173,14 @@ class Broker:
                 os.close(drain[0])
 
     def _drain_request(self, owner: str) -> tuple[int, Path]:
-        """While a quiet grade waits, no new development or grading may start; running work finishes normally."""
+        """While a quiet grade waits, new gradings wait; new development waits once dev_drain_after has passed."""
         path = self.root / f'drain-{os.getpid()}-{time.monotonic_ns()}.request'
         fd = os.open(path, os.O_RDWR | os.O_CREAT, 0o644)
         fcntl.flock(fd, fcntl.LOCK_EX)
-        os.write(fd, owner.encode())
+        os.write(fd, json.dumps({'owner': owner, 'dev_after_unix': time.time() + self.dev_drain_after}).encode())
         return fd, path
 
-    def _draining(self) -> bool:
+    def _draining(self, kind: str) -> bool:
         for path in self.root.glob('drain-*.request'):
             try:
                 fd = os.open(path, os.O_RDWR)
@@ -187,7 +189,13 @@ class Broker:
             try:
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
-                return True
+                if kind != 'dev':
+                    return True
+                try:
+                    if time.time() >= json.loads(path.read_text())['dev_after_unix']:
+                        return True
+                except (OSError, ValueError, KeyError):
+                    return True
             else:
                 path.unlink(missing_ok=True)
             finally:

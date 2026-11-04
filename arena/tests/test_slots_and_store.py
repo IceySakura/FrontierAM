@@ -68,29 +68,84 @@ def test_exclusive_lease_is_all_or_nothing(tmp_path):
     assert len(quiet.fds) == 3 and len(broker.leases()) == 3
 
 
-def _wait_quiet(state, started):
-    broker = slots.Broker(layout(), state)
+def _wait_quiet(state, started, dev_drain_after):
+    broker = slots.Broker(layout(), state, dev_drain_after=dev_drain_after)
     started.set()
-    broker.acquire('grade', 2**30, 'quiet grade', isolation='quiet', timeout=30, poll=0.05)
+    broker.acquire('grade', 2**30, 'quiet grade', isolation='quiet', timeout=60, poll=0.05)
     time.sleep(60)
 
 
-def test_waiting_quiet_grade_blocks_new_development(tmp_path):
-    broker = slots.Broker(layout(), tmp_path)
-    running = broker.acquire('dev', 2**30, 'running agent')
+def _start_waiter(tmp_path, dev_drain_after):
     started = multiprocessing.Event()
-    waiter = multiprocessing.Process(target=_wait_quiet, args=(tmp_path, started))
+    waiter = multiprocessing.Process(target=_wait_quiet, args=(tmp_path, started, dev_drain_after))
     waiter.start()
     assert started.wait(10)
     time.sleep(0.5)
-    running.release()
-    with pytest.raises(TimeoutError):
-        broker.acquire('dev', 2**30, 'new agent', timeout=1, poll=0.05)
+    return waiter
+
+
+def test_waiting_quiet_grade_blocks_new_grading_but_not_development_at_first(tmp_path):
+    broker = slots.Broker(layout(), tmp_path)
+    running = broker.acquire('dev', 2**30, 'running agent')
+    waiter = _start_waiter(tmp_path, dev_drain_after=3600)
     with pytest.raises(TimeoutError):
         broker.acquire('grade', 2**30, 'another grader', isolation='grade_pool', timeout=1, poll=0.05)
+    running.release()
+    # The quiet grade takes the freed dev slot; with a second dev slot a new agent would start meanwhile.
     waiter.kill()
     waiter.join()
     assert broker.acquire('dev', 2**30, 'new agent', timeout=1, poll=0.05).id == 'dev-04'
+
+
+def test_long_waiting_quiet_grade_finally_drains_development(tmp_path):
+    two_dev = layout()
+    two_dev['slots'].append({'id': 'dev-06', 'kind': 'dev', 'cpu': 6, 'host_cpu': 7})
+    broker = slots.Broker(two_dev, tmp_path)
+    running = broker.acquire('dev', 2**30, 'running agent')
+    started = multiprocessing.Event()
+    waiter = multiprocessing.Process(target=_wait_quiet_two, args=(tmp_path, started))
+    waiter.start()
+    assert started.wait(10)
+    time.sleep(0.5)
+    with pytest.raises(TimeoutError):
+        broker.acquire('dev', 2**30, 'new agent', timeout=1, poll=0.05)
+    running.release()
+    waiter.kill()
+    waiter.join()
+
+
+def _wait_quiet_two(state, started):
+    two_dev = layout()
+    two_dev['slots'].append({'id': 'dev-06', 'kind': 'dev', 'cpu': 6, 'host_cpu': 7})
+    broker = slots.Broker(two_dev, state, dev_drain_after=0)
+    started.set()
+    broker.acquire('grade', 2**30, 'quiet grade', isolation='quiet', timeout=60, poll=0.05)
+    time.sleep(60)
+
+
+def test_waiting_quiet_grade_does_not_block_development_before_the_delay(tmp_path):
+    two_dev = layout()
+    two_dev['slots'].append({'id': 'dev-06', 'kind': 'dev', 'cpu': 6, 'host_cpu': 7})
+    broker = slots.Broker(two_dev, tmp_path)
+    running = broker.acquire('dev', 2**30, 'running agent')
+    started = multiprocessing.Event()
+    waiter = multiprocessing.Process(target=_wait_quiet_delayed_two, args=(tmp_path, started))
+    waiter.start()
+    assert started.wait(10)
+    time.sleep(0.5)
+    assert broker.acquire('dev', 2**30, 'new agent', timeout=1, poll=0.05).id == 'dev-06'
+    running.release()
+    waiter.kill()
+    waiter.join()
+
+
+def _wait_quiet_delayed_two(state, started):
+    two_dev = layout()
+    two_dev['slots'].append({'id': 'dev-06', 'kind': 'dev', 'cpu': 6, 'host_cpu': 7})
+    broker = slots.Broker(two_dev, state, dev_drain_after=3600)
+    started.set()
+    broker.acquire('grade', 2**30, 'quiet grade', isolation='quiet', timeout=60, poll=0.05)
+    time.sleep(60)
 
 
 def _hold(state, ready):
