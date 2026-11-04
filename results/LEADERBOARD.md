@@ -17,7 +17,7 @@
 | --- | --- | --- | --- |
 | claude-opus-5-5 | **36.88** | 配对，load factor 1.009（与 1 个其他评测和 6 个开发 agent 并行） | 第 1 次尝试，正常结束最后一轮（1877 s，50 次 HTTP） |
 | deepseek-v4-pro | **29.32** | 配对，load factor 1.013（同上） | 第 1 次尝试，正常结束最后一轮（2021 s，94 次 HTTP） |
-| hy4-preview | 未测 | — | 见下方说明 |
+| hy4-preview | 已移出本轮计划 | — | 见下方说明 |
 | minimax-m3.1-flash | 未测 | — | 2 次尝试均因推理中断 |
 | step-5-preview | 未测 | — | 2 次尝试均因推理中断 |
 
@@ -29,7 +29,7 @@
 | --- | --- | --- | --- |
 | claude-opus-5-5 | **0.35** | 参考失败而它成功：case0175、case0296；参考成功而它失败：case0008、case0257、case0397、case0490、case0637 | 第 1 次尝试，正常结束最后一轮（4756 s）；11-03 夜间与 11-04 安静环境两次评测结果相同 |
 | deepseek-v4-pro | **0**（无效提交） | — | 第 1 次尝试到 2 小时开发期限，冻结的提交缺少 README.md，按题目规则记 0 |
-| hy4-preview | 未测 | — | 见下方说明 |
+| hy4-preview | 已移出本轮计划 | — | 见下方说明 |
 | minimax-m3.1-flash | 未测 | — | 2 次尝试均因推理中断 |
 | step-5-preview | 未测 | — | 2 次尝试均因推理中断 |
 
@@ -41,8 +41,4 @@
 | minimax-m3.1-flash | 同样的 600 s SDK 超时 | `incomplete_response`：`finish_reason` 既不是 `stop` 也不是 `tool_calls`（现已记录具体值） |
 | step-5-preview | 模型调用了不在允许列表中的工具名 | 指数题：工具名为 `mcp__workspace<parameter=command`，工具调用格式在网关转换时损坏；优化器：`incomplete_response` |
 
-按约定，minimax 和 step-5 保持冻结协议，记为未测。hy4 的限流来自 key 的 TPM 配额而不是模型本身，所以两题改为串行重跑一次（第 3 次尝试），结果见下节。
-
-## hy4-preview 第 3 次尝试（串行）
-
-进行中。
+按约定，minimax 和 step-5 保持冻结协议，记为未测。hy4-preview 的限流来自该 key 对该模型的 TPM 配额，而不是模型本身。11-04 起 hy4-preview 已从本轮计划中移除：正在串行进行的第 3 次尝试已取消（`store/dev-runs/dev-exponential-20261104T062918Z-961e1e/CANCELLED.json`），不计入结果。
