@@ -207,6 +207,8 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
     task = TASKS[job['task']]
     results = store.result_dir(job['id'])
     archive = store.submission_dir(job['submission']) / 'source.tar'
+    if task.paired and job['kind'] != 'baseline' and store.active_baseline(task.name) is None:
+        return store.finish(job, 'failed', status='unmeasured', reason='no_active_baseline_to_pair_with')
     host = machine.status(layout)
     if not host['ready']:
         # Timing under lost isolation is not comparable; leave the submission ungraded rather than mis-scored.
@@ -227,6 +229,12 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
     with broker.acquire('grade', task.grade_memory, f'grade {job["id"]}', isolation=policy) as lease:
         placement = placement_for(lease, layout)
         say(event='grade_started', job=job['id'], task=task.name, kind=job['kind'], slot=lease.id)
+        paired = None
+        if task.paired:
+            # Chosen only once the slot is held, so a baseline activated while this job waited is the one used.
+            # A baseline is paired with itself; everything else with the reference its score is anchored to.
+            active = store.active_baseline(task.name)
+            paired = archive if job['kind'] == 'baseline' else store.submission_dir(active['id']) / 'source.tar'
         before = broker.leases()
         started = time.time()
         spec = {
@@ -235,6 +243,7 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
             'placement': placement.__dict__,
             'output': str(results / 'grade'),
             'archive': str(archive),
+            'paired_reference': str(paired) if paired else None,
         }
         code = run_in_slot(lease, spec, results / 'spec.json', results / 'job.log', extra_fds=(job['lock_fd'],))
         isolation = {'policy': lease.isolation, 'held_idle': [slot_id for slot_id, _ in lease.held]}
@@ -250,6 +259,7 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
         'layout_sha256': layout['layout_sha256'],
         'runtime_lock_sha256': runtime['lock_sha256'],
         'source_sha256': sha(archive),
+        'paired_reference_sha256': sha(paired) if paired else None,
         'job_exit_code': code,
         'isolation': isolation,
         'host_checks_before': host['checks'],
@@ -368,7 +378,7 @@ def cmd_grade(args) -> None:
     run_workers(args, job_ids=[job])
 
 
-def enqueue_reference(store, runtime, task, *, kind: str, note: str | None = None) -> str:
+def enqueue_reference(store, runtime, task, *, kind: str, note: str | None = None, isolation: str | None = None) -> str:
     submission_id, directory = store.new_submission(task.name, {'origin': 'reference', 'kind': kind})
     archive = task.reference_archive(runtime, directory)
     stage = directory / 'stage'
@@ -378,7 +388,7 @@ def enqueue_reference(store, runtime, task, *, kind: str, note: str | None = Non
     shutil.rmtree(stage)
     archive.unlink()
     store.update_submission(submission_id, status='frozen', source_sha256=sha(directory / 'source.tar'))
-    return store.enqueue(submission_id, kind=kind, note=note)
+    return store.enqueue(submission_id, kind=kind, note=note, isolation=isolation)
 
 
 def enqueue_archive(store, runtime, task, archive: Path, *, kind: str) -> str:
@@ -399,7 +409,9 @@ def cmd_baseline(args) -> None:
     task = TASKS[args.task]
     if store.active_baseline(task.name) and not args.replace:
         raise SystemExit(f'{task.name} already has an active baseline; pass --replace to measure and activate another')
-    jobs = [enqueue_reference(store, runtime, task, kind='baseline', note='activate' if args.replace else None)]
+    # Load factors divide by baseline times, so the baseline itself is always measured on a quiet machine.
+    jobs = [enqueue_reference(store, runtime, task, kind='baseline', note='activate' if args.replace else None,
+                              isolation='quiet')]
     args.drain, args.task = True, [task.name]
     run_workers(args, job_ids=jobs)
 

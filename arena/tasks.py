@@ -77,6 +77,8 @@ class Task:
     # UID whose host-wide task count the grader's RLIMIT_NPROC budget depends on; grading waits for headroom.
     grader_uid: int | None = None
     grader_uid_headroom: int = 0
+    # Whether grading measures the active baseline's frozen reference beside each submission.
+    paired: bool = False
 
     def provider_config(self, runtime: dict, placement: Placement) -> dict:
         return {
@@ -191,19 +193,25 @@ class Exponential(Task):
     # measured above 1.04 is redone with the machine quiet (results/CONCURRENCY.md).
     grade_isolation = 'shared'
     load_gate = 1.04
+    # Reference measured for new baselines. The KIOPS/Octave pilot anchor (private_pilot/reference_submission) is
+    # dominated by interpreter overhead at pilot sizes; Expokit is the published author code, compiled.
+    reference = 'private_pilot/reference_expokit'
+    paired = True
 
     def assets(self, runtime):
         from nexus.extensions.tasks.frontieram_offline.assets import LockedAssets
 
         return LockedAssets(runtime['source_root'])
 
-    async def grade(self, runtime, placement, output):
+    async def grade(self, runtime, placement, output, paired_archive=None):
+        """paired_archive is the frozen source.tar of the active baseline, so pairing and anchoring share one reference."""
         from nexus.extensions.tasks.frontieram_offline.grading import grade
 
+        if paired_archive is None:
+            raise ValueError('exponential grading needs the frozen reference archive of the active baseline')
         assets = self.assets(runtime)
         paired = output / 'paired_reference'
-        reference = self.reference_archive(runtime, output / 'paired_incoming')
-        assets.controller.validate_and_extract(reference, paired, output / 'paired_reference.tar')
+        assets.controller.validate_and_extract(Path(paired_archive), paired, output / 'paired_reference.tar')
         return await grade(
             SimpleNamespace(assets=assets, docker=self.docker(runtime, placement)),
             output,
@@ -213,8 +221,10 @@ class Exponential(Task):
 
     def reference_archive(self, runtime, output):
         output.mkdir(parents=True, exist_ok=True)
-        source = Path(runtime['source_root']) / 'private_pilot/reference_submission'
-        # The frozen reference has no run.sh; the evaluator only starts ./run.sh.
+        source = Path(runtime['source_root']) / self.reference
+        if (source / 'run.sh').exists():
+            return tar_directory(source, output / 'incoming.tar')
+        # The KIOPS reference has no run.sh; the evaluator only starts ./run.sh.
         command = json.loads((source / 'PROVENANCE.json').read_text())['command']
         entry = f'#!/bin/sh\nexec {shlex.join(command)}\n'.encode()
         return tar_directory(source, output / 'incoming.tar', {'run.sh': (entry, 0o755)})
