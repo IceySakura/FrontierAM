@@ -226,7 +226,9 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
     # Interference probes measure concurrency on purpose; a job may carry an escalated policy from the load gate.
     policy = 'shared' if job['kind'] == 'probe' else job.get('isolation') or task.grade_isolation
     say(event='grade_waiting', job=job['id'], task=task.name, isolation=policy)
-    with broker.acquire('grade', task.grade_memory, f'grade {job["id"]}', isolation=policy) as lease:
+    # A job may name its slot, e.g. a control sentinel placed on the noisiest slot of a concurrent round.
+    with broker.acquire('grade', task.grade_memory, f'grade {job["id"]}', slot_id=job.get('slot'),
+                        isolation=policy) as lease:
         placement = placement_for(lease, layout)
         say(event='grade_started', job=job['id'], task=task.name, kind=job['kind'], slot=lease.id)
         paired = None
