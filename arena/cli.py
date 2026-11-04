@@ -611,21 +611,28 @@ def cmd_report(args) -> None:
             lines.append(f'- sentinel `{j["id"]}` (reference re-graded): score={j.get("score")} vs ideal 50.0')
         lines += [
             '',
-            '| model | attempt | development | dev s | HTTP | status | score | grading | detail | submission |',
-            '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+            '| protocol | model | harness | attempt | development | dev s | HTTP | status | score | grading | detail '
+            '| submission |',
+            '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
         ]
         candidate_jobs = [j for j in store.jobs('done') + store.jobs('failed') if j.get('kind') == 'candidate']
         jobs = {}
         for job in sorted(candidate_jobs, key=lambda j: j['id']):
             if job.get('status') != 'superseded_by_quiet_regrade':
                 jobs[job['submission']] = job
-        attempts: dict[str, int] = {}
+        attempts: dict[tuple, int] = {}
         agent_rows = sorted(
             (m for m in store.submissions(name) if m.get('origin') == 'agent' and not m.get('smoke')),
-            key=lambda m: (m.get('model'), m['created_utc']),
+            key=lambda m: (m.get('protocol', 'v4'), m.get('model'), m['created_utc']),
         )
         for meta in agent_rows:
-            attempts[meta['model']] = attempts.get(meta['model'], 0) + 1
+            protocol = meta.get('protocol', 'v4')
+            key = (protocol, meta['model'])
+            attempts[key] = attempts.get(key, 0) + 1
+            conditions = store.root / 'dev-runs' / meta.get('dev_run', '') / 'v6_conditions.json'
+            harness = read_json(conditions)['harness'] if conditions.is_file() else 'codex'
+            if (store.root / 'dev-runs' / meta.get('dev_run', '') / 'CANCELLED.json').is_file():
+                continue
             dev = meta.get('development', {})
             job = jobs.get(meta['id'])
             detail = grading = ''
@@ -652,7 +659,7 @@ def cmd_report(args) -> None:
             seconds = dev.get('development_seconds')
             score_text = f'{meta["score"]:.2f}' if isinstance(meta.get('score'), float) else str(meta.get('score'))
             lines.append(
-                f'| {meta.get("model")} | {attempts[meta["model"]]} | {dev.get("agent_stop_reason")} | '
+                f'| {protocol} | {meta.get("model")} | {harness} | {attempts[key]} | {dev.get("agent_stop_reason")} | '
                 f'{round(seconds) if seconds else ""} | {dev.get("http_attempts")} | {meta.get("status")} | '
                 f'{score_text} | {grading} | {detail} | `{meta["id"]}` |'
             )
