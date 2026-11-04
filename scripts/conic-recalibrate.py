@@ -4,7 +4,8 @@ limit = clamp(1.2 x slowest of the reference's three local repeats, 1, 300) wher
 repeats accepted); 300 seconds where it does not. Local repeats come from the full-suite reference run under the
 original limits and, for cases that failed at those limits, from a remeasurement with relaxed limits.
 
-Usage: conic-recalibrate.py STORE FULL_SUITE MEASURE_STORE MEASURE_SUITE OUTPUT_MANIFEST
+Usage: conic-recalibrate.py STORE FULL_SUITE OUTPUT_MANIFEST MEASURE_STORE:MEASURE_SUITE [...]
+(later remeasurements override earlier ones for the cases they cover)
 """
 
 import ast
@@ -30,9 +31,12 @@ def local_runs(store: Path, suite: str) -> dict:
 
 
 def main():
-    store, full, measure_store, measure, output = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3]), sys.argv[4], Path(sys.argv[5])
+    store, full, output = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3])
     runs = local_runs(store, full)
-    remeasured = local_runs(measure_store, measure)
+    remeasured = {}
+    for pair in sys.argv[4:]:
+        measure_store, measure = pair.split(':', 1)
+        remeasured.update(local_runs(Path(measure_store), measure))
     runs.update(remeasured)
     manifest = json.loads(ORIGINAL.read_text())
     policy = manifest['time_budget_policy']
@@ -49,7 +53,7 @@ def main():
             counts['unsolved'] += 1
         case['time_limit_seconds'] = round(limit, 6)
     manifest['time_budget_policy'] = {**policy, 'recalibrated_on': 'this host (local rerun of the reference)',
-                                      'sources': {'full_suite': full, 'remeasurement': measure}}
+                                      'sources': {'full_suite': full, 'remeasurements': sys.argv[4:]}}
     output.write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps(counts))
 
