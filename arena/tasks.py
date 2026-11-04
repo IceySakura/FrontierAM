@@ -273,8 +273,11 @@ class Conic(Task):
     )
     grade_memory = 8 * GIB + GIB // 2
     # Success is judged against fixed per-case deadlines, so pairing cannot correct it, and four pilot cases finish
-    # within 1% of their deadline. Under 4 graders plus full development load the reference lost 3 of 10 successes.
-    grade_isolation = 'quiet'
+    # within 1% of their deadline. Under 4 graders plus full development load the reference lost 3 of 10 successes;
+    # with no other grader and 9 real agents developing, every case stayed within 1% (results/CONCURRENCY.md).
+    # grade_pool trades that sub-percent risk for grading during development (operator choice, 2026-11-04); each
+    # result records the development slots that were leased while it ran.
+    grade_isolation = 'grade_pool'
 
     def provider_config(self, runtime, placement):
         return {
