@@ -57,16 +57,19 @@ def main():
         print(json.dumps({'suite': suite, 'undecided': len(undecided),
                           'regrade_budget_seconds': 3 * sum(new[k] for k in undecided)}))
         return
+    deciding = dict(first)
     if len(sys.argv) == 8:
         rerun = runs(Path(sys.argv[5]), sys.argv[6])
         for k, v in rerun.items():
             if decisions.get(k) == 'undecided':
                 decisions[k] = 'solved' if decide(v, new[k], new[k]) == 'solved' else 'unsolved'
+                deciding[k] = v
     output = Path(sys.argv[-1])
     if any(v == 'undecided' for v in decisions.values()):
         raise SystemExit(f'{sum(v == "undecided" for v in decisions.values())} cases still undecided')
+    detail = {k: {'slowest': max(r['elapsed'] for r in v), 'limit': new[k]} for k, v in deciding.items()}
     summary = {'suite': suite, 'limits': str(recal), 'solved': sum(v == 'solved' for v in decisions.values()),
-               'cases': len(decisions), 'decisions': decisions}
+               'cases': len(decisions), 'decisions': decisions, 'detail': detail}
     output.write_text(json.dumps(summary, indent=2) + '\n')
     print(json.dumps({k: v for k, v in summary.items() if k != 'decisions'}))
 
