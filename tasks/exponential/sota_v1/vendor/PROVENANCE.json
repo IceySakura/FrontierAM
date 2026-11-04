@@ -1,0 +1,56 @@
+{
+  "retrieved_utc": "2026-11-04",
+  "policy": "Archives are byte-for-byte downloads. Author code was not modified; local adapters are separate files.",
+  "sources": [
+    {
+      "name": "Expokit",
+      "file": "expokit/upstream-mirror.zip",
+      "url": "https://codeload.github.com/MacroUniverse/Expokit/zip/refs/heads/master",
+      "commit": "5d6e67905a6a8812f4c88af6152b3580032fb49e",
+      "sha256": "f4b63fcf863cb2b9cc0d0474eb708af342f18dfd82e638ace59a69989002ded5",
+      "note": "Mirror of the Sidje distribution; the already-frozen reference independently records byte identity of the Fortran files across three mirrors."
+    },
+    {
+      "name": "KIOPS",
+      "file": "kiops/upstream-9414984.zip",
+      "url": "https://gitlab.com/stephane.gaudreault/kiops/-/archive/941498440037ea41339bb1d64514e4f490513fdd/kiops-941498440037ea41339bb1d64514e4f490513fdd.zip",
+      "commit": "941498440037ea41339bb1d64514e4f490513fdd",
+      "sha256": "51b2eb61c1f294b70a98b510b5b0f4fc967f21b5b9346be5841cb40b0d06204d"
+    },
+    {
+      "name": "Al-Mohy--Higham expmv",
+      "file": "expmv/upstream.zip",
+      "url": "https://codeload.github.com/higham/expmv/zip/refs/heads/master",
+      "commit": "779f27e81afba16b9b2454ef0460ecf7bad23988",
+      "sha256": "a3fc31daaf34485726b960f2fd0b5891c0e0f183320a5a90dc645a89ac50922d"
+    },
+    {
+      "name": "ExponentialUtilities.jl",
+      "file": "exponentialutilities/upstream.zip",
+      "url": "https://codeload.github.com/SciML/ExponentialUtilities.jl/zip/refs/heads/master",
+      "commit": "eb049829a0a618536a301d23678ad51c2e5c8bd6",
+      "sha256": "a3482d27ed3a8336d9e1cb27001ce3ffb1530840c9046ad634f5b98b5abfdf70"
+    },
+    {
+      "name": "SLEPc",
+      "file": "slepc/upstream-v3.18.2.zip",
+      "url": "https://codeload.github.com/slepc/slepc/zip/refs/tags/v3.18.2",
+      "version": "3.18.2",
+      "sha256": "96f63cb5d70bfa78de40af53a8ef2abf4f31155b82909a5091bd8cd03476316e"
+    },
+    {
+      "name": "SciPy expm_multiply",
+      "version": "1.18.1",
+      "availability": "preinstalled in frontieram-exponential:port-v1; Tencent PyPI simple index returned HTTP 200",
+      "adapter": "scipy_expm_multiply/stream_scipy.py",
+      "upstream_code_modified": false
+    }
+  ],
+  "unretrieved": [
+    {
+      "name": "phipm",
+      "official_url": "http://www1.maths.leeds.ac.uk/~jitse/software.html",
+      "result": "DNS resolution failed from this host; no license statement was available from an authoritative source"
+    }
+  ]
+}
