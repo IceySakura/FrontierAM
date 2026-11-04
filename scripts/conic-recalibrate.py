@@ -55,6 +55,10 @@ def main():
     manifest['time_budget_policy'] = {**policy, 'recalibrated_on': 'this host (local rerun of the reference)',
                                       'sources': {'full_suite': full, 'remeasurements': sys.argv[4:]}}
     output.write_text(json.dumps(manifest, indent=2) + '\n')
+    # Under its own recalibrated limits the reference solves exactly the cases it solved locally.
+    outcomes = {k: ('solved' if v['success'] else 'unsolved') for k, v in runs.items()}
+    output.with_name(output.stem + '-reference-outcomes.json').write_text(
+        json.dumps({'solved': counts['solved'], 'decisions': outcomes}, indent=2) + '\n')
     print(json.dumps(counts))
 
 
