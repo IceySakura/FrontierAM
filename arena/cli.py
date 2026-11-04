@@ -596,32 +596,52 @@ def cmd_report(args) -> None:
         sentinels = [j for j in store.jobs('done') if j['task'] == name and j.get('kind') == 'sentinel']
         for j in sentinels:
             lines.append(f'- sentinel `{j["id"]}` (reference re-graded): score={j.get("score")} vs ideal 50.0')
-        lines += ['', '| submission | model | development | dev s | HTTP | status | score | detail |',
-                  '| --- | --- | --- | --- | --- | --- | --- | --- |']
-        jobs = {j['submission']: j for j in store.jobs('done') + store.jobs('failed') if j.get('kind') == 'candidate'}
-        for meta in store.submissions(name):
-            if meta.get('origin') != 'agent' or meta.get('smoke'):
-                continue
+        lines += [
+            '',
+            '| model | attempt | development | dev s | HTTP | status | score | grading | detail | submission |',
+            '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+        ]
+        candidate_jobs = [j for j in store.jobs('done') + store.jobs('failed') if j.get('kind') == 'candidate']
+        jobs = {}
+        for job in sorted(candidate_jobs, key=lambda j: j['id']):
+            if job.get('status') != 'superseded_by_quiet_regrade':
+                jobs[job['submission']] = job
+        attempts: dict[str, int] = {}
+        agent_rows = sorted(
+            (m for m in store.submissions(name) if m.get('origin') == 'agent' and not m.get('smoke')),
+            key=lambda m: (m.get('model'), m['created_utc']),
+        )
+        for meta in agent_rows:
+            attempts[meta['model']] = attempts.get(meta['model'], 0) + 1
             dev = meta.get('development', {})
             job = jobs.get(meta['id'])
-            detail = ''
+            detail = grading = ''
             if job and (store.result_dir(job['id']) / 'score.json').exists():
                 score = read_json(store.result_dir(job['id']) / 'score.json')
+                result = read_json(store.result_dir(job['id']) / 'result.json')
+                grading = (result.get('isolation') or {}).get('policy', '')
                 if 'delta_vs_baseline' in score:
-                    detail = f'baseline p={score["baseline_success_rate"]}, delta={score["delta_vs_baseline"]}'
+                    detail = f'baseline p={score["baseline_success_rate"]}, delta={score["delta_vs_baseline"]:+.2f}'
                 elif score.get('scoring') == 'paired':
                     anchored = score.get('anchored_score')
-                    detail = (f'paired; anchored={anchored:.2f}, load factor={score.get("load_factor"):.3f}'
+                    detail = (f'paired; anchored {anchored:.2f}; load factor {score.get("load_factor"):.3f}'
                               if anchored is not None else 'paired')
                 elif score.get('reason'):
                     detail = str(score['reason'])
             elif job:
                 detail = str(job.get('reason'))
+            elif dev.get('task_status') == 'unmeasured':
+                agent_result = store.root / 'dev-runs' / meta.get('dev_run', '') / 'task/agent/agent_result.json'
+                errors = dev.get('error_categories') or (
+                    read_json(agent_result).get('error_categories', []) if agent_result.is_file() else []
+                )
+                detail = 'development ended abnormally: ' + ', '.join(sorted(set(errors)))
             seconds = dev.get('development_seconds')
+            score_text = f'{meta["score"]:.2f}' if isinstance(meta.get('score'), float) else str(meta.get('score'))
             lines.append(
-                f'| `{meta["id"]}` | {meta.get("model")} | {dev.get("agent_stop_reason")} | '
+                f'| {meta.get("model")} | {attempts[meta["model"]]} | {dev.get("agent_stop_reason")} | '
                 f'{round(seconds) if seconds else ""} | {dev.get("http_attempts")} | {meta.get("status")} | '
-                f'{meta.get("score")} | {detail} |'
+                f'{score_text} | {grading} | {detail} | `{meta["id"]}` |'
             )
         lines.append('')
     queue = {state: len(store.jobs(state)) for state in ('pending', 'running', 'done', 'failed')}

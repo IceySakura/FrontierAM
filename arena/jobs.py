@@ -74,6 +74,7 @@ async def develop(spec: dict) -> int:
         'agent_eligible': agent.get('evaluation_eligible'),
         'agent_stop_reason': agent.get('stop_reason'),
         'http_attempts': agent.get('http_attempts'),
+        'error_categories': agent.get('error_categories'),
         'development_seconds': agent.get('development_seconds'),
         'source_frozen': (output / 'task/source.tar').is_file(),
         'fixture_tool_history_ok': None if fixture is None else not fixture.failures,
