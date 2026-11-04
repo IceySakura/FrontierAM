@@ -252,6 +252,9 @@ class Conic(Task):
         'and public-dev. Implement the updated conic solver.'
     )
     grade_memory = 8 * GIB + GIB // 2
+    # Success is judged against fixed per-case deadlines, so pairing cannot correct it, and four pilot cases finish
+    # within 1% of their deadline. Under 4 graders plus full development load the reference lost 3 of 10 successes.
+    grade_isolation = 'quiet'
 
     def provider_config(self, runtime, placement):
         return {
