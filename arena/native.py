@@ -62,7 +62,11 @@ spec = json.loads(sys.argv[1])
 endpoint = Endpoint(base_url=spec["base_url"], token=spec["token"], model=spec["model"],
                     context_window=spec["context_window"], max_output=spec["max_output"], effort=spec["effort"],
                     dialect=spec["dialect"], streaming=False)
-task = Task(prompt=spec["prompt"], workspace=Path("/workspace"))
+# The client transport answers only once the whole upstream response exists, so a client idle timeout shorter than
+# the longest max-effort response ends the attempt; every client gets the full development window instead.
+WINDOW_MS = int(spec["client_timeout_seconds"] * 1000)
+options = {"step": {"httpIdleTimeoutMs": 0, "retry": {"provider": {"timeoutMs": WINDOW_MS}}}}
+task = Task(prompt=spec["prompt"], workspace=Path("/workspace"), harness_options=options.get(spec["harness"], {}))
 harness = resolve(spec["harness"])
 refused = harness.refuses(task)
 if refused:
@@ -70,9 +74,21 @@ if refused:
     sys.exit(97)
 with ExitStack() as stack:
     endpoint = stack.enter_context(client_transport(endpoint, timeout=None))
-    launch = harness.setup(Path("/home/agent/atr-home"), endpoint, task)
+    home = Path("/home/agent/atr-home")
+    launch = harness.setup(home, endpoint, task)
+    environment = launch.environment()
+    if spec["harness"] == "claude":
+        environment["API_TIMEOUT_MS"] = str(WINDOW_MS)
+    if spec["harness"] == "codex":
+        config = home / ".codex" / "config.toml"
+        text = config.read_text()
+        marker = 'wire_api = "responses"\n'
+        if marker not in text:
+            print("ATR_REFUSED codex config has no Responses provider table to extend", flush=True)
+            sys.exit(98)
+        config.write_text(text.replace(marker, marker + f"stream_idle_timeout_ms = {WINDOW_MS}\n", 1))
     print("ATR_LAUNCH " + json.dumps({"argv": list(launch.argv)[:3], "stdin": launch.prompt_via_stdin}), flush=True)
-    process = subprocess.Popen(list(launch.argv), env=launch.environment(), cwd="/workspace",
+    process = subprocess.Popen(list(launch.argv), env=environment, cwd="/workspace",
                                stdin=subprocess.PIPE if launch.prompt_via_stdin else subprocess.DEVNULL)
     if launch.prompt_via_stdin:
         process.stdin.write(task.prompt.encode())
@@ -242,7 +258,7 @@ def develop(spec: dict, runtime: dict) -> dict:
                    'UNIX-CONNECT:/run/atr/atr.sock')
         launcher_spec = {
             'base_url': f'http://127.0.0.1:{CONTAINER_PORT}', 'token': token, 'model': model, 'harness': harness,
-            'prompt': prompt(task.name, runtime), **route,
+            'prompt': prompt(task.name, runtime), 'client_timeout_seconds': seconds, **route,
         }
         deadline = started + seconds
         with (output / 'cli.log').open('wb') as log:
