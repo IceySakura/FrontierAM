@@ -369,6 +369,9 @@ def main(argv=None):
     p.add_argument('--repeats', type=int, default=3)
     p.add_argument('--cpuset', default='0', help='the one exclusive CPU leased for this grading slot')
     p.add_argument('--cgroup-parent', default=None, help='isolated systemd slice owning the slot CPUs')
+    p.add_argument('--paired-submission', type=Path, default=None,
+                   help='frozen reference measured alternately with the candidate on the same slot')
+    p.add_argument('--paired-command', default='./run.sh')
     args = p.parse_args(argv)
     if not 1 <= args.repeats <= 3: p.error('repeats must be 1..3; official aggregates require 3')
     manifest = json.loads(args.manifest.read_text())
@@ -376,19 +379,40 @@ def main(argv=None):
     if len({c['id'] for c in cases}) != len(cases): p.error('duplicate case IDs')
     report = {'scope': 'Docker offline evaluation; no score without independently calibrated reference',
               'score': None, 'runs': [], 'aggregates': {}}
+    if args.paired_submission is not None:
+        # Shared-hardware load (memory bandwidth, cache, frequency) cannot be partitioned on this host. Measuring the
+        # reference beside the candidate, in alternating order, lets the same load act on both sides of the ratio.
+        report.update(paired_runs=[], paired_aggregates={}, pairing='per case, alternating reference/candidate order')
     with tempfile.TemporaryDirectory(prefix='frontieram-frozen-') as tmp:
         frozen = Path(tmp) / 'submission.tar'
         report['submission'] = freeze_submission(args.submission, frozen)
+        if args.paired_submission is not None:
+            paired = Path(tmp) / 'paired.tar'
+            report['paired_submission'] = freeze_submission(args.paired_submission, paired)
+        session = dict(image=args.image, docker=args.docker, cpuset=args.cpuset, cgroup_parent=args.cgroup_parent)
         for case in cases:
             file = args.manifest.parent / case.get('file', case.get('path'))
             if case.get('sha256') and hashlib.sha256(file.read_bytes()).hexdigest() != case['sha256']:
                 raise ValueError('evaluator_error:case_hash_mismatch')
-            rows = []
+            rows, paired_rows = [], []
             for repeat in range(1, args.repeats + 1):
-                record = run_session(args.command, file, image=args.image, submission_tar=frozen, docker=args.docker,
-                                     repeat=repeat, cpuset=args.cpuset, cgroup_parent=args.cgroup_parent)
-                record['id'] = case['id']; rows.append(record); report['runs'].append(record)
+                def candidate():
+                    record = run_session(args.command, file, submission_tar=frozen, repeat=repeat, **session)
+                    record['id'] = case['id']; rows.append(record); report['runs'].append(record)
+
+                def reference():
+                    record = run_session(args.paired_command, file, submission_tar=paired, repeat=repeat, **session)
+                    record['id'] = case['id']; paired_rows.append(record); report['paired_runs'].append(record)
+
+                order = [candidate] if args.paired_submission is None else (
+                    [reference, candidate] if repeat % 2 else [candidate, reference])
+                for measure in order:
+                    measure()
             report['aggregates'][case['id']] = aggregate(rows)
+            if args.paired_submission is not None:
+                report['paired_aggregates'][case['id']] = aggregate(paired_rows)
+                if not report['paired_aggregates'][case['id']]['valid']:
+                    raise RuntimeError('evaluator_error:paired_reference_failed:' + case['id'])
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     print(f'Wrote {len(report["runs"])} isolated runs to {args.output}')

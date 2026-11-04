@@ -83,7 +83,9 @@ class Store:
 
     # Grading queue -----------------------------------------------------------------------------------------------
 
-    def enqueue(self, submission_id: str, *, kind: str = 'candidate', note: str | None = None) -> str:
+    def enqueue(
+        self, submission_id: str, *, kind: str = 'candidate', note: str | None = None, isolation: str | None = None
+    ) -> str:
         meta = self.submission(submission_id)
         if not (self.submission_dir(submission_id) / 'source.tar').is_file():
             raise ValueError(f'{submission_id} has no frozen source to grade')
@@ -96,6 +98,7 @@ class Store:
                 'submission': submission_id,
                 'kind': kind,
                 'note': note,
+                'isolation': isolation,
                 'enqueued_utc': utc(),
             },
         )

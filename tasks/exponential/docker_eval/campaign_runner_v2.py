@@ -677,6 +677,8 @@ def evaluation(args, docker, image, run, artifact):
                '--cpuset', docker.cpuset]
     if docker.cgroup_parent is not None:
         command += ['--cgroup-parent', docker.cgroup_parent]
+    if getattr(args, 'paired_submission', None) is not None:
+        command += ['--paired-submission', str(args.paired_submission)]
     with (run / 'evaluator_stdout.log').open('wb') as stdout, (run / 'evaluator_stderr.log').open('wb') as stderr:
         result = subprocess.run(command, stdout=stdout, stderr=stderr, timeout=8 * 3600)
     if result.returncode or not output.exists():
@@ -686,6 +688,9 @@ def evaluation(args, docker, image, run, artifact):
     expected = {case['id'] for case in manifest['cases']}
     if set(report['aggregates']) != expected or len(report['runs']) != 3 * len(expected):
         raise InfrastructureFailure('incomplete private evaluation')
+    if getattr(args, 'paired_submission', None) is not None and (
+            set(report.get('paired_aggregates', {})) != expected or len(report['paired_runs']) != 3 * len(expected)):
+        raise InfrastructureFailure('incomplete paired reference evaluation')
     return report
 
 

@@ -63,9 +63,10 @@ def main():
     parser.add_argument('--docker', default=shutil.which('docker'))
     parser.add_argument('--docker-host', default=os.environ.get('DOCKER_HOST', 'unix:///var/run/docker.sock'))
     parser.add_argument(
-        '--grade-docker-host',
-        default='unix:///run/frontieram-grade-docker/docker.sock',
-        help='grading-only daemon created by ./bench host setup; images are copied there by ID',
+        '--machine',
+        type=Path,
+        default=Path(os.environ.get('FRONTIERAM_MACHINE', '/etc/frontieram/machine.json')),
+        help='layout from ./bench host setup; images are copied by ID into every per-slot grading daemon',
     )
     parser.add_argument('--codex', required=True, help='Codex executable or its npm launcher')
     parser.add_argument('--exponential-image', default='frontieram-exponential:port-v1')
@@ -92,17 +93,23 @@ def main():
         images[name] = {'id': image['Id'], 'architecture': image['Architecture']}
     if images['exponential']['architecture'] != images['conic']['architecture']:
         parser.error('The two numerical images must use the same architecture')
-    grade_prefix = [str(docker), '--host', args.grade_docker_host]
-    for name in ('exponential', 'conic'):
-        image_id = images[name]['id']
-        if subprocess.run(grade_prefix + ['image', 'inspect', image_id], capture_output=True).returncode:
-            save = subprocess.Popen(prefix + ['image', 'save', getattr(args, name + '_image')], stdout=subprocess.PIPE)
-            subprocess.run(grade_prefix + ['image', 'load', '--quiet'], stdin=save.stdout, check=True)
-            if save.wait():
-                parser.error('Could not export the numerical image to the grading daemon')
-        loaded = json.loads(subprocess.check_output(grade_prefix + ['image', 'inspect', image_id]))[0]['Id']
-        if loaded != image_id:
-            parser.error('The grading daemon holds a different image under the locked ID')
+    if not args.machine.exists():
+        parser.error(f'{args.machine} is missing; run ./bench host setup first')
+    grade_hosts = json.loads(args.machine.read_text())['docker_hosts']['grade']
+    for host in grade_hosts:
+        grade_prefix = [str(docker), '--host', host]
+        for name in ('exponential', 'conic'):
+            image_id = images[name]['id']
+            if subprocess.run(grade_prefix + ['image', 'inspect', image_id], capture_output=True).returncode:
+                save = subprocess.Popen(
+                    prefix + ['image', 'save', getattr(args, name + '_image')], stdout=subprocess.PIPE
+                )
+                subprocess.run(grade_prefix + ['image', 'load', '--quiet'], stdin=save.stdout, check=True)
+                if save.wait():
+                    parser.error(f'Could not export the numerical image to {host}')
+            loaded = json.loads(subprocess.check_output(grade_prefix + ['image', 'inspect', image_id]))[0]['Id']
+            if loaded != image_id:
+                parser.error(f'{host} holds a different image under the locked ID')
     server = json.loads(subprocess.check_output(prefix + ['info', '--format', '{{json .}}']))
     native_arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(server['Architecture'], server['Architecture'])
     if native_arch != images['exponential']['architecture']:
@@ -198,7 +205,7 @@ def main():
         'profile_sha256': sha(runtime / 'conic-profile.json'),
         'docker_path': str(docker),
         'docker_host': args.docker_host,
-        'grade_docker_host': args.grade_docker_host,
+        'grade_docker_hosts': grade_hosts,
         'conic_reference_root': str(runtime / 'tasks/conic/reference_submission'),
         'codex_path': str(codex),
         'codex_version': version,

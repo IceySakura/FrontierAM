@@ -134,7 +134,15 @@ class BoundedOpenAIClient(OpenAIClient):
             trust_env=False,
             event_hooks={'request': [self._before_http], 'response': [self._after_http]},
         )
-        args.update(max_retries=1, sdk_max_retries=0, http_client=self._http)
+        # The SDK's default 600 s read timeout cut slow but valid responses and ended whole attempts as protocol
+        # errors; every request is bounded by the immutable deadline below, so the transport must not end it first.
+        budget = max(1.0, deadline - clock()) + 30.0
+        args.update(
+            max_retries=1,
+            sdk_max_retries=0,
+            http_client=self._http,
+            timeout=httpx.Timeout(budget, connect=30.0),
+        )
         request_args = copy.deepcopy(config.request_args)
         request_args['model'] = self._model
         enforced = copy.deepcopy(config.enforced_request_args)

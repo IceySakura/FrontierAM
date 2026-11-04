@@ -17,7 +17,7 @@ from typing import Any
 IMAGE_ID = 'sha256:f203391e0381bdca377548961998bbbcac9bfd2212cfd00ffb77c4b31ed230f2'
 CODEX_SHA256 = '58a91f6ea19bea477ae3a2ec48d619f0039afe75d3476260747e11d201fa7cea'
 ASSET_SHA256 = {
-    'campaign_runner_v2.py': '9021159821e24c4449b74403ffa9e11d58040e56251eb338cb0f292a2c4ba5d8',
+    'campaign_runner_v2.py': '88f0451befd1262e431381e2fbaac96f118148fd4872bc6d03511a2f64943f8a',
     'harness_resilient/docker_mcp.py': 'd75a609874647c183b66c1e1222b3453afd2356257cd3553b50eff6ef1641106',
     'public_pilot_v2/public_pilot.tar': '931d071f291720b5dc0f8fc1eb400becc53e7d039e2dd8ecdfc9e7a2043537bb',
     'public_pilot_v2/task/PUBLIC_MANIFEST.json': '0013e554392033e4bc879df809f8dfaab1f422240b0304550ed31eac7442fb4a',
@@ -25,7 +25,7 @@ ASSET_SHA256 = {
     'private_pilot/dataset_v1/freeze.json': '3d42dbc64de7e87032d166e8eff9efac03f7b000a86c30cbdd24173e0c63c1da',
     'private_pilot/dataset_v1/manifest.json': '958fb28f19e22f129553c66025b03573727aea499652f6b39954297015713b0f',
     'private_pilot/reference_calibration/report.json': 'fd317984133031a38b469e6ffb31e9736979e943b4c2ace2af40dd10e21a1d41',
-    'evaluator/run_docker.py': 'a78f21731932aa82b82f3ac4966b029c340f215f5a75f22075cd9154b69ef36a',
+    'evaluator/run_docker.py': '04a971c2a8d98c87ca72ba7c90849b94ba46b928c5deee7898e3db9ce0679535',
     'evaluator/supervisor.py': '62c3722738fe48199381b74d42ef5063876e390f0a7e094df18716e7a6e820ea',
     '../public/tools/scoring.py': '182386804a8ca159d780e33dca2ed6348922f27efc3b43043befb0bf993ab0ad',
     'harness_recovery/metadata/retry_policies.json': 'e145b2e37bb4a82222b4199cceef9b4f1547be770b1bb0180cae39eb08d3e461',

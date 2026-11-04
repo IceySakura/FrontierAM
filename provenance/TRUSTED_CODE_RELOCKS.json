@@ -25,6 +25,21 @@
           "new": "64fcaf60107ad431b166eb8288327c1e09a1db5a9cd2f4ef8cd06eb50901d13f"
         }
       ]
+    },
+    {
+      "utc": "2026-11-04T03:11:37+00:00",
+      "changes": [
+        {
+          "file": "tasks/exponential/docker_eval/campaign_runner_v2.py",
+          "old": "9021159821e24c4449b74403ffa9e11d58040e56251eb338cb0f292a2c4ba5d8",
+          "new": "88f0451befd1262e431381e2fbaac96f118148fd4872bc6d03511a2f64943f8a"
+        },
+        {
+          "file": "tasks/exponential/docker_eval/evaluator/run_docker.py",
+          "old": "a78f21731932aa82b82f3ac4966b029c340f215f5a75f22075cd9154b69ef36a",
+          "new": "04a971c2a8d98c87ca72ba7c90849b94ba46b928c5deee7898e3db9ce0679535"
+        }
+      ]
     }
   ]
 }

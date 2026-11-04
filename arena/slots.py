@@ -196,7 +196,7 @@ class Broker:
 
     def _lock_set(self, candidates, holds, memory_bytes, owner, isolation) -> Lease | None:
         """All or nothing, under the allocation lock: a partial exclusive lease is never left behind."""
-        busy = orphan_cpus(self.layout['docker_hosts'].values())
+        busy = orphan_cpus(machine.all_docker_hosts(self.layout))
         for slot in candidates:
             if slot['cpu'] in busy:
                 continue

@@ -13,7 +13,7 @@ def layout(memory_gib=16):
     return {
         'layout_sha256': 'fixture',
         'memory_budget_bytes': memory_gib * 2**30,
-        'docker_hosts': {},
+        'docker_hosts': {'dev': 'unix:///dev.sock', 'grade': []},
         'slots': [
             {'id': 'grade-24', 'kind': 'grade', 'cpu': 24, 'host_cpu': 25},
             {'id': 'grade-26', 'kind': 'grade', 'cpu': 26, 'host_cpu': 27},

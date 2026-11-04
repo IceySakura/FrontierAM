@@ -46,18 +46,18 @@ Codex 安装采用[官方文档中的 npm 方式](https://developers.openai.com/
 
 - **housekeeping**（默认物理核 0–1）：systemd 下的 `system.slice`、`user.slice` 以及其余顶层 cgroup（监控 agent、编辑器、默认 dockerd/containerd）全部限制在这里，每 30 秒由 `frontieram-isolate.timer` 重新收紧新出现的顶层 cgroup。
 - **`frontieram.slice`** 独占其余 CPU。每个 slot 是一个完整物理核：容器在一个硬件线程，另一个线程只运行该 slot 的宿主侧进程（开发控制器 Codex/Nexus，或评测计时进程），以 `systemd-run` scope 固定。
-- **评测专用 Docker**：`frontieram-grade-docker.service` 加私有 `frontieram-grade-containerd.service`，独占一个核。容器 stdio 经它们中继、位于计时路径上，开发的 `docker exec` 流量走默认 dockerd，不与之共享。
+- **每个评测 slot 一套独立 Docker**：`frontieram-grade-containerd-<slot>` 加 `frontieram-grade-docker-<slot>`，运行在该 slot 的兄弟线程上。容器 stdio 经它们中继、位于计时路径上；共用一个守护进程时，它是 4 并发下最大的干扰源。开发的 `docker exec` 流量走默认 dockerd。
 - `--grade-placement packed|spread` 决定评测核是否挤在同一 L3 域。
 
 slot 租约是机器级的 `flock`（`/run/frontieram/slots/`），持有进程崩溃时自动释放；内存按容器上限计入机器预算，避免无 swap 的 OOM。`./bench host status` 和每个评测任务开始前都会复核隔离，失效时拒绝评测（记为未测）而非在争用下计时。
 
-**并发不是假定安全的，而是实测的**：`./bench interference` 让参考实现在 1/2/4 个评测并发、可选 9 个开发 slot 满载内存带宽压力下重复评测，并按 baseline 计分（理想值恰为 50）。每个题目据此声明 `grade_isolation`：
+**并发不是假定安全的，而是实测的**：`./bench interference` 让参考实现（或 `--candidate` 给出的真实提交）在 1/2/4 个评测并发、可选全部开发 slot 满载内存带宽压力下重复评测并计分。指数传播的理想值恰为 50。共享硬件上的缓存和内存带宽争用无法分区，所以指数传播在每个用例上**配对测量**：同一 slot 上交替运行参考实现与候选，用同一时段的参考时间计分。每次评测还记录 **load factor**（配对参考时间 ÷ 安静 baseline），超过题目设定的闸门就自动在全机安静下重测。
 
 | 策略 | 评测期间保持空闲 | 用于 |
 | --- | --- | --- |
-| `quiet` | 所有其他评测 slot 和开发 slot（等待进行中的开发结束，暂停新开发） | 指数传播（分数是连续的时间比） |
-| `grade_pool` | 所有其他评测 slot | 优化器（逐例时限内成功即算） |
-| `shared` | 无 | 不计时的题目 |
+| `shared` | 无 | 指数传播（配对计分，load factor 闸门 1.04） |
+| `grade_pool` | 所有其他评测 slot | 优化器（实测前的保守默认） |
+| `quiet` | 所有其他评测 slot 和开发 slot（等待进行中的开发结束，暂停新的开发和评测） | 被闸门退回的重测 |
 
 本机实测结论与数字见 `results/CONCURRENCY.md`。
 

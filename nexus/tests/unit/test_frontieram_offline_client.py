@@ -76,6 +76,16 @@ async def ask(client):
 
 
 @pytest.mark.asyncio
+async def test_sdk_transport_timeout_never_ends_a_request_before_the_deadline():
+    client = client_for(lambda request: httpx.Response(200, json=completion()), deadline=time.monotonic() + 7200)
+    try:
+        timeout = client.client.timeout
+        assert timeout.read > 7200 and timeout.write > 7200 and timeout.pool > 7200
+    finally:
+        await client.aclose()
+
+
+@pytest.mark.asyncio
 async def test_native_sdk_retry_is_not_multiplied_and_payload_is_identical():
     payloads = []
 

@@ -44,8 +44,7 @@ def say(**fields) -> None:
 
 
 def placement_for(lease: Lease, layout: dict) -> Placement:
-    flow = 'dev' if lease.slot['kind'] == 'dev' else 'grade'
-    return Placement(lease.cpuset, lease.cgroup_parent, layout['docker_hosts'][flow], lease.id)
+    return Placement(lease.cpuset, lease.cgroup_parent, lease.slot['docker_host'], lease.id)
 
 
 def run_in_slot(lease: Lease, spec: dict, spec_path: Path, log: Path, extra_fds: tuple[int, ...] = ()) -> int:
@@ -84,9 +83,11 @@ def context() -> tuple[dict, Broker, dict]:
     layout = machine.load()
     machine.require_ready(layout)
     runtime = load_runtime()
-    for key in ('grade_docker_host', 'conic_reference_root'):
+    for key in ('grade_docker_hosts', 'conic_reference_root'):
         if key not in runtime:
-            raise RuntimeError('This .runtime predates concurrent slots; rename it and run ./bench prepare again')
+            raise RuntimeError('This .runtime predates per-slot grading daemons; rename it and run ./bench prepare')
+    if set(runtime['grade_docker_hosts']) != set(layout['docker_hosts']['grade']):
+        raise RuntimeError('The sealed runtime loaded images into other grading daemons; run ./bench prepare again')
     return layout, Broker(layout), runtime
 
 
@@ -186,8 +187,8 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
         write_json(results / 'host_not_ready.json', host)
         say(event='grade_refused', job=job['id'], failed_checks=failed)
         return store.finish(job, 'failed', status='unmeasured', reason='host_isolation_lost:' + ','.join(failed))
-    # Interference probes measure concurrency on purpose; everything else uses the task's measured policy.
-    policy = 'shared' if job['kind'] == 'probe' else task.grade_isolation
+    # Interference probes measure concurrency on purpose; a job may carry an escalated policy from the load gate.
+    policy = 'shared' if job['kind'] == 'probe' else job.get('isolation') or task.grade_isolation
     say(event='grade_waiting', job=job['id'], task=task.name, isolation=policy)
     with broker.acquire('grade', task.grade_memory, f'grade {job["id"]}', isolation=policy) as lease:
         placement = placement_for(lease, layout)
@@ -240,6 +241,14 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
         return store.finish(job, 'done', status='sentinel', score=score.get('score'))
     score = task.score(runtime, metrics, store.active_baseline(task.name))
     write_json(results / 'score.json', {**score, 'baseline': (store.active_baseline(task.name) or {}).get('id')})
+    gate = task.load_gate
+    if gate is not None and policy != 'quiet' and (score.get('load_factor') or 0) > gate:
+        # Pairing cancels load only as far as candidate and reference respond to it alike; above the gate that
+        # assumption is not trusted, so the submission is measured again with the machine kept quiet.
+        regrade = store.enqueue(job['submission'], isolation='quiet', note=f'load gate {score["load_factor"]:.3f}')
+        say(event='load_gate', job=job['id'], load_factor=score['load_factor'], gate=gate, regrade=regrade)
+        return store.finish(job, 'done', status='superseded_by_quiet_regrade', regrade=regrade,
+                            load_factor=score['load_factor'])
     store.update_submission(job['submission'], status='graded', score=score.get('score'), score_status=score.get('status'))
     say(event='graded', job=job['id'], submission=job['submission'], score=score.get('score'), status=score.get('status'))
     return store.finish(job, 'done', status=score.get('status'), score=score.get('score'))
@@ -268,38 +277,12 @@ def finish_baseline(store, runtime, task, job, record, metrics) -> dict:
     }
     write_json(directory / 'baseline.json', baseline)
     if ok and (store.active_baseline(task.name) is None or job.get('note') == 'activate'):
+        # Scoring is done here against the store baseline. The sealed worker's own calibration lock is tied to one
+        # Docker daemon ID and cannot follow per-slot daemons, so the worker reports local_calibration_required.
         store.activate_baseline(task.name, baseline_id)
-        if task.name == 'exponential':
-            install_exponential_calibration(runtime, directory)
     say(event='baseline_finished', task=task.name, baseline=baseline_id, qualified=ok, reason=reason,
         active=(store.active_baseline(task.name) or {}).get('id'))
     return store.finish(job, 'done', status='baseline', qualified=ok)
-
-
-def install_exponential_calibration(runtime, directory: Path) -> None:
-    """Keep the sealed worker's own scorer on the same anchor, so the two scores can be cross-checked."""
-    from nexus.extensions.tasks.frontieram_offline.assets import LockedAssets
-    from nexus.extensions.tasks.frontieram_offline.local_calibration import host_fingerprint
-
-    assets = LockedAssets(runtime['source_root'])
-    docker = assets.controller.Docker(runtime['docker_path'], runtime['grade_docker_host'])
-    report = directory / 'evaluation.json'
-    lock = assets.source_root / 'local_calibration.json'
-    if lock.exists():
-        previous = lock.with_name(f'local_calibration.replaced-{int(time.time())}.json')
-        lock.rename(previous)
-    write_json(
-        lock,
-        {
-            'host_fingerprint': host_fingerprint(docker, assets.image_id),
-            'report': str(report),
-            'report_sha256': sha(report),
-            'manifest_sha256': sha(assets.manifest),
-            'policy': 'frozen author KIOPS, multiplier 0.01',
-            'entry_adapter': 'run.sh generated from PROVENANCE.json command',
-            'measured_on_slot': read_json(directory / 'baseline.json')['slot'],
-        },
-    )
 
 
 def worker_loop(layout, broker, runtime, store, args, stop: threading.Event, job_ids=None) -> list[dict]:
@@ -362,6 +345,18 @@ def enqueue_reference(store, runtime, task, *, kind: str, note: str | None = Non
     archive.unlink()
     store.update_submission(submission_id, status='frozen', source_sha256=sha(directory / 'source.tar'))
     return store.enqueue(submission_id, kind=kind, note=note)
+
+
+def enqueue_archive(store, runtime, task, archive: Path, *, kind: str) -> str:
+    """Queue a frozen canonical source.tar (for example from another store) after re-validating it."""
+    submission_id, directory = store.new_submission(task.name, {'origin': 'archive', 'label': str(archive)})
+    stage = directory / 'stage'
+    task.stage(runtime, archive, stage)
+    shutil.move(stage / 'source.tar', directory / 'source.tar')
+    shutil.move(stage / 'source_manifest.json', directory / 'source_manifest.json')
+    shutil.rmtree(stage)
+    store.update_submission(submission_id, status='frozen', source_sha256=sha(directory / 'source.tar'))
+    return store.enqueue(submission_id, kind=kind)
 
 
 def cmd_baseline(args) -> None:
@@ -430,15 +425,17 @@ def cmd_interference(args) -> None:
     store = Store(args.store)
     task = TASKS[args.task]
     baseline = store.active_baseline(task.name)
-    if task.name != 'exponential':
-        raise SystemExit('Timing interference is measured on the exponential task, whose score is a time ratio')
     report = {'task': task.name, 'created_utc': utc(), 'baseline': baseline and baseline['id'], 'levels': []}
     for level in [int(x) for x in args.levels.split(',')]:
         stop, leases = threading.Event(), []
         if args.dev_load:
             dev_load(layout, broker, args.dev_load, stop, leases)
         try:
-            jobs = [enqueue_reference(store, runtime, task, kind='probe', note=f'level-{level}') for _ in range(level)]
+            candidates = [enqueue_archive(store, runtime, task, Path(p), kind='probe') for p in args.candidate or []]
+            jobs = candidates + [
+                enqueue_reference(store, runtime, task, kind='probe', note=f'level-{level}')
+                for _ in range(max(0, level - len(candidates)))
+            ]
             args.drain, args.workers, args.task_filter = True, level, None
             run_workers(args, job_ids=jobs)
         finally:
@@ -450,15 +447,35 @@ def cmd_interference(args) -> None:
         for job_id in jobs:
             metrics = read_json(store.result_dir(job_id) / 'grade/metrics.json')
             entry = {'job': job_id, 'slot': read_json(store.result_dir(job_id) / 'result.json')['slot'],
-                     'valid_runs': metrics['valid_runs']}
-            if baseline is not None and metrics['aggregates']:
+                     'valid_runs': metrics['valid_runs'],
+                     'source': store.submission(read_json(store.result_dir(job_id) / 'result.json')['submission'])
+                     .get('label', 'reference')}
+            if baseline is not None and task.name == 'exponential' and metrics['aggregates']:
                 ratios = {case: metrics['aggregates'][case]['time_seconds'] / ref['time_seconds']
                           for case, ref in baseline['metrics']['aggregates'].items()}
+                scored = task.score(runtime, metrics, baseline)
                 entry.update(
-                    score_vs_baseline=task.score(runtime, metrics, baseline)['score'],
+                    score_vs_baseline=scored.get('anchored_score', scored.get('score')),
+                    paired_score=scored['score'] if scored.get('scoring') == 'paired' else None,
+                    load_factor=scored.get('load_factor'),
                     time_ratio_median=statistics.median(ratios.values()),
                     time_ratio_max=max(ratios.values()),
                     time_ratio_min=min(ratios.values()),
+                )
+            if baseline is not None and task.name == 'conic' and metrics.get('cases'):
+                reference = {c['case_id']: c for c in baseline['metrics']['cases']}
+                flipped = [c['case_id'] for c in metrics['cases'] if c['success'] != reference[c['case_id']]['success']]
+                ratios = [
+                    statistics.median(c['elapsed_seconds']) / statistics.median(reference[c['case_id']]['elapsed_seconds'])
+                    for c in metrics['cases']
+                    if c['success'] and reference[c['case_id']]['success']
+                ]
+                entry.update(
+                    success_rate=metrics['success_rate'],
+                    baseline_success_rate=baseline['metrics']['success_rate'],
+                    flipped_cases=flipped,
+                    time_ratio_median=statistics.median(ratios) if ratios else None,
+                    time_ratio_max=max(ratios) if ratios else None,
                 )
             rows.append(entry)
         report['levels'].append({'concurrent_grades': level, 'dev_load_slots': args.dev_load, 'runs': rows})
@@ -592,6 +609,10 @@ def cmd_report(args) -> None:
                 score = read_json(store.result_dir(job['id']) / 'score.json')
                 if 'delta_vs_baseline' in score:
                     detail = f'baseline p={score["baseline_success_rate"]}, delta={score["delta_vs_baseline"]}'
+                elif score.get('scoring') == 'paired':
+                    anchored = score.get('anchored_score')
+                    detail = (f'paired; anchored={anchored:.2f}, load factor={score.get("load_factor"):.3f}'
+                              if anchored is not None else 'paired')
                 elif score.get('reason'):
                     detail = str(score['reason'])
             elif job:
@@ -624,7 +645,6 @@ def host_plan_options(args) -> dict:
     return {
         'housekeeping_cores': args.housekeeping_cores,
         'grade_cores': args.grade_cores,
-        'grade_daemon_cores': args.grade_daemon_cores,
         'host_reserve_gib': args.host_reserve_gib,
         'grade_placement': args.grade_placement,
     }
@@ -640,7 +660,6 @@ def main() -> None:
     host.add_argument('action', choices=['plan', 'setup', 'status'])
     host.add_argument('--housekeeping-cores', type=int, default=2)
     host.add_argument('--grade-cores', type=int, default=4)
-    host.add_argument('--grade-daemon-cores', type=int, default=1)
     host.add_argument('--host-reserve-gib', type=float, default=6.0)
     host.add_argument('--grade-placement', choices=['packed', 'spread'], default='packed')
     develop = sub.add_parser('develop')
@@ -673,9 +692,10 @@ def main() -> None:
     sentinel.add_argument('--count', type=int, default=1)
     sentinel.add_argument('--workers', type=int, default=1)
     interference = sub.add_parser('interference')
-    interference.add_argument('--task', choices=['exponential'], default='exponential')
+    interference.add_argument('--task', choices=sorted(TASKS), default='exponential')
     interference.add_argument('--levels', default='1,2,4')
     interference.add_argument('--dev-load', type=int, default=0, help='dev slots running a memory-bandwidth hog')
+    interference.add_argument('--candidate', action='append', help='source.tar graded as a probe next to references')
     interference.add_argument('--workers', type=int, default=None)
     smoke = sub.add_parser('smoke')
     smoke.add_argument('--task', choices=['exponential', 'conic', 'both'], default='both')

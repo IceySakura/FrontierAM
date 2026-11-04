@@ -61,6 +61,8 @@ def validate_tool_response(response: dict[str, Any], allowed_names: set[str], re
             raise BoundaryError('tool_identity')
         function = call.get('function')
         if not isinstance(function, dict) or function.get('name') not in allowed_names:
+            name = function.get('name') if isinstance(function, dict) else None
+            record('rejected_tool', name=str(name)[:64], allowed=sorted(allowed_names))
             raise BoundaryError('tool_identity')
         call_id = call.get('id')
         if call_id in (None, ''):

@@ -81,8 +81,13 @@ def worker(config_path: Path) -> None:
     docker = c.Docker(wrapper, config['docker_host'], config['cpuset'], config['cgroup_parent'])
     try:
         build = c.offline_build(docker, assets.image_id, root)
+        paired = config.get('paired_reference')
         report = c.evaluation(
-            SimpleNamespace(manifest=assets.manifest), docker, assets.image_id, root, Path(build['artifact'])
+            SimpleNamespace(manifest=assets.manifest, paired_submission=Path(paired) if paired else None),
+            docker,
+            assets.image_id,
+            root,
+            Path(build['artifact']),
         )
         baseline = qualified_baseline(assets, docker)
         score = (
@@ -242,8 +247,9 @@ async def _finish_grading(child, spawn, config: dict) -> None:
         raise OwnedCleanupError(errors)
 
 
-async def grade(runtime, output_dir: Path, *, timeout: float = 900) -> dict:
+async def grade(runtime, output_dir: Path, *, timeout: float = 900, paired_reference: Path | None = None) -> dict:
     config = {
+        'paired_reference': str(paired_reference) if paired_reference is not None else None,
         'source_root': str(runtime.assets.source_root),
         'output_dir': str(output_dir),
         'docker_path': str(runtime.docker.prefix[0]),

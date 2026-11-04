@@ -60,8 +60,10 @@ class Task:
     grade_memory: int
     grade_timeout: float = 28800
     # How much of the machine must stay idle while this task is graded; chosen from measured interference
-    # (store/interference/*.json): 'shared', 'grade_pool' (no other grader) or 'quiet' (no grader, no development).
+    # (results/CONCURRENCY.md): 'shared', 'grade_pool' (no other grader) or 'quiet' (no grader, no development).
     grade_isolation: str = 'grade_pool'
+    # Highest accepted load factor (paired reference time / quiet baseline time); above it the grade is redone quiet.
+    load_gate: float | None = None
 
     def provider_config(self, runtime: dict, placement: Placement) -> dict:
         return {
@@ -161,28 +163,38 @@ class Exponential(Task):
     instruction = 'Read /workspace/task/PILOT.md, INSTRUCTION.md and API.md in full. Implement the exponential propagation task.'
     grade_memory = 4 * GIB + GIB // 2
     grade_timeout = 8 * 3600
-    # The score is a continuous time ratio: graders sharing an L3 domain cost 5-15 points, dev load about 1.
-    grade_isolation = 'quiet'
+    # Scored against the reference measured beside each candidate, so graders may share the machine. Pairing cancels
+    # load only as far as both respond alike: at load factor 1.095 a real candidate drifted 1.1 points, so any grade
+    # measured above 1.04 is redone with the machine quiet (results/CONCURRENCY.md).
+    grade_isolation = 'shared'
+    load_gate = 1.04
 
     def assets(self, runtime):
         from nexus.extensions.tasks.frontieram_offline.assets import LockedAssets
 
         return LockedAssets(runtime['source_root'])
 
+    async def grade(self, runtime, placement, output):
+        from nexus.extensions.tasks.frontieram_offline.grading import grade
+
+        assets = self.assets(runtime)
+        paired = output / 'paired_reference'
+        reference = self.reference_archive(runtime, output / 'paired_incoming')
+        assets.controller.validate_and_extract(reference, paired, output / 'paired_reference.tar')
+        return await grade(
+            SimpleNamespace(assets=assets, docker=self.docker(runtime, placement)),
+            output,
+            timeout=self.grade_timeout,
+            paired_reference=paired,
+        )
+
     def reference_archive(self, runtime, output):
+        output.mkdir(parents=True, exist_ok=True)
         source = Path(runtime['source_root']) / 'private_pilot/reference_submission'
         # The frozen reference has no run.sh; the evaluator only starts ./run.sh.
         command = json.loads((source / 'PROVENANCE.json').read_text())['command']
         entry = f'#!/bin/sh\nexec {shlex.join(command)}\n'.encode()
         return tar_directory(source, output / 'incoming.tar', {'run.sh': (entry, 0o755)})
-
-    async def grade(self, runtime, placement, output):
-        from nexus.extensions.tasks.frontieram_offline.grading import grade
-
-        assets = self.assets(runtime)
-        return await grade(
-            SimpleNamespace(assets=assets, docker=self.docker(runtime, placement)), output, timeout=self.grade_timeout
-        )
 
     def metrics(self, output, raw):
         report_path = output / 'evaluation.json'
@@ -192,6 +204,7 @@ class Exponential(Task):
             'valid_runs': raw.get('valid_runs'),
             'total_runs': raw.get('total_runs'),
             'aggregates': report['aggregates'] if report else None,
+            'paired_aggregates': report.get('paired_aggregates') if report else None,
             'report': str(report_path) if report else None,
         }
 
@@ -200,20 +213,33 @@ class Exponential(Task):
         return ok, 'all 69 reference runs verified' if ok else 'reference did not pass all 69 runs'
 
     def score(self, runtime, metrics, baseline):
+        """Primary score: candidate against the reference measured beside it; anchored score is diagnostic."""
         raw = metrics['raw']
         if raw.get('exit_status') != 'finished':
             return {'status': 'unmeasured', 'score': None, 'reason': raw.get('reason')}
         if metrics['aggregates'] is None:
             # Build or archive failure: the frozen protocol scores an invalid submission as zero.
             return {'status': 'invalid_submission', 'score': 0.0, 'reason': raw.get('reason')}
-        if baseline is None:
-            return {'status': 'baseline_required', 'score': None}
         assets = self.assets(runtime)
         cases = json.loads(assets.manifest.read_text())['cases']
-        result = assets.scoring.score_submission(cases, metrics['aggregates'], baseline['metrics']['aggregates'])
-        if raw.get('score') is not None and abs(raw['score'] - result['score']) > 1e-12:
-            raise RuntimeError('Worker and orchestrator scores disagree for the same baseline')
-        return {'status': result.get('status'), 'score': result['score'], 'detail': result}
+        result: dict[str, Any] = {}
+        if metrics.get('paired_aggregates'):
+            paired = assets.scoring.score_submission(cases, metrics['aggregates'], metrics['paired_aggregates'])
+            result.update(status=paired.get('status'), score=paired['score'], scoring='paired', detail=paired)
+        if baseline is not None:
+            anchored = assets.scoring.score_submission(cases, metrics['aggregates'], baseline['metrics']['aggregates'])
+            result.update(anchored_score=anchored['score'])
+            if metrics.get('paired_aggregates'):
+                reference = baseline['metrics']['aggregates']
+                ratios = [metrics['paired_aggregates'][k]['time_seconds'] / reference[k]['time_seconds']
+                          for k in reference]
+                result.update(load_factor=sorted(ratios)[len(ratios) // 2])
+            else:
+                result.update(status=anchored.get('status'), score=anchored['score'], scoring='anchored',
+                              detail=anchored)
+        if 'score' not in result:
+            return {'status': 'baseline_required', 'score': None}
+        return result
 
 
 class Conic(Task):

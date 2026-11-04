@@ -54,10 +54,13 @@ note "all development attempts finished"
 while [ "$(queue_open)" != 0 ]; do sleep 120; done
 note "grading queue drained"
 
+# Stop the looping workers first; otherwise one of them claims a sentinel and is killed mid-grade.
+kill "$wexp" "$wcon" 2>/dev/null
+wait "$wexp" "$wcon" 2>/dev/null
 ./bench sentinel --task exponential --count 2 > "$log/sentinel-exponential.log" 2>&1
 note "closing exponential sentinels done"
 
-kill "$wexp" "$wcon" "$health" 2>/dev/null
+kill "$health" 2>/dev/null
 ./bench rescore > "$log/rescore.log" 2>&1
 ./bench report > "$log/REPORT.md" 2>&1
 note "report written to $log/REPORT.md"
