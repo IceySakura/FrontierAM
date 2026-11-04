@@ -71,7 +71,7 @@ def main():
     summary = {'suite': suite, 'limits': str(recal), 'solved': sum(v == 'solved' for v in decisions.values()),
                'cases': len(decisions), 'decisions': decisions, 'detail': detail}
     output.write_text(json.dumps(summary, indent=2) + '\n')
-    print(json.dumps({k: v for k, v in summary.items() if k != 'decisions'}))
+    print(json.dumps({k: v for k, v in summary.items() if k not in ('decisions', 'detail')}))
 
 
 if __name__ == '__main__':
