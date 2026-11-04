@@ -11,7 +11,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RUNTIME = ROOT / '.runtime'
+# A second sealed runtime can serve new work while jobs started on the first one are still reading it.
+RUNTIME = Path(os.environ.get('FRONTIERAM_RUNTIME') or ROOT / '.runtime').resolve()
 
 
 def sha(path) -> str:

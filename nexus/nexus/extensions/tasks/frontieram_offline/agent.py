@@ -67,7 +67,13 @@ class OfflineCodexInput(AgentRunInput):
     max_output_tokens: int = Field(default=64000, ge=128, le=64000)
     auto_compact_token_limit: int = Field(default=110000, ge=1024, lt=131072)
     # v4: Codex Responses converted to Chat Completions. v5: native Responses through NativeResponsesBridge.
-    protocol: Literal['v4', 'v5'] = 'v4'
+    protocol: Literal['v4', 'v5', 'v5.1'] = 'v4'
+    upstream_headers: dict[str, str] = Field(default_factory=dict)
+
+
+AIHUB_ENDPOINT = 'http://api.aihub.woa.com/standard/v1'
+# Taiji's native Responses route; hy4 is served there directly with its own token, not through AIHub.
+TAIJI_RESPONSES_ENDPOINT = 'http://api.taiji.woa.com/openapi/v2'
 
 
 def _codex_catalog(codex: Path, codex_home: Path, model: str) -> Path | None:
@@ -296,19 +302,22 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
     if parsed.username or parsed.password or parsed.query or parsed.fragment:
         raise ValueError('Model endpoint must not contain credentials or query parameters')
     is_fixture = parsed.hostname in {'127.0.0.1', 'localhost', '::1'}
-    if not is_fixture and (
-        not value.allow_live_endpoint or value.base_url.rstrip('/') != 'http://api.aihub.woa.com/standard/v1'
-    ):
+    endpoint = value.base_url.rstrip('/')
+    approved = {AIHUB_ENDPOINT} | ({TAIJI_RESPONSES_ENDPOINT} if value.protocol in ('v5', 'v5.1') else set())
+    if not is_fixture and (not value.allow_live_endpoint or endpoint not in approved):
         raise ValueError('Live model calls require an explicit live profile and the approved endpoint')
+    if value.upstream_headers and endpoint != TAIJI_RESPONSES_ENDPOINT:
+        raise ValueError('Fixed upstream headers are only configured for the Taiji Responses endpoint')
     client_args: dict[str, Any] = {'base_url': value.base_url}
     if is_fixture:
         if value.key_file:
             raise ValueError('Local fixtures must not read a real credential')
         api_key = 'local-fixture-only'
     else:
-        # AIHub routes by cache_task_id: one value per attempt keeps the whole conversation,
-        # including retries and compaction turns, on one upstream account.
-        client_args['cache_task_id'] = 'frontieram-' + secrets.token_hex(16)
+        if endpoint == AIHUB_ENDPOINT:
+            # AIHub routes by cache_task_id: one value per attempt keeps the whole conversation,
+            # including retries and compaction turns, on one upstream account.
+            client_args['cache_task_id'] = 'frontieram-' + secrets.token_hex(16)
         if not value.key_file:
             raise ValueError('A private credential file is required for a live profile')
         key_path = Path(value.key_file).expanduser()
@@ -317,6 +326,8 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
         api_key = key_path.read_text().strip()
     metadata_dir = assets.source_root / 'harness_recovery/metadata'
     provider_timeout = 600 if value.model == 'deepseek-v4-pro' else (None if value.model == 'hy4-preview' else 3600)
+    if endpoint != AIHUB_ENDPOINT:
+        provider_timeout = None  # The body timeout field is an AIHub gateway extension.
     retry_policy = json.loads((metadata_dir / 'retry_policies.json').read_text())
     started = time.monotonic()
     deadline = started + value.development_seconds
@@ -325,7 +336,7 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
     token = secrets.token_urlsafe(32)
     client: Any
     proxy: Any
-    if value.protocol == 'v5':
+    if value.protocol in ('v5', 'v5.1'):
         if is_fixture:
             raise ValueError('Protocol v5 forwards native Responses and has no local Chat fixture')
         client = NativeResponsesBridge(
@@ -338,6 +349,7 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
             max_output_tokens=value.max_output_tokens,
             cache_task_id=client_args.get('cache_task_id'),
             provider_timeout_max_seconds=provider_timeout,
+            upstream_headers=value.upstream_headers,
             audit_path=run_dir / 'http_audit.jsonl',
         )
         proxy = _BridgeServer(client)
@@ -372,10 +384,18 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
         settings = codex_settings(
             value.model, proxy.base_url, mcp, value.development_seconds, value.auto_compact_token_limit
         )
-        if value.protocol == 'v5':
+        if value.protocol in ('v5', 'v5.1'):
             catalog = await asyncio.to_thread(_codex_catalog, assets.codex_path, run_dir / 'codex_home', value.model)
             if catalog is not None:
                 settings['model_catalog_json'] = str(catalog)
+        if value.protocol == 'v5.1':
+            # Codex tells the model its sandbox is read-only. That describes the host controller, whose own tools
+            # are disabled; one model took it literally and never wrote its submission through the workspace tool.
+            settings['developer_instructions'] += (
+                ' The sandbox and approval settings you are shown describe only this host controller. The workspace '
+                'tool runs in a separate offline container where /workspace/submission is writable; write your '
+                'submission there with workspace.exec.'
+            )
         command = [
             str(assets.codex_path),
             '--no-daemon',

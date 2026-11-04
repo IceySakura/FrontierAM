@@ -118,7 +118,7 @@ def main():
         parser.error('The verifier requires cgroup v2')
     if server.get('MemTotal', 0) < 10 * 2**30:
         parser.error('Allocate at least 10 GiB to the Docker host for the 8 GiB verifier')
-    runtime = ROOT / '.runtime'
+    runtime = Path(os.environ.get('FRONTIERAM_RUNTIME') or ROOT / '.runtime').resolve()
     if runtime.exists():
         parser.error('.runtime already exists; preserve completed runs and rename it before preparing a new profile')
     runtime.mkdir()

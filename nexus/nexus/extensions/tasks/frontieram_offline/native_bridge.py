@@ -243,6 +243,7 @@ class NativeResponsesBridge:
         max_output_tokens: int = 64000,
         cache_task_id: str | None = None,
         provider_timeout_max_seconds: int | None = None,
+        upstream_headers: dict[str, str] | None = None,
         audit_path: Path | None = None,
         transport: httpx.AsyncBaseTransport | None = None,
         clock: Callable[[], float] = time.monotonic,
@@ -258,6 +259,9 @@ class NativeResponsesBridge:
             raise ValueError('A successful frozen retry policy is required')
         self.url = upstream_url.rstrip('/') + '/responses'
         self._key = normalize_cache_task_id(api_key, cache_task_id) if cache_task_id else api_key
+        if any(k.lower() in ('authorization', 'content-type', 'host') for k in upstream_headers or {}):
+            raise ValueError('Fixed upstream headers cannot replace transport or credential headers')
+        self._headers = dict(upstream_headers or {})
         self._token = token
         self.deadline = deadline
         self.max_http_attempts = max_http_attempts
@@ -326,7 +330,7 @@ class NativeResponsesBridge:
                 response = await self._http.post(
                     url,
                     content=body,
-                    headers={'Authorization': f'Bearer {self._key}', 'Content-Type': 'application/json'},
+                    headers={**self._headers, 'Authorization': f'Bearer {self._key}', 'Content-Type': 'application/json'},
                     timeout=httpx.Timeout(remaining + 30.0, connect=30.0),
                 )
         except TimeoutError:

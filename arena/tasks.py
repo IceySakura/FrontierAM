@@ -50,6 +50,16 @@ DEV_POLICY = (
 )
 
 
+# Models served outside AIHub: their native Responses route, credential file and fixed headers (protocol v5 only).
+MODEL_UPSTREAMS = {
+    'hy4': {
+        'base_url': 'http://api.taiji.woa.com/openapi/v2',
+        'key_file': '/root/.frontieram/hy4-taiji.token',
+        'upstream_headers': {'Sensitive-Business': 'true'},
+    },
+}
+
+
 class Task:
     name: str
     nexus_import: str
@@ -89,6 +99,11 @@ class Task:
     ) -> dict:
         """One Nexus run that develops and freezes only; grading is a separate job."""
         seconds = development_seconds or (60 if smoke else 7200)
+        upstream = MODEL_UPSTREAMS.get(model) if not smoke else None
+        if upstream is not None:
+            if protocol not in ('v5', 'v5.1'):
+                raise ValueError(f'{model} is served only through its native Responses route (protocol v5)')
+            base_url, key_file = upstream['base_url'], upstream['key_file']
         return {
             'imports': [self.nexus_import],
             'task_name': self.nexus_task,
@@ -112,6 +127,7 @@ class Task:
                 'max_output_tokens': 64000,
                 'auto_compact_token_limit': 110000,
                 'protocol': protocol,
+                'upstream_headers': (upstream or {}).get('upstream_headers', {}),
             },
             'processors': {'token_counter': {'name': 'token_counter'}},
             'runner': {'cache': {'enabled': False}, 'timeout': 36600},
