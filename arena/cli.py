@@ -189,6 +189,20 @@ def cmd_submit(args) -> None:
 # Grading -----------------------------------------------------------------------------------------------------------
 
 
+def uid_tasks(uid: int) -> int:
+    """Tasks (threads included) owned by a real UID on the whole host: what RLIMIT_NPROC counts."""
+    count = 0
+    for status in Path('/proc').glob('[0-9]*/task/[0-9]*/status'):
+        try:
+            for line in status.read_text().splitlines():
+                if line.startswith('Uid:'):
+                    count += int(line.split()[1]) == uid
+                    break
+        except OSError:
+            continue
+    return count
+
+
 def grade_job(layout, broker, runtime, store, job) -> dict:
     task = TASKS[job['task']]
     results = store.result_dir(job['id'])
@@ -200,6 +214,13 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
         write_json(results / 'host_not_ready.json', host)
         say(event='grade_refused', job=job['id'], failed_checks=failed)
         return store.finish(job, 'failed', status='unmeasured', reason='host_isolation_lost:' + ','.join(failed))
+    if task.grader_uid is not None:
+        waited = False
+        while (count := uid_tasks(task.grader_uid)) > 128 - task.grader_uid_headroom:
+            if not waited:
+                say(event='grade_waiting_uid_headroom', job=job['id'], uid=task.grader_uid, tasks=count)
+                waited = True
+            time.sleep(30)
     # Interference probes measure concurrency on purpose; a job may carry an escalated policy from the load gate.
     policy = 'shared' if job['kind'] == 'probe' else job.get('isolation') or task.grade_isolation
     say(event='grade_waiting', job=job['id'], task=task.name, isolation=policy)

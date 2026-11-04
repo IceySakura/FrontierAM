@@ -47,6 +47,9 @@ CREDENTIALS = {
 DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 CONTAINER_PORT = 18080
 MEMORY = 4 * 2**30
+# Not the grader's UID 1000: RLIMIT_NPROC is per real UID host-wide, and the conic verifier caps UID 1000 at 128
+# tasks; native harness threads under UID 1000 made concurrent grading fail with "Cannot fork".
+DEV_UID = 2000
 
 LAUNCHER = r'''
 import json, subprocess, sys
@@ -113,6 +116,53 @@ def _wait_port(port: int, process: subprocess.Popen, timeout: float = 60) -> Non
     raise RuntimeError('atr serve did not start listening')
 
 
+def freeze(controller, docker, name: str, output: Path, label: str = 'source') -> dict:
+    """controller.freeze with the exporter under DEV_UID: /proc/1/root of the paused container is only readable by
+    its own UID. The export script, size caps and archive validation are the reviewed ones, unchanged."""
+    docker.pause(name)
+    raw = output / f'{label}.docker.tar'
+    image = docker.inspect(name)['Image']
+    exporter = 'frontieram-export-' + secrets.token_hex(16)
+    command = [
+        *docker.prefix, 'run', '--rm', '--name', exporter, '--network', 'none', '--pid', 'container:' + name,
+        '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges:true', '--user', f'{DEV_UID}:{DEV_UID}',
+        *controller.placement_options(docker.cpuset, docker.cgroup_parent),
+        '--memory', str(controller.MEMORY), '--memory-swap', str(controller.MEMORY), '--pids-limit', '32',
+        '--ulimit', 'nofile=128:128', '--ipc', 'none', '--log-driver', 'none', '--entrypoint', 'python3',
+        image, '-c', controller.EXPORT_SCRIPT,
+    ]
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    total = 0
+    try:
+        with raw.open('xb') as stream:
+            started = time.monotonic()
+            while block := process.stdout.read(1024 * 1024):
+                total += len(block)
+                if total > controller.RAW_TAR_CAP:
+                    raise controller.SubmissionFailure('export exceeds artifact plus archive overhead limit')
+                if time.monotonic() - started > 90:
+                    raise controller.InfrastructureFailure('paused workspace export timed out')
+                stream.write(block)
+        error = process.stderr.read(4096)
+        code = process.wait(timeout=30)
+        if code == 42:
+            raise controller.SubmissionFailure(error.decode(errors='replace')[:500])
+        if code:
+            raise controller.InfrastructureFailure('paused workspace export failed: ' + error.decode(errors='replace')[:500])
+        result = controller.validate_and_extract(raw, output / label, output / f'{label}.tar')
+        result.update(paused_before_export=True, frozen_at_utc=controller.now(), raw_archive_bytes=total,
+                      exporter_uid=DEV_UID)
+        controller.save(output / f'{label}_manifest.json', result)
+        raw.unlink()
+        docker.remove(name)
+        return result
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait(timeout=5)
+        subprocess.run([*docker.prefix, 'rm', '--force', exporter], capture_output=True, timeout=15)
+
+
 def prompt(task_name: str, runtime: dict) -> str:
     task = TASKS[task_name]
     return (
@@ -175,10 +225,11 @@ def develop(spec: dict, runtime: dict) -> dict:
             # descriptors cannot hold a native client, so v6 raises both and records it in v6_conditions.json.
             '--pids-limit', '1024', '--ulimit', 'nofile=16384:16384', '--ulimit', 'core=0:0',
             '--tmpfs', '/tmp:rw,exec,nosuid,nodev,size=1g,mode=1777',
-            '--tmpfs', '/workspace:rw,exec,nosuid,nodev,size=1g,uid=1000,gid=1000,mode=0755',
-            '--tmpfs', '/home/agent:rw,exec,nosuid,nodev,size=1g,uid=1000,gid=1000,mode=0700',
+            '--tmpfs', f'/workspace:rw,exec,nosuid,nodev,size=1g,uid={DEV_UID},gid={DEV_UID},mode=0755',
+            '--tmpfs', f'/home/agent:rw,exec,nosuid,nodev,size=1g,uid={DEV_UID},gid={DEV_UID},mode=0700',
             '--mount', f'type=bind,src={socket_dir},dst=/run/atr',
-            '--env', 'HOME=/home/agent', '--log-driver', 'none', '--user', '1000:1000', '--workdir', '/workspace',
+            '--env', 'HOME=/home/agent', '--log-driver', 'none', '--user', f'{DEV_UID}:{DEV_UID}',
+            '--workdir', '/workspace',
             '--entrypoint', '/bin/sleep', HARNESS_IMAGES[task.name], 'infinity',
         ]
         subprocess.run(create, check=True, capture_output=True, timeout=60)
@@ -212,7 +263,7 @@ def develop(spec: dict, runtime: dict) -> dict:
         summary.update(exit_code=code, agent_stop_reason=stop_reason, development_seconds=stopped - started)
         eligible = stop_reason in ('turn_completed', 'development_deadline')
         try:
-            manifest = assets.controller.freeze(docker, name, frozen_dir, 'source')
+            manifest = freeze(assets.controller, docker, name, frozen_dir)
             summary.update(source_frozen=True, files=len(manifest['files']))
             status = 'verification_completed' if eligible else 'unmeasured'
         except assets.controller.SubmissionFailure as error:

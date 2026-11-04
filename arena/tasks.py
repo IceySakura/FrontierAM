@@ -74,6 +74,9 @@ class Task:
     grade_isolation: str = 'grade_pool'
     # Highest accepted load factor (paired reference time / quiet baseline time); above it the grade is redone quiet.
     load_gate: float | None = None
+    # UID whose host-wide task count the grader's RLIMIT_NPROC budget depends on; grading waits for headroom.
+    grader_uid: int | None = None
+    grader_uid_headroom: int = 0
 
     def provider_config(self, runtime: dict, placement: Placement) -> dict:
         return {
@@ -278,6 +281,9 @@ class Conic(Task):
     # grade_pool trades that sub-percent risk for grading during development (operator choice, 2026-11-04); each
     # result records the development slots that were leased while it ran.
     grade_isolation = 'grade_pool'
+    # The verifier sets RLIMIT_NPROC=128 for candidate UID 1000, counted across the host; keep 96 of it free.
+    grader_uid = 1000
+    grader_uid_headroom = 96
 
     def provider_config(self, runtime, placement):
         return {

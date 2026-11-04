@@ -32,6 +32,9 @@ RUN /opt/atr/scripts/install_harnesses.sh --prefix /opt/toolchain --python /opt/
 RUN /opt/atr/scripts/install_harnesses.sh --prefix /opt/toolchain --python /opt/atr-venv/bin/python \
       --env-file /opt/toolchain/env-antigravity.sh --only antigravity
 RUN chmod -R a+rX /opt/toolchain /opt/atr /opt/atr-venv /opt/python
+# Development runs as UID 2000. RLIMIT_NPROC is counted per real UID across the whole host, and the conic verifier
+# limits UID 1000 to 128 tasks, so harness threads under UID 1000 made concurrent grading fail to fork.
+RUN useradd --uid 2000 --no-create-home --home-dir /home/agent --shell /bin/bash agent
 
 ENV ATR_CLAUDE_BIN=/opt/toolchain/bin/claude \
     ATR_CODEX_BIN=/opt/toolchain/bin/codex \
