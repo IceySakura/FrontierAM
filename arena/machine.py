@@ -240,7 +240,8 @@ def _grade_docker_unit(slot: dict) -> str:
         f'--data-root={daemon["data"]}/docker',
         f'--exec-root={daemon["run"]}/exec',
         f'--pidfile={daemon["run"]}/dockerd.pid',
-        '--bridge=none',
+        # Never --bridge=none: dockerd then deletes the host's docker0, breaking the default daemon's networking.
+        f'--bridge={_bridge(slot)}',
         '--iptables=false',
         '--ip6tables=false',
         '--ip-masq=false',
@@ -254,11 +255,18 @@ def _grade_docker_unit(slot: dict) -> str:
         '[Service]\nType=notify\n'
         f'Slice={DAEMON_SLICE}\nAllowedCPUs={slot["host_cpu"]}\n'
         f'ExecStartPre=/bin/mkdir -p {daemon["run"]}\n'
+        f"ExecStartPre=/bin/sh -c 'ip link show {_bridge(slot)} >/dev/null 2>&1 || "
+        f'(ip link add {_bridge(slot)} type bridge && ip addr add 10.231.{slot["cpu"]}.1/24 dev {_bridge(slot)})\'\n'
         f'ExecStart={" ".join(arguments)}\n'
         'ExecReload=/bin/kill -s HUP $MAINPID\nTimeoutStartSec=120\nRestart=on-failure\n'
         'LimitNOFILE=infinity\nLimitNPROC=infinity\nTasksMax=infinity\nDelegate=yes\nKillMode=process\n'
         'OOMScoreAdjust=-500\n\n[Install]\nWantedBy=multi-user.target\n'
     )
+
+
+def _bridge(slot: dict) -> str:
+    """A private, unused bridge per grading daemon; grading containers always run with --network none."""
+    return f'frg{slot["cpu"]}'
 
 
 def grade_slots(layout: dict) -> list[dict]:

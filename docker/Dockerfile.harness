@@ -1,0 +1,44 @@
+# syntax=docker/dockerfile:1.7
+# Development image for protocol v6: the task's locked numerical image plus native agent harnesses and the ATR SDK.
+# Grading never uses this image; it keeps running submissions in the original locked task image.
+#   docker buildx build --build-context atr=PATH/agent-traffic-runtime --build-arg BASE=IMAGE -f Dockerfile.harness .
+ARG BASE
+FROM ${BASE}
+
+USER root
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates git socat gnupg \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# ATR needs Python 3.13; it gets its own interpreter so the task's Python and packages stay as locked.
+RUN PIP_NO_INDEX=0 python -m pip install --no-cache-dir uv==0.12.10 \
+    && UV_PYTHON_INSTALL_DIR=/opt/python uv venv /opt/atr-venv --python 3.13
+COPY --from=atr pyproject.toml uv.lock README.md /opt/atr/
+COPY --from=atr src /opt/atr/src
+COPY --from=atr scripts /opt/atr/scripts
+RUN uv pip install --python /opt/atr-venv/bin/python --no-cache /opt/atr
+
+# One layer per harness at the versions ATR pins and has tested.
+RUN /opt/atr/scripts/install_harnesses.sh --prefix /opt/toolchain --python /opt/atr-venv/bin/python \
+      --env-file /opt/toolchain/env-claude.sh --only claude
+RUN /opt/atr/scripts/install_harnesses.sh --prefix /opt/toolchain --python /opt/atr-venv/bin/python \
+      --env-file /opt/toolchain/env-codex.sh --only codex
+RUN /opt/atr/scripts/install_harnesses.sh --prefix /opt/toolchain --python /opt/atr-venv/bin/python \
+      --env-file /opt/toolchain/env-dsh.sh --only dsh
+RUN /opt/atr/scripts/install_harnesses.sh --prefix /opt/toolchain --python /opt/atr-venv/bin/python \
+      --env-file /opt/toolchain/env-step.sh --only step
+RUN /opt/atr/scripts/install_harnesses.sh --prefix /opt/toolchain --python /opt/atr-venv/bin/python \
+      --env-file /opt/toolchain/env-antigravity.sh --only antigravity
+RUN chmod -R a+rX /opt/toolchain /opt/atr /opt/atr-venv /opt/python
+
+ENV ATR_CLAUDE_BIN=/opt/toolchain/bin/claude \
+    ATR_CODEX_BIN=/opt/toolchain/bin/codex \
+    ATR_DSH_ENTRY=/opt/toolchain/lib/dsh/node_modules/@deepseek-ai/dsh/lib/bin.js \
+    ATR_STEP_BIN=/opt/toolchain/bin/step \
+    ATR_ANTIGRAVITY_BIN=/opt/atr-venv/bin/python \
+    ATR_NODE_BIN=/usr/bin/node
+WORKDIR /workspace
+ENTRYPOINT []
+CMD ["sleep", "infinity"]
