@@ -1,0 +1,55 @@
+diff --git a/src/atr/upstream/models.yaml b/src/atr/upstream/models.yaml
+index 51f7585..76cf7f4 100644
+--- a/src/atr/upstream/models.yaml
++++ b/src/atr/upstream/models.yaml
+@@ -1127,6 +1127,50 @@ models:
+       source: User proposal 2026-09-23
+       note: Explicit field-by-field confirmation is required; these additions were absent from the migration
+         baseline.
++  minimax-m3.1-flash:
++    status: active
++    connection: aihub
++    provider: minimax
++    model: minimax-m3.1-flash
++    default_dialect: responses
++    endpoints:
++      responses:
++        path: /v1/responses
++        transport: native
++        streaming: true
++        limits:
++          max_input_tokens: null
++          context_window_tokens: null
++          max_output_tokens: 524288
++          client_context_tokens: 1000000
++          context_accounting: unknown
++          output_tokens_include_reasoning: null
++          output_field: max_output_tokens
++        reasoning:
++          levels:
++          - low
++          - medium
++          - high
++          aliases: {}
++          policy:
++            mode: effort
++        request_fields: {}
++        required_headers: {}
++        history: {}
++        provenance:
++          basis: manual
++          source: FrontierAM 2026-11-04. AI Hub model detail lists context_length 1000000, max_output 524288 and
++            reasoning_effort; /v1/responses answered with reasoning.effort=high; /v1/messages returned 404.
++          confirmed_at: '2026-11-04'
++          confirmed: [path, transport, streaming, limits.max_input_tokens, limits.context_window_tokens,
++            limits.max_output_tokens, limits.client_context_tokens, limits.context_accounting,
++            limits.output_tokens_include_reasoning, limits.output_field, reasoning.levels, reasoning.aliases,
++            reasoning.policy, reasoning.policy.mode, request_fields, required_headers, history]
++    provenance:
++      basis: manual
++      source: Added locally by FrontierAM for a Codex-over-Responses run; not part of upstream ATR.
++      confirmed_at: '2026-11-04'
++      confirmed: [status, connection, provider, model, default_dialect, endpoints]
+   deepseek-v4-pro:
+     status: active
+     connection: aihub
