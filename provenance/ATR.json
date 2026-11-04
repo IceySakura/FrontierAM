@@ -1,1 +1,1 @@
-{"atr_commit": "28f747890040f952e1dbe41f69ece51587bc1147", "local_patch": "provenance/atr-local-models.patch", "reason": "minimax-m3.1-flash added for a Codex-over-Responses v6 run; not upstream"}
+{"atr_commit": "28f747890040f952e1dbe41f69ece51587bc1147", "local_patch": "provenance/atr-local-models.patch", "reason": "minimax-m3.1-flash added locally for a Codex-over-Responses v6 run; not upstream"}
