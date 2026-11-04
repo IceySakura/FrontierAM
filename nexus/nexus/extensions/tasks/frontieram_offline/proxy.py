@@ -48,6 +48,8 @@ def validate_tool_response(response: dict[str, Any], allowed_names: set[str], re
         raise BoundaryError('choice_count')
     choice = choices[0]
     if not isinstance(choice, dict) or choice.get('finish_reason') not in {'stop', 'tool_calls'}:
+        reason = choice.get('finish_reason') if isinstance(choice, dict) else None
+        record('incomplete_response', finish_reason=str(reason)[:32], usage=response.get('usage'))
         raise BoundaryError('incomplete_response')
     message = choice.get('message')
     if not isinstance(message, dict):
