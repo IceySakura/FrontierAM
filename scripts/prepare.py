@@ -58,6 +58,39 @@ def resolve_codex(path):
     return matches.pop()
 
 
+def override_conic_manifest(task: Path, manifest: Path) -> dict:
+    """Swap in a manifest that differs only in per-case time limits, re-chaining the hashes that name it.
+
+    The original verifier checks the manifest against the score anchor and the package lock; both are updated in this
+    sealed copy only. Instances, inputs, checks and code stay byte-identical to the original package.
+    """
+    target = task / 'tests/private/data/manifest.json'
+    original, new = json.loads(target.read_text()), json.loads(manifest.read_text())
+    keep = lambda m: [{k: v for k, v in c.items() if k != 'time_limit_seconds'} for c in m['instances']]  # noqa: E731
+    if keep(original) != keep(new) or new.get('scoring_version') != original.get('scoring_version'):
+        raise SystemExit('A conic manifest override may change time_limit_seconds only')
+    if any(not 1 <= c['time_limit_seconds'] <= 300 for c in new['instances']):
+        raise SystemExit('Time limits must stay within the original 1-300 second range')
+    shutil.copyfile(manifest, target)
+    anchor_path = task / 'tests/private/score-anchor.json'
+    anchor = json.loads(anchor_path.read_text())
+    anchor['evaluation_manifest_sha256'] = sha(target)
+    write(anchor_path, anchor)
+    lock_path = task / 'tests/private/package-lock.json'
+    lock = json.loads(lock_path.read_text())
+    for relative in ('private/data/manifest.json', 'private/score-anchor.json'):
+        path = task / 'tests' / relative
+        lock['files'][relative] = {'sha256': sha(path), 'size_bytes': path.stat().st_size}
+    write(lock_path, lock)
+    return {
+        'source': str(manifest.resolve()),
+        'manifest_sha256': sha(target),
+        'original_manifest_sha256': sha(ROOT / 'tasks/conic/original/tests/private/data/manifest.json'),
+        'changed_limits': sum(a['time_limit_seconds'] != b['time_limit_seconds']
+                              for a, b in zip(original['instances'], new['instances'])),
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--docker', default=shutil.which('docker'))
@@ -71,6 +104,7 @@ def main():
     parser.add_argument('--codex', required=True, help='Codex executable or its npm launcher')
     parser.add_argument('--exponential-image', default='frontieram-exponential:port-v1')
     parser.add_argument('--conic-image', default='frontieram-conic:success-v2-port-v1')
+    parser.add_argument('--conic-manifest', type=Path, help='held-out manifest with recalibrated time limits only')
     args = parser.parse_args()
     if not args.docker_host.startswith('unix://'):
         parser.error('Use a local Unix Docker socket')
@@ -154,6 +188,7 @@ def main():
     shutil.copytree(ROOT / 'tasks/conic/original', runtime / 'tasks/conic/original')
     shutil.copytree(ROOT / 'tasks/conic/reference_submission', runtime / 'tasks/conic/reference_submission')
     task = runtime / 'tasks/conic/original'
+    manifest_override = override_conic_manifest(task, args.conic_manifest) if args.conic_manifest else None
     public_tar = runtime / 'conic-public.tar'
     architecture = images['conic']['architecture']
     port_note = (
@@ -196,6 +231,12 @@ def main():
         image_id=images['conic']['id'],
         port_version='portable-v1',
     )
+    if manifest_override:
+        for relative in ('tests/private/data/manifest.json', 'tests/private/score-anchor.json',
+                         'tests/private/package-lock.json'):
+            if relative in profile['locked_files']:
+                profile['locked_files'][relative] = sha(task / relative)
+        profile['manifest_override'] = manifest_override
     write(runtime / 'conic-profile.json', profile)
     portable = {
         'schema_version': 1,

@@ -458,11 +458,18 @@ def cmd_suite(args) -> None:
     if not hasattr(task, 'suite'):
         raise SystemExit(f'{task.name} has no shardable held-out suite')
     shards = shard_cases(task.suite(runtime), args.shards)
-    suite_id = new_id(f'suite-{task.name}')
-    submission = freeze_reference(store, runtime, task, kind='suite') if args.reference else args.submission
     slots = args.slots.split(',') if args.slots else [None] * len(shards)
     if len(slots) != len(shards):
         raise SystemExit('--slots needs one slot per shard')
+    if args.cases:
+        # A subset keeps every case in its full-suite shard, hence on the same slot as in full-suite runs.
+        subset = set(json.loads(Path(args.cases).read_text()))
+        kept = [([i for i in ids if i in subset], slot) for ids, slot in zip(shards, slots)]
+        if sum(len(ids) for ids, _ in kept) != len(subset):
+            raise SystemExit('--cases names instances outside the held-out suite')
+        shards, slots = [ids for ids, _ in kept if ids], [slot for ids, slot in kept if ids]
+    suite_id = new_id(f'suite-{task.name}')
+    submission = freeze_reference(store, runtime, task, kind='suite') if args.reference else args.submission
     # The same partition and the same shard-to-slot map for every suite put each case on the same slot for the
     # reference and every candidate, so per-slot conditions apply to both sides alike.
     jobs = [
@@ -866,6 +873,7 @@ def main() -> None:
     suite.add_argument('--isolation', default='shared', choices=['shared', 'grade_pool', 'quiet'])
     suite.add_argument('--slots', help='comma-separated grade slot per shard, e.g. grade-06,grade-14,grade-22,grade-30')
     suite.add_argument('--hold', action='store_true', help='write the shards to jobs/held instead of the queue')
+    suite.add_argument('--cases', help='JSON list of case IDs: grade this subset, each case in its full-suite shard')
     suite_report = sub.add_parser('suite-report')
     suite_report.add_argument('--suite', required=True)
     sub.add_parser('status')
