@@ -33,7 +33,16 @@ from .store import Store, new_id, read_json, utc, write_json
 from .tasks import TASKS, Placement
 
 
-MODELS = ['claude-opus-5-5', 'deepseek-v4-pro', 'hy4-preview', 'minimax-m3.1-flash', 'step-5-preview']
+MODELS = [
+    'claude-opus-5-5',
+    'deepseek-v4-pro',
+    'hy4-preview',
+    'minimax-m3.1-flash',
+    'step-5-preview',
+    'gpt-6.1-sol',
+    'gpt-6-astra',
+    'gemini-4-argon',
+]
 DEFAULT_BASE_URL = 'http://api.aihub.woa.com/standard/v1'
 PRINT_LOCK = threading.Lock()
 
@@ -112,6 +121,8 @@ def develop_one(layout, broker, runtime, store, args, index: int) -> dict:
             'base_url': args.base_url,
             'key_file': str(args.key_file) if args.key_file else None,
             'smoke': args.smoke,
+            'protocol': getattr(args, 'protocol', 'v4'),
+            'development_seconds': getattr(args, 'development_seconds', None),
         }
         code = run_in_slot(lease, spec, output / 'spec.json', output / 'job.log')
     result_path = output / 'develop_result.json'
@@ -120,7 +131,8 @@ def develop_one(layout, broker, runtime, store, args, index: int) -> dict:
     origin = {
         'origin': 'agent',
         'model': args.model,
-        'smoke': args.smoke,
+        'protocol': getattr(args, 'protocol', 'v4'),
+        'smoke': args.smoke or bool(getattr(args, 'development_seconds', None)),
         'dev_run': run_id,
         'dev_slot': lease.id,
         'runtime_lock_sha256': runtime['lock_sha256'],
@@ -690,6 +702,10 @@ def main() -> None:
     develop.add_argument('--base-url', default=DEFAULT_BASE_URL)
     develop.add_argument('--no-grade', action='store_true', help='freeze only; do not queue for grading')
     develop.add_argument('--wait', type=float, default=None, help='seconds to wait for a free dev slot')
+    develop.add_argument('--protocol', choices=['v4', 'v5'], default='v4',
+                         help='v4: Responses converted to Chat; v5: native Responses (native_bridge.py)')
+    develop.add_argument('--development-seconds', type=float, default=None,
+                         help='shorter budget for a validation run; such submissions never enter the leaderboard')
     develop.set_defaults(smoke=False)
     submit = sub.add_parser('submit')
     submit.add_argument('--task', choices=sorted(TASKS), required=True)

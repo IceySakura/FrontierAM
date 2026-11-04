@@ -7,11 +7,12 @@ import json
 import os
 import secrets
 import signal
+import subprocess
 import time
 
 from contextlib import suppress
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Literal, cast
 from urllib.parse import urlparse
 
 from pydantic import ConfigDict, Field
@@ -19,6 +20,7 @@ from pydantic import ConfigDict, Field
 from nexus.core import AgentRunInput, AgentRunOutput, OpenAIConfig, agent_registry, require_context
 
 from .client import BoundedOpenAIClient
+from .native_bridge import NativeResponsesBridge
 from .proxy import OfflineResponsesProxy
 
 
@@ -64,6 +66,57 @@ class OfflineCodexInput(AgentRunInput):
     max_http_attempts: int = Field(default=800, ge=1, le=800)
     max_output_tokens: int = Field(default=64000, ge=128, le=64000)
     auto_compact_token_limit: int = Field(default=110000, ge=1024, lt=131072)
+    # v4: Codex Responses converted to Chat Completions. v5: native Responses through NativeResponsesBridge.
+    protocol: Literal['v4', 'v5'] = 'v4'
+
+
+def _codex_catalog(codex: Path, codex_home: Path, model: str) -> Path | None:
+    """Pin the shipped catalog entry of a Codex-known model to the plain function-calling tool surface.
+
+    Codex ships entries for its own models with code-mode tools, Responses Lite, freeform apply_patch and multi-agent
+    tools. Under the v4 Chat conversion those could not reach the model; over native Responses they steer it to tool
+    calls that do not exist here. Models without a shipped entry keep Codex's generic defaults, as in v4.
+    """
+    dumped = subprocess.run(
+        [str(codex), 'debug', 'models'],
+        env={'HOME': str(codex_home), 'CODEX_HOME': str(codex_home), 'PATH': '/usr/bin:/bin'},
+        capture_output=True,
+        timeout=60,
+        check=True,
+    )
+    catalog = json.loads(dumped.stdout)
+    entry = next((e for e in catalog.get('models', []) if isinstance(e, dict) and e.get('slug') == model), None)
+    if entry is None:
+        return None
+    entry.update(
+        use_responses_lite=False,
+        tool_mode=None,
+        multi_agent_version=None,
+        apply_patch_tool_type=None,
+        supports_search_tool=False,
+        experimental_supported_tools=[],
+    )
+    path = codex_home / 'model_catalog.json'
+    path.write_text(json.dumps(catalog, ensure_ascii=False))
+    return path
+
+
+class _BridgeServer:
+    """The proxy role of a NativeResponsesBridge, whose own stop() is the synchronous client stop."""
+
+    def __init__(self, bridge: NativeResponsesBridge) -> None:
+        self.bridge = bridge
+        self.errors: list[dict[str, Any]] = []
+
+    @property
+    def base_url(self) -> str:
+        return self.bridge.base_url
+
+    async def start(self) -> None:
+        await self.bridge.start()
+
+    async def stop(self) -> None:
+        await self.bridge.stop_server()
 
 
 class OfflineCodexOutput(AgentRunOutput):
@@ -263,29 +316,48 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
             raise ValueError('Credential file must be private to its owner')
         api_key = key_path.read_text().strip()
     metadata_dir = assets.source_root / 'harness_recovery/metadata'
-    protocol = json.loads((metadata_dir / f'{value.model}.protocol.json').read_text())['data']
-    parameters = {p['name']: p for p in protocol['standard_protocol']['openai_chat']['parameters']}
-    output_parameter = 'max_completion_tokens' if 'max_completion_tokens' in parameters else 'max_tokens'
     provider_timeout = 600 if value.model == 'deepseek-v4-pro' else (None if value.model == 'hy4-preview' else 3600)
     retry_policy = json.loads((metadata_dir / 'retry_policies.json').read_text())
     started = time.monotonic()
     deadline = started + value.development_seconds
     deadline_unix = time.time() + value.development_seconds
     mcp = runtime.mcp_config(deadline_monotonic=deadline, deadline_unix=deadline_unix)
-    client = BoundedOpenAIClient(
-        OpenAIConfig(client_args={'api_key': api_key, **client_args}, request_args={'model': value.model}),
-        deadline=deadline,
-        retry_policy=retry_policy,
-        max_http_attempts=value.max_http_attempts,
-        audit_path=run_dir / 'http_audit.jsonl',
-        model=value.model,
-        max_output_tokens=value.max_output_tokens,
-        output_parameter=output_parameter,
-        provider_timeout_max_seconds=provider_timeout,
-    )
-    client._client_key = 'main'
     token = secrets.token_urlsafe(32)
-    proxy = OfflineResponsesProxy(client, token=token)
+    client: Any
+    proxy: Any
+    if value.protocol == 'v5':
+        if is_fixture:
+            raise ValueError('Protocol v5 forwards native Responses and has no local Chat fixture')
+        client = NativeResponsesBridge(
+            upstream_url=value.base_url,
+            api_key=api_key,
+            token=token,
+            deadline=deadline,
+            retry_policy=retry_policy,
+            max_http_attempts=value.max_http_attempts,
+            max_output_tokens=value.max_output_tokens,
+            cache_task_id=client_args.get('cache_task_id'),
+            provider_timeout_max_seconds=provider_timeout,
+            audit_path=run_dir / 'http_audit.jsonl',
+        )
+        proxy = _BridgeServer(client)
+    else:
+        protocol = json.loads((metadata_dir / f'{value.model}.protocol.json').read_text())['data']
+        parameters = {p['name']: p for p in protocol['standard_protocol']['openai_chat']['parameters']}
+        output_parameter = 'max_completion_tokens' if 'max_completion_tokens' in parameters else 'max_tokens'
+        client = BoundedOpenAIClient(
+            OpenAIConfig(client_args={'api_key': api_key, **client_args}, request_args={'model': value.model}),
+            deadline=deadline,
+            retry_policy=retry_policy,
+            max_http_attempts=value.max_http_attempts,
+            audit_path=run_dir / 'http_audit.jsonl',
+            model=value.model,
+            max_output_tokens=value.max_output_tokens,
+            output_parameter=output_parameter,
+            provider_timeout_max_seconds=provider_timeout,
+        )
+        client._client_key = 'main'
+        proxy = OfflineResponsesProxy(client, token=token)
     process = None
     readers: list[asyncio.Task] = []
     waiters: list[asyncio.Task] = []
@@ -300,6 +372,10 @@ async def offline_codex_agent(value: OfflineCodexInput) -> OfflineCodexOutput:
         settings = codex_settings(
             value.model, proxy.base_url, mcp, value.development_seconds, value.auto_compact_token_limit
         )
+        if value.protocol == 'v5':
+            catalog = await asyncio.to_thread(_codex_catalog, assets.codex_path, run_dir / 'codex_home', value.model)
+            if catalog is not None:
+                settings['model_catalog_json'] = str(catalog)
         command = [
             str(assets.codex_path),
             '--no-daemon',

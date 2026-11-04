@@ -53,6 +53,8 @@ async def develop(spec: dict) -> int:
         base_url=base_url,
         key_file=None if spec['smoke'] else spec['key_file'],
         smoke=spec['smoke'],
+        protocol=spec.get('protocol', 'v4'),
+        development_seconds=spec.get('development_seconds'),
     )
     write(output / 'input.json', config)
     try:

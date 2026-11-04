@@ -84,8 +84,11 @@ class Task:
         base_url: str,
         key_file: str | None,
         smoke: bool,
+        protocol: str = 'v4',
+        development_seconds: float | None = None,
     ) -> dict:
         """One Nexus run that develops and freezes only; grading is a separate job."""
+        seconds = development_seconds or (60 if smoke else 7200)
         return {
             'imports': [self.nexus_import],
             'task_name': self.nexus_task,
@@ -104,10 +107,11 @@ class Task:
                 'base_url': base_url,
                 'key_file': key_file,
                 'allow_live_endpoint': not smoke,
-                'development_seconds': 60 if smoke else 7200,
+                'development_seconds': seconds,
                 'max_http_attempts': 8 if smoke else 800,
                 'max_output_tokens': 64000,
                 'auto_compact_token_limit': 110000,
+                'protocol': protocol,
             },
             'processors': {'token_counter': {'name': 'token_counter'}},
             'runner': {'cache': {'enabled': False}, 'timeout': 36600},

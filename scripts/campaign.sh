@@ -48,7 +48,7 @@ devs=()
 for pair in "${attempts[@]}"; do
   task=${pair%%:*}
   model=${pair#*:}
-  ./bench --store "$store" develop --task "$task" --model "$model" --key-file "$KEY" \
+  ./bench --store "$store" develop --task "$task" --model "$model" --key-file "$KEY" --protocol "${PROTOCOL:-v4}" \
     > "$log/develop-$task-$model.log" 2>&1 &
   devs+=($!)
   note "development started: $task / $model"
