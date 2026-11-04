@@ -310,12 +310,23 @@ class Conic(Task):
     def reference_archive(self, runtime, output):
         return tar_directory(Path(runtime['conic_reference_root']), output / 'incoming.tar')
 
-    async def grade(self, runtime, placement, output):
+    def suite(self, runtime) -> list[dict]:
+        """The 650 held-out instances with their frozen per-case limits."""
+        manifest = Path(self.assets(runtime).task_root) / 'tests/private/data/manifest.json'
+        return json.loads(manifest.read_text())['instances']
+
+    async def grade(self, runtime, placement, output, case_ids=None):
         from nexus.extensions.tasks.frontieram_conic.grading import grade
 
         assets = self.assets(runtime)
+        timeout = self.grade_timeout
+        if case_ids:
+            limits = {c['id']: c['time_limit_seconds'] for c in self.suite(runtime)}
+            # Three repeats at every case's limit, the 1800-second build budget and per-case process overhead.
+            timeout = 3 * sum(limits[i] for i in case_ids) + 1800 + 15 * len(case_ids) + 900
         return await grade(
-            SimpleNamespace(assets=assets, docker=self.docker(runtime, placement)), output, timeout=self.grade_timeout
+            SimpleNamespace(assets=assets, docker=self.docker(runtime, placement)), output, timeout=timeout,
+            case_ids=case_ids,
         )
 
     def metrics(self, output, raw):

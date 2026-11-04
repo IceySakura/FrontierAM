@@ -84,7 +84,8 @@ class Store:
     # Grading queue -----------------------------------------------------------------------------------------------
 
     def enqueue(
-        self, submission_id: str, *, kind: str = 'candidate', note: str | None = None, isolation: str | None = None
+        self, submission_id: str, *, kind: str = 'candidate', note: str | None = None, isolation: str | None = None,
+        extra: dict | None = None,
     ) -> str:
         meta = self.submission(submission_id)
         if not (self.submission_dir(submission_id) / 'source.tar').is_file():
@@ -100,6 +101,7 @@ class Store:
                 'note': note,
                 'isolation': isolation,
                 'enqueued_utc': utc(),
+                **(extra or {}),
             },
         )
         return job_id

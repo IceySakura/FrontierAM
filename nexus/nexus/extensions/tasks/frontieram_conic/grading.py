@@ -140,8 +140,13 @@ def worker(config_path):
         docker.run('cp', str(assets.task_root / 'tests'), name + ':/', timeout=120)
         # Docker cp extracts this trusted tar in a stopped container, never on the host.
         overlay = root / 'verifier_overlay.tar'
+        case_ids = config.get('case_ids') or assets.profile['case_ids']
+        suite = json.loads((assets.task_root / 'tests/private/data/manifest.json').read_text())['instances']
+        if len(set(case_ids)) != len(case_ids) or not set(case_ids) <= {c['id'] for c in suite}:
+            raise RuntimeError('Requested cases are not unique members of the held-out suite')
         grading_config = json.loads((assets.task_root / 'tests/config.json').read_text())
-        grading_config.update(mode='pilot', case_ids=assets.profile['case_ids'])
+        # The original verifier's case-list mode: the 20-case profile subset, or one shard of the full suite.
+        grading_config.update(mode='pilot', case_ids=case_ids)
         with tarfile.open(overlay, 'w') as archive:
             archive.add(root / 'source', arcname='workspace/submission', recursive=True)
             payload = (json.dumps(grading_config, indent=2) + '\n').encode()
@@ -162,7 +167,7 @@ def worker(config_path):
         if completed.returncode:
             result['reason'] = 'original_verifier_failed'
         else:
-            result = interpret_summary(json.loads((verifier / 'summary.json').read_text()), assets.profile['case_ids'])
+            result = interpret_summary(json.loads((verifier / 'summary.json').read_text()), case_ids)
             records = list((verifier / 'cases').glob('*/repeat-*/record.json'))
             result.update(
                 total_runs=len(records),
@@ -178,9 +183,10 @@ def worker(config_path):
     (root / 'grading_result.json').write_text(json.dumps(result, indent=2) + '\n')
 
 
-async def grade(runtime, output_dir: Path, *, timeout: float = 28800) -> dict:
+async def grade(runtime, output_dir: Path, *, timeout: float = 28800, case_ids: list[str] | None = None) -> dict:
     assets = runtime.assets
     config = {
+        'case_ids': list(case_ids) if case_ids else None,
         'source_root': str(assets.source_root),
         'profile_path': str(assets.profile_path),
         'profile_sha256': assets.profile_sha256,

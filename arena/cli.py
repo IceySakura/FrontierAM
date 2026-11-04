@@ -246,6 +246,7 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
             'output': str(results / 'grade'),
             'archive': str(archive),
             'paired_reference': str(paired) if paired else None,
+            'case_ids': job.get('case_ids'),
         }
         code = run_in_slot(lease, spec, results / 'spec.json', results / 'job.log', extra_fds=(job['lock_fd'],))
         isolation = {'policy': lease.isolation, 'held_idle': [slot_id for slot_id, _ in lease.held]}
@@ -279,6 +280,10 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
         return finish_baseline(store, runtime, task, job, record, metrics)
     if job['kind'] == 'probe':
         return store.finish(job, 'done', status='probe', note=job.get('note'))
+    if job['kind'] == 'shard':
+        # One part of a full-suite assessment; `suite-report` merges the parts once all are graded.
+        say(event='shard_graded', job=job['id'], suite=job.get('suite'), success_rate=metrics.get('success_rate'))
+        return store.finish(job, 'done', status='shard', suite=job.get('suite'))
     if job['kind'] == 'sentinel':
         baseline = store.active_baseline(task.name)
         score = task.score(runtime, metrics, baseline)
@@ -381,6 +386,10 @@ def cmd_grade(args) -> None:
 
 
 def enqueue_reference(store, runtime, task, *, kind: str, note: str | None = None, isolation: str | None = None) -> str:
+    return store.enqueue(freeze_reference(store, runtime, task, kind=kind), kind=kind, note=note, isolation=isolation)
+
+
+def freeze_reference(store, runtime, task, *, kind: str) -> str:
     submission_id, directory = store.new_submission(task.name, {'origin': 'reference', 'kind': kind})
     archive = task.reference_archive(runtime, directory)
     stage = directory / 'stage'
@@ -390,7 +399,7 @@ def enqueue_reference(store, runtime, task, *, kind: str, note: str | None = Non
     shutil.rmtree(stage)
     archive.unlink()
     store.update_submission(submission_id, status='frozen', source_sha256=sha(directory / 'source.tar'))
-    return store.enqueue(submission_id, kind=kind, note=note, isolation=isolation)
+    return submission_id
 
 
 def enqueue_archive(store, runtime, task, archive: Path, *, kind: str) -> str:
@@ -428,6 +437,68 @@ def cmd_sentinel(args) -> None:
     jobs = [enqueue_reference(store, runtime, task, kind='sentinel') for _ in range(args.count)]
     args.drain, args.task = True, [task.name]
     run_workers(args, job_ids=jobs)
+
+
+def shard_cases(instances: list[dict], count: int) -> list[list[str]]:
+    """Balance worst-case time: longest limit first, each case to the shard with the least total limit so far."""
+    shards: list[list[str]] = [[] for _ in range(count)]
+    totals = [0.0] * count
+    for case in sorted(instances, key=lambda c: (-c['time_limit_seconds'], c['id'])):
+        index = totals.index(min(totals))
+        shards[index].append(case['id'])
+        totals[index] += case['time_limit_seconds']
+    return shards
+
+
+def cmd_suite(args) -> None:
+    """Queue a full held-out suite assessment of one submission (or the reference) as shards on separate slots."""
+    store = Store(args.store)
+    runtime = load_runtime()
+    task = TASKS[args.task]
+    if not hasattr(task, 'suite'):
+        raise SystemExit(f'{task.name} has no shardable held-out suite')
+    shards = shard_cases(task.suite(runtime), args.shards)
+    suite_id = new_id(f'suite-{task.name}')
+    submission = freeze_reference(store, runtime, task, kind='suite') if args.reference else args.submission
+    jobs = [
+        store.enqueue(submission, kind='shard', isolation=args.isolation, note=f'{suite_id} shard {i + 1}/{len(shards)}',
+                      extra={'suite': suite_id, 'case_ids': ids})
+        for i, ids in enumerate(shards)
+    ]
+    record = {'id': suite_id, 'task': task.name, 'submission': submission, 'reference': args.reference,
+              'created_utc': utc(), 'shards': [{'job': j, 'cases': len(ids)} for j, ids in zip(jobs, shards)],
+              'runtime_lock_sha256': runtime['lock_sha256']}
+    write_json(store.root / 'suites' / f'{suite_id}.json', record)
+    say(event='suite_queued', **record)
+
+
+def cmd_suite_report(args) -> None:
+    """Merge the shards of a suite: success counts over the whole held-out set and per group."""
+    store = Store(args.store)
+    record = read_json(store.root / 'suites' / f'{args.suite}.json')
+    cases, missing = [], []
+    for shard in record['shards']:
+        metrics_path = store.result_dir(shard['job']) / 'grade/metrics.json'
+        done = store.root / 'jobs/done' / f'{shard["job"]}.json'
+        if not done.exists() or not metrics_path.exists():
+            missing.append(shard['job'])
+            continue
+        metrics = read_json(metrics_path)
+        if metrics.get('success_rate') is None:
+            missing.append(shard['job'])
+            continue
+        cases.extend(metrics['cases'])
+    groups: dict[str, dict] = {}
+    for case in cases:
+        group = groups.setdefault(case['group'], {'cases': 0, 'successes': 0})
+        group['cases'] += 1
+        group['successes'] += bool(case['success'])
+    solved = sum(bool(c['success']) for c in cases)
+    report = {**record, 'complete': not missing, 'missing_shards': missing, 'cases_graded': len(cases),
+              'successes': solved, 'success_rate': solved / len(cases) if cases else None, 'groups': groups,
+              'cases': sorted(cases, key=lambda c: c['case_id'])}
+    write_json(store.root / 'suites' / f'{args.suite}.report.json', report)
+    print(json.dumps({k: v for k, v in report.items() if k != 'cases'}, indent=2, ensure_ascii=False))
 
 
 def cmd_rescore(args) -> None:
@@ -780,6 +851,15 @@ def main() -> None:
     smoke.add_argument('--task', choices=['exponential', 'conic', 'both'], default='both')
     smoke.add_argument('--parallel', type=int, default=1, help='concurrent fixture attempts per task')
     smoke.add_argument('--workers', type=int, default=None)
+    suite = sub.add_parser('suite', help='queue a sharded full held-out suite assessment')
+    suite.add_argument('--task', choices=sorted(TASKS), default='conic')
+    target = suite.add_mutually_exclusive_group(required=True)
+    target.add_argument('--submission')
+    target.add_argument('--reference', action='store_true')
+    suite.add_argument('--shards', type=int, default=4)
+    suite.add_argument('--isolation', default='shared', choices=['shared', 'grade_pool', 'quiet'])
+    suite_report = sub.add_parser('suite-report')
+    suite_report.add_argument('--suite', required=True)
     sub.add_parser('status')
     sub.add_parser('report')
     sub.add_parser('recover')
@@ -801,6 +881,8 @@ def main() -> None:
         'report': cmd_report,
         'recover': lambda a: say(requeued=Store(a.store).recover()),
         'rescore': cmd_rescore,
+        'suite': cmd_suite,
+        'suite-report': cmd_suite_report,
         'leaderboard': cmd_leaderboard,
     }
     handlers[args.command](args)

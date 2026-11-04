@@ -103,8 +103,10 @@ async def grade(spec: dict) -> int:
     except controller.SubmissionFailure as error:
         raw = {'exit_status': 'finished', 'score': 0.0, 'reason': f'invalid_archive:{error}'}
     else:
-        paired = {'paired_archive': Path(spec['paired_reference'])} if task.paired else {}
-        raw = await task.grade(runtime, placement, output, **paired)
+        extra = {'paired_archive': Path(spec['paired_reference'])} if task.paired else {}
+        if spec.get('case_ids'):
+            extra['case_ids'] = spec['case_ids']
+        raw = await task.grade(runtime, placement, output, **extra)
     write(output / 'metrics.json', task.metrics(output, raw))
     return 0
 
