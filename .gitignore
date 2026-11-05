@@ -22,3 +22,4 @@ staging/
 .venv-ops/
 Raw_Resource/
 /conic-reference-submission-*.tar.gz
+.venv-harbor/
