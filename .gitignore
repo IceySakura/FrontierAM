@@ -19,3 +19,4 @@ store-*/
 dist/
 staging/
 .runtime-ops/
+.venv-ops/

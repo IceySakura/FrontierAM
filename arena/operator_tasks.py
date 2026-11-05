@@ -25,6 +25,8 @@ ROOT = Path(__file__).resolve().parents[1]
 OPS = ROOT / '.runtime-ops'
 SPECS = ROOT / 'tasks/operator'
 PAIR = 'FRONTIERAM_REFERENCE_PAIR.json'
+# Host-side graders use the packages' pinned host NumPy (2.3.5), separate from the orchestration environment.
+GRADER_PYTHON = ROOT / '.venv-ops/bin/python'
 
 
 def score_100(raw: float, weak: float, strong: float) -> float:
@@ -152,7 +154,7 @@ class GalaxyGravity(OperatorTask):
         config_path.write_text(json.dumps(config, indent=2) + '\n')
         grader = root / 'tasks/galaxy-gravity/harbor/tests/grade.py'
         env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
-        done = subprocess.run([sys.executable, '-IB', str(grader), '--submission', str(source), '--output', str(out),
+        done = subprocess.run([str(GRADER_PYTHON), '-IB', str(grader), '--submission', str(source), '--output', str(out),
                                '--config', str(config_path)], env=env, capture_output=True, text=True, timeout=self.grade_timeout)
         (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
         summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
@@ -175,7 +177,7 @@ class PolarizationDemosaicking(OperatorTask):
         grader = root / 'harbor/polarization-demosaicking/grade_submission.py'
         out.parent.mkdir(parents=True, exist_ok=True)
         env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
-        done = subprocess.run([sys.executable, '-B', str(grader), '--submission', str(source), '--output', str(out),
+        done = subprocess.run([str(GRADER_PYTHON), '-B', str(grader), '--submission', str(source), '--output', str(out),
                                '--mode', 'formal'], cwd=grader.parent, env=env, capture_output=True, text=True,
                               timeout=self.grade_timeout)
         (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
@@ -206,7 +208,7 @@ class SpeciesTree(OperatorTask):
         driver = ROOT / 'arena/operator_drivers/species_tree_batch.py'
         out.parent.mkdir(parents=True, exist_ok=True)
         env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
-        done = subprocess.run([sys.executable, '-B', str(driver), str(self.root() / 'operator'), str(source), str(out)],
+        done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.root() / 'operator'), str(source), str(out)],
                               env=env, capture_output=True, text=True, timeout=self.grade_timeout)
         (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
         summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
