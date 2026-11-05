@@ -1,13 +1,13 @@
 /*
  * Independent C99 Chebyshev action for
- *   y = exp(-t L)b0 + t phi_1(-t L)b1
- *     = b0 + g(L)(b1-Lb0),  g(x)=(1-exp(-t x))/x, g(0)=t.
+ *   y = exp(-t L)b0 + t phi_1(-t L)b1.
  *
  * The spectrum of the symmetric PSD L is enclosed by a rounded-up
  * Gershgorin bound.  Scaled Bessel coefficients for exp(-t x) are formed
- * by a stable backward ratio recurrence, and coefficients of g are obtained
- * from x g(x)=1-exp(-t x).  A Chebyshev recurrence then needs one CSR SpMV
- * per retained degree.
+ * by a stable backward ratio recurrence, and coefficients of
+ * g(x)=t phi_1(-t x) are obtained from x g(x)=1-exp(-t x).  The two actions
+ * are evaluated separately to avoid the cancellation in
+ * b0+g(L)(b1-Lb0) when the exponential strongly damps b0.
  */
 #define _POSIX_C_SOURCE 200809L
 #include <errno.h>
@@ -108,7 +108,8 @@ static void spmv_scaled(const double *restrict x, double *restrict y) {
  * overflow for a as large as 50000.  The division recurrence follows
  * (1+z)q=(1-f)/a.
  */
-static int make_coefficients(double t, double **q_out, long double **tail_out) {
+static int make_coefficients(double t, double **q_out, long double **q_tail_out,
+                             double **f_out, long double **f_tail_out) {
     long double aa = (long double)t * (long double)lambda_upper * 0.5L;
     int top = (int)ceill(12.0L * sqrtl(aa + 1.0L) + 128.0L);
     if (top < 160) top = 160;
@@ -118,7 +119,8 @@ static int make_coefficients(double t, double **q_out, long double **tail_out) {
     long double *e = xmalloc((size_t)(top + 1) * sizeof *e);
     long double *f = xmalloc((size_t)(top + 1) * sizeof *f);
     long double *q = xmalloc((size_t)(top + 1) * sizeof *q);
-    long double *tail = xmalloc((size_t)(top + 2) * sizeof *tail);
+    long double *q_tail = xmalloc((size_t)(top + 2) * sizeof *q_tail);
+    long double *f_tail = xmalloc((size_t)(top + 2) * sizeof *f_tail);
 
     ratio[top] = 0.0L;
     for (int k = top; k >= 1; --k)
@@ -150,33 +152,62 @@ static int make_coefficients(double t, double **q_out, long double **tail_out) {
     /* The recurrence above solves (1+z)q=(1-f)/a, i.e. phi_1(-tx).
        Multiply by t to obtain g(x)=t*phi_1(-tx). */
     double *qd = xmalloc((size_t)(top + 1) * sizeof *qd);
-    for (int k = 0; k <= top; ++k) qd[k] = (double)((long double)t * q[k]);
-    tail[top + 1] = 0.0L;
-    for (int k = top; k >= 0; --k)
-        tail[k] = tail[k + 1] + (long double)t * fabsl(q[k]);
+    double *fd = xmalloc((size_t)(top + 1) * sizeof *fd);
+    for (int k = 0; k <= top; ++k) {
+        qd[k] = (double)((long double)t * q[k]);
+        fd[k] = (double)f[k];
+    }
+    q_tail[top + 1] = 0.0L;
+    f_tail[top + 1] = 0.0L;
+    for (int k = top; k >= 0; --k) {
+        q_tail[k] = q_tail[k + 1] + (long double)t * fabsl(q[k]);
+        f_tail[k] = f_tail[k + 1] + fabsl(f[k]);
+    }
 
     free(ratio);
     free(e);
     free(f);
     free(q);
     *q_out = qd;
-    *tail_out = tail;
+    *q_tail_out = q_tail;
+    *f_out = fd;
+    *f_tail_out = f_tail;
     return top;
 }
 
-static int choose_degree(int top, const long double *tail, long double c_norm,
+static int choose_degree(int top,
+                         const long double *f_tail, long double b0_norm,
+                         const long double *q_tail, long double b1_norm,
                          double atol, double rtol, long double scale) {
     long double budget = ((long double)atol + (long double)rtol * scale) /
                          SAFETY_FACTOR;
-    if (c_norm == 0.0L) return 0;
-    long double coefficient_limit = budget / c_norm;
     for (int d = 0; d < top; ++d)
-        if (tail[d + 1] <= coefficient_limit) return d;
+        if (f_tail[d + 1] * b0_norm + q_tail[d + 1] * b1_norm <= budget)
+            return d;
     return top;
 }
 
+static void evaluate_series(int degree, const double *q, const double *c,
+                            double *y,
+                            double *v0, double *v1, double *v2) {
+    memset(v0, 0, (size_t)n_rows * sizeof *v0);
+    memset(v1, 0, (size_t)n_rows * sizeof *v1);
+    double *bk1 = v0, *bk2 = v1, *work = v2;
+    for (int k = degree; k >= 1; --k) {
+        spmv_scaled(bk1, work);
+        for (int i = 0; i < n_rows; ++i) {
+            work[i] = 2.0 * work[i] - bk2[i] + q[k] * c[i];
+        }
+        double *tmp = bk2; bk2 = bk1; bk1 = work; work = tmp;
+    }
+    spmv_scaled(bk1, y);
+    for (int i = 0; i < n_rows; ++i)
+        y[i] = y[i] - bk2[i] + q[0] * c[i];
+}
+
 static void solve_one(double t, double atol, double rtol, int coeff_top,
-                      const double *q, const long double *tail,
+                      const double *q, const long double *q_tail,
+                      const double *f, const long double *f_tail,
                       const double *b0, const double *b1, double *y,
                       double *c, double *v0, double *v1, double *v2) {
     if (t == 0.0 || lambda_upper == 0.0) {
@@ -184,10 +215,12 @@ static void solve_one(double t, double atol, double rtol, int coeff_top,
         return;
     }
     spmv_l(b0, c);
-    long double c2 = 0.0L, scale = 0.0L;
+    long double c2 = 0.0L, b0_2 = 0.0L, b1_2 = 0.0L, scale = 0.0L;
     for (int i = 0; i < n_rows; ++i) {
         c[i] = b1[i] - c[i];
         c2 += (long double)c[i] * (long double)c[i];
+        b0_2 += (long double)b0[i] * (long double)b0[i];
+        b1_2 += (long double)b1[i] * (long double)b1[i];
         long double s0 = fabsl((long double)b0[i]);
         long double s1 = fabsl((long double)t * (long double)b1[i]);
         if (s0 > scale) scale = s0;
@@ -197,20 +230,32 @@ static void solve_one(double t, double atol, double rtol, int coeff_top,
         memcpy(y, b0, (size_t)n_rows * sizeof *y);
         return;
     }
-    int degree = choose_degree(coeff_top, tail, sqrtl(c2), atol, rtol, scale);
+    long double b0_norm = sqrtl(b0_2);
+    long double b1_norm = sqrtl(b1_2);
+    int degree = choose_degree(coeff_top, f_tail, b0_norm, q_tail, b1_norm,
+                               atol, rtol, scale);
 
-    memcpy(v0, c, (size_t)n_rows * sizeof *v0);
-    for (int i = 0; i < n_rows; ++i) y[i] = b0[i] + q[0] * v0[i];
-    if (degree == 0) return;
-    spmv_scaled(v0, v1);
-    for (int i = 0; i < n_rows; ++i) y[i] += q[1] * v1[i];
-    for (int k = 2; k <= degree; ++k) {
-        spmv_scaled(v1, v2);
+    for (;;) {
+        evaluate_series(degree, f, b0, y, v0, v1, v2);
+        evaluate_series(degree, q, b1, c, v0, v1, v2);
+
+        long double y_inf = 0.0L;
         for (int i = 0; i < n_rows; ++i) {
-            v2[i] = 2.0 * v2[i] - v0[i];
-            y[i] += q[k] * v2[i];
+            y[i] += c[i];
+            long double yi = fabsl((long double)y[i]);
+            if (yi > y_inf) y_inf = yi;
         }
-        double *tmp = v0; v0 = v1; v1 = v2; v2 = tmp;
+
+        /* The sum of the two omitted Chebyshev tails bounds the output error.
+           Thus max(y_inf-tail_bound,0) is a certified lower bound for the
+           exact output norm and gives a conservative output-relative test. */
+        long double tail_bound = f_tail[degree + 1] * b0_norm
+                               + q_tail[degree + 1] * b1_norm;
+        long double output_scale = y_inf > tail_bound ? y_inf - tail_bound : 0.0L;
+        int corrected = choose_degree(coeff_top, f_tail, b0_norm,
+                                      q_tail, b1_norm, atol, rtol, output_scale);
+        if (corrected <= degree) return;
+        degree = corrected;
     }
 }
 
@@ -260,14 +305,19 @@ int main(void) {
         if (edge > bound) bound = edge;
     }
     if (bound < 0.0L) bound = 0.0L;
-    lambda_upper = nextafter((double)bound, INFINITY);
-    lambda_upper *= 1.0 + (double)(8 + max_row_nnz) * DBL_EPSILON;
+    if (bound == 0.0L) {
+        lambda_upper = 0.0;
+    } else {
+        lambda_upper = nextafter((double)bound, INFINITY);
+        lambda_upper *= 1.0 + (double)(8 + max_row_nnz) * DBL_EPSILON;
+    }
 
-    double *coeff = NULL;
-    long double *tail = NULL;
+    double *q_coeff = NULL, *f_coeff = NULL;
+    long double *q_tail = NULL, *f_tail = NULL;
     int coeff_top = 0;
     if (t != 0.0 && lambda_upper != 0.0)
-        coeff_top = make_coefficients(t, &coeff, &tail);
+        coeff_top = make_coefficients(t, &q_coeff, &q_tail,
+                                      &f_coeff, &f_tail);
 
     size_t bytes = (size_t)n_rows * sizeof(double);
     double *b0 = xmalloc(bytes), *b1 = xmalloc(bytes), *y = xmalloc(bytes);
@@ -275,7 +325,8 @@ int main(void) {
     for (int r = 0; r < requests; ++r) {
         read_exact(b0, bytes);
         read_exact(b1, bytes);
-        solve_one(t, atol, rtol, coeff_top, coeff, tail, b0, b1, y, c, v0, v1, v2);
+        solve_one(t, atol, rtol, coeff_top, q_coeff, q_tail,
+                  f_coeff, f_tail, b0, b1, y, c, v0, v1, v2);
         write_all(y, bytes);
     }
     return 0;

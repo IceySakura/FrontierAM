@@ -30,6 +30,15 @@ def sha(path: Path) -> str:
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
+def extract_zip(z: zipfile.ZipFile, target: Path) -> None:
+    """extractall drops Unix modes; restore each file's permission bits recorded by a Unix zip tool (build.sh 0755)."""
+    z.extractall(target)
+    for member in z.infolist():
+        mode = (member.external_attr >> 16) & 0o777
+        if member.create_system == 3 and mode and not member.is_dir():
+            (target / member.filename).chmod(mode)
+
+
 def extract(archive: Path, target: Path) -> None:
     target.mkdir(parents=True)
     if archive.name.endswith('.zip'):
@@ -37,7 +46,7 @@ def extract(archive: Path, target: Path) -> None:
             for member in z.infolist():
                 if member.filename.startswith('/') or '..' in Path(member.filename).parts:
                     raise SystemExit(f'unsafe path in {archive.name}: {member.filename}')
-            z.extractall(target)
+            extract_zip(z, target)
     else:
         with tarfile.open(archive) as t:
             t.extractall(target, filter='data')
@@ -79,7 +88,7 @@ def assemble_public(spec: dict, roots: dict, target: Path) -> None:
         dest.parent.mkdir(parents=True, exist_ok=True)
         if unzip:
             with zipfile.ZipFile(source) as z:
-                z.extractall(dest)
+                extract_zip(z, dest)
         elif source.is_dir():
             shutil.copytree(source, dest)
         else:
@@ -152,6 +161,11 @@ def main():
                             str(context)], check=True)
             image_id = subprocess.check_output(['docker', 'image', 'inspect', '--format', '{{.Id}}', image['tag']],
                                                text=True).strip()
+        else:
+            # Re-sealing without a rebuild keeps the image already built (and loaded into the grading daemons).
+            found = subprocess.run(['docker', 'image', 'inspect', '--format', '{{.Id}}', image['tag']],
+                                   capture_output=True, text=True)
+            image_id = found.stdout.strip() or None
         lock = {
             'name': name, 'status': spec['status'], 'sealed_utc': datetime.now(timezone.utc).isoformat(timespec='seconds'),
             'spec_sha256': sha(spec_dir / 'task.json'), 'packages': packages, 'integrity': integrity,

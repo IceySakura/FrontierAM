@@ -16,5 +16,7 @@ for task in "$@"; do
 done
 scripts/data-maintenance.sh
 log "\"event\": \"data_maintenance_done\", \"exit\": $?"
+scripts/exp2-public.sh
+log "\"event\": \"exp2_public_done\", \"exit\": $?"
 python3 scripts/release-when-free.py store --defer store-recal >> store/reruns/release-main.log 2>&1 < /dev/null &
 log '"event": "conic_release_resumed"'

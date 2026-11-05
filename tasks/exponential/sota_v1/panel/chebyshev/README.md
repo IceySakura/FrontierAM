@@ -11,13 +11,14 @@ For a symmetric positive semidefinite `L`, a rounded-up Gershgorin bound
 
 `Z = 2 L/lambda_upper - I`
 
-therefore has spectrum in `[-1,1]`. The solver uses
+therefore has spectrum in `[-1,1]`. The solver evaluates
 
-`y = b0 + g(L)(b1-L*b0)`, where `g(x)=(1-exp(-t*x))/x` and `g(0)=t`.
+`y = exp(-t*L)b0 + g(L)b1`, where
+`g(x)=(1-exp(-t*x))/x=t*phi_1(-t*x)` and `g(0)=t`.
 
-This identity avoids an inverse and remains valid when `L` is singular. It also
-reduces each request to one initial CSR product and one Chebyshev recurrence,
-instead of separate recurrences for the exponential and phi function.
+The two Chebyshev actions are kept separate. This avoids the cancellation in
+`b0+g(L)(b1-L*b0)` when the exponential strongly damps `b0`; no inverse is
+formed, and singular `L` remains valid.
 
 With `a=t*lambda_upper/2`,
 
@@ -29,16 +30,21 @@ overflow: a Miller-style backward recurrence forms the ratios
 `g` then follow in long double from the Chebyshev coefficient identity
 `x*g(x)=1-exp(-t*x)`. No division by `L` occurs.
 
-For each request, the smallest polynomial degree is used for which
+Both series are evaluated with the matrix Clenshaw recurrence. For each
+request, the initial common polynomial degree is the smallest `d` for which
 
-`sum_{k>d}|q_k| * ||b1-L*b0||_2`
+`sum_{k>d}|f_k|*||b0||_2 + sum_{k>d}|q_k|*||b1||_2`
 
 is at most one eighth of
 `atol + rtol*max(||b0||_inf,t*||b1||_inf)`. Since a symmetric Chebyshev
 operator has 2-norm at most one term by term, this is an explicit coefficient
-tail bound. The factor eight reserves margin for floating-point recurrence and
-SpMV error. Coefficients and the spectral interval are computed once per
-session and reused; no state depending on a right-hand side is retained.
+tail bound. After computing `y_d`, the combined tail `E_d` gives the certified
+lower bound `max(||y_d||_inf-E_d,0)` on the exact output norm. If the
+output-relative budget requires a larger degree, both actions are recomputed
+at that degree; the check repeats until satisfied. The factor eight reserves
+margin for floating-point recurrence and SpMV error. Coefficients and the
+spectral interval are computed once per session and reused; no state depending
+on a right-hand side is retained.
 
 Degenerate cases are exact: `t=0` returns `b0`, a zero operator returns
 `b0+t*b1`, and `b1-L*b0=0` returns `b0`.

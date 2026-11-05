@@ -343,7 +343,7 @@ def main() -> int:
     manifest_path = output / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=False) + "\n")
     (output / "truth_costs.json").write_text(json.dumps(costs, indent=2) + "\n")
-    write_truth_plan(costs, ROOT / "truth_plan.md")
+    write_truth_plan(costs, output / "truth_estimate.md")
     print(f"{manifest_path}: {len(scored)} scored + {len(controls)} controls")
     return 0
 
