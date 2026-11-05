@@ -49,9 +49,9 @@
 | trajectory 验证链路 | 在开发核上用 VAR(1) 参照跑 12 个正式输入（每种设置 2 个）：12/12 合格，逐例误差与出题方记录最大相差 1.2e-13，墙钟中位数为原机的 0.95 倍；验证器的 11 项沙箱自检全部通过（嵌套 PID/用户命名空间、no_new_privs、无 capabilities、uid 1000、Landlock 私有哨兵、`/proc` 三项、禁止 socket 与 mount），运行环境为 x86_64、单核配额、2 GiB、无交换、仅回环网卡（`scripts/trajectory-compare.py`） |
 | v6 开发 harness 镜像 | 四题构建完成（`frontieram-<题目>-harness:v6`） |
 | 镜像导入 4 个评测守护进程 | 4 个 slot 全部完成（`scripts/load-grade-images.sh`，只在 slot 空闲时导入，因为守护进程跑在计时 CPU 的 SMT 兄弟核上） |
-| 本机参照基线 | galaxy-gravity 完成（grade-06，安静条件）：弱参照 0.00139018、强参照 0.000596871，与包内记录的 E0 = 0.00139、E5 = 0.000597 一致，基线已激活。polarization-demosaicking 完成：弱参照 1.80825、强参照 1.10992，与包内 B = 1.808、H5 = 1.110 一致，两条参照都在每景 1 秒内跑完 32 景，基线已激活。species-tree 第一次基线因 `build.sh` 丢失执行权限失败（见第 3 节），修正并改用 1.0.1 正式数据后排队重跑（原机锚点：弱参照漏 625、强参照漏 529 个分裂，分母 4900）；exponential-v2（冒烟集 panel）进行中（`scripts/new-task-baselines.sh`，日志 `store/reruns/new-task-baselines.log`）。三题基线都用 `.runtime-recal` 运行（与 `.runtime-suite` 只差锥优化时限清单，不影响这些题） |
+| 本机参照基线 | 全部在 grade-06 上安静测量并激活，锚点与包内记录一致：galaxy（真实基础镜像重建后重测）弱 0.00139018 / 强 0.000596871（包内 E0 = 0.00139、E5 = 0.000597，与替代镜像上的结果完全相同）；polarization 弱 1.80825 / 强 1.10992（包内 B = 1.808、H5 = 1.110）；species-tree（50 个正式用例）弱 625 / 强 529 个漏分裂，即 0.127551 / 0.107959，与 `activation.json` 的原机锚点一个不差；trajectory（3000 个子集输入）OBM 0.35031684638830834 / VAR(1) 0.23005048805553863，与出题方在同一子集上的记录相差不到 2e-15。基线都用 `.runtime-recal` 运行（与 `.runtime-suite` 只差锥优化时限清单，不影响这些题） |
 | 锚点核对 | galaxy、polarization 本机锚点与包内记录一致（见上一行） |
-| CPU 上限与墙钟检查 | galaxy：单次调用最多 1.82 CPU 秒（上限 5 秒；原机记录 3.09 秒）。polarization：每景墙钟最多 0.198 秒（弱参照）、0.701 秒（强参照），上限 1.000 秒，32/32 景通过 |
-| 隔离检查（`scripts/shim-audit.py` 汇总垫片日志） | galaxy 122 次、polarization 66 次容器创建全部为：`linux/amd64`、`--cpuset-cpus 6`（grade-06 计时 CPU）、`frontieram-grade.slice`、封存的 amd64 镜像 ID、`--network none`、`--cpus 1`，内存上限与包内规定一致（galaxy 2 GiB、polarization 8 GiB，均不带交换） |
+| CPU 上限与墙钟检查 | galaxy：单次调用最多 1.82 CPU 秒（上限 5 秒；原机记录 3.09 秒）。polarization：每景墙钟最多 0.198 秒（弱参照）、0.701 秒（强参照），上限 1.000 秒，32/32 景通过；species-tree 两条参照 50/50 例无失败；trajectory 单例墙钟最多 3.87 秒（OBM，含 R 启动），上限 30 秒 |
+| 隔离检查 | docker 垫片日志（`scripts/shim-audit.py`）：galaxy 122 次、polarization 66 次、species-tree 102 次容器创建全部为 `linux/amd64`、`--cpuset-cpus 6`（grade-06 计时 CPU）、`frontieram-grade.slice`、封存的 amd64 镜像 ID、`--network none`、`--cpus 1`，内存上限与包内规定一致（2/8/4 GiB，均不带交换）。trajectory 的验证容器：CPU 6、`frontieram-grade.slice`、单核配额、2 GiB、无交换、仅回环网卡，验证器的 11 项沙箱自检在两条参照中全部通过 |
 
 `mcmc-long-run-covariance-maintainer-v1`（19.6 GB）是 trajectory-covariance 的出题方包，正在从北大网盘下载到 `/srv/frontieram-raw/`（`Raw_Resource/` 中为软链接），下载完成后按同样流程接入。
