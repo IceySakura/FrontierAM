@@ -100,7 +100,15 @@ def main():
         (SEAL / 'docker_eval/evaluator').mkdir(parents=True, exist_ok=True)
         shutil.copyfile(EXP / 'docker_eval/evaluator' / name, SEAL / 'docker_eval/evaluator' / name)
     graded = copy_cases(args.graded.resolve(), SEAL / 'data')
-    for member in PANEL:
+    panel, frozen_path = list(PANEL), V2 / 'calibration_v2/FROZEN.json'
+    if frozen_path.exists():
+        # After public calibration only the frozen members, byte-identical to their frozen state, form the reference.
+        frozen = json.loads(frozen_path.read_text())
+        panel = [m for m in PANEL if m in frozen['members']]
+        for relative, digest in frozen['panel_files_sha256'].items():
+            if relative.split('/')[0] in panel and sha(V2 / 'panel' / relative) != digest:
+                raise SystemExit(f'panel file changed since freezing: {relative}')
+    for member in panel:
         shutil.copytree(V2 / 'panel' / member, SEAL / 'panel' / member, symlinks=False,
                         ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
     public_tar(SEAL / 'public.tar', args.public_dev.resolve(), args.public_full.resolve() if args.public_full else None)
@@ -113,7 +121,8 @@ def main():
         'graded_scope': graded.get('scope'),
         'graded_cases': len(graded['cases']),
         'scored_cases': sum(c['role'] == 'scored' for c in graded['cases']),
-        'panel': list(PANEL),
+        'panel': panel,
+        'panel_frozen': frozen_path.exists(),
         'public_tar_sha256': files['public.tar'],
         'files': files,
     }
