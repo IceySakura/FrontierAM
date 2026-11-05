@@ -179,7 +179,18 @@ def freeze(controller, docker, name: str, output: Path, label: str = 'source') -
         subprocess.run([*docker.prefix, 'rm', '--force', exporter], capture_output=True, timeout=15)
 
 
-def prompt(task_name: str, runtime: dict) -> str:
+# v6.1: development cores are packed more densely than grading cores, so timings measured while developing are noisy.
+TIMING_NOTE = (
+    '\n\n## Development timing is approximate\n'
+    'Your development core shares its L3 cache and memory bandwidth with other concurrent attempts, so times you '
+    'measure here can be 10-30% slower than in verification and vary from run to run. Use them only for relative '
+    'comparisons: interleave the variants you compare (A, B, A, B, ...) and compare medians. Verification runs on an '
+    'isolated grading core; only the verification result is authoritative. Each case is timed over the whole process '
+    'from launch to exit, including interpreter startup and imports, so keep a safety margin under every limit.\n'
+)
+
+
+def prompt(task_name: str, runtime: dict, protocol: str = 'v6') -> str:
     task = TASKS[task_name]
     return (
         task.instruction.replace(' Use only the offline workspace tool.', '')
@@ -189,6 +200,7 @@ def prompt(task_name: str, runtime: dict) -> str:
         'One attempt, at most 7200 wall-clock seconds including model requests and tool time. Finishing your turn, '
         'or the deadline, freezes /workspace/submission for evaluation; there is no later repair or hidden feedback.'
         + runtime['architecture_override_prompt']
+        + (TIMING_NOTE if protocol == 'v6.1' else '')
     )
 
 
@@ -258,7 +270,7 @@ def develop(spec: dict, runtime: dict) -> dict:
                    'UNIX-CONNECT:/run/atr/atr.sock')
         launcher_spec = {
             'base_url': f'http://127.0.0.1:{CONTAINER_PORT}', 'token': token, 'model': model, 'harness': harness,
-            'prompt': prompt(task.name, runtime), 'client_timeout_seconds': seconds, **route,
+            'prompt': prompt(task.name, runtime, spec['protocol']), 'client_timeout_seconds': seconds, **route,
         }
         deadline = started + seconds
         with (output / 'cli.log').open('wb') as log:

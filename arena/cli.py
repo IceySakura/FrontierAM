@@ -829,7 +829,7 @@ def main() -> None:
     develop.add_argument('--base-url', default=DEFAULT_BASE_URL)
     develop.add_argument('--no-grade', action='store_true', help='freeze only; do not queue for grading')
     develop.add_argument('--wait', type=float, default=None, help='seconds to wait for a free dev slot')
-    develop.add_argument('--protocol', choices=['v4', 'v5', 'v5.1', 'v6'], default='v4',
+    develop.add_argument('--protocol', choices=['v4', 'v5', 'v5.1', 'v6', 'v6.1'], default='v4',
                          help='v4: Responses converted to Chat; v5: native Responses (native_bridge.py)')
     develop.add_argument('--development-seconds', type=float, default=None,
                          help='shorter budget for a validation run; such submissions never enter the leaderboard')
