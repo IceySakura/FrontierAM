@@ -68,7 +68,7 @@
 ## 5. 待确认
 
 - 专属空间的实际配额和保留期，以及除本人外是否还有人（例如云研发管理员）能读取。在确认之前，私有材料一律先加密再上传。
-- 第 3 节第 1 步（删除 trash 与无用镜像）和第 3 步（archive 上云、删除本地副本）是否可以执行。
+- 第 3 节第 1–3 步已获同意（11-05 16:00）：由 `scripts/data-maintenance.sh` 在新题基线全部完成、恢复锥优化评测之前的空闲窗口执行（`scripts/new-task-baselines.sh` 末尾调用），日志在 `store/reruns/data-maintenance.log`。归档用 gpg AES256 加密，口令在 `/root/.frontieram/archive-passphrase`，**需要另存一份到安全的地方**，否则云上归档无法解密。
 
 ## 6. 工具
 
