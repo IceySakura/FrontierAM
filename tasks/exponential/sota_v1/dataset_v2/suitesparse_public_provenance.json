@@ -1,0 +1,93 @@
+{
+  "bfs_rule": "canonical first-unused root; FIFO BFS; stop at limit; induced edges; discovery ordering",
+  "collection": "SuiteSparse Matrix Collection, live archive endpoints",
+  "conversion": "SPD symmetric average; adjacency -> D-|A+A^T|/2",
+  "generated_utc": "2026-11-05T04:19:34.621241+00:00",
+  "matrices": [
+    {
+      "attempts": [
+        {
+          "error": "URLError: <urlopen error [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1016)>",
+          "url": "https://suitesparse-collection-website.herokuapp.com/MM/HB/bcsstk17.tar.gz"
+        },
+        {
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "url": "https://sparse.tamu.edu/MM/HB/bcsstk17.tar.gz"
+        }
+      ],
+      "group": "HB",
+      "kind": "spd",
+      "name": "bcsstk17",
+      "replacement": null,
+      "replacement_rule": null,
+      "split": "public",
+      "status": "unavailable",
+      "timed": false,
+      "url": null
+    },
+    {
+      "attempts": [
+        {
+          "error": "URLError: <urlopen error [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1016)>",
+          "url": "https://suitesparse-collection-website.herokuapp.com/MM/HB/bcsstk18.tar.gz"
+        },
+        {
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "url": "https://sparse.tamu.edu/MM/HB/bcsstk18.tar.gz"
+        }
+      ],
+      "group": "HB",
+      "kind": "spd",
+      "name": "bcsstk18",
+      "replacement": null,
+      "replacement_rule": null,
+      "split": "public",
+      "status": "unavailable",
+      "timed": false,
+      "url": null
+    },
+    {
+      "attempts": [
+        {
+          "error": "URLError: <urlopen error [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1016)>",
+          "url": "https://suitesparse-collection-website.herokuapp.com/MM/DIMACS10/fe_4elt2.tar.gz"
+        },
+        {
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "url": "https://sparse.tamu.edu/MM/DIMACS10/fe_4elt2.tar.gz"
+        }
+      ],
+      "group": "DIMACS10",
+      "kind": "adjacency",
+      "name": "fe_4elt2",
+      "replacement": "DIMACS10/wing_nodal",
+      "replacement_rule": "DIMACS10/wing_nodal",
+      "split": "public",
+      "status": "unavailable",
+      "timed": false,
+      "url": null
+    },
+    {
+      "attempts": [
+        {
+          "error": "URLError: <urlopen error [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1016)>",
+          "url": "https://suitesparse-collection-website.herokuapp.com/MM/DIMACS10/wing_nodal.tar.gz"
+        },
+        {
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "url": "https://sparse.tamu.edu/MM/DIMACS10/wing_nodal.tar.gz"
+        }
+      ],
+      "group": "DIMACS10",
+      "kind": "adjacency",
+      "name": "wing_nodal",
+      "replacement": "DIMACS10/fe_4elt2",
+      "replacement_rule": "DIMACS10/fe_4elt2",
+      "split": "public",
+      "status": "unavailable",
+      "timed": false,
+      "url": null
+    }
+  ],
+  "schema": 1
+}
