@@ -30,6 +30,7 @@ from .tasks import TASKS, Placement, write
 ATR_ROOT = Path(os.environ.get('FRONTIERAM_ATR', '/data/workspace/agent-traffic-runtime'))
 ATR_PYTHON = ATR_ROOT / '.venv/bin/python'
 HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': 'frontieram-conic-harness:v6',
+                  'exponential-v2': 'frontieram-exponential-harness:v6',
                   'galaxy-gravity': 'frontieram-galaxy-gravity-harness:v6',
                   'polarization-demosaicking': 'frontieram-polarization-demosaicking-harness:v6',
                   'species-tree': 'frontieram-species-tree-harness:v6',

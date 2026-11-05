@@ -37,4 +37,13 @@
 
 ## 4. 进度
 
-（初步检查结果待补）
+| 步骤 | 状态 |
+| --- | --- |
+| 封存（哈希、包内清单、可移植性修改） | 四题完成 |
+| amd64 任务镜像 | 四题构建完成，`uname -m` 为 x86_64，Python/NumPy 版本与预期一致（galaxy、species、trajectory：3.12.14 / 2.3.5；polarization：3.11.15 / 1.26.4） |
+| v6 开发 harness 镜像 | 四题构建完成（`frontieram-<题目>-harness:v6`） |
+| 镜像导入 4 个评测守护进程 | grade-06 完成；其余 3 个 slot 在锥优化重标定结束后自动导入（`scripts/load-grade-images.sh`，只在 slot 空闲时导入，因为守护进程跑在计时 CPU 的 SMT 兄弟核上） |
+| 本机参照基线 | 排队中：`scripts/new-task-baselines.sh` 等镜像导入完成后，在安静条件下依次跑 galaxy、polarization、species-tree（以及 exponential-v2），结果写入 `store/reruns/new-task-baselines.log` |
+| 锚点核对、CPU 上限与 1 秒墙钟检查、隔离检查（垫片日志） | 待基线完成 |
+
+第五道题 `mcmc-long-run-covariance-maintainer-v1`（出题方完整包，19.6 GB）正在从北大网盘下载到 `/srv/frontieram-raw/`，`Raw_Resource/` 中为软链接；下载完成后按同样流程接入。

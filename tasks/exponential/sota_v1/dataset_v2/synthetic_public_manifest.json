@@ -3,124 +3,124 @@
     {
       "args": {
         "nine_point": true,
-        "nx": 32,
-        "ny": 32
+        "nx": 260,
+        "ny": 260
       },
       "family": "mesh_diffusion",
       "file": "mothers/public/syn_diffusion2d.npz",
       "fn": "diffusion_2d",
-      "n": 1024,
+      "n": 67600,
       "name": "syn_diffusion2d",
-      "nnz": 8836,
+      "nnz": 605284,
       "seed": 41001,
-      "smoke": true,
+      "smoke": false,
       "split": "public"
     },
     {
       "args": {
         "nine_point": false,
-        "nx": 36,
-        "ny": 28
+        "nx": 280,
+        "ny": 240
       },
       "family": "mesh_diffusion",
       "file": "mothers/public/syn_diffusion2d_b.npz",
       "fn": "diffusion_2d",
-      "n": 1008,
+      "n": 67200,
       "name": "syn_diffusion2d_b",
-      "nnz": 4912,
+      "nnz": 334960,
       "seed": 41007,
-      "smoke": true,
+      "smoke": false,
       "split": "public"
     },
     {
       "args": {
-        "nx": 10,
-        "ny": 10,
-        "nz": 10
+        "nx": 42,
+        "ny": 42,
+        "nz": 42
       },
       "family": "mesh_diffusion",
       "file": "mothers/public/syn_diffusion3d.npz",
       "fn": "diffusion_3d",
-      "n": 1000,
+      "n": 74088,
       "name": "syn_diffusion3d",
-      "nnz": 6400,
+      "nnz": 508032,
       "seed": 41002,
-      "smoke": true,
+      "smoke": false,
       "split": "public"
     },
     {
       "args": {
-        "n": 1500,
+        "n": 80000,
         "target_degree": 8
       },
       "family": "geometric_graph",
       "file": "mothers/public/syn_geometric.npz",
       "fn": "geometric_graph",
-      "n": 1500,
+      "n": 80000,
       "name": "syn_geometric",
-      "nnz": 12810,
+      "nnz": 718296,
       "seed": 41003,
-      "smoke": true,
+      "smoke": false,
       "split": "public"
     },
     {
       "args": {
-        "n": 1600,
+        "n": 75000,
         "target_degree": 10
       },
       "family": "geometric_graph",
       "file": "mothers/public/syn_geometric_b.npz",
       "fn": "geometric_graph",
-      "n": 1600,
+      "n": 75000,
       "name": "syn_geometric_b",
-      "nnz": 16842,
+      "nnz": 820898,
       "seed": 41008,
-      "smoke": true,
+      "smoke": false,
       "split": "public"
     },
     {
       "args": {
         "edges_per_vertex": 4,
-        "n": 1500
+        "n": 80000
       },
       "family": "network_operator",
       "file": "mothers/public/syn_heavytail.npz",
       "fn": "heavy_tailed_graph",
-      "n": 1500,
+      "n": 80000,
       "name": "syn_heavytail",
-      "nnz": 13480,
+      "nnz": 719980,
       "seed": 41004,
-      "smoke": true,
+      "smoke": false,
       "split": "public"
     },
     {
       "args": {
         "average_degree": 10,
-        "n": 1200
+        "n": 60000
       },
       "family": "signed_incidence",
       "file": "mothers/public/syn_signed.npz",
       "fn": "signed_incidence",
-      "n": 1200,
+      "n": 60000,
       "name": "syn_signed",
-      "nnz": 13150,
+      "nnz": 659930,
       "seed": 41005,
-      "smoke": true,
+      "smoke": false,
       "split": "public"
     },
     {
       "args": {
-        "condition": 100000000.0,
-        "n": 2000
+        "condition": 10000000000.0,
+        "n": 100000
       },
       "family": "diagonal_local",
       "file": "mothers/public/syn_logspectrum.npz",
       "fn": "log_spectrum_local",
-      "n": 2000,
+      "n": 100000,
       "name": "syn_logspectrum",
-      "nnz": 4000,
+      "nnz": 200000,
       "seed": 41006,
-      "smoke": true,
+      "smoke": false,
       "split": "public"
     }
   ],

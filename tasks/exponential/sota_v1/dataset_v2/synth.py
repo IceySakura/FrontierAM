@@ -274,7 +274,7 @@ def generate(split: str, smoke: bool) -> list[dict]:
             raise ValueError(f"{spec['name']} exceeds protocol: {matrix.shape}, nnz={matrix.nnz}")
         metadata = {**spec, "seed": seed, "split": split, "smoke": smoke,
                     "n": matrix.shape[0], "nnz": matrix.nnz}
-        path = ROOT / "mothers" / split / f"{spec['name']}.npz"
+        path = ROOT / "mothers" / (f"{split}_smoke" if smoke else split) / f"{spec['name']}.npz"
         save_mother(path, matrix, metadata)
         output.append(metadata | {"file": str(path.relative_to(ROOT))})
         print(spec["name"], matrix.shape[0], matrix.nnz)
@@ -289,7 +289,7 @@ def main() -> int:
     if args.split == "private" and args.smoke:
         parser.error("private smoke generation is intentionally disabled")
     generated = generate(args.split, args.smoke)
-    path = ROOT / f"synthetic_{args.split}_manifest.json"
+    path = ROOT / f"synthetic_{args.split}{'_smoke' if args.smoke else ''}_manifest.json"
     path.write_text(json.dumps({"schema": 1, "split": args.split, "mothers": generated},
                                indent=2, sort_keys=True) + "\n")
     return 0

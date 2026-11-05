@@ -148,6 +148,8 @@ def choose_mothers(split: str, smoke: bool) -> list[Path]:
         standard = [path for path in paths if path.name.startswith("standard_")]
         synthetic = [path for path in paths if path.name.startswith("syn_")]
         if smoke:
+            # Smoke synthetic mothers are reduced-size realizations kept apart from the full-size ones.
+            synthetic = sorted((ROOT / "mothers" / "public_smoke").glob("syn_*.npz"))
             # Eight independent mothers while retaining all six synthetic families.
             preferred_standard = [
                 path for token in ("bcsstk17", "fe_4elt2")

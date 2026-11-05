@@ -25,6 +25,8 @@ MOTHERS = ROOT / "mothers"
 URLS = (
     "https://suitesparse-collection-website.herokuapp.com/MM/{group}/{name}.tar.gz",
     "https://sparse.tamu.edu/MM/{group}/{name}.tar.gz",
+    # The University of Florida mirror serves the same collection archives; reachable when the two above are not.
+    "https://www.cise.ufl.edu/research/sparse/MM/{group}/{name}.tar.gz",
 )
 
 # Split assignment and replacements are declared before any fetch or numerical test.
@@ -39,7 +41,7 @@ MATRICES = (
          replacement="DIMACS10/wing_nodal", timed=False),
     dict(group="DIMACS10", name="wing_nodal", split="public", kind="adjacency",
          replacement="DIMACS10/fe_4elt2", timed=False),
-    dict(group="Boeing", name="thermal1", split="private", kind="spd",
+    dict(group="Schmid", name="thermal1", split="private", kind="spd",
          replacement="a separately frozen thermal operator", timed=True),
     dict(group="SNAP", name="email-Enron", split="private", kind="adjacency",
          replacement="SNAP/cit-HepPh", timed=True),
@@ -160,6 +162,15 @@ def validate_psd(matrix: sp.csr_matrix) -> dict:
     except (spla.ArpackError, ValueError, RuntimeError) as exc:
         lanczos_error = f"{type(exc).__name__}: {exc}"
     scale = max(1.0, float(np.max(np.asarray(abs(matrix).sum(axis=1)))))
+    if smallest is None:
+        # Plain Lanczos stalls on ill-conditioned FEM matrices (bcsstk*: condition ~1e10). Shift-invert just below 0
+        # converges to the eigenvalues nearest the shift, i.e. the smallest ones, including any negative ones.
+        try:
+            smallest = float(np.min(spla.eigsh(matrix.tocsc(), k=3, sigma=-1e-6 * scale, which="LM",
+                                               return_eigenvectors=False)))
+            lanczos_error = f"{lanczos_error}; shift-invert fallback used"
+        except (spla.ArpackError, ValueError, RuntimeError) as exc:
+            lanczos_error = f"{lanczos_error}; shift-invert: {type(exc).__name__}: {exc}"
     psd = bool(np.min(diagonal, initial=0) >= -1e-10 * scale and
                (diagonal_dominant or (smallest is not None and smallest >= -1e-8 * scale)))
     return {
