@@ -1,0 +1,48 @@
+{
+  "method": "Expokit DSPHIV/DGPADM author source (R. B. Sidje) with a local FAMEXP2 stream adapter",
+  "citation": "R. B. Sidje, Expokit: A Software Package for Computing Matrix Exponentials, ACM Trans. Math. Softw. 24(1):130-156, 1998",
+  "upstream": "http://www.maths.uq.edu.au/expokit (release dated Oct 7, 1997)",
+  "upstream_retrieval": {
+    "note": "The UQ site was unreachable from this host; the Fortran files were taken from three independent GitHub copies of the distribution and are byte-identical across them.",
+    "mirrors": [
+      "github.com/MacroUniverse/Expokit (original/fortran)",
+      "github.com/weinbe58/expokitpy (expokit/original_source/fortran)",
+      "github.com/rhr/f2py-expokit (expokit.orig.f)"
+    ],
+    "sha256": {
+      "vendor_expokit/README": "06301738b4db1db1a0b81f3b0b4cb907d36fa456cf5eee7744467ec912e9158a",
+      "vendor_expokit/blas.f": "5a62ad4ebd6d1ef2653063a4178efd5e03d3e2e928ad41f8e5d1f1db5c3f2e43",
+      "vendor_expokit/copyright": "7bb2510b327f42ce279a29f0c39cf69fe930201b29fbaaf9e72c5aef8cbc4c9a",
+      "vendor_expokit/expokit.f": "93ef885b77e375425b1e8a38eabe70680cc02cb546eaa1dbc17199f6f2a3bbdf",
+      "vendor_expokit/lapack.f": "ea78248947106b54fe273886f9401f8be2e3999c31af231b7ce7b62bf6aed986"
+    }
+  },
+  "original_author_files_modified": false,
+  "license": "Expokit notice (vendor_expokit/copyright): non-commercial use, copying and modification permitted with the notice retained",
+  "build": "build.sh inside the frozen task image frontieram-exponential:port-v1 (gfortran/gcc 12.2, -fallow-argument-mismatch for Fortran 77 workspace passing, static link with the BLAS/LAPACK subset shipped by Expokit); expokit_avx2 -O3 -march=x86-64-v3, expokit_generic -O2",
+  "policy": {
+    "solver": "DSPHIV (symmetric Lanczos, phi-function) with A = -L, u = b1, v = b0",
+    "krylov_m": "min(30, n-1); 30 is the author's default in the Expokit drivers",
+    "solver_tolerance": "rtol * 1000",
+    "anorm": "infinity norm of L",
+    "small_dimension": "n<=64: DGPADM (degree-6 Pade) on the augmented matrix [[A, u],[0, 0]]",
+    "degenerate": "t=0, zero operator or both rhs zero: y = b0 + t*b1",
+    "reuse": "no state carried between requests; no future rhs seen"
+  },
+  "calibration": {
+    "script": "calibrate.py",
+    "report": "calibration.json",
+    "selection_data": "public/dev only; 29 cases",
+    "rule": "Rule: tol = multiplier * rtol, with the Krylov size at the author's default m = 30. Choose the largest multiplier on GRID such that it and every smaller grid value pass every request of every public dev case with error_inf <= MARGIN * (atol + rtol * |y_ref|_inf). Timing plays no part in the selection.",
+    "margin": 0.1,
+    "selected_multiplier": 1000.0,
+    "rule_history": "The first rule (largest single qualifying value, margin 0.5) was replaced after public results showed non-monotonic accuracy above 1e3; no private or candidate data was used.",
+    "private_results_used_for_tuning": false,
+    "candidate_submissions_used_for_tuning": false
+  },
+  "public_comparison_with_kiops": "On the 29 public dev cases (3 repeats, same image, one CPU), Expokit time / KIOPS time has geometric mean 0.040 (range 0.012-0.182).",
+  "adopted_utc": "2026-11-04",
+  "adopted_after_model_runs": true,
+  "reason": "The KIOPS/Octave pilot anchor is dominated by interpreter overhead at pilot sizes; v6 candidates scored 70-95 against it. Expokit is a published, widely cited author implementation in a compiled language.",
+  "is_final_sota_claim": false
+}

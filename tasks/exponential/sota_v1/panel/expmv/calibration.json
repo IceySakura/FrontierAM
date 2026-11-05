@@ -1,0 +1,197 @@
+{
+  "rule": [
+    "Rule, fixed before running: for each level (p4, p7, p10) take the cheapest of half < single < double for which every",
+    "request of every public dev case at that level passes with error_inf <= MARGIN * (atol + rtol * |y_ref|_inf)."
+  ],
+  "margin": 0.1,
+  "selected": {
+    "p4": "single",
+    "p7": "double",
+    "p10": "double"
+  },
+  "results": {
+    "p4": {
+      "half": {
+        "cases": 8,
+        "max_scaled_error": Infinity,
+        "failures": 8,
+        "worst_case": [
+          "mesh12_p4_k1",
+          "accuracy_failure",
+          [
+            {
+              "passed": false,
+              "error_inf": 2.6797908382086844e-05,
+              "scaled_error": 1.4787758081067923,
+              "reason": "accuracy_failure"
+            }
+          ]
+        ]
+      },
+      "single": {
+        "cases": 8,
+        "max_scaled_error": 0.0019206996942105234,
+        "failures": 0,
+        "worst_case": [
+          "mesh48_p4_k16",
+          "ok",
+          [
+            {
+              "passed": true,
+              "error_inf": 6.593551822586807e-09,
+              "scaled_error": 0.0011857087786983464,
+              "reason": "passed"
+            },
+            {
+              "passed": true,
+              "error_inf": 9.405154648145508e-09,
+              "scaled_error": 0.0016580365560726897,
+              "reason": "passed"
+            }
+          ]
+        ]
+      },
+      "double": {
+        "cases": 8,
+        "max_scaled_error": 4.678028510910499e-10,
+        "failures": 0,
+        "worst_case": [
+          "mesh48_p4_k16",
+          "ok",
+          [
+            {
+              "passed": true,
+              "error_inf": 1.7763568394002505e-15,
+              "scaled_error": 3.1943965183720917e-10,
+              "reason": "passed"
+            },
+            {
+              "passed": true,
+              "error_inf": 1.2836953722228372e-15,
+              "scaled_error": 2.2630290873808006e-10,
+              "reason": "passed"
+            }
+          ]
+        ]
+      }
+    },
+    "p7": {
+      "half": {
+        "cases": 8,
+        "max_scaled_error": Infinity,
+        "failures": 8,
+        "worst_case": [
+          "mesh12_p7_k1",
+          "accuracy_failure",
+          [
+            {
+              "passed": false,
+              "error_inf": 2.6797908382086844e-05,
+              "scaled_error": 1478.7758081067923,
+              "reason": "accuracy_failure"
+            }
+          ]
+        ]
+      },
+      "single": {
+        "cases": 8,
+        "max_scaled_error": Infinity,
+        "failures": 2,
+        "worst_case": [
+          "mesh48_p7_k1",
+          "accuracy_failure",
+          [
+            {
+              "passed": false,
+              "error_inf": 6.593551822586807e-09,
+              "scaled_error": 1.1857087786983465,
+              "reason": "accuracy_failure"
+            }
+          ]
+        ]
+      },
+      "double": {
+        "cases": 8,
+        "max_scaled_error": 4.678028510910499e-07,
+        "failures": 0,
+        "worst_case": [
+          "mesh48_p7_k16",
+          "ok",
+          [
+            {
+              "passed": true,
+              "error_inf": 1.7763568394002505e-15,
+              "scaled_error": 3.194396518372092e-07,
+              "reason": "passed"
+            },
+            {
+              "passed": true,
+              "error_inf": 1.2836953722228372e-15,
+              "scaled_error": 2.2630290873808007e-07,
+              "reason": "passed"
+            }
+          ]
+        ]
+      }
+    },
+    "p10": {
+      "half": {
+        "cases": 13,
+        "max_scaled_error": Infinity,
+        "failures": 11,
+        "worst_case": [
+          "mesh12_p10_k1",
+          "accuracy_failure",
+          [
+            {
+              "passed": false,
+              "error_inf": 2.6797908382086844e-05,
+              "scaled_error": 1478775.8081067922,
+              "reason": "accuracy_failure"
+            }
+          ]
+        ]
+      },
+      "single": {
+        "cases": 13,
+        "max_scaled_error": Infinity,
+        "failures": 11,
+        "worst_case": [
+          "mesh12_p10_k1",
+          "accuracy_failure",
+          [
+            {
+              "passed": false,
+              "error_inf": 4.674200748677748e-10,
+              "scaled_error": 25.79341227242841,
+              "reason": "accuracy_failure"
+            }
+          ]
+        ]
+      },
+      "double": {
+        "cases": 13,
+        "max_scaled_error": 0.00046780285109104987,
+        "failures": 0,
+        "worst_case": [
+          "mesh48_p10_k16",
+          "ok",
+          [
+            {
+              "passed": true,
+              "error_inf": 1.7763568394002505e-15,
+              "scaled_error": 0.00031943965183720913,
+              "reason": "passed"
+            },
+            {
+              "passed": true,
+              "error_inf": 1.2836953722228372e-15,
+              "scaled_error": 0.00022630290873808007,
+              "reason": "passed"
+            }
+          ]
+        ]
+      }
+    }
+  }
+}

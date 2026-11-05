@@ -1,0 +1,17 @@
+{
+  "method": "Al-Mohy & Higham expmv (truncated Taylor with scaling, Algorithm 3.2), author MATLAB code run in Octave with a thin FAMEXP2 adapter",
+  "citation": "A. H. Al-Mohy and N. J. Higham, Computing the action of the matrix exponential, with an application to exponential integrators, SIAM J. Sci. Comput. 33(2):488-511, 2011",
+  "upstream": "https://github.com/higham/expmv",
+  "commit": "779f27e81afba16b9b2454ef0460ecf7bad23988",
+  "archive_sha256": "a3fc31daaf34485726b960f2fd0b5891c0e0f183320a5a90dc645a89ac50922d",
+  "original_author_files_modified": false,
+  "policy": {
+    "phi1": "first n entries of expm(t*[[-L, b1]; [0, 0]]) * [b0; 1]",
+    "precision": "per tolerance level from calibration.json: p4 single, p7 double, p10 double",
+    "degenerate": "t=0, zero operator or both rhs zero: y = b0 + t*b1",
+    "shift_and_balance": "author defaults (trace shift on, balancing off)"
+  },
+  "calibration": {"script": "calibrate.py", "report": "calibration.json", "selection_data": "29 public dev cases only",
+                  "rule": "cheapest of half < single < double per level with every public request within 0.1 of the allowed error"},
+  "is_final_sota_claim": false
+}

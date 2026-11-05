@@ -1,0 +1,15 @@
+{
+  "PROVENANCE.json": "add0943009f6c579930cf1fce9f392bb159fe80316a56c02b6668dd57b698ca0",
+  "build.sh": "7cb096c612efd59399d7a5f0527389e78f91e28c393c00d864af228c641b1d7c",
+  "calibrate.py": "18c6cf008b79757bbd265ceb8c3a6f0f7da3fbe1b1d95b0575c98d5c52b767df",
+  "calibration.json": "e3052e74798745788e76f1bdcdf8e9a690839a47983b657a1269f51f8f902ef6",
+  "expokit_avx2": "80e4cc67b8b828994e40b0b80ba97d0b1cac7e6cd13714f761e4893efa2b6243",
+  "expokit_generic": "0ec09e032e93563f20bc32f1a9ff0973fd484989b6c10b90e9f18c3d8e6b5d59",
+  "run.sh": "8d34dc2e89596169e36a38b68a39d654d4c717c675c836c2a16f2ae61a49f985",
+  "src/stream_expokit.c": "ce302476ec3761dbfd615b4faf8be411b8ffc9e5ef7f6c741a730a6c3263830d",
+  "vendor_expokit/README": "06301738b4db1db1a0b81f3b0b4cb907d36fa456cf5eee7744467ec912e9158a",
+  "vendor_expokit/blas.f": "5a62ad4ebd6d1ef2653063a4178efd5e03d3e2e928ad41f8e5d1f1db5c3f2e43",
+  "vendor_expokit/copyright": "7bb2510b327f42ce279a29f0c39cf69fe930201b29fbaaf9e72c5aef8cbc4c9a",
+  "vendor_expokit/expokit.f": "93ef885b77e375425b1e8a38eabe70680cc02cb546eaa1dbc17199f6f2a3bbdf",
+  "vendor_expokit/lapack.f": "ea78248947106b54fe273886f9401f8be2e3999c31af231b7ce7b62bf6aed986"
+}
