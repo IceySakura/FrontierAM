@@ -26,8 +26,6 @@
 | gpt-6-astra | Codex | max | 128000 | 1.05M | 6685 s | 139 | 正常结束 |
 | hy4 | Claude Code（太极） | high | 64000 | 1M | 6902 s | 284 | 正常结束 |
 | claude-opus-5-5 | Claude Code | max | 128000 | 1M | 5321 s | 115 | 正常结束 |
-| deepseek-v4-pro | DeepSeek DSH | max | 393216 | 1M | 6792 s | 180 | 正常结束 |
-| minimax-m3.1-flash | Codex（Responses） | high | 524288 | 1M | 3719 s | 144 | 正常结束 |
 | step-5-preview | Step Code | high | 65536 | 1M | 7200 s | 55 | 到达期限，无有效提交 |
 
 ## 3. 结果（本机重标定时限，650 例）
@@ -39,8 +37,6 @@
 | gpt-6-astra | 404 | 0.622 | −109 | 55 / 164 | <1e-13 | 0 |
 | hy4 | 339 | 0.522 | −174 | 43 / 217 | <1e-28 | 0 |
 | claude-opus-5-5 | 334 | 0.514 | −179 | 31 / 210 | <1e-33 | 0 |
-| deepseek-v4-pro | 尚未评测 | — | — | — | — | — |
-| minimax-m3.1-flash | 尚未评测 | — | — | — | — | — |
 | step-5-preview | 无有效提交 | 0 | — | — | — | 0 |
 
 分组解出数（LP 184 / QP 253 / SOC 134 / PSD 42 / EXP 37）：
@@ -53,7 +49,6 @@
 | hy4 | 157 | 113 | 32 | 6 | 31 |
 | claude-opus-5-5 | 107 | 184 | 11 | 13 | 19 |
 
-deepseek-v4-pro 和 minimax-m3.1-flash 的开发都正常结束，并交出了有效的冻结提交；但受评测机时限制，它们的 650 例全集评测排在其他模型之后，交付前没有运行（deepseek 已开始的 2 个分片被主动取消，把 slot 让给优先级更高的评测）。目前只有题目包 20 例 pilot 子集上的结果（原时限）：deepseek 0.20，minimax 0.10，同期参考为 0.50。
 
 ## 4. 成功率如何映射为最终得分
 
