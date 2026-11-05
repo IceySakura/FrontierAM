@@ -1,0 +1,28 @@
+---
+description: Every FrontierAM task reports its final score on a 100-point scale where the locally rerun reference scores 50
+alwaysApply: true
+---
+
+# Final score convention: reference = 50, maximum = 100
+
+Every task's final score (reports, leaderboards, chat summaries) is on a 0–100 scale:
+
+- The reference implementation is rerun on this machine and is the anchor; never anchor on historical or other-machine numbers.
+- A monotone mapping of the task's raw metric gives the reference **50**, the best achievable result **100**, and an invalid submission **0**. Infrastructure failures are "unmeasured", not 0.
+- If the task already has a reference-anchored scale, rescale it linearly (conic: original 0–10 with reference 5 → ×10).
+- A new task must define its mapping when it is added, and the report must state the formula.
+- Always show raw metric, mapping, and final score together.
+
+Current mappings:
+
+| Task | Raw metric | Final score |
+| --- | --- | --- |
+| exponential | time ratio R vs paired reference | 100 / (1 + R) |
+| conic | success rate p over 650 cases, p_B = local reference rate | 0 if p ≤ 0.9·p_B; 50·(p − 0.9·p_B)/(0.1·p_B) up to p_B; 50 + 50·(p − p_B)/(1 − p_B) above |
+
+```text
+# ❌ "gpt-6.1-sol: S = 0.52 (0–10)"     # task-native scale
+# ✅ "gpt-6.1-sol: 5.2 / 100 (reference 50); p = 0.718 vs p_B = 0.789"
+```
+
+See README.md "最终得分约定" for the full statement.
