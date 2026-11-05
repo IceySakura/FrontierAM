@@ -29,7 +29,11 @@ from .tasks import TASKS, Placement, write
 
 ATR_ROOT = Path(os.environ.get('FRONTIERAM_ATR', '/data/workspace/agent-traffic-runtime'))
 ATR_PYTHON = ATR_ROOT / '.venv/bin/python'
-HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': 'frontieram-conic-harness:v6'}
+HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': 'frontieram-conic-harness:v6',
+                  'galaxy-gravity': 'frontieram-galaxy-gravity-harness:v6',
+                  'polarization-demosaicking': 'frontieram-polarization-demosaicking-harness:v6',
+                  'species-tree': 'frontieram-species-tree-harness:v6',
+                  'trajectory-covariance': 'frontieram-trajectory-covariance-harness:v6'}
 # The vendor's own client where ATR has one; Claude Code for Messages models without one, Codex for Responses ones.
 HARNESS = {
     'claude-opus-5-5': 'claude',
@@ -190,13 +194,18 @@ TIMING_NOTE = (
 )
 
 
+SUBMISSION_NOTE = (
+    'Put the complete source, an executable run.sh and README.md in /workspace/submission; the evaluator runs '
+    './run.sh from that directory in a clean copy of this environment without the agent tools.'
+)
+
+
 def prompt(task_name: str, runtime: dict, protocol: str = 'v6') -> str:
     task = TASKS[task_name]
     return (
         task.instruction.replace(' Use only the offline workspace tool.', '')
         + ' The machine is offline: no network access and no package downloads; use what is installed. '
-        'Put the complete source, an executable run.sh and README.md in /workspace/submission; the evaluator runs '
-        './run.sh from that directory in a clean copy of this environment without the agent tools. '
+        + getattr(task, 'submission_note', SUBMISSION_NOTE) + ' '
         'One attempt, at most 7200 wall-clock seconds including model requests and tool time. Finishing your turn, '
         'or the deadline, freezes /workspace/submission for evaluation; there is no later repair or hidden feedback.'
         + runtime['architecture_override_prompt']

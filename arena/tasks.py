@@ -380,6 +380,10 @@ class Conic(Task):
 
 TASKS: dict[str, Task] = {task.name: task for task in (Exponential(), Conic())}
 
+from .operator_tasks import operator_tasks  # noqa: E402  (operator tasks subclass Task)
+
+TASKS.update(operator_tasks())
+
 
 def placement_record(placement: Placement) -> dict[str, Any]:
     return asdict(placement)

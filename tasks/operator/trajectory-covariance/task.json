@@ -1,0 +1,21 @@
+{
+  "name": "trajectory-covariance",
+  "title": "从一条采样轨迹估计长期协方差",
+  "status": "development_only",
+  "status_reason": "Only the public package was delivered: there is no operator package, so no private trajectories, reference matrices, baselines, grader or anchors.",
+  "packages": {
+    "public": {"file": "trajectory-covariance-public-v1(1).tar.gz", "sha256": "48533e2f9c2d2990143a6ca04b4e9ef7e41cb4e83085309c8d5a2d1850ccb502", "root": "trajectory-covariance-public-v1"}
+  },
+  "integrity": {"type": "sha256sums", "package": "public", "file": "SHA256SUMS"},
+  "public_files": [
+    {"from": "public:problem.md", "to": "problem.md"},
+    {"from": "unzip:public:public-dev/trajectory-dev.zip", "to": "public-dev"}
+  ],
+  "portability_edits": [],
+  "images": {
+    "task": {"tag": "frontieram-trajectory-covariance:amd64-b1", "dockerfile": "Dockerfile.amd64", "replaces": ["local/trajectory-runtime:b1"]}
+  },
+  "references": {},
+  "submission_note": "Put the complete source, an executable run.sh and README.md in /workspace/submission, plus an optional executable no-argument build.sh; the evaluator builds once offline and runs ./run.sh INPUT OUTPUT per trajectory in a clean copy of this environment without the agent tools.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/public-dev. Implement the long-run covariance estimator described there."
+}

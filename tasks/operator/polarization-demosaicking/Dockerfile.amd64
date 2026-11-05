@@ -1,0 +1,19 @@
+# amd64 reconstruction of songberg-cpu-probe:r4.2.2-33d65cf (the solver image) plus the public task layer of
+# local/four-angle-public:b1-v1.2. Recipe read from the frozen ARM64 image history: official python:3.11.15-slim-bookworm,
+# the image's own requirements.lock installed with pip, user worker (1000), single-thread library defaults.
+# torch comes from the CPU wheel index (the default PyPI amd64 wheel bundles CUDA). The ARM image's vendored Codex
+# layers are development tooling for its own agent and are not part of the solver environment.
+FROM python:3.11.15-slim-bookworm
+COPY requirements.lock /opt/bo/requirements.lock
+RUN python3 -m pip install --no-cache-dir --index-url https://mirrors.tencent.com/pypi/simple/ \
+        --extra-index-url https://download.pytorch.org/whl/cpu \
+        "torch==2.2.2+cpu" $(grep -v '^torch==' /opt/bo/requirements.lock) \
+    && python3 -m pip check
+RUN groupadd --gid 1000 worker && useradd --create-home --uid 1000 --gid 1000 worker \
+    && mkdir -p /workspace/submission /workspace/public-dev && chown worker:worker /workspace /workspace/submission
+ENV OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 BLIS_NUM_THREADS=1 \
+    PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 HOME=/home/worker
+COPY problem.md /workspace/problem.md
+COPY public-dev/check.py /workspace/public-dev/check.py
+RUN chmod -R a=rX /workspace/problem.md /workspace/public-dev
+WORKDIR /workspace

@@ -1,0 +1,26 @@
+{
+  "name": "species-tree",
+  "title": "从短基因的估计树推断物种树",
+  "status": "public_acceptance",
+  "status_reason": "The operator package does not contain the private scoring data (data-seal.json and the 50 formal cases are transferred separately per its README), so only the public acceptance protocol on development cases can run here.",
+  "packages": {
+    "operator": {"file": "species-tree-operator-v1.zip", "sha256": "32a33c67a0303d02ee907459b66078bced42a2aebbbfabfaf69b44996296e809", "root": ""},
+    "public": {"file": "species-tree-public-v1(1).zip", "sha256": "0fb53633f003ee3f21dacab8eeaa85c85d9416aa5044e8d36a700bf551b4a3bd", "root": ""}
+  },
+  "integrity": {"type": "sha256sums", "package": "operator", "file": "SHA256SUMS"},
+  "public_files": [
+    {"from": "public:problem.md", "to": "problem.md"},
+    {"from": "unzip:public:public-dev/species-tree-dev.zip", "to": "public-dev"}
+  ],
+  "portability_edits": [],
+  "images": {
+    "task": {
+      "tag": "frontieram-species-tree:amd64-b1",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": ["sha256:1d48faa312f84fa5a6ace78b36fafe247eda2e6c5ac5d6ddd5da53ccf80a4c11", "local/species-tree-cpu:b1"]
+    }
+  },
+  "references": {"weak": "references:unweighted", "strong": "references:weighted"},
+  "submission_note": "Put the complete source, an executable run.sh and README.md in /workspace/submission, plus an optional executable no-argument build.sh; the evaluator builds once offline and runs ./run.sh INPUT OUTPUT per instance in a clean copy of this environment without the agent tools.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/public-dev. Implement the species-tree inference program described there."
+}

@@ -17,3 +17,5 @@ store/
 store-*/
 .runtime-*/
 dist/
+staging/
+.runtime-ops/

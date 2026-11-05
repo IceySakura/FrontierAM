@@ -1,0 +1,11 @@
+# amd64 stand-in for local/species-tree-cpu:b1, which is exported separately and not shipped. The task promises a POSIX
+# shell, C/C++ compilers and Python 3; the conic success-v2 image from the same author provides them (Debian bookworm,
+# gcc/g++ 12, make, cmake, CPython 3.12.14).
+ARG BASE=frontieram-conic:success-v2-port-v1
+FROM ${BASE}
+USER root
+RUN rm -rf /workspace/public-dev && ln -sf /usr/local/bin/python3 /usr/bin/python3
+COPY public-dev/ /workspace/public-dev/
+COPY problem.md /workspace/problem.md
+RUN chmod -R a=rX /workspace/public-dev /workspace/problem.md
+WORKDIR /workspace

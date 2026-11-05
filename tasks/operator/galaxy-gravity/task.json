@@ -1,0 +1,32 @@
+{
+  "name": "galaxy-gravity",
+  "title": "星系快照中的引力加速度",
+  "status": "formal",
+  "packages": {
+    "operator": {"file": "galaxy-gravity-operator-1.0.1(1).tar.gz", "sha256": "3e5b54c54f6067fc32fff7d71efa9f09237c2f32463e97668519c8c77be0369a", "root": "operator"},
+    "public": {"file": "galaxy-gravity-public-1.0.1.zip", "sha256": "85558e0b72817be7abf609b1cf8de391653c27014a94ec8913c44688a6ce31c8", "root": ""}
+  },
+  "integrity": {"type": "sha256sums", "package": "operator", "file": "SHA256SUMS"},
+  "public_files": [
+    {"from": "public:problem.md", "to": "problem.md"},
+    {"from": "public:public-dev", "to": "public-dev"}
+  ],
+  "portability_edits": [
+    {
+      "file": "tasks/galaxy-gravity/harbor/tests/worker.py",
+      "old": "or os.uname().machine != \"aarch64\" or",
+      "new": "or os.uname().machine not in (\"aarch64\", \"x86_64\") or",
+      "reason": "This host is native Linux amd64; the package was calibrated on native ARM64. The worker's resource, network and CPU-affinity checks are unchanged."
+    }
+  ],
+  "images": {
+    "task": {
+      "tag": "frontieram-galaxy-gravity:amd64-b2",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": ["sha256:3effa53ebc6b4469ced04f611f8678de95fe793145141fc73486e2fa8ba3e2bc", "local/galaxy-gravity-cpu:b2"]
+    }
+  },
+  "references": {"weak": "baselines/standard", "strong": "baselines/modified"},
+  "submission_note": "Put the complete source in /workspace/submission with an executable ./solve at its root, or an executable ./build.sh that creates ./solve; the evaluator builds once offline and runs ./solve INPUT OUTPUT per snapshot in a clean copy of this environment without the agent tools.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/public-dev. Implement the gravitational-acceleration program described there."
+}
