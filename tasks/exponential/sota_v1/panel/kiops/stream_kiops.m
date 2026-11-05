@@ -1,6 +1,7 @@
-function stream_kiops()
+function stream_kiops(multiplier)
 % Local stream adapter; pinned upstream kiops.m/expm_kiops.m remain unchanged.
-% Generic size fallback and tolerance policy are frozen before model runs.
+% Generic size fallback and tolerance policy are frozen before model runs. The optional argument overrides the
+% tolerance multiplier (tol = multiplier * rtol) for public calibration only (calibrate.py).
   here=fileparts(mfilename('fullpath'));
   addpath(fullfile(here,'vendor_kiops'));
   fprintf(1,'READY\n'); fflush(1);
@@ -19,7 +20,8 @@ function stream_kiops()
   rows=repelem((1:n).',diff(ptr));
   L=sparse(rows,col+1,val,n,n); t=double(h.t); A=-t*L;
   assert(t>=0 && t<=10000 && isfinite(t));
-  tol=double(h.rtol)*0.01;
+  if nargin < 1, multiplier = 0.01; end
+  tol=double(h.rtol)*multiplier;
   mmin=min(10,n); mmax=min(128,n+1); m_init=mmin;
   for j=1:double(h.requests)
     b0=read_exact(n,'double=>double'); b1=read_exact(n,'double=>double');

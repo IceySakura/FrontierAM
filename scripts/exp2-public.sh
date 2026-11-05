@@ -36,11 +36,11 @@ TOOLS=$ROOT/tasks/exponential/public/tools
 P=$ROOT/$V2/panel
 container 8 6g "python3 $P/expokit/calibrate.py $TOOLS $MANIFEST $P/expokit/expokit_avx2 $ROOT/$OUT/expokit.json" > "$OUT/expokit.log" 2>&1 &
 container 10 6g "python3 $P/expmv/calibrate.py $TOOLS $MANIFEST $ROOT/$OUT/expmv.json" > "$OUT/expmv.log" 2>&1 &
-for member in kiops scipy chebyshev; do
-    cpu=$((12 + 2 * $(echo "kiops scipy chebyshev" | tr ' ' '\n' | grep -n "^$member$" | cut -d: -f1)))
-    container $cpu 6g "python3 $TOOLS/run_local.py --manifest $MANIFEST --command $P/$member/run.sh --repeats 1 \
-        --output $ROOT/$OUT/$member-validation.json" > "$OUT/$member.log" 2>&1 &
-done
+container 16-23,24-26 40g "python3 $P/kiops/calibrate.py $TOOLS $MANIFEST $ROOT/$OUT/kiops.json --jobs 11" > "$OUT/kiops.log" 2>&1 &
+container 12 6g "python3 $TOOLS/run_local.py --manifest $MANIFEST --command $P/scipy/run.sh --repeats 1 \
+    --output $ROOT/$OUT/scipy-validation.json" > "$OUT/scipy.log" 2>&1 &
+container 14 6g "python3 $TOOLS/run_local.py --manifest $MANIFEST --command $P/chebyshev/run.sh --repeats 1 \
+    --output $ROOT/$OUT/chebyshev-validation.json" > "$OUT/chebyshev.log" 2>&1 &
 wait
 log '"event": "panel_calibration_done"'
 
