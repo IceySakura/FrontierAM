@@ -70,9 +70,11 @@ dtypes match the pilot format: float64 `data/b0/b1/y_ref/t/rtol/atol`, uint32
 ## Truth status and cost
 
 The eight controls have analytic dense-eigendecomposition truth. Scored
-`y_ref` arrays are explicit finite zero placeholders so the wire-format loader
-can be exercised; manifest fields mark them `placeholder_zero_unqualified`.
-They must not be used for correctness or scoring.
+`y_ref` arrays were generated as finite zero placeholders
+(`placeholder_zero_unqualified`). `truth.py` has since replaced them in the
+public smoke: all 48 are `chebyshev_audited_qualified`. See `truth_plan.md` for
+the method, validation and measured cost. The planning estimates below predate
+that run.
 
 For the reduced smoke, the Chebyshev planning model estimates 1.90 CPU-minutes
 total primary work. The hardest session is `syn_signed_p10_k16`: degree 3,081,

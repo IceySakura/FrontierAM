@@ -1,38 +1,40 @@
-# Dataset-v2 truth computation plan
+# Dataset-v2 truth computation
 
-Scored files currently contain finite zero placeholders in `y_ref`; they are
-explicitly **unqualified** and must not be used for correctness or scoring.
-Analytic controls already contain qualified dense-eigendecomposition truth.
+Implemented in `truth.py`; run as `truth.py MANIFEST --jobs N --cpus LIST`. Scored cases whose
+`truth_status` is not `chebyshev_audited_qualified` must not be used for correctness or scoring.
+Analytic controls keep their dense-eigendecomposition truth.
 
-## Primary computation
+## Method
 
-Use 256-bit MPFR/Arb coefficients for both `exp(-t x)` and
-`(1-exp(-t x))/x` on `[0, lambda_upper]`, where `lambda_upper` is the smaller
-of the infinity norm and a safety-inflated verified Lanczos upper bound.
-Choose the Chebyshev tail below `1e-3` of the p10 acceptance threshold and use
-one compensated binary64/long-double Clenshaw recurrence for both functions.
-Reuse sessions use block SpMM over all 16 right-hand sides.
+* **Primary:** `exp(-t x)` and `t*phi1(-t x)` are expanded separately in Chebyshev series on
+  `[0, ||L||_inf]`. Coefficients come from Chebyshev-point samples; the series is truncated where the
+  coefficient envelope drops below `1e-3` of the request's acceptance threshold. The Clenshaw recurrence
+  and the sparse products run in x87 extended precision (eps ~1.1e-19).
+* **Audit:** Al-Mohy–Higham truncated Taylor (`scipy.sparse.linalg.expm_multiply`, binary64) on the
+  augmented operator `t*[[-L, b1], [0, 0]]` applied to `[b0; 1]`.
+* **Qualification:** for every request, `||primary - audit||_inf <= 0.02*(atol + rtol*||y||_inf)`.
+* **Arbitration:** when the audit disagrees and `n <= 6000`, a dense eigendecomposition decides. The case
+  qualifies if the primary is within the same `0.02` of it. Otherwise the case stays unqualified.
 
-## Independent audit
+## Approaches that were rejected
 
-Audit every case with restarted high-accuracy Lanczos/KIOPS at `1e-3*rtol`.
-For `eta >= 1e4`, add rational Krylov or scaling-and-Taylor augmented action.
-Audit controls and sampled principal subproblems with arbitrary precision dense
-eigendecomposition. Require infinity-norm disagreement no greater than
-`0.02*(atol + rtol*||y||inf)`; otherwise classify the case as evaluator error.
+* `y = b0 + phi1(L)(b1 - L b0)` cancels catastrophically at large `t*lambda`.
+* A binary64 Chebyshev primary reached `0.108` of the threshold against dense eigh at `eta = 1e5`, p10:
+  rounding is amplified by `max f = t`.
+* A Lanczos audit stagnated on stiff operators, with errors 2.7x and 13x the threshold.
 
-## Cost model
+## Public smoke result (48 scored cases)
 
-The generator estimates degree as
-`ceil(2*sqrt(eta*log(2/(atol+rtol))))`, sparse work as
-`2*nnz*degree*requests`, and CPU time at a conservative 50 million sparse
-floating operations/second. This is a planning estimate, not a timing result.
+* 48/48 qualified. The worst primary–audit disagreement on 47 cases is within 0.02.
+* `syn_logspectrum_p10_k16`, request 14: the audit is off by 0.237 of the threshold, while the primary
+  matches dense eigh to 0.000 (case-wide arbitration 0.0064). The binary64 Taylor audit is the inaccurate
+  side on this ill-conditioned operator.
+* Cost: 600 CPU-s primary+audit for all 48 cases (max Chebyshev degree 1827), plus 58 CPU-s arbitration.
+  Extended precision is roughly 5x the binary64 planning estimate (1.9 CPU-min primary).
 
-* Cases estimated: 48
-* Primary total: 1.9 CPU-minutes (0.03 CPU-hours)
-* Hardest case: `syn_signed_p10_k16`, degree 3081,
-  0.4 CPU-minutes
-* Independent audit budget: 1–2x primary for ordinary cases and 2–3x for
-  `eta >= 1e4`.
+## Full dataset
 
-Machine-readable per-case estimates are in `truth_costs.json`.
+The binary64 planning budget was 20–60 CPU-h primary plus 20–80 CPU-h audit. With the measured
+extended-precision factor, plan for about 100–300 CPU-h primary. Operators above `n = 6000` have no
+dense arbitration, so an audit disagreement there removes the case from scoring. The count of such
+cases must be reported with the release.

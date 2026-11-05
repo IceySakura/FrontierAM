@@ -20,3 +20,5 @@ dist/
 staging/
 .runtime-ops/
 .venv-ops/
+Raw_Resource/
+/conic-reference-submission-*.tar.gz
