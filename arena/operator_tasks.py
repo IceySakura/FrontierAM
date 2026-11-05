@@ -208,7 +208,9 @@ class SpeciesTree(OperatorTask):
         driver = ROOT / 'arena/operator_drivers/species_tree_batch.py'
         out.parent.mkdir(parents=True, exist_ok=True)
         env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
-        done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.root() / 'operator'), str(source), str(out)],
+        private = self.root() / 'private-data'
+        command = [str(GRADER_PYTHON), '-B', str(driver), str(self.root() / 'operator'), str(source), str(out)]
+        done = subprocess.run(command + ([str(private)] if private.is_dir() else []),
                               env=env, capture_output=True, text=True, timeout=self.grade_timeout)
         (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
         summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
@@ -218,7 +220,8 @@ class SpeciesTree(OperatorTask):
         reason = summary.get('reason') or (done.stderr.strip().splitlines()[-1] if done.returncode and done.stderr.strip() else None)
         return {'status': mapped, 'raw_error': summary.get('mean_nrf'), 'reason': reason, 'package_score': None,
                 'missed_splits': summary.get('missed_splits'), 'failed_cases': summary.get('failed_cases'),
-                'scope': 'public development cases (not the official private set)'}
+                'scope': {'formal': '50 formal hidden cases', 'public': 'public development cases (pipeline check)'}
+                .get(summary.get('scope'), summary.get('scope'))}
 
 
 class DevelopmentOnlyTask(OperatorTask):
