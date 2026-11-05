@@ -16,3 +16,4 @@ store/
 .runtime.*/
 store-*/
 .runtime-*/
+dist/

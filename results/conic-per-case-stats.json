@@ -1,0 +1,178 @@
+{
+  "limits": {
+    "private_original": {
+      "1s": 422,
+      "1-300s": 90,
+      "300s": 138
+    },
+    "private_recalibrated": {
+      "1-300s": 109,
+      "1s": 404,
+      "300s": 137
+    },
+    "public_dev": {
+      "300s": 163
+    }
+  },
+  "solvers": {
+    "reference": {
+      "solved": 513,
+      "solved_by_band": {
+        "1-300s": 109,
+        "1s": 404
+      },
+      "solved_by_group": {
+        "exponential": 37,
+        "quadratic": 234,
+        "linear": 162,
+        "soc": 65,
+        "psd": 15
+      },
+      "median_fastest_repeat_on_1s_cases": 0.281,
+      "unsolved_by_band_and_reason": {
+        "300s | invalid_input_or_result": 1,
+        "300s | memory_limit": 1,
+        "300s | residual_tolerance_exceeded": 128,
+        "300s | time_limit": 1,
+        "300s | unresolved": 6
+      }
+    },
+    "gpt-6.1-sol": {
+      "solved": 467,
+      "solved_by_band": {
+        "1-300s": 29,
+        "1s": 333,
+        "300s": 105
+      },
+      "solved_by_group": {
+        "exponential": 23,
+        "quadratic": 176,
+        "linear": 161,
+        "soc": 75,
+        "psd": 32
+      },
+      "median_fastest_repeat_on_1s_cases": 0.53,
+      "unsolved_by_band_and_reason": {
+        "1-300s | slower_than_limit": 2,
+        "1-300s | time_limit": 78,
+        "1s | time_limit": 67,
+        "1s | unresolved": 4,
+        "300s | memory_limit": 1,
+        "300s | time_limit": 2,
+        "300s | time_limit;unresolved": 1,
+        "300s | unresolved": 28
+      },
+      "time_ratio_vs_reference_on_both_solved_above_1s": {
+        "cases": 29,
+        "median": 0.52,
+        "geomean": 0.312
+      }
+    },
+    "gpt-6-astra": {
+      "solved": 404,
+      "solved_by_band": {
+        "1-300s": 27,
+        "1s": 322,
+        "300s": 55
+      },
+      "solved_by_group": {
+        "exponential": 24,
+        "quadratic": 169,
+        "linear": 157,
+        "soc": 35,
+        "psd": 19
+      },
+      "median_fastest_repeat_on_1s_cases": 0.472,
+      "unsolved_by_band_and_reason": {
+        "1-300s | slower_than_limit": 1,
+        "1-300s | time_limit": 81,
+        "1s | time_limit": 78,
+        "1s | unresolved": 4,
+        "300s | time_limit": 10,
+        "300s | time_limit;unresolved": 4,
+        "300s | unresolved": 68
+      },
+      "time_ratio_vs_reference_on_both_solved_above_1s": {
+        "cases": 27,
+        "median": 0.479,
+        "geomean": 0.325
+      }
+    },
+    "hy4": {
+      "solved": 339,
+      "solved_by_band": {
+        "1-300s": 22,
+        "1s": 274,
+        "300s": 43
+      },
+      "solved_by_group": {
+        "exponential": 31,
+        "quadratic": 113,
+        "linear": 157,
+        "soc": 32,
+        "psd": 6
+      },
+      "median_fastest_repeat_on_1s_cases": 0.393,
+      "unsolved_by_band_and_reason": {
+        "1-300s | slower_than_limit": 1,
+        "1-300s | time_limit": 76,
+        "1-300s | unresolved": 10,
+        "1s | nonzero_exit;unresolved": 1,
+        "1s | time_limit": 98,
+        "1s | unresolved": 31,
+        "300s | time_limit": 7,
+        "300s | unresolved": 87
+      },
+      "time_ratio_vs_reference_on_both_solved_above_1s": {
+        "cases": 22,
+        "median": 0.541,
+        "geomean": 0.335
+      }
+    },
+    "claude-opus-5-5": {
+      "solved": 334,
+      "solved_by_band": {
+        "1s": 293,
+        "1-300s": 10,
+        "300s": 31
+      },
+      "solved_by_group": {
+        "exponential": 19,
+        "quadratic": 184,
+        "linear": 107,
+        "soc": 11,
+        "psd": 13
+      },
+      "median_fastest_repeat_on_1s_cases": 0.45,
+      "unsolved_by_band_and_reason": {
+        "1-300s | time_limit": 97,
+        "1-300s | unresolved": 2,
+        "1s | time_limit": 108,
+        "1s | unresolved": 3,
+        "300s | time_limit": 2,
+        "300s | unresolved": 104
+      },
+      "time_ratio_vs_reference_on_both_solved_above_1s": {
+        "cases": 10,
+        "median": 0.547,
+        "geomean": 0.239
+      }
+    }
+  },
+  "reference_slowest_over_original_limit_solved_above_1s": {
+    "cases": 36,
+    "quantiles_10_50_90": [
+      0.753,
+      0.92,
+      0.981
+    ]
+  },
+  "reference_residual_failures": {
+    "repeats": 384,
+    "gap_relative_quantiles_10_50_90": [
+      1.691335182660981e-11,
+      8.461356633580445e-10,
+      8.080887654110449e-07
+    ]
+  }
+}
