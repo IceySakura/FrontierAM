@@ -1,0 +1,96 @@
+{
+  "cases": {
+    "floor_1s": 422,
+    "above_1s": 228
+  },
+  "reference": {
+    "original_limits": {
+      "floor_1s": 411,
+      "above_1s": 36
+    },
+    "recalibrated_limits": {
+      "floor_1s": 420,
+      "above_1s": 93
+    }
+  },
+  "gpt-6.1-sol v6": {
+    "original_limits": {
+      "floor_1s": 334,
+      "above_1s": 130
+    },
+    "original_above_1s_mcnemar": {
+      "candidate_only": 118,
+      "reference_only": 24,
+      "p": 4.154432818198808e-16
+    },
+    "recalibrated_limits": {
+      "floor_1s": 335,
+      "above_1s": 132
+    },
+    "recalibrated_above_1s_mcnemar": {
+      "candidate_only": 105,
+      "reference_only": 66,
+      "p": 0.003537977507549087
+    }
+  },
+  "gpt-6-astra v6": {
+    "original_limits": {
+      "floor_1s": 323,
+      "above_1s": 74
+    },
+    "original_above_1s_mcnemar": {
+      "candidate_only": 64,
+      "reference_only": 26,
+      "p": 7.657072931048344e-05
+    },
+    "recalibrated_limits": {
+      "floor_1s": 323,
+      "above_1s": 81
+    },
+    "recalibrated_above_1s_mcnemar": {
+      "candidate_only": 55,
+      "reference_only": 67,
+      "p": 0.3193082974752445
+    }
+  },
+  "claude-opus-5-5 v6": {
+    "original_limits": {
+      "floor_1s": 293,
+      "above_1s": 36
+    },
+    "original_above_1s_mcnemar": {
+      "candidate_only": 32,
+      "reference_only": 32,
+      "p": 1.0
+    },
+    "recalibrated_limits": {
+      "floor_1s": 294,
+      "above_1s": 40
+    },
+    "recalibrated_above_1s_mcnemar": {
+      "candidate_only": 31,
+      "reference_only": 84,
+      "p": 8.02856176220707e-07
+    }
+  },
+  "hy4 v6": {
+    "original_limits": {
+      "floor_1s": 276,
+      "above_1s": 60
+    },
+    "original_above_1s_mcnemar": {
+      "candidate_only": 55,
+      "reference_only": 31,
+      "p": 0.012672513952314864
+    },
+    "recalibrated_limits": {
+      "floor_1s": 278,
+      "above_1s": 61
+    },
+    "recalibrated_above_1s_mcnemar": {
+      "candidate_only": 43,
+      "reference_only": 75,
+      "p": 0.004123703844699421
+    }
+  }
+}
