@@ -18,12 +18,14 @@ ORIGINAL = ROOT / 'tasks/conic/original/tests/private/data/manifest.json'
 RECAL = ROOT / 'tasks/conic/local_recal/recal-manifest.json'
 PUBLIC = ROOT / 'tasks/conic/original/environment/public-dev/manifest.json'
 REF_OUTCOMES = ROOT / 'tasks/conic/local_recal/recal-manifest-reference-outcomes.json'
+# Finished measurement stores, archived outside the repository (/data/archive/README.md).
+ARCHIVE = '/data/archive/FrontierAM/stores'
 
 # solver -> runs in the order they decide a case: (run name, store, suite)
 SOLVERS = {
     'reference': [('original_limits', 'store', 'suite-conic-20261104T112639Z-5805a6'),
-                  ('remeasure_2x_limit', 'store-measure', 'suite-conic-20261104T130556Z-c921f0'),
-                  ('remeasure_300s', 'store-measure2', 'suite-conic-20261104T162157Z-c36161')],
+                  ('remeasure_2x_limit', f'{ARCHIVE}/store-measure', 'suite-conic-20261104T130556Z-c921f0'),
+                  ('remeasure_300s', f'{ARCHIVE}/store-measure2', 'suite-conic-20261104T162157Z-c36161')],
     'gpt-6.1-sol': [('original_limits', 'store', 'suite-conic-20261104T112642Z-4c4423'),
                     ('recalibrated_regrade', 'store-recal', 'suite-conic-20261104T192406Z-37e06b')],
     'gpt-6-astra': [('original_limits', 'store', 'suite-conic-20261104T120311Z-34c2e1'),
