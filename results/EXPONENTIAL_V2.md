@@ -11,7 +11,8 @@
 | 参考解 | `dataset_v2/truth.py`：扩展精度 Chebyshev 为主、双精度截断 Taylor 审计、差异超限时用稠密特征分解仲裁（n ≤ 6000）；冒烟集 48/48 合格（`dataset_v2/truth_plan.md`） |
 | 评测接入 | `arena/exponential_v2.py`（任务名 `exponential-v2`）、`scripts/prepare_exponential_v2.py`（封存到 `.runtime-exp2`）。沿用 v1 的评测器、工具、镜像和计分器，只换清单、用例和参考；在开发核上用 3 个用例、5 个成员跑通 |
 | 公开开发包 | v1 公开包去掉旧数据，加 `V2.md`（覆盖 v1 关于参考、数据和计时的条款）与 v2 公开用例 |
-| 本机基线 | 冒烟集上的 panel 基线正在 grade-06 上安静测量（流程验证用） |
+| 本机基线（冒烟集，流程验证） | 已完成并激活（grade-06，安静条件，Chebyshev 为修正前版本）。virtual best 覆盖全部 56 个用例；各成员的合格用例数：Expokit 45、KIOPS 49、expmv 50、Chebyshev 39，SciPy 因基础设施故障只跑了 2 个（见下）。各用例的最快成员：Chebyshev 30、Expokit 16、KIOPS 5、expmv 5。不合格集中在 signed、heavytail、logspectrum、geometric 这几族，原因是 v1 标定的容差在解强衰减时不够（见第 3 节）。**这次基线不作为正式锚点**：正式基线在私有集上用重新标定、修正后的成员重测 |
+| 基础设施事故（已修正） | 16:56 镜像导入脚本在 grade-06 两个评测会话之间的空档（slot 没有容器、但仍有租约）向它的 docker 守护进程导入镜像，守护进程跑在计时 CPU 的 SMT 兄弟核上：SciPy 成员的一次 `docker create` 超时（30 秒）导致该成员评测中断，那段时间其他成员的计时也受干扰。`scripts/load-grade-images.sh` 已改为按调度器租约判断空闲（安静评测期间所有 slot 都持有租约） |
 
 ## 2. 计分（50/100 约定）
 

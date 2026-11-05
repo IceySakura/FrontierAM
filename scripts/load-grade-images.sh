@@ -1,6 +1,6 @@
 #!/bin/bash
 # Copy the sealed operator-task images into every grading daemon by ID. Each daemon runs on its slot's SMT sibling,
-# so a slot is loaded only while no container runs on it; busy slots are retried until they are free.
+# so a slot is loaded only while it holds no broker lease and runs no container; busy slots are retried until free.
 # Usage: scripts/load-grade-images.sh [slot ...]   (default: every grade slot in /etc/frontieram/machine.json)
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -18,7 +18,11 @@ while [ ${#pending[@]} -gt 0 ]; do
     next=()
     for slot in "${pending[@]}"; do
         host=unix:///run/frontieram-grade/$slot/docker.sock
-        if [ "$(docker --host "$host" ps -q | wc -l)" != 0 ]; then
+        # A grade between two sessions has no container but still holds its lease (quiet grades lease every slot).
+        owner=$(python3 -c "import json,sys
+try: print(json.load(open('/run/frontieram/slots/$slot.json')).get('owner') or '')
+except (OSError, ValueError): print('')")
+        if [ -n "$owner" ] || [ "$(docker --host "$host" ps -q | wc -l)" != 0 ]; then
             next+=("$slot")
             continue
         fi
