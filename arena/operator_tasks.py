@@ -191,6 +191,34 @@ class PolarizationDemosaicking(OperatorTask):
                 'scene_statuses': {r['scene']: r['status'] for r in rows}}
 
 
+class SpeciesTree(OperatorTask):
+    grade_memory = 6 * GIB
+
+    def reference_dir(self, which: str) -> Path:
+        method = self.spec['references'][which].split(':', 1)[1]
+        target = self.sealed / 'references' / method
+        if not target.exists():
+            subprocess.run([sys.executable, '-B', str(self.root() / 'operator/references/materialize.py'), method,
+                            str(target)], check=True, capture_output=True, timeout=120)
+        return target
+
+    def run_grader(self, source, out, placement):
+        driver = ROOT / 'arena/operator_drivers/species_tree_batch.py'
+        out.parent.mkdir(parents=True, exist_ok=True)
+        env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
+        done = subprocess.run([sys.executable, '-B', str(driver), str(self.root() / 'operator'), str(source), str(out)],
+                              env=env, capture_output=True, text=True, timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
+        status = summary.get('status')
+        # Per-case algorithm failures count as 98 missed splits and still give a valid batch error.
+        mapped = {'ok': 'ok', 'algorithm_failures': 'ok', 'submission_failure': 'submission_failure'}.get(status, 'infrastructure_failure')
+        reason = summary.get('reason') or (done.stderr.strip().splitlines()[-1] if done.returncode and done.stderr.strip() else None)
+        return {'status': mapped, 'raw_error': summary.get('mean_nrf'), 'reason': reason, 'package_score': None,
+                'missed_splits': summary.get('missed_splits'), 'failed_cases': summary.get('failed_cases'),
+                'scope': 'public development cases (not the official private set)'}
+
+
 class DevelopmentOnlyTask(OperatorTask):
     """Development wiring only: the delivered material cannot be graded on this machine (see task.json status)."""
 
@@ -212,7 +240,8 @@ def _finite(value) -> bool:
     return isinstance(value, (int, float)) and math.isfinite(value)
 
 
-CLASSES = {'galaxy-gravity': GalaxyGravity, 'polarization-demosaicking': PolarizationDemosaicking}
+CLASSES = {'galaxy-gravity': GalaxyGravity, 'polarization-demosaicking': PolarizationDemosaicking,
+           'species-tree': SpeciesTree}
 
 
 def operator_tasks() -> dict[str, OperatorTask]:

@@ -2,7 +2,7 @@
   "name": "species-tree",
   "title": "从短基因的估计树推断物种树",
   "status": "public_acceptance",
-  "status_reason": "The operator package does not contain the private scoring data (data-seal.json and the 50 formal cases are transferred separately per its README), so only the public acceptance protocol on development cases can run here.",
+  "status_reason": "The operator package does not contain the private scoring data (data-seal.json and the 50 formal cases are transferred separately per its README). Grading here runs the package's own batch grader on the 50 public development cases, with both references measured on the same cases as anchors: a check of the pipeline and the references, not an official score.",
   "packages": {
     "operator": {"file": "species-tree-operator-v1.zip", "sha256": "32a33c67a0303d02ee907459b66078bced42a2aebbbfabfaf69b44996296e809", "root": ""},
     "public": {"file": "species-tree-public-v1(1).zip", "sha256": "0fb53633f003ee3f21dacab8eeaa85c85d9416aa5044e8d36a700bf551b4a3bd", "root": ""}
@@ -12,7 +12,14 @@
     {"from": "public:problem.md", "to": "problem.md"},
     {"from": "unzip:public:public-dev/species-tree-dev.zip", "to": "public-dev"}
   ],
-  "portability_edits": [],
+  "portability_edits": [
+    {
+      "file": "operator/runtime/worker.py",
+      "old": "os.sched_getaffinity(0) != {0}",
+      "new": "len(os.sched_getaffinity(0)) != 1",
+      "reason": "Each grading slot pins the worker to its own single CPU instead of CPU 0; the quota, memory and swap checks are unchanged."
+    }
+  ],
   "images": {
     "task": {
       "tag": "frontieram-species-tree:amd64-b1",
