@@ -1,7 +1,8 @@
-# amd64 reconstruction of local/galaxy-gravity-cpu:b2. The original is built FROM local/trajectory-runtime:b1, which is
-# not shipped; its documented toolchain (Debian bookworm, CPython 3.12.14 under /usr/local, NumPy 2.3.5, gcc) matches
-# the conic success-v2 image from the same author, used here as the base. The task layer is the original Dockerfile.
-ARG BASE=frontieram-conic:success-v2-port-v1
+# amd64 reconstruction of local/galaxy-gravity-cpu:b2: the package's own Dockerfile on its base local/trajectory-runtime:b1,
+# which ships (ARM64) in the trajectory-covariance maintainer package and is rebuilt for amd64 as
+# frontieram-trajectory-covariance:amd64-b1 (CPython 3.11.15, NumPy 1.26.4, SciPy 1.12.0, R 4.2.2, gcc/g++ 12).
+# The original uses `ln -s`; -sf keeps the layer idempotent.
+ARG BASE=frontieram-trajectory-covariance:amd64-b1
 FROM ${BASE}
 USER root
 RUN rm -rf /workspace/public-dev && ln -sf /usr/local/bin/python3 /usr/bin/python3

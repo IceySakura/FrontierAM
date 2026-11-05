@@ -53,7 +53,13 @@ def extract(archive: Path, target: Path) -> None:
 
 
 def verify_integrity(spec: dict, roots: dict) -> dict:
-    rule = spec['integrity']
+    """One rule or a list of rules (one per package); every listed file must match."""
+    rules = spec['integrity'] if isinstance(spec['integrity'], list) else [spec['integrity']]
+    results = [verify_rule(spec, rule, roots) for rule in rules]
+    return results[0] if len(results) == 1 else {'rules': results}
+
+
+def verify_rule(spec: dict, rule: dict, roots: dict) -> dict:
     base = roots[rule['package']]
     listing = base / rule['file']
     if rule['type'] == 'sha256sums':
@@ -141,7 +147,15 @@ def main():
             digest = sha(archive)
             if digest != package['sha256']:
                 raise SystemExit(f'{name}: {archive.name} sha256 {digest} != {package["sha256"]}')
-            extract(archive, target / 'packages' / key)
+            if 'extracted' in package:
+                # Packages too large to copy (mcmc maintainer package: 29 GB) are referenced where the verified archive
+                # was unpacked; the integrity listing below still covers every file. They take no portability edits.
+                if key == 'operator' and spec.get('portability_edits'):
+                    raise SystemExit(f'{name}: portability edits are not supported on an extracted package')
+                (target / 'packages').mkdir(parents=True, exist_ok=True)
+                (target / 'packages' / key).symlink_to(Path(package['extracted']).resolve(strict=True))
+            else:
+                extract(archive, target / 'packages' / key)
             roots[key] = target / 'packages' / key / package['root']
             packages[key] = {'file': package['file'], 'sha256': digest}
         integrity = verify_integrity(spec, roots)

@@ -1,13 +1,17 @@
-# amd64 stand-in for local/trajectory-runtime:b1 (not shipped). The task promises Python 3, NumPy, SciPy, R and C/C++;
-# the conic success-v2 image supplies CPython 3.12.14, NumPy 2.3.5, SciPy 1.16.3 and gcc/g++ 12, and R is added from
-# Debian bookworm.
-ARG BASE=frontieram-conic:success-v2-port-v1
-FROM ${BASE}
+# amd64 rebuild of local/trajectory-runtime:b1 following the maintainer package's own
+# harbor/mcmc-long-run-covariance/public/Dockerfile, on the amd64 reconstruction of its base
+# songberg-reproduction:mcmcse-1.5-0 (tasks/operator/_images/songberg-reproduction). problem.md and trajectory-dev.zip
+# are byte-identical in the public and maintainer packages. The original PATH also lists /opt/public-codex (the author's
+# agent tooling, not rebuilt).
+ARG BASE=frontieram-songberg-reproduction:amd64-mcmcse-1.5-0
+FROM ${BASE} AS scrub
 USER root
-RUN sed -i 's#http://deb.debian.org#https://mirrors.tencent.com#g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || true; \
-    apt-get update && apt-get install -y --no-install-recommends r-base-core && rm -rf /var/lib/apt/lists/*
-RUN rm -rf /workspace/public-dev && ln -sf /usr/local/bin/python3 /usr/bin/python3
-COPY public-dev/ /workspace/public-dev/
+RUN rm -rf /tmp/* /opt/bo /opt/songberg-* /usr/local/lib/R/site-library/momentLS /workspace /root/.cache /var/cache/apt/archives/* && mkdir -p /workspace/public-dev /workspace/submission && chown 1000:1000 /workspace/submission
 COPY problem.md /workspace/problem.md
-RUN chmod -R a=rX /workspace/public-dev /workspace/problem.md
+COPY public-dev/trajectory-dev.zip /workspace/public-dev/trajectory-dev.zip
+RUN cd /workspace/public-dev && python3 -m zipfile -e trajectory-dev.zip . && chmod -R a=rX /workspace/public-dev /workspace/problem.md
+FROM scratch
+COPY --from=scrub / /
+ENV PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin HOME=/home/worker LANG=C.UTF-8 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 BLIS_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1
 WORKDIR /workspace
+CMD ["/bin/bash"]

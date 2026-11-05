@@ -224,6 +224,40 @@ class SpeciesTree(OperatorTask):
                 .get(summary.get('scope'), summary.get('scope'))}
 
 
+class TrajectoryCovariance(OperatorTask):
+    grade_memory = 4 * GIB
+    grade_timeout = 12 * 3600
+    # Parent chains per setting in the default case set (all five prefixes each): 100 of 1,000 gives 3,000 of 30,000.
+    subset_parents = 100
+
+    def case_ids(self) -> list[str]:
+        """Fixed stratified subset: per setting, the first parents in ID order, with every prefix of each."""
+        manifest = self.root() / 'results/mcmc-long-run-covariance/formal-v1/private/manifest.json'
+        cases = json.loads(manifest.read_text())['cases']
+        chosen = set()
+        for model in sorted({c['model'] for c in cases}):
+            chosen.update(sorted({c['parent'] for c in cases if c['model'] == model})[:self.subset_parents])
+        return [c['id'] for c in cases if c['parent'] in chosen]
+
+    def run_grader(self, source, out, placement):
+        out.parent.mkdir(parents=True, exist_ok=True)
+        cases = out.parent / f'{out.name}-cases.json'
+        cases.write_text(json.dumps(self.case_ids()) + '\n')
+        driver = ROOT / 'arena/operator_drivers/trajectory_batch.py'
+        env = {**os.environ, 'DOCKER_HOST': placement.docker_host}
+        done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.root()), str(source), str(out),
+                               '--cases', str(cases), '--image', self.lock()['image']['id'], '--cpuset', placement.cpuset,
+                               '--cgroup-parent', placement.cgroup_parent],
+                              env=env, capture_output=True, text=True, timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
+        status = summary.get('status', 'infrastructure_failure')
+        return {'status': status, 'raw_error': summary.get('raw_error'), 'reason': summary.get('reason'),
+                'package_score': None, 'cases': summary.get('cases'), 'failures': summary.get('failures'),
+                'max_wall_s': summary.get('max_wall_s'), 'max_cpu_s': summary.get('max_cpu_s'),
+                'scope': f'{len(json.loads(cases.read_text()))} of 30,000 formal inputs (fixed stratified subset)'}
+
+
 class DevelopmentOnlyTask(OperatorTask):
     """Development wiring only: the delivered material cannot be graded on this machine (see task.json status)."""
 
@@ -246,7 +280,7 @@ def _finite(value) -> bool:
 
 
 CLASSES = {'galaxy-gravity': GalaxyGravity, 'polarization-demosaicking': PolarizationDemosaicking,
-           'species-tree': SpeciesTree}
+           'species-tree': SpeciesTree, 'trajectory-covariance': TrajectoryCovariance}
 
 
 def operator_tasks() -> dict[str, OperatorTask]:
