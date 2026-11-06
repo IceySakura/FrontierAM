@@ -10,6 +10,7 @@ best itself is 50 and the 50/100 convention holds with the panel as the referenc
 from __future__ import annotations
 
 import hashlib
+import math
 import importlib.util
 import json
 import shlex
@@ -174,6 +175,64 @@ class ExponentialV2(Task):
         if uncovered:
             return {'status': 'unmeasured', 'score': None, 'reason': 'panel baseline does not cover every case'}
         result = self.scoring().score_submission(self.cases(), part['aggregates'], reference)
+        speed = speed_ratio(self.cases(), part, baseline['metrics']) if result['status'] == 'ok' else None
         return {'status': result['status'], 'score': result['score'], 'relative_time': result['relative_time'],
                 'failed_cases': result['failed_cases'], 'reference': 'panel virtual best', 'winners': winners,
-                'detail': result}
+                'speed_ratio': speed, 'detail': result}
+
+
+def _runs(part: dict) -> dict[str, list[dict]]:
+    by_case: dict[str, list[dict]] = {}
+    for run in json.loads(Path(part['report']).read_text())['runs']:
+        by_case.setdefault(run['id'], []).append(run)
+    return by_case
+
+
+def speed_ratio(cases: list[dict], candidate: dict, panel_metrics: dict, replicates: int = 2000, seed: int = 0) -> dict:
+    """Supplementary to 100/(1+R) (DESIGN section 4): S = exp(-mean log(T_candidate / T_virtual_best)), mothers equally
+    weighted (cases equally within a mother), with a hierarchical bootstrap: resample mothers, cases within mothers,
+    and repetitions within each case for the candidate and every panel member, recomputing medians and the virtual
+    best inside every replicate. S > 1 means faster than the panel. Percentile 95% interval."""
+    import random
+    import statistics
+
+    rng = random.Random(seed)
+    scored = [c for c in cases if c['role'] == 'scored']
+    mine = _runs(candidate)
+    members = {m: _runs(p) for m, p in panel_metrics['parts'].items() if p.get('report')}
+
+    def valid_times(runs):
+        return [r['time_seconds'] for r in runs] if runs and all(r['valid'] for r in runs) else None
+
+    def log_ratio(case, resample: bool) -> float | None:
+        pick = (lambda xs: [rng.choice(xs) for _ in xs]) if resample else (lambda xs: xs)
+        own = valid_times(mine.get(case['id']))
+        options = [valid_times(runs.get(case['id'])) for runs in members.values()]
+        options = [statistics.median(pick(t)) for t in options if t]
+        if not own or not options:
+            return None
+        return math.log(statistics.median(pick(own)) / min(options))
+
+    by_mother: dict[str, list[dict]] = {}
+    for case in scored:
+        by_mother.setdefault(case['mother'], []).append(case)
+
+    def estimate(resample: bool) -> float | None:
+        mothers = list(by_mother)
+        chosen = [rng.choice(mothers) for _ in mothers] if resample else mothers
+        means = []
+        for mother in chosen:
+            group = by_mother[mother]
+            group = [rng.choice(group) for _ in group] if resample else group
+            logs = [log_ratio(c, resample) for c in group]
+            if any(v is None for v in logs):
+                return None
+            means.append(sum(logs) / len(logs))
+        return math.exp(-sum(means) / len(means))
+
+    point = estimate(False)
+    if point is None:
+        return None
+    draws = sorted(v for v in (estimate(True) for _ in range(replicates)) if v is not None)
+    return {'S': point, 'ci95': [draws[int(0.025 * (len(draws) - 1))], draws[int(0.975 * (len(draws) - 1))]],
+            'replicates': len(draws), 'meaning': 'geometric speed ratio vs panel virtual best; >1 is faster'}
