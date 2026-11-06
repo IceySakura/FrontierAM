@@ -30,6 +30,9 @@ TOOLS = HERE.parents[1] / 'public/tools'
 MARGIN = 0.1
 # Tightest multiplier that still asks the p10 level (rtol 1e-10) for no less than 100 x binary64 epsilon.
 FLOOR = 100 * 2.220446049250313e-16 / 1e-10
+# Members whose multiplier is not an absolute tolerance on the result (exputils: per-step error estimate of its
+# adaptive time stepping) take no floor; their declared grid covers the meaningful range.
+FLOOR_BY_MEMBER = {'exputils': 0.0}
 RESOURCE = {'wall_timeout', 'cpu_limit', 'cpu_timeout', 'memory_limit', 'startup_timeout'}
 LEVELS = {1e-4: 'p4', 1e-7: 'p7', 1e-10: 'p10'}
 PRECISIONS = ['half', 'single', 'double']
@@ -75,9 +78,10 @@ def select(out: Path, manifest: Path) -> dict:
             # Converted first-pass results carry only their failures plus one record holding the largest error.
             ok, detail = qualifies([c for c in e['cases'] if c['id'] in ids or c['id'].startswith('__')])
             table.append({'multiplier': float(e['value']), 'qualifies': ok, **detail})
-        region = [r for r in table if r['multiplier'] >= FLOOR]
+        floor = FLOOR_BY_MEMBER.get(member, FLOOR)
+        region = [r for r in table if r['multiplier'] >= floor]
         chosen = next((r['multiplier'] for i, r in enumerate(region) if all(s['qualifies'] for s in region[i:])), None)
-        result[member] = {'selected_multiplier': chosen, 'floor': FLOOR, 'grid': table}
+        result[member] = {'selected_multiplier': chosen, 'floor': floor, 'grid': table}
     levels = {}
     for level in LEVELS.values():
         table = []
