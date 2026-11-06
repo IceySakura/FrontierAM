@@ -12,4 +12,4 @@ export OMP_NUM_THREADS=1
 exec "$HERE/julia-1.11.7/bin/julia" \
     --startup-file=no --history-file=no --project="$HERE" \
     --sysimage="$HERE/exputils_sysimage_min.so" \
-    "$HERE/stream_exputils.jl" "${1:-0.000001}"
+    "$HERE/stream_exputils.jl" "${1:-1e-06}"

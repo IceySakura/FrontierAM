@@ -405,6 +405,118 @@
       }
     ]
   },
+  "exputils": {
+    "selected_multiplier": 1e-06,
+    "floor": 0.0,
+    "grid": [
+      {
+        "multiplier": 0.01,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion2d_b_p7_k16",
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_b_p7_k1"
+        ],
+        "resource_failures": [
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.666004736522223
+      },
+      {
+        "multiplier": 0.001,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_b_p7_k1"
+        ],
+        "resource_failures": [
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.666004736522223
+      },
+      {
+        "multiplier": 0.0001,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_b_p7_k1"
+        ],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.07515295712017313
+      },
+      {
+        "multiplier": 1e-05,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.40228887260092955
+      },
+      {
+        "multiplier": 1e-06,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.08096918068766103
+      },
+      {
+        "multiplier": 1e-07,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.06511274403126942
+      }
+    ]
+  },
   "kiops": {
     "selected_multiplier": 0.001,
     "floor": 0.0002220446049250313,
@@ -573,8 +685,141 @@
       }
     ]
   },
-  "slepc": {
+  "rational": {
     "selected_multiplier": null,
+    "floor": 0.0002220446049250313,
+    "grid": [
+      {
+        "multiplier": 3.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p4_k1",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p10_k1"
+        ],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.0754264006133261
+      },
+      {
+        "multiplier": 1.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p4_k1",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p10_k1"
+        ],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.0754264006133261
+      },
+      {
+        "multiplier": 0.3,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p4_k1",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p10_k1"
+        ],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.0754264006133261
+      },
+      {
+        "multiplier": 0.1,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p4_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.6515645274157402
+      },
+      {
+        "multiplier": 0.03,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.13642146370320693
+      },
+      {
+        "multiplier": 0.01,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.12229866359783022
+      },
+      {
+        "multiplier": 0.003,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.12229866359783022
+      },
+      {
+        "multiplier": 0.001,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k1",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.12229866359783022
+      }
+    ]
+  },
+  "slepc": {
+    "selected_multiplier": 0.001,
     "floor": 0.0002220446049250313,
     "grid": [
       {
@@ -639,6 +884,172 @@
           "syn_geometric_b_p10_k16"
         ],
         "max_scaled_error": 0.532845010428827
+      },
+      {
+        "multiplier": 10.0,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.03786282572612867
+      },
+      {
+        "multiplier": 3.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p10_k1"
+        ],
+        "resource_failures": [
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.1634754331916898
+      },
+      {
+        "multiplier": 1.0,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.004712494962118696
+      },
+      {
+        "multiplier": 0.3,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.00471244571617618
+      },
+      {
+        "multiplier": 0.1,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.004712443301146161
+      },
+      {
+        "multiplier": 0.03,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.004712445593068923
+      },
+      {
+        "multiplier": 0.01,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.004712443050372119
+      },
+      {
+        "multiplier": 0.003,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p10_k1"
+        ],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.004712443176519062
+      },
+      {
+        "multiplier": 0.001,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.00471244233604606
+      },
+      {
+        "multiplier": 0.0003,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.0047124439546785135
       }
     ]
   },

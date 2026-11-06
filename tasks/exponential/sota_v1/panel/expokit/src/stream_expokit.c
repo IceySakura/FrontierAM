@@ -17,7 +17,7 @@
 #include <unistd.h>
 
 #define KRYLOV_DEFAULT 30
-#define TOL_MULTIPLIER_DEFAULT 1000.0 /* selected by calibrate.py on public dev cases; see calibration.json */
+#define TOL_MULTIPLIER_DEFAULT 0.0003 /* selected by calibrate.py on public dev cases; see calibration.json */
 #define DENSE_MAX 64
 #define PADE_DEGREE 6
 

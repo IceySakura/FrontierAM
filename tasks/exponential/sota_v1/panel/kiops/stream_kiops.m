@@ -20,7 +20,7 @@ function stream_kiops(multiplier)
   rows=repelem((1:n).',diff(ptr));
   L=sparse(rows,col+1,val,n,n); t=double(h.t); A=-t*L;
   assert(t>=0 && t<=10000 && isfinite(t));
-  if nargin < 1, multiplier = 0.01; end
+  if nargin < 1, multiplier = 0.001; end
   tol=double(h.rtol)*multiplier;
   mmin=min(10,n); mmax=min(128,n+1); m_init=mmin;
   for j=1:double(h.requests)

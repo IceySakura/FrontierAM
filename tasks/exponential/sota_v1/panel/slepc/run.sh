@@ -12,4 +12,4 @@ if [ "$#" -gt 1 ]; then
     echo "usage: $0 [tolerance-multiplier]" >&2
     exit 2
 fi
-exec ./stream_slepc "${1:-100}"
+exec ./stream_slepc "${1:-0.001}"
