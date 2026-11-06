@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "workdir": "/workspace",
+  "path_base": "Paths below are relative to /workspace unless absolute.",
+  "resources": [
+    {
+      "id": "development-inputs",
+      "availability": "bundled",
+      "path": "public-dev/manifest.json",
+      "directory": "public-dev/inputs/",
+      "format": "NPZ (schema_version=1)",
+      "count": 163,
+      "size_bytes": 195281927,
+      "manifest_sha256": "8fbdfa495c68d6447ef4a7edfa6116d1f0f410a4c09f19fcfc668b1b59864561",
+      "usage": "Read public-dev/README.md. Input paths in manifest.json are relative to public-dev/; each record includes its input SHA256, dimensions and budgets. These inputs are for development only."
+    },
+    {
+      "id": "public-input-reader-and-result-checker",
+      "availability": "bundled",
+      "directory": "public-dev/io/",
+      "requirements": "public-dev/requirements.txt",
+      "file_sha256": {
+        "model.py": "2920f27edabf5e3d9744f7d857b8d8ebd5bcc541ec00c25cab3b41091972ecc7",
+        "check.py": "96c29be44c331da697ae8cd5cb39c2c46fac6d8b65f35cf27d88e208d8dc0ea3",
+        "check_result.py": "4b82a51747efed700cd242e17fbab87e37a12f62d81c8647c520e641ccf18c69"
+      },
+      "command": "python /workspace/public-dev/io/check_result.py --input INPUT_PATH --result RESULT_PATH",
+      "usage": "Reads an input/result pair and checks the public mathematical conditions. This is a self-check, not a solver or a formal performance evaluation."
+    },
+    {
+      "id": "interface-examples",
+      "availability": "bundled",
+      "directory": "public-dev/examples/",
+      "index": "public-dev/examples/expected_checks.json",
+      "format": "13 NPZ files and 7 expected interface checks",
+      "usage": "Read public-dev/examples/README.md; start with 01-mixed-qp.input.npz and 01-mixed-qp.result.npz to verify the interface."
+    },
+    {
+      "id": "submission-directory",
+      "availability": "bundled",
+      "path": "submission/",
+      "initial_contents": "empty",
+      "usage": "Save all submitted source and offline dependencies here; provide run.sh and README.md, plus build.sh when needed."
+    },
+    {
+      "id": "python-numerics",
+      "availability": "preinstalled",
+      "command": "python",
+      "version": "3.12.14",
+      "packages": {
+        "numpy": "2.3.5",
+        "scipy": "1.16.3",
+        "psutil": "7.1.3"
+      },
+      "usage": "Python runtime and numerical libraries are available without installation. Additional submission dependencies must be supplied for offline building."
+    },
+    {
+      "id": "native-build-tools",
+      "availability": "preinstalled",
+      "commands": {
+        "gcc": "12.2.0",
+        "g++": "12.2.0",
+        "gfortran": "12.2.0",
+        "cmake": "3.25.1",
+        "ninja": "1.11.1",
+        "rustc": "1.63.0",
+        "cargo": "1.65.0"
+      },
+      "usage": "Use these tools from build.sh; keep build outputs and any extra dependencies inside submission/."
+    },
+    {
+      "id": "development-command-line-tools",
+      "availability": "preinstalled",
+      "commands": [
+        "git",
+        "curl",
+        "rg",
+        "unzip",
+        "xz"
+      ],
+      "version": "Pinned by the development image digest in task.toml",
+      "usage": "General development utilities; use COMMAND --help for usage. Do not assume development-only tools are available during formal solving."
+    },
+    {
+      "id": "agent-clis",
+      "availability": "preinstalled",
+      "commands": {
+        "codex": "0.153.4",
+        "claude": "2.1.308"
+      },
+      "usage": "codex --help or claude --help. No credentials or model weights are shipped. Any model authentication is supplied separately by the trial operator."
+    }
+  ],
+  "external_task_resources": [],
+  "notes": "Harbor supplies the task instruction separately. All task data needed for development are bundled. Hidden evaluation inputs and private grading materials are not development resources."
+}

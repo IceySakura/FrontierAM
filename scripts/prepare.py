@@ -105,6 +105,9 @@ def main():
     parser.add_argument('--exponential-image', default='frontieram-exponential:port-v1')
     parser.add_argument('--conic-image', default='frontieram-conic:success-v2-port-v1')
     parser.add_argument('--conic-manifest', type=Path, help='held-out manifest with recalibrated time limits only')
+    parser.add_argument('--conic-task', type=Path, default=ROOT / 'tasks/conic/original',
+                        help='conic task directory (a revised package from the author, ported the same way)')
+    parser.add_argument('--conic-profile-template', type=Path, default=ROOT / 'tasks/conic/profile_template.json')
     args = parser.parse_args()
     if not args.docker_host.startswith('unix://'):
         parser.error('Use a local Unix Docker socket')
@@ -185,7 +188,7 @@ def main():
     asset_path = extensions / 'frontieram_conic/assets.py'
     asset_path.write_text(asset_path.read_text().replace(OLD_CONIC, images['conic']['id']))
     # Sealed copies: editing the repository can never change files under a running or queued job.
-    shutil.copytree(ROOT / 'tasks/conic/original', runtime / 'tasks/conic/original')
+    shutil.copytree(args.conic_task, runtime / 'tasks/conic/original', ignore=shutil.ignore_patterns('.gitignore'))
     shutil.copytree(ROOT / 'tasks/conic/reference_submission', runtime / 'tasks/conic/reference_submission')
     task = runtime / 'tasks/conic/original'
     manifest_override = override_conic_manifest(task, args.conic_manifest) if args.conic_manifest else None
@@ -223,7 +226,7 @@ def main():
         add_text('resources.yaml', json.dumps(resources, indent=2) + '\n')
         archive.add(task / 'instruction.md', arcname='INSTRUCTION.md', filter=clean)
         archive.add(task / 'environment/public-dev', arcname='public-dev', filter=clean)
-    profile = json.loads((ROOT / 'tasks/conic/profile_template.json').read_text())
+    profile = json.loads(args.conic_profile_template.read_text())
     profile.update(
         task_root=str(task),
         public_tar=str(public_tar),

@@ -1,0 +1,36 @@
+schema_version = "1.3"
+artifacts = ["/workspace/submission"]
+
+[task]
+name = "withexpbench/conic-solver"
+version = "0.3.0"
+description = "Develop a high-accuracy convex conic solver under fixed evaluation resources."
+
+[metadata]
+preparation_status = "success_scoring_with_retrospective_reference"
+
+[agent]
+# Development is unlimited in time: omit timeout_sec (Harbor defaults to None).
+# The job configuration must not add an agent timeout override.
+
+[environment]
+# Public OCI index digest verified through anonymous registry requests and Docker pull.
+docker_image = "docker.io/isxinyuuu/optwithexp@sha256:a0d0870fae06d94f210cee1493b4a0c6cb5825c644ca9f81f28830be33008724"
+workdir = "/workspace"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+network_mode = "public"
+[verifier]
+environment_mode = "separate"
+user = "root"
+network_mode = "no-network"
+timeout_sec = 5184000 # Batch guard; each solve has its own manifest budget of 1–300 seconds.
+
+[verifier.environment]
+# Inherit the public development image; /tests is uploaded only for verification.
+cpus = 1
+memory_mb = 8192
+storage_mb = 20480
+workdir = "/workspace"
+network_mode = "no-network"
