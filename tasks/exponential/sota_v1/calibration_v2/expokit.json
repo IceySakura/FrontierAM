@@ -1,0 +1,1240 @@
+{
+  "rule": "Rule: tol = multiplier * rtol, with the Krylov size at the author's default m = 30. Choose the largest multiplier on GRID such that it and every smaller grid value pass every request of every public dev case with error_inf <= MARGIN * (atol + rtol * |y_ref|_inf). Timing plays no part in the selection.",
+  "grid": [
+    1000000.0,
+    300000.0,
+    100000.0,
+    30000.0,
+    10000.0,
+    3000.0,
+    1000.0,
+    300,
+    100,
+    30,
+    10,
+    3,
+    1,
+    0.3,
+    0.1,
+    0.03,
+    0.01,
+    0.003,
+    0.001
+  ],
+  "margin": 0.1,
+  "selected_multiplier": null,
+  "results": [
+    {
+      "multiplier": 1000000.0,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.12251408212061413,
+      "qualifies": false
+    },
+    {
+      "multiplier": 300000.0,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.4487835187778134,
+      "qualifies": false
+    },
+    {
+      "multiplier": 100000.0,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.7216879709798939,
+      "qualifies": false
+    },
+    {
+      "multiplier": 30000.0,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.8154739953358958,
+      "qualifies": false
+    },
+    {
+      "multiplier": 10000.0,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.6197228533371595,
+      "qualifies": false
+    },
+    {
+      "multiplier": 3000.0,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.0971925090865946,
+      "qualifies": false
+    },
+    {
+      "multiplier": 1000.0,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.8580251655007335,
+      "qualifies": false
+    },
+    {
+      "multiplier": 300,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.6661253047483511,
+      "qualifies": false
+    },
+    {
+      "multiplier": 100,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.02063631218156198,
+      "qualifies": false
+    },
+    {
+      "multiplier": 30,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.004645278299445767,
+      "qualifies": false
+    },
+    {
+      "multiplier": 10,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.8557505438903652,
+      "qualifies": false
+    },
+    {
+      "multiplier": 3,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k1",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion3d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.07088404040756852,
+      "qualifies": false
+    },
+    {
+      "multiplier": 1,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p4_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.6548707644952345,
+      "qualifies": false
+    },
+    {
+      "multiplier": 0.3,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p7_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_geometric_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.6737239307334363,
+      "qualifies": false
+    },
+    {
+      "multiplier": 0.1,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.7937218916409233,
+      "qualifies": false
+    },
+    {
+      "multiplier": 0.03,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.7937763263992437,
+      "qualifies": false
+    },
+    {
+      "multiplier": 0.01,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.6958515236377183,
+      "qualifies": false
+    },
+    {
+      "multiplier": 0.003,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.23381262754633217,
+      "qualifies": false
+    },
+    {
+      "multiplier": 0.001,
+      "cases": 74,
+      "failures": [
+        {
+          "id": "syn_diffusion2d_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        },
+        {
+          "id": "syn_diffusion2d_b_p10_k16",
+          "reason": "accuracy_failure",
+          "stderr": ""
+        }
+      ],
+      "max_scaled_error": 0.11996629738209195,
+      "qualifies": false
+    }
+  ]
+}

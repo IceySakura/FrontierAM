@@ -1,0 +1,518 @@
+{
+  "rule": "Public calibration of the exponential-v2 panel under one amended rule for every parameterised member.\n\nRule (amended 2026-11-06, public data only, see RULE.md):\n  * cases: the truth-qualified public cases (scored cases without an independently verified reference are excluded);\n  * a setting qualifies if no request fails accuracy and the largest error over the requests it completes is at most\n    MARGIN x (atol + rtol * |y_ref|_inf); a wall/CPU/memory limit is a case failure of the member (it then takes no\n    part in that case's virtual best), not a disqualification of the setting;\n  * tolerance members (expokit, kiops): the largest multiplier that qualifies together with every smaller one;\n  * expmv: per level (p4, p7, p10) the cheapest of half < single < double that qualifies on that level's cases.\nTiming plays no part, so settings are evaluated in parallel.",
+  "margin": 0.1,
+  "expokit": {
+    "selected_multiplier": null,
+    "grid": [
+      {
+        "multiplier": 1000000.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion2d_b_p7_k16",
+          "syn_diffusion2d_b_p10_k1",
+          "syn_diffusion3d_p4_k1",
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k1",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k1",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k1",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k1",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.12251408212061413
+      },
+      {
+        "multiplier": 300000.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion2d_b_p7_k16",
+          "syn_diffusion2d_b_p10_k1",
+          "syn_diffusion3d_p4_k1",
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k1",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k1",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k1",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.4487835187778134
+      },
+      {
+        "multiplier": 100000.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion2d_b_p7_k16",
+          "syn_diffusion3d_p4_k1",
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k1",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k1",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k1",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k1",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.7216879709798939
+      },
+      {
+        "multiplier": 30000.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion2d_b_p7_k16",
+          "syn_diffusion3d_p4_k1",
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k1",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k1",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.8154739953358958
+      },
+      {
+        "multiplier": 10000.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k1",
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k1",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k1",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.6197228533371595
+      },
+      {
+        "multiplier": 3000.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k1",
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.0971925090865946
+      },
+      {
+        "multiplier": 1000.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.8580251655007335
+      },
+      {
+        "multiplier": 300.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.6661253047483511
+      },
+      {
+        "multiplier": 100.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.02063631218156198
+      },
+      {
+        "multiplier": 30.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k1",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.004645278299445767
+      },
+      {
+        "multiplier": 10.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k1",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.8557505438903652
+      },
+      {
+        "multiplier": 3.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_diffusion3d_p7_k1",
+          "syn_diffusion3d_p7_k16",
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_p7_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.07088404040756852
+      },
+      {
+        "multiplier": 1.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.6548707644952345
+      },
+      {
+        "multiplier": 0.3,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [],
+        "max_scaled_error": 0.6737239307334363
+      },
+      {
+        "multiplier": 0.1,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [],
+        "max_scaled_error": 0.7937218916409233
+      },
+      {
+        "multiplier": 0.03,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [],
+        "max_scaled_error": 0.7937763263992437
+      },
+      {
+        "multiplier": 0.01,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [],
+        "max_scaled_error": 0.6958515236377183
+      },
+      {
+        "multiplier": 0.003,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [],
+        "max_scaled_error": 0.23381262754633217
+      },
+      {
+        "multiplier": 0.001,
+        "qualifies": false,
+        "accuracy_failures": [],
+        "resource_failures": [],
+        "max_scaled_error": 0.11996629738209195
+      }
+    ]
+  },
+  "kiops": {
+    "selected_multiplier": 0.001,
+    "grid": [
+      {
+        "multiplier": 1.0,
+        "qualifies": false,
+        "accuracy_failures": [
+          "standard_HB_bcsstk17_p7_k16",
+          "standard_HB_bcsstk17_p10_k1",
+          "standard_HB_bcsstk17_p10_k16",
+          "syn_diffusion2d_p4_k1",
+          "syn_diffusion2d_p4_k16",
+          "syn_diffusion2d_p7_k16",
+          "syn_diffusion2d_p10_k1",
+          "syn_diffusion2d_b_p10_k1",
+          "syn_diffusion3d_p4_k1",
+          "syn_diffusion3d_p4_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_b_p4_k1",
+          "syn_geometric_b_p4_k16",
+          "syn_heavytail_p4_k16",
+          "syn_signed_p7_k16",
+          "syn_signed_p10_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.7856153000562154
+      },
+      {
+        "multiplier": 0.3,
+        "qualifies": false,
+        "accuracy_failures": [
+          "standard_HB_bcsstk17_p7_k16",
+          "standard_HB_bcsstk17_p10_k16",
+          "syn_diffusion2d_p4_k1",
+          "syn_diffusion2d_p4_k16",
+          "syn_diffusion2d_p7_k16",
+          "syn_diffusion3d_p4_k1",
+          "syn_diffusion3d_p4_k16",
+          "syn_geometric_p4_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_signed_p10_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.5916460620062393
+      },
+      {
+        "multiplier": 0.1,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_geometric_p4_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.7931912650964896
+      },
+      {
+        "multiplier": 0.03,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_geometric_p4_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.28637912739367255
+      },
+      {
+        "multiplier": 0.01,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16",
+          "syn_geometric_p4_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.2666879237279659
+      },
+      {
+        "multiplier": 0.003,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p4_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.06356003365090564
+      },
+      {
+        "multiplier": 0.001,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.03189416160032487
+      },
+      {
+        "multiplier": 0.0003,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.03139991565119534
+      },
+      {
+        "multiplier": 0.0001,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.02805461353589283
+      },
+      {
+        "multiplier": 3e-05,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.026348511079435664
+      },
+      {
+        "multiplier": 1e-05,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.024932797908674652
+      }
+    ]
+  },
+  "expmv": {
+    "selected": {
+      "p4": null,
+      "p7": null,
+      "p10": null
+    },
+    "levels": {
+      "p4": {
+        "selected": null,
+        "grid": []
+      },
+      "p7": {
+        "selected": null,
+        "grid": []
+      },
+      "p10": {
+        "selected": null,
+        "grid": []
+      }
+    }
+  }
+}

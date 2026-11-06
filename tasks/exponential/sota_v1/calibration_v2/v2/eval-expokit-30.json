@@ -1,0 +1,112 @@
+{
+ "member": "expokit",
+ "value": "30",
+ "cases": [
+  {
+   "id": "syn_diffusion2d_p10_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_diffusion2d_b_p10_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_diffusion3d_p4_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_diffusion3d_p7_k1",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_diffusion3d_p7_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_diffusion3d_p10_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_geometric_p4_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_geometric_p7_k1",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_geometric_p7_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_geometric_p10_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_geometric_b_p4_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_geometric_b_p7_k1",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_geometric_b_p7_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "syn_geometric_b_p10_k16",
+   "valid": false,
+   "reason": "accuracy_failure",
+   "rtol": null,
+   "worst": null
+  },
+  {
+   "id": "__all_completed_requests__",
+   "valid": true,
+   "reason": "ok",
+   "rtol": null,
+   "worst": 0.004645278299445767
+  }
+ ],
+ "source": "expokit.json (first public pass, 2026-11-05)"
+}
