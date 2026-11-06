@@ -26,7 +26,10 @@ log '"event": "start"'
 (cd $DATA && taskset -c 0-3 nice "$ROOT/.venv-ops/bin/python" fetch_suitesparse.py --split private) || true
 (cd $DATA && taskset -c 0-3 nice "$ROOT/.venv-ops/bin/python" build_cases.py --split private)
 log "\"event\": \"private_cases_built\", \"cases\": $(python3 -c "import json;print(len(json.load(open('$DATA/cases/private/manifest.json'))['cases']))")"
-container 4-31 48g "cd $DATA && python3 truth.py cases/private/manifest.json --jobs 28" > "$OUT/truth-private.log" 2>&1
+# TRUTH_CPUS leaves CPUs to an attempt still developing (default: every non-housekeeping CPU).
+TRUTH_CPUS=${TRUTH_CPUS:-4-31}
+JOBS=$(python3 -c "import sys;print(sum(int(b)-int(a)+1 if '-' in r else 1 for r in sys.argv[1].split(',') for a,b in [(r.split('-')+[r])[:2]]))" "$TRUTH_CPUS")
+container "$TRUTH_CPUS" 48g "cd $DATA && python3 truth.py cases/private/manifest.json --jobs $JOBS" > "$OUT/truth-private.log" 2>&1
 log "\"event\": \"private_truth\", \"summary\": $(tail -1 "$OUT/truth-private.log")"
 .venv-ops/bin/python scripts/prepare_exponential_v2.py --force --graded $DATA/cases/private \
     --public-dev $DATA/cases/public_smoke --public-full $DATA/cases/public_dev_full > "$OUT/seal-private.json"
