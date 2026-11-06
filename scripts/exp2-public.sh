@@ -2,8 +2,8 @@
 # exponential-v2, public half (idle window only: it loads every non-housekeeping CPU).
 #   1. convert the public standard matrices (PSD check with shift-invert fallback) and build the full-size public cases;
 #   2. reference solutions (truth.py) in one container over CPUs 4-31;
-#   3. panel calibration on the public cases under each member's frozen rule (expokit, expmv), and validation of the
-#      members without a parameter (kiops, scipy, chebyshev), each in its own single-CPU container;
+#   3. panel calibration on the public cases under each member's rule (expokit and kiops tolerance grids, expmv
+#      precision levels), and validation of the members without a parameter (scipy, chebyshev);
 #   4. the one_shot subset for the development package (cases/public_dev_full).
 # Private cases are generated only after the panel is frozen (scripts/exp2-private.sh).
 # Log: store/reruns/exp2-public.log; reports under tasks/exponential/sota_v1/calibration_v2/.
