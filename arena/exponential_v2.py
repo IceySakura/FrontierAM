@@ -84,8 +84,27 @@ class ExponentialV2(Task):
         return tar_directory(SEAL / 'panel', output / 'incoming.tar', {PANEL_MARKER: (marker, 0o644)})
 
     # Grading ---------------------------------------------------------------------------------------------------
-    def evaluate(self, runtime, placement, run: Path) -> dict:
-        """Build (if build.sh) and evaluate run/source on every graded case; returns the part summary."""
+    def suite(self, runtime) -> list[dict]:
+        """Every graded case with a cost proxy (nonzeros x requests) for balancing shards across slots."""
+        return [dict(c, cost=float(c.get('nnz', 1)) * c.get('request_count', 1)) for c in self.cases()]
+
+    def manifest_for(self, out: Path, case_ids) -> Path:
+        """The sealed manifest, or a copy restricted to case_ids with absolute case paths (one shard of a suite)."""
+        sealed = SEAL / 'data/manifest.json'
+        if not case_ids:
+            return sealed
+        manifest = json.loads(sealed.read_text())
+        wanted = set(case_ids)
+        manifest['cases'] = [dict(c, file=str(SEAL / 'data' / c['file'])) for c in manifest['cases'] if c['id'] in wanted]
+        if len(manifest['cases']) != len(wanted):
+            raise ValueError('case_ids name cases outside the sealed manifest')
+        path = out / 'shard-manifest.json'
+        path.write_text(json.dumps(manifest, indent=1) + '\n')
+        return path
+
+    def evaluate(self, runtime, placement, run: Path, manifest: Path | None = None) -> dict:
+        """Build (if build.sh) and evaluate run/source on the graded cases (or a shard); returns the part summary."""
+        manifest = manifest or SEAL / 'data/manifest.json'
         c = self.assets(runtime).controller
         image = self.lock()['image']['id']
         docker = c.Docker(runtime['docker_path'], placement.docker_host, placement.cpuset, placement.cgroup_parent)
@@ -99,7 +118,7 @@ class ExponentialV2(Task):
         report_path = run / 'evaluation.json'
         command = [sys.executable, str(SEAL / 'docker_eval/evaluator/run_docker.py'), '--image', image,
                    '--docker', str(wrapper), '--submission', build['artifact'], '--command', './run.sh',
-                   '--manifest', str(SEAL / 'data/manifest.json'), '--output', str(report_path), '--repeats', '3',
+                   '--manifest', str(manifest), '--output', str(report_path), '--repeats', '3',
                    '--cpuset', placement.cpuset]
         if placement.cgroup_parent:
             command += ['--cgroup-parent', placement.cgroup_parent]
@@ -108,16 +127,17 @@ class ExponentialV2(Task):
         if done.returncode or not report_path.exists():
             return {'status': 'infrastructure_failure', 'reason': f'evaluator exit {done.returncode}; see {run}/evaluator.log'}
         report = json.loads(report_path.read_text())
-        expected = {case['id'] for case in self.cases()}
+        expected = {case['id'] for case in json.loads(manifest.read_text())['cases']}
         if set(report['aggregates']) != expected or len(report['runs']) != 3 * len(expected):
             return {'status': 'infrastructure_failure', 'reason': 'incomplete evaluation'}
         valid = sum(a['valid'] for a in report['aggregates'].values())
         return {'status': 'ok', 'valid_cases': valid, 'total_cases': len(expected), 'report': str(report_path),
                 'build': build.get('status')}
 
-    async def grade(self, runtime, placement, output):
+    async def grade(self, runtime, placement, output, case_ids=None):
         self.verify()
         source = output / 'source'
+        manifest = self.manifest_for(output, case_ids)
         if (source / PANEL_MARKER).exists():
             c = self.assets(runtime).controller
             parts = {}
@@ -126,9 +146,9 @@ class ExponentialV2(Task):
                 run.mkdir(parents=True)
                 c.validate_and_extract(tar_directory(source / member, run / 'incoming.tar'), run / 'source',
                                        run / 'source.tar')
-                parts[member] = self.evaluate(runtime, placement, run)
+                parts[member] = self.evaluate(runtime, placement, run, manifest)
             return {'exit_status': 'finished', 'kind': 'panel', 'parts': parts}
-        return {'exit_status': 'finished', 'kind': 'candidate', 'parts': {'candidate': self.evaluate(runtime, placement, output)}}
+        return {'exit_status': 'finished', 'kind': 'candidate', 'parts': {'candidate': self.evaluate(runtime, placement, output, manifest)}}
 
     def metrics(self, output, raw):
         parts = {}

@@ -440,13 +440,13 @@ def cmd_sentinel(args) -> None:
 
 
 def shard_cases(instances: list[dict], count: int) -> list[list[str]]:
-    """Balance worst-case time: longest limit first, each case to the shard with the least total limit so far."""
+    """Balance worst-case time: costliest case first (its cost, else its limit), each to the least-loaded shard."""
     shards: list[list[str]] = [[] for _ in range(count)]
     totals = [0.0] * count
-    for case in sorted(instances, key=lambda c: (-c['time_limit_seconds'], c['id'])):
+    for case in sorted(instances, key=lambda c: (-c.get('cost', c.get('time_limit_seconds', 0)), c['id'])):
         index = totals.index(min(totals))
         shards[index].append(case['id'])
-        totals[index] += case['time_limit_seconds']
+        totals[index] += case.get('cost', case.get('time_limit_seconds', 0))
     return shards
 
 
