@@ -434,8 +434,9 @@ int main(int argc, char** argv) {
             norm_infinity = std::max(norm_infinity, row_sum);
         }
         const double stiffness = h.t * norm_infinity;
+        // The inner-solve tolerance of stiff sessions follows the stopping multiplier (0.1 by default, as before).
         factor.set_solve_tolerance(stiffness > 50000.0
-                                       ? std::max(2e-13, 0.1 * h.rtol)
+                                       ? std::max(2e-13, tolerance_multiplier * h.rtol)
                                        : 2e-13);
         double shift_ratio = 10.0;
         if (h.t != 0.0 && !zero_operator) {
