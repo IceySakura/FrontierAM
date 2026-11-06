@@ -5,7 +5,7 @@ Rule (amended 2026-11-06, public data only, see RULE.md):
   * a setting qualifies if no request fails accuracy and the largest error over the requests it completes is at most
     MARGIN x (atol + rtol * |y_ref|_inf); a wall/CPU/memory limit is a case failure of the member (it then takes no
     part in that case's virtual best), not a disqualification of the setting;
-  * tolerance members (expokit, kiops): the largest multiplier that qualifies together with every smaller one down to
+  * tolerance members (expokit, kiops, slepc, rational, exputils): the largest multiplier that qualifies together with every smaller one down to
     FLOOR (below it the p10 tolerance approaches binary64 epsilon; those values are reported but not required);
   * expmv: per level (p4, p7, p10) the cheapest of half < single < double that qualifies on that level's cases.
 Timing plays no part, so settings are evaluated in parallel.
@@ -38,11 +38,10 @@ PRECISIONS = ['half', 'single', 'double']
 def command(member: str, value: str) -> str:
     if member == 'expokit':
         return f'{PANEL / "expokit/expokit_avx2"} --tol-multiplier {value}'
-    if member == 'kiops':
-        return f'{PANEL / "kiops/run.sh"} {value}'
     if member == 'expmv':
         return f'''{PANEL / "expmv/run.sh"} "struct('p4','{value}','p7','{value}','p10','{value}')"'''
-    raise ValueError(member)
+    # Every other parameterised member takes the tolerance multiplier as the first argument of its run.sh.
+    return f'{PANEL / member / "run.sh"} {value}'
 
 
 def evaluate(member: str, value: str, manifest: str) -> dict:
@@ -69,7 +68,7 @@ def select(out: Path, manifest: Path) -> dict:
     ids = {c['id']: c for c in json.loads(manifest.read_text())['cases']}
     evaluations = [json.loads(p.read_text()) for p in sorted(out.glob('eval-*.json'))]
     result = {}
-    for member in ('expokit', 'kiops'):
+    for member in sorted({e['member'] for e in evaluations} - {'expmv'}):
         rows = sorted((e for e in evaluations if e['member'] == member), key=lambda e: -float(e['value']))
         table = []
         for e in rows:

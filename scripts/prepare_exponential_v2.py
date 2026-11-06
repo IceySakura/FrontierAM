@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXP = ROOT / 'tasks/exponential'
 V2 = EXP / 'sota_v1'
 SEAL = ROOT / '.runtime-exp2'
-PANEL = ('expokit', 'kiops', 'expmv', 'scipy', 'chebyshev')
+PANEL = ('expokit', 'kiops', 'expmv', 'scipy', 'chebyshev', 'slepc', 'rational', 'exputils')
 QUALIFIED = {'chebyshev_audited_qualified', 'analytic_dense_eigh_qualified'}
 
 
@@ -100,7 +100,7 @@ def main():
         (SEAL / 'docker_eval/evaluator').mkdir(parents=True, exist_ok=True)
         shutil.copyfile(EXP / 'docker_eval/evaluator' / name, SEAL / 'docker_eval/evaluator' / name)
     graded = copy_cases(args.graded.resolve(), SEAL / 'data')
-    panel, frozen_path = list(PANEL), V2 / 'calibration_v2/FROZEN.json'
+    panel, frozen_path = [m for m in PANEL if (V2 / 'panel' / m / 'run.sh').exists()], V2 / 'calibration_v2/FROZEN.json'
     if frozen_path.exists():
         # After public calibration only the frozen members, byte-identical to their frozen state, form the reference.
         frozen = json.loads(frozen_path.read_text())

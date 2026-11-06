@@ -1,0 +1,62 @@
+{
+  "method": "SLEPc MFNEXPOKIT with FNEXP on an augmented sparse operator",
+  "citation": "V. Hernandez, J. E. Roman, and V. Vidal, SLEPc: A Scalable and Flexible Toolkit for the Solution of Eigenvalue Problems, ACM TOMS 31(3), 2005; SLEPc Users Manual, MFN chapter",
+  "license": "BSD-2-Clause",
+  "platform": "Debian bookworm amd64, GCC 12.2.0, frontieram-exponential:port-v1",
+  "upstream": {
+    "petsc": {
+      "version": "3.26.1",
+      "source_url": "https://mirrors.tencent.com/pypi/packages/df/0f/0a3ae83f60fba9357e8de2acef74fc0871078c9991ae8aac4d04df118030/petsc-3.26.1.tar.gz",
+      "source_sha256": "a4dc46c1b4403545ac2274741ce10801366c4a9a7b2683b678d18f6663b93496"
+    },
+    "slepc": {
+      "version": "3.26.1",
+      "source_url": "https://mirrors.tencent.com/pypi/packages/4a/a1/2af7a27c3c027e8c92a35d87a72b5ce70af82acaca3b97c6fa42a5fde482/slepc-3.26.1.tar.gz",
+      "source_sha256": "d9b8bb27f6402e72e9d8f7ae9a1de241ff772b55d0bf265e8e10c61750f49cb9"
+    }
+  },
+  "configure": {
+    "petsc": [
+      "--with-mpi=0",
+      "--with-debugging=0",
+      "--with-shared-libraries=1",
+      "--with-cxx=0",
+      "--with-fc=0",
+      "--with-fortran-bindings=0",
+      "--with-x=0",
+      "--with-ssl=0",
+      "--with-cuda=0",
+      "--with-hip=0",
+      "--with-kokkos=0",
+      "--with-blaslapack-lib=/usr/lib/x86_64-linux-gnu/libopenblas.so",
+      "COPTFLAGS=-O3 -march=x86-64-v2",
+      "CFLAGS=-fPIC"
+    ],
+    "slepc": [
+      "PETSC_DIR=<PETSc install prefix>",
+      "--prefix=<install prefix>"
+    ],
+    "downloads": "All --download-* options disabled; system OpenBLAS/LAPACK used",
+    "parallel_build": "docker --cpuset-cpus 2,3; make -j2"
+  },
+  "unmodified_upstream": true,
+  "unmodified_upstream_statement": "The PETSc and SLEPc tarballs were configured and compiled without source changes. src/stream_slepc.c is a separate thin protocol and sparse-matrix adapter.",
+  "runtime": {
+    "mpi": "PETSc MPIUNI, PETSC_COMM_SELF, exactly one process",
+    "threads": 1,
+    "solver": "MFNEXPOKIT",
+    "function": "FNEXP",
+    "krylov_dimension": {
+      "one_shot": 60,
+      "reuse": 80
+    },
+    "tolerance": "100 * protocol rtol by default; optional run.sh first argument overrides 100",
+    "reuse": "The same MFN, Mat, and Vec objects are reused; only the augmented matrix's final column is updated in place."
+  },
+  "artifacts": {
+    "adapter_source_sha256": "3ee8e04c31156ccb7264cc471712af4895bd3bb3e1b5184b627ac543e367a1cb",
+    "stream_slepc_sha256": "bf4006c5a358a062d55ea81ef5b0debf7d9e6b822b9f6e0a83b1e04166e8fc92",
+    "libpetsc_so_3_26_1_sha256": "77142fe55f4af77015e5ad1728bd3adb1ba5007e4516005061795eeab2806bd6",
+    "libslepc_so_3_26_1_sha256": "0801a59459ff3e13ec0e8d159b91171519e21979e79732c4c1e7f7cf63e8fdf5"
+  }
+}

@@ -89,6 +89,16 @@ def main():
                      f"policy = struct('p4', '{selected['p4']}', 'p7', '{selected['p7']}', 'p10', '{selected['p10']}');", dry)
         members['expmv'] = {'precision': selected}
 
+    for member, row in selection.items():
+        if member in ('expokit', 'kiops', 'expmv', 'rule', 'margin') or not isinstance(row, dict):
+            continue
+        # Members whose run.sh takes the multiplier as "${1:-DEFAULT}" (slepc, rational, exputils).
+        if row.get('selected_multiplier') is None:
+            excluded[member] = 'no tolerance multiplier on the grid passes every public case with margin 0.1'
+            continue
+        replace_once(PANEL / member / 'run.sh', r'\$\{1:-[0-9.eE+-]+\}', '${1:-%r}' % row['selected_multiplier'], dry)
+        members[member] = {'tol_multiplier': row['selected_multiplier']}
+
     for member in ('scipy', 'chebyshev'):
         check = validation(member)
         if check['accuracy_failures'] or (check['max_scaled_error'] or 0) > 1:
