@@ -1,8 +1,9 @@
 {
-  "rule": "Public calibration of the exponential-v2 panel under one amended rule for every parameterised member.\n\nRule (amended 2026-11-06, public data only, see RULE.md):\n  * cases: the truth-qualified public cases (scored cases without an independently verified reference are excluded);\n  * a setting qualifies if no request fails accuracy and the largest error over the requests it completes is at most\n    MARGIN x (atol + rtol * |y_ref|_inf); a wall/CPU/memory limit is a case failure of the member (it then takes no\n    part in that case's virtual best), not a disqualification of the setting;\n  * tolerance members (expokit, kiops): the largest multiplier that qualifies together with every smaller one;\n  * expmv: per level (p4, p7, p10) the cheapest of half < single < double that qualifies on that level's cases.\nTiming plays no part, so settings are evaluated in parallel.",
+  "rule": "Public calibration of the exponential-v2 panel under one amended rule for every parameterised member.\n\nRule (amended 2026-11-06, public data only, see RULE.md):\n  * cases: the truth-qualified public cases (scored cases without an independently verified reference are excluded);\n  * a setting qualifies if no request fails accuracy and the largest error over the requests it completes is at most\n    MARGIN x (atol + rtol * |y_ref|_inf); a wall/CPU/memory limit is a case failure of the member (it then takes no\n    part in that case's virtual best), not a disqualification of the setting;\n  * tolerance members (expokit, kiops): the largest multiplier that qualifies together with every smaller one down to\n    FLOOR (below it the p10 tolerance approaches binary64 epsilon; those values are reported but not required);\n  * expmv: per level (p4, p7, p10) the cheapest of half < single < double that qualifies on that level's cases.\nTiming plays no part, so settings are evaluated in parallel.",
   "margin": 0.1,
   "expokit": {
-    "selected_multiplier": null,
+    "selected_multiplier": 0.0003,
+    "floor": 0.0002220446049250313,
     "grid": [
       {
         "multiplier": 1000000.0,
@@ -324,11 +325,89 @@
         "accuracy_failures": [],
         "resource_failures": [],
         "max_scaled_error": 0.11996629738209195
+      },
+      {
+        "multiplier": 0.0003,
+        "qualifies": true,
+        "accuracy_failures": [],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "max_scaled_error": 0.006760070793288198
+      },
+      {
+        "multiplier": 0.0001,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16"
+        ],
+        "max_scaled_error": 0.006760070778945667
+      },
+      {
+        "multiplier": 3e-05,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16"
+        ],
+        "max_scaled_error": 0.006760070802849886
+      },
+      {
+        "multiplier": 1e-05,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16"
+        ],
+        "max_scaled_error": 0.006760070827778573
+      },
+      {
+        "multiplier": 3e-06,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_geometric_b_p10_k1",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16"
+        ],
+        "max_scaled_error": 0.006760070828803039
+      },
+      {
+        "multiplier": 1e-06,
+        "qualifies": false,
+        "accuracy_failures": [
+          "syn_diffusion3d_p10_k16",
+          "syn_geometric_p10_k16",
+          "syn_geometric_b_p10_k16"
+        ],
+        "resource_failures": [
+          "syn_geometric_b_p4_k16",
+          "syn_geometric_b_p7_k16"
+        ],
+        "max_scaled_error": 0.01434421518174178
       }
     ]
   },
   "kiops": {
     "selected_multiplier": 0.001,
+    "floor": 0.0002220446049250313,
     "grid": [
       {
         "multiplier": 1.0,

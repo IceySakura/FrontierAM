@@ -5,7 +5,8 @@ Rule (amended 2026-11-06, public data only, see RULE.md):
   * a setting qualifies if no request fails accuracy and the largest error over the requests it completes is at most
     MARGIN x (atol + rtol * |y_ref|_inf); a wall/CPU/memory limit is a case failure of the member (it then takes no
     part in that case's virtual best), not a disqualification of the setting;
-  * tolerance members (expokit, kiops): the largest multiplier that qualifies together with every smaller one;
+  * tolerance members (expokit, kiops): the largest multiplier that qualifies together with every smaller one down to
+    FLOOR (below it the p10 tolerance approaches binary64 epsilon; those values are reported but not required);
   * expmv: per level (p4, p7, p10) the cheapest of half < single < double that qualifies on that level's cases.
 Timing plays no part, so settings are evaluated in parallel.
 
@@ -27,6 +28,8 @@ HERE = Path(__file__).resolve().parent
 PANEL = HERE.parent / 'panel'
 TOOLS = HERE.parents[1] / 'public/tools'
 MARGIN = 0.1
+# Tightest multiplier that still asks the p10 level (rtol 1e-10) for no less than 100 x binary64 epsilon.
+FLOOR = 100 * 2.220446049250313e-16 / 1e-10
 RESOURCE = {'wall_timeout', 'cpu_limit', 'cpu_timeout', 'memory_limit', 'startup_timeout'}
 LEVELS = {1e-4: 'p4', 1e-7: 'p7', 1e-10: 'p10'}
 PRECISIONS = ['half', 'single', 'double']
@@ -73,8 +76,9 @@ def select(out: Path, manifest: Path) -> dict:
             # Converted first-pass results carry only their failures plus one record holding the largest error.
             ok, detail = qualifies([c for c in e['cases'] if c['id'] in ids or c['id'].startswith('__')])
             table.append({'multiplier': float(e['value']), 'qualifies': ok, **detail})
-        chosen = next((r['multiplier'] for i, r in enumerate(table) if all(s['qualifies'] for s in table[i:])), None)
-        result[member] = {'selected_multiplier': chosen, 'grid': table}
+        region = [r for r in table if r['multiplier'] >= FLOOR]
+        chosen = next((r['multiplier'] for i, r in enumerate(region) if all(s['qualifies'] for s in region[i:])), None)
+        result[member] = {'selected_multiplier': chosen, 'floor': FLOOR, 'grid': table}
     levels = {}
     for level in LEVELS.values():
         table = []
