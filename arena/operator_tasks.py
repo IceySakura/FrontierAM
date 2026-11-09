@@ -167,13 +167,22 @@ class GalaxyGravity(OperatorTask):
                 'cpu_limit_s': official['cpu_limit_s']}
 
 
+class GalaxyGravityV2(GalaxyGravity):
+    """galaxy-gravity at 131,072 particles (scripts/prepare_galaxy_v2.py); same grader, references and budget."""
+
+
 class PolarizationDemosaicking(OperatorTask):
     grade_memory = 10 * GIB
     # Each scene has a 1.000-second wall limit including interpreter start-up, so no other grader runs meanwhile.
     grade_isolation = 'grade_pool'
 
+    # FRONTIERAM_POLAR_DATA=wen grades the public-feedback scenes instead (protocol v6.2; results/OPEN_ITEMS.md).
+    feedback = OPS / 'polarization-demosaicking-feedback'
+
     def run_grader(self, source, out, placement):
         root = self.root()
+        if os.environ.get('FRONTIERAM_POLAR_DATA') == 'wen':
+            return self.run_feedback(source, out, placement)
         grader = root / 'harbor/polarization-demosaicking/grade_submission.py'
         out.parent.mkdir(parents=True, exist_ok=True)
         env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
@@ -191,6 +200,22 @@ class PolarizationDemosaicking(OperatorTask):
                 'expected_cases': summary.get('expected_cases'),
                 'max_wall_s': max((r.get('wall_s') or 0 for r in rows), default=None),
                 'scene_statuses': {r['scene']: r['status'] for r in rows}}
+
+
+    def run_feedback(self, source, out, placement):
+        driver = ROOT / 'arena/operator_drivers/polarization_feedback.py'
+        out.parent.mkdir(parents=True, exist_ok=True)
+        env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
+        done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.root() / 'harbor/polarization-demosaicking'),
+                               str(source), str(out), str(self.feedback)], env=env, capture_output=True, text=True,
+                              timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
+        rows = summary.get('scene_rows', [])
+        return {'status': summary.get('status', 'infrastructure_failure'), 'raw_error': summary.get('mean_rmse'),
+                'reason': summary.get('reason'), 'cases_passed': summary.get('cases_passed'),
+                'expected_cases': summary.get('expected_cases'), 'max_wall_s': max((r.get('wall_s') or 0 for r in rows), default=None),
+                'scene_rmse': {r['scene']: r.get('mean_rmse') for r in rows}, 'scene_statuses': {r['scene']: r['status'] for r in rows}}
 
 
 class SpeciesTree(OperatorTask):
@@ -283,13 +308,22 @@ class TrajectoryCovariance(OperatorTask):
     # Parent chains per setting in the default case set (all five prefixes each): 100 of 1,000 gives 3,000 of 30,000.
     subset_parents = 100
 
+    # Protocol v6.2 public feedback (results/OPEN_ITEMS.md): FRONTIERAM_TRAJ_POOL=feedback selects the last 10 parents
+    # per setting (all five prefixes, 300 inputs). They are never part of the formal subset, so feedback reveals
+    # nothing about graded inputs; agents see per-case errors only, never the trajectories.
+    feedback_parents = 10
+
     def case_ids(self) -> list[str]:
         """Fixed stratified subset: per setting, the first parents in ID order, with every prefix of each."""
         manifest = self.root() / 'results/mcmc-long-run-covariance/formal-v1/private/manifest.json'
         cases = json.loads(manifest.read_text())['cases']
+        feedback = os.environ.get('FRONTIERAM_TRAJ_POOL') == 'feedback'
         chosen = set()
         for model in sorted({c['model'] for c in cases}):
-            chosen.update(sorted({c['parent'] for c in cases if c['model'] == model})[:self.subset_parents])
+            parents = sorted({c['parent'] for c in cases if c['model'] == model})
+            if len(parents) < self.subset_parents + self.feedback_parents:
+                raise RuntimeError('trajectory: too few parents to keep the feedback pool disjoint from the formal subset')
+            chosen.update(parents[-self.feedback_parents:] if feedback else parents[:self.subset_parents])
         return [c['id'] for c in cases if c['parent'] in chosen]
 
     def run_grader(self, source, out, placement):
@@ -332,7 +366,8 @@ def _finite(value) -> bool:
     return isinstance(value, (int, float)) and math.isfinite(value)
 
 
-CLASSES = {'galaxy-gravity': GalaxyGravity, 'polarization-demosaicking': PolarizationDemosaicking,
+CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2,
+           'polarization-demosaicking': PolarizationDemosaicking,
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance}
 

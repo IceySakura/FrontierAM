@@ -35,6 +35,7 @@ ATR_PYTHON = ATR_ROOT / '.venv/bin/python'
 HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': 'frontieram-conic-harness:v6',
                   'exponential-v2': 'frontieram-exponential-harness:v6',
                   'galaxy-gravity': 'frontieram-galaxy-gravity-harness:v6',
+                  'galaxy-gravity-v2': 'frontieram-galaxy-gravity-harness:v6',
                   'polarization-demosaicking': 'frontieram-polarization-demosaicking-harness:v6',
                   'species-tree': 'frontieram-species-tree-harness:v6',
                   'species-tree-v2': 'frontieram-species-tree-harness:v6',
@@ -246,6 +247,15 @@ SCORING_DISCLOSURE['species-tree-v2'] = (
     'same instances and limits: matching the weaker one scores zero, matching the stronger one is the midpoint of the '
     'scale and recovering every true split is the maximum. Running time does not count beyond the limit. Instances '
     'vary in how much the gene trees conflict, so a method must stay accurate across that range.'
+)
+
+SCORING_DISCLOSURE['galaxy-gravity-v2'] = (
+    'Every call on every held-out snapshot must stay within the CPU, wall-clock and memory limits and return finite '
+    'accelerations for all particles; a single failed call makes the whole submission score zero. Given that, the '
+    'score depends only on the overall relative acceleration error, compared with two tree-code references measured '
+    'on the same snapshots and budget: matching the weaker one scores zero, matching the stronger one is the midpoint '
+    'of the scale and exact accelerations are the maximum. Using less CPU time earns nothing extra, so spend the budget '
+    'on accuracy while keeping a safety margin under the limit.'
 )
 
 SETTING_SINGLE = (
