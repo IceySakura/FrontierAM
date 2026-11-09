@@ -199,6 +199,12 @@ TIMING_NOTE = (
     'isolated grading core; only the verification result is authoritative. Each case is timed over the whole process '
     'from launch to exit, including interpreter startup and imports, so keep a safety margin under every limit.\n'
 )
+# Exponential tasks time a session from the first input byte, not from process launch (their API.md is authoritative).
+TIMING_NOTE_SESSION = TIMING_NOTE.replace(
+    'Each case is timed over the whole process from launch to exit, including interpreter startup and imports, so keep '
+    'a safety margin under every limit.',
+    'Timing and limits follow the task\'s own interface rules exactly as written in its documents; keep a safety '
+    'margin under every limit.')
 
 
 SUBMISSION_NOTE = (
@@ -226,7 +232,9 @@ SCORING_DISCLOSURE = {
         'KIOPS, expmv, SciPy expm_multiply, a Chebyshev method, SLEPc MFN, ExponentialUtilities.jl), averaged '
         'with equal weight over matrices, structure families, scenarios and accuracy levels: matching the per-case '
         'fastest published method is the midpoint of the scale, and the faster you are than that the higher the '
-        'score. Times cover the whole process, startup included.'
+        'score. Timing follows the task\'s own interface rules (API.md): it starts before the first matrix byte '
+        'is delivered and ends when all results are out and the process has exited; imports and input-independent '
+        'initialisation before READY are not timed.'
     ),
 }
 
@@ -302,7 +310,8 @@ def prompt(task_name: str, runtime: dict, protocol: str = 'v6', setting: str = '
         + getattr(task, 'submission_note', SUBMISSION_NOTE) + ' '
         + budget
         + runtime['architecture_override_prompt']
-        + (TIMING_NOTE if protocol in ('v6.1', 'v6.2') else '')
+        + ((TIMING_NOTE_SESSION if task_name.startswith('exponential') and protocol == 'v6.2' else TIMING_NOTE)
+           if protocol in ('v6.1', 'v6.2') else '')
     )
 
 

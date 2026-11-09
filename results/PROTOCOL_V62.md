@@ -54,6 +54,10 @@ conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写
 - **harness**（`arena/native.py`）：`./bench develop --protocol v6.2 --setting single|iterative [--development-seconds N]`。迭代设置向容器只读挂载 `/opt/frontieram/bin/submit`，并挂载评测 socket 目录；宿主侧 `EvalService` 处理测试和正式提交：测试时暂停容器、用正式导出器冻结快照（保留容器）、以子进程运行 `public-eval`、恢复容器并把报告写入 `/workspace/feedback/test-<n>/`。主循环每秒检查正式提交和截止时间；截止时立即暂停并冻结，未完成的评测继续跑完但结果不再送达，在释放迭代锁之前等它结束，因此它的评分任务不会与下一次迭代尝试重叠。迭代尝试先取得机器级锁 `/run/frontieram/v62-iterative.lock` 再开始计时。每次尝试把实际提示存为 `prompt.txt`，测试记录存入 `develop_result.json` 的 `evaluations`。
 - **验证脚本**：`scripts/v62-smoke.py TASK SETTING SECONDS OUT` 用 shell 脚本代替模型，在真实开发容器中走完一次尝试并检查结果。单轮设置已在 conic 上通过：结束回合即冻结，容器内没有评测接口和 socket（`store/reruns/v62-smoke/conic-single-1`）。
 
+## 更正（11-09 16:40）：exponential-v2 的计时说明
+
+exponential-v2 的计时从交付矩阵第一个字节开始，READY 之前的导入不计（题面 INSTRUCTION.md 与 V2.md）。v6.2 评分说明里原写“计时覆盖整个进程，包括启动”，以及 v6.1 起附加的通用计时说明（“从进程启动到退出，包括解释器启动和导入”）都与这道题不符。已改为：v6.2 下 exponential 类题目的评分说明和计时说明都改为“按题目自己的接口规则计时”；v6.1 的提示保持原样不改（历史协议）。11-09 12:55 开始的 sol exponential-v2 单轮尝试（`exponential-v2-20261109T064531Z-785a70`）用的是有误的提示，照常评分但只作记录、不计成绩；16:44 以修正后的提示重跑（`dev-exponential-v2-20261109T084408Z-a55f39`），以重跑为正式成绩（默认决定）。v6.1 的 sol 尝试同样看到了那句通用说明，但题面原文写得很明确，成绩不改。
+
 ## 进度
 
 1. 已完成：设计、两个公开反馈评测器、公开评测命令、harness 两种设置、单轮设置验证。
