@@ -1,4 +1,4 @@
-# 指数传播 v2：进展与待讨论事项（2026-11-05）
+# 指数传播 v2：进展与待讨论事项（2026-11-05，11-09 更新）
 
 目标（见 `tasks/exponential/sota_v1/DESIGN.md`）：把参考换成已发表人类方法组成的参照组（panel），数据集换成更大、含标准矩阵和合成算子的 v2，参考解独立验证，分数仍按 50/100 约定。
 
@@ -46,6 +46,18 @@
 - **冻结结果（11-06 17:04，`calibration_v2/FROZEN.json`）**：7 个成员入选——Expokit 3e-4·rtol、KIOPS 1e-3·rtol、expmv（p4 single，p7/p10 double）、ExponentialUtilities.jl 1e-6、SLEPc MFN 1e-3·rtol、SciPy、Chebyshev。**有理 Krylov 未入选**：修正 1（刚性会话的内层容差随倍数变化）之后，倍数 ≤ 0.03 时已无精度失败，但 `syn_heavytail_p10_k16` 的误差固定在门槛的 0.122，略高于余量 0.1，且不随倍数变化（另有一处固定的内部容差，未查实）。panel 冻结后私有集即开始生成，本轮不再改动；修好后可纳入下一个冻结版本（待讨论）。SLEPc 的网格在 3e-3 处不单调（一个精度失败），按规则选更严的 1e-3。
 - **私有集**：只有在加强后的参照组冻结之后才生成（5 个标准矩阵：thermal1、email-Enron、cit-HepPh、road_usa 与 fe_ocean 的 BFS 子图；6 个合成族），参考解同样要求独立验证，不合格的剔除。
 - **开发包先行**：公开开发包与参照组、私有集无关，已封存（冒烟集 56 例 + 正式规模 one_shot 40 例，172 MB），gpt-6.1-sol 的 v6.1 尝试先用它开发；评分在最终封存后进行。
+
+## 4c. 2026-11-06 至 11-09：私有集、封存修正、正式基线
+
+- **私有集**（panel 冻结 17:04 之后生成，18:45 封存）：11 个母矩阵（标准 5 个：Schmid/thermal1、SNAP/email-Enron、SNAP/cit-HepPh、DIMACS10/road_usa 与 DIMACS10/fe_ocean 的 BFS 子图；合成 6 族：diffusion2d、diffusion3d、geometric、heavytail、logspectrum、signed）× 3 个精度档 × 2 种场景（one_shot、reuse 16 个右端），共 66 个计分会话，另有 8 个控制例；n = 34,546–120,000，非零元最多 899,980。参考解 66/66 合格、无剔除：主方法与独立审计的最大差异为门槛的 0.0156（合格线 0.02），没有用例需要稠密仲裁，共 6.3 CPU 小时。（清单顶部的 `truth_note` 仍是生成时的“占位符”说明，逐例状态与数据已核实为真实参考解。）
+- **gpt-6.1-sol 候选评测**（11-06 23:49，4 个分片在 4 个评测 slot 上并行，shared）：74/74 合格。
+- **panel 基线第一次没跑成（11-06 23:49，到 11-09 才发现）**：封存时 Julia 运行时里的库符号链接被展开成实体文件（评测器出于安全拒绝链接，展开本身是必要的），ExponentialUtilities.jl 从 959 MB 变成 1.42 GB，超过单个提交 1 GiB 的上限，基线入队即被拒；后续评分在空的套件编号上报错退出。
+- **修正**（不改冻结成员本身，`FROZEN.json` 不变）：
+  - `scripts/prepare_exponential_v2.py::seal_member`：每组链接（目标文件及解析到它的所有链接）只物化需要的名字：在成员任一普通文件中以字符串出现的名字（ELF NEEDED、JLL 库名、sysimage 中的 dlopen 字符串），加上实测加载过的名字（`calibration_v2/loader_names.json`：在宿主机上以 `LD_DEBUG=files` 跑完公开冒烟集 56 例记录，Julia 的 `dlopen("libpcre2-8")` 会自动补 `.so`，单靠字符串扫描会漏）。ExponentialUtilities.jl 封存后 1.008 GB，SLEPc 27 MB。第一版只用字符串规则，漏掉 `libpcre2-8.so`，在评测镜像里全部启动失败，因此加了实测清单。
+  - `arena/exponential_v2.py`：基线引用只带成员名单，评分时逐个成员从已校验哈希的封存目录读取，并各自作为独立提交校验（每个成员都受 1 GiB 上限）；`verify()` 增加检查，封存 panel 目录中不得有 lock 之外的文件。
+  - 重新封存后数据、评测器、公开包等 81 个非 panel 文件与 11-06 的封存逐字节相同，所以 sol 的候选评测仍然有效，不重评。
+- **容器内功能检查**：SLEPc 和 ExponentialUtilities.jl 的标定是在宿主机上直接运行的（`run_local.py`），此前从未在评测镜像中跑过。在开发 slot 上按正式路径（离线构建、`run_docker.py`）检查：SLEPc 56 例中 55 例合格（1 例精度失败，属于正常的单例失败）；ExponentialUtilities.jl 修正后前 13 例全部合格，耗时与宿主机一致（中位比 0.97），其后为避免与计时评测同一 L3 域而停止。
+- **panel 基线重跑**：11-09 11:20 启动后发现上述检查留下的孤儿评测器仍在核 4（与 grade-06 同一 L3 域）上运行了约 50 秒，该次基线作废（`store/jobs/failed/job-20261109T032027Z-*`），11:22 在干净的机器上重新开始（`suite-exponential-v2-20261109T032227Z-c09381`），分片与 sol 的候选评测相同（同一用例划分、同一分片到 slot 的映射），评分前由 `scripts/exp2-panel-suite.sh` 核对。
 
 ## 5. 待讨论
 

@@ -1,4 +1,16 @@
-# 新题整合状态（2026-11-05）
+# 新题整合状态（2026-11-05，11-09 更新）
+
+**11-09 状态**：五道新题都已接入并有本机基线，gpt-6.1-sol（v6.1，一次 2 小时断网尝试）的成绩如下，原始指标、映射和得分见 `LEADERBOARD.md`：
+
+| 题目 | sol 得分（满分 100，参考 50） |
+| --- | --- |
+| galaxy-gravity | 100.0（题目允许暴力求精确解，已反馈出题人） |
+| polarization-demosaicking | 50.7（取 15:09 的重评，默认决定，待讨论） |
+| trajectory-covariance | 61.5（3000 例固定子集） |
+| species-tree | 暂停：出题人告知数据有误，提交已冻结待评 |
+| exponential-v2 | sol 候选评测 74/74 合格；panel 正式基线 11-09 重跑中，得分待出（`EXPONENTIAL_V2.md` 第 4c 节） |
+
+另：出题方的 conic 修正版题包（solver-20261105）已接入并重测 sol，见 `CONIC_REVISION_SOL.md`。
 
 `Raw_Resource/` 中的 4 道新题已接入 FrontierAM 框架。原始包不进 git；`scripts/prepare_operator_tasks.py` 按 `tasks/operator/<题目>/task.json` 核对哈希、解压、校验包内清单、应用可移植性修改并封存到 `.runtime-ops/<题目>/`。评测时运行题目自带的评分器，通过 docker 垫片（`arena/docker_shim.py`）把它的 ARM64 平台、CPU 编号和镜像映射到本机评测 slot。
 

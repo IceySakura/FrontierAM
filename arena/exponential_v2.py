@@ -53,6 +53,9 @@ class ExponentialV2(Task):
             path = SEAL / relative
             if path.is_symlink() or not path.is_file() or _sha(path) != expected:
                 raise RuntimeError(f'exponential-v2: sealed file changed or missing: {relative}')
+        present = {str(p.relative_to(SEAL)) for p in (SEAL / 'panel').rglob('*') if not p.is_dir()}
+        if present != {r for r in lock['files'] if r.startswith('panel/')}:
+            raise RuntimeError('exponential-v2: sealed panel holds files outside the lock')
         return lock
 
     def assets(self, runtime: dict):
@@ -80,8 +83,12 @@ class ExponentialV2(Task):
     def reference_archive(self, runtime: dict, output: Path) -> Path:
         lock = self.verify()
         output.mkdir(parents=True, exist_ok=True)
+        # The panel together exceeds one submission's size bound, so the reference carries only the membership;
+        # grade() reads each member from the hash-verified seal and validates it as its own submission.
         marker = json.dumps({'task': self.name, 'panel': lock['panel']}).encode() + b'\n'
-        return tar_directory(SEAL / 'panel', output / 'incoming.tar', {PANEL_MARKER: (marker, 0o644)})
+        empty = output / 'panel-reference'
+        empty.mkdir(exist_ok=True)
+        return tar_directory(empty, output / 'incoming.tar', {PANEL_MARKER: (marker, 0o644)})
 
     # Grading ---------------------------------------------------------------------------------------------------
     def suite(self, runtime) -> list[dict]:
@@ -144,7 +151,7 @@ class ExponentialV2(Task):
             for member in json.loads((source / PANEL_MARKER).read_text())['panel']:
                 run = output / 'panel' / member
                 run.mkdir(parents=True)
-                c.validate_and_extract(tar_directory(source / member, run / 'incoming.tar'), run / 'source',
+                c.validate_and_extract(tar_directory(SEAL / 'panel' / member, run / 'incoming.tar'), run / 'source',
                                        run / 'source.tar')
                 parts[member] = self.evaluate(runtime, placement, run, manifest)
             return {'exit_status': 'finished', 'kind': 'panel', 'parts': parts}

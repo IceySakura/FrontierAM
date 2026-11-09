@@ -17,6 +17,8 @@ import argparse
 import hashlib
 import io
 import json
+import os
+import re
 import shutil
 import tarfile
 
@@ -53,6 +55,46 @@ def copy_cases(source: Path, target: Path) -> dict:
         shutil.copyfile(source / case['file'], target / case['file'])
     shutil.copyfile(source / 'manifest.json', target / 'manifest.json')
     return manifest
+
+
+def seal_member(source: Path, target: Path, loaded: set[str]) -> dict:
+    """Copy a panel member as regular files only (the evaluator rejects links) without duplicating every alias.
+
+    Per link group (a target file and the links resolving to it) only the names that occur as a string in some
+    regular file of the member (ELF NEEDED entries, JLL library names, sysimage dlopen strings) or that the loader
+    requested in a recorded run (`loaded`, e.g. Julia's dlopen("libx") resolving libx.so) are materialised; the
+    target itself is kept when no name of its group is needed. Every other name is dropped.
+    """
+    shutil.copytree(source, target, symlinks=True, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+    links = {p: Path(os.path.realpath(p)) for p in target.rglob('*') if p.is_symlink()}
+    if not links:
+        return {'links': 0}
+    if any(not t.is_file() or not t.is_relative_to(target.resolve()) for t in links.values()):
+        raise SystemExit(f'{source}: link to a directory or outside the member')
+    groups = {}
+    for link, resolved in links.items():
+        groups.setdefault(resolved, []).append(link)
+    names = {p.name for p in links} | {t.name for t in groups}
+    pattern = re.compile(b'|'.join(re.escape(n.encode()) for n in sorted(names, key=len, reverse=True)))
+    found = set()
+    for path in target.rglob('*'):
+        if path.is_file() and not path.is_symlink():
+            found.update(m.group().decode() for m in pattern.finditer(path.read_bytes()))
+    found |= loaded
+    kept = dropped = 0
+    for resolved, aliases in groups.items():
+        wanted = [a for a in aliases if a.name in found]
+        for alias in aliases:
+            alias.unlink()
+        for alias in wanted:
+            shutil.copy2(resolved, alias)
+        kept += len(wanted)
+        if wanted and resolved.name not in found:
+            resolved.unlink()
+            dropped += 1
+    dropped += len(links) - kept
+    return {'links': len(links), 'materialised': kept, 'names_dropped': dropped,
+            'bytes': sum(p.stat().st_size for p in target.rglob('*') if p.is_file())}
 
 
 def public_tar(path: Path, dev: Path, full: Path | None) -> None:
@@ -108,9 +150,9 @@ def main():
         for relative, digest in frozen['panel_files_sha256'].items():
             if relative.split('/')[0] in panel and sha(V2 / 'panel' / relative) != digest:
                 raise SystemExit(f'panel file changed since freezing: {relative}')
-    for member in panel:
-        shutil.copytree(V2 / 'panel' / member, SEAL / 'panel' / member, symlinks=False,
-                        ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+    loaded = json.loads((V2 / 'calibration_v2/loader_names.json').read_text())['members']
+    sealing = {member: seal_member(V2 / 'panel' / member, SEAL / 'panel' / member, set(loaded.get(member, ())))
+               for member in panel}
     public_tar(SEAL / 'public.tar', args.public_dev.resolve(), args.public_full.resolve() if args.public_full else None)
     image = json.loads((args.runtime / 'runtime-lock.json').read_text())['images']['exponential']
     files = {str(p.relative_to(SEAL)): sha(p) for p in sorted(SEAL.rglob('*')) if p.is_file()}
@@ -123,6 +165,7 @@ def main():
         'scored_cases': sum(c['role'] == 'scored' for c in graded['cases']),
         'panel': panel,
         'panel_frozen': frozen_path.exists(),
+        'panel_sealing': sealing,
         'public_tar_sha256': files['public.tar'],
         'files': files,
     }

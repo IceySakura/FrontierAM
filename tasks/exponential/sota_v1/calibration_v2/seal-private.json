@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "image": {
+    "id": "sha256:10654e8d187d1bd02ca703e42a81b6bd9e62f63e5d73588845326588ca5c13a8",
+    "architecture": "amd64"
+  },
+  "graded_source": "tasks/exponential/sota_v1/dataset_v2/cases/private",
+  "graded_scope": "private dataset-v2",
+  "graded_cases": 74,
+  "scored_cases": 66,
+  "panel": [
+    "expokit",
+    "kiops",
+    "expmv",
+    "scipy",
+    "chebyshev",
+    "slepc",
+    "exputils"
+  ],
+  "panel_frozen": true,
+  "public_tar_sha256": "77190dfc374225ea03c300c7126087577a17351a1a831ff57258ecde3d7367aa"
+}
