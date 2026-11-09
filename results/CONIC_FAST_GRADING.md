@@ -1,0 +1,23 @@
+# conic 私有集评分提速：首次失败即跳过后续重复（2026-11-09）
+
+## 动机
+
+conic 私有集 650 题、每题 3 次重复，在 4 个评测核上，参考求解器约 1.4 小时，模型提交 3–5 小时（sol v6 约 3.1 小时、astra 3.4 小时、sol 修正版 5 小时），最坏 8.9 小时。时间大头是 137 道时限 300 秒的题（参考历史上解不出、按规则给 300 秒）：解不出的提交每题要跑 300 秒 × 3 次。
+
+## 做法（用户 19:55 决定采用）
+
+评分规则要求三次重复都通过独立检查才算解出。第一次（或第二次）已经失败的题，后面的重复无论结果如何都不能改变该题的判定，因此不再运行，直接记一条失败记录：
+
+- `outcome = algorithm_failure`，`status = null`，`elapsed_seconds` 取该题时限（失败题在聚合中的罚时本来就是上限），`reason = skipped_after_failed_repeat`；
+- 评分库（`lib/conic_eval/scoring.py`）不改：它要求每题恰好 3 条合法记录，跳过的记录满足全部校验；
+- 逐题成功与否、成功率 p、按映射得到的分数，与全部运行时完全相同。
+
+实现：`scripts/prepare.py --conic-skip-failed-repeats` 在封存副本的 `tests/grade.py` 重复循环中插入上述判断（原文恰好出现一次才替换），并更新 profile 中该文件的锁定哈希。正式评分用的 runtime 是 `.runtime-conic-solver1105-skip`（与 `.runtime-conic-solver1105` 相比只有 `tests/grade.py` 不同）。已交付的 conic 结果不受影响。
+
+## 验证
+
+`scripts/conic-skip-check.sh`：取 sol 修正版提交（`conic-20261106T084017Z-a0cb85`）的 16 个私有用例（8 个稳定解出、8 个在短时限上失败），分别用原版和提速版评分器在评测核上评分，要求逐题成功与否一致、且提速版确实产生了跳过记录。结果写入 `results/conic-fast-grading-check.json`；`scripts/v62-final.sh` 只有在该文件给出 `equivalent: true` 时才用提速版评分器，否则自动退回原版。
+
+## 预期效果
+
+对大量失败的提交（如 sol 修正版，300 个失败题中 218 个超时），失败题只跑一次，总耗时预计从约 5 小时降到约 2 小时；对基本都能解出的提交几乎没有变化。附带的诊断信息变化：失败题的第 2、3 次耗时不再是实测值。
