@@ -258,6 +258,22 @@ SCORING_DISCLOSURE['galaxy-gravity-v2'] = (
     'on accuracy while keeping a safety margin under the limit.'
 )
 
+SCORING_DISCLOSURE['polarization-demosaicking'] = (
+    'Every held-out scene must be reconstructed within its wall-clock limit (startup and imports included), memory '
+    'limit and output contract; a single failed scene makes the whole submission score zero. Given that, the score '
+    'depends only on the mean RMSE over all scenes and the four angles, compared with two reference methods measured on '
+    'the same scenes and limits: matching the weaker one scores zero, matching the stronger one is the midpoint of the '
+    'scale and zero error is the maximum. Speed within the limit earns nothing extra, so keep a safety margin under it.'
+)
+SCORING_DISCLOSURE['trajectory-covariance'] = (
+    'The score depends only on the mean whitened error over all held-out inputs, averaged with equal weight over the '
+    'settings and trajectory lengths; a failed or invalid output counts as the zero matrix for that input. It is '
+    'compared with two reference estimators measured on the same inputs: matching the weaker one scores zero, matching '
+    'the stronger one is the midpoint of the scale and zero error is the maximum. Running time does not count beyond '
+    'the limit. The settings differ strongly in their autocorrelation structure, so a method must be accurate across all '
+    'of them rather than excel on one.'
+)
+
 SETTING_SINGLE = (
     'One attempt, at most {seconds} wall-clock seconds including model requests and tool time. Finishing your '
     'turn, or the deadline, freezes /workspace/submission for evaluation; the evaluator gives no feedback during '

@@ -162,6 +162,37 @@ def publicise_conic_task(task: Path, repeats: int) -> dict:
             'public_manifest_sha256': manifest['source_manifest_sha256']}
 
 
+SKIP_OLD = """            for row in rows:
+                for name in ('tmp', 'output'):
+                    reset_directory(WORK / name)"""
+SKIP_NEW = """            for row in rows:
+                if repeat > 1 and cases[row['id']]['repeats'][-1]['outcome'] != 'accepted':
+                    # FrontierAM: a case needs all three repeats accepted, so later repeats of a failed case cannot
+                    # change any score; record them as failures at the case's limit instead of running them.
+                    limit = time_limits[row['id']]
+                    record = dict(repeat=repeat, case_id=row['id'], input_sha256=row['sha256'],
+                        outcome='algorithm_failure', status=None, elapsed_seconds=float(limit),
+                        time_limit_seconds=limit, reason='skipped_after_failed_repeat')
+                    directory = LOG / 'cases' / row['id'] / f'repeat-{repeat}'
+                    directory.mkdir(parents=True, exist_ok=True)
+                    write(directory / 'record.json', record)
+                    cases[row['id']]['repeats'].append(record)
+                    continue
+                for name in ('tmp', 'output'):
+                    reset_directory(WORK / name)"""
+
+
+def skip_failed_repeats(task: Path) -> dict:
+    """Score-preserving speed-up of the conic verifier (results/CONIC_FAST_GRADING.md)."""
+    path = task / 'tests/grade.py'
+    text = path.read_text()
+    if text.count(SKIP_OLD) != 1:
+        raise SystemExit('grade.py: repeat loop not found exactly once')
+    before = sha(path)
+    path.write_text(text.replace(SKIP_OLD, SKIP_NEW))
+    return {'file': 'tests/grade.py', 'sha256_before': before, 'sha256_after': sha(path)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--docker', default=shutil.which('docker'))
@@ -179,6 +210,8 @@ def main():
     parser.add_argument('--conic-task', type=Path, default=ROOT / 'tasks/conic/original',
                         help='conic task directory (a revised package from the author, ported the same way)')
     parser.add_argument('--conic-profile-template', type=Path, default=ROOT / 'tasks/conic/profile_template.json')
+    parser.add_argument('--conic-skip-failed-repeats', action='store_true',
+                        help='do not run repeats 2-3 of a case whose previous repeat failed (scores unchanged)')
     parser.add_argument('--conic-public-repeats', type=int,
                         help='seal the protocol v6.2 public-feedback grader instead: public-dev inputs, N repeats')
     args = parser.parse_args()
@@ -268,6 +301,7 @@ def main():
     task = runtime / 'tasks/conic/original'
     manifest_override = override_conic_manifest(task, args.conic_manifest) if args.conic_manifest else None
     public_feedback = publicise_conic_task(task, args.conic_public_repeats) if args.conic_public_repeats else None
+    skip_edit = skip_failed_repeats(task) if args.conic_skip_failed_repeats else None
     public_tar = runtime / 'conic-public.tar'
     architecture = images['conic']['architecture']
     port_note = (
@@ -327,6 +361,9 @@ def main():
         # The sealed asset loader pins the 20-case pilot fields; public grading always passes explicit shard case IDs,
         # and the repeat count it runs is the sealed tests/config.json value.
         profile['public_feedback'] = public_feedback
+    if skip_edit:
+        profile['locked_files']['tests/grade.py'] = skip_edit['sha256_after']
+        profile['skip_failed_repeats'] = skip_edit
     write(runtime / 'conic-profile.json', profile)
     portable = {
         'schema_version': 1,
