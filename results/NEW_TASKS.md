@@ -8,7 +8,7 @@
 | polarization-demosaicking | 50.7（取 15:09 的重评，默认决定，待讨论） |
 | trajectory-covariance | 61.5（3000 例固定子集） |
 | species-tree | 暂停：出题人告知数据有误，提交已冻结待评 |
-| exponential-v2 | sol 候选评测 74/74 合格；panel 正式基线 11-09 重跑中，得分待出（`EXPONENTIAL_V2.md` 第 4c 节） |
+| exponential-v2 | 62.7（74/74 合格，R = 0.596，100/(1+R)；几何速度比 2.01，95% 区间 1.45–2.91；`EXPONENTIAL_V2.md` 第 4d 节） |
 
 另：出题方的 conic 修正版题包（solver-20261105）已接入并重测 sol，见 `CONIC_REVISION_SOL.md`。
 

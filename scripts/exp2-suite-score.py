@@ -5,7 +5,7 @@ i). This merges the shards of each suite, builds the per-case virtual best of th
 100 / (1 + R) of the v1 scorer, the geometric speed ratio with its hierarchical bootstrap interval, the winner per
 case and every failure. Writes results to OUT/score.json with merged run reports beside it.
 
-Usage: exp2-suite-score.py --store STORE --panel PANEL_SUITE --candidate CANDIDATE_SUITE --out OUT
+Usage: exp2-suite-score.py --store STORE [--panel-store STORE] --panel PANEL_SUITE --candidate CANDIDATE_SUITE --out OUT
 """
 
 import argparse
@@ -44,7 +44,8 @@ def merged_parts(store: Path, suite: str, out: Path) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--store', type=Path, default=ROOT / 'store')
+    parser.add_argument('--store', type=Path, default=ROOT / 'store', help='store holding the candidate suite')
+    parser.add_argument('--panel-store', type=Path, help='store holding the panel suite (default: --store)')
     parser.add_argument('--panel', required=True)
     parser.add_argument('--candidate', required=True)
     parser.add_argument('--out', type=Path, required=True)
@@ -52,7 +53,7 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     task = TASKS['exponential-v2']
     cases = task.cases()
-    panel = {'kind': 'panel', 'parts': merged_parts(args.store, args.panel, args.out)}
+    panel = {'kind': 'panel', 'parts': merged_parts(args.panel_store or args.store, args.panel, args.out)}
     candidate = merged_parts(args.store, args.candidate, args.out)['candidate']
     ok, reason = task.baseline_ok(panel)
     reference, winners, uncovered = task.virtual_best(panel)
