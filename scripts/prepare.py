@@ -91,6 +91,76 @@ def override_conic_manifest(task: Path, manifest: Path) -> dict:
     }
 
 
+def replace_once(path: Path, old: str, new: str) -> None:
+    text = path.read_text()
+    if text.count(old) != 1:
+        raise SystemExit(f'{path}: expected exactly one occurrence of {old!r}')
+    path.write_text(text.replace(old, new))
+
+
+def publicise_conic_task(task: Path, repeats: int) -> dict:
+    """Turn a sealed copy of the conic task into the protocol v6.2 public-feedback grader.
+
+    The held-out inputs are deleted and the package's own public development inputs take their place, with the public
+    manifest's per-case limits; the verifier, checker and sandbox are unchanged except that the repeat count (three,
+    hard-coded) is read from config. Hashes that name the manifest and the edited library are re-chained in this copy.
+    """
+    public = task / 'environment/public-dev'
+    source = json.loads((public / 'manifest.json').read_text())
+    data = task / 'tests/private/data'
+    shutil.rmtree(data)
+    (data / 'inputs').mkdir(parents=True)
+    instances = []
+    for row in source['instances']:
+        target = data / row['path']
+        shutil.copyfile(public / row['path'], target)
+        if sha(target) != row['sha256'] or not 1 <= row['time_limit_seconds'] <= 300:
+            raise SystemExit(f'public instance {row["id"]} fails its manifest hash or limit range')
+        instances.append({k: row[k] for k in ('id', 'group', 'path', 'sha256', 'dims', 'cone_types',
+                                              'time_limit_seconds', 'memory_limit_bytes')})
+    held_out = json.loads((ROOT / 'tasks/conic/original/tests/private/data/manifest.json').read_text())
+    manifest = {
+        'schema_version': held_out['schema_version'], 'maintainer_only': False,
+        'scoring_version': held_out['scoring_version'], 'source_manifest_sha256': sha(public / 'manifest.json'),
+        'path_base': held_out['path_base'], 'time_budget_policy': source.get('time_budget_policy'),
+        'purpose': 'protocol v6.2 public feedback: the public development inputs and limits, graded like held-out data',
+        'instances': instances,
+    }
+    write(data / 'manifest.json', manifest)
+    anchor_path = task / 'tests/private/score-anchor.json'
+    anchor = json.loads(anchor_path.read_text())
+    anchor.update(evaluation_manifest_sha256=sha(data / 'manifest.json'),
+                  note='public feedback runtime: pilot mode only, no formal score from this anchor')
+    write(anchor_path, anchor)
+    tests = task / 'tests'
+    replace_once(tests / 'grade.py', 'for repeat in (1, 2, 3):',
+                 "for repeat in range(1, int(config.get('repeats', 3)) + 1):")
+    scoring = tests / 'lib/conic_eval/scoring.py'
+    replace_once(scoring, 'REQUIRED_REPEATS = 3', f'REQUIRED_REPEATS = {repeats}')
+    replace_once(scoring, 'if len(numbers) != 3 or set(numbers) != {1, 2, 3}:',
+                 'if len(numbers) != REQUIRED_REPEATS or set(numbers) != set(range(1, REQUIRED_REPEATS + 1)):')
+    replace_once(scoring, 'consistent = len(statuses) == 3 and len(set(statuses)) == 1',
+                 'consistent = len(statuses) == REQUIRED_REPEATS and len(set(statuses)) == 1')
+    replace_once(scoring, 'success = valid and outcomes["accepted"] == 3 and consistent',
+                 'success = valid and outcomes["accepted"] == REQUIRED_REPEATS and consistent')
+    replace_once(scoring, '"inconsistent_accepted_statuses" if outcomes["accepted"] == 3 else "algorithm_failure",',
+                 '"inconsistent_accepted_statuses" if outcomes["accepted"] == REQUIRED_REPEATS else "algorithm_failure",')
+    replace_once(scoring, 'statistics.median(elapsed) if len(elapsed) == 3 else None,',
+                 'statistics.median(elapsed) if len(elapsed) == REQUIRED_REPEATS else None,')
+    config = json.loads((tests / 'config.json').read_text())
+    config['repeats'] = repeats
+    write(tests / 'config.json', config)
+    lock_path = tests / 'private/package-lock.json'
+    lock = json.loads(lock_path.read_text())
+    lock['files'] = {k: v for k, v in lock['files'].items() if not k.startswith('private/data/')}
+    for path in sorted([data / 'manifest.json', *(data / 'inputs').iterdir(), anchor_path, scoring]):
+        lock['files'][str(path.relative_to(tests))] = {'sha256': sha(path), 'size_bytes': path.stat().st_size}
+    lock.update(hidden_input_count=len(instances), public_feedback=True)
+    write(lock_path, lock)
+    return {'instances': len(instances), 'repeats': repeats, 'manifest_sha256': sha(data / 'manifest.json'),
+            'public_manifest_sha256': manifest['source_manifest_sha256']}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--docker', default=shutil.which('docker'))
@@ -108,7 +178,11 @@ def main():
     parser.add_argument('--conic-task', type=Path, default=ROOT / 'tasks/conic/original',
                         help='conic task directory (a revised package from the author, ported the same way)')
     parser.add_argument('--conic-profile-template', type=Path, default=ROOT / 'tasks/conic/profile_template.json')
+    parser.add_argument('--conic-public-repeats', type=int,
+                        help='seal the protocol v6.2 public-feedback grader instead: public-dev inputs, N repeats')
     args = parser.parse_args()
+    if args.conic_public_repeats is not None and args.conic_manifest:
+        parser.error('--conic-public-repeats replaces the held-out data; it cannot take a held-out manifest override')
     if not args.docker_host.startswith('unix://'):
         parser.error('Use a local Unix Docker socket')
     if not args.docker:
@@ -192,6 +266,7 @@ def main():
     shutil.copytree(ROOT / 'tasks/conic/reference_submission', runtime / 'tasks/conic/reference_submission')
     task = runtime / 'tasks/conic/original'
     manifest_override = override_conic_manifest(task, args.conic_manifest) if args.conic_manifest else None
+    public_feedback = publicise_conic_task(task, args.conic_public_repeats) if args.conic_public_repeats else None
     public_tar = runtime / 'conic-public.tar'
     architecture = images['conic']['architecture']
     port_note = (
@@ -240,6 +315,17 @@ def main():
             if relative in profile['locked_files']:
                 profile['locked_files'][relative] = sha(task / relative)
         profile['manifest_override'] = manifest_override
+    if public_feedback:
+        held_out = [k for k in profile['locked_files'] if k.startswith('tests/private/data/')]
+        for relative in held_out:
+            del profile['locked_files'][relative]
+        for path in sorted(task.rglob('*')):
+            relative = str(path.relative_to(task))
+            if path.is_file() and (relative in profile['locked_files'] or relative.startswith('tests/private/data/')):
+                profile['locked_files'][relative] = sha(path)
+        # The sealed asset loader pins the 20-case pilot fields; public grading always passes explicit shard case IDs,
+        # and the repeat count it runs is the sealed tests/config.json value.
+        profile['public_feedback'] = public_feedback
     write(runtime / 'conic-profile.json', profile)
     portable = {
         'schema_version': 1,

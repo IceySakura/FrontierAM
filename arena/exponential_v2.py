@@ -12,6 +12,7 @@ from __future__ import annotations
 import hashlib
 import math
 import importlib.util
+import os
 import json
 import shlex
 import subprocess
@@ -23,7 +24,8 @@ from types import SimpleNamespace
 from .tasks import GIB, Task, tar_directory
 
 ROOT = Path(__file__).resolve().parents[1]
-SEAL = ROOT / '.runtime-exp2'
+# The protocol v6.2 public-feedback grader is the same task sealed elsewhere (public cases, one repeat).
+SEAL = Path(os.environ.get('FRONTIERAM_EXP2_SEAL') or ROOT / '.runtime-exp2')
 PANEL_MARKER = 'FRONTIERAM_PANEL.json'
 
 
@@ -112,6 +114,7 @@ class ExponentialV2(Task):
     def evaluate(self, runtime, placement, run: Path, manifest: Path | None = None) -> dict:
         """Build (if build.sh) and evaluate run/source on the graded cases (or a shard); returns the part summary."""
         manifest = manifest or SEAL / 'data/manifest.json'
+        repeats = self.lock().get('repeats', 3)
         c = self.assets(runtime).controller
         image = self.lock()['image']['id']
         docker = c.Docker(runtime['docker_path'], placement.docker_host, placement.cpuset, placement.cgroup_parent)
@@ -125,7 +128,7 @@ class ExponentialV2(Task):
         report_path = run / 'evaluation.json'
         command = [sys.executable, str(SEAL / 'docker_eval/evaluator/run_docker.py'), '--image', image,
                    '--docker', str(wrapper), '--submission', build['artifact'], '--command', './run.sh',
-                   '--manifest', str(manifest), '--output', str(report_path), '--repeats', '3',
+                   '--manifest', str(manifest), '--output', str(report_path), '--repeats', str(repeats),
                    '--cpuset', placement.cpuset]
         if placement.cgroup_parent:
             command += ['--cgroup-parent', placement.cgroup_parent]
@@ -135,7 +138,7 @@ class ExponentialV2(Task):
             return {'status': 'infrastructure_failure', 'reason': f'evaluator exit {done.returncode}; see {run}/evaluator.log'}
         report = json.loads(report_path.read_text())
         expected = {case['id'] for case in json.loads(manifest.read_text())['cases']}
-        if set(report['aggregates']) != expected or len(report['runs']) != 3 * len(expected):
+        if set(report['aggregates']) != expected or len(report['runs']) != repeats * len(expected):
             return {'status': 'infrastructure_failure', 'reason': 'incomplete evaluation'}
         valid = sum(a['valid'] for a in report['aggregates'].values())
         return {'status': 'ok', 'valid_cases': valid, 'total_cases': len(expected), 'report': str(report_path),

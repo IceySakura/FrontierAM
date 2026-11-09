@@ -10,7 +10,8 @@ case files and the reference change. Layout of the sealed copy (the evaluator fi
   public.tar                  development package: v1 docs and tools + V2.md + v2 public cases
   lock.json                   SHA-256 of every sealed file, the image ID and the panel membership
 
-Usage: prepare_exponential_v2.py --graded DIR [--public-dev DIR] [--public-full DIR] [--force]
+Usage: [FRONTIERAM_EXP2_SEAL=DIR] prepare_exponential_v2.py --graded DIR [--public-dev DIR] [--public-full DIR]
+       [--repeats N] [--force]
 """
 
 import argparse
@@ -28,7 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EXP = ROOT / 'tasks/exponential'
 V2 = EXP / 'sota_v1'
-SEAL = ROOT / '.runtime-exp2'
+SEAL = Path(os.environ.get('FRONTIERAM_EXP2_SEAL') or ROOT / '.runtime-exp2')
 PANEL = ('expokit', 'kiops', 'expmv', 'scipy', 'chebyshev', 'slepc', 'rational', 'exputils')
 QUALIFIED = {'chebyshev_audited_qualified', 'analytic_dense_eigh_qualified'}
 
@@ -129,6 +130,7 @@ def main():
     parser.add_argument('--public-dev', type=Path, default=V2 / 'dataset_v2/cases/public_smoke')
     parser.add_argument('--public-full', type=Path, help='full-size public cases shipped as task/dev_full')
     parser.add_argument('--runtime', type=Path, default=ROOT / '.runtime-suite', help='runtime holding the v1 image ID')
+    parser.add_argument('--repeats', type=int, default=3, help='timed repeats per case (1 for the v6.2 public-feedback seal)')
     parser.add_argument('--force', action='store_true')
     args = parser.parse_args()
     if SEAL.exists():
@@ -164,6 +166,7 @@ def main():
         'graded_cases': len(graded['cases']),
         'scored_cases': sum(c['role'] == 'scored' for c in graded['cases']),
         'panel': panel,
+        'repeats': args.repeats,
         'panel_frozen': frozen_path.exists(),
         'panel_sealing': sealing,
         'public_tar_sha256': files['public.tar'],

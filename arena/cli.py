@@ -123,6 +123,7 @@ def develop_one(layout, broker, runtime, store, args, index: int) -> dict:
             'key_file': str(args.key_file) if args.key_file else None,
             'smoke': args.smoke,
             'protocol': getattr(args, 'protocol', 'v4'),
+            'setting': getattr(args, 'setting', 'single'),
             'development_seconds': getattr(args, 'development_seconds', None),
         }
         code = run_in_slot(lease, spec, output / 'spec.json', output / 'job.log')
@@ -133,6 +134,7 @@ def develop_one(layout, broker, runtime, store, args, index: int) -> dict:
         'origin': 'agent',
         'model': args.model,
         'protocol': getattr(args, 'protocol', 'v4'),
+        'setting': getattr(args, 'setting', 'single') if getattr(args, 'protocol', 'v4') == 'v6.2' else None,
         'smoke': args.smoke or bool(getattr(args, 'development_seconds', None)),
         'dev_run': run_id,
         'dev_slot': lease.id,
@@ -450,7 +452,7 @@ def shard_cases(instances: list[dict], count: int) -> list[list[str]]:
     return shards
 
 
-def cmd_suite(args) -> None:
+def cmd_suite(args) -> dict:
     """Queue a full held-out suite assessment of one submission (or the reference) as shards on separate slots."""
     store = Store(args.store)
     runtime = load_runtime()
@@ -483,6 +485,7 @@ def cmd_suite(args) -> None:
               'runtime_lock_sha256': runtime['lock_sha256']}
     write_json(store.root / 'suites' / f'{suite_id}.json', record)
     say(event='suite_queued', **record)
+    return record
 
 
 def cmd_suite_report(args) -> None:
@@ -829,8 +832,10 @@ def main() -> None:
     develop.add_argument('--base-url', default=DEFAULT_BASE_URL)
     develop.add_argument('--no-grade', action='store_true', help='freeze only; do not queue for grading')
     develop.add_argument('--wait', type=float, default=None, help='seconds to wait for a free dev slot')
-    develop.add_argument('--protocol', choices=['v4', 'v5', 'v5.1', 'v6', 'v6.1'], default='v4',
+    develop.add_argument('--protocol', choices=['v4', 'v5', 'v5.1', 'v6', 'v6.1', 'v6.2'], default='v4',
                          help='v4: Responses converted to Chat; v5: native Responses (native_bridge.py)')
+    develop.add_argument('--setting', choices=['single', 'iterative'], default='single',
+                         help='v6.2: single = no feedback; iterative = public-set test submissions and a formal one')
     develop.add_argument('--development-seconds', type=float, default=None,
                          help='shorter budget for a validation run; such submissions never enter the leaderboard')
     develop.set_defaults(smoke=False)
@@ -880,6 +885,16 @@ def main() -> None:
     sub.add_parser('report')
     sub.add_parser('recover')
     sub.add_parser('rescore')
+    public_baseline = sub.add_parser('public-baseline', help='v6.2: measure the reference on the public set')
+    public_baseline.add_argument('--task', choices=['conic', 'exponential-v2'], required=True)
+    public_baseline.add_argument('--replace', action='store_true')
+    public_eval = sub.add_parser('public-eval', help='v6.2: grade a source tree on the public set, compare with baseline')
+    public_eval.add_argument('--task', choices=['conic', 'exponential-v2'], required=True)
+    public_eval.add_argument('--source', required=True)
+    public_eval.add_argument('--out', required=True)
+    public_eval.add_argument('--groups', help='comma-separated groups (conic) or families (exponential-v2)')
+    public_eval.add_argument('--cases', help='comma-separated case IDs')
+    public_eval.add_argument('--label', default=None)
     board = sub.add_parser('leaderboard')
     board.add_argument('--task', choices=sorted(TASKS), required=True)
     args = parser.parse_args()
@@ -900,6 +915,8 @@ def main() -> None:
         'suite': cmd_suite,
         'suite-report': cmd_suite_report,
         'leaderboard': cmd_leaderboard,
+        'public-baseline': lambda a: __import__('arena.public_eval', fromlist=['x']).cmd_public_baseline(a),
+        'public-eval': lambda a: __import__('arena.public_eval', fromlist=['x']).cmd_public_eval(a),
     }
     handlers[args.command](args)
 
