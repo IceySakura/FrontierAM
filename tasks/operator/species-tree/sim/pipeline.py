@@ -76,6 +76,7 @@ def main():
     parser.add_argument('--rate', type=float, default=4e-8, help='mean substitution rate per site per generation')
     parser.add_argument('--length', type=int, default=200)
     parser.add_argument('--fast', action='store_true', help='IQ-TREE --fast tree search')
+    parser.add_argument('--ad-only', action='store_true', help='simulate true trees only and report AD (calibration)')
     args = parser.parse_args()
     out = args.out
     work = out / 'work'
@@ -104,6 +105,8 @@ def main():
     for g in range(1, args.genes + 1):
         gene = relabel((run / f'g_trees{g:0{len(str(args.genes))}d}.trees').read_text().strip(), mapping)
         true_genes.append(gene)
+        if args.ad_only:
+            continue
         tree = work / f'g{g}.tre'
         tree.write_text(gene + '\n')
         rates = [round(rng.gammavariate(2, 1), 4) for _ in range(5)]
@@ -120,9 +123,14 @@ def main():
         if args.fast:
             command.append('--fast')
         subprocess.run(command, check=True, capture_output=True)
-        estimated.append((work / f'e{g}.treefile').read_text().strip())
-    (out / 'genes.tre').write_text('\n'.join(estimated) + '\n')
+        # IQ-TREE 2.3 writes an aBayes-only support as '/0.99'; the task's inputs carry the bare value.
+        estimated.append(re.sub(r'\)/', ')', (work / f'e{g}.treefile').read_text().strip()))
     ad = sum(nrf(truth, t) for t in true_genes) / len(true_genes)
+    if args.ad_only:
+        print(json.dumps({'taxa': args.taxa, 'seed': args.seed, 'height': args.height, 'pop': args.pop, 'AD': ad}))
+        shutil.rmtree(out)
+        return
+    (out / 'genes.tre').write_text('\n'.join(estimated) + '\n')
     gtee = sum(nrf(t, e) for t, e in zip(true_genes, estimated)) / len(true_genes)
     est_vs_species = sum(nrf(truth, e) for e in estimated) / len(estimated)
     stats = {'taxa': args.taxa, 'genes': args.genes, 'seed': args.seed, 'height': args.height, 'pop': args.pop,

@@ -53,7 +53,7 @@ def script(task: str, setting: str) -> str:
                  f"cat > /workspace/submission/solve.py <<'EOF'\n{EXP2_SOLVE}EOF\n"
                  "printf '#!/bin/sh\\nexec python3 \"$(dirname \"$0\")/solve.py\"\\n' > /workspace/submission/run.sh\n"
                  "chmod +x /workspace/submission/run.sh\n")
-        subset = '--cases control_zero,control_diagonal,control_scalar_stiff'
+        subset = '--cases standard_DIMACS10_fe_4elt2_p4_k1,control_zero,control_scalar_stiff'
     lines = ['set -x', files, "echo 'smoke submission v1' > /workspace/submission/README.md"]
     if setting == 'iterative':
         lines += [f'/opt/frontieram/bin/submit --test {subset}; echo "submit-exit=$?"',

@@ -215,7 +215,21 @@ def exp2_report(task, store, record, reference, ids) -> dict:
         return {'status': 'invalid_submission', 'score': 0.0, 'reason': candidate['reasons'], 'cases': []}
     best, winners, uncovered = task.virtual_best({'parts': panel})
     scoring = task.scoring()
-    result = scoring.score_submission(cases, candidate['aggregates'], {c['id']: best[c['id']] for c in cases})
+    if any(c['role'] == 'scored' for c in cases):
+        result = scoring.score_submission(cases, candidate['aggregates'], {c['id']: best[c['id']] for c in cases})
+    else:  # controls only: the scorer needs a scored session for R, so report per-case verdicts without a score
+        verdicts = {}
+        for c in cases:
+            record = candidate['aggregates'].get(c['id'])
+            verdict = dict(scoring.validate_measurement(record, scenario=c['scenario']))
+            if verdict['valid']:
+                verdict.update(time_seconds=record['time_seconds'],
+                               relative_time=record['time_seconds'] / best[c['id']]['time_seconds'])
+            verdict['reference_time_seconds'] = best[c['id']]['time_seconds']
+            verdicts[c['id']] = verdict
+        failed = {k: v.get('reason') for k, v in verdicts.items() if not v['valid']}
+        result = {'status': 'ok' if not failed else 'invalid_submission', 'score': None, 'relative_time': None,
+                  'failed_cases': failed, 'case_results': verdicts}
     rows, groups = [], {}
     for case in cases:
         verdict = result['case_results'][case['id']]
