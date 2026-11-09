@@ -129,26 +129,38 @@ def breakdown_html(spec: dict | None, results: list[dict]) -> str:
                 f'<tr><th>合计</th><th class="num">{report["cases_graded"]}</th><th class="num">{sum(reference["reference"].values())}</th>'
                 f'<th class="num">{report["successes"]}</th></tr></table>')
     if spec['kind'] == 'exp2_score':
-        score = json.loads((ROOT / spec['path']).read_text())
         cases = {c['id']: c for c in json.loads((ROOT / spec['manifest']).read_text())['cases']}
-        family, setting = defaultdict(list), defaultdict(list)
-        for case_id, result in score['case_results'].items():
-            case = cases[case_id]
-            if case['role'] != 'scored' or not result.get('relative_time'):
-                continue
-            family[case['family']].append(math.log(result['relative_time']))
-            setting[(case['scenario'], case['precision'])].append(math.log(result['relative_time']))
-        geo = lambda values: math.exp(sum(values) / len(values))  # noqa: E731
-        winners = defaultdict(int)
-        for member in (score.get('winners') or {}).values():
-            winners[member] += 1
-        rows = ''.join(f'<tr><td>{html.escape(f)}</td><td class="num">{len(v)}</td><td class="num">{geo(v):.2f}</td></tr>'
-                       for f, v in sorted(family.items(), key=lambda item: geo(item[1])))
-        rows2 = ''.join(f'<tr><td>{s} / {p}</td><td class="num">{len(v)}</td><td class="num">{geo(v):.2f}</td></tr>'
-                        for (s, p), v in sorted(setting.items()))
+        sources = spec.get('paths') or [{'label': model_name(results[0]['model']), 'path': spec['path']}]
+        columns, winners = [], defaultdict(int)
+        for source in sources:
+            score = json.loads((ROOT / source['path']).read_text())
+            family, setting = defaultdict(list), defaultdict(list)
+            for case_id, result in score['case_results'].items():
+                case = cases[case_id]
+                if case['role'] != 'scored' or not result.get('relative_time'):
+                    continue
+                family[case['family']].append(math.log(result['relative_time']))
+                setting[(case['scenario'], case['precision'])].append(math.log(result['relative_time']))
+            columns.append((source['label'], family, setting))
+            if not winners:
+                for member in (score.get('winners') or {}).values():
+                    winners[member] += 1
+        columns = [c for c in columns if c[1]]
+        if not columns:
+            return ''
+        geo = lambda values: math.exp(sum(values) / len(values)) if values else None  # noqa: E731
+        cell = lambda values: f'<td class="num">{geo(values):.2f}</td>' if values else '<td></td>'  # noqa: E731
+        head = ''.join(f'<th class="num">{html.escape(label)}</th>' for label, _, _ in columns)
+        first = columns[0]
+        rows = ''.join(f'<tr><td>{html.escape(f)}</td><td class="num">{len(first[1][f])}</td>'
+                       + ''.join(cell(c[1].get(f)) for c in columns) + '</tr>'
+                       for f in sorted(first[1], key=lambda f: geo(first[1][f])))
+        rows2 = ''.join(f'<tr><td>{s} / {p}</td><td class="num">{len(first[2][(s, p)])}</td>'
+                        + ''.join(cell(c[2].get((s, p))) for c in columns) + '</tr>'
+                        for s, p in sorted(first[2]))
         return ('<h4>耗时比（模型 / 参照组逐例最快者，几何平均，越小越快）</h4>'
-                f'<table><tr><th>结构族</th><th class="num">会话</th><th class="num">耗时比</th></tr>{rows}</table>'
-                f'<table><tr><th>场景 / 精度档</th><th class="num">会话</th><th class="num">耗时比</th></tr>{rows2}</table>'
+                f'<table><tr><th>结构族</th><th class="num">会话</th>{head}</tr>{rows}</table>'
+                f'<table><tr><th>场景 / 精度档</th><th class="num">会话</th>{head}</tr>{rows2}</table>'
                 '<p>参照组逐例最快的成员：' + '、'.join(f'{m} {n} 例' for m, n in sorted(winners.items(), key=lambda i: -i[1]))
                 + '。</p>')
     return ''
@@ -170,11 +182,19 @@ def page(title: str, body: str, depth: int = 0) -> str:
 <main>{body}</main><footer>{FOOTER}</footer></body></html>'''
 
 
+def anchor_of(r: dict) -> str:
+    return re.sub(r'[^\w.]+', '-', f'{r["model"]}-{r["protocol"]}-{r.get("setting", "")}').strip('-')
+
+
+def protocol_label(r: dict) -> str:
+    return f'{r["protocol"]} {r["setting"]}' if r.get('setting') else r['protocol']
+
+
 def result_rows(task: dict, group: dict) -> str:
     rows = []
     for r in group['results']:
-        anchor = f'{r["model"]}-{r["protocol"]}'
-        rows.append(f'<tr><td><a href="#{anchor}">{html.escape(model_name(r["model"]))}</a></td><td>{r["protocol"]}</td>'
+        rows.append(f'<tr><td><a href="#{anchor_of(r)}">{html.escape(model_name(r["model"]))}</a></td>'
+                    f'<td>{html.escape(protocol_label(r))}</td>'
                     f'<td>{md(r["raw"])[3:-4]}</td><td>{md(r["mapping"])[3:-4]}</td>'
                     f'<td class="num score {score_class(r["score"])}">{fmt_score(r["score"])}</td></tr>')
     return ('<table><tr><th>模型</th><th>协议</th><th>原始指标</th><th>换算</th><th class="num">得分（满分 100）</th></tr>'
@@ -196,8 +216,7 @@ def task_page(task: dict) -> str:
     body.append('<h2>各模型的做法</h2>')
     for group in task['result_groups']:
         for r in group['results']:
-            anchor = f'{r["model"]}-{r["protocol"]}'
-            body.append(f'<h3 id="{anchor}">{html.escape(model_name(r["model"]))}（{r["protocol"]}）'
+            body.append(f'<h3 id="{anchor_of(r)}">{html.escape(model_name(r["model"]))}（{html.escape(protocol_label(r))}）'
                         f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span></h3>')
             if r.get('notes_md'):
                 body.append(f'<div class="note">{md(r["notes_md"])}</div>')
@@ -225,8 +244,14 @@ def index_page(site: dict, tasks: list[dict]) -> str:
             cells = []
             for m in models:
                 hit = [r for r in group['results'] if r['model'] == m]
-                cells.append(f'<td class="score {score_class(hit[0]["score"])}">{fmt_score(hit[0]["score"])}</td>' if hit
-                             else '<td></td>')
+                if len(hit) == 1:
+                    cells.append(f'<td class="score {score_class(hit[0]["score"])}">{fmt_score(hit[0]["score"])}</td>')
+                elif hit:
+                    cells.append('<td>' + '<br>'.join(
+                        f'<small>{html.escape(r.get("setting", ""))}</small> '
+                        f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>' for r in hit) + '</td>')
+                else:
+                    cells.append('<td></td>')
             label = f'<a href="tasks/{task["id"]}.html">{html.escape(task["title"])}</a>'
             rows.append(f'<tr><td>{label}<br><small>{html.escape(group["title"])}</small></td>{"".join(cells)}</tr>')
     cards = ''.join(
