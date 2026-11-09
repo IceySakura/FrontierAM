@@ -89,7 +89,18 @@ exponential-v2 的映射和参照与 v6.1 相同：R 是相对 panel 逐例最�
 
 所有测试都在 15 分钟上限内完成（最长 6.6 分钟，为 sol conic 第一次测试），没有触发部分结果。
 
-其余（conic 四次尝试、两道新题、opus 的 polarization 与 trajectory）评分中，见 `scripts/v62-final.sh` 的日志 `store/reruns/v62-final.log`。
+单轮设置下的其他题目（映射：L ≥ 弱参照得 0；强参照 ≤ L < 弱参照得 50·(弱 − L)/(弱 − 强)；L < 强参照得 100 − 50·L/强）：
+
+| 模型 | 题目 | 提交 | 原始指标 | 得分 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| gpt-6.1-sol | species-tree-v2 | `species-tree-v2-20261109T124138Z-536e02` | E = 1.0（U = 0.150263，W = 0.132976） | **0** | 4.4 分钟结束回合 |
+| claude-opus-5-5 | species-tree-v2 | `species-tree-v2-20261109T134305Z-2caffd` | E = 0.135628 | **42.3** | |
+| gpt-6.1-sol | galaxy-gravity-v2 | `galaxy-gravity-v2-20261109T132936Z-9e4112` | 4.25e-9（弱 0.00125189，强 0.000590528） | **99.9996** | 106 分钟 |
+| claude-opus-5-5 | galaxy-gravity-v2 | `galaxy-gravity-v2-20261109T130056Z-aea0a3` | 1.06e-7 | **99.991** | 63 分钟 |
+| claude-opus-5-5 | polarization-demosaicking | `polarization-demosaicking-20261109T124343Z-553533` | 第一次评分 31/32 景，第一景 1.003 秒超时 | 待重评 | 首景冷启动，见 `NEW_TASKS.md` 第 5 节 |
+| claude-opus-5-5 | trajectory-covariance | `trajectory-covariance-20261109T130605Z-481cfb` | L = 0.221264（弱 0.350317，强 0.230050） | **51.9** | |
+
+conic 的四次尝试（sol 单轮与迭代、opus 单轮与迭代）正在用跳过失败重复的评测器评分（等价性检查通过：16 例逐例一致，`results/conic-fast-grading-check.json`），见 `store/reruns/v62-final.log`。
 
 ## 更正（11-09 16:40）：exponential-v2 的计时说明
 
