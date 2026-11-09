@@ -11,10 +11,12 @@ from __future__ import annotations
 import json
 import math
 import shutil
+import subprocess
 import threading
+import time
 
 from argparse import Namespace
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait
 from pathlib import Path
 
 from .store import Store, read_json, utc, write_json
@@ -23,8 +25,46 @@ from .tasks import TASKS, tar_directory
 PUBLIC_TASKS = ('conic', 'exponential-v2')
 
 
-def _grade_suite(task, store: Store, runtime: dict, *, submission: str | None, case_ids: list[str] | None) -> dict:
-    """Queue the cases as shards on the grading slots (same partition as full-set runs) and grade them now."""
+def _abort_shard(store: Store, job: str) -> None:
+    """Stop an unfinished shard: its systemd scope (the grading process tree) and its containers on the slot."""
+    subprocess.run(['systemctl', 'stop', f'frontieram-grade-{job}'], capture_output=True, timeout=120)
+    spec_path = store.result_dir(job) / 'spec.json'
+    if not spec_path.exists():
+        return
+    host = read_json(spec_path)['placement']['docker_host']
+    names = subprocess.run(['docker', '--host', host, 'ps', '-aq', '--filter', 'name=nexus-conic-grade-',
+                            '--filter', 'name=frontieram-final-', '--filter', 'name=frontieram-stage-'],
+                           capture_output=True, text=True, timeout=60).stdout.split()
+    if names:
+        subprocess.run(['docker', '--host', host, 'rm', '-f', *names], capture_output=True, timeout=120)
+
+
+def _harvest_conic(store: Store, job: str) -> dict:
+    """Per-case repeat-1 records written so far inside a still-running conic verifier container."""
+    grade = store.result_dir(job) / 'grade'
+    config_path = grade / 'grading_config.json'
+    if not config_path.exists():
+        return {}
+    config = read_json(config_path)
+    target = grade / 'partial-verifier'
+    shutil.rmtree(target, ignore_errors=True)
+    subprocess.run(['docker', '--host', config['docker_host'], 'cp', f'nexus-conic-grade-{config["owner"]}:/logs/verifier',
+                    str(target)], capture_output=True, timeout=120)
+    records = {}
+    for path in target.glob('cases/*/repeat-1/record.json'):
+        record = read_json(path)
+        records[record['case_id']] = record
+    return records
+
+
+def _grade_suite(task, store: Store, runtime: dict, *, submission: str | None, case_ids: list[str] | None,
+                 cap: float | None = None) -> dict:
+    """Queue the cases as shards on the grading slots (same partition as full-set runs) and grade them now.
+
+    With a cap (seconds), shards still running at the cap are harvested for the cases they finished and stopped;
+    record['partial'] then maps those jobs to their finished per-case results (conic records or exponential-v2
+    aggregates) and the remaining cases count as not evaluated.
+    """
     from .cli import cmd_suite, context, worker_loop
 
     layout, broker, _ = context()
@@ -39,9 +79,25 @@ def _grade_suite(task, store: Store, runtime: dict, *, submission: str | None, c
     jobs = [shard['job'] for shard in record['shards']]
     args = Namespace(task=[task.name], drain=True)
     stop = threading.Event()
-    with ThreadPoolExecutor(len(jobs)) as pool:
-        for future in [pool.submit(worker_loop, layout, broker, runtime, store, args, stop, [job]) for job in jobs]:
-            future.result()
+    started = time.monotonic()
+    pool = ThreadPoolExecutor(len(jobs))
+    futures = {job: pool.submit(worker_loop, layout, broker, runtime, store, args, stop, [job]) for job in jobs}
+    wait(list(futures.values()), timeout=None if cap is None else max(1.0, cap - (time.monotonic() - started)))
+    unfinished = [job for job, future in futures.items() if not future.done()]
+    record['partial'] = {}
+    if unfinished:
+        stop.set()
+        for job in unfinished:
+            if task.name == 'conic':
+                record['partial'][job] = _harvest_conic(store, job)
+            else:
+                report = store.result_dir(job) / 'grade/evaluation.json'
+                record['partial'][job] = read_json(report).get('aggregates', {}) if report.exists() else {}
+            _abort_shard(store, job)
+        wait(list(futures.values()), timeout=600)
+        say_partial = {job: len(found) for job, found in record['partial'].items()}
+        print(json.dumps({'event': 'public_eval_cap', 'cap_s': cap, 'harvested_cases': say_partial}), flush=True)
+    pool.shutdown(wait=False)
     return record
 
 
@@ -174,11 +230,13 @@ def cmd_public_eval(args) -> None:
     (directory / 'incoming.tar').unlink()
     store.update_submission(submission_id, status='frozen')
     record = _grade_suite(task, store, runtime, submission=submission_id,
-                          case_ids=None if len(ids) == len(_select(task, runtime, None, None)) else ids)
+                          case_ids=None if len(ids) == len(_select(task, runtime, None, None)) else ids,
+                          cap=args.cap)
     reference = read_json(store.root / 'suites' / f'{baseline["suite"]}.json')
     report = (conic_report if task.name == 'conic' else exp2_report)(task, store, record, reference, ids)
     report.update(task=task.name, suite=record['id'], submission=submission_id, created_utc=utc(),
-                  subset=len(ids) != len(_select(task, runtime, None, None)))
+                  subset=len(ids) != len(_select(task, runtime, None, None)), cap_s=args.cap,
+                  capped=bool(record.get('partial')))
     write_json(out / 'report.json', report)
     (out / 'report.md').write_text(render(report))
     print(json.dumps({k: v for k, v in report.items() if k not in ('cases', 'groups')}))
@@ -187,8 +245,21 @@ def cmd_public_eval(args) -> None:
 def conic_report(task, store, record, reference, ids) -> dict:
     rows, missing = conic_rows(store, record)
     base, _ = conic_rows(store, reference)
-    if missing or set(rows) != set(ids):
+    partial = record.get('partial') or {}
+    missing = [job for job in missing if job not in partial]
+    if missing:
         return {'status': 'unmeasured', 'reason': f'grading incomplete: {missing}', 'cases': list(rows.values())}
+    for found in partial.values():
+        for case_id, run in found.items():
+            rows[case_id] = {'id': case_id, 'group': base[case_id]['group'], 'limit_s': run.get('time_limit_seconds'),
+                             'solved': run.get('outcome') == 'accepted', 'status': run.get('status'),
+                             'seconds': run.get('elapsed_seconds'),
+                             'reason': None if run.get('outcome') == 'accepted' else run.get('reason')}
+    not_evaluated = [i for i in ids if i not in rows]
+    ids = [i for i in ids if i in rows]
+    if not ids:
+        return {'status': 'unmeasured', 'reason': 'no case finished within the cap', 'cases': [],
+                'not_evaluated': not_evaluated}
     groups: dict[str, dict] = {}
     for case_id in ids:
         row, ref = rows[case_id], base[case_id]
@@ -200,16 +271,29 @@ def conic_report(task, store, record, reference, ids) -> dict:
     p = sum(rows[i]['solved'] for i in ids) / len(ids)
     p_b = sum(base[i]['solved'] for i in ids) / len(ids)
     return {'status': 'ok', 'success_rate': p, 'baseline_success_rate': p_b, 'score': conic_score(p, p_b),
-            'repeats': 1, 'groups': groups, 'cases': [rows[i] for i in ids],
-            'note': 'One repeat per case; the formal evaluation runs three and needs all three to pass.'}
+            'repeats': 1, 'groups': groups, 'cases': [rows[i] for i in ids], 'not_evaluated': not_evaluated,
+            'note': 'One repeat per case; the formal evaluation runs three and needs all three to pass.'
+                    + (f' {len(not_evaluated)} cases were not evaluated before the cap; rates and score cover the '
+                       f'evaluated cases only.' if not_evaluated else '')}
 
 
 def exp2_report(task, store, record, reference, ids) -> dict:
     parts, missing = exp2_parts(store, record)
     panel, _ = exp2_parts(store, reference)
+    partial = record.get('partial') or {}
+    missing = [job for job in missing if job not in partial]
+    if partial:
+        candidate = parts.setdefault('candidate', {'status': 'ok', 'aggregates': {}, 'reasons': []})
+        for found in partial.values():
+            candidate['aggregates'].update(found)
     candidate = parts.get('candidate')
     if missing or candidate is None:
         return {'status': 'unmeasured', 'reason': f'grading incomplete: {missing}', 'cases': []}
+    not_evaluated = [i for i in ids if i not in candidate['aggregates']] if partial else []
+    ids = [i for i in ids if i not in set(not_evaluated)]
+    if not ids:
+        return {'status': 'unmeasured', 'reason': 'no case finished within the cap', 'cases': [],
+                'not_evaluated': not_evaluated}
     cases = [c for c in task.cases() if c['id'] in set(ids)]
     if candidate['status'] != 'ok':
         return {'status': 'invalid_submission', 'score': 0.0, 'reason': candidate['reasons'], 'cases': []}
@@ -249,6 +333,7 @@ def exp2_report(task, store, record, reference, ids) -> dict:
         group['geometric_relative_time'] = math.exp(sum(ratios) / len(ratios)) if ratios else None
     return {'status': result['status'], 'score': result['score'], 'relative_time': result['relative_time'],
             'failed_cases': result['failed_cases'], 'repeats': 1, 'groups': groups, 'cases': rows,
+            'not_evaluated': not_evaluated,
             'note': 'One timed repeat per case (the formal evaluation takes the median of three). relative_time is '
                     'your time over the fastest published panel method on that case.'}
 
@@ -262,6 +347,9 @@ def render(report: dict) -> str:
               if score is not None else '- public-set score: none',
               f'- cases evaluated: {len(report["cases"])}' + (' (subset)' if report.get('subset') else ''),
               f'- note: {report.get("note", "")}', '']
+    if report.get('not_evaluated'):
+        lines += [f'Not evaluated before the {int(report.get("cap_s") or 0) // 60}-minute cap ({len(report["not_evaluated"])}): '
+                  + ', '.join(report['not_evaluated']), '']
     if report['task'] == 'conic':
         lines += [f'Solved {report["success_rate"]:.3f} of the evaluated cases; the baseline solved '
                   f'{report["baseline_success_rate"]:.3f} of the same cases.', '',

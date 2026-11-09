@@ -37,6 +37,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'galaxy-gravity': 'frontieram-galaxy-gravity-harness:v6',
                   'polarization-demosaicking': 'frontieram-polarization-demosaicking-harness:v6',
                   'species-tree': 'frontieram-species-tree-harness:v6',
+                  'species-tree-v2': 'frontieram-species-tree-harness:v6',
                   'trajectory-covariance': 'frontieram-trajectory-covariance-harness:v6'}
 # The vendor's own client where ATR has one; Claude Code for Messages models without one, Codex for Responses ones.
 HARNESS = {
@@ -238,6 +239,15 @@ SCORING_DISCLOSURE = {
     ),
 }
 
+SCORING_DISCLOSURE['species-tree-v2'] = (
+    'Each held-out instance is run once in a fresh process within its time limit (startup included); a timeout, crash '
+    'or invalid tree counts as the worst error for that instance. The score depends only on the mean normalised '
+    'Robinson-Foulds error over all held-out instances, compared with two published reference methods measured on the '
+    'same instances and limits: matching the weaker one scores zero, matching the stronger one is the midpoint of the '
+    'scale and recovering every true split is the maximum. Running time does not count beyond the limit. Instances '
+    'vary in how much the gene trees conflict, so a method must stay accurate across that range.'
+)
+
 SETTING_SINGLE = (
     'One attempt, at most {seconds} wall-clock seconds including model requests and tool time. Finishing your '
     'turn, or the deadline, freezes /workspace/submission for evaluation; the evaluator gives no feedback during '
@@ -248,15 +258,26 @@ SETTING_ITERATIVE = (
     'One attempt, at most {seconds} wall-clock seconds including model requests, tool time and evaluations. '
     'At any time you may run `/opt/frontieram/bin/submit --test` (optionally `--groups G1,G2` or `--cases ID1,ID2`): '
     'it freezes the current /workspace/submission, pauses this environment, grades the frozen copy on the public '
-    'development set with the formal evaluator on an isolated grading core (one timed run per case), and then '
-    'writes per-case results, a per-case comparison with the baseline and a public-set score on the 100-point '
-    'scale (baseline = 50) to /workspace/feedback/<n>/report.md (and report.json), and prints a summary. The '
-    'evaluation time counts against your budget: a full public evaluation takes from a few minutes up to about '
-    'half an hour, so restrict it with --groups or --cases when you need only part of it. You may test as often as '
-    'you like. `/opt/frontieram/bin/submit --final` freezes /workspace/submission as your final submission and ends '
-    'the attempt; if you never submit --final, /workspace/submission as it stands when the budget runs out is '
-    'graded. Only the hidden held-out set determines your score; the public-set score is feedback.'
+    'development set with the formal evaluator on isolated grading cores (one timed run per case, the formal per-case '
+    'limits, cases with short limits first), and then writes per-case results, a per-case comparison with the baseline '
+    'and a public-set score on the 100-point scale (baseline = 50) to /workspace/feedback/test-<n>/report.md (and '
+    'report.json), and prints a summary. Each test evaluation is capped at {cap} minutes: when the cap is reached the '
+    'cases finished so far are reported, the rest are marked not evaluated, and the score covers the evaluated cases '
+    'only. {typical} The evaluation time counts against your budget; restrict a test with --groups or --cases when you '
+    'need only part of the set. You may test as often as you like, one test at a time. `/opt/frontieram/bin/submit '
+    '--status` shows the remaining budget without using it. `/opt/frontieram/bin/submit --final` freezes '
+    '/workspace/submission as your final submission and ends the attempt; if you never submit --final, '
+    '/workspace/submission as it stands when the budget runs out is graded (not the last tested version). Only the '
+    'hidden held-out set determines your score; the public-set score is feedback.'
 )
+TEST_CAP_SECONDS = int(os.environ.get('FRONTIERAM_V62_TEST_CAP') or 900)  # override only for validation runs
+# Measured full public evaluations of baseline-speed solutions on this machine (results/PROTOCOL_V62.md).
+TYPICAL_EVALUATION = {
+    'conic': 'A full public evaluation of a solver about as fast and robust as the baseline takes about 6 minutes; '
+             'a solver that runs to many of the long limits takes longer and may reach the cap.',
+    'exponential-v2': 'A full public evaluation of a solution about as fast as the baseline takes about 4 minutes; '
+                      'slower or failing solutions take longer and may reach the cap.',
+}
 
 SUBMIT_CLIENT = r'''#!/usr/bin/env python3
 """FrontierAM protocol v6.2: --test grades /workspace/submission on the public set; --final ends the attempt."""
@@ -266,10 +287,11 @@ parser = argparse.ArgumentParser(description=__doc__)
 kind = parser.add_mutually_exclusive_group(required=True)
 kind.add_argument("--test", action="store_true", help="public-set evaluation with per-case baseline comparison")
 kind.add_argument("--final", action="store_true", help="freeze /workspace/submission and end the attempt")
+kind.add_argument("--status", action="store_true", help="show the remaining budget and tests so far")
 parser.add_argument("--groups", help="comma-separated groups (or families) to evaluate")
 parser.add_argument("--cases", help="comma-separated case IDs to evaluate")
 args = parser.parse_args()
-request = {"kind": "test" if args.test else "final", "groups": args.groups, "cases": args.cases}
+request = {"kind": "test" if args.test else "final" if args.final else "status", "groups": args.groups, "cases": args.cases}
 connection = socket.socket(socket.AF_UNIX)
 connection.connect("/run/frontieram-eval/eval.sock")
 connection.sendall((json.dumps(request) + "\n").encode())
@@ -298,7 +320,9 @@ ITERATIVE_LOCK = Path('/run/frontieram/v62-iterative.lock')
 def prompt(task_name: str, runtime: dict, protocol: str = 'v6', setting: str = 'single', seconds: float = 7200) -> str:
     task = TASKS[task_name]
     if protocol == 'v6.2':
-        budget = (SETTING_ITERATIVE if setting == 'iterative' else SETTING_SINGLE).format(seconds=int(seconds))
+        budget = (SETTING_ITERATIVE.format(seconds=int(seconds), cap=TEST_CAP_SECONDS // 60,
+                                           typical=TYPICAL_EVALUATION.get(task_name, ''))
+                  if setting == 'iterative' else SETTING_SINGLE.format(seconds=int(seconds)))
         budget += ' How the final score is determined: ' + SCORING_DISCLOSURE[task_name]
     else:
         budget = ('One attempt, at most 7200 wall-clock seconds including model requests and tool time. Finishing '
@@ -371,7 +395,8 @@ class EvalService:
         with connection:
             try:
                 request = json.loads(connection.makefile().readline())
-                reply = self._final() if request.get('kind') == 'final' else self._test(request)
+                kind = request.get('kind')
+                reply = self._final() if kind == 'final' else self._status() if kind == 'status' else self._test(request)
             except Exception as error:
                 reply = {'ok': False, 'message': f'evaluation service error: {type(error).__name__}: {error}'}
             try:
@@ -381,6 +406,13 @@ class EvalService:
 
     def _now(self) -> float:
         return round(time.monotonic() - self.started, 1)
+
+    def _status(self) -> dict:
+        tests = [r for r in self.records if r['kind'] == 'test']
+        running = self.busy.locked()
+        return {'ok': True, 'message': f'Remaining budget: {max(0, int(self.deadline - time.monotonic()))} s. Tests so far: '
+                                       f'{len(tests)}{" (one is running)" if running else ""}. Each test is capped at '
+                                       f'{TEST_CAP_SECONDS // 60} minutes.'}
 
     def _final(self) -> dict:
         self.records.append({'kind': 'final', 'at_seconds': self._now()})
@@ -418,12 +450,13 @@ class EvalService:
             config = PUBLIC_EVAL[self.task]
             command = [sys.executable, '-m', 'arena.cli', '--store', str(config['store']), 'public-eval',
                        '--task', self.task, '--source', str(directory / 'source'), '--out', str(directory / 'report'),
-                       '--label', f'{self.output.parent.name} test {n}']
+                       '--label', f'{self.output.parent.name} test {n}',
+                       '--cap', str(int(max(30, min(TEST_CAP_SECONDS, self.deadline - time.monotonic() - 30))))]
             for option in ('groups', 'cases'):
                 if request.get(option):
                     command += [f'--{option}', str(request[option])]
             log = (directory / 'public-eval.log').open('wb')
-            process = subprocess.Popen(command, cwd=ROOT, env={**os.environ, **config['env']}, stdout=log,
+            process = subprocess.Popen(command, cwd=ROOT, env={**os.environ, **config['env'], 'FRONTIERAM_PUBLIC_EVAL': '1'}, stdout=log,
                                        stderr=subprocess.STDOUT)
             self.processes.append(process)
             try:
@@ -472,6 +505,9 @@ class EvalService:
                       for g, v in sorted(report['groups'].items())]
         elif report.get('failed_cases'):
             lines.append(f'{len(report["failed_cases"])} failed cases (any failure scores the formal submission 0).')
+        if report.get('not_evaluated'):
+            lines.append(f'{len(report["not_evaluated"])} cases were not evaluated before the {TEST_CAP_SECONDS // 60}-minute '
+                         f'cap; the score covers the evaluated cases only.')
         lines.append(f'Details: /workspace/feedback/test-{n:02d}/report.md. Remaining budget: '
                      f'{max(0, int(self.deadline - time.monotonic()))} s.')
         return '\n'.join(lines)
@@ -499,7 +535,8 @@ def develop(spec: dict, runtime: dict) -> dict:
                                       placement.cgroup_parent)
     write(output / 'v6_conditions.json', {'harness': harness, 'route': route, 'image': HARNESS_IMAGES[task.name],
                                           'development_seconds': seconds, 'memory_bytes': MEMORY,
-                                          'protocol': protocol, 'setting': setting if protocol == 'v6.2' else None})
+                                          'protocol': protocol, 'setting': setting if protocol == 'v6.2' else None,
+                                          'test_cap_seconds': TEST_CAP_SECONDS if iterative else None})
     credential_env, credential_file = CREDENTIALS.get(model, DEFAULT_CREDENTIAL)
     token = secrets.token_urlsafe(32)
     port = _free_port()

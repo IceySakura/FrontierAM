@@ -105,6 +105,8 @@ class ExponentialV2(Task):
         manifest = json.loads(sealed.read_text())
         wanted = set(case_ids)
         manifest['cases'] = [dict(c, file=str(SEAL / 'data' / c['file'])) for c in manifest['cases'] if c['id'] in wanted]
+        if self.lock().get('repeats', 3) == 1:  # public-feedback seal: cheapest sessions first for capped tests
+            manifest['cases'].sort(key=lambda c: (float(c.get('nnz', 1)) * c.get('request_count', 1), c['id']))
         if len(manifest['cases']) != len(wanted):
             raise ValueError('case_ids name cases outside the sealed manifest')
         path = out / 'shard-manifest.json'

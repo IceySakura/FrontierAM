@@ -55,7 +55,13 @@ def script(task: str, setting: str) -> str:
                  "chmod +x /workspace/submission/run.sh\n")
         subset = '--cases standard_DIMACS10_fe_4elt2_p4_k1,control_zero,control_scalar_stiff'
     lines = ['set -x', files, "echo 'smoke submission v1' > /workspace/submission/README.md"]
-    if setting == 'iterative':
+    if setting == 'iterative-cap':  # conic: every solve sleeps past its limit; a short cap must return partial results
+        lines += ["printf '#!/bin/sh\\nsleep 400\\n' > /workspace/submission/run.sh",
+                  '/opt/frontieram/bin/submit --status; echo "status-exit=$?"',
+                  '/opt/frontieram/bin/submit --test --groups soc; echo "submit-exit=$?"',
+                  'ls -la /workspace/feedback/test-01/ && head -12 /workspace/feedback/test-01/report.md',
+                  '/opt/frontieram/bin/submit --final; echo "final-exit=$?"', 'sleep 120', 'echo NOT-REACHED']
+    elif setting == 'iterative':
         lines += [f'/opt/frontieram/bin/submit --test {subset}; echo "submit-exit=$?"',
                   'ls -la /workspace/feedback/test-01/ && head -20 /workspace/feedback/test-01/report.md',
                   "echo 'smoke submission v2 (final)' > /workspace/submission/README.md",
@@ -72,7 +78,8 @@ def main():
     out.mkdir(parents=True)
     with broker.acquire('dev', task.dev_memory, f'v6.2 smoke {out.name}', timeout=3600) as lease:
         spec = {'task': task_name, 'model': 'gpt-6.1-sol', 'placement': placement_for(lease, layout).__dict__,
-                'output': str(out), 'protocol': 'v6.2', 'setting': setting, 'development_seconds': seconds,
+                'output': str(out), 'protocol': 'v6.2', 'setting': setting.replace('-cap', ''),
+                'development_seconds': seconds,
                 'agent_script': script(task_name, setting)}
         result = develop(spec, runtime)
     print(json.dumps(result, indent=1))
@@ -80,7 +87,14 @@ def main():
     checks = {'frozen': result.get('source_frozen') is True,
               'final_readme_frozen': 'v2' in (out / 'task/source/README.md').read_text()
               if setting == 'iterative' else True}
-    if setting == 'iterative':
+    if setting == 'iterative-cap':
+        test = next((r for r in result.get('evaluations', []) if r.get('kind') == 'test'), {})
+        report = json.loads((out / 'evaluations/test-01/report/report.json').read_text())
+        checks.update(stop_reason=result.get('agent_stop_reason') == 'formal_submission',
+                      status_ok='Remaining budget' in log, capped=report.get('capped') is True,
+                      partial=bool(report.get('not_evaluated')) and bool(report.get('cases')),
+                      feedback_in_container='report.md' in log and 'NOT-REACHED' not in log)
+    elif setting == 'iterative':
         checks.update(stop_reason=result.get('agent_stop_reason') == 'formal_submission',
                       test_done=any(r.get('kind') == 'test' and r.get('status') in ('ok', 'invalid_submission')
                                     for r in result.get('evaluations', [])),

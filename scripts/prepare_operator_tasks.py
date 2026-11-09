@@ -132,7 +132,9 @@ def main():
     parser.add_argument('--build-images', action='store_true')
     parser.add_argument('--force', action='store_true', help='replace an existing sealed copy')
     args = parser.parse_args()
-    names = args.task or sorted(p.parent.name for p in SPECS.glob('*/task.json'))
+    # Derived tasks (e.g. species-tree-v2, scripts/prepare_species_v2.py) are sealed by their own scripts.
+    names = args.task or sorted(p.parent.name for p in SPECS.glob('*/task.json')
+                                if 'derived_from' not in json.loads(p.read_text()))
     for name in names:
         spec_dir = SPECS / name
         spec = json.loads((spec_dir / 'task.json').read_text())

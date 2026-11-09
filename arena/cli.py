@@ -205,6 +205,36 @@ def uid_tasks(uid: int) -> int:
     return count
 
 
+ITERATIVE_LOCK = Path('/run/frontieram/v62-iterative.lock')
+
+
+def iterative_attempt_running() -> bool:
+    """True while a protocol v6.2 iterative attempt holds the machine lock (arena/native.py)."""
+    import fcntl
+
+    if not ITERATIVE_LOCK.exists():
+        return False
+    with ITERATIVE_LOCK.open('a') as handle:
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return True
+        fcntl.flock(handle, fcntl.LOCK_UN)
+        return False
+
+
+def wait_for_iterative_attempts(job, store) -> None:
+    """Iterative attempts' test evaluations count against their budget, so no other grading may take the slots."""
+    if os.environ.get('FRONTIERAM_PUBLIC_EVAL') == '1' or store.root.name.startswith('store-public-'):
+        return
+    waited = False
+    while iterative_attempt_running():
+        if not waited:
+            say(event='grade_waiting_for_iterative_attempt', job=job['id'])
+            waited = True
+        time.sleep(30)
+
+
 def grade_job(layout, broker, runtime, store, job) -> dict:
     task = TASKS[job['task']]
     results = store.result_dir(job['id'])
@@ -225,6 +255,7 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
                 say(event='grade_waiting_uid_headroom', job=job['id'], uid=task.grader_uid, tasks=count)
                 waited = True
             time.sleep(30)
+    wait_for_iterative_attempts(job, store)
     # Interference probes measure concurrency on purpose; a job may carry an escalated policy from the load gate.
     policy = 'shared' if job['kind'] == 'probe' else job.get('isolation') or task.grade_isolation
     say(event='grade_waiting', job=job['id'], task=task.name, isolation=policy)
@@ -896,6 +927,7 @@ def main() -> None:
     public_eval.add_argument('--groups', help='comma-separated groups (conic) or families (exponential-v2)')
     public_eval.add_argument('--cases', help='comma-separated case IDs')
     public_eval.add_argument('--label', default=None)
+    public_eval.add_argument('--cap', type=float, default=None, help='seconds; stop and report finished cases')
     board = sub.add_parser('leaderboard')
     board.add_argument('--task', choices=sorted(TASKS), required=True)
     args = parser.parse_args()

@@ -111,7 +111,8 @@ def publicise_conic_task(task: Path, repeats: int) -> dict:
     shutil.rmtree(data)
     (data / 'inputs').mkdir(parents=True)
     instances = []
-    for row in source['instances']:
+    # Short limits first: a capped test evaluation (protocol v6.2) then reports as many cases as possible.
+    for row in sorted(source['instances'], key=lambda r: (r['time_limit_seconds'], r['id'])):
         target = data / row['path']
         shutil.copyfile(public / row['path'], target)
         if sha(target) != row['sha256'] or not 1 <= row['time_limit_seconds'] <= 300:

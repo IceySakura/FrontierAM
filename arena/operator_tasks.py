@@ -224,6 +224,59 @@ class SpeciesTree(OperatorTask):
                 .get(summary.get('scope'), summary.get('scope'))}
 
 
+class SpeciesTreeV2(SpeciesTree):
+    """species-tree rebuilt at 250 taxa (scripts/prepare_species_v2.py), graded in shards like the conic suite."""
+    # FRONTIERAM_SPECIES_V2_DATA=public grades the shipped public cases instead (protocol v6.2 public feedback).
+    grade_timeout = 8 * 3600
+
+    def reference_dir(self, which: str) -> Path:
+        return SpeciesTree.reference_dir(self, which)
+
+    def data(self) -> Path:
+        public = os.environ.get('FRONTIERAM_SPECIES_V2_DATA') == 'public'
+        return self.root('public') / 'public-dev' if public else self.sealed / 'private'
+
+    def suite(self, runtime=None) -> list[dict]:
+        data = self.data()
+        if data.name == 'public-dev':
+            return [{'id': d.name, 'group': 'all', 'time_limit_seconds': 120}
+                    for d in sorted((data / 'cases').iterdir())]
+        return [{'id': c['case'], 'group': 'all', 'time_limit_seconds': 120}
+                for c in json.loads((data / 'manifest.json').read_text())['cases']]
+
+    async def grade(self, runtime, placement, output, case_ids=None):
+        source = output / 'source'
+        if (source / PAIR).exists():
+            parts = {which: self.run_grader(source / which, output / which, placement, case_ids)
+                     for which in ('weak', 'strong')}
+            return {'exit_status': 'finished', 'kind': 'reference_pair', 'parts': parts}
+        return {'exit_status': 'finished', 'kind': 'candidate',
+                'parts': {'candidate': self.run_grader(source, output / 'candidate', placement, case_ids)}}
+
+    def run_grader(self, source, out, placement, case_ids=None):
+        driver = ROOT / 'arena/operator_drivers/species_tree_v2_batch.py'
+        out.parent.mkdir(parents=True, exist_ok=True)
+        env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
+        data = self.data()
+        if data.name == 'public-dev' and not (data / 'manifest.json').exists():
+            raise RuntimeError('public-feedback grading needs the public manifest (prepare_species_v2.py)')
+        command = [str(GRADER_PYTHON), '-B', str(driver), str(self.root() / 'operator'), str(source), str(out), str(data)]
+        if case_ids:
+            ids = out.parent / f'{out.name}-cases.json'
+            ids.write_text(json.dumps(list(case_ids)) + '\n')
+            command += ['--cases', str(ids)]
+        done = subprocess.run(command, env=env, capture_output=True, text=True, timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
+        mapped = {'ok': 'ok', 'algorithm_failures': 'ok', 'submission_failure': 'submission_failure'}.get(
+            summary.get('status'), 'infrastructure_failure')
+        reason = summary.get('reason') or (done.stderr.strip().splitlines()[-1] if done.returncode and done.stderr.strip() else None)
+        return {'status': mapped, 'raw_error': summary.get('mean_nrf'), 'reason': reason, 'package_score': None,
+                'missed_splits': summary.get('missed_splits'), 'denominator': summary.get('denominator'),
+                'failed_cases': summary.get('failed_cases'), 'cases': summary.get('expected_cases'),
+                'scope': summary.get('scope')}
+
+
 class TrajectoryCovariance(OperatorTask):
     grade_memory = 4 * GIB
     grade_timeout = 12 * 3600
@@ -280,7 +333,8 @@ def _finite(value) -> bool:
 
 
 CLASSES = {'galaxy-gravity': GalaxyGravity, 'polarization-demosaicking': PolarizationDemosaicking,
-           'species-tree': SpeciesTree, 'trajectory-covariance': TrajectoryCovariance}
+           'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2,
+           'trajectory-covariance': TrajectoryCovariance}
 
 
 def operator_tasks() -> dict[str, OperatorTask]:
