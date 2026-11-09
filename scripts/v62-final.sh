@@ -67,6 +67,28 @@ FRONTIERAM_RUNTIME=$EXP_RT ./bench --store store-species-v2 grade-worker --task 
     --out results/species-tree-v2/anchors.json >> store/reruns/v62-score.log 2>&1
 log "\"event\": \"species_v2_anchors\", \"suite\": \"$species_ref\""
 
+# galaxy-gravity-v2 reference pair (quiet, one job), then the new tasks' gpt-6.1-sol single attempts.
+FRONTIERAM_RUNTIME=$EXP_RT ./bench --store store-galaxy-v2 baseline --task galaxy-gravity-v2 >> store/reruns/v62-worker.log 2>&1
+log "\"event\": \"galaxy_v2_anchors\", \"store\": \"store-galaxy-v2\""
+frozen() { python3 -c "import json,sys;r=[json.loads(l) for l in open(sys.argv[1]) if 'develop_finished' in l];print(r[-1]['submission'] if r else '')" "$1" 2>/dev/null; }
+galaxy_sub=$(frozen store/reruns/sol-v62-single-galaxy-v2.log)
+if [ -n "$galaxy_sub" ] && [ -f "store-v62/submissions/$galaxy_sub/source.tar" ]; then
+    src=$(mktemp -d) && tar -xf "store-v62/submissions/$galaxy_sub/source.tar" -C "$src"
+    FRONTIERAM_RUNTIME=$EXP_RT ./bench --store store-galaxy-v2 submit --task galaxy-gravity-v2 --source "$src" \
+        --label "gpt-6.1-sol v6.2 single $galaxy_sub" >> store/reruns/v62-worker.log 2>&1
+    FRONTIERAM_RUNTIME=$EXP_RT ./bench --store store-galaxy-v2 grade-worker --task galaxy-gravity-v2 --workers 1 --drain >> store/reruns/v62-worker.log 2>&1
+    log "\"event\": \"graded\", \"label\": \"sol-single-galaxy-v2\", \"submission\": \"$galaxy_sub\""
+fi
+species_sub=$(frozen store/reruns/sol-v62-single-species-v2.log)
+if [ -n "$species_sub" ]; then
+    suite=$(FRONTIERAM_RUNTIME=$EXP_RT ./bench --store store-species-v2 suite --task species-tree-v2 --submission "$species_sub" \
+            --shards 4 --slots $SLOTS --isolation shared | last_id)
+    FRONTIERAM_RUNTIME=$EXP_RT ./bench --store store-species-v2 grade-worker --task species-tree-v2 --workers 4 --drain >> store/reruns/v62-worker.log 2>&1
+    .venv-ops/bin/python scripts/species-v2-suite-score.py --store store-species-v2 --reference "$species_ref" --candidate "$suite" \
+        --out results/species-tree-v2/sol-v62-single.json >> store/reruns/v62-score.log 2>&1
+    log "\"event\": \"graded\", \"label\": \"sol-single-species-v2\", \"suite\": \"$suite\", \"submission\": \"$species_sub\""
+fi
+
 grade_conic() {
     local submission=$1 label=$2 suite
     suite=$(FRONTIERAM_RUNTIME=$CONIC_RT ./bench --store store-v62 suite --task conic --submission "$submission" \
