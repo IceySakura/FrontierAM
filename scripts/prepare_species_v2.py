@@ -98,7 +98,8 @@ def main():
     public_root = SEAL / 'packages/public'
     dev = public_root / 'public-dev'
     public = copy_cases(args.data / 'public', dev)
-    shutil.copyfile(V1 / v1['roots']['public'] / 'public-dev/check_rf.py', dev / 'check_rf.py')
+    with tarfile.open(V1 / 'public.tar') as v1_public:  # v1 ships check_rf.py inside its development zip
+        (dev / 'check_rf.py').write_bytes(v1_public.extractfile('public-dev/check_rf.py').read())
     for name in ('problem.md', 'README.md'):
         target = public_root / 'problem.md' if name == 'problem.md' else dev / 'README.md'
         target.write_text((SPEC / ('problem.md' if name == 'problem.md' else 'public-dev-README.md')).read_text())
