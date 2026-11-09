@@ -19,6 +19,9 @@ P_B=0.7892307692307692
 log() { echo "{\"time\": \"$(date +%FT%T)\", $1}" >> "$LOG"; }
 last_id() { python3 -c "import json,sys;print(json.loads(sys.stdin.readlines()[-1])['id'])"; }
 
+# RESUME=smoke skips the steps before the smoke checks (public baselines, the single-setting exponential-v2 grading).
+RESUME=${RESUME:-}
+if [ -z "$RESUME" ]; then
 until grep -qE '"event": "(scored|score_failed|partition_mismatch|queue_failed)"' store/reruns/exp2-panel-suite.log; do sleep 60; done
 while pgrep -f "public-baseline --task conic" >/dev/null; do sleep 60; done
 log '"event": "start"'
@@ -27,6 +30,7 @@ FRONTIERAM_RUNTIME=$EXP_RT FRONTIERAM_EXP2_SEAL=$R/.runtime-exp2-public ./bench 
     public-baseline --task exponential-v2 > store/reruns/v62-public-baseline-exp2.log 2>&1 \
     || { log '"event": "exp2_public_baseline_failed"'; exit 1; }
 log '"event": "public_baselines_done"'
+fi
 
 grade_exp2() {
     local submission=$1 label=$2 suite
@@ -66,7 +70,8 @@ develop_iterative() {
     python3 -c "import json;print([json.loads(l) for l in open('store/reruns/sol-v62-iterative-$label.log') if 'develop_finished' in l][-1]['submission'])"
 }
 
-grade_exp2 exponential-v2-20261109T064531Z-785a70 sol-single-exp2
+[ -z "$RESUME" ] && grade_exp2 exponential-v2-20261109T064531Z-785a70 sol-single-exp2
+log "\"event\": \"resume\", \"from\": \"${RESUME:-start}\""
 
 for task in conic exponential-v2; do
     runtime=$EXP_RT; [ $task = conic ] && runtime=$CONIC_RT

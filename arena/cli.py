@@ -888,6 +888,7 @@ def main() -> None:
     public_baseline = sub.add_parser('public-baseline', help='v6.2: measure the reference on the public set')
     public_baseline.add_argument('--task', choices=['conic', 'exponential-v2'], required=True)
     public_baseline.add_argument('--replace', action='store_true')
+    public_baseline.add_argument('--from-suite', help='summarise an already graded reference suite instead of grading')
     public_eval = sub.add_parser('public-eval', help='v6.2: grade a source tree on the public set, compare with baseline')
     public_eval.add_argument('--task', choices=['conic', 'exponential-v2'], required=True)
     public_eval.add_argument('--source', required=True)

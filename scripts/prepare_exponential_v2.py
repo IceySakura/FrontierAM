@@ -139,6 +139,13 @@ def main():
         shutil.rmtree(SEAL)
     SEAL.mkdir()
     shutil.copytree(EXP / 'public/tools', SEAL / 'public/tools', ignore=shutil.ignore_patterns('__pycache__'))
+    if args.repeats != 3:
+        # The scorer validates exactly REPEATS timed runs per case; a v6.2 public-feedback seal times fewer.
+        scorer = SEAL / 'public/tools/scoring.py'
+        text = scorer.read_text()
+        if text.count('\nREPEATS = 3\n') != 1:
+            raise SystemExit('scoring.py: expected exactly one REPEATS = 3')
+        scorer.write_text(text.replace('\nREPEATS = 3\n', f'\nREPEATS = {args.repeats}\n'))
     shutil.copytree(EXP / 'public/sdk', SEAL / 'public/sdk', ignore=shutil.ignore_patterns('__pycache__'))
     for name in ('run_docker.py', 'supervisor.py'):
         (SEAL / 'docker_eval/evaluator').mkdir(parents=True, exist_ok=True)

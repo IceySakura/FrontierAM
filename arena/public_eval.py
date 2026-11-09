@@ -111,7 +111,12 @@ def cmd_public_baseline(args) -> None:
     store, runtime, task = Store(args.store), load_runtime(), TASKS[args.task]
     if baseline_path(store, task.name).exists() and not args.replace:
         raise SystemExit(f'{task.name} already has a public baseline; pass --replace to measure another')
-    record = _grade_suite(task, store, runtime, submission=None, case_ids=None)
+    if args.from_suite:  # re-summarise an already graded reference suite, e.g. after a scorer-side correction
+        record = read_json(store.root / 'suites' / f'{args.from_suite}.json')
+        if not record.get('reference'):
+            raise SystemExit(f'{args.from_suite} is not a reference suite')
+    else:
+        record = _grade_suite(task, store, runtime, submission=None, case_ids=None)
     if task.name == 'conic':
         rows, missing = conic_rows(store, record)
         summary = {'cases': len(rows), 'solved': sum(r['solved'] for r in rows.values())}
