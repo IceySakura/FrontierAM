@@ -5,7 +5,7 @@
 | 事项 | 默认决定 | 依据 / 文档 |
 | --- | --- | --- |
 | polarization 正式成绩 | 取 11-06 15:09 的重评（50.7）；第一次评分因调度核上的编译负载导致第一景超时，按“平台故障记未测”处理 | `NEW_TASKS.md` |
-| polarization 公开开发集 | 用 Wen 等 2019（CPDNet，CC BY-NC）105 景，裁剪为 1024×1024。公开反馈评测器已实现并验证（`arena/operator_drivers/polarization_feedback.py`，复用包内构建、沙箱运行和打分；数据封存于 `.runtime-ops/polarization-demosaicking-feedback/`），弱参照在开发核上 105/105 通过、整批 2.1937；东京工业大学数据集下载后实测再定；待出题人确认 | `POLARIZATION_PUBLIC_DEV_REQUEST.md` |
+| polarization 公开开发集 | 用 Wen 等 2019（CPDNet，CC BY-NC）105 景，裁剪为 1024×1024。公开反馈评测器已实现并验证（`arena/operator_drivers/polarization_feedback.py`，复用包内构建、沙箱运行和打分；数据封存于 `.runtime-ops/polarization-demosaicking-feedback/`），弱参照在开发核上 105/105 通过、整批 2.1937；东京工业大学数据集（1024×768、仅限研究用途）不采用，原因见请求文档；待出题人确认 | `POLARIZATION_PUBLIC_DEV_REQUEST.md` |
 | polarization 测试集的选景方式 | 测试集删去了“双线性比 LEIC 更准”的场景，会放大两条参照的差距；保持不变，请出题人确认是否有意 | 同上 |
 | galaxy-gravity 规模 | 粒子数 65,536 → 131,072，保持 5 CPU 秒；在评测核上复测后定稿 | `GALAXY_SCALE.md` |
 | species-tree 新版本 | 自建 S100 式模拟（已校准），约 250 个物种、≥ 200 个正式用例、120 秒（按试点实测的参照耗时最终确定），新的公开开发集 | `SPECIES_TREE_SIM.md`、`SPECIES_TREE_SCALE.md` |
