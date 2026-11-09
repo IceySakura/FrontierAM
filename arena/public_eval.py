@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import shutil
 import subprocess
 import threading
@@ -27,7 +28,8 @@ PUBLIC_TASKS = ('conic', 'exponential-v2')
 
 def _abort_shard(store: Store, job: str) -> None:
     """Stop an unfinished shard: its systemd scope (the grading process tree) and its containers on the slot."""
-    subprocess.run(['systemctl', 'stop', f'frontieram-grade-{job}'], capture_output=True, timeout=120)
+    # The unit is a scope (arena/cli.py run_in_slot); without the suffix systemctl would look for a service.
+    subprocess.run(['systemctl', 'stop', f'frontieram-grade-{job}.scope'], capture_output=True, timeout=120)
     spec_path = store.result_dir(job) / 'spec.json'
     if not spec_path.exists():
         return
@@ -80,11 +82,17 @@ def _grade_suite(task, store: Store, runtime: dict, *, submission: str | None, c
     args = Namespace(task=[task.name], drain=True)
     stop = threading.Event()
     started = time.monotonic()
-    pool = ThreadPoolExecutor(len(jobs))
-    futures = {job: pool.submit(worker_loop, layout, broker, runtime, store, args, stop, [job]) for job in jobs}
-    wait(list(futures.values()), timeout=None if cap is None else max(1.0, cap - (time.monotonic() - started)))
-    unfinished = [job for job, future in futures.items() if not future.done()]
+    # Daemon threads: after a cap the process may exit while a worker still waits for a slot (cmd_public_eval).
+    threads = {job: threading.Thread(target=worker_loop, args=(layout, broker, runtime, store, args, stop, [job]),
+                                     daemon=True) for job in jobs}
+    for thread in threads.values():
+        thread.start()
+    deadline = None if cap is None else started + cap
+    while any(t.is_alive() for t in threads.values()) and (deadline is None or time.monotonic() < deadline):
+        time.sleep(2)
+    unfinished = [job for job, thread in threads.items() if thread.is_alive()]
     record['partial'] = {}
+    record['unfinished'] = unfinished
     if unfinished:
         stop.set()
         for job in unfinished:
@@ -94,11 +102,26 @@ def _grade_suite(task, store: Store, runtime: dict, *, submission: str | None, c
                 report = store.result_dir(job) / 'grade/evaluation.json'
                 record['partial'][job] = read_json(report).get('aggregates', {}) if report.exists() else {}
             _abort_shard(store, job)
-        wait(list(futures.values()), timeout=600)
         say_partial = {job: len(found) for job, found in record['partial'].items()}
         print(json.dumps({'event': 'public_eval_cap', 'cap_s': cap, 'harvested_cases': say_partial}), flush=True)
-    pool.shutdown(wait=False)
     return record
+
+
+def _finish_capped(store: Store, record: dict) -> None:
+    """After a capped evaluation is reported: stop shards that started late, retire their jobs, exit at once."""
+    for _ in range(3):
+        for job in record.get('unfinished') or []:
+            _abort_shard(store, job)
+        time.sleep(5)
+    for job in record.get('unfinished') or []:
+        for state in ('pending', 'running'):
+            path = store.root / 'jobs' / state / f'{job}.json'
+            if path.exists():
+                data = read_json(path)
+                data['aborted'] = 'v6.2 test evaluation reached its cap'
+                write_json(store.root / 'jobs/failed' / f'{job}.json', data)
+                path.unlink()
+    os._exit(0)
 
 
 def _shards(store: Store, record: dict):
@@ -239,7 +262,9 @@ def cmd_public_eval(args) -> None:
                   capped=bool(record.get('partial')))
     write_json(out / 'report.json', report)
     (out / 'report.md').write_text(render(report))
-    print(json.dumps({k: v for k, v in report.items() if k not in ('cases', 'groups')}))
+    print(json.dumps({k: v for k, v in report.items() if k not in ('cases', 'groups')}), flush=True)
+    if record.get('unfinished'):
+        _finish_capped(store, record)
 
 
 def conic_report(task, store, record, reference, ids) -> dict:
