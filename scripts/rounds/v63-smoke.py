@@ -62,7 +62,7 @@ def script(task: str, setting: str) -> str:
                   "echo 'v6.3 smoke submission (final)' > /workspace/submission/README.md",
                   '/opt/frontieram/bin/submit --final; echo "final-exit=$?"', 'sleep 120', 'echo NOT-REACHED']
     else:
-        lines += ['ls /opt/frontieram 2>&1; echo single-done']
+        lines += ['ls /opt/frontieram/bin/submit 2>&1; echo single-done']
     return '\n'.join(lines) + '\n'
 
 
@@ -78,14 +78,14 @@ def main():
         result = develop(spec, runtime)
     print(json.dumps({k: v for k, v in result.items() if k != 'route'}, indent=1))
     log = (out / 'cli.log').read_text(errors='replace')
-    workspace = log.split('WORKSPACE-BEGIN', 1)[-1].split('WORKSPACE-END', 1)[0]
+    workspace = log.rsplit('WORKSPACE-BEGIN\n', 1)[-1].split('WORKSPACE-END', 1)[0]  # after the xtrace lines
     prompt = (out / 'prompt.txt').read_text()
     checks = {'frozen': result.get('source_frozen') is True,
               'no_public_dev': 'public-dev' not in workspace and 'dev_full' not in workspace,
               'samples_present': '/samples' in workspace,
               'limit_in_prompt': f'{int(seconds // 60) if seconds >= 60 else 0} minutes' in prompt or 'minutes' in prompt}
     if setting == 'iterative':
-        report = log.split('REPORT-BEGIN', 1)[-1].split('REPORT-END', 1)[0]
+        report = log.rsplit('REPORT-BEGIN\n', 1)[-1].split('REPORT-END', 1)[0]
         ids = json.loads((out / 'evaluations/test-01/report/report.json').read_text()) if \
             (out / 'evaluations/test-01/report/report.json').exists() else {}
         checks.update(stop_reason=result.get('agent_stop_reason') == 'formal_submission',
