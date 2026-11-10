@@ -46,6 +46,14 @@ anchors() {
         done_event anchor "$task" && continue
         id=$(suite "$task" --reference) && log "\"event\": \"anchor\", \"label\": \"$task\", \"suite\": \"$id\""
     done
+    # exponential v3 reference: the v2 panel plus the Chebyshev v2 member measured on the held-out cases (timed)
+    if ! done_event anchor exponential-v3-cheb2 && ! attempts_running; then
+        id=$(FRONTIERAM_RUNTIME=$EXP_RT FRONTIERAM_EXP3_SEAL=$R/.runtime-exp3-cheb2 ./bench --store $STORE suite --task exponential-v3 \
+             --reference --shards 6 --isolation dev_idle --cap-s $CAP | last_id) && \
+        FRONTIERAM_RUNTIME=$EXP_RT FRONTIERAM_EXP3_SEAL=$R/.runtime-exp3-cheb2 ./bench --store $STORE grade-worker --task exponential-v3 \
+            --workers 6 --drain >> var/stores/store/reruns/v63-worker.log 2>&1 && \
+        log "\"event\": \"anchor\", \"label\": \"exponential-v3-cheb2\", \"suite\": \"$id\""
+    fi
     for task in galaxy-gravity-v3 polarization-demosaicking-v2; do
         done_event anchor "$task" && continue
         attempts_running && continue   # both grade with quiet isolation (no development): after the attempts
@@ -85,9 +93,11 @@ json.dump({'suite': suite, 'complete': report['complete'], 'successes': report['
 PY
             ;;
         exponential-v3)
+            done_event anchor exponential-v3-cheb2 || return 1
             id=$(suite exponential-v3 "--submission $sub") || return 1
             .venv-ops/bin/python scripts/grade/exp2-suite-score.py --task exponential-v3 --store $STORE --panel-store var/stores/store \
-                --panel $PANEL --candidate "$id" --out "$out" >> var/stores/store/reruns/v63-score.log 2>&1 ;;
+                --panel $PANEL --extra-panel "$STORE:$(value anchor exponential-v3-cheb2 suite)" --candidate "$id" --out "$out" \
+                >> var/stores/store/reruns/v63-score.log 2>&1 ;;
         species-tree-v3|trajectory-covariance-v2)
             done_event anchor "$task" || return 1
             id=$(suite "$task" "--submission $sub") || return 1
