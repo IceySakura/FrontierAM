@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 from arena.cli import context, placement_for
-from arena.exponential_v2 import SEAL
+
 from arena.tasks import TASKS, tar_directory
 
 SMOKE = Path('tasks/exponential/versions/v2/dataset/cases/public_smoke').resolve()
@@ -30,7 +30,7 @@ def main():
         for member in members:
             run = out / member
             run.mkdir()
-            c.validate_and_extract(tar_directory(SEAL / 'panel' / member, run / 'incoming.tar'), run / 'source', run / 'source.tar')
+            c.validate_and_extract(tar_directory(TASKS['exponential-v2'].seal / 'panel' / member, run / 'incoming.tar'), run / 'source', run / 'source.tar')
             part = task.evaluate(runtime, placement, run, out / 'manifest.json')
             if part.get('report'):
                 aggregates = json.loads(Path(part['report']).read_text())['aggregates']

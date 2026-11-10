@@ -384,9 +384,10 @@ from .operator_tasks import operator_tasks  # noqa: E402  (operator tasks subcla
 
 TASKS.update(operator_tasks())
 
-from .exponential_v2 import ExponentialV2  # noqa: E402
+from .exponential_v2 import ExponentialV2, ExponentialV3  # noqa: E402
 
 TASKS[ExponentialV2.name] = ExponentialV2()
+TASKS[ExponentialV3.name] = ExponentialV3()
 
 
 def placement_record(placement: Placement) -> dict[str, Any]:

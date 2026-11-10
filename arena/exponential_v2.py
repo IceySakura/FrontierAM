@@ -24,8 +24,6 @@ from types import SimpleNamespace
 from .tasks import GIB, Task, tar_directory
 
 ROOT = Path(__file__).resolve().parents[1]
-# The protocol v6.2 public-feedback grader is the same task sealed elsewhere (public cases, one repeat).
-SEAL = Path(os.environ.get('FRONTIERAM_EXP2_SEAL') or ROOT / '.runtime-exp2')
 PANEL_MARKER = 'FRONTIERAM_PANEL.json'
 
 
@@ -44,18 +42,24 @@ class ExponentialV2(Task):
     # Timing ratios against a baseline measured earlier on the same slot: no other grader may share the machine.
     grade_isolation = 'grade_pool'
     paired = False
+    # The public-feedback grader is the same task sealed elsewhere (public cases, one repeat), named by the variable.
+    seal_env, default_seal = 'FRONTIERAM_EXP2_SEAL', ROOT / '.runtime-exp2'
+
+    @property
+    def seal(self) -> Path:
+        return Path(os.environ.get(self.seal_env) or self.default_seal)
 
     # Sealed material -------------------------------------------------------------------------------------------
     def lock(self) -> dict:
-        return json.loads((SEAL / 'lock.json').read_text())
+        return json.loads((self.seal / 'lock.json').read_text())
 
     def verify(self) -> dict:
         lock = self.lock()
         for relative, expected in lock['files'].items():
-            path = SEAL / relative
+            path = self.seal / relative
             if path.is_symlink() or not path.is_file() or _sha(path) != expected:
                 raise RuntimeError(f'exponential-v2: sealed file changed or missing: {relative}')
-        present = {str(p.relative_to(SEAL)) for p in (SEAL / 'panel').rglob('*') if not p.is_dir()}
+        present = {str(p.relative_to(self.seal)) for p in (self.seal / 'panel').rglob('*') if not p.is_dir()}
         if present != {r for r in lock['files'] if r.startswith('panel/')}:
             raise RuntimeError('exponential-v2: sealed panel holds files outside the lock')
         return lock
@@ -64,19 +68,19 @@ class ExponentialV2(Task):
         from .tasks import TASKS
 
         lock = self.lock()
-        public = SEAL / 'public.tar'
+        public = self.seal / 'public.tar'
         if _sha(public) != lock['public_tar_sha256']:
             raise RuntimeError('exponential-v2: sealed public package changed')
         return SimpleNamespace(controller=TASKS['exponential'].assets(runtime).controller, public_tar=public, lock=lock)
 
     def scoring(self):
-        spec = importlib.util.spec_from_file_location('frontieram_exp2_scoring', SEAL / 'public/tools/scoring.py')
+        spec = importlib.util.spec_from_file_location('frontieram_exp2_scoring', self.seal / 'public/tools/scoring.py')
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         return module
 
     def cases(self) -> list[dict]:
-        return json.loads((SEAL / 'data/manifest.json').read_text())['cases']
+        return json.loads((self.seal / 'data/manifest.json').read_text())['cases']
 
     def dev_config(self, *args, **kwargs):
         raise ValueError('exponential-v2 is developed with --protocol v6 or v6.1')
@@ -99,12 +103,12 @@ class ExponentialV2(Task):
 
     def manifest_for(self, out: Path, case_ids) -> Path:
         """The sealed manifest, or a copy restricted to case_ids with absolute case paths (one shard of a suite)."""
-        sealed = SEAL / 'data/manifest.json'
+        sealed = self.seal / 'data/manifest.json'
         if not case_ids:
             return sealed
         manifest = json.loads(sealed.read_text())
         wanted = set(case_ids)
-        manifest['cases'] = [dict(c, file=str(SEAL / 'data' / c['file'])) for c in manifest['cases'] if c['id'] in wanted]
+        manifest['cases'] = [dict(c, file=str(self.seal / 'data' / c['file'])) for c in manifest['cases'] if c['id'] in wanted]
         if self.lock().get('repeats', 3) == 1:  # public-feedback seal: cheapest sessions first for capped tests
             manifest['cases'].sort(key=lambda c: (float(c.get('nnz', 1)) * c.get('request_count', 1), c['id']))
         if len(manifest['cases']) != len(wanted):
@@ -115,7 +119,7 @@ class ExponentialV2(Task):
 
     def evaluate(self, runtime, placement, run: Path, manifest: Path | None = None) -> dict:
         """Build (if build.sh) and evaluate run/source on the graded cases (or a shard); returns the part summary."""
-        manifest = manifest or SEAL / 'data/manifest.json'
+        manifest = manifest or self.seal / 'data/manifest.json'
         repeats = self.lock().get('repeats', 3)
         c = self.assets(runtime).controller
         image = self.lock()['image']['id']
@@ -128,7 +132,7 @@ class ExponentialV2(Task):
         wrapper.write_text('#!/bin/sh\nexec ' + ' '.join(shlex.quote(x) for x in docker.prefix) + ' "$@"\n')
         wrapper.chmod(0o700)
         report_path = run / 'evaluation.json'
-        command = [sys.executable, str(SEAL / 'docker_eval/evaluator/run_docker.py'), '--image', image,
+        command = [sys.executable, str(self.seal / 'docker_eval/evaluator/run_docker.py'), '--image', image,
                    '--docker', str(wrapper), '--submission', build['artifact'], '--command', './run.sh',
                    '--manifest', str(manifest), '--output', str(report_path), '--repeats', str(repeats),
                    '--cpuset', placement.cpuset]
@@ -156,7 +160,7 @@ class ExponentialV2(Task):
             for member in json.loads((source / PANEL_MARKER).read_text())['panel']:
                 run = output / 'panel' / member
                 run.mkdir(parents=True)
-                c.validate_and_extract(tar_directory(SEAL / 'panel' / member, run / 'incoming.tar'), run / 'source',
+                c.validate_and_extract(tar_directory(self.seal / 'panel' / member, run / 'incoming.tar'), run / 'source',
                                        run / 'source.tar')
                 parts[member] = self.evaluate(runtime, placement, run, manifest)
             return {'exit_status': 'finished', 'kind': 'panel', 'parts': parts}
@@ -268,3 +272,12 @@ def speed_ratio(cases: list[dict], candidate: dict, panel_metrics: dict, replica
     draws = sorted(v for v in (estimate(True) for _ in range(replicates)) if v is not None)
     return {'S': point, 'ci95': [draws[int(0.025 * (len(draws) - 1))], draws[int(0.975 * (len(draws) - 1))]],
             'replicates': len(draws), 'meaning': 'geometric speed ratio vs panel virtual best; >1 is faster'}
+
+
+class ExponentialV3(ExponentialV2):
+    """Protocol v6.3 version (scripts/seal/prepare_exp_v3.py): per-session limits for the evaluation time caps
+    (results/EVAL_TIME_LIMITS.md) and a samples-only workspace; same data, panel, evaluator and scorer otherwise."""
+
+    name = 'exponential-v3'
+    instruction = ExponentialV2.instruction
+    seal_env, default_seal = 'FRONTIERAM_EXP3_SEAL', ROOT / '.runtime-exp3'
