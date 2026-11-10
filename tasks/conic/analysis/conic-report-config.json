@@ -1,0 +1,27 @@
+{
+ "store": "var/stores/store",
+ "reference_suite": "suite-conic-20261104T112639Z-5805a6",
+ "reference_recal": "tasks/conic/versions/original/local_recal/recal-manifest-reference-outcomes.json",
+ "candidates": [
+  {
+   "label": "gpt-6.1-sol v6",
+   "suite": "suite-conic-20261104T112642Z-4c4423",
+   "recal": "tasks/conic/analysis/conic-recal-gpt-6.1-sol.json"
+  },
+  {
+   "label": "gpt-6-astra v6",
+   "suite": "suite-conic-20261104T120311Z-34c2e1",
+   "recal": "tasks/conic/analysis/conic-recal-gpt-6-astra.json"
+  },
+  {
+   "label": "claude-opus-5-5 v6",
+   "suite": "suite-conic-20261104T112644Z-62e345",
+   "recal": "tasks/conic/analysis/conic-recal-claude-opus-5-5.json"
+  },
+  {
+   "label": "hy4 v6",
+   "suite": "suite-conic-20261104T120314Z-3397f6",
+   "recal": "tasks/conic/analysis/conic-recal-hy4.json"
+  }
+ ]
+}

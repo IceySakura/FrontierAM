@@ -1,0 +1,2 @@
+#!/bin/sh
+exec env FMM_UNROLLED=1 FMM_ORDER=8 FMM_THETA=0.45 FMM_MAC=0 FMM_NCRIT=96 FMM_NCC_POST=96 FMM_NCS=256 "$(dirname "$0")/solve" "$@"

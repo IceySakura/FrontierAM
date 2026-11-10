@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "sealed_label": "dataset-v2-public-2026-11-05",
+  "rhs_master": 684033561177,
+  "mothers": {
+    "syn_diffusion2d": 41001,
+    "syn_diffusion2d_b": 41007,
+    "syn_diffusion3d": 41002,
+    "syn_geometric": 41003,
+    "syn_geometric_b": 41008,
+    "syn_heavytail": 41004,
+    "syn_signed": 41005,
+    "syn_logspectrum": 41006
+  }
+}

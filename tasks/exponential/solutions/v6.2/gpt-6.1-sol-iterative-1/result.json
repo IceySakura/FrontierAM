@@ -1,0 +1,10 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.2",
+ "setting": "迭代",
+ "submission": "exponential-v2-20261109T153537Z-142f3b",
+ "raw": "74/74 合格，R = 0.589",
+ "mapping": "\\(100/(1+R)\\)",
+ "score": 62.9,
+ "review": "待复核"
+}

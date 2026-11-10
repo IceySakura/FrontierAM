@@ -1,0 +1,107 @@
+{
+  "id": "conic",
+  "order": 1,
+  "title": "凸锥优化求解器",
+  "category": "数值优化",
+  "summary": "从零实现一个通用凸锥优化求解器，覆盖线性、二次、二阶锥、半正定和指数锥，650 个隐藏实例，逐例时限 1–300 秒（出题方 2026-11-05 修正版题包）。",
+  "statement": {
+    "kind": "file",
+    "path": "tasks/conic/versions/solver-20261105/package/instruction.md"
+  },
+  "background_md": "凸锥优化是运筹、控制、机器学习和金融里最常用的数学规划形式：在线性约束和锥约束下最小化一个凸二次目标。成熟的工业求解器（如 Clarabel、MOSEK、ECOS、SCS）都基于内点法或一阶方法，需要处理数值病态、不可行性判定（给出原始或对偶不可行证书）和从几十到上百万变量的规模差异。\n\n这道题要求模型在 2 小时内、断网、只用 NumPy/SciPy 等已安装的库，**从零写出一个通用求解器**。难点不是某一类问题，而是在五类锥、各种规模和病态程度上都能在时限内给出通过独立检查的结果。",
+  "judge_md": "- **输入**：每个实例给出稀疏矩阵 \\(P, A\\)、向量 \\(q, b\\) 和锥块列表；求解程序每次在新进程中处理一个实例。\n- **正式集**：650 个隐藏实例，分五组：线性 184、二次 253、二阶锥 134、半正定 42、指数锥 37。规模从几十到约一百万个变量。\n- **时限**：每个实例有自己的时限（1–300 秒），按参考求解器的实测耗时乘 1.2 倍、下限 1 秒、参考失败的实例给 300 秒；计时从进程启动到退出，包括解释器启动和导入。650 例中 422 例的时限是 1 秒。本机按同一规则用本机参考的实测时间重新标定。修正版题包的公开开发集（163 例）同样给出逐例时限，私有数据和评分与原版相同。\n- **判定**：每个实例运行三次，三次都必须在时限内给出通过独立检查器的结果（最优解，或原始/对偶不可行证书），才算解出；`unresolved`、超时、超内存都算失败。\n- **原始指标**：解出的实例比例 \\(p\\)。\n- **换算**：设本机参考的解出比例为 \\(p_B\\)。\\(p \\le 0.9p_B\\) 记 0 分；\\(0.9p_B < p \\le p_B\\) 记 \\(50(p-0.9p_B)/(0.1p_B)\\)；\\(p > p_B\\) 记 \\(50 + 50(p-p_B)/(1-p_B)\\)。时限内的快慢不加分。",
+  "baseline_md": "参考实现是 **Clarabel 0.11.1**（Rust 编写的工业级内点法求解器，带齐次自对偶嵌入和不可行证书），在本机评测核上按本机标定的时限实测：**650 例中解出 513 例，\\(p_B = 0.789\\)**，记 50 分。参考在大规模二阶锥和半正定问题上也会失败（例如时限内给出的解没有通过残差检查）。",
+  "result_groups": [
+    {
+      "title": "协议 v6.2（修正版题包，2 小时，单轮 / 迭代；2026-11-09 开发，11-10 评分）",
+      "breakdown": {
+        "kind": "suite_report",
+        "paths": [
+          {
+            "label": "gpt-6.1-sol 单轮",
+            "path": "tasks/conic/solutions/v6.2/gpt-6.1-sol-single-1/score.json"
+          },
+          {
+            "label": "gpt-6.1-sol 迭代",
+            "path": "tasks/conic/solutions/v6.2/gpt-6.1-sol-iterative-1/score.json"
+          },
+          {
+            "label": "Claude Opus 5.5 单轮",
+            "path": "tasks/conic/solutions/v6.2/claude-opus-5-5-single-1/score.json"
+          },
+          {
+            "label": "Claude Opus 5.5 迭代",
+            "path": "tasks/conic/solutions/v6.2/claude-opus-5-5-iterative-1/score.json"
+          }
+        ]
+      },
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.2",
+          "setting": "单轮",
+          "submission": "conic-20261109T065544Z-ff7b81",
+          "store": "var/stores/store-v62",
+          "raw": "428 / 650（\\(p = 0.658\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
+          "score": 0.0,
+          "notes_md": "Python + SciPy 的内点法加 HiGHS（线性部分）和一个小的 C++ 辅助模块，用满 2 小时。失败 222 例中 174 例超时，主要在指数锥（16/37）和二次规划（174/253）上。比 v6.1 在同一修正版题包上的尝试（350 例）多解出 78 例，仍低于 0.9·p_B。"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.2",
+          "setting": "迭代",
+          "submission": "conic-20261109T142802Z-f6e6e3",
+          "store": "var/stores/store-v62",
+          "raw": "387 / 650（\\(p = 0.595\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
+          "score": 0.0,
+          "notes_md": "Python + C++ 辅助模块的锥求解器。5 次公开集测试（其中两次只测部分题型）的公开分数为 0、0、16.3、4.5、9.1，到 2 小时截止也没有正式提交，按规则以截止时工作区里的版本评分。SOC 只解出 26/134，比单轮尝试更差。"
+        },
+        {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.2",
+          "setting": "单轮",
+          "submission": "conic-20261109T132523Z-751260",
+          "store": "var/stores/store-v62",
+          "raw": "487 / 650（\\(p = 0.749\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
+          "score": 24.7,
+          "notes_md": "原生 C++ 内点法（自带 AMD 排序和稀疏分解，运行时不用 Python），88 分钟结束回合。比 v6 原版题包上的尝试（334 例）多解出 153 例。与 Clarabel 逐例比：只有它解出 36 例、只有 Clarabel 解出 62 例（精确 McNemar p = 0.011）。"
+        },
+        {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.2",
+          "setting": "迭代",
+          "submission": "conic-20261109T165533Z-b71add",
+          "store": "var/stores/store-v62",
+          "raw": "504 / 650（\\(p = 0.775\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
+          "score": 41.2,
+          "notes_md": "原生 C++ 齐次自对偶嵌入（HSDE）内点法，只在 PSD 锥上调用 LAPACK；README 写明避开 Python 是因为导入 NumPy 和 SciPy 就要约 0.7 秒，1 秒时限的用例会做不完。5 次全量公开集测试 55.8、57.7、61.5、61.5、62.5，80 分钟正式提交。私有集上与 Clarabel 逐例比：只有它解出 48 例、只有 Clarabel 解出 57 例（p = 0.44），与参考没有显著差异；公开集分数高于 50，私有集略低于参考。"
+        }
+      ]
+    }
+  ],
+  "notes_md": "- 650 例中 422 例的时限是 1 秒，而计时包括解释器启动和导入；Python 加 SciPy 的求解器光启动就要约 0.7 秒。opus 两种设置都写了运行时不加载 Python 的原生 C++ 内点法，这是它接近参考的主要原因；sol 两种设置都还是 Python + SciPy，超时是主要失分。\n- opus 迭代版与 Clarabel 逐例比没有显著差异（48 对 57，McNemar p = 0.44）；其余三份提交都显著落后。\n- 迭代设置的公开集反馈对 opus 有帮助（+17 例），对 sol 没有帮助（5 次测试都远低于参考，到截止也没有正式提交）；每种设置只有一次尝试，不足以区分设置效应与尝试间波动。",
+  "current_version": "solver-20261105",
+  "versions": [
+    {
+      "dir": "original",
+      "registry": "conic",
+      "note": "出题方原版题包（650 例私有集）；协议 v6 的成绩基于此版本"
+    },
+    {
+      "dir": "solver-20261105",
+      "registry": "conic",
+      "note": "出题方 2026-11-05 修正版：公开开发集给出逐例时限；私有数据和评分不变（当前版本）"
+    }
+  ],
+  "locations": {
+    "statement": "versions/solver-20261105/package/instruction.md",
+    "public": "versions/solver-20261105/package/environment/public-dev/（163 例公开开发集及逐例时限）",
+    "private": "versions/*/package/tests/private/（650 例私有集，两版相同）",
+    "grader": "versions/*/package/tests/（题包自带评测器）；本机重标定时限见 versions/original/local_recal/",
+    "references": "references/r1/clarabel/（Clarabel 0.11.1）"
+  }
+}

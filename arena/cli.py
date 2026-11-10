@@ -845,7 +845,7 @@ def host_plan_options(args) -> dict:
 
 def main() -> None:
     if len(sys.argv) > 1 and sys.argv[1] == 'prepare':
-        raise SystemExit(subprocess.call([sys.executable, str(ROOT / 'scripts/prepare.py'), *sys.argv[2:]]))
+        raise SystemExit(subprocess.call([sys.executable, str(ROOT / 'scripts/seal/prepare.py'), *sys.argv[2:]]))
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--store', default=None, help='store root (default $FRONTIERAM_STORE or ./store)')
     sub = parser.add_subparsers(dest='command', required=True)

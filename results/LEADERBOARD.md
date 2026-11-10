@@ -1,12 +1,12 @@
 # FrontierAM 排行榜（本 x86_64 服务器；协议 v6 起，2026-11-04 至 11-10）
 
-每个模型、每道题只有一次开发尝试：独占一个开发 slot（一个物理核），2 小时，工具环境断网，结束即冻结。只有冻结后的源码进入评测，并与在本机重跑的参考实现比较。证据在 `store*/`，方法细节见 `results/conic/CONIC_FULL.md` 和 `results/platform/CONCURRENCY.md`。
+每个模型、每道题只有一次开发尝试：独占一个开发 slot（一个物理核），2 小时，工具环境断网，结束即冻结。只有冻结后的源码进入评测，并与在本机重跑的参考实现比较。证据在 `store*/`，方法细节见 `tasks/conic/analysis/CONIC_FULL.md` 和 `docs/platform/CONCURRENCY.md`。
 
 ## 协议 v6
 
 - 模型流量走 agent-traffic-runtime（ATR）。每个模型使用自己的原生 harness，推理强度、输出长度和上下文都设为 ATR 目录中验证过的最高值。
 - harness 运行在断网的开发容器内，通过 Unix socket 连到宿主上的 `atr serve`。凭据只留在宿主，不进入容器。
-- 开发容器以 UID 2000 运行。原因是 RLIMIT_NPROC 按 UID 在整台主机统计，评测器的进程上限会和开发 harness 的线程互相干扰（`results/platform/CONCURRENCY.md` §5）。
+- 开发容器以 UID 2000 运行。原因是 RLIMIT_NPROC 按 UID 在整台主机统计，评测器的进程上限会和开发 harness 的线程互相干扰（`docs/platform/CONCURRENCY.md` §5）。
 - 客户端超时覆盖整个开发窗口：ATR 的非流式传输在长回答生成完之前不发送任何数据，原来的短超时会误判为失败。
 
 | 模型 | harness | 推理强度 / 最大输出 |
@@ -35,7 +35,7 @@ gemini-4-argon 和 hy4-preview 已按要求移出本轮。
 | claude-opus-5-5 | 329（0.506） | 334（0.514） | 0 | 36 / 40 |
 | step-5-preview | 0（2 小时内无有效提交） | — | 0 | — |
 
-得分按题目的映射计算：与参考持平得 50 分，解出数不超过参考的 90% 得 0 分，全部解出得 100 分。要点（详见 `results/conic/CONIC_FULL.md`）：
+得分按题目的映射计算：与参考持平得 50 分，解出数不超过参考的 90% 得 0 分，全部解出得 100 分。要点（详见 `tasks/conic/analysis/CONIC_FULL.md`）：
 
 - **整体成功率**：在重标定时限下（题目的设计口径），没有模型超过参考。gpt-6.1-sol 最接近，但显著落后（p = 0.0048）。原时限下 sol 略高于参考，差异不显著（p = 0.28）。
 - **需要实际求解的 228 个实例**：gpt-6.1-sol 在两种时限下都显著优于 Clarabel；重标定时限下为 132 对 93，p = 0.0035。优势集中在 PSD、SOC 和 LP。
@@ -50,11 +50,11 @@ gemini-4-argon 和 hy4-preview 已按要求移出本轮。
 | 参考（Clarabel 0.11.1） | 513（0.789） | — | 50 |
 | gpt-6.1-sol（新的一次 2 小时尝试，开发时看到修正版材料） | 350（0.538） | p ≤ 0.9·p_B = 0.710 记 0 | **0** |
 
-与上一次 sol 逐例配对：两次都解出的 338 例上新提交更快（耗时几何平均为旧的 0.52 倍），但旧提交解出的 467 例中丢了 129 例（QP 53、SOC 49），只多解出 12 例。原因是新提交用专用快速路径取代了通用内点法，快速路径失败后的回退要加载完整的 SciPy（约 1.2 秒），在 1 秒用例上必然超时，且回退在病态 QP 和大规模 SOC 上不收敛。分析与证据见 `results/conic/CONIC_REVISION_SOL.md`。单次尝试无法区分这是材料引导的系统性倾向还是偶然（待讨论）。
+与上一次 sol 逐例配对：两次都解出的 338 例上新提交更快（耗时几何平均为旧的 0.52 倍），但旧提交解出的 467 例中丢了 129 例（QP 53、SOC 49），只多解出 12 例。原因是新提交用专用快速路径取代了通用内点法，快速路径失败后的回退要加载完整的 SciPy（约 1.2 秒），在 1 秒用例上必然超时，且回退在病态 QP 和大规模 SOC 上不收敛。分析与证据见 `tasks/conic/analysis/CONIC_REVISION_SOL.md`。单次尝试无法区分这是材料引导的系统性倾向还是偶然（待讨论）。
 
 ### 修正版题包，协议 v6.2（2 小时，单轮 / 迭代；11-09 开发，11-10 评分）
 
-同一私有集、评分器和时限，p_B = 0.789（513/650）。映射：p ≤ 0.9·p_B = 0.710 记 0；0.710 < p ≤ p_B 为 50·(p − 0.9·p_B)/(0.1·p_B)。私有评分用跳过失败重复的评测器（失败题的第 2、3 次重复记为失败、不实际运行；等价性检查 16 例逐例一致，`results/conic/CONIC_FAST_GRADING.md`）。
+同一私有集、评分器和时限，p_B = 0.789（513/650）。映射：p ≤ 0.9·p_B = 0.710 记 0；0.710 < p ≤ p_B 为 50·(p − 0.9·p_B)/(0.1·p_B)。私有评分用跳过失败重复的评测器（失败题的第 2、3 次重复记为失败、不实际运行；等价性检查 16 例逐例一致，`tasks/conic/analysis/CONIC_FAST_GRADING.md`）。
 
 | 模型 | 设置 | 650 例通过（p） | 得分（满分 100） | 与 Clarabel 逐例比（只有模型解出 / 只有参考解出，精确 McNemar p） |
 | --- | --- | --- | --- | --- |
@@ -100,7 +100,7 @@ gemini-4-argon 和 hy4-preview 已按要求移出本轮。
 
 ## 指数传播 v2（人类 SOTA 参照组，协议 v6.1，2026-11-09）
 
-参照组为 7 个已发表方法（Expokit、KIOPS、expmv、SciPy `expm_multiply`、Chebyshev、SLEPc MFN、ExponentialUtilities.jl），只在公开数据上标定并冻结后才生成私有集；私有集为 SuiteSparse 标准矩阵 5 个加合成算子 6 族，参考解独立审计。参照取每个用例上合格成员中最快者（virtual best），在本机评测 slot 上实测。细节见 `results/exponential/EXPONENTIAL_V2.md`。
+参照组为 7 个已发表方法（Expokit、KIOPS、expmv、SciPy `expm_multiply`、Chebyshev、SLEPc MFN、ExponentialUtilities.jl），只在公开数据上标定并冻结后才生成私有集；私有集为 SuiteSparse 标准矩阵 5 个加合成算子 6 族，参考解独立审计。参照取每个用例上合格成员中最快者（virtual best），在本机评测 slot 上实测。细节见 `tasks/exponential/analysis/EXPONENTIAL_V2.md`。
 
 | 模型 | 原始指标 | 映射 | 得分（满分 100，参照组 50） | 补充：几何速度比 S（95% 区间） |
 | --- | --- | --- | --- | --- |
@@ -129,7 +129,7 @@ S 的区间下限大于 1：sol 在本私有集上显著快于参照组逐例最
 | deepseek-v4-pro | 26.96 | 1.013 |
 | step-5-preview | 0（第 1 次因 harness 超时设置作废；重跑后 2 小时内无有效提交） | — |
 
-这组分数**不能**解读为超过人类 SOTA。参考是 KIOPS 跑在 Octave 解释器里；私有用例只有 n = 1.5k–3.2k，耗时以解释器开销为主；评分公式在高分段饱和。已经接入更强的 Expokit 参考（Sidje 1998 作者原码，编译执行），在公开用例上比 KIOPS 快约 25 倍，但还未建立 baseline。完整的重做方案（SuiteSparse 加合成算子的大规模数据集、多个人类已发表实现组成参照组、基于置信区间的判据）见 `tasks/exponential/sota_v1/DESIGN.md`。
+这组分数**不能**解读为超过人类 SOTA。参考是 KIOPS 跑在 Octave 解释器里；私有用例只有 n = 1.5k–3.2k，耗时以解释器开销为主；评分公式在高分段饱和。已经接入更强的 Expokit 参考（Sidje 1998 作者原码，编译执行），在公开用例上比 KIOPS 快约 25 倍，但还未建立 baseline。完整的重做方案（SuiteSparse 加合成算子的大规模数据集、多个人类已发表实现组成参照组、基于置信区间的判据）见 `tasks/exponential/versions/v2/DESIGN.md`。
 
 ## 历史协议
 

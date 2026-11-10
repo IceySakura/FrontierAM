@@ -1,0 +1,5781 @@
+{
+  "protocol": "FAMEXP2",
+  "scope": "public trusted local development only",
+  "calibrated_reference_available": false,
+  "score": null,
+  "repeats": 1,
+  "runs": [
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 8,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 11143,
+      "nnz": 76779,
+      "t": 0.0004166666666666667,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.0627858960069716,
+      "cpu_seconds": 0.7635639999999999,
+      "memory_bytes": 65867776,
+      "child_exit_seconds": 0.0627858960069716,
+      "last_output_seconds": 0.014084794005611911,
+      "startup_seconds": 0.7069379760068841,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.7379847210149836e-13,
+          "scaled_error": 2.849045667203948e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_fe_4elt2_p4_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 13,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 11143,
+      "nnz": 76779,
+      "t": 0.0004166666666666667,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.14757521799765527,
+      "cpu_seconds": 0.408958,
+      "memory_bytes": 65101824,
+      "child_exit_seconds": 0.14757521799765527,
+      "last_output_seconds": 0.09809898599633016,
+      "startup_seconds": 0.26807281898800284,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.223555165606044e-12,
+          "scaled_error": 8.63685999580932e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.0922213911079837e-08,
+          "scaled_error": 0.00010911304547993215,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1255984477820391e-08,
+          "scaled_error": 0.00011244741736873765,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1302832114701289e-08,
+          "scaled_error": 0.0001129154452985379,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1254714715747127e-08,
+          "scaled_error": 0.00011243471302748582,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.2130985115559905e-13,
+          "scaled_error": 3.171769954657611e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.7484211290461644e-09,
+          "scaled_error": 3.753944015982163e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.755454391907165e-09,
+          "scaled_error": 3.761082303139601e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.763776623699755e-09,
+          "scaled_error": 3.769393877807228e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.0968453357260728e-09,
+          "scaled_error": 3.09885372008734e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.903998789413187e-21,
+          "scaled_error": 8.903998789413152e-14,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.139797726843142e-09,
+          "scaled_error": 5.131705273273513e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.024217125670916e-09,
+          "scaled_error": 6.165487658714527e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.971341395152649e-09,
+          "scaled_error": 5.843204972506619e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8133766155337128e-09,
+          "scaled_error": 3.547887335367697e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1510881765992853e-12,
+          "scaled_error": 8.125328584013801e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_fe_4elt2_p4_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 18,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 11143,
+      "nnz": 76779,
+      "t": 0.0004166666666666667,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.07115822599735111,
+      "cpu_seconds": 0.343532,
+      "memory_bytes": 63148032,
+      "child_exit_seconds": 0.07115822599735111,
+      "last_output_seconds": 0.013409089006017894,
+      "startup_seconds": 0.2755511289869901,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 6.391553952767026e-13,
+          "scaled_error": 6.4011323379443014e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_fe_4elt2_p7_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 23,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 11143,
+      "nnz": 76779,
+      "t": 0.0004166666666666667,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.16479282602085732,
+      "cpu_seconds": 0.443746,
+      "memory_bytes": 64962560,
+      "child_exit_seconds": 0.16479282602085732,
+      "last_output_seconds": 0.0991854090243578,
+      "startup_seconds": 0.28555396100273356,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 5.363006046199548e-16,
+          "scaled_error": 3.7856513268033513e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.582845379909941e-12,
+          "scaled_error": 6.576270253115461e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.015943381816214e-12,
+          "scaled_error": 7.008934448903476e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.3824501239651e-12,
+          "scaled_error": 6.376075155011867e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.793565709983795e-12,
+          "scaled_error": 6.786778935466768e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.3849737289249884e-16,
+          "scaled_error": 1.7591953802558618e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.02168341117629e-13,
+          "scaled_error": 9.0333716269599e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1332046412348973e-12,
+          "scaled_error": 1.1358478630745537e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2642109581406658e-12,
+          "scaled_error": 1.267332017274548e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8153256675645935e-12,
+          "scaled_error": 1.8165563407108862e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.893524299861111e-21,
+          "scaled_error": 8.893524299861074e-11,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.0998537070558996e-12,
+          "scaled_error": 3.7175048764265516e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.954192446225079e-12,
+          "scaled_error": 3.690593679281917e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.728894805097525e-12,
+          "scaled_error": 3.409346720044513e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8297585668847205e-12,
+          "scaled_error": 3.494717977272113e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.321264262558856e-16,
+          "scaled_error": 3.756186666095145e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_fe_4elt2_p7_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 28,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 11143,
+      "nnz": 76779,
+      "t": 0.0004166666666666667,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.07557461300166324,
+      "cpu_seconds": 0.38388900000000004,
+      "memory_bytes": 63524864,
+      "child_exit_seconds": 0.07557461300166324,
+      "last_output_seconds": 0.01663534899125807,
+      "startup_seconds": 0.3123431380081456,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 8.326672684688674e-16,
+          "scaled_error": 1.538033485787805e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_fe_4elt2_p10_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 33,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 11143,
+      "nnz": 76779,
+      "t": 0.0004166666666666667,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.17032262700377032,
+      "cpu_seconds": 0.46488799999999997,
+      "memory_bytes": 65265664,
+      "child_exit_seconds": 0.17032262700377032,
+      "last_output_seconds": 0.10070013499353081,
+      "startup_seconds": 0.30162395199295133,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.7947076036992655e-19,
+          "scaled_error": 2.6786171776101716e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.218847493575595e-15,
+          "scaled_error": 4.214633591183872e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.6629367034256575e-15,
+          "scaled_error": 4.658280039945304e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.773959005888173e-15,
+          "scaled_error": 4.769189817448867e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.551914400963142e-15,
+          "scaled_error": 4.547368609438949e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.6263032587282567e-19,
+          "scaled_error": 1.2369822295668738e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-15,
+          "scaled_error": 1.1125615090143155e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.992007221626409e-16,
+          "scaled_error": 1.0011146643833855e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.661338147750939e-16,
+          "scaled_error": 6.672154366774275e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.993293105381991e-16,
+          "scaled_error": 4.996395927692135e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.222410672252746e-21,
+          "scaled_error": 9.222410672252708e-08,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.5543122344752192e-15,
+          "scaled_error": 1.8412125495178305e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.6653345369377348e-15,
+          "scaled_error": 1.972056585678844e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.43689570931383e-16,
+          "scaled_error": 1.9246648050234476e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.43689570931383e-16,
+          "scaled_error": 1.969222019848137e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.2526065174565133e-19,
+          "scaled_error": 2.295957580817619e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_fe_4elt2_p10_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 38,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 10937,
+      "nnz": 161913,
+      "t": 0.017857142857142856,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.12383170399698429,
+      "cpu_seconds": 0.46545400000000003,
+      "memory_bytes": 69066752,
+      "child_exit_seconds": 0.12383170399698429,
+      "last_output_seconds": 0.03773180799908005,
+      "startup_seconds": 0.34725322300801054,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.1900882976887424e-11,
+          "scaled_error": 2.2589549435841394e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_wing_nodal_p4_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 43,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 10937,
+      "nnz": 161913,
+      "t": 0.017857142857142856,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.8714001030020881,
+      "cpu_seconds": 1.20181,
+      "memory_bytes": 73129984,
+      "child_exit_seconds": 0.8714001030020881,
+      "last_output_seconds": 0.8053150330088101,
+      "startup_seconds": 0.3433093299972825,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 8.270919019115475e-11,
+          "scaled_error": 4.40046670741759e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1619449846733687e-09,
+          "scaled_error": 1.1678972853265364e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1587447668048867e-09,
+          "scaled_error": 1.1659344216354726e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2907752644508719e-09,
+          "scaled_error": 1.2976881540401465e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1168671543160258e-09,
+          "scaled_error": 1.1228509537870327e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.0120269993438864e-11,
+          "scaled_error": 2.0494617295072294e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.705552910833914e-10,
+          "scaled_error": 1.2121679143148726e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.9786106914286847e-10,
+          "scaled_error": 3.947957955545783e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.816809538038536e-10,
+          "scaled_error": 6.510503968648802e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.567917750123885e-10,
+          "scaled_error": 6.645564877690914e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.911185715058814e-17,
+          "scaled_error": 2.9111857150583977e-10,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.180671226399312e-09,
+          "scaled_error": 4.5215981673155125e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.8263233073366756e-09,
+          "scaled_error": 3.818787565244894e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.8780534483408005e-09,
+          "scaled_error": 9.433281041596756e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.955194062208676e-10,
+          "scaled_error": 6.2419121164775926e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.78153331301812e-11,
+          "scaled_error": 4.66813425806739e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_wing_nodal_p4_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 48,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 10937,
+      "nnz": 161913,
+      "t": 0.017857142857142856,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.11606488598044962,
+      "cpu_seconds": 0.457545,
+      "memory_bytes": 68444160,
+      "child_exit_seconds": 0.11606488598044962,
+      "last_output_seconds": 0.02798931099823676,
+      "startup_seconds": 0.34717151999939233,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.5731860258938468e-13,
+          "scaled_error": 2.0851413705803176e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_wing_nodal_p7_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 53,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 10937,
+      "nnz": 161913,
+      "t": 0.017857142857142856,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.8560416940017603,
+      "cpu_seconds": 1.169429,
+      "memory_bytes": 72302592,
+      "child_exit_seconds": 0.8560416940017603,
+      "last_output_seconds": 0.7888164189935196,
+      "startup_seconds": 0.32534589600982144,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 6.15271722459454e-14,
+          "scaled_error": 3.2656256005147976e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.633094239485217e-13,
+          "scaled_error": 8.66744755661762e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.848477506262498e-13,
+          "scaled_error": 8.883496236306081e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.530154443382344e-13,
+          "scaled_error": 9.57348943946898e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.181544413650045e-13,
+          "scaled_error": 9.248226660779242e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.3425705819590803e-14,
+          "scaled_error": 1.5272778829463404e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.325405031512801e-13,
+          "scaled_error": 1.2510013995862123e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.88418203051333e-14,
+          "scaled_error": 7.396684318153475e-07,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.250913857029026e-13,
+          "scaled_error": 5.942562670721334e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.165418010515509e-13,
+          "scaled_error": 5.41617325578408e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.7092622194514215e-17,
+          "scaled_error": 2.709262219451034e-07,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.510880392492254e-12,
+          "scaled_error": 3.440291158810047e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.498307116738374e-12,
+          "scaled_error": 3.646530761229601e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.658595565918631e-12,
+          "scaled_error": 8.664127103057011e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.4085954624931674e-13,
+          "scaled_error": 5.0388143181480686e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.430378369197797e-14,
+          "scaled_error": 2.8848616268361404e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_wing_nodal_p7_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 58,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 10937,
+      "nnz": 161913,
+      "t": 0.017857142857142856,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.11129947501467541,
+      "cpu_seconds": 0.431507,
+      "memory_bytes": 69107712,
+      "child_exit_seconds": 0.11129947501467541,
+      "last_output_seconds": 0.03553242000634782,
+      "startup_seconds": 0.3259600769961253,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.497202527569243e-15,
+          "scaled_error": 0.00011087187157837115,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_wing_nodal_p10_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 63,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 10937,
+      "nnz": 161913,
+      "t": 0.017857142857142856,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.8568463700066786,
+      "cpu_seconds": 1.159889,
+      "memory_bytes": 72421376,
+      "child_exit_seconds": 0.8568463700066786,
+      "last_output_seconds": 0.7905436019937042,
+      "startup_seconds": 0.3157516079954803,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.469446951953614e-17,
+          "scaled_error": 1.8441336209316462e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.020605904817785e-14,
+          "scaled_error": 0.00020297375542756508,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.0872192862952943e-14,
+          "scaled_error": 0.00020954159572657128,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.9872992140790302e-14,
+          "scaled_error": 0.00020139149229954465,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.787459069646502e-14,
+          "scaled_error": 0.0001800931599240918,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.3877787807814457e-17,
+          "scaled_error": 9.487233207667115e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.886579864025407e-15,
+          "scaled_error": 3.4548394598657015e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.6637359812630166e-15,
+          "scaled_error": 4.856028563367312e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.1086244689504383e-15,
+          "scaled_error": 3.9832299713225904e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.6637359812630166e-15,
+          "scaled_error": 4.7817275726854414e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.1371081479358505e-18,
+          "scaled_error": 3.1371081479353173e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.105427357601002e-15,
+          "scaled_error": 9.886826348445596e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.6058269965196814e-15,
+          "scaled_error": 9.978770218055319e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.774758283725532e-15,
+          "scaled_error": 0.00012080791919752858,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.7192471324942744e-15,
+          "scaled_error": 0.00011921748683462542,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.898059818321144e-17,
+          "scaled_error": 3.133285197438815e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_DIMACS10_wing_nodal_p10_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 68,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 10974,
+      "nnz": 428650,
+      "t": 5.119247423442036e-10,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.139804553007707,
+      "cpu_seconds": 0.455217,
+      "memory_bytes": 85839872,
+      "child_exit_seconds": 0.139804553007707,
+      "last_output_seconds": 0.06463773199357092,
+      "startup_seconds": 0.321074609993957,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 7.389968985000257e-12,
+          "scaled_error": 7.389965211548435e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_HB_bcsstk17_p4_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 73,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 10974,
+      "nnz": 428650,
+      "t": 5.119247423442036e-10,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.6158841169963125,
+      "cpu_seconds": 0.928267,
+      "memory_bytes": 92598272,
+      "child_exit_seconds": 0.6158841169963125,
+      "last_output_seconds": 0.546175202995073,
+      "startup_seconds": 0.3232857000257354,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.5024442267205118e-11,
+          "scaled_error": 0.00015024432392938728,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.6927726876356815e-08,
+          "scaled_error": 0.0002477587250049886,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.724354746825753e-08,
+          "scaled_error": 0.00024744763431210016,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.9040803478940234e-08,
+          "scaled_error": 0.00023016656287109163,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.20339933832059e-08,
+          "scaled_error": 0.00028211539684005105,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.583665117590991e-12,
+          "scaled_error": 7.583661128414433e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.0149537044146228e-09,
+          "scaled_error": 1.0578687335308757e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.017906338864123e-10,
+          "scaled_error": 8.137367776308489e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.303912283174725e-09,
+          "scaled_error": 2.3056882694497103e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.508635299491857e-09,
+          "scaled_error": 2.506304329835445e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.994030638496e-24,
+          "scaled_error": 3.994030638496e-17,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.183433405773428e-09,
+          "scaled_error": 2.9211124253054384e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.53827789290051e-09,
+          "scaled_error": 3.356207455311169e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.096092645096029e-10,
+          "scaled_error": 0.00013317499009366556,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.37829264631029e-11,
+          "scaled_error": 1.4850694183554512e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.362768237246948e-11,
+          "scaled_error": 0.00013627672447772372,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_HB_bcsstk17_p4_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 78,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 10974,
+      "nnz": 428650,
+      "t": 5.119247423442036e-10,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.12739738798700273,
+      "cpu_seconds": 0.45756699999999995,
+      "memory_bytes": 85123072,
+      "child_exit_seconds": 0.12739738798700273,
+      "last_output_seconds": 0.05229742400115356,
+      "startup_seconds": 0.3363278420001734,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 6.2626570596080455e-12,
+          "scaled_error": 6.256400662187847e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_HB_bcsstk17_p7_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 83,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 10974,
+      "nnz": 428650,
+      "t": 5.119247423442036e-10,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.7133443669881672,
+      "cpu_seconds": 1.014279,
+      "memory_bytes": 91721728,
+      "child_exit_seconds": 0.7133443669881672,
+      "last_output_seconds": 0.6282619569974486,
+      "startup_seconds": 0.31427443301072344,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.1983731746144838e-14,
+          "scaled_error": 0.00011983723558738066,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.7918888595147564e-11,
+          "scaled_error": 0.00011655619370900931,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.3743228777229888e-11,
+          "scaled_error": 9.97250472036467e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.409017347242525e-11,
+          "scaled_error": 8.018995123550894e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.3006817844996021e-11,
+          "scaled_error": 9.019671837696183e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.916774891349539e-15,
+          "scaled_error": 5.916771712656403e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.788771942540854e-12,
+          "scaled_error": 6.867004865671726e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.624389842751043e-12,
+          "scaled_error": 5.626801891936479e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.614975068761851e-12,
+          "scaled_error": 4.628872527381485e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.0005491814223485e-12,
+          "scaled_error": 4.046650887383819e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.6082968058804454e-24,
+          "scaled_error": 3.6082968058804454e-14,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.5999923608234212e-11,
+          "scaled_error": 0.00015611720968064264,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.6490031562454988e-11,
+          "scaled_error": 0.00016614138990370418,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1463590493532294e-12,
+          "scaled_error": 0.00031058130075972934,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.1748011377886733e-13,
+          "scaled_error": 6.32444837461974e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.7785748605819428e-14,
+          "scaled_error": 0.0001778573610868494,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_HB_bcsstk17_p7_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 88,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 10974,
+      "nnz": 428650,
+      "t": 5.119247423442036e-10,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.1740541019826196,
+      "cpu_seconds": 0.50088,
+      "memory_bytes": 85700608,
+      "child_exit_seconds": 0.1740541019826196,
+      "last_output_seconds": 0.0831056909810286,
+      "startup_seconds": 0.33337065699743107,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.0521097881799335e-15,
+          "scaled_error": 0.00026090598608652474,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_HB_bcsstk17_p10_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 93,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 10974,
+      "nnz": 428650,
+      "t": 5.119247423442036e-10,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.7471416600164957,
+      "cpu_seconds": 1.043932,
+      "memory_bytes": 92893184,
+      "child_exit_seconds": 0.7471416600164957,
+      "last_output_seconds": 0.6567065700073726,
+      "startup_seconds": 0.31044656698941253,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.0381377663023758e-17,
+          "scaled_error": 0.00010381370307356232,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.4868995751603507e-14,
+          "scaled_error": 0.00016947285088811823,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.6978419498391304e-14,
+          "scaled_error": 0.00017283191382838056,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.2537527399890678e-14,
+          "scaled_error": 0.00013275257432785684,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.398081733190338e-14,
+          "scaled_error": 0.00016801538019777613,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.038805385368624e-18,
+          "scaled_error": 6.038802238212483e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.488348053067822e-15,
+          "scaled_error": 6.483673535845467e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.770761894538737e-15,
+          "scaled_error": 8.77064875489447e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.439293542825908e-15,
+          "scaled_error": 6.699702495124904e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.438494264988549e-15,
+          "scaled_error": 7.449173105924621e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.601571491457313e-24,
+          "scaled_error": 3.601571491457313e-11,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.9206858326015208e-14,
+          "scaled_error": 0.00018798541359791427,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8540724511240114e-14,
+          "scaled_error": 0.0001569825762381582,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.839878497975292e-16,
+          "scaled_error": 0.00017247978059404035,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.201636426617085e-16,
+          "scaled_error": 0.00017673400681139447,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.1427754358210028e-17,
+          "scaled_error": 0.00021427739318932945,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "standard_HB_bcsstk17_p10_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 98,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 67600,
+      "nnz": 605284,
+      "t": 0.0009643529024807233,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.9501718819956295,
+      "cpu_seconds": 1.287543,
+      "memory_bytes": 117256192,
+      "child_exit_seconds": 0.9501718819956295,
+      "last_output_seconds": 0.8529456900141668,
+      "startup_seconds": 0.351830269995844,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 4.33915523954595e-11,
+          "scaled_error": 0.00022120416571992183,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_p4_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 103,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 67600,
+      "nnz": 605284,
+      "t": 0.0009643529024807233,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 12.56244454800617,
+      "cpu_seconds": 12.784896,
+      "memory_bytes": 119791616,
+      "child_exit_seconds": 12.56244454800617,
+      "last_output_seconds": 12.465799122990575,
+      "startup_seconds": 0.3480305779958144,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 6.906924251287583e-11,
+          "scaled_error": 0.00035162488684484054,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.080920403854883e-08,
+          "scaled_error": 0.0005076872246828555,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.577042649917985e-08,
+          "scaled_error": 0.0005572968273724069,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.317603063437204e-08,
+          "scaled_error": 0.000531281249488114,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.423415083694039e-08,
+          "scaled_error": 0.0005418467401400891,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.976218882146068e-11,
+          "scaled_error": 0.00020284157704901073,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.0360558860150974e-08,
+          "scaled_error": 0.00031222741539721125,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.469511175197454e-09,
+          "scaled_error": 9.640073723968213e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.38937948923612e-08,
+          "scaled_error": 0.00014014801881429218,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.495705448384399e-08,
+          "scaled_error": 0.00015767367741247973,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2230188852694298e-17,
+          "scaled_error": 1.2230188852694286e-10,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.818878151015895e-08,
+          "scaled_error": 0.0006854774589411234,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.678749574912102e-08,
+          "scaled_error": 0.0006710707589043823,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.887488030796359e-10,
+          "scaled_error": 0.0004682802075209379,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.639532035124016e-11,
+          "scaled_error": 6.066669083635456e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.169833455243635e-11,
+          "scaled_error": 0.0003650010359903535,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_p4_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 108,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 67600,
+      "nnz": 605284,
+      "t": 0.0009643529024807233,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.8552315779961646,
+      "cpu_seconds": 1.1777289999999998,
+      "memory_bytes": 114397184,
+      "child_exit_seconds": 0.8552315779961646,
+      "last_output_seconds": 0.7588864960125647,
+      "startup_seconds": 0.33510518399998546,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.0238476733093194e-11,
+          "scaled_error": 0.00011204146193109032,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_p7_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 113,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 67600,
+      "nnz": 605284,
+      "t": 0.0009643529024807233,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 12.777656580001349,
+      "cpu_seconds": 13.01364,
+      "memory_bytes": 119631872,
+      "child_exit_seconds": 12.777656580001349,
+      "last_output_seconds": 12.680409429012798,
+      "startup_seconds": 0.3561458589974791,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 5.197838687243106e-14,
+          "scaled_error": 0.00026461552420442276,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.946598520736643e-11,
+          "scaled_error": 0.000294376155696745,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.1797675603684183e-11,
+          "scaled_error": 0.0003176907046024867,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.892117101360725e-11,
+          "scaled_error": 0.0002889973011250055,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.203814991081799e-11,
+          "scaled_error": 0.0003200864140480264,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.99032242652604e-14,
+          "scaled_error": 0.0001524528657127937,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.9926473015033364e-11,
+          "scaled_error": 0.0002036856185032045,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.263989327237596e-12,
+          "scaled_error": 6.357626008018824e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.912587252079106e-12,
+          "scaled_error": 8.315872750927509e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.959544052165256e-12,
+          "scaled_error": 7.121562593271495e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.0349731332810381e-17,
+          "scaled_error": 1.034973133281037e-07,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.7079561643338366e-11,
+          "scaled_error": 0.0003725705581198104,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.8386349654473406e-11,
+          "scaled_error": 0.0003857844859429446,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.472501370309743e-13,
+          "scaled_error": 0.0004005617434022047,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.719279658559449e-14,
+          "scaled_error": 6.737420705711597e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.9445365336853175e-14,
+          "scaled_error": 0.0002517232459320843,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_p7_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 118,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 67600,
+      "nnz": 605284,
+      "t": 0.0009643529024807233,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.9995966269925702,
+      "cpu_seconds": 1.344725,
+      "memory_bytes": 117387264,
+      "child_exit_seconds": 0.9995966269925702,
+      "last_output_seconds": 0.9032809079799335,
+      "startup_seconds": 0.3611178160062991,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 9.981307501436693e-15,
+          "scaled_error": 0.017818213286445353,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_p10_k1"
+    },
+    {
+      "status": "accuracy_failure",
+      "valid": false,
+      "reason": "accuracy_failure",
+      "repeat": 1,
+      "pid": 123,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 67600,
+      "nnz": 605284,
+      "t": 0.0009643529024807233,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 11.910408479016041,
+      "cpu_seconds": 12.141812,
+      "memory_bytes": 119533568,
+      "child_exit_seconds": 11.910408479016041,
+      "last_output_seconds": 11.827891120017739,
+      "startup_seconds": 0.3402834360022098,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": false,
+          "error_inf": 0.0009642875075002386,
+          "scaled_error": 9642875075.002386,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9999563781749324,
+          "scaled_error": 9999563781749.324,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9997455841745124,
+          "scaled_error": 9997455841745.123,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9998890671677299,
+          "scaled_error": 9998890671677.299,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9998968989862993,
+          "scaled_error": 9998968989862.992,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.0009623043055887281,
+          "scaled_error": 9623043055.887281,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9414678830614475,
+          "scaled_error": 9414678830614.475,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9588137751796783,
+          "scaled_error": 9588137751796.781,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.97854765563952,
+          "scaled_error": 9785476556395.2,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9896752036800237,
+          "scaled_error": 9896752036800.236,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.597049056113665e-18,
+          "scaled_error": 9.597049056113665e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.99522365709944,
+          "scaled_error": 9952236570994.4,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9957655780284216,
+          "scaled_error": 9957655780284.215,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.00538096228949525,
+          "scaled_error": 53809622894.9525,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.004434627809710268,
+          "scaled_error": 44346278097.10268,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.0009642693209937472,
+          "scaled_error": 9642693209.937471,
+          "reason": "accuracy_failure"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_p10_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 128,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 67200,
+      "nnz": 334960,
+      "t": 0.007365590080370433,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 1.7541915999900084,
+      "cpu_seconds": 2.06554,
+      "memory_bytes": 109428736,
+      "child_exit_seconds": 1.7541915999900084,
+      "last_output_seconds": 1.671645616996102,
+      "startup_seconds": 0.3296328599972185,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 5.853606514436005e-10,
+          "scaled_error": 0.0007135769024763032,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_b_p4_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 133,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 67200,
+      "nnz": 334960,
+      "t": 0.007365590080370433,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 22.145304611010943,
+      "cpu_seconds": 22.312677,
+      "memory_bytes": 109428736,
+      "child_exit_seconds": 22.145304611010943,
+      "last_output_seconds": 22.07152234201203,
+      "startup_seconds": 0.32875873398734257,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.0373257548074166e-09,
+          "scaled_error": 0.001240162061208096,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.5720699486632128e-07,
+          "scaled_error": 0.0015712216872834884,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1614385961658535e-07,
+          "scaled_error": 0.0011617217924346653,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2367662780010669e-07,
+          "scaled_error": 0.0012362418256571918,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2270747840048557e-07,
+          "scaled_error": 0.0012265982525403675,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.136369364029282e-10,
+          "scaled_error": 0.0007438878069659338,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.7363253050883986e-08,
+          "scaled_error": 0.0008894757348884524,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.982927753940711e-08,
+          "scaled_error": 0.00020795903176969272,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.4023650957438747e-08,
+          "scaled_error": 0.0002569046833606536,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.065856335471295e-08,
+          "scaled_error": 0.00033306091651054556,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.01675385746267e-17,
+          "scaled_error": 7.016753857462651e-10,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.6323124601980155e-07,
+          "scaled_error": 0.0016531935615741206,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.5460690172552916e-07,
+          "scaled_error": 0.0015728355798572096,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.738074730272772e-10,
+          "scaled_error": 0.0011313803121955218,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.3797730302457468e-11,
+          "scaled_error": 9.6673771049632e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.747892749066567e-10,
+          "scaled_error": 0.001165841176516122,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_b_p4_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 138,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 67200,
+      "nnz": 334960,
+      "t": 0.007365590080370433,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 1.0566727140103467,
+      "cpu_seconds": 1.3561729999999999,
+      "memory_bytes": 109428736,
+      "child_exit_seconds": 1.0566727140103467,
+      "last_output_seconds": 0.9869142879906576,
+      "startup_seconds": 0.31255105600575916,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.2810087979839864e-11,
+          "scaled_error": 0.0003719317794326169,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_b_p7_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 143,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 67200,
+      "nnz": 334960,
+      "t": 0.007365590080370433,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 21.151101302995812,
+      "cpu_seconds": 21.308606,
+      "memory_bytes": 109428736,
+      "child_exit_seconds": 21.151101302995812,
+      "last_output_seconds": 21.08081024000421,
+      "startup_seconds": 0.3100923940073699,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.189391900940917e-12,
+          "scaled_error": 0.001422298692333219,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.058853667198719e-11,
+          "scaled_error": 0.0009064118269467589,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.88582957214723e-11,
+          "scaled_error": 0.0008888857426089665,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.985692828173853e-11,
+          "scaled_error": 0.0009993538256963897,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.595635397374735e-11,
+          "scaled_error": 0.0009598755363527692,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.736190160700929e-13,
+          "scaled_error": 0.0009397358702515914,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.601185956704337e-11,
+          "scaled_error": 0.0008070885486164754,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.150668614892993e-11,
+          "scaled_error": 0.0003559804440133564,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.602561833236038e-11,
+          "scaled_error": 0.00022572411773962427,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.059397180038559e-11,
+          "scaled_error": 0.00033708962456042844,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.974300657766193e-17,
+          "scaled_error": 6.974300657766175e-07,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.3196611164945082e-10,
+          "scaled_error": 0.0013372567257638665,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2842502061793937e-10,
+          "scaled_error": 0.0013151632574415855,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2126870688189406e-12,
+          "scaled_error": 0.0014020239358732874,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.358098746309655e-14,
+          "scaled_error": 9.4379155154208e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1505644527398662e-12,
+          "scaled_error": 0.0013758031900118826,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_b_p7_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 148,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 67200,
+      "nnz": 334960,
+      "t": 0.007365590080370433,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 1.5149417920038104,
+      "cpu_seconds": 1.811727,
+      "memory_bytes": 109428736,
+      "child_exit_seconds": 1.5149417920038104,
+      "last_output_seconds": 1.4531640030036215,
+      "startup_seconds": 0.31287896999856457,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 2.36128391145618e-15,
+          "scaled_error": 0.002848823537466884,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_b_p10_k1"
+    },
+    {
+      "status": "accuracy_failure",
+      "valid": false,
+      "reason": "accuracy_failure",
+      "repeat": 1,
+      "pid": 153,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 67200,
+      "nnz": 334960,
+      "t": 0.007365590080370433,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 20.749221800011583,
+      "cpu_seconds": 20.905393,
+      "memory_bytes": 109428736,
+      "child_exit_seconds": 20.749221800011583,
+      "last_output_seconds": 20.68173119801213,
+      "startup_seconds": 0.3041515729855746,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": false,
+          "error_inf": 0.0073637284216063695,
+          "scaled_error": 73637284216.06369,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9986098466386183,
+          "scaled_error": 9986098466386.184,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9988630132733607,
+          "scaled_error": 9988630132733.607,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.998761301893526,
+          "scaled_error": 9987613018935.26,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9996966734859051,
+          "scaled_error": 9996966734859.05,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.007232579318400257,
+          "scaled_error": 72325793184.00256,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.8444340737403467,
+          "scaled_error": 8444340737403.467,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9221365720298452,
+          "scaled_error": 9221365720298.451,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.543600569501461,
+          "scaled_error": 5436005695014.609,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.8955996178952889,
+          "scaled_error": 8955996178952.889,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.269137792280799e-17,
+          "scaled_error": 0.0007269137792280799,
+          "reason": "passed"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9863774455843358,
+          "scaled_error": 9863774455843.357,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.9795726262093541,
+          "scaled_error": 9795726262093.541,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.007631512234443592,
+          "scaled_error": 76315122344.43591,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.00046913023574375406,
+          "scaled_error": 4691302357.43754,
+          "reason": "accuracy_failure"
+        },
+        {
+          "passed": false,
+          "error_inf": 0.007364355390658315,
+          "scaled_error": 73643553906.58315,
+          "reason": "accuracy_failure"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion2d_b_p10_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 158,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 74088,
+      "nnz": 508032,
+      "t": 5.959736676896244,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 15.514056732994504,
+      "cpu_seconds": 15.716457,
+      "memory_bytes": 111800320,
+      "child_exit_seconds": 15.514056732994504,
+      "last_output_seconds": 15.439833896001801,
+      "startup_seconds": 0.31095350699615665,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 4.1184447796549506e-08,
+          "scaled_error": 0.0013444151486493292,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion3d_p4_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 163,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 74088,
+      "nnz": 508032,
+      "t": 5.959736676896244,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 236.30870344099822,
+      "cpu_seconds": 235.092768,
+      "memory_bytes": 119111680,
+      "child_exit_seconds": 236.30870344099822,
+      "last_output_seconds": 236.23537447702256,
+      "startup_seconds": 0.3123914999887347,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 2.177939280312291e-07,
+          "scaled_error": 0.0019632752425933304,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.0046888063625368e-08,
+          "scaled_error": 0.001994022743024636,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.5269511234212697e-08,
+          "scaled_error": 0.0020471513813181846,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.911549583181852e-09,
+          "scaled_error": 0.001978464750240421,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.4033571164455703e-08,
+          "scaled_error": 0.0021179922117491854,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.827071871909116e-08,
+          "scaled_error": 0.0012451329256271727,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.747384724056557e-08,
+          "scaled_error": 0.0012002405971367474,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.986608428567135e-11,
+          "scaled_error": 0.0005576118154899976,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.83448476848994e-11,
+          "scaled_error": 0.0003923434911612074,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.4294855837232445e-10,
+          "scaled_error": 0.0005532315263791158,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.6942258244988804e-15,
+          "scaled_error": 2.6942258244970687e-08,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.6633326527237813e-07,
+          "scaled_error": 0.0024799470402258232,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1053513918057867e-07,
+          "scaled_error": 0.002287648954644826,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2310425007155956e-07,
+          "scaled_error": 0.0023313767062477808,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.186407979847906e-12,
+          "scaled_error": 9.16269016616725e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.106242872028762e-07,
+          "scaled_error": 0.0020288922425989297,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion3d_p4_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 168,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 74088,
+      "nnz": 508032,
+      "t": 5.959736676896244,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 13.713970609998796,
+      "cpu_seconds": 13.931681000000001,
+      "memory_bytes": 119111680,
+      "child_exit_seconds": 13.713970609998796,
+      "last_output_seconds": 13.645883535995381,
+      "startup_seconds": 0.31167268598801456,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 5.17119577410699e-14,
+          "scaled_error": 0.00042107842076597916,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion3d_p7_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 289,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 74088,
+      "nnz": 508032,
+      "t": 5.959736676896244,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 238.2648302440066,
+      "cpu_seconds": 237.076694,
+      "memory_bytes": 119111680,
+      "child_exit_seconds": 238.2648302440066,
+      "last_output_seconds": 238.193854593992,
+      "startup_seconds": 0.31097822601441294,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.340339506050725e-10,
+          "scaled_error": 0.0020517770610456515,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.2467643197299214e-11,
+          "scaled_error": 0.0018515233577291279,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.483070997080783e-11,
+          "scaled_error": 0.002014759007047578,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.8302152288439686e-12,
+          "scaled_error": 0.001921501678868353,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.5108587084488043e-11,
+          "scaled_error": 0.0018231382899812833,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.7174071033117e-11,
+          "scaled_error": 0.001456364808689977,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.034446470819631e-11,
+          "scaled_error": 0.0012172969063196783,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.33804803345378e-14,
+          "scaled_error": 0.000470837974171607,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.382195782122843e-14,
+          "scaled_error": 0.00019625008416518215,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.604560226688758e-14,
+          "scaled_error": 0.0001736589864521929,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.112911484676904e-15,
+          "scaled_error": 3.1129114846748105e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2402229243591023e-10,
+          "scaled_error": 0.0023687041040779287,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.21950304021734e-10,
+          "scaled_error": 0.002272897715399493,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.0159859065161925e-10,
+          "scaled_error": 0.0020359256210747503,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.269223919120792e-15,
+          "scaled_error": 8.261567062693646e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.0465230338450056e-10,
+          "scaled_error": 0.0019749301218950663,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion3d_p7_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 294,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 74088,
+      "nnz": 508032,
+      "t": 5.959736676896244,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 15.333527857001172,
+      "cpu_seconds": 15.541943999999999,
+      "memory_bytes": 119111680,
+      "child_exit_seconds": 15.333527857001172,
+      "last_output_seconds": 15.264844037010334,
+      "startup_seconds": 0.3090546839812305,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.930189507173054e-14,
+          "scaled_error": 0.0011742658300987268,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion3d_p10_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 299,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 74088,
+      "nnz": 508032,
+      "t": 5.959736676896244,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 198.33628733700607,
+      "cpu_seconds": 197.556542,
+      "memory_bytes": 119111680,
+      "child_exit_seconds": 198.33628733700607,
+      "last_output_seconds": 198.27396059199236,
+      "startup_seconds": 0.3083497569896281,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.1822487433477136e-13,
+          "scaled_error": 0.0024013510300281054,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.1497560676042582e-14,
+          "scaled_error": 0.001816557840438116,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.1274648709379562e-14,
+          "scaled_error": 0.001994765855666967,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.946700159549124e-15,
+          "scaled_error": 0.0021314452269453397,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.234518993449175e-14,
+          "scaled_error": 0.001714905490926745,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.1958437552457326e-14,
+          "scaled_error": 0.0011345512298401854,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.91631171936524e-14,
+          "scaled_error": 0.0012290246556971494,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.4814677222761983e-17,
+          "scaled_error": 0.0001679118676949521,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.64327230778705e-17,
+          "scaled_error": 0.0003271274475780155,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.932048271369169e-16,
+          "scaled_error": 0.0006427891983039024,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.427281776548102e-16,
+          "scaled_error": 0.0014272817765433295,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.3412881916252672e-13,
+          "scaled_error": 0.0021853344135355085,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.4852008511923032e-13,
+          "scaled_error": 0.002043874244599769,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.953948693601887e-14,
+          "scaled_error": 0.0017480441182786102,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2303153558868712e-17,
+          "scaled_error": 0.0001226831954871072,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2451498165866326e-13,
+          "scaled_error": 0.002061414881009037,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_diffusion3d_p10_k16"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 304,
+      "returncode": -9,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 80000,
+      "nnz": 718296,
+      "t": 25.25946038499357,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 60.016339111025445,
+      "cpu_seconds": 59.988628000000006,
+      "memory_bytes": 128462848,
+      "child_exit_seconds": 60.016339111025445,
+      "last_output_seconds": null,
+      "startup_seconds": 0.2866345189977437,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_p4_k1"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 309,
+      "returncode": -9,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 80000,
+      "nnz": 718296,
+      "t": 25.25946038499357,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 240.01420422899537,
+      "cpu_seconds": 239.118486,
+      "memory_bytes": 128569344,
+      "child_exit_seconds": 240.01420422899537,
+      "last_output_seconds": 184.74410802000784,
+      "startup_seconds": 0.28781238399096765,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.7075106513608773e-05,
+          "scaled_error": 0.0067596201274088,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.659241470434533e-07,
+          "scaled_error": 0.00465458822111444,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.9438587176095166e-06,
+          "scaled_error": 0.005223944467002745,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_p4_k16"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 314,
+      "returncode": -9,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 80000,
+      "nnz": 718296,
+      "t": 25.25946038499357,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 60.01591045598616,
+      "cpu_seconds": 59.997415,
+      "memory_bytes": 124870656,
+      "child_exit_seconds": 60.01591045598616,
+      "last_output_seconds": null,
+      "startup_seconds": 0.283285211015027,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_p7_k1"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 319,
+      "returncode": -9,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 80000,
+      "nnz": 718296,
+      "t": 25.25946038499357,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 240.0205388859904,
+      "cpu_seconds": 239.12575299999997,
+      "memory_bytes": 128032768,
+      "child_exit_seconds": 240.0205388859904,
+      "last_output_seconds": 184.42453929697513,
+      "startup_seconds": 0.2826605710142758,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.1884390804794975e-08,
+          "scaled_error": 0.004704740383398132,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.2605407743478985e-10,
+          "scaled_error": 0.004256284490838432,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.003523520328735e-10,
+          "scaled_error": 0.005997525995715799,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_p7_k16"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 324,
+      "returncode": -9,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 80000,
+      "nnz": 718296,
+      "t": 25.25946038499357,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 60.019466405996354,
+      "cpu_seconds": 60.010601,
+      "memory_bytes": 128282624,
+      "child_exit_seconds": 60.019466405996354,
+      "last_output_seconds": null,
+      "startup_seconds": 0.2835711860097945,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_p10_k1"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 329,
+      "returncode": -9,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 80000,
+      "nnz": 718296,
+      "t": 25.25946038499357,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 240.01501497699064,
+      "cpu_seconds": 239.108938,
+      "memory_bytes": 128655360,
+      "child_exit_seconds": 240.01501497699064,
+      "last_output_seconds": 184.4849208329979,
+      "startup_seconds": 0.2837991010164842,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 9.316991622654314e-12,
+          "scaled_error": 0.0036883696815720544,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.7916544903815463e-13,
+          "scaled_error": 0.0037878666237585812,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.0967229608668276e-13,
+          "scaled_error": 0.004092630330537148,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_p10_k16"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 334,
+      "returncode": -9,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 75000,
+      "nnz": 820898,
+      "t": 76.44136773013585,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 60.01694599000621,
+      "cpu_seconds": 60.016336,
+      "memory_bytes": 134881280,
+      "child_exit_seconds": 60.01694599000621,
+      "last_output_seconds": null,
+      "startup_seconds": 0.290238468995085,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_b_p4_k1"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 339,
+      "returncode": -9,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 75000,
+      "nnz": 820898,
+      "t": 76.44136773013585,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 240.01965861400822,
+      "cpu_seconds": 239.12808,
+      "memory_bytes": 134782976,
+      "child_exit_seconds": 240.01965861400822,
+      "last_output_seconds": 219.28635530199972,
+      "startup_seconds": 0.28172932800953276,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 4.694113485648188e-05,
+          "scaled_error": 0.006140725671701826,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_b_p4_k16"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 344,
+      "returncode": -9,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 75000,
+      "nnz": 820898,
+      "t": 76.44136773013585,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 60.01591669098707,
+      "cpu_seconds": 60.000429,
+      "memory_bytes": 131055616,
+      "child_exit_seconds": 60.01591669098707,
+      "last_output_seconds": null,
+      "startup_seconds": 0.28047303401399404,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_b_p7_k1"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 349,
+      "returncode": -9,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 75000,
+      "nnz": 820898,
+      "t": 76.44136773013585,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 240.02008176399977,
+      "cpu_seconds": 239.145556,
+      "memory_bytes": 134627328,
+      "child_exit_seconds": 240.02008176399977,
+      "last_output_seconds": 217.4450366619858,
+      "startup_seconds": 0.2810611620079726,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 4.5381431945656914e-08,
+          "scaled_error": 0.0059366858083602075,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_b_p7_k16"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 354,
+      "returncode": -9,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 75000,
+      "nnz": 820898,
+      "t": 76.44136773013585,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 60.018275088019436,
+      "cpu_seconds": 60.018387,
+      "memory_bytes": 134352896,
+      "child_exit_seconds": 60.018275088019436,
+      "last_output_seconds": null,
+      "startup_seconds": 0.278985090990318,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_b_p10_k1"
+    },
+    {
+      "status": "wall_timeout",
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat": 1,
+      "pid": 359,
+      "returncode": -9,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 75000,
+      "nnz": 820898,
+      "t": 76.44136773013585,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 240.02123556402512,
+      "cpu_seconds": 239.148097,
+      "memory_bytes": 134537216,
+      "child_exit_seconds": 240.02123556402512,
+      "last_output_seconds": 217.54516095900908,
+      "startup_seconds": 0.2799771789868828,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 5.4711790653527714e-11,
+          "scaled_error": 0.007157260074242819,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_geometric_b_p10_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 485,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 80000,
+      "nnz": 719980,
+      "t": 2.9866760075766207e-06,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.1372935410181526,
+      "cpu_seconds": 0.410576,
+      "memory_bytes": 121311232,
+      "child_exit_seconds": 0.1372935410181526,
+      "last_output_seconds": 0.08533052299753763,
+      "startup_seconds": 0.2796480349788908,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 6.182601746795841e-12,
+          "scaled_error": 6.164210598420735e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_heavytail_p4_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 490,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 80000,
+      "nnz": 719980,
+      "t": 2.9866760075766207e-06,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.7351374210265931,
+      "cpu_seconds": 0.992912,
+      "memory_bytes": 124502016,
+      "child_exit_seconds": 0.7351374210265931,
+      "last_output_seconds": 0.6871823340188712,
+      "startup_seconds": 0.27977477098465897,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 6.881252641843512e-12,
+          "scaled_error": 6.860761811702995e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2512457736590932e-08,
+          "scaled_error": 0.00012499957843955346,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2559205453399613e-08,
+          "scaled_error": 0.00012546658859972738,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.12297113011806e-09,
+          "scaled_error": 6.116854307673936e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2486227829455743e-08,
+          "scaled_error": 0.00012473754140107177,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.190446167201241e-12,
+          "scaled_error": 6.172022841671938e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2195200627118652e-08,
+          "scaled_error": 0.00012183063153295456,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.961114963286661e-09,
+          "scaled_error": 4.95627896287518e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.049503259968446e-09,
+          "scaled_error": 5.044529511833814e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.117629986450822e-09,
+          "scaled_error": 5.112552609231604e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.439110715931712e-23,
+          "scaled_error": 7.439110715931713e-16,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2590141706958491e-08,
+          "scaled_error": 0.00012597550872773595,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2598456389234514e-08,
+          "scaled_error": 0.00012604076234578346,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2621459710704386e-09,
+          "scaled_error": 3.394159857772098e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.4069131415439529e-09,
+          "scaled_error": 4.341912505138898e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.619345535208192e-12,
+          "scaled_error": 6.599634605743286e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_heavytail_p4_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 495,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 80000,
+      "nnz": 719980,
+      "t": 2.9866760075766207e-06,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.13219647100777365,
+      "cpu_seconds": 0.40635,
+      "memory_bytes": 121311232,
+      "child_exit_seconds": 0.13219647100777365,
+      "last_output_seconds": 0.07964266699855216,
+      "startup_seconds": 0.2806959959852975,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.025024675196164e-12,
+          "scaled_error": 3.0220664362551323e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_heavytail_p7_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 500,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 80000,
+      "nnz": 719980,
+      "t": 2.9866760075766207e-06,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.7404234840068966,
+      "cpu_seconds": 1.000507,
+      "memory_bytes": 122486784,
+      "child_exit_seconds": 0.7404234840068966,
+      "last_output_seconds": 0.6922694449895062,
+      "startup_seconds": 0.2819657929940149,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 4.558394203009637e-15,
+          "scaled_error": 4.5448202972866314e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.176104320829381e-12,
+          "scaled_error": 9.166937383705552e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.298117831235686e-12,
+          "scaled_error": 9.288808363237373e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.4344528049578e-12,
+          "scaled_error": 4.430022782285376e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.346079465899493e-12,
+          "scaled_error": 9.336714877552412e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.85741684091629e-15,
+          "scaled_error": 3.8459431532801164e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.09432512735475e-12,
+          "scaled_error": 7.087382001838315e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.1293856395109287e-12,
+          "scaled_error": 3.126293123384082e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.089639655229348e-12,
+          "scaled_error": 3.086600250822583e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.9485303087994907e-12,
+          "scaled_error": 2.945671912271555e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.434426895335288e-23,
+          "scaled_error": 7.434426895335288e-13,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.404810263902164e-12,
+          "scaled_error": 9.408879784216829e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.397038702729787e-12,
+          "scaled_error": 9.40810236513042e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.93500812332104e-13,
+          "scaled_error": 2.323878635028765e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.5257239915911214e-12,
+          "scaled_error": 3.2483373836890366e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.692102588898465e-15,
+          "scaled_error": 4.678130528660906e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_heavytail_p7_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 505,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 80000,
+      "nnz": 719980,
+      "t": 2.9866760075766207e-06,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.13769061499624513,
+      "cpu_seconds": 0.41224299999999997,
+      "memory_bytes": 121311232,
+      "child_exit_seconds": 0.13769061499624513,
+      "last_output_seconds": 0.08631632800097577,
+      "startup_seconds": 0.2811334049911238,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.8630394456201644e-15,
+          "scaled_error": 7.78358864309803e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_heavytail_p10_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 510,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 80000,
+      "nnz": 719980,
+      "t": 2.9866760075766207e-06,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.7375278240069747,
+      "cpu_seconds": 0.994868,
+      "memory_bytes": 121647104,
+      "child_exit_seconds": 0.7375278240069747,
+      "last_output_seconds": 0.6870581100229174,
+      "startup_seconds": 0.2792447099927813,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 2.6694243332719275e-18,
+          "scaled_error": 2.66147536864369e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.329070518200751e-15,
+          "scaled_error": 5.323746771650494e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.218048215738236e-15,
+          "scaled_error": 5.212835380446324e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.55351295663786e-15,
+          "scaled_error": 2.550961994715839e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.329070518200751e-15,
+          "scaled_error": 5.323746771498906e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.917259076110109e-18,
+          "scaled_error": 1.911559455228688e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.773959005888173e-15,
+          "scaled_error": 4.7692609289765807e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.6653345369377348e-15,
+          "scaled_error": 1.6636831483392705e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.5543122344752192e-15,
+          "scaled_error": 1.552773565013097e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.4432899320127035e-15,
+          "scaled_error": 1.4418585425285107e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.441299889378876e-23,
+          "scaled_error": 7.441299889378876e-10,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.662137425588298e-15,
+          "scaled_error": 5.6635483365578265e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.662137425588298e-15,
+          "scaled_error": 5.6636851047732176e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.2735593669694936e-15,
+          "scaled_error": 0.00013407729132342998,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.440892098500626e-16,
+          "scaled_error": 1.3179147212957003e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.8434896039326862e-18,
+          "scaled_error": 2.8350223107884653e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_heavytail_p10_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 515,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 100000,
+      "nnz": 200000,
+      "t": 0.8311459187972725,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.5115203679888509,
+      "cpu_seconds": 0.784086,
+      "memory_bytes": 122372096,
+      "child_exit_seconds": 0.5115203679888509,
+      "last_output_seconds": 0.4611181310028769,
+      "startup_seconds": 0.27895168200484477,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.9468301415415112e-09,
+          "scaled_error": 2.3369811496531277e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_logspectrum_p4_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 520,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 100000,
+      "nnz": 200000,
+      "t": 0.8311459187972725,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 4.17082238200237,
+      "cpu_seconds": 4.410959,
+      "memory_bytes": 131112960,
+      "child_exit_seconds": 4.17082238200237,
+      "last_output_seconds": 4.123194006999256,
+      "startup_seconds": 0.2799160159775056,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 2.3625599254728513e-09,
+          "scaled_error": 2.665254990431687e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.160025402986321e-08,
+          "scaled_error": 0.00011789600831768759,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.1595022214881965e-08,
+          "scaled_error": 0.00011786737181433604,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.721061485137625e-10,
+          "scaled_error": 6.023371486293111e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.160025402986321e-08,
+          "scaled_error": 0.00011908406279673213,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.977945474074261e-09,
+          "scaled_error": 2.3740808554238353e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.590793452521666e-08,
+          "scaled_error": 0.00012117831185245145,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.754313609467431e-10,
+          "scaled_error": 4.749564055844967e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.4489359712044347e-09,
+          "scaled_error": 1.4474890907763279e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.376272762421138e-09,
+          "scaled_error": 1.3729063427935411e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.0403671838481102e-15,
+          "scaled_error": 2.040367183834519e-08,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.9866771339138722e-08,
+          "scaled_error": 0.00010583797980751316,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.969638185883582e-08,
+          "scaled_error": 0.00010535580706571127,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.517540348938695e-08,
+          "scaled_error": 0.00013409075154865942,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.4404934456944147e-10,
+          "scaled_error": 8.288116394925911e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.3625578160491045e-09,
+          "scaled_error": 2.6652526107450934e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_logspectrum_p4_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 525,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 100000,
+      "nnz": 200000,
+      "t": 0.8311459187972725,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.0955051250057295,
+      "cpu_seconds": 0.369619,
+      "memory_bytes": 131112960,
+      "child_exit_seconds": 0.0955051250057295,
+      "last_output_seconds": 0.045967586018377915,
+      "startup_seconds": 0.2788681960082613,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.2807090377673376e-13,
+          "scaled_error": 3.2774354589944144e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_logspectrum_p7_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 530,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 100000,
+      "nnz": 200000,
+      "t": 0.8311459187972725,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 4.149268640001537,
+      "cpu_seconds": 4.388438,
+      "memory_bytes": 131112960,
+      "child_exit_seconds": 4.149268640001537,
+      "last_output_seconds": 4.098575358017115,
+      "startup_seconds": 0.2797787099843845,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.6142642778049776e-12,
+          "scaled_error": 1.8210864683477296e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8605561535878223e-11,
+          "scaled_error": 0.00010155065614403952,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8605561535878223e-11,
+          "scaled_error": 0.00010154966964762334,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8604007223643748e-11,
+          "scaled_error": 0.00016654420911590864,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8604007223643748e-11,
+          "scaled_error": 0.00010151838234626436,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2940759575030825e-12,
+          "scaled_error": 1.5539741466864017e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.3756773498130315e-11,
+          "scaled_error": 8.252562185602617e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.2795988147427124e-13,
+          "scaled_error": 3.2763245160037603e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.545697565727096e-13,
+          "scaled_error": 9.497457573551774e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.892886427247504e-13,
+          "scaled_error": 8.884002443448706e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.0381496398971115e-15,
+          "scaled_error": 2.0381496398835347e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.618039036088703e-11,
+          "scaled_error": 8.768052531157534e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.7041257294181378e-11,
+          "scaled_error": 9.065676396407075e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1177281322716226e-11,
+          "scaled_error": 9.907091049478555e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.5973667661105537e-13,
+          "scaled_error": 6.417601227828977e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.6168177907616155e-12,
+          "scaled_error": 1.8229429708174802e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_logspectrum_p7_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 535,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 100000,
+      "nnz": 200000,
+      "t": 0.8311459187972725,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.5045681770134252,
+      "cpu_seconds": 0.776793,
+      "memory_bytes": 131112960,
+      "child_exit_seconds": 0.5045681770134252,
+      "last_output_seconds": 0.4553031779942103,
+      "startup_seconds": 0.2786187779856846,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 6.328271240363392e-15,
+          "scaled_error": 6.397702691836642e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_logspectrum_p10_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 540,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 100000,
+      "nnz": 200000,
+      "t": 0.8311459187972725,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 4.123316128010629,
+      "cpu_seconds": 4.36193,
+      "memory_bytes": 131112960,
+      "child_exit_seconds": 4.123316128010629,
+      "last_output_seconds": 4.072785630996805,
+      "startup_seconds": 0.27885421999963,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-15,
+          "scaled_error": 1.2517014470293035e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-14,
+          "scaled_error": 6.0584358397372606e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-14,
+          "scaled_error": 6.007282637791037e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.0880185641326534e-14,
+          "scaled_error": 9.739961709008245e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-14,
+          "scaled_error": 6.059241952643446e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.881784197001252e-16,
+          "scaled_error": 1.0629810963124512e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.549516567451064e-15,
+          "scaled_error": 4.9477687890703764e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.549516567451064e-15,
+          "scaled_error": 7.541975186391691e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.66053886991358e-15,
+          "scaled_error": 7.468100847989091e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.771561172376096e-15,
+          "scaled_error": 7.40640056500923e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.062749506929472e-17,
+          "scaled_error": 0.00010627495069203869,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.103828801926284e-15,
+          "scaled_error": 4.862173385261111e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 9.547918011776346e-15,
+          "scaled_error": 5.2248620930185475e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.439293542825908e-15,
+          "scaled_error": 5.556598340798578e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.3306690738754696e-16,
+          "scaled_error": 8.236489184438004e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.773959005888173e-15,
+          "scaled_error": 5.385606474472603e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_logspectrum_p10_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 545,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 60000,
+      "nnz": 659930,
+      "t": 0.009146835422581724,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 0.7699896159756463,
+      "cpu_seconds": 1.04091,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.7699896159756463,
+      "last_output_seconds": 0.7185323549783789,
+      "startup_seconds": 0.2802072550111916,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.1564526246343743e-10,
+          "scaled_error": 0.00011432158933132443,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_signed_p4_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 550,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 60000,
+      "nnz": 659930,
+      "t": 0.009146835422581724,
+      "rtol": 0.0001,
+      "atol": 1e-07,
+      "time_seconds": 5.359410345990909,
+      "cpu_seconds": 5.597168,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 5.359410345990909,
+      "last_output_seconds": 5.308035340014612,
+      "startup_seconds": 0.27888498999527656,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 2.1270278507262708e-10,
+          "scaled_error": 0.0002096258826819627,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.635162475010503e-09,
+          "scaled_error": 6.628613138677523e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.575719357915233e-09,
+          "scaled_error": 6.569228695799803e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.307773663978168e-09,
+          "scaled_error": 7.300560416713925e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.078600927634682e-09,
+          "scaled_error": 7.071613888746543e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1343423249321472e-10,
+          "scaled_error": 0.00011281376558129804,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 4.195782963255235e-09,
+          "scaled_error": 4.4107478961598596e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.3893012013331827e-09,
+          "scaled_error": 2.592563430753474e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 7.1831620777375316e-09,
+          "scaled_error": 7.64583360392525e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.7553931641600684e-09,
+          "scaled_error": 3.1803594089478967e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.937193880533657e-17,
+          "scaled_error": 5.937193880533469e-10,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.847573312875667e-09,
+          "scaled_error": 8.896927699342041e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.0031952685229939e-08,
+          "scaled_error": 9.997574125968759e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.394005161303724e-09,
+          "scaled_error": 0.0002851156526128444,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.4984851076996208e-10,
+          "scaled_error": 3.176102207671349e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.1558041463087818e-10,
+          "scaled_error": 0.00021246188520997587,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_signed_p4_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 555,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 60000,
+      "nnz": 659930,
+      "t": 0.009146835422581724,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 0.15298469600384124,
+      "cpu_seconds": 0.4272119999999999,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.15298469600384124,
+      "last_output_seconds": 0.10155307399691083,
+      "startup_seconds": 0.2799889970046934,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 4.692579658183149e-12,
+          "scaled_error": 6.161949087783489e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_signed_p7_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 560,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 60000,
+      "nnz": 659930,
+      "t": 0.009146835422581724,
+      "rtol": 1e-07,
+      "atol": 1e-10,
+      "time_seconds": 5.307089438021649,
+      "cpu_seconds": 5.543137,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 5.307089438021649,
+      "last_output_seconds": 5.255157449020771,
+      "startup_seconds": 0.2783340390014928,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 9.975527348604629e-14,
+          "scaled_error": 9.831219685977158e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.9020895969390494e-11,
+          "scaled_error": 0.00019002121061966224,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.843407371193706e-11,
+          "scaled_error": 0.00018415873664394085,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8894330544583227e-11,
+          "scaled_error": 0.00018875680565771032,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.8237633625517446e-11,
+          "scaled_error": 0.00018219631850863516,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.911281021284907e-14,
+          "scaled_error": 3.874569294760605e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.447325758187958e-12,
+          "scaled_error": 5.4300214242103406e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.4439894552585884e-12,
+          "scaled_error": 3.860303007355295e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.170602440472295e-12,
+          "scaled_error": 0.00010296117151968216,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.0244762737499125e-12,
+          "scaled_error": 0.00010643756629809887,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.941285772505474e-17,
+          "scaled_error": 5.941285772505285e-07,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.7963659993422993e-11,
+          "scaled_error": 0.0003800462456429213,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.434713624628216e-11,
+          "scaled_error": 0.00034629099637837983,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.647729242081901e-13,
+          "scaled_error": 0.00013196763049076927,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.6785678669826183e-13,
+          "scaled_error": 8.688384523914198e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.796956219025986e-14,
+          "scaled_error": 8.669701698668738e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_signed_p7_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 565,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 60000,
+      "nnz": 659930,
+      "t": 0.009146835422581724,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.7924614159855992,
+      "cpu_seconds": 1.06443,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.7924614159855992,
+      "last_output_seconds": 0.7398975929827429,
+      "startup_seconds": 0.2808936510118656,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 8.951173136040325e-16,
+          "scaled_error": 0.00017886611582752386,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_signed_p10_k1"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 570,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 60000,
+      "nnz": 659930,
+      "t": 0.009146835422581724,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 5.397161642991705,
+      "cpu_seconds": 5.634863,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 5.397161642991705,
+      "last_output_seconds": 5.348547433997737,
+      "startup_seconds": 0.2786765010096133,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.2576745200831851e-16,
+          "scaled_error": 0.00012394813219058622,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.26405569239796e-14,
+          "scaled_error": 0.0003260833849224108,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.6145752229922437e-14,
+          "scaled_error": 0.00026119944608580864,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.531308496145357e-14,
+          "scaled_error": 0.00025288099238880837,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.5091040356528538e-14,
+          "scaled_error": 0.00025066273806960827,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.418476861114186e-17,
+          "scaled_error": 6.358329208065093e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.897260540483785e-15,
+          "scaled_error": 8.886880190757335e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 3.0643890203130297e-15,
+          "scaled_error": 3.6294074655768616e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.7297361459833738e-15,
+          "scaled_error": 2.5785819988853173e-05,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.215650382226158e-15,
+          "scaled_error": 0.00011366012114284534,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1879942072117799e-17,
+          "scaled_error": 0.00011879942072116832,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.7319479184152442e-14,
+          "scaled_error": 0.00017190912173146818,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.787459069646502e-14,
+          "scaled_error": 0.0001811334310033877,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.2108369862318114e-15,
+          "scaled_error": 0.00023663927637708083,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.085503215092487e-15,
+          "scaled_error": 0.00023165610728523889,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.5326962749261384e-16,
+          "scaled_error": 0.0002496058937908962,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "syn_signed_p10_k16"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 575,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 3,
+      "nnz": 0,
+      "t": 2.0,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.051519908010959625,
+      "cpu_seconds": 0.32923899999999995,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.051519908010959625,
+      "last_output_seconds": 0.00510246999328956,
+      "startup_seconds": 0.28039682100643404,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 0.0,
+          "scaled_error": 0.0,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "control_zero"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 580,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 2,
+      "nnz": 4,
+      "t": 0.0,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.052052574028493837,
+      "cpu_seconds": 0.32870699999999997,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.052052574028493837,
+      "last_output_seconds": 0.00917925001704134,
+      "startup_seconds": 0.2793996839900501,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-16,
+          "scaled_error": 1.7487667795918973e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "control_time_zero"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 585,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 2,
+      "nnz": 1,
+      "t": 0.5,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.0527748670137953,
+      "cpu_seconds": 0.328904,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.0527748670137953,
+      "last_output_seconds": 0.0036672240239568055,
+      "startup_seconds": 0.27867141098249704,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 6.938893903907228e-18,
+          "scaled_error": 8.73479657161898e-08,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "control_diagonal"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 590,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 2,
+      "nnz": 4,
+      "t": 0.5,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.05283957897336222,
+      "cpu_seconds": 0.329695,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.05283957897336222,
+      "last_output_seconds": 0.003383943985681981,
+      "startup_seconds": 0.279632029007189,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-16,
+          "scaled_error": 1.6757395715715327e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "control_positive_offdiag"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 595,
+      "returncode": 0,
+      "scenario": "reuse",
+      "request_count": 16,
+      "n": 2,
+      "nnz": 4,
+      "t": 0.5,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.07454283902188763,
+      "cpu_seconds": 0.349921,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.07454283902188763,
+      "last_output_seconds": 0.02750038102385588,
+      "startup_seconds": 0.2790879219828639,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-16,
+          "scaled_error": 1.8144418584034193e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.551115123125783e-17,
+          "scaled_error": 6.0123732551669175e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.938893903907228e-17,
+          "scaled_error": 2.4293118433056523e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.551115123125783e-16,
+          "scaled_error": 4.160110099814117e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.7755575615628914e-16,
+          "scaled_error": 6.93794846404681e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-16,
+          "scaled_error": 3.7242271395390206e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-16,
+          "scaled_error": 1.8079533669419831e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.551115123125783e-17,
+          "scaled_error": 1.5233579442363078e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 5.551115123125783e-17,
+          "scaled_error": 1.6279057094614538e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.6653345369377348e-16,
+          "scaled_error": 4.194243625624807e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-16,
+          "scaled_error": 1.6051214617213838e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-16,
+          "scaled_error": 1.8753447323361807e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 8.326672684688674e-17,
+          "scaled_error": 3.7154159462740224e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 1.1102230246251565e-16,
+          "scaled_error": 5.439621700314339e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 6.938893903907228e-17,
+          "scaled_error": 6.900657541918382e-06,
+          "reason": "passed"
+        },
+        {
+          "passed": true,
+          "error_inf": 2.220446049250313e-16,
+          "scaled_error": 2.1928085744800097e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "control_reuse"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 600,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 1,
+      "nnz": 1,
+      "t": 0.001,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 4.5724457780015655,
+      "cpu_seconds": 4.827071,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 4.5724457780015655,
+      "last_output_seconds": 4.524198646016885,
+      "startup_seconds": 0.2787699849868659,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 3.4286636390322997e-22,
+          "scaled_error": 3.4286511311655984e-09,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "control_scalar_stiff"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 605,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 3,
+      "nnz": 2,
+      "t": 3.0,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.05443771998398006,
+      "cpu_seconds": 0.33197299999999996,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.05443771998398006,
+      "last_output_seconds": 0.006681795988697559,
+      "startup_seconds": 0.2803244639944751,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 4.440892098500626e-16,
+          "scaled_error": 3.2148068746885025e-06,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "control_b0_zero"
+    },
+    {
+      "status": "ok",
+      "valid": true,
+      "reason": "ok",
+      "repeat": 1,
+      "pid": 610,
+      "returncode": 0,
+      "scenario": "one_shot",
+      "request_count": 1,
+      "n": 3,
+      "nnz": 2,
+      "t": 3.0,
+      "rtol": 1e-10,
+      "atol": 1e-13,
+      "time_seconds": 0.053721880016382784,
+      "cpu_seconds": 0.331069,
+      "memory_bytes": 132468736,
+      "child_exit_seconds": 0.053721880016382784,
+      "last_output_seconds": 0.008607550989836454,
+      "startup_seconds": 0.28082457100390457,
+      "stderr_bytes": 0,
+      "stderr": "",
+      "errors": [
+        {
+          "passed": true,
+          "error_inf": 8.881784197001252e-16,
+          "scaled_error": 1.5378720971307728e-05,
+          "reason": "passed"
+        }
+      ],
+      "measurement_scope": "trusted local single-child wait4; not cgroup or sandbox",
+      "id": "control_b1_zero"
+    }
+  ],
+  "aggregates": {
+    "standard_DIMACS10_fe_4elt2_p4_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.0627858960069716,
+      "memory_bytes": 65867776,
+      "max_wall_seconds": 0.0627858960069716,
+      "max_cpu_seconds": 0.7635639999999999,
+      "request_count": 1
+    },
+    "standard_DIMACS10_fe_4elt2_p4_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.14757521799765527,
+      "memory_bytes": 65101824,
+      "max_wall_seconds": 0.14757521799765527,
+      "max_cpu_seconds": 0.408958,
+      "request_count": 16
+    },
+    "standard_DIMACS10_fe_4elt2_p7_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.07115822599735111,
+      "memory_bytes": 63148032,
+      "max_wall_seconds": 0.07115822599735111,
+      "max_cpu_seconds": 0.343532,
+      "request_count": 1
+    },
+    "standard_DIMACS10_fe_4elt2_p7_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.16479282602085732,
+      "memory_bytes": 64962560,
+      "max_wall_seconds": 0.16479282602085732,
+      "max_cpu_seconds": 0.443746,
+      "request_count": 16
+    },
+    "standard_DIMACS10_fe_4elt2_p10_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.07557461300166324,
+      "memory_bytes": 63524864,
+      "max_wall_seconds": 0.07557461300166324,
+      "max_cpu_seconds": 0.38388900000000004,
+      "request_count": 1
+    },
+    "standard_DIMACS10_fe_4elt2_p10_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.17032262700377032,
+      "memory_bytes": 65265664,
+      "max_wall_seconds": 0.17032262700377032,
+      "max_cpu_seconds": 0.46488799999999997,
+      "request_count": 16
+    },
+    "standard_DIMACS10_wing_nodal_p4_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.12383170399698429,
+      "memory_bytes": 69066752,
+      "max_wall_seconds": 0.12383170399698429,
+      "max_cpu_seconds": 0.46545400000000003,
+      "request_count": 1
+    },
+    "standard_DIMACS10_wing_nodal_p4_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.8714001030020881,
+      "memory_bytes": 73129984,
+      "max_wall_seconds": 0.8714001030020881,
+      "max_cpu_seconds": 1.20181,
+      "request_count": 16
+    },
+    "standard_DIMACS10_wing_nodal_p7_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.11606488598044962,
+      "memory_bytes": 68444160,
+      "max_wall_seconds": 0.11606488598044962,
+      "max_cpu_seconds": 0.457545,
+      "request_count": 1
+    },
+    "standard_DIMACS10_wing_nodal_p7_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.8560416940017603,
+      "memory_bytes": 72302592,
+      "max_wall_seconds": 0.8560416940017603,
+      "max_cpu_seconds": 1.169429,
+      "request_count": 16
+    },
+    "standard_DIMACS10_wing_nodal_p10_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.11129947501467541,
+      "memory_bytes": 69107712,
+      "max_wall_seconds": 0.11129947501467541,
+      "max_cpu_seconds": 0.431507,
+      "request_count": 1
+    },
+    "standard_DIMACS10_wing_nodal_p10_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.8568463700066786,
+      "memory_bytes": 72421376,
+      "max_wall_seconds": 0.8568463700066786,
+      "max_cpu_seconds": 1.159889,
+      "request_count": 16
+    },
+    "standard_HB_bcsstk17_p4_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.139804553007707,
+      "memory_bytes": 85839872,
+      "max_wall_seconds": 0.139804553007707,
+      "max_cpu_seconds": 0.455217,
+      "request_count": 1
+    },
+    "standard_HB_bcsstk17_p4_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.6158841169963125,
+      "memory_bytes": 92598272,
+      "max_wall_seconds": 0.6158841169963125,
+      "max_cpu_seconds": 0.928267,
+      "request_count": 16
+    },
+    "standard_HB_bcsstk17_p7_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.12739738798700273,
+      "memory_bytes": 85123072,
+      "max_wall_seconds": 0.12739738798700273,
+      "max_cpu_seconds": 0.45756699999999995,
+      "request_count": 1
+    },
+    "standard_HB_bcsstk17_p7_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.7133443669881672,
+      "memory_bytes": 91721728,
+      "max_wall_seconds": 0.7133443669881672,
+      "max_cpu_seconds": 1.014279,
+      "request_count": 16
+    },
+    "standard_HB_bcsstk17_p10_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.1740541019826196,
+      "memory_bytes": 85700608,
+      "max_wall_seconds": 0.1740541019826196,
+      "max_cpu_seconds": 0.50088,
+      "request_count": 1
+    },
+    "standard_HB_bcsstk17_p10_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.7471416600164957,
+      "memory_bytes": 92893184,
+      "max_wall_seconds": 0.7471416600164957,
+      "max_cpu_seconds": 1.043932,
+      "request_count": 16
+    },
+    "syn_diffusion2d_p4_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.9501718819956295,
+      "memory_bytes": 117256192,
+      "max_wall_seconds": 0.9501718819956295,
+      "max_cpu_seconds": 1.287543,
+      "request_count": 1
+    },
+    "syn_diffusion2d_p4_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 12.56244454800617,
+      "memory_bytes": 119791616,
+      "max_wall_seconds": 12.56244454800617,
+      "max_cpu_seconds": 12.784896,
+      "request_count": 16
+    },
+    "syn_diffusion2d_p7_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.8552315779961646,
+      "memory_bytes": 114397184,
+      "max_wall_seconds": 0.8552315779961646,
+      "max_cpu_seconds": 1.1777289999999998,
+      "request_count": 1
+    },
+    "syn_diffusion2d_p7_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 12.777656580001349,
+      "memory_bytes": 119631872,
+      "max_wall_seconds": 12.777656580001349,
+      "max_cpu_seconds": 13.01364,
+      "request_count": 16
+    },
+    "syn_diffusion2d_p10_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.9995966269925702,
+      "memory_bytes": 117387264,
+      "max_wall_seconds": 0.9995966269925702,
+      "max_cpu_seconds": 1.344725,
+      "request_count": 1
+    },
+    "syn_diffusion2d_p10_k16": {
+      "valid": false,
+      "reason": "accuracy_failure",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 11.910408479016041,
+      "memory_bytes": 119533568,
+      "max_wall_seconds": 11.910408479016041,
+      "max_cpu_seconds": 12.141812,
+      "request_count": 16
+    },
+    "syn_diffusion2d_b_p4_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 1.7541915999900084,
+      "memory_bytes": 109428736,
+      "max_wall_seconds": 1.7541915999900084,
+      "max_cpu_seconds": 2.06554,
+      "request_count": 1
+    },
+    "syn_diffusion2d_b_p4_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 22.145304611010943,
+      "memory_bytes": 109428736,
+      "max_wall_seconds": 22.145304611010943,
+      "max_cpu_seconds": 22.312677,
+      "request_count": 16
+    },
+    "syn_diffusion2d_b_p7_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 1.0566727140103467,
+      "memory_bytes": 109428736,
+      "max_wall_seconds": 1.0566727140103467,
+      "max_cpu_seconds": 1.3561729999999999,
+      "request_count": 1
+    },
+    "syn_diffusion2d_b_p7_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 21.151101302995812,
+      "memory_bytes": 109428736,
+      "max_wall_seconds": 21.151101302995812,
+      "max_cpu_seconds": 21.308606,
+      "request_count": 16
+    },
+    "syn_diffusion2d_b_p10_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 1.5149417920038104,
+      "memory_bytes": 109428736,
+      "max_wall_seconds": 1.5149417920038104,
+      "max_cpu_seconds": 1.811727,
+      "request_count": 1
+    },
+    "syn_diffusion2d_b_p10_k16": {
+      "valid": false,
+      "reason": "accuracy_failure",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 20.749221800011583,
+      "memory_bytes": 109428736,
+      "max_wall_seconds": 20.749221800011583,
+      "max_cpu_seconds": 20.905393,
+      "request_count": 16
+    },
+    "syn_diffusion3d_p4_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 15.514056732994504,
+      "memory_bytes": 111800320,
+      "max_wall_seconds": 15.514056732994504,
+      "max_cpu_seconds": 15.716457,
+      "request_count": 1
+    },
+    "syn_diffusion3d_p4_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 236.30870344099822,
+      "memory_bytes": 119111680,
+      "max_wall_seconds": 236.30870344099822,
+      "max_cpu_seconds": 235.092768,
+      "request_count": 16
+    },
+    "syn_diffusion3d_p7_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 13.713970609998796,
+      "memory_bytes": 119111680,
+      "max_wall_seconds": 13.713970609998796,
+      "max_cpu_seconds": 13.931681000000001,
+      "request_count": 1
+    },
+    "syn_diffusion3d_p7_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 238.2648302440066,
+      "memory_bytes": 119111680,
+      "max_wall_seconds": 238.2648302440066,
+      "max_cpu_seconds": 237.076694,
+      "request_count": 16
+    },
+    "syn_diffusion3d_p10_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 15.333527857001172,
+      "memory_bytes": 119111680,
+      "max_wall_seconds": 15.333527857001172,
+      "max_cpu_seconds": 15.541943999999999,
+      "request_count": 1
+    },
+    "syn_diffusion3d_p10_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 198.33628733700607,
+      "memory_bytes": 119111680,
+      "max_wall_seconds": 198.33628733700607,
+      "max_cpu_seconds": 197.556542,
+      "request_count": 16
+    },
+    "syn_geometric_p4_k1": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 60.016339111025445,
+      "memory_bytes": 128462848,
+      "max_wall_seconds": 60.016339111025445,
+      "max_cpu_seconds": 59.988628000000006,
+      "request_count": 1
+    },
+    "syn_geometric_p4_k16": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 240.01420422899537,
+      "memory_bytes": 128569344,
+      "max_wall_seconds": 240.01420422899537,
+      "max_cpu_seconds": 239.118486,
+      "request_count": 16
+    },
+    "syn_geometric_p7_k1": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 60.01591045598616,
+      "memory_bytes": 124870656,
+      "max_wall_seconds": 60.01591045598616,
+      "max_cpu_seconds": 59.997415,
+      "request_count": 1
+    },
+    "syn_geometric_p7_k16": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 240.0205388859904,
+      "memory_bytes": 128032768,
+      "max_wall_seconds": 240.0205388859904,
+      "max_cpu_seconds": 239.12575299999997,
+      "request_count": 16
+    },
+    "syn_geometric_p10_k1": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 60.019466405996354,
+      "memory_bytes": 128282624,
+      "max_wall_seconds": 60.019466405996354,
+      "max_cpu_seconds": 60.010601,
+      "request_count": 1
+    },
+    "syn_geometric_p10_k16": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 240.01501497699064,
+      "memory_bytes": 128655360,
+      "max_wall_seconds": 240.01501497699064,
+      "max_cpu_seconds": 239.108938,
+      "request_count": 16
+    },
+    "syn_geometric_b_p4_k1": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 60.01694599000621,
+      "memory_bytes": 134881280,
+      "max_wall_seconds": 60.01694599000621,
+      "max_cpu_seconds": 60.016336,
+      "request_count": 1
+    },
+    "syn_geometric_b_p4_k16": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 240.01965861400822,
+      "memory_bytes": 134782976,
+      "max_wall_seconds": 240.01965861400822,
+      "max_cpu_seconds": 239.12808,
+      "request_count": 16
+    },
+    "syn_geometric_b_p7_k1": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 60.01591669098707,
+      "memory_bytes": 131055616,
+      "max_wall_seconds": 60.01591669098707,
+      "max_cpu_seconds": 60.000429,
+      "request_count": 1
+    },
+    "syn_geometric_b_p7_k16": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 240.02008176399977,
+      "memory_bytes": 134627328,
+      "max_wall_seconds": 240.02008176399977,
+      "max_cpu_seconds": 239.145556,
+      "request_count": 16
+    },
+    "syn_geometric_b_p10_k1": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 60.018275088019436,
+      "memory_bytes": 134352896,
+      "max_wall_seconds": 60.018275088019436,
+      "max_cpu_seconds": 60.018387,
+      "request_count": 1
+    },
+    "syn_geometric_b_p10_k16": {
+      "valid": false,
+      "reason": "wall_timeout",
+      "repeat_count": 1,
+      "all_repeats_valid": false,
+      "time_seconds": 240.02123556402512,
+      "memory_bytes": 134537216,
+      "max_wall_seconds": 240.02123556402512,
+      "max_cpu_seconds": 239.148097,
+      "request_count": 16
+    },
+    "syn_heavytail_p4_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.1372935410181526,
+      "memory_bytes": 121311232,
+      "max_wall_seconds": 0.1372935410181526,
+      "max_cpu_seconds": 0.410576,
+      "request_count": 1
+    },
+    "syn_heavytail_p4_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.7351374210265931,
+      "memory_bytes": 124502016,
+      "max_wall_seconds": 0.7351374210265931,
+      "max_cpu_seconds": 0.992912,
+      "request_count": 16
+    },
+    "syn_heavytail_p7_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.13219647100777365,
+      "memory_bytes": 121311232,
+      "max_wall_seconds": 0.13219647100777365,
+      "max_cpu_seconds": 0.40635,
+      "request_count": 1
+    },
+    "syn_heavytail_p7_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.7404234840068966,
+      "memory_bytes": 122486784,
+      "max_wall_seconds": 0.7404234840068966,
+      "max_cpu_seconds": 1.000507,
+      "request_count": 16
+    },
+    "syn_heavytail_p10_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.13769061499624513,
+      "memory_bytes": 121311232,
+      "max_wall_seconds": 0.13769061499624513,
+      "max_cpu_seconds": 0.41224299999999997,
+      "request_count": 1
+    },
+    "syn_heavytail_p10_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.7375278240069747,
+      "memory_bytes": 121647104,
+      "max_wall_seconds": 0.7375278240069747,
+      "max_cpu_seconds": 0.994868,
+      "request_count": 16
+    },
+    "syn_logspectrum_p4_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.5115203679888509,
+      "memory_bytes": 122372096,
+      "max_wall_seconds": 0.5115203679888509,
+      "max_cpu_seconds": 0.784086,
+      "request_count": 1
+    },
+    "syn_logspectrum_p4_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 4.17082238200237,
+      "memory_bytes": 131112960,
+      "max_wall_seconds": 4.17082238200237,
+      "max_cpu_seconds": 4.410959,
+      "request_count": 16
+    },
+    "syn_logspectrum_p7_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.0955051250057295,
+      "memory_bytes": 131112960,
+      "max_wall_seconds": 0.0955051250057295,
+      "max_cpu_seconds": 0.369619,
+      "request_count": 1
+    },
+    "syn_logspectrum_p7_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 4.149268640001537,
+      "memory_bytes": 131112960,
+      "max_wall_seconds": 4.149268640001537,
+      "max_cpu_seconds": 4.388438,
+      "request_count": 16
+    },
+    "syn_logspectrum_p10_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.5045681770134252,
+      "memory_bytes": 131112960,
+      "max_wall_seconds": 0.5045681770134252,
+      "max_cpu_seconds": 0.776793,
+      "request_count": 1
+    },
+    "syn_logspectrum_p10_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 4.123316128010629,
+      "memory_bytes": 131112960,
+      "max_wall_seconds": 4.123316128010629,
+      "max_cpu_seconds": 4.36193,
+      "request_count": 16
+    },
+    "syn_signed_p4_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.7699896159756463,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.7699896159756463,
+      "max_cpu_seconds": 1.04091,
+      "request_count": 1
+    },
+    "syn_signed_p4_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 5.359410345990909,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 5.359410345990909,
+      "max_cpu_seconds": 5.597168,
+      "request_count": 16
+    },
+    "syn_signed_p7_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.15298469600384124,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.15298469600384124,
+      "max_cpu_seconds": 0.4272119999999999,
+      "request_count": 1
+    },
+    "syn_signed_p7_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 5.307089438021649,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 5.307089438021649,
+      "max_cpu_seconds": 5.543137,
+      "request_count": 16
+    },
+    "syn_signed_p10_k1": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.7924614159855992,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.7924614159855992,
+      "max_cpu_seconds": 1.06443,
+      "request_count": 1
+    },
+    "syn_signed_p10_k16": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 5.397161642991705,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 5.397161642991705,
+      "max_cpu_seconds": 5.634863,
+      "request_count": 16
+    },
+    "control_zero": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.051519908010959625,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.051519908010959625,
+      "max_cpu_seconds": 0.32923899999999995,
+      "request_count": 1
+    },
+    "control_time_zero": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.052052574028493837,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.052052574028493837,
+      "max_cpu_seconds": 0.32870699999999997,
+      "request_count": 1
+    },
+    "control_diagonal": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.0527748670137953,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.0527748670137953,
+      "max_cpu_seconds": 0.328904,
+      "request_count": 1
+    },
+    "control_positive_offdiag": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.05283957897336222,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.05283957897336222,
+      "max_cpu_seconds": 0.329695,
+      "request_count": 1
+    },
+    "control_reuse": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.07454283902188763,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.07454283902188763,
+      "max_cpu_seconds": 0.349921,
+      "request_count": 16
+    },
+    "control_scalar_stiff": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 4.5724457780015655,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 4.5724457780015655,
+      "max_cpu_seconds": 4.827071,
+      "request_count": 1
+    },
+    "control_b0_zero": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.05443771998398006,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.05443771998398006,
+      "max_cpu_seconds": 0.33197299999999996,
+      "request_count": 1
+    },
+    "control_b1_zero": {
+      "valid": true,
+      "reason": "ok",
+      "repeat_count": 1,
+      "all_repeats_valid": true,
+      "time_seconds": 0.053721880016382784,
+      "memory_bytes": 132468736,
+      "max_wall_seconds": 0.053721880016382784,
+      "max_cpu_seconds": 0.331069,
+      "request_count": 1
+    }
+  }
+}

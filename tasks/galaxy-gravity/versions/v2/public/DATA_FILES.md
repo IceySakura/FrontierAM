@@ -1,0 +1,24 @@
+# 公开包中的数据文件（未复制到仓库）
+
+- public-dev/cases/case-01.in（4,194,304 字节）
+- public-dev/cases/case-01.ref（3,145,728 字节）
+- public-dev/cases/case-02.in（4,194,304 字节）
+- public-dev/cases/case-02.ref（3,145,728 字节）
+- public-dev/cases/case-03.in（4,194,304 字节）
+- public-dev/cases/case-03.ref（3,145,728 字节）
+- public-dev/cases/case-04.in（4,194,304 字节）
+- public-dev/cases/case-04.ref（3,145,728 字节）
+- public-dev/cases/case-05.in（4,194,304 字节）
+- public-dev/cases/case-05.ref（3,145,728 字节）
+- public-dev/cases/case-06.in（4,194,304 字节）
+- public-dev/cases/case-06.ref（3,145,728 字节）
+- public-dev/cases/case-07.in（4,194,304 字节）
+- public-dev/cases/case-07.ref（3,145,728 字节）
+- public-dev/cases/case-08.in（4,194,304 字节）
+- public-dev/cases/case-08.ref（3,145,728 字节）
+- public-dev/cases/case-09.in（4,194,304 字节）
+- public-dev/cases/case-09.ref（3,145,728 字节）
+- public-dev/cases/case-10.in（4,194,304 字节）
+- public-dev/cases/case-10.ref（3,145,728 字节）
+- public-dev/smoke.in（1,024 字节）
+- public-dev/smoke.ref（768 字节）

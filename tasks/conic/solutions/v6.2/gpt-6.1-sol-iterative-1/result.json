@@ -1,0 +1,10 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.2",
+ "setting": "迭代",
+ "submission": "conic-20261109T142802Z-f6e6e3",
+ "raw": "387 / 650（\\(p = 0.595\\)）",
+ "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
+ "score": 0.0,
+ "review": null
+}

@@ -1,0 +1,10 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.2",
+ "setting": "单轮",
+ "submission": "exponential-v2-20261109T090735Z-9ccd95",
+ "raw": "58 例精度不合格",
+ "mapping": "任一例失败记 0",
+ "score": 0.0,
+ "review": null
+}

@@ -1,4 +1,4 @@
-"""Operator-delivered tasks (tasks/operator/<name>/task.json, sealed by scripts/prepare_operator_tasks.py).
+"""Operator-delivered tasks (tasks/operator/<name>/task.json, sealed by scripts/seal/prepare_operator_tasks.py).
 
 Each package brings its own host grader and per-case workers. They run here unchanged apart from the declared
 portability edits, inside a grading slot: a docker shim first on the grader's PATH maps the package's ARM64
@@ -24,7 +24,7 @@ from .tasks import GIB, Placement, Task, tar_directory, write
 
 ROOT = Path(__file__).resolve().parents[1]
 OPS = ROOT / '.runtime-ops'
-SPECS = ROOT / 'tasks/operator'
+SPECS = ROOT / 'tasks'  # tasks/<family>/versions/<version>/task.json
 PAIR = 'FRONTIERAM_REFERENCE_PAIR.json'
 # Host-side graders use the packages' pinned host NumPy (2.3.5), separate from the orchestration environment.
 GRADER_PYTHON = ROOT / '.venv-ops/bin/python'
@@ -169,14 +169,14 @@ class GalaxyGravity(OperatorTask):
 
 
 class GalaxyGravityV2(GalaxyGravity):
-    """galaxy-gravity at 131,072 particles (scripts/prepare_galaxy_v2.py); same grader, references and budget."""
+    """galaxy-gravity at 131,072 particles (scripts/seal/prepare_galaxy_v2.py); same grader, references and budget."""
 
 
 class PolarizationDemosaicking(OperatorTask):
     grade_memory = 10 * GIB
     # Each scene has a 1.000-second wall limit including interpreter start-up, about 0.6 s of which a typical
     # submission uses; with development sessions running on the L3-sharing dev cores, scenes spiked to 0.9-1.0 s
-    # (results/polarization/polarization-first-scene.json), so the whole machine is kept quiet.
+    # (tasks/polarization-demosaicking/analysis/polarization-first-scene.json), so the whole machine is kept quiet.
     grade_isolation = 'quiet'
 
     # FRONTIERAM_POLAR_DATA=wen grades the public-feedback scenes instead (protocol v6.2; results/OPEN_ITEMS.md).
@@ -186,7 +186,7 @@ class PolarizationDemosaicking(OperatorTask):
         """Read the task image's layer files on the slot's daemon into the page cache before any timed scene.
 
         A cold cache adds 0.2-0.5 s to the first scene's interpreter start-up and imports (1.000 s limit), while warm
-        runs show no first-scene penalty (results/polarization/polarization-first-scene.json). Untimed, and the submission is not run.
+        runs show no first-scene penalty (tasks/polarization-demosaicking/analysis/polarization-first-scene.json). Untimed, and the submission is not run.
         """
         start, files, size = time.monotonic(), 0, 0
         inspect = subprocess.run(['docker', '-H', placement.docker_host, 'image', 'inspect', self.lock()['image']['id'],
@@ -276,7 +276,7 @@ class SpeciesTree(OperatorTask):
 
 
 class SpeciesTreeV2(SpeciesTree):
-    """species-tree rebuilt at 250 taxa (scripts/prepare_species_v2.py), graded in shards like the conic suite."""
+    """species-tree rebuilt at 250 taxa (scripts/seal/prepare_species_v2.py), graded in shards like the conic suite."""
     # FRONTIERAM_SPECIES_V2_DATA=public grades the shipped public cases instead (protocol v6.2 public feedback).
     grade_timeout = 8 * 3600
 
@@ -401,7 +401,7 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
 
 def operator_tasks() -> dict[str, OperatorTask]:
     tasks = {}
-    for path in sorted(SPECS.glob('*/task.json')):
+    for path in sorted(SPECS.glob('*/versions/*/task.json')):
         spec = json.loads(path.read_text())
         tasks[spec['name']] = CLASSES.get(spec['name'], DevelopmentOnlyTask)(spec)
     return tasks

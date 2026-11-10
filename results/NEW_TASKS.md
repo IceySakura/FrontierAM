@@ -8,9 +8,9 @@
 | polarization-demosaicking | 50.7（取 15:09 的重评，默认决定，待讨论） |
 | trajectory-covariance | 61.5（3000 例固定子集） |
 | species-tree | 暂停：出题人告知数据有误，提交已冻结待评 |
-| exponential-v2 | 62.7（74/74 合格，R = 0.596，100/(1+R)；几何速度比 2.01，95% 区间 1.45–2.91；`results/exponential/EXPONENTIAL_V2.md` 第 4d 节） |
+| exponential-v2 | 62.7（74/74 合格，R = 0.596，100/(1+R)；几何速度比 2.01，95% 区间 1.45–2.91；`tasks/exponential/analysis/EXPONENTIAL_V2.md` 第 4d 节） |
 
-另：出题方的 conic 修正版题包（solver-20261105）已接入并重测 sol，见 `results/conic/CONIC_REVISION_SOL.md`。
+另：出题方的 conic 修正版题包（solver-20261105）已接入并重测 sol，见 `tasks/conic/analysis/CONIC_REVISION_SOL.md`。
 
 **11-10 状态（协议 v6.2，2 小时单轮）**：两道新版本题与 opus 的两道 operator 题评分结果，详见第 5 节。
 
@@ -21,7 +21,7 @@
 | polarization-demosaicking | —（v6.1：50.7） | 55.9（重评；第一次评分只有第一景超时，记未测） |
 | trajectory-covariance | —（v6.1：61.5） | 51.9 |
 
-`var/raw/` 中的 4 道新题已接入 FrontierAM 框架。原始包不进 git；`scripts/prepare_operator_tasks.py` 按 `tasks/operator/<题目>/task.json` 核对哈希、解压、校验包内清单、应用可移植性修改并封存到 `.runtime-ops/<题目>/`。评测时运行题目自带的评分器，通过 docker 垫片（`arena/docker_shim.py`）把它的 ARM64 平台、CPU 编号和镜像映射到本机评测 slot。
+`var/raw/` 中的 4 道新题已接入 FrontierAM 框架。原始包不进 git；`scripts/seal/prepare_operator_tasks.py` 按 `tasks/operator/<题目>/task.json` 核对哈希、解压、校验包内清单、应用可移植性修改并封存到 `.runtime-ops/<题目>/`。评测时运行题目自带的评分器，通过 docker 垫片（`arena/docker_shim.py`）把它的 ARM64 平台、CPU 编号和镜像映射到本机评测 slot。
 
 ## 1. 各题概况
 
@@ -41,7 +41,7 @@
   - species-tree：worker 的 CPU 检查从"必须是 CPU 0"改为"恰好一个 CPU"。
 - **镜像**：原镜像都是 ARM64，本机只能重建 amd64 版；需要的是“镜像里装了什么”，不是镜像文件本身（`tasks/operator/<题目>/Dockerfile.amd64`）：
   - polarization：按冻结镜像的构建历史重建，官方 `python:3.11.15-slim-bookworm`，加上从冻结镜像中原样拷出的 `requirements.lock`（torch 用 CPU 版）。
-  - trajectory 与 galaxy：两题共同的基础镜像 `local/trajectory-runtime:b1` 及其基础 `songberg-reproduction:mcmcse-1.5-0` 都在 mcmc 出题方包的 `images/formal-images.tar` 里。后者的 R 是在容器中安装后 commit 的，构建历史看不到，因此从镜像文件里读出 dpkg 状态（比官方 Python 基础镜像多 165 个包，其中 2 个仅 ARM64 存在）、`requirements.lock`（与 polarization 完全相同）和 R 库目录（mcmcse 1.5-0、fftwtools 0.9-11、microbenchmark 1.4.10），按原版本重建为 `frontieram-songberg-reproduction:amd64-mcmcse-1.5-0`（`tasks/operator/_images/songberg-reproduction/`），再照搬包内 `public/Dockerfile` 得到 trajectory 镜像，galaxy 的 Dockerfile 建在其上。之前用锥优化镜像（CPython 3.12.14、NumPy 2.3.5）作替代是错的：真实环境是 CPython 3.11.15、NumPy 1.26.4、SciPy 1.12.0、R 4.2.2；galaxy 的基线因此在新镜像上重测。
+  - trajectory 与 galaxy：两题共同的基础镜像 `local/trajectory-runtime:b1` 及其基础 `songberg-reproduction:mcmcse-1.5-0` 都在 mcmc 出题方包的 `images/formal-images.tar` 里。后者的 R 是在容器中安装后 commit 的，构建历史看不到，因此从镜像文件里读出 dpkg 状态（比官方 Python 基础镜像多 165 个包，其中 2 个仅 ARM64 存在）、`requirements.lock`（与 polarization 完全相同）和 R 库目录（mcmcse 1.5-0、fftwtools 0.9-11、microbenchmark 1.4.10），按原版本重建为 `frontieram-songberg-reproduction:amd64-mcmcse-1.5-0`（`docker/songberg-reproduction/`），再照搬包内 `public/Dockerfile` 得到 trajectory 镜像，galaxy 的 Dockerfile 建在其上。之前用锥优化镜像（CPython 3.12.14、NumPy 2.3.5）作替代是错的：真实环境是 CPython 3.11.15、NumPy 1.26.4、SciPy 1.12.0、R 4.2.2；galaxy 的基线因此在新镜像上重测。
   - species-tree：基础镜像 `local/species-tree-cpu:b1` 不在任何包里，仍以锥优化镜像替代（Debian bookworm、gcc/g++ 12、CPython 3.12.14）；如能拿到它的 Dockerfile 或依赖清单可按原样重建。
 - **宿主侧评分环境**：`.venv-ops`（Python 3.12.16，NumPy 2.3.5，与 polarization 维护包要求的宿主 NumPy 一致）。
 - **评测隔离**：在实测干扰之前，四道题都先用 `grade_pool`（评测期间不与其他评测并发）。
@@ -70,26 +70,26 @@
 | --- | --- |
 | 封存（哈希、包内清单、可移植性修改） | 四题完成 |
 | amd64 任务镜像 | 四题构建完成，`uname -m` 为 x86_64。galaxy、trajectory、polarization：CPython 3.11.15 / NumPy 1.26.4（与原镜像一致）；species-tree：替代镜像 CPython 3.12.14 / NumPy 2.3.5 |
-| trajectory 验证链路 | 在开发核上用 VAR(1) 参照跑 12 个正式输入（每种设置 2 个）：12/12 合格，逐例误差与出题方记录最大相差 1.2e-13，墙钟中位数为原机的 0.95 倍；验证器的 11 项沙箱自检全部通过（嵌套 PID/用户命名空间、no_new_privs、无 capabilities、uid 1000、Landlock 私有哨兵、`/proc` 三项、禁止 socket 与 mount），运行环境为 x86_64、单核配额、2 GiB、无交换、仅回环网卡（`scripts/trajectory-compare.py`） |
+| trajectory 验证链路 | 在开发核上用 VAR(1) 参照跑 12 个正式输入（每种设置 2 个）：12/12 合格，逐例误差与出题方记录最大相差 1.2e-13，墙钟中位数为原机的 0.95 倍；验证器的 11 项沙箱自检全部通过（嵌套 PID/用户命名空间、no_new_privs、无 capabilities、uid 1000、Landlock 私有哨兵、`/proc` 三项、禁止 socket 与 mount），运行环境为 x86_64、单核配额、2 GiB、无交换、仅回环网卡（`scripts/analyze/trajectory-compare.py`） |
 | v6 开发 harness 镜像 | 四题构建完成（`frontieram-<题目>-harness:v6`） |
-| 镜像导入 4 个评测守护进程 | 4 个 slot 全部完成（`scripts/load-grade-images.sh`，只在 slot 空闲时导入，因为守护进程跑在计时 CPU 的 SMT 兄弟核上） |
+| 镜像导入 4 个评测守护进程 | 4 个 slot 全部完成（`scripts/setup/load-grade-images.sh`，只在 slot 空闲时导入，因为守护进程跑在计时 CPU 的 SMT 兄弟核上） |
 | 本机参照基线 | 全部在 grade-06 上安静测量并激活，锚点与包内记录一致：galaxy（真实基础镜像重建后重测）弱 0.00139018 / 强 0.000596871（包内 E0 = 0.00139、E5 = 0.000597，与替代镜像上的结果完全相同）；polarization 弱 1.80825 / 强 1.10992（包内 B = 1.808、H5 = 1.110）；species-tree（50 个正式用例）弱 625 / 强 529 个漏分裂，即 0.127551 / 0.107959，与 `activation.json` 的原机锚点一个不差；trajectory（3000 个子集输入）OBM 0.35031684638830834 / VAR(1) 0.23005048805553863，与出题方在同一子集上的记录相差不到 2e-15。基线都用 `.runtime-recal` 运行（与 `.runtime-suite` 只差锥优化时限清单，不影响这些题） |
 | 锚点核对 | galaxy、polarization 本机锚点与包内记录一致（见上一行） |
 | CPU 上限与墙钟检查 | galaxy：单次调用最多 1.82 CPU 秒（上限 5 秒；原机记录 3.09 秒）。polarization：每景墙钟最多 0.198 秒（弱参照）、0.701 秒（强参照），上限 1.000 秒，32/32 景通过；species-tree 两条参照 50/50 例无失败；trajectory 单例墙钟最多 3.87 秒（OBM，含 R 启动），上限 30 秒 |
-| 隔离检查 | docker 垫片日志（`scripts/shim-audit.py`）：galaxy 122 次、polarization 66 次、species-tree 102 次容器创建全部为 `linux/amd64`、`--cpuset-cpus 6`（grade-06 计时 CPU）、`frontieram-grade.slice`、封存的 amd64 镜像 ID、`--network none`、`--cpus 1`，内存上限与包内规定一致（2/8/4 GiB，均不带交换）。trajectory 的验证容器：CPU 6、`frontieram-grade.slice`、单核配额、2 GiB、无交换、仅回环网卡，验证器的 11 项沙箱自检在两条参照中全部通过 |
+| 隔离检查 | docker 垫片日志（`scripts/setup/shim-audit.py`）：galaxy 122 次、polarization 66 次、species-tree 102 次容器创建全部为 `linux/amd64`、`--cpuset-cpus 6`（grade-06 计时 CPU）、`frontieram-grade.slice`、封存的 amd64 镜像 ID、`--network none`、`--cpus 1`，内存上限与包内规定一致（2/8/4 GiB，均不带交换）。trajectory 的验证容器：CPU 6、`frontieram-grade.slice`、单核配额、2 GiB、无交换、仅回环网卡，验证器的 11 项沙箱自检在两条参照中全部通过 |
 
 ## 5. 协议 v6.2 结果（11-10）
 
 映射与 v6.1 相同：原始指标 L ≥ 弱参照得 0；强参照 ≤ L < 弱参照得 50·(弱 − L)/(弱 − 强)；L < 强参照得 100 − 50·L/强。锚点都是本机评测核上重测的参照误差。
 
-**species-tree-v2**（200 个正式用例，250 物种，每例 120 秒；`results/species-tree/species-tree-v2/`）。参照分片实测（`suite-species-tree-v2-20261109T181626Z-e9383f`）：不加权 TREE-QMC 漏 7423 个分裂（U = 0.150263），加权 TREE-QMC 漏 6569 个（W = 0.132976），分母 200 × 247 = 49,400。
+**species-tree-v2**（200 个正式用例，250 物种，每例 120 秒；`tasks/species-tree/analysis/species-tree-v2/`）。参照分片实测（`suite-species-tree-v2-20261109T181626Z-e9383f`）：不加权 TREE-QMC 漏 7423 个分裂（U = 0.150263），加权 TREE-QMC 漏 6569 个（W = 0.132976），分母 200 × 247 = 49,400。
 
 | 模型 | 原始指标 | 映射 | 得分 | 说明 |
 | --- | --- | --- | --- | --- |
 | gpt-6.1-sol | 49,400 / 49,400 个分裂全部漏掉，E = 1.0 | E ≥ U 记 0 | **0** | 4.4 分钟就结束回合。程序每例 0.13 秒输出一棵 250 叶的二叉树，但与真树没有一个共同分裂（输出是平衡树，最终说明写“选最大校正距离”合并，与邻接法方向相反）。它在公开用例 001 上用 `check_rf.py` 测到 `normalized_rf = 1.0`，没有处理，只核对了格式和可复现性 |
 | claude-opus-5-5 | 漏 6,700 个，E = 0.135628 | 50·(U − E)/(U − W) | **42.3** | 类似加权 ASTRAL 的支持度加权四元组方法加精确动态规划，每例中位 4.2 秒、最多 11.1 秒。逐例与加权参照比：82 例更好、18 例相同、100 例更差，平均每例多漏 0.66 个分裂（95% bootstrap 区间 0.07–1.20），显著差于强参照、显著好于弱参照 |
 
-公开反馈基线（`scripts/species-v2-public-baseline.sh`，`FRONTIERAM_SPECIES_V2_DATA=public`，在 4 个评测核上分片，`var/stores/store-public-species-v2`，`results/species-tree/species-tree-v2/public-anchors.json`）：50 个公开用例上不加权参照漏 1,957 / 12,350 个分裂（U = 0.158462），加权参照漏 1,750 个（W = 0.141700），两条参照 50/50 例无失败。公开集比私有集略难（私有 U = 0.150、W = 0.133），两条参照的差距相近；若以后对这道题开迭代设置，公开反馈分数以这两个值为锚点，换算与私有集相同。
+公开反馈基线（`scripts/references/species-v2-public-baseline.sh`，`FRONTIERAM_SPECIES_V2_DATA=public`，在 4 个评测核上分片，`var/stores/store-public-species-v2`，`tasks/species-tree/references/r1/anchors-public.json`）：50 个公开用例上不加权参照漏 1,957 / 12,350 个分裂（U = 0.158462），加权参照漏 1,750 个（W = 0.141700），两条参照 50/50 例无失败。公开集比私有集略难（私有 U = 0.150、W = 0.133），两条参照的差距相近；若以后对这道题开迭代设置，公开反馈分数以这两个值为锚点，换算与私有集相同。
 
 参照耗时：加权参照每例中位 48 秒、最多 105.5 秒（上限 120 秒，余量 12%），不加权参照最多 62.5 秒；200/200 例都在时限内。余量偏紧，后续若有波动可能出现参照超时（待讨论：改为 180 秒）。
 
@@ -102,7 +102,7 @@
 
 结论：加倍粒子数确实使直接求和超时，但两个模型都改用高阶快速多极方法，在时限内达到 1e-7 以下的误差。映射在 L < 强参照时为 100 − 50·L/强，强参照误差约 6e-4，因此误差在 1e-6 以下的提交都挤在 99.9 分以上，题目无法再区分强解法（需反馈出题人：例如以误差的对数或以“给定误差下的耗时”计分）。另：弱参照单次最多 4.05 CPU 秒，余量 19%，低于定稿前约定的 25%；按约定后续尝试应改为 6 CPU 秒。本轮两份提交都是在题面写明的 5 秒下开发和评测的，sol 的程序会按剩余时间调整精度，事后改时限会改变它的输出，因此本轮成绩按 5 秒保留（默认决定）。
 
-**polarization-demosaicking（opus）**：第一次评分（11-10 03:53，grade-06）31/32 景通过，第一个运行的 ball 景 1.003 秒超过 1.000 秒上限，其余 31 景 0.56–0.58 秒。opus 的程序只用 NumPy（FFT 卷积），耗时只取决于图像尺寸、与内容无关；在宿主进程内实测，每个新进程的第一次重建 0.42–0.50 秒，没有跨进程的缓存或编译。与 11-06 sol 第一次评分的情况相同（第一景超时，其余约 0.48 秒），判为评测环境的首景冷启动，第一次记为未测，在 conic 评分结束后重评一次（`scripts/v62-after.sh`），以重评为准（默认决定，与 11-06 的处理一致）。重评（11-10 07:14，`job-20261109T231347Z-033dc2`）：32/32 景通过，平均 RMSE L = 0.978773，比强参照 1.10992 低 12%（sol v6.1 为 1.09499），得 100 − 50·L/强 = **55.9**；第一景 0.710 秒，仍是 32 景中最慢的（其余最多 0.585 秒）。首景偏慢在两份提交、三次评分中都出现（+0.14 至 +0.5 秒），是评分环境的系统性效应，建议评分器在计时前加一次不计时的预热运行（待讨论）。
+**polarization-demosaicking（opus）**：第一次评分（11-10 03:53，grade-06）31/32 景通过，第一个运行的 ball 景 1.003 秒超过 1.000 秒上限，其余 31 景 0.56–0.58 秒。opus 的程序只用 NumPy（FFT 卷积），耗时只取决于图像尺寸、与内容无关；在宿主进程内实测，每个新进程的第一次重建 0.42–0.50 秒，没有跨进程的缓存或编译。与 11-06 sol 第一次评分的情况相同（第一景超时，其余约 0.48 秒），判为评测环境的首景冷启动，第一次记为未测，在 conic 评分结束后重评一次（`scripts/rounds/v62-after.sh`），以重评为准（默认决定，与 11-06 的处理一致）。重评（11-10 07:14，`job-20261109T231347Z-033dc2`）：32/32 景通过，平均 RMSE L = 0.978773，比强参照 1.10992 低 12%（sol v6.1 为 1.09499），得 100 − 50·L/强 = **55.9**；第一景 0.710 秒，仍是 32 景中最慢的（其余最多 0.585 秒）。首景偏慢在两份提交、三次评分中都出现（+0.14 至 +0.5 秒），是评分环境的系统性效应，建议评分器在计时前加一次不计时的预热运行（待讨论）。
 
 **trajectory-covariance（opus）**：3000/3000 合格，L = 0.221264，单例最多 1.66 秒；L < 强参照 0.230050，得 100 − 50·L/强 = **51.9**（sol v6.1 为 0.176933，61.5 分）。
 

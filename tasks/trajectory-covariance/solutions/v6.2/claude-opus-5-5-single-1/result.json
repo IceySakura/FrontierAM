@@ -1,0 +1,10 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.2",
+ "setting": "单轮",
+ "submission": "trajectory-covariance-20261109T130605Z-481cfb",
+ "raw": "\\(L = 0.221264\\)，3000/3000 合格（单例最多 1.66 秒）",
+ "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
+ "score": 51.9,
+ "review": "待复核"
+}

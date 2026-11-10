@@ -1,6 +1,6 @@
 """Protocol v6.2 public-set evaluation: grade a source tree on a task's public set and compare it with the baseline.
 
-The public-feedback graders are the formal ones sealed over public data (scripts/prepare.py --conic-public-repeats,
+The public-feedback graders are the formal ones sealed over public data (scripts/seal/prepare.py --conic-public-repeats,
 FRONTIERAM_EXP2_SEAL with prepare_exponential_v2.py --repeats); they run in their own store, so nothing here touches
 held-out data or formal results. `public-baseline` measures the reference once; `public-eval` grades one source tree
 on all or part of the public set (sharded over the grading slots like a suite) and writes report.json / report.md.

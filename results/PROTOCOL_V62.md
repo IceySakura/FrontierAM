@@ -2,7 +2,7 @@
 
 ## 动机
 
-conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写的测试脚本按统一的 15 秒上限而不是逐例时限判“通过”，把按真实时限只有 0.546 的结果读成了“满足短时限”，也无从知道这比参考（0.789）和自己上一次（0.718）差很多（`results/conic/CONIC_REVISION_SOL.md`）。v6.2 由评测方在正式评测环境中替 agent 评测公开集，并给出与 baseline 的逐例对比，目的是：
+conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写的测试脚本按统一的 15 秒上限而不是逐例时限判“通过”，把按真实时限只有 0.546 的结果读成了“满足短时限”，也无从知道这比参考（0.789）和自己上一次（0.718）差很多（`tasks/conic/analysis/CONIC_REVISION_SOL.md`）。v6.2 由评测方在正式评测环境中替 agent 评测公开集，并给出与 baseline 的逐例对比，目的是：
 
 1. 消除 agent 自行评测的误差（开发核计时噪声、判定标准写错）；
 2. 让 agent 知道自己与 baseline 的差距在哪里，据此决定改进方向。
@@ -29,7 +29,7 @@ conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写
 
 - **计时**：测试评测的时间（包括导出、构建和评测）计入开发预算，评测期间开发容器暂停。
 - **次数**：不限，只受排队约束。
-- **上线范围**：先在公开集现成的题上线（conic 修正版、exponential-v2），sol 先在 v6.2 下重跑；species-tree 等修正版数据，galaxy、trajectory、polarization 补齐公开集后跟进（polarization 的公开场景需出题人提供，见 `results/polarization/POLARIZATION_PUBLIC_DEV_REQUEST.md`）。
+- **上线范围**：先在公开集现成的题上线（conic 修正版、exponential-v2），sol 先在 v6.2 下重跑；species-tree 等修正版数据，galaxy、trajectory、polarization 补齐公开集后跟进（polarization 的公开场景需出题人提供，见 `tasks/polarization-demosaicking/analysis/POLARIZATION_PUBLIC_DEV_REQUEST.md`）。
 - **评分说明**：题面告诉 agent 什么样的算法算好、最终的标准化分数考虑哪些方面，但不给出映射函数。
 
 ## 默认决定（待讨论）
@@ -48,11 +48,11 @@ conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写
 ## 实现（2026-11-09）
 
 - **公开反馈评测器**（与正式评测器同一套代码，只换数据，正式封存不变）：
-  - conic：`FRONTIERAM_RUNTIME=.runtime-conic-public scripts/prepare.py --conic-task tasks/conic/solver-20261105 --conic-profile-template tasks/conic/solver-20261105-profile_template.json --conic-public-repeats 1`。`publicise_conic_task` 删除封存副本里的私有输入，换成包内公开开发集 163 例（逐文件核对清单哈希，时限沿用公开清单），清单转为私有清单格式，重新串联评分锚点、包锁和 profile 的锁定文件哈希；重复次数的 7 处写死改为读配置，每处要求原文恰好出现一次。
-  - exponential-v2：`FRONTIERAM_EXP2_SEAL=.runtime-exp2-public scripts/prepare_exponential_v2.py --graded cases/public --repeats 1`（72 例，冻结的 7 个 panel 成员）。
+  - conic：`FRONTIERAM_RUNTIME=.runtime-conic-public scripts/seal/prepare.py --conic-task tasks/conic/versions/solver-20261105/package --conic-profile-template tasks/conic/versions/solver-20261105/profile_template.json --conic-public-repeats 1`。`publicise_conic_task` 删除封存副本里的私有输入，换成包内公开开发集 163 例（逐文件核对清单哈希，时限沿用公开清单），清单转为私有清单格式，重新串联评分锚点、包锁和 profile 的锁定文件哈希；重复次数的 7 处写死改为读配置，每处要求原文恰好出现一次。
+  - exponential-v2：`FRONTIERAM_EXP2_SEAL=.runtime-exp2-public scripts/seal/prepare_exponential_v2.py --graded cases/public --repeats 1`（72 例，冻结的 7 个 panel 成员）。
 - **公开评测命令**（`arena/public_eval.py`）：`bench --store store-public-<task> public-baseline --task T` 在全部评测 slot 上分片测参考并登记；`bench ... public-eval --task T --source DIR --out DIR [--groups] [--cases]` 导入源码（经正式的提交校验），按全集的分片和 slot 映射只评所选用例，与公开基线逐例对比，写 `report.json` 和 `report.md`。
 - **harness**（`arena/native.py`）：`./bench develop --protocol v6.2 --setting single|iterative [--development-seconds N]`。迭代设置向容器只读挂载 `/opt/frontieram/bin/submit`，并挂载评测 socket 目录；宿主侧 `EvalService` 处理测试和正式提交：测试时暂停容器、用正式导出器冻结快照（保留容器）、以子进程运行 `public-eval`、恢复容器并把报告写入 `/workspace/feedback/test-<n>/`。主循环每秒检查正式提交和截止时间；截止时立即暂停并冻结，未完成的评测继续跑完但结果不再送达，在释放迭代锁之前等它结束，因此它的评分任务不会与下一次迭代尝试重叠。迭代尝试先取得机器级锁 `/run/frontieram/v62-iterative.lock` 再开始计时。每次尝试把实际提示存为 `prompt.txt`，测试记录存入 `develop_result.json` 的 `evaluations`。
-- **验证脚本**：`scripts/v62-smoke.py TASK SETTING SECONDS OUT` 用 shell 脚本代替模型，在真实开发容器中走完一次尝试并检查结果。单轮设置已在 conic 上通过：结束回合即冻结，容器内没有评测接口和 socket（`var/stores/store/reruns/v62-smoke/conic-single-1`）。
+- **验证脚本**：`scripts/rounds/v62-smoke.py TASK SETTING SECONDS OUT` 用 shell 脚本代替模型，在真实开发容器中走完一次尝试并检查结果。单轮设置已在 conic 上通过：结束回合即冻结，容器内没有评测接口和 socket（`var/stores/store/reruns/v62-smoke/conic-single-1`）。
 
 ## 定稿规则（用户 11-09 19:20 决定）
 
@@ -63,7 +63,7 @@ conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写
 - **`submit --status`**：查看剩余预算和已做的测试次数，不占用评测资源。
 - **以最后一版为准**：没有 `--final` 时，以预算耗尽时的 `/workspace/submission` 为准，不是最后一次测试的版本；题面写明。
 - **迭代尝试期间不做其他评测（代码强制）**：评分任务在申请评测核之前检查机器级迭代锁，锁被持有时等待；迭代尝试自己的公开评测（`store-public-*`，或带 `FRONTIERAM_PUBLIC_EVAL=1`）不受限。起因：11-09 18:50 一次提前启动的私有集评分与 sol 的测试评测争用评测核，使 sol 多等了约 3–4 分钟（约占预算 3%），该尝试照常保留，只作试点记录。
-- **试点**：11-09 18:46 开始的 sol exponential-v2 迭代尝试使用旧题面（没有上限说明），只作试点记录；在定稿规则下重新运行 conic 和 exponential-v2 的迭代尝试（`scripts/v62-final.sh`）。上限、部分结果和 `--status` 在冒烟测试中用缩短到 60 秒的上限验证（仅验证用，记录在 `v6_conditions.json`）。
+- **试点**：11-09 18:46 开始的 sol exponential-v2 迭代尝试使用旧题面（没有上限说明），只作试点记录；在定稿规则下重新运行 conic 和 exponential-v2 的迭代尝试（`scripts/rounds/v62-final.sh`）。上限、部分结果和 `--status` 在冒烟测试中用缩短到 60 秒的上限验证（仅验证用，记录在 `v6_conditions.json`）。
 
 ## 结果（陆续更新）
 
@@ -100,7 +100,7 @@ exponential-v2 的映射和参照与 v6.1 相同：R 是相对 panel 逐例最�
 | claude-opus-5-5 | polarization-demosaicking | `polarization-demosaicking-20261109T124343Z-553533` | 重评 32/32 景，L = 0.978773（弱 1.80825，强 1.10992） | **55.9** | 第一次评分只有第一景 1.003 秒超时，按首景冷启动记未测，见 `NEW_TASKS.md` 第 5 节 |
 | claude-opus-5-5 | trajectory-covariance | `trajectory-covariance-20261109T130605Z-481cfb` | L = 0.221264（弱 0.350317，强 0.230050） | **51.9** | |
 
-conic（修正版题包，650 例私有集，p_B = 0.789；映射 p ≤ 0.9·p_B 记 0，0.9·p_B < p ≤ p_B 为 50·(p − 0.9·p_B)/(0.1·p_B)）。用跳过失败重复的评测器评分（等价性检查 16 例逐例一致，`results/conic/conic-fast-grading-check.json`）；四次评分用时 107、26、22、25 分钟，均完整、无基础设施失败。
+conic（修正版题包，650 例私有集，p_B = 0.789；映射 p ≤ 0.9·p_B 记 0，0.9·p_B < p ≤ p_B 为 50·(p − 0.9·p_B)/(0.1·p_B)）。用跳过失败重复的评测器评分（等价性检查 16 例逐例一致，`tasks/conic/analysis/conic-fast-grading-check.json`）；四次评分用时 107、26、22、25 分钟，均完整、无基础设施失败。
 
 | 模型 | 设置 | 提交 | 原始指标 | 得分 | 备注 |
 | --- | --- | --- | --- | --- | --- |
@@ -129,6 +129,6 @@ exponential-v2 的计时从交付矩阵第一个字节开始，READY 之前的�
 ## 进度（11-10）
 
 1. 已完成：两个公开反馈评测器（conic 163 例、exponential-v2 72 例）与公开基线、`public-eval` 命令（15 分钟上限、部分结果、短时限先测）、harness 两种设置、`submit --test/--final/--status`、机器级迭代锁（代码强制），端到端冒烟测试（包括上限缩短到 60 秒的触顶测试）。
-2. 已完成：全部尝试（sol 单轮 4 题、迭代 2 题；opus 单轮 6 题、迭代 2 题）及其私有集评分，结果见上面各表；conic 私有评分使用跳过失败重复的评测器（`results/conic/CONIC_FAST_GRADING.md`）。
+2. 已完成：全部尝试（sol 单轮 4 题、迭代 2 题；opus 单轮 6 题、迭代 2 题）及其私有集评分，结果见上面各表；conic 私有评分使用跳过失败重复的评测器（`tasks/conic/analysis/CONIC_FAST_GRADING.md`）。
 3. 只作记录、不计成绩：sol exponential-v2 单轮的第一次尝试（计时说明有误）和旧题面下的迭代试点。
 4. 待讨论事项见 `OPEN_ITEMS.md`（重复尝试以区分设置效应与波动、polarization 评分器预热、galaxy-gravity-v2 计分方式等）。

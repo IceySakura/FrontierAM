@@ -1,0 +1,2 @@
+#!/bin/sh
+exec env FMM_UNROLLED=1 FMM_AUTOTUNE=1 FMM_TARGET_CPU=3.45 FMM_NCRIT=96 FMM_NCC_POST=96 FMM_NCS=256 "$(dirname "$0")/solve" "$@"

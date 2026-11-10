@@ -1,0 +1,10 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.2",
+ "setting": "单轮",
+ "submission": "galaxy-gravity-v2-20261109T132936Z-9e4112",
+ "raw": "\\(L = 4.25\\times10^{-9}\\)，单次最多 4.45 CPU 秒",
+ "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
+ "score": 99.9996,
+ "review": "待复核"
+}

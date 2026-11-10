@@ -28,7 +28,7 @@ uv sync --project nexus --python 3.12.16 --locked --extra dev --extra runtime
 npm install -g @openai/codex@0.166.0-alpha.5.1
 codex --version
 
-./scripts/build-images.sh
+./scripts/setup/build-images.sh
 sudo ./bench host setup            # CPU 隔离、评测专用 Docker 守护进程、slot 布局（root，可重复执行）
 ./bench prepare --codex "$(command -v codex)"
 ./bench smoke --task both --parallel 2
@@ -36,7 +36,7 @@ sudo ./bench host setup            # CPU 隔离、评测专用 Docker 守护进�
 
 Codex 安装采用[官方文档中的 npm 方式](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted)，固定到本机验证版本 `0.166.0-alpha.5.1`；已确认 npm 提供该版本的 Linux x64 包。`prepare` 会检查所需启动选项、定位 npm 包里的原生可执行文件并记录版本及 SHA256；`smoke` 还会实际验证工具限制。更换 Codex 后须重新准备并验证，不能悄悄换版本继续同一轮。
 
-非默认 Docker 地址可通过 `DOCKER_HOST=unix:///path/to/docker.sock` 设置。镜像默认 `linux/amd64`；`PLATFORM=linux/arm64 ./scripts/build-images.sh` 可构建 ARM64 版本。`prepare` 拒绝用跨架构模拟环境产生数值评测结果。
+非默认 Docker 地址可通过 `DOCKER_HOST=unix:///path/to/docker.sock` 设置。镜像默认 `linux/amd64`；`PLATFORM=linux/arm64 ./scripts/setup/build-images.sh` 可构建 ARM64 版本。`prepare` 拒绝用跨架构模拟环境产生数值评测结果。
 
 `prepare` 只生成被 Git 忽略的 `.runtime/`：本机路径、镜像 ID、Codex 哈希、复制后的执行代码与封存 profile。不会修改原题包。已有 `.runtime/` 时拒绝覆盖；更新环境前请保留已有结果，将旧 `.runtime/` 改名，再重新准备。
 
@@ -59,7 +59,7 @@ slot 租约是机器级的 `flock`（`/run/frontieram/slots/`），持有进程�
 | `grade_pool` | 所有其他评测 slot | 优化器（实测前的保守默认） |
 | `quiet` | 所有其他评测 slot 和开发 slot（等待进行中的开发结束，暂停新的开发和评测） | 被闸门退回的重测 |
 
-本机实测结论与数字见 `results/platform/CONCURRENCY.md`。
+本机实测结论与数字见 `docs/platform/CONCURRENCY.md`。
 
 ## 开发与评测是两个独立流程
 
@@ -88,7 +88,7 @@ export AIHUB_KEY_FILE=/secure/aihub.key     # 仓库外私有文件，权限 600
 
 开发资源统一为单核、4 GiB、禁用 swap、32 个进程/线程、128 个 fd、256 MiB 临时目录、1 GiB 工作目录。数值评测使用题目各自的原定限制：指数传播 4 GiB；优化器 8 GiB，包含裁判开销。
 
-原题中的“绑定 CPU0”在本仓库表示“绑定该 slot 的唯一 CPU”：冻结代码中的 CPU 编号改为参数，评测语义不变；改动与新旧哈希记录在 `provenance/TRUSTED_CODE_RELOCKS.json`，由 `scripts/relock.py` 维护。prompt 附注告知模型 CPU 编号按次分配、不得写死。
+原题中的“绑定 CPU0”在本仓库表示“绑定该 slot 的唯一 CPU”：冻结代码中的 CPU 编号改为参数，评测语义不变；改动与新旧哈希记录在 `provenance/TRUSTED_CODE_RELOCKS.json`，由 `scripts/seal/relock.py` 维护。prompt 附注告知模型 CPU 编号按次分配、不得写死。
 
 ## 新增题目
 
@@ -109,9 +109,9 @@ export AIHUB_KEY_FILE=/secure/aihub.key     # 仓库外私有文件，权限 600
 | 题目 | 评测范围 | 最终得分（满分 100，参考 = 50） |
 | --- | --- | --- |
 | 指数传播 | 固定 23 个会话，每个 3 次，共 69 次验解 | 100 / (1 + R)，R 为相对参考的时间比（配对测量）；同时报告正确性、相对耗时、CPU、内存和失败原因 |
-| 优化求解器 | 全部 650 个留出实例，每例 3 次；时限按题目规则用本机参考运行重新标定 | 成功率 p 按原题映射：p ≤ 0.9·p_B 为 0，p_B 处为 50，全部解出为 100（原题 0–10 分 × 10）；见 `results/conic/CONIC_FULL.md` |
+| 优化求解器 | 全部 650 个留出实例，每例 3 次；时限按题目规则用本机参考运行重新标定 | 成功率 p 按原题映射：p ≤ 0.9·p_B 为 0，p_B 处为 50，全部解出为 100（原题 0–10 分 × 10）；见 `tasks/conic/analysis/CONIC_FULL.md` |
 
-优化器完整 650 例及原始 `candidate` 裁判都保存在 `tasks/conic/original/`。全集评测通过原裁判的用例列表模式分片运行，裁判代码不改；本机重标定只改时限，见 `tasks/conic/local_recal/`。题目包自带的 20 例平衡子集只用于快速探针，不能当作 650 例分布的无偏总分。
+优化器完整 650 例及原始 `candidate` 裁判都保存在 `tasks/conic/versions/original/package/`。全集评测通过原裁判的用例列表模式分片运行，裁判代码不改；本机重标定只改时限，见 `tasks/conic/versions/original/local_recal/`。题目包自带的 20 例平衡子集只用于快速探针，不能当作 650 例分布的无偏总分。
 
 基础设施失败记为未测，不能当作算法 0 分；构建/提交无效按题意另记 0 分。所有原始记录、源码快照和失败尝试均保留。
 
@@ -119,10 +119,10 @@ export AIHUB_KEY_FILE=/secure/aihub.key     # 仓库外私有文件，权限 600
 
 - `nexus/`：上游固定提交及两题扩展；源提交见 `provenance/nexus.json`。
 - `tasks/`：原始题包、公开数据、私有数据及固定参考。仅运行方可访问完整仓库。
-- `tasks/conic/reference_submission/`：优化器私有参考提交（冻结 Clarabel 0.11.1 实现），原始文件与 `standard-calibration.json` 记录的哈希逐一相同；另补同版本 Linux x86_64 wheel，来源与校验见 `tasks/conic/REFERENCE_PROVENANCE.json`。尚未在本机重跑校准。
+- `tasks/conic/references/r1/clarabel/`：优化器私有参考提交（冻结 Clarabel 0.11.1 实现），原始文件与 `standard-calibration.json` 记录的哈希逐一相同；另补同版本 Linux x86_64 wheel，来源与校验见 `tasks/conic/references/r1/REFERENCE_PROVENANCE.json`。尚未在本机重跑校准。
 - `docker/`、`scripts/`、`bench`：架构对应镜像、准备、校准、验证和运行入口。
 - `fixtures/`：仅用于连通性回放的冻结提交，不进入真实模型的工作区。
-- `results/platform/VALIDATION.md`：本次验证结论、边界和已知限制。
+- `docs/platform/VALIDATION.md`：本次验证结论、边界和已知限制。
 
 已修复开发到时的双重冻结竞态：控制器与工具 watchdog 同时冻结时，只在核验同一容器已经冻结、且隔离配置仍正确后接受“已冻结”结果；替换容器或实际未冻结仍报错。测试覆盖正常结束、到时、重试、输出截断、未知工具、清理与隔离边界。
 

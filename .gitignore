@@ -25,8 +25,12 @@ Raw_Resource/
 .venv-harbor/
 
 # per-case timing records next to score.json (kept local)
+tasks/*/solutions/**/suite-*.json
 results/**/suite-*.json
 # internal migration guide from another project (not part of FrontierAM)
 docs/PLATFORM_MIGRATION_GUIDE.md
 # all local run data: stores, raw packages, exports, build output
 var/
+# temporary links for jobs still running against pre-migration paths (2026-11-10); remove with the links
+tasks/exponential/sota_v1/
+tasks/operator/

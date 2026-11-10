@@ -1,0 +1,3260 @@
+{
+  "suite": "suite-conic-20261105T034838Z-fc5e77",
+  "limits": "tasks/conic/versions/original/local_recal/recal-manifest.json",
+  "solved": 162,
+  "cases": 650,
+  "decisions": {
+    "case0333": "solved",
+    "case0446": "unsolved",
+    "case0090": "unsolved",
+    "case0018": "unsolved",
+    "case0361": "solved",
+    "case0030": "unsolved",
+    "case0533": "unsolved",
+    "case0591": "unsolved",
+    "case0166": "unsolved",
+    "case0376": "solved",
+    "case0623": "unsolved",
+    "case0357": "unsolved",
+    "case0504": "unsolved",
+    "case0003": "unsolved",
+    "case0257": "solved",
+    "case0525": "unsolved",
+    "case0277": "solved",
+    "case0192": "unsolved",
+    "case0392": "unsolved",
+    "case0487": "unsolved",
+    "case0005": "unsolved",
+    "case0435": "unsolved",
+    "case0635": "unsolved",
+    "case0222": "solved",
+    "case0563": "unsolved",
+    "case0329": "solved",
+    "case0070": "unsolved",
+    "case0481": "unsolved",
+    "case0463": "unsolved",
+    "case0497": "unsolved",
+    "case0373": "unsolved",
+    "case0578": "unsolved",
+    "case0419": "unsolved",
+    "case0450": "unsolved",
+    "case0426": "unsolved",
+    "case0290": "solved",
+    "case0281": "solved",
+    "case0184": "unsolved",
+    "case0271": "solved",
+    "case0491": "unsolved",
+    "case0132": "unsolved",
+    "case0097": "unsolved",
+    "case0136": "unsolved",
+    "case0140": "solved",
+    "case0619": "unsolved",
+    "case0056": "unsolved",
+    "case0115": "solved",
+    "case0586": "unsolved",
+    "case0107": "unsolved",
+    "case0285": "solved",
+    "case0208": "solved",
+    "case0346": "unsolved",
+    "case0048": "unsolved",
+    "case0335": "unsolved",
+    "case0650": "unsolved",
+    "case0323": "solved",
+    "case0123": "unsolved",
+    "case0002": "unsolved",
+    "case0200": "unsolved",
+    "case0289": "solved",
+    "case0305": "unsolved",
+    "case0627": "unsolved",
+    "case0397": "unsolved",
+    "case0234": "solved",
+    "case0267": "solved",
+    "case0556": "unsolved",
+    "case0240": "solved",
+    "case0514": "unsolved",
+    "case0196": "unsolved",
+    "case0541": "unsolved",
+    "case0365": "solved",
+    "case0062": "unsolved",
+    "case0042": "unsolved",
+    "case0058": "unsolved",
+    "case0174": "unsolved",
+    "case0353": "unsolved",
+    "case0582": "unsolved",
+    "case0562": "unsolved",
+    "case0350": "solved",
+    "case0521": "unsolved",
+    "case0567": "unsolved",
+    "case0258": "solved",
+    "case0099": "unsolved",
+    "case0401": "unsolved",
+    "case0615": "unsolved",
+    "case0485": "unsolved",
+    "case0158": "unsolved",
+    "case0509": "unsolved",
+    "case0170": "unsolved",
+    "case0468": "unsolved",
+    "case0413": "solved",
+    "case0574": "unsolved",
+    "case0388": "unsolved",
+    "case0409": "solved",
+    "case0026": "unsolved",
+    "case0150": "unsolved",
+    "case0146": "unsolved",
+    "case0229": "solved",
+    "case0313": "solved",
+    "case0273": "solved",
+    "case0418": "unsolved",
+    "case0369": "solved",
+    "case0554": "unsolved",
+    "case0607": "unsolved",
+    "case0034": "unsolved",
+    "case0460": "unsolved",
+    "case0384": "solved",
+    "case0515": "unsolved",
+    "case0304": "solved",
+    "case0066": "solved",
+    "case0530": "unsolved",
+    "case0216": "solved",
+    "case0340": "solved",
+    "case0611": "unsolved",
+    "case0631": "unsolved",
+    "case0546": "unsolved",
+    "case0127": "unsolved",
+    "case0604": "unsolved",
+    "case0080": "unsolved",
+    "case0456": "unsolved",
+    "case0596": "unsolved",
+    "case0204": "solved",
+    "case0405": "unsolved",
+    "case0009": "unsolved",
+    "case0071": "unsolved",
+    "case0111": "unsolved",
+    "case0540": "unsolved",
+    "case0417": "unsolved",
+    "case0344": "unsolved",
+    "case0162": "unsolved",
+    "case0227": "solved",
+    "case0244": "solved",
+    "case0438": "unsolved",
+    "case0188": "unsolved",
+    "case0297": "solved",
+    "case0454": "unsolved",
+    "case0154": "unsolved",
+    "case0022": "unsolved",
+    "case0639": "unsolved",
+    "case0119": "unsolved",
+    "case0307": "solved",
+    "case0296": "solved",
+    "case0180": "unsolved",
+    "case0103": "unsolved",
+    "case0094": "unsolved",
+    "case0175": "unsolved",
+    "case0380": "solved",
+    "case0212": "solved",
+    "case0442": "unsolved",
+    "case0474": "unsolved",
+    "case0078": "unsolved",
+    "case0038": "unsolved",
+    "case0085": "unsolved",
+    "case0517": "unsolved",
+    "case0458": "unsolved",
+    "case0182": "unsolved",
+    "case0518": "unsolved",
+    "case0531": "unsolved",
+    "case0076": "unsolved",
+    "case0129": "unsolved",
+    "case0428": "unsolved",
+    "case0283": "solved",
+    "case0334": "unsolved",
+    "case0629": "unsolved",
+    "case0568": "unsolved",
+    "case0448": "unsolved",
+    "case0451": "unsolved",
+    "case0407": "solved",
+    "case0134": "unsolved",
+    "case0575": "unsolved",
+    "case0394": "unsolved",
+    "case0390": "unsolved",
+    "case0542": "unsolved",
+    "case0172": "unsolved",
+    "case0470": "unsolved",
+    "case0558": "unsolved",
+    "case0068": "unsolved",
+    "case0024": "unsolved",
+    "case0160": "unsolved",
+    "case0499": "unsolved",
+    "case0081": "unsolved",
+    "case0345": "unsolved",
+    "case0232": "solved",
+    "case0306": "solved",
+    "case0479": "unsolved",
+    "case0164": "unsolved",
+    "case0382": "solved",
+    "case0399": "unsolved",
+    "case0592": "unsolved",
+    "case0088": "unsolved",
+    "case0194": "unsolved",
+    "case0434": "unsolved",
+    "case0101": "unsolved",
+    "case0431": "solved",
+    "case0621": "solved",
+    "case0125": "unsolved",
+    "case0109": "unsolved",
+    "case0298": "solved",
+    "case0548": "unsolved",
+    "case0263": "solved",
+    "case0613": "unsolved",
+    "case0579": "unsolved",
+    "case0206": "solved",
+    "case0247": "solved",
+    "case0055": "unsolved",
+    "case0606": "unsolved",
+    "case0564": "unsolved",
+    "case0573": "unsolved",
+    "case0371": "solved",
+    "case0612": "unsolved",
+    "case0292": "solved",
+    "case0483": "unsolved",
+    "case0269": "solved",
+    "case0522": "unsolved",
+    "case0064": "unsolved",
+    "case0272": "solved",
+    "case0510": "unsolved",
+    "case0594": "unsolved",
+    "case0032": "unsolved",
+    "case0275": "solved",
+    "case0178": "unsolved",
+    "case0092": "unsolved",
+    "case0007": "unsolved",
+    "case0403": "unsolved",
+    "case0259": "solved",
+    "case0325": "solved",
+    "case0020": "unsolved",
+    "case0096": "unsolved",
+    "case0462": "unsolved",
+    "case0354": "unsolved",
+    "case0168": "unsolved",
+    "case0486": "unsolved",
+    "case0378": "unsolved",
+    "case0190": "unsolved",
+    "case0544": "unsolved",
+    "case0040": "unsolved",
+    "case0083": "unsolved",
+    "case0318": "unsolved",
+    "case0148": "unsolved",
+    "case0477": "unsolved",
+    "case0359": "solved",
+    "case0601": "unsolved",
+    "case0186": "unsolved",
+    "case0036": "unsolved",
+    "case0202": "solved",
+    "case0527": "unsolved",
+    "case0219": "solved",
+    "case0348": "unsolved",
+    "case0338": "solved",
+    "case0060": "unsolved",
+    "case0415": "unsolved",
+    "case0386": "solved",
+    "case0287": "solved",
+    "case0210": "solved",
+    "case0301": "solved",
+    "case0649": "unsolved",
+    "case0113": "unsolved",
+    "case0248": "solved",
+    "case0472": "unsolved",
+    "case0506": "unsolved",
+    "case0144": "unsolved",
+    "case0363": "solved",
+    "case0439": "unsolved",
+    "case0625": "unsolved",
+    "case0236": "solved",
+    "case0367": "solved",
+    "case0230": "solved",
+    "case0587": "unsolved",
+    "case0279": "solved",
+    "case0117": "unsolved",
+    "case0015": "unsolved",
+    "case0641": "unsolved",
+    "case0028": "unsolved",
+    "case0138": "unsolved",
+    "case0105": "unsolved",
+    "case0465": "unsolved",
+    "case0131": "unsolved",
+    "case0411": "solved",
+    "case0633": "unsolved",
+    "case0475": "unsolved",
+    "case0242": "solved",
+    "case0016": "unsolved",
+    "case0121": "unsolved",
+    "case0342": "unsolved",
+    "case0214": "solved",
+    "case0421": "unsolved",
+    "case0156": "unsolved",
+    "case0316": "unsolved",
+    "case0555": "unsolved",
+    "case0637": "unsolved",
+    "case0583": "unsolved",
+    "case0152": "unsolved",
+    "case0198": "unsolved",
+    "case0443": "unsolved",
+    "case0072": "unsolved",
+    "case0315": "solved",
+    "case0617": "unsolved",
+    "case0044": "unsolved",
+    "case0176": "unsolved",
+    "case0331": "solved",
+    "case0049": "unsolved",
+    "case0352": "solved",
+    "case0538": "unsolved",
+    "case0310": "solved",
+    "case0493": "unsolved",
+    "case0226": "solved",
+    "case0035": "unsolved",
+    "case0268": "solved",
+    "case0014": "unsolved",
+    "case0543": "unsolved",
+    "case0067": "unsolved",
+    "case0402": "unsolved",
+    "case0031": "unsolved",
+    "case0505": "unsolved",
+    "case0385": "unsolved",
+    "case0337": "solved",
+    "case0495": "unsolved",
+    "case0079": "unsolved",
+    "case0104": "unsolved",
+    "case0213": "solved",
+    "case0559": "unsolved",
+    "case0246": "solved",
+    "case0252": "solved",
+    "case0155": "unsolved",
+    "case0341": "unsolved",
+    "case0201": "unsolved",
+    "case0189": "unsolved",
+    "case0133": "unsolved",
+    "case0444": "unsolved",
+    "case0467": "unsolved",
+    "case0218": "solved",
+    "case0254": "solved",
+    "case0073": "unsolved",
+    "case0516": "unsolved",
+    "case0374": "unsolved",
+    "case0535": "unsolved",
+    "case0355": "unsolved",
+    "case0091": "unsolved",
+    "case0620": "unsolved",
+    "case0557": "unsolved",
+    "case0043": "unsolved",
+    "case0309": "solved",
+    "case0381": "solved",
+    "case0398": "unsolved",
+    "case0519": "unsolved",
+    "case0469": "unsolved",
+    "case0602": "unsolved",
+    "case0644": "unsolved",
+    "case0256": "solved",
+    "case0588": "unsolved",
+    "case0534": "unsolved",
+    "case0447": "unsolved",
+    "case0427": "unsolved",
+    "case0300": "solved",
+    "case0260": "solved",
+    "case0001": "unsolved",
+    "case0046": "unsolved",
+    "case0389": "unsolved",
+    "case0193": "unsolved",
+    "case0054": "solved",
+    "case0274": "solved",
+    "case0095": "unsolved",
+    "case0019": "unsolved",
+    "case0181": "unsolved",
+    "case0377": "solved",
+    "case0336": "unsolved",
+    "case0231": "solved",
+    "case0482": "unsolved",
+    "case0147": "unsolved",
+    "case0488": "unsolved",
+    "case0406": "unsolved",
+    "case0320": "unsolved",
+    "case0137": "unsolved",
+    "case0116": "unsolved",
+    "case0112": "unsolved",
+    "case0141": "unsolved",
+    "case0197": "unsolved",
+    "case0124": "unsolved",
+    "case0159": "unsolved",
+    "case0185": "unsolved",
+    "case0286": "solved",
+    "case0255": "solved",
+    "case0580": "unsolved",
+    "case0059": "unsolved",
+    "case0569": "unsolved",
+    "case0410": "solved",
+    "case0632": "unsolved",
+    "case0608": "unsolved",
+    "case0528": "unsolved",
+    "case0584": "unsolved",
+    "case0239": "solved",
+    "case0151": "unsolved",
+    "case0100": "unsolved",
+    "case0461": "unsolved",
+    "case0308": "solved",
+    "case0366": "solved",
+    "case0552": "unsolved",
+    "case0551": "unsolved",
+    "case0039": "unsolved",
+    "case0142": "unsolved",
+    "case0362": "solved",
+    "case0640": "unsolved",
+    "case0238": "unsolved",
+    "case0128": "unsolved",
+    "case0023": "unsolved",
+    "case0609": "unsolved",
+    "case0501": "unsolved",
+    "case0523": "unsolved",
+    "case0636": "unsolved",
+    "case0440": "unsolved",
+    "case0108": "unsolved",
+    "case0420": "unsolved",
+    "case0120": "unsolved",
+    "case0492": "unsolved",
+    "case0330": "solved",
+    "case0010": "unsolved",
+    "case0321": "unsolved",
+    "case0547": "unsolved",
+    "case0565": "unsolved",
+    "case0347": "unsolved",
+    "case0476": "unsolved",
+    "case0282": "solved",
+    "case0053": "unsolved",
+    "case0593": "unsolved",
+    "case0589": "unsolved",
+    "case0262": "solved",
+    "case0414": "solved",
+    "case0027": "unsolved",
+    "case0278": "solved",
+    "case0209": "solved",
+    "case0205": "solved",
+    "case0291": "solved",
+    "case0167": "unsolved",
+    "case0393": "unsolved",
+    "case0550": "unsolved",
+    "case0294": "solved",
+    "case0249": "solved",
+    "case0576": "unsolved",
+    "case0449": "unsolved",
+    "case0452": "unsolved",
+    "case0177": "unsolved",
+    "case0628": "unsolved",
+    "case0075": "unsolved",
+    "case0082": "unsolved",
+    "case0478": "unsolved",
+    "case0500": "unsolved",
+    "case0358": "unsolved",
+    "case0163": "unsolved",
+    "case0624": "unsolved",
+    "case0314": "unsolved",
+    "case0171": "unsolved",
+    "case0498": "unsolved",
+    "case0616": "unsolved",
+    "case0424": "unsolved",
+    "case0597": "unsolved",
+    "case0457": "unsolved",
+    "case0241": "solved",
+    "case0351": "solved",
+    "case0063": "unsolved",
+    "case0225": "solved",
+    "case0436": "unsolved",
+    "case0011": "unsolved",
+    "case0235": "unsolved",
+    "case0299": "solved",
+    "case0087": "unsolved",
+    "case0006": "unsolved",
+    "case0511": "unsolved",
+    "case0217": "solved",
+    "case0051": "unsolved",
+    "case0012": "unsolved",
+    "case0319": "unsolved",
+    "case0223": "solved",
+    "case0464": "unsolved",
+    "case0324": "solved",
+    "case0370": "solved",
+    "case0327": "unsolved",
+    "case0425": "unsolved",
+    "case0326": "unsolved",
+    "case0157": "unsolved",
+    "case0520": "unsolved",
+    "case0293": "solved",
+    "case0536": "unsolved",
+    "case0228": "solved",
+    "case0626": "unsolved",
+    "case0526": "unsolved",
+    "case0145": "unsolved",
+    "case0276": "solved",
+    "case0250": "solved",
+    "case0643": "unsolved",
+    "case0021": "unsolved",
+    "case0356": "unsolved",
+    "case0379": "unsolved",
+    "case0646": "unsolved",
+    "case0502": "unsolved",
+    "case0004": "unsolved",
+    "case0634": "unsolved",
+    "case0084": "unsolved",
+    "case0570": "unsolved",
+    "case0484": "unsolved",
+    "case0221": "solved",
+    "case0302": "solved",
+    "case0610": "unsolved",
+    "case0422": "unsolved",
+    "case0529": "unsolved",
+    "case0537": "unsolved",
+    "case0065": "solved",
+    "case0375": "unsolved",
+    "case0311": "solved",
+    "case0445": "unsolved",
+    "case0622": "unsolved",
+    "case0503": "unsolved",
+    "case0614": "unsolved",
+    "case0561": "unsolved",
+    "case0508": "unsolved",
+    "case0603": "unsolved",
+    "case0280": "solved",
+    "case0383": "solved",
+    "case0372": "unsolved",
+    "case0266": "unsolved",
+    "case0057": "solved",
+    "case0245": "solved",
+    "case0648": "unsolved",
+    "case0630": "unsolved",
+    "case0459": "unsolved",
+    "case0220": "solved",
+    "case0187": "unsolved",
+    "case0149": "unsolved",
+    "case0295": "unsolved",
+    "case0360": "solved",
+    "case0122": "unsolved",
+    "case0203": "solved",
+    "case0343": "unsolved",
+    "case0429": "unsolved",
+    "case0118": "unsolved",
+    "case0237": "solved",
+    "case0173": "unsolved",
+    "case0618": "unsolved",
+    "case0243": "solved",
+    "case0364": "solved",
+    "case0581": "unsolved",
+    "case0349": "solved",
+    "case0553": "unsolved",
+    "case0261": "solved",
+    "case0029": "unsolved",
+    "case0642": "unsolved",
+    "case0416": "unsolved",
+    "case0396": "unsolved",
+    "case0077": "unsolved",
+    "case0050": "unsolved",
+    "case0284": "solved",
+    "case0490": "unsolved",
+    "case0061": "unsolved",
+    "case0143": "unsolved",
+    "case0400": "unsolved",
+    "case0512": "unsolved",
+    "case0135": "unsolved",
+    "case0089": "unsolved",
+    "case0605": "unsolved",
+    "case0102": "unsolved",
+    "case0233": "solved",
+    "case0207": "solved",
+    "case0165": "unsolved",
+    "case0253": "solved",
+    "case0328": "solved",
+    "case0513": "unsolved",
+    "case0161": "unsolved",
+    "case0560": "unsolved",
+    "case0169": "unsolved",
+    "case0441": "unsolved",
+    "case0093": "unsolved",
+    "case0179": "unsolved",
+    "case0017": "unsolved",
+    "case0153": "unsolved",
+    "case0251": "solved",
+    "case0590": "unsolved",
+    "case0507": "unsolved",
+    "case0037": "unsolved",
+    "case0471": "unsolved",
+    "case0572": "unsolved",
+    "case0224": "solved",
+    "case0408": "solved",
+    "case0312": "solved",
+    "case0433": "unsolved",
+    "case0549": "unsolved",
+    "case0577": "unsolved",
+    "case0332": "solved",
+    "case0368": "solved",
+    "case0647": "unsolved",
+    "case0473": "unsolved",
+    "case0585": "unsolved",
+    "case0191": "unsolved",
+    "case0489": "unsolved",
+    "case0264": "unsolved",
+    "case0211": "solved",
+    "case0086": "unsolved",
+    "case0532": "unsolved",
+    "case0395": "unsolved",
+    "case0598": "unsolved",
+    "case0453": "unsolved",
+    "case0423": "unsolved",
+    "case0391": "unsolved",
+    "case0069": "unsolved",
+    "case0595": "unsolved",
+    "case0139": "unsolved",
+    "case0638": "unsolved",
+    "case0412": "solved",
+    "case0466": "unsolved",
+    "case0496": "unsolved",
+    "case0571": "unsolved",
+    "case0566": "unsolved",
+    "case0600": "unsolved",
+    "case0265": "unsolved",
+    "case0041": "unsolved",
+    "case0599": "unsolved",
+    "case0339": "solved",
+    "case0539": "unsolved",
+    "case0106": "unsolved",
+    "case0455": "unsolved",
+    "case0025": "unsolved",
+    "case0098": "unsolved",
+    "case0183": "unsolved",
+    "case0480": "unsolved",
+    "case0126": "unsolved",
+    "case0524": "unsolved",
+    "case0195": "unsolved",
+    "case0437": "unsolved",
+    "case0052": "unsolved",
+    "case0303": "solved",
+    "case0047": "unsolved",
+    "case0322": "solved",
+    "case0008": "unsolved",
+    "case0288": "solved",
+    "case0114": "unsolved",
+    "case0045": "unsolved",
+    "case0270": "solved",
+    "case0033": "unsolved",
+    "case0494": "unsolved",
+    "case0432": "solved",
+    "case0317": "unsolved",
+    "case0199": "unsolved",
+    "case0404": "unsolved",
+    "case0215": "solved",
+    "case0110": "unsolved",
+    "case0387": "unsolved",
+    "case0013": "unsolved",
+    "case0545": "unsolved",
+    "case0074": "unsolved",
+    "case0645": "unsolved",
+    "case0130": "unsolved",
+    "case0430": "unsolved"
+  },
+  "detail": {
+    "case0333": {
+      "slowest": 0.6238083619973622,
+      "limit": 1.0
+    },
+    "case0446": {
+      "slowest": 0.5464885160035919,
+      "limit": 1.0
+    },
+    "case0090": {
+      "slowest": 0.36416609201114625,
+      "limit": 1.0
+    },
+    "case0018": {
+      "slowest": 0.2344258139783051,
+      "limit": 1.0
+    },
+    "case0361": {
+      "slowest": 0.8114325439964887,
+      "limit": 1.0
+    },
+    "case0030": {
+      "slowest": 0.4325233749987092,
+      "limit": 1.0
+    },
+    "case0533": {
+      "slowest": 1.0179887000122108,
+      "limit": 1.0
+    },
+    "case0591": {
+      "slowest": 5.742600940982811,
+      "limit": 300.0
+    },
+    "case0166": {
+      "slowest": 0.9335827750037424,
+      "limit": 1.0
+    },
+    "case0376": {
+      "slowest": 0.8216686749947257,
+      "limit": 1.0
+    },
+    "case0623": {
+      "slowest": 0.36427610999089666,
+      "limit": 1.0
+    },
+    "case0357": {
+      "slowest": 1.0179521749960259,
+      "limit": 1.0
+    },
+    "case0504": {
+      "slowest": 0.39866765099577606,
+      "limit": 1.0
+    },
+    "case0003": {
+      "slowest": 0.9175406639988068,
+      "limit": 3.870292
+    },
+    "case0257": {
+      "slowest": 0.5983618779864628,
+      "limit": 1.0
+    },
+    "case0525": {
+      "slowest": 6.324958961020457,
+      "limit": 300.0
+    },
+    "case0277": {
+      "slowest": 0.5816370450193062,
+      "limit": 1.0
+    },
+    "case0192": {
+      "slowest": 1.018047466990538,
+      "limit": 1.0
+    },
+    "case0392": {
+      "slowest": 0.37765311799012125,
+      "limit": 1.011593
+    },
+    "case0487": {
+      "slowest": 2.768288171995664,
+      "limit": 2.737731
+    },
+    "case0005": {
+      "slowest": 0.5536394320079125,
+      "limit": 1.788373
+    },
+    "case0435": {
+      "slowest": 0.4110126720042899,
+      "limit": 1.700595
+    },
+    "case0635": {
+      "slowest": 0.36107243900187314,
+      "limit": 1.0
+    },
+    "case0222": {
+      "slowest": 0.5786180509894621,
+      "limit": 1.0
+    },
+    "case0563": {
+      "slowest": 0.5692847790196538,
+      "limit": 1.0
+    },
+    "case0329": {
+      "slowest": 0.49863515098695643,
+      "limit": 1.0
+    },
+    "case0070": {
+      "slowest": 0.3629026470007375,
+      "limit": 1.0
+    },
+    "case0481": {
+      "slowest": 0.41473332402529195,
+      "limit": 1.0
+    },
+    "case0463": {
+      "slowest": 2.8772174660116434,
+      "limit": 4.847202
+    },
+    "case0497": {
+      "slowest": 4.088323286996456,
+      "limit": 300.0
+    },
+    "case0373": {
+      "slowest": 0.48642036301316693,
+      "limit": 6.035085
+    },
+    "case0578": {
+      "slowest": 5.1194876189983916,
+      "limit": 300.0
+    },
+    "case0419": {
+      "slowest": 1.5118230970110744,
+      "limit": 1.486326
+    },
+    "case0450": {
+      "slowest": 2.2488466999784578,
+      "limit": 300.0
+    },
+    "case0426": {
+      "slowest": 0.3629750030231662,
+      "limit": 1.0
+    },
+    "case0290": {
+      "slowest": 0.5224096159799956,
+      "limit": 1.0
+    },
+    "case0281": {
+      "slowest": 0.5300351380137727,
+      "limit": 1.0
+    },
+    "case0184": {
+      "slowest": 1.0275441549893003,
+      "limit": 1.0
+    },
+    "case0271": {
+      "slowest": 0.5451206929865293,
+      "limit": 300.0
+    },
+    "case0491": {
+      "slowest": 3.66913372601266,
+      "limit": 300.0
+    },
+    "case0132": {
+      "slowest": 1.0232550550135784,
+      "limit": 1.0
+    },
+    "case0097": {
+      "slowest": 20.362083854997763,
+      "limit": 300.0
+    },
+    "case0136": {
+      "slowest": 0.35875343999941833,
+      "limit": 1.0
+    },
+    "case0140": {
+      "slowest": 0.5104219040076714,
+      "limit": 1.0
+    },
+    "case0619": {
+      "slowest": 0.36407645599683747,
+      "limit": 1.0
+    },
+    "case0056": {
+      "slowest": 0.5158170020149555,
+      "limit": 4.579332
+    },
+    "case0115": {
+      "slowest": 0.49801564001245424,
+      "limit": 1.0
+    },
+    "case0586": {
+      "slowest": 21.06274657699396,
+      "limit": 300.0
+    },
+    "case0107": {
+      "slowest": 0.36636538701714016,
+      "limit": 1.0
+    },
+    "case0285": {
+      "slowest": 0.5270193399919663,
+      "limit": 1.0
+    },
+    "case0208": {
+      "slowest": 0.5505256540200207,
+      "limit": 1.0
+    },
+    "case0346": {
+      "slowest": 0.4656141769955866,
+      "limit": 3.435351
+    },
+    "case0048": {
+      "slowest": 0.3652519379975274,
+      "limit": 1.0
+    },
+    "case0335": {
+      "slowest": 0.4672553800046444,
+      "limit": 4.636559
+    },
+    "case0650": {
+      "slowest": 0.5055389830085915,
+      "limit": 3.054478
+    },
+    "case0323": {
+      "slowest": 0.5264595019980334,
+      "limit": 1.0
+    },
+    "case0123": {
+      "slowest": 0.3583423400123138,
+      "limit": 1.0
+    },
+    "case0002": {
+      "slowest": 1.2812891410139855,
+      "limit": 2.790482
+    },
+    "case0200": {
+      "slowest": 1.0244136249821167,
+      "limit": 1.0
+    },
+    "case0289": {
+      "slowest": 1.3446535669791047,
+      "limit": 1.670021
+    },
+    "case0305": {
+      "slowest": 0.5947582740045618,
+      "limit": 300.0
+    },
+    "case0627": {
+      "slowest": 0.3619483990187291,
+      "limit": 1.0
+    },
+    "case0397": {
+      "slowest": 1.0182537579967175,
+      "limit": 1.0
+    },
+    "case0234": {
+      "slowest": 0.7966763989825267,
+      "limit": 1.0
+    },
+    "case0267": {
+      "slowest": 0.5082840510003734,
+      "limit": 1.0
+    },
+    "case0556": {
+      "slowest": 0.49916658698930405,
+      "limit": 1.0
+    },
+    "case0240": {
+      "slowest": 0.5603547049977351,
+      "limit": 1.0
+    },
+    "case0514": {
+      "slowest": 6.7502708489773795,
+      "limit": 300.0
+    },
+    "case0196": {
+      "slowest": 0.5726636490144301,
+      "limit": 1.0
+    },
+    "case0541": {
+      "slowest": 1.0458323010243475,
+      "limit": 300.0
+    },
+    "case0365": {
+      "slowest": 0.7839752099826001,
+      "limit": 1.0
+    },
+    "case0062": {
+      "slowest": 0.8432374089898076,
+      "limit": 1.0
+    },
+    "case0042": {
+      "slowest": 0.4202365419769194,
+      "limit": 1.0
+    },
+    "case0058": {
+      "slowest": 0.3618357880041003,
+      "limit": 1.0
+    },
+    "case0174": {
+      "slowest": 0.3749316110042855,
+      "limit": 1.0
+    },
+    "case0353": {
+      "slowest": 0.4837077329866588,
+      "limit": 300.0
+    },
+    "case0582": {
+      "slowest": 6.2700165749993175,
+      "limit": 300.0
+    },
+    "case0562": {
+      "slowest": 0.5689122510084417,
+      "limit": 300.0
+    },
+    "case0350": {
+      "slowest": 0.7900717279990204,
+      "limit": 1.0
+    },
+    "case0521": {
+      "slowest": 8.38156828499632,
+      "limit": 300.0
+    },
+    "case0567": {
+      "slowest": 15.874975973012624,
+      "limit": 300.0
+    },
+    "case0258": {
+      "slowest": 1.8262158920115326,
+      "limit": 300.0
+    },
+    "case0099": {
+      "slowest": 1.013268499984406,
+      "limit": 1.0
+    },
+    "case0401": {
+      "slowest": 0.37944717798382044,
+      "limit": 1.0
+    },
+    "case0615": {
+      "slowest": 0.42147818801458925,
+      "limit": 1.0
+    },
+    "case0485": {
+      "slowest": 3.638994023989653,
+      "limit": 300.0
+    },
+    "case0158": {
+      "slowest": 0.8905642649915535,
+      "limit": 1.0
+    },
+    "case0509": {
+      "slowest": 4.545903766003903,
+      "limit": 300.0
+    },
+    "case0170": {
+      "slowest": 0.3671723879815545,
+      "limit": 1.0
+    },
+    "case0468": {
+      "slowest": 0.6278976770117879,
+      "limit": 300.0
+    },
+    "case0413": {
+      "slowest": 0.5026401499926578,
+      "limit": 1.0
+    },
+    "case0574": {
+      "slowest": 18.16711723600747,
+      "limit": 300.0
+    },
+    "case0388": {
+      "slowest": 0.37658969301264733,
+      "limit": 1.0
+    },
+    "case0409": {
+      "slowest": 0.5402215860085562,
+      "limit": 1.0
+    },
+    "case0026": {
+      "slowest": 0.3982496710086707,
+      "limit": 1.0
+    },
+    "case0150": {
+      "slowest": 1.0156485390034504,
+      "limit": 1.0
+    },
+    "case0146": {
+      "slowest": 1.0219516700017266,
+      "limit": 1.0
+    },
+    "case0229": {
+      "slowest": 0.5340532549889758,
+      "limit": 1.0
+    },
+    "case0313": {
+      "slowest": 0.5383928999945056,
+      "limit": 1.0
+    },
+    "case0273": {
+      "slowest": 0.5113743590191007,
+      "limit": 1.0
+    },
+    "case0418": {
+      "slowest": 1.2202499519917183,
+      "limit": 1.196155
+    },
+    "case0369": {
+      "slowest": 0.7839737769972999,
+      "limit": 1.0
+    },
+    "case0554": {
+      "slowest": 11.376306054997258,
+      "limit": 300.0
+    },
+    "case0607": {
+      "slowest": 1.0164748399984092,
+      "limit": 1.0
+    },
+    "case0034": {
+      "slowest": 0.15055690298322588,
+      "limit": 1.0
+    },
+    "case0460": {
+      "slowest": 0.6134913960122503,
+      "limit": 1.0
+    },
+    "case0384": {
+      "slowest": 0.9069571160071064,
+      "limit": 1.0
+    },
+    "case0515": {
+      "slowest": 0.21131848101504147,
+      "limit": 1.0
+    },
+    "case0304": {
+      "slowest": 0.8041978230176028,
+      "limit": 5.650844
+    },
+    "case0066": {
+      "slowest": 0.49716473001171835,
+      "limit": 1.0
+    },
+    "case0530": {
+      "slowest": 6.958874982985435,
+      "limit": 300.0
+    },
+    "case0216": {
+      "slowest": 0.5103258239978459,
+      "limit": 1.0
+    },
+    "case0340": {
+      "slowest": 0.5135936749866232,
+      "limit": 1.0
+    },
+    "case0611": {
+      "slowest": 29.711941845016554,
+      "limit": 300.0
+    },
+    "case0631": {
+      "slowest": 0.37125804999959655,
+      "limit": 1.0
+    },
+    "case0546": {
+      "slowest": 1.025272365019191,
+      "limit": 1.0
+    },
+    "case0127": {
+      "slowest": 0.36311912699602544,
+      "limit": 1.0
+    },
+    "case0604": {
+      "slowest": 59.93004816499888,
+      "limit": 300.0
+    },
+    "case0080": {
+      "slowest": 0.36619199698907323,
+      "limit": 300.0
+    },
+    "case0456": {
+      "slowest": 1.022409863973735,
+      "limit": 1.0
+    },
+    "case0596": {
+      "slowest": 1.0201046240108553,
+      "limit": 1.0
+    },
+    "case0204": {
+      "slowest": 0.5062632159970235,
+      "limit": 1.0
+    },
+    "case0405": {
+      "slowest": 1.0223973159736488,
+      "limit": 1.017357
+    },
+    "case0009": {
+      "slowest": 0.4477555449993815,
+      "limit": 1.0
+    },
+    "case0071": {
+      "slowest": 0.3653817700105719,
+      "limit": 300.0
+    },
+    "case0111": {
+      "slowest": 1.0193456220149528,
+      "limit": 1.0
+    },
+    "case0540": {
+      "slowest": 0.44341423400328495,
+      "limit": 1.0
+    },
+    "case0417": {
+      "slowest": 1.0925884820171632,
+      "limit": 1.072009
+    },
+    "case0344": {
+      "slowest": 0.35534478299086913,
+      "limit": 1.0
+    },
+    "case0162": {
+      "slowest": 0.9563261099974625,
+      "limit": 1.0
+    },
+    "case0227": {
+      "slowest": 8.219476962985937,
+      "limit": 300.0
+    },
+    "case0244": {
+      "slowest": 0.4976657550141681,
+      "limit": 1.0
+    },
+    "case0438": {
+      "slowest": 13.678680501005147,
+      "limit": 300.0
+    },
+    "case0188": {
+      "slowest": 1.0225053379836027,
+      "limit": 1.0
+    },
+    "case0297": {
+      "slowest": 0.5998302930092905,
+      "limit": 1.0
+    },
+    "case0454": {
+      "slowest": 20.33935795701109,
+      "limit": 300.0
+    },
+    "case0154": {
+      "slowest": 0.3584567270008847,
+      "limit": 1.0
+    },
+    "case0022": {
+      "slowest": 0.1489845940086525,
+      "limit": 1.0
+    },
+    "case0639": {
+      "slowest": 0.3625267529860139,
+      "limit": 1.0
+    },
+    "case0119": {
+      "slowest": 0.35935466701630503,
+      "limit": 1.0
+    },
+    "case0307": {
+      "slowest": 0.4984688390104566,
+      "limit": 1.0
+    },
+    "case0296": {
+      "slowest": 0.498495489009656,
+      "limit": 300.0
+    },
+    "case0180": {
+      "slowest": 0.5304700589913409,
+      "limit": 1.0
+    },
+    "case0103": {
+      "slowest": 0.3619495869788807,
+      "limit": 1.0
+    },
+    "case0094": {
+      "slowest": 1.0186209100065753,
+      "limit": 1.0
+    },
+    "case0175": {
+      "slowest": 5.0890403049997985,
+      "limit": 300.0
+    },
+    "case0380": {
+      "slowest": 0.49692807300016284,
+      "limit": 1.0
+    },
+    "case0212": {
+      "slowest": 0.5510894719918724,
+      "limit": 1.0
+    },
+    "case0442": {
+      "slowest": 16.936090035014786,
+      "limit": 300.0
+    },
+    "case0474": {
+      "slowest": 0.6183278169773985,
+      "limit": 1.0
+    },
+    "case0078": {
+      "slowest": 0.3709806470142212,
+      "limit": 1.0
+    },
+    "case0038": {
+      "slowest": 0.6140869889932219,
+      "limit": 1.0
+    },
+    "case0085": {
+      "slowest": 0.3630855710071046,
+      "limit": 1.0
+    },
+    "case0517": {
+      "slowest": 0.1358669400215149,
+      "limit": 1.0
+    },
+    "case0458": {
+      "slowest": 0.5942225450125989,
+      "limit": 1.0
+    },
+    "case0182": {
+      "slowest": 1.0165654050069861,
+      "limit": 1.0
+    },
+    "case0518": {
+      "slowest": 7.013900624006055,
+      "limit": 300.0
+    },
+    "case0531": {
+      "slowest": 6.91644859497319,
+      "limit": 300.0
+    },
+    "case0076": {
+      "slowest": 0.3585858599981293,
+      "limit": 1.0
+    },
+    "case0129": {
+      "slowest": 0.35186953100492246,
+      "limit": 1.0
+    },
+    "case0428": {
+      "slowest": 2.1706640609772876,
+      "limit": 2.137966
+    },
+    "case0283": {
+      "slowest": 0.520803489984246,
+      "limit": 1.0
+    },
+    "case0334": {
+      "slowest": 0.4560856109892484,
+      "limit": 4.565106
+    },
+    "case0629": {
+      "slowest": 0.35086619199137203,
+      "limit": 1.0
+    },
+    "case0568": {
+      "slowest": 15.483332351985155,
+      "limit": 300.0
+    },
+    "case0448": {
+      "slowest": 0.5339607170026284,
+      "limit": 1.0
+    },
+    "case0451": {
+      "slowest": 2.2312422700051684,
+      "limit": 300.0
+    },
+    "case0407": {
+      "slowest": 0.4872909929836169,
+      "limit": 1.0
+    },
+    "case0134": {
+      "slowest": 0.4986435179889668,
+      "limit": 1.0
+    },
+    "case0575": {
+      "slowest": 1.8585451509861741,
+      "limit": 300.0
+    },
+    "case0394": {
+      "slowest": 0.3714866689988412,
+      "limit": 1.0
+    },
+    "case0390": {
+      "slowest": 0.5036378469958436,
+      "limit": 1.0
+    },
+    "case0542": {
+      "slowest": 1.018112667981768,
+      "limit": 300.0
+    },
+    "case0172": {
+      "slowest": 0.3634482680063229,
+      "limit": 1.0
+    },
+    "case0470": {
+      "slowest": 3.7064655070134904,
+      "limit": 4.682339
+    },
+    "case0558": {
+      "slowest": 0.48533964800299145,
+      "limit": 1.0
+    },
+    "case0068": {
+      "slowest": 0.4886146940116305,
+      "limit": 1.0
+    },
+    "case0024": {
+      "slowest": 0.8226379590050783,
+      "limit": 1.0
+    },
+    "case0160": {
+      "slowest": 0.8708136820059735,
+      "limit": 1.0
+    },
+    "case0499": {
+      "slowest": 4.6829426100011915,
+      "limit": 300.0
+    },
+    "case0081": {
+      "slowest": 0.35541431000456214,
+      "limit": 300.0
+    },
+    "case0345": {
+      "slowest": 0.44984436000231653,
+      "limit": 3.554909
+    },
+    "case0232": {
+      "slowest": 0.5238595480041113,
+      "limit": 1.0
+    },
+    "case0306": {
+      "slowest": 1.7134757229941897,
+      "limit": 300.0
+    },
+    "case0479": {
+      "slowest": 0.7629528600082267,
+      "limit": 1.0
+    },
+    "case0164": {
+      "slowest": 0.5599884359980933,
+      "limit": 1.0
+    },
+    "case0382": {
+      "slowest": 0.8176656349969562,
+      "limit": 1.0
+    },
+    "case0399": {
+      "slowest": 0.37338466799701564,
+      "limit": 1.0
+    },
+    "case0592": {
+      "slowest": 1.2429915259999689,
+      "limit": 300.0
+    },
+    "case0088": {
+      "slowest": 1.0334377399994992,
+      "limit": 1.0
+    },
+    "case0194": {
+      "slowest": 0.5374691790202633,
+      "limit": 1.0
+    },
+    "case0434": {
+      "slowest": 1.8300074079888873,
+      "limit": 1.800856
+    },
+    "case0101": {
+      "slowest": 1.0205516109999735,
+      "limit": 1.0
+    },
+    "case0431": {
+      "slowest": 0.5071146179980133,
+      "limit": 1.0
+    },
+    "case0621": {
+      "slowest": 0.6024024169892073,
+      "limit": 1.0
+    },
+    "case0125": {
+      "slowest": 0.3520122089830693,
+      "limit": 1.0
+    },
+    "case0109": {
+      "slowest": 1.0237066709960345,
+      "limit": 1.0
+    },
+    "case0298": {
+      "slowest": 0.5146581589942798,
+      "limit": 300.0
+    },
+    "case0548": {
+      "slowest": 0.4378710520104505,
+      "limit": 1.0
+    },
+    "case0263": {
+      "slowest": 0.7289965640229639,
+      "limit": 1.0
+    },
+    "case0613": {
+      "slowest": 1.0235204630007502,
+      "limit": 1.0
+    },
+    "case0579": {
+      "slowest": 16.241057095990982,
+      "limit": 300.0
+    },
+    "case0206": {
+      "slowest": 0.5125551660021301,
+      "limit": 1.0
+    },
+    "case0247": {
+      "slowest": 1.4325929940096103,
+      "limit": 2.585622
+    },
+    "case0055": {
+      "slowest": 1.0740583000006154,
+      "limit": 1.0
+    },
+    "case0606": {
+      "slowest": 7.894166710000718,
+      "limit": 300.0
+    },
+    "case0564": {
+      "slowest": 0.5599779479962308,
+      "limit": 300.0
+    },
+    "case0573": {
+      "slowest": 4.0299357529729605,
+      "limit": 4.001422
+    },
+    "case0371": {
+      "slowest": 0.987338205013657,
+      "limit": 1.0
+    },
+    "case0612": {
+      "slowest": 2.7219191619951744,
+      "limit": 300.0
+    },
+    "case0292": {
+      "slowest": 0.6098489489813801,
+      "limit": 1.0
+    },
+    "case0483": {
+      "slowest": 0.39635619599721394,
+      "limit": 1.0
+    },
+    "case0269": {
+      "slowest": 0.4894744119956158,
+      "limit": 1.0
+    },
+    "case0522": {
+      "slowest": 8.169060729997,
+      "limit": 300.0
+    },
+    "case0064": {
+      "slowest": 0.501093888975447,
+      "limit": 1.0
+    },
+    "case0272": {
+      "slowest": 0.5575253900024109,
+      "limit": 300.0
+    },
+    "case0510": {
+      "slowest": 4.45344011799898,
+      "limit": 300.0
+    },
+    "case0594": {
+      "slowest": 1.2130682900024112,
+      "limit": 300.0
+    },
+    "case0032": {
+      "slowest": 0.15541854800540023,
+      "limit": 1.0
+    },
+    "case0275": {
+      "slowest": 0.5066050630121026,
+      "limit": 1.0
+    },
+    "case0178": {
+      "slowest": 0.7145647970028222,
+      "limit": 1.0
+    },
+    "case0092": {
+      "slowest": 1.0191634199873079,
+      "limit": 1.0
+    },
+    "case0007": {
+      "slowest": 1.0140682899800595,
+      "limit": 1.0
+    },
+    "case0403": {
+      "slowest": 0.3502832959929947,
+      "limit": 1.0
+    },
+    "case0259": {
+      "slowest": 0.5437051840126514,
+      "limit": 300.0
+    },
+    "case0325": {
+      "slowest": 0.6046464529936202,
+      "limit": 1.0
+    },
+    "case0020": {
+      "slowest": 0.22520462100510485,
+      "limit": 1.0
+    },
+    "case0096": {
+      "slowest": 1.0242359099793248,
+      "limit": 1.0
+    },
+    "case0462": {
+      "slowest": 2.8785914450127166,
+      "limit": 300.0
+    },
+    "case0354": {
+      "slowest": 0.4680059300153516,
+      "limit": 300.0
+    },
+    "case0168": {
+      "slowest": 0.36466048800502904,
+      "limit": 1.0
+    },
+    "case0486": {
+      "slowest": 3.647673035011394,
+      "limit": 300.0
+    },
+    "case0378": {
+      "slowest": 0.6138317750010174,
+      "limit": 1.0
+    },
+    "case0190": {
+      "slowest": 1.0217170440009795,
+      "limit": 1.0
+    },
+    "case0544": {
+      "slowest": 1.021591944998363,
+      "limit": 1.0
+    },
+    "case0040": {
+      "slowest": 0.36601476499345154,
+      "limit": 1.0
+    },
+    "case0083": {
+      "slowest": 0.5044380809995346,
+      "limit": 1.0
+    },
+    "case0318": {
+      "slowest": 0.4025949240021873,
+      "limit": 1.650741
+    },
+    "case0148": {
+      "slowest": 1.0214748090074863,
+      "limit": 1.0
+    },
+    "case0477": {
+      "slowest": 2.2616284839750733,
+      "limit": 2.239526
+    },
+    "case0359": {
+      "slowest": 0.7647571990091819,
+      "limit": 1.0
+    },
+    "case0601": {
+      "slowest": 1.0463087139942218,
+      "limit": 1.0
+    },
+    "case0186": {
+      "slowest": 1.018876612011809,
+      "limit": 1.0
+    },
+    "case0036": {
+      "slowest": 0.15655140002490953,
+      "limit": 1.0
+    },
+    "case0202": {
+      "slowest": 0.7119539889972657,
+      "limit": 1.0
+    },
+    "case0527": {
+      "slowest": 7.769745588011574,
+      "limit": 300.0
+    },
+    "case0219": {
+      "slowest": 0.6934114939940628,
+      "limit": 1.0
+    },
+    "case0348": {
+      "slowest": 0.3554903780168388,
+      "limit": 1.0
+    },
+    "case0338": {
+      "slowest": 0.6516159680031706,
+      "limit": 1.0
+    },
+    "case0060": {
+      "slowest": 0.8692997560137883,
+      "limit": 1.0
+    },
+    "case0415": {
+      "slowest": 1.0779786070052069,
+      "limit": 1.056221
+    },
+    "case0386": {
+      "slowest": 0.9045161210233346,
+      "limit": 1.0
+    },
+    "case0287": {
+      "slowest": 0.48105480198864825,
+      "limit": 1.0
+    },
+    "case0210": {
+      "slowest": 0.4855481359991245,
+      "limit": 1.0
+    },
+    "case0301": {
+      "slowest": 0.4947788340214174,
+      "limit": 1.0
+    },
+    "case0649": {
+      "slowest": 0.5716748519917019,
+      "limit": 4.980265
+    },
+    "case0113": {
+      "slowest": 0.3515323270112276,
+      "limit": 1.455918
+    },
+    "case0248": {
+      "slowest": 0.5279839290014934,
+      "limit": 1.0
+    },
+    "case0472": {
+      "slowest": 0.602015937998658,
+      "limit": 1.0
+    },
+    "case0506": {
+      "slowest": 0.3958797639934346,
+      "limit": 1.0
+    },
+    "case0144": {
+      "slowest": 0.4903385220095515,
+      "limit": 1.0
+    },
+    "case0363": {
+      "slowest": 0.781793280999409,
+      "limit": 1.0
+    },
+    "case0439": {
+      "slowest": 13.595999569981359,
+      "limit": 300.0
+    },
+    "case0625": {
+      "slowest": 0.3566105189966038,
+      "limit": 1.0
+    },
+    "case0236": {
+      "slowest": 0.528683793003438,
+      "limit": 1.0
+    },
+    "case0367": {
+      "slowest": 0.9034411369939335,
+      "limit": 1.0
+    },
+    "case0230": {
+      "slowest": 0.514544350997312,
+      "limit": 300.0
+    },
+    "case0587": {
+      "slowest": 23.855377664993284,
+      "limit": 300.0
+    },
+    "case0279": {
+      "slowest": 0.5341025790257845,
+      "limit": 1.0
+    },
+    "case0117": {
+      "slowest": 1.0214273600140586,
+      "limit": 1.0
+    },
+    "case0015": {
+      "slowest": 0.8744231020100415,
+      "limit": 9.123471
+    },
+    "case0641": {
+      "slowest": 0.3742036100011319,
+      "limit": 1.984605
+    },
+    "case0028": {
+      "slowest": 0.4413404490042012,
+      "limit": 1.0
+    },
+    "case0138": {
+      "slowest": 0.35415796597953886,
+      "limit": 1.0
+    },
+    "case0105": {
+      "slowest": 0.3527674220094923,
+      "limit": 1.0
+    },
+    "case0465": {
+      "slowest": 2.855140339990612,
+      "limit": 4.767822
+    },
+    "case0131": {
+      "slowest": 0.35031242299010046,
+      "limit": 300.0
+    },
+    "case0411": {
+      "slowest": 0.4834965580084827,
+      "limit": 1.0
+    },
+    "case0633": {
+      "slowest": 0.9678422050201334,
+      "limit": 1.0
+    },
+    "case0475": {
+      "slowest": 3.250285738002276,
+      "limit": 300.0
+    },
+    "case0242": {
+      "slowest": 0.5137404949928168,
+      "limit": 1.0
+    },
+    "case0016": {
+      "slowest": 0.1449003769957926,
+      "limit": 1.0
+    },
+    "case0121": {
+      "slowest": 1.0234726720082108,
+      "limit": 1.0
+    },
+    "case0342": {
+      "slowest": 0.3667560200265143,
+      "limit": 1.0
+    },
+    "case0214": {
+      "slowest": 0.49586223901133053,
+      "limit": 1.0
+    },
+    "case0421": {
+      "slowest": 1.019097566982964,
+      "limit": 1.0
+    },
+    "case0156": {
+      "slowest": 1.0225867010012735,
+      "limit": 1.0
+    },
+    "case0316": {
+      "slowest": 0.39820403899648227,
+      "limit": 1.664276
+    },
+    "case0555": {
+      "slowest": 11.242638463998446,
+      "limit": 300.0
+    },
+    "case0637": {
+      "slowest": 0.35594714697799645,
+      "limit": 1.0
+    },
+    "case0583": {
+      "slowest": 8.842789472982986,
+      "limit": 300.0
+    },
+    "case0152": {
+      "slowest": 1.0183542339946143,
+      "limit": 1.0
+    },
+    "case0198": {
+      "slowest": 1.0223171469988301,
+      "limit": 1.0
+    },
+    "case0443": {
+      "slowest": 17.9429404240218,
+      "limit": 300.0
+    },
+    "case0072": {
+      "slowest": 0.3551130859996192,
+      "limit": 300.0
+    },
+    "case0315": {
+      "slowest": 0.49112560000503436,
+      "limit": 1.0
+    },
+    "case0617": {
+      "slowest": 0.3571064079878852,
+      "limit": 1.0
+    },
+    "case0044": {
+      "slowest": 0.3532594220014289,
+      "limit": 1.0
+    },
+    "case0176": {
+      "slowest": 4.986200889979955,
+      "limit": 300.0
+    },
+    "case0331": {
+      "slowest": 0.5132844049949199,
+      "limit": 1.0
+    },
+    "case0049": {
+      "slowest": 0.3653705100005027,
+      "limit": 3.210027
+    },
+    "case0352": {
+      "slowest": 0.5258718020049855,
+      "limit": 1.0
+    },
+    "case0538": {
+      "slowest": 0.4255230330163613,
+      "limit": 1.0
+    },
+    "case0310": {
+      "slowest": 0.5361766169953626,
+      "limit": 1.0
+    },
+    "case0493": {
+      "slowest": 3.970497433008859,
+      "limit": 300.0
+    },
+    "case0226": {
+      "slowest": 0.7754659279889893,
+      "limit": 1.0
+    },
+    "case0035": {
+      "slowest": 0.15910979601903819,
+      "limit": 1.0
+    },
+    "case0268": {
+      "slowest": 0.5318600019963924,
+      "limit": 1.0
+    },
+    "case0014": {
+      "slowest": 0.47747823398094624,
+      "limit": 5.419978
+    },
+    "case0543": {
+      "slowest": 1.13887433000491,
+      "limit": 1.227304
+    },
+    "case0067": {
+      "slowest": 0.5103495299990755,
+      "limit": 1.0
+    },
+    "case0402": {
+      "slowest": 0.3865636329865083,
+      "limit": 1.0
+    },
+    "case0031": {
+      "slowest": 0.15288831302314065,
+      "limit": 1.0
+    },
+    "case0505": {
+      "slowest": 0.4064641119912267,
+      "limit": 1.0
+    },
+    "case0385": {
+      "slowest": 1.0091414310154505,
+      "limit": 1.0
+    },
+    "case0337": {
+      "slowest": 0.6741572599858046,
+      "limit": 1.0
+    },
+    "case0495": {
+      "slowest": 4.363710025005275,
+      "limit": 300.0
+    },
+    "case0079": {
+      "slowest": 0.3620497510128189,
+      "limit": 1.0
+    },
+    "case0104": {
+      "slowest": 1.0250335780146997,
+      "limit": 1.0
+    },
+    "case0213": {
+      "slowest": 0.6136476419924293,
+      "limit": 1.844569
+    },
+    "case0559": {
+      "slowest": 1.3182899829989765,
+      "limit": 300.0
+    },
+    "case0246": {
+      "slowest": 0.5832799919880927,
+      "limit": 1.0
+    },
+    "case0252": {
+      "slowest": 22.218831590987975,
+      "limit": 27.20029
+    },
+    "case0155": {
+      "slowest": 1.0201405829866417,
+      "limit": 1.0
+    },
+    "case0341": {
+      "slowest": 0.37706824802444316,
+      "limit": 1.0
+    },
+    "case0201": {
+      "slowest": 1.021644191001542,
+      "limit": 1.0
+    },
+    "case0189": {
+      "slowest": 1.0190835229877848,
+      "limit": 1.0
+    },
+    "case0133": {
+      "slowest": 0.35945621400605887,
+      "limit": 1.0
+    },
+    "case0444": {
+      "slowest": 18.82010869900114,
+      "limit": 300.0
+    },
+    "case0467": {
+      "slowest": 0.6355436070007272,
+      "limit": 1.0
+    },
+    "case0218": {
+      "slowest": 2.9379664480220526,
+      "limit": 22.472602
+    },
+    "case0254": {
+      "slowest": 1.144538469001418,
+      "limit": 14.0993
+    },
+    "case0073": {
+      "slowest": 0.35928632598370314,
+      "limit": 300.0
+    },
+    "case0516": {
+      "slowest": 0.24324682899168693,
+      "limit": 1.0
+    },
+    "case0374": {
+      "slowest": 0.48228910099714994,
+      "limit": 5.423305
+    },
+    "case0535": {
+      "slowest": 9.115622065990465,
+      "limit": 300.0
+    },
+    "case0355": {
+      "slowest": 0.49228910100646317,
+      "limit": 300.0
+    },
+    "case0091": {
+      "slowest": 1.019665822997922,
+      "limit": 1.0
+    },
+    "case0620": {
+      "slowest": 0.36861526998109184,
+      "limit": 1.0
+    },
+    "case0557": {
+      "slowest": 0.5087454370222986,
+      "limit": 1.0
+    },
+    "case0043": {
+      "slowest": 0.41001273298752494,
+      "limit": 1.0
+    },
+    "case0309": {
+      "slowest": 0.5424035690084565,
+      "limit": 1.0
+    },
+    "case0381": {
+      "slowest": 0.5045921450073365,
+      "limit": 1.0
+    },
+    "case0398": {
+      "slowest": 0.39236666201031767,
+      "limit": 1.0
+    },
+    "case0519": {
+      "slowest": 7.150618735002354,
+      "limit": 300.0
+    },
+    "case0469": {
+      "slowest": 3.8536892279807944,
+      "limit": 5.109914
+    },
+    "case0602": {
+      "slowest": 14.626110879005864,
+      "limit": 14.578664
+    },
+    "case0644": {
+      "slowest": 0.4416673429950606,
+      "limit": 8.964562
+    },
+    "case0256": {
+      "slowest": 10.586816658003954,
+      "limit": 132.436929
+    },
+    "case0588": {
+      "slowest": 25.29512686500675,
+      "limit": 300.0
+    },
+    "case0534": {
+      "slowest": 1.0450569319946226,
+      "limit": 1.045531
+    },
+    "case0447": {
+      "slowest": 0.5507666530029383,
+      "limit": 1.0
+    },
+    "case0427": {
+      "slowest": 0.3604345719795674,
+      "limit": 1.0
+    },
+    "case0300": {
+      "slowest": 0.4998171940096654,
+      "limit": 1.0
+    },
+    "case0260": {
+      "slowest": 5.081791297008749,
+      "limit": 300.0
+    },
+    "case0001": {
+      "slowest": 1.0224150059802923,
+      "limit": 2.182237
+    },
+    "case0046": {
+      "slowest": 0.4738531440088991,
+      "limit": 300.0
+    },
+    "case0389": {
+      "slowest": 0.5310123310191557,
+      "limit": 1.0
+    },
+    "case0193": {
+      "slowest": 1.021924136992311,
+      "limit": 1.0
+    },
+    "case0054": {
+      "slowest": 0.7544851530110464,
+      "limit": 1.0
+    },
+    "case0274": {
+      "slowest": 0.5288135430018883,
+      "limit": 1.0
+    },
+    "case0095": {
+      "slowest": 0.621600115991896,
+      "limit": 1.0
+    },
+    "case0019": {
+      "slowest": 0.23277095798403025,
+      "limit": 1.0
+    },
+    "case0181": {
+      "slowest": 1.018291925021913,
+      "limit": 1.0
+    },
+    "case0377": {
+      "slowest": 0.8446099059947301,
+      "limit": 1.0
+    },
+    "case0336": {
+      "slowest": 0.46548125002300367,
+      "limit": 4.010741
+    },
+    "case0231": {
+      "slowest": 0.5231669300119393,
+      "limit": 1.0
+    },
+    "case0482": {
+      "slowest": 0.4104421829979401,
+      "limit": 1.0
+    },
+    "case0147": {
+      "slowest": 1.0195227939984761,
+      "limit": 1.0
+    },
+    "case0488": {
+      "slowest": 3.789348185993731,
+      "limit": 300.0
+    },
+    "case0406": {
+      "slowest": 1.0242731100006495,
+      "limit": 1.0
+    },
+    "case0320": {
+      "slowest": 0.42366455402225256,
+      "limit": 2.086533
+    },
+    "case0137": {
+      "slowest": 0.3663175039982889,
+      "limit": 1.0
+    },
+    "case0116": {
+      "slowest": 1.023548903001938,
+      "limit": 1.0
+    },
+    "case0112": {
+      "slowest": 1.0183763399836607,
+      "limit": 1.0
+    },
+    "case0141": {
+      "slowest": 0.378443227004027,
+      "limit": 300.0
+    },
+    "case0197": {
+      "slowest": 1.0204945060249884,
+      "limit": 1.0
+    },
+    "case0124": {
+      "slowest": 0.35533960300381295,
+      "limit": 1.0
+    },
+    "case0159": {
+      "slowest": 1.020756135985721,
+      "limit": 1.0
+    },
+    "case0185": {
+      "slowest": 1.0188334340055007,
+      "limit": 1.0
+    },
+    "case0286": {
+      "slowest": 0.5291062309988774,
+      "limit": 1.0
+    },
+    "case0255": {
+      "slowest": 2.0466245909919962,
+      "limit": 34.977969
+    },
+    "case0580": {
+      "slowest": 36.97339148298488,
+      "limit": 300.0
+    },
+    "case0059": {
+      "slowest": 0.35137202401529066,
+      "limit": 1.0
+    },
+    "case0569": {
+      "slowest": 15.958561684994493,
+      "limit": 300.0
+    },
+    "case0410": {
+      "slowest": 0.5525967510184273,
+      "limit": 1.0
+    },
+    "case0632": {
+      "slowest": 0.37069964298279956,
+      "limit": 1.0
+    },
+    "case0608": {
+      "slowest": 1.0182061349914875,
+      "limit": 1.0
+    },
+    "case0528": {
+      "slowest": 7.893069761019433,
+      "limit": 300.0
+    },
+    "case0584": {
+      "slowest": 11.22063657999388,
+      "limit": 300.0
+    },
+    "case0239": {
+      "slowest": 1.2292611470038537,
+      "limit": 4.747661
+    },
+    "case0151": {
+      "slowest": 1.02178256798652,
+      "limit": 1.0
+    },
+    "case0100": {
+      "slowest": 1.023134019022109,
+      "limit": 1.0
+    },
+    "case0461": {
+      "slowest": 3.0223880609846674,
+      "limit": 4.101194
+    },
+    "case0308": {
+      "slowest": 0.48682049798662774,
+      "limit": 300.0
+    },
+    "case0366": {
+      "slowest": 0.7779459209996276,
+      "limit": 1.0
+    },
+    "case0552": {
+      "slowest": 9.509868566994555,
+      "limit": 21.776429
+    },
+    "case0551": {
+      "slowest": 9.357451482006582,
+      "limit": 300.0
+    },
+    "case0039": {
+      "slowest": 0.611751220014412,
+      "limit": 1.0
+    },
+    "case0142": {
+      "slowest": 1.0212527269904967,
+      "limit": 1.0
+    },
+    "case0362": {
+      "slowest": 0.8443030400085263,
+      "limit": 1.0
+    },
+    "case0640": {
+      "slowest": 0.3718689740053378,
+      "limit": 1.0
+    },
+    "case0238": {
+      "slowest": 0.8428853880031966,
+      "limit": 300.0
+    },
+    "case0128": {
+      "slowest": 0.3622053829894867,
+      "limit": 1.0
+    },
+    "case0023": {
+      "slowest": 0.2201053869794123,
+      "limit": 1.0
+    },
+    "case0609": {
+      "slowest": 0.7870252899883781,
+      "limit": 300.0
+    },
+    "case0501": {
+      "slowest": 4.748638640012359,
+      "limit": 300.0
+    },
+    "case0523": {
+      "slowest": 8.231813680991763,
+      "limit": 300.0
+    },
+    "case0636": {
+      "slowest": 0.3588380859873723,
+      "limit": 1.0
+    },
+    "case0440": {
+      "slowest": 17.378871750988765,
+      "limit": 300.0
+    },
+    "case0108": {
+      "slowest": 1.0152218699804507,
+      "limit": 1.0
+    },
+    "case0420": {
+      "slowest": 1.0238613919937052,
+      "limit": 1.0
+    },
+    "case0120": {
+      "slowest": 0.3588637940119952,
+      "limit": 1.0
+    },
+    "case0492": {
+      "slowest": 4.043272603012156,
+      "limit": 7.046808
+    },
+    "case0330": {
+      "slowest": 0.5216790309932549,
+      "limit": 1.0
+    },
+    "case0010": {
+      "slowest": 0.5339730539999437,
+      "limit": 1.0
+    },
+    "case0321": {
+      "slowest": 0.4124905449862126,
+      "limit": 1.956158
+    },
+    "case0547": {
+      "slowest": 0.44568489500670694,
+      "limit": 1.0
+    },
+    "case0565": {
+      "slowest": 16.339450622006552,
+      "limit": 300.0
+    },
+    "case0347": {
+      "slowest": 0.37558048000209965,
+      "limit": 1.0
+    },
+    "case0476": {
+      "slowest": 3.4431611339969095,
+      "limit": 300.0
+    },
+    "case0282": {
+      "slowest": 0.5591709139989689,
+      "limit": 1.0
+    },
+    "case0053": {
+      "slowest": 0.5050659330154303,
+      "limit": 24.148299
+    },
+    "case0593": {
+      "slowest": 0.9468230739876162,
+      "limit": 300.0
+    },
+    "case0589": {
+      "slowest": 0.8455199249729048,
+      "limit": 300.0
+    },
+    "case0262": {
+      "slowest": 0.7436728310131002,
+      "limit": 1.0
+    },
+    "case0414": {
+      "slowest": 0.5016813240072224,
+      "limit": 1.0
+    },
+    "case0027": {
+      "slowest": 0.4216622230014764,
+      "limit": 1.0
+    },
+    "case0278": {
+      "slowest": 0.522122270980617,
+      "limit": 1.0
+    },
+    "case0209": {
+      "slowest": 0.5185389980033506,
+      "limit": 1.0
+    },
+    "case0205": {
+      "slowest": 0.4948895760171581,
+      "limit": 1.0
+    },
+    "case0291": {
+      "slowest": 0.5013515749888029,
+      "limit": 1.0
+    },
+    "case0167": {
+      "slowest": 0.3687710689846426,
+      "limit": 1.0
+    },
+    "case0393": {
+      "slowest": 0.38737951999064535,
+      "limit": 1.0
+    },
+    "case0550": {
+      "slowest": 9.410037525987718,
+      "limit": 23.420509
+    },
+    "case0294": {
+      "slowest": 0.5300502490135841,
+      "limit": 300.0
+    },
+    "case0249": {
+      "slowest": 1.026029929984361,
+      "limit": 1.360541
+    },
+    "case0576": {
+      "slowest": 12.234642136027105,
+      "limit": 300.0
+    },
+    "case0449": {
+      "slowest": 2.2819840500014834,
+      "limit": 3.693938
+    },
+    "case0452": {
+      "slowest": 20.796076507976977,
+      "limit": 300.0
+    },
+    "case0177": {
+      "slowest": 0.761985831981292,
+      "limit": 1.0
+    },
+    "case0628": {
+      "slowest": 0.37406823300989345,
+      "limit": 1.0
+    },
+    "case0075": {
+      "slowest": 0.3679399430111516,
+      "limit": 1.0
+    },
+    "case0082": {
+      "slowest": 0.36580951302312315,
+      "limit": 300.0
+    },
+    "case0478": {
+      "slowest": 0.7825925539946184,
+      "limit": 1.0
+    },
+    "case0500": {
+      "slowest": 4.798756903997855,
+      "limit": 6.605771
+    },
+    "case0358": {
+      "slowest": 1.0225323929917067,
+      "limit": 1.0
+    },
+    "case0163": {
+      "slowest": 1.0228835750021972,
+      "limit": 1.0
+    },
+    "case0624": {
+      "slowest": 0.3697005620051641,
+      "limit": 1.0
+    },
+    "case0314": {
+      "slowest": 1.029863865027437,
+      "limit": 1.0
+    },
+    "case0171": {
+      "slowest": 0.3633783599943854,
+      "limit": 1.0
+    },
+    "case0498": {
+      "slowest": 4.13841202299227,
+      "limit": 7.549078
+    },
+    "case0616": {
+      "slowest": 0.3684056870115455,
+      "limit": 1.0
+    },
+    "case0424": {
+      "slowest": 25.97319830401102,
+      "limit": 25.867064
+    },
+    "case0597": {
+      "slowest": 1.01814815599937,
+      "limit": 1.0
+    },
+    "case0457": {
+      "slowest": 1.0250013539916836,
+      "limit": 1.0
+    },
+    "case0241": {
+      "slowest": 0.6120204039907549,
+      "limit": 1.0
+    },
+    "case0351": {
+      "slowest": 0.5446714060090017,
+      "limit": 1.0
+    },
+    "case0063": {
+      "slowest": 0.5050279540009797,
+      "limit": 1.0
+    },
+    "case0225": {
+      "slowest": 0.5280375830188859,
+      "limit": 1.0
+    },
+    "case0436": {
+      "slowest": 0.42044313001679257,
+      "limit": 2.08771
+    },
+    "case0011": {
+      "slowest": 0.7029582459945232,
+      "limit": 15.286433
+    },
+    "case0235": {
+      "slowest": 1.0172800659784116,
+      "limit": 1.0
+    },
+    "case0299": {
+      "slowest": 1.2313970569812227,
+      "limit": 300.0
+    },
+    "case0087": {
+      "slowest": 1.0183955749962479,
+      "limit": 1.0
+    },
+    "case0006": {
+      "slowest": 0.7359151120181195,
+      "limit": 1.0
+    },
+    "case0511": {
+      "slowest": 4.616530978004448,
+      "limit": 300.0
+    },
+    "case0217": {
+      "slowest": 0.7110558790154755,
+      "limit": 1.0
+    },
+    "case0051": {
+      "slowest": 0.4267109990178142,
+      "limit": 16.125158
+    },
+    "case0012": {
+      "slowest": 0.8025945900008082,
+      "limit": 20.044344
+    },
+    "case0319": {
+      "slowest": 0.41315068100811914,
+      "limit": 1.615173
+    },
+    "case0223": {
+      "slowest": 1.68430961901322,
+      "limit": 300.0
+    },
+    "case0464": {
+      "slowest": 2.9416796719888225,
+      "limit": 300.0
+    },
+    "case0324": {
+      "slowest": 0.6269959539931733,
+      "limit": 1.0
+    },
+    "case0370": {
+      "slowest": 0.8066949490166735,
+      "limit": 1.0
+    },
+    "case0327": {
+      "slowest": 3.677486761996988,
+      "limit": 3.657001
+    },
+    "case0425": {
+      "slowest": 28.445552741002757,
+      "limit": 28.328966
+    },
+    "case0326": {
+      "slowest": 7.665534236002713,
+      "limit": 7.630476
+    },
+    "case0157": {
+      "slowest": 0.8619151189923286,
+      "limit": 1.0
+    },
+    "case0520": {
+      "slowest": 7.267920664016856,
+      "limit": 300.0
+    },
+    "case0293": {
+      "slowest": 0.6541567290259991,
+      "limit": 1.0
+    },
+    "case0536": {
+      "slowest": 9.223269515990978,
+      "limit": 44.233128
+    },
+    "case0228": {
+      "slowest": 0.5150556029984728,
+      "limit": 1.0
+    },
+    "case0626": {
+      "slowest": 0.3630168180097826,
+      "limit": 1.0
+    },
+    "case0526": {
+      "slowest": 7.924923471990041,
+      "limit": 28.929885
+    },
+    "case0145": {
+      "slowest": 1.016713246004656,
+      "limit": 1.0
+    },
+    "case0276": {
+      "slowest": 0.5217749990115408,
+      "limit": 1.0
+    },
+    "case0250": {
+      "slowest": 1.9642529300181195,
+      "limit": 3.009028
+    },
+    "case0643": {
+      "slowest": 0.4532320470025297,
+      "limit": 11.913448
+    },
+    "case0021": {
+      "slowest": 0.1530977780057583,
+      "limit": 1.0
+    },
+    "case0356": {
+      "slowest": 1.0162915410182904,
+      "limit": 1.0
+    },
+    "case0379": {
+      "slowest": 1.0193918870063499,
+      "limit": 1.0
+    },
+    "case0646": {
+      "slowest": 0.5214548229996581,
+      "limit": 17.988386
+    },
+    "case0502": {
+      "slowest": 2.8680404550104868,
+      "limit": 2.84416
+    },
+    "case0004": {
+      "slowest": 1.013601986982394,
+      "limit": 1.321634
+    },
+    "case0634": {
+      "slowest": 0.697271863988135,
+      "limit": 1.0
+    },
+    "case0084": {
+      "slowest": 0.35852988398983143,
+      "limit": 1.0
+    },
+    "case0570": {
+      "slowest": 16.129453444998944,
+      "limit": 300.0
+    },
+    "case0484": {
+      "slowest": 3.698097485990729,
+      "limit": 300.0
+    },
+    "case0221": {
+      "slowest": 0.7533860380062833,
+      "limit": 1.0
+    },
+    "case0302": {
+      "slowest": 0.4916218649887014,
+      "limit": 300.0
+    },
+    "case0610": {
+      "slowest": 30.3512120610103,
+      "limit": 300.0
+    },
+    "case0422": {
+      "slowest": 1.0238283569924533,
+      "limit": 1.0
+    },
+    "case0529": {
+      "slowest": 7.186634990997845,
+      "limit": 300.0
+    },
+    "case0537": {
+      "slowest": 9.339948784006992,
+      "limit": 300.0
+    },
+    "case0065": {
+      "slowest": 0.4945338849793188,
+      "limit": 1.0
+    },
+    "case0375": {
+      "slowest": 0.48711636700318195,
+      "limit": 4.403998
+    },
+    "case0311": {
+      "slowest": 0.5402195309870876,
+      "limit": 1.0
+    },
+    "case0445": {
+      "slowest": 18.581961447984213,
+      "limit": 300.0
+    },
+    "case0622": {
+      "slowest": 1.023313218000112,
+      "limit": 1.0
+    },
+    "case0503": {
+      "slowest": 0.40256480398238637,
+      "limit": 1.0
+    },
+    "case0614": {
+      "slowest": 1.0221397069981322,
+      "limit": 1.0
+    },
+    "case0561": {
+      "slowest": 1.3284649120178074,
+      "limit": 1.309625
+    },
+    "case0508": {
+      "slowest": 0.4004828040197026,
+      "limit": 300.0
+    },
+    "case0603": {
+      "slowest": 60.95015387801686,
+      "limit": 271.058507
+    },
+    "case0280": {
+      "slowest": 0.5583968790015206,
+      "limit": 1.0
+    },
+    "case0383": {
+      "slowest": 0.8583664109755773,
+      "limit": 1.0
+    },
+    "case0372": {
+      "slowest": 1.0197152319888119,
+      "limit": 1.0
+    },
+    "case0266": {
+      "slowest": 1.0161782399809454,
+      "limit": 1.0
+    },
+    "case0057": {
+      "slowest": 0.719999180000741,
+      "limit": 1.0
+    },
+    "case0245": {
+      "slowest": 0.5034181269875262,
+      "limit": 300.0
+    },
+    "case0648": {
+      "slowest": 0.5949191880063154,
+      "limit": 22.35511
+    },
+    "case0630": {
+      "slowest": 0.36064333200920373,
+      "limit": 1.0
+    },
+    "case0459": {
+      "slowest": 0.6148978979908861,
+      "limit": 1.0
+    },
+    "case0220": {
+      "slowest": 1.9496825899987016,
+      "limit": 19.572954
+    },
+    "case0187": {
+      "slowest": 0.6688961949839722,
+      "limit": 1.0
+    },
+    "case0149": {
+      "slowest": 1.0226837010122836,
+      "limit": 1.0
+    },
+    "case0295": {
+      "slowest": 0.7387748320179526,
+      "limit": 300.0
+    },
+    "case0360": {
+      "slowest": 0.8004368070105556,
+      "limit": 1.0
+    },
+    "case0122": {
+      "slowest": 0.3516036420187447,
+      "limit": 1.0
+    },
+    "case0203": {
+      "slowest": 0.7819528659747448,
+      "limit": 1.0
+    },
+    "case0343": {
+      "slowest": 0.35352693899767473,
+      "limit": 1.0
+    },
+    "case0429": {
+      "slowest": 2.172575540986145,
+      "limit": 2.146039
+    },
+    "case0118": {
+      "slowest": 1.0250900730025023,
+      "limit": 1.0
+    },
+    "case0237": {
+      "slowest": 0.5241648770170286,
+      "limit": 1.0
+    },
+    "case0173": {
+      "slowest": 0.35792521201074123,
+      "limit": 1.0
+    },
+    "case0618": {
+      "slowest": 1.0224982389772777,
+      "limit": 1.0
+    },
+    "case0243": {
+      "slowest": 0.5060487739974633,
+      "limit": 1.0
+    },
+    "case0364": {
+      "slowest": 0.830499064992182,
+      "limit": 1.0
+    },
+    "case0581": {
+      "slowest": 4.396568675991148,
+      "limit": 300.0
+    },
+    "case0349": {
+      "slowest": 0.7880569490080234,
+      "limit": 1.0
+    },
+    "case0553": {
+      "slowest": 11.631607393006561,
+      "limit": 300.0
+    },
+    "case0261": {
+      "slowest": 0.6311166119994596,
+      "limit": 300.0
+    },
+    "case0029": {
+      "slowest": 0.15274201301508583,
+      "limit": 1.0
+    },
+    "case0642": {
+      "slowest": 0.37762559100519866,
+      "limit": 1.311011
+    },
+    "case0416": {
+      "slowest": 1.0860588930081576,
+      "limit": 1.070877
+    },
+    "case0396": {
+      "slowest": 1.022092655999586,
+      "limit": 1.0
+    },
+    "case0077": {
+      "slowest": 0.36030685098376125,
+      "limit": 1.0
+    },
+    "case0050": {
+      "slowest": 0.3746189190133009,
+      "limit": 3.605526
+    },
+    "case0284": {
+      "slowest": 0.5263867320027202,
+      "limit": 1.0
+    },
+    "case0490": {
+      "slowest": 2.9656719850027002,
+      "limit": 2.940659
+    },
+    "case0061": {
+      "slowest": 0.5022532859875355,
+      "limit": 1.0
+    },
+    "case0143": {
+      "slowest": 0.36155453900573775,
+      "limit": 300.0
+    },
+    "case0400": {
+      "slowest": 0.37780674602254294,
+      "limit": 1.0
+    },
+    "case0512": {
+      "slowest": 6.869206745002884,
+      "limit": 19.525561
+    },
+    "case0135": {
+      "slowest": 0.36117233301047236,
+      "limit": 1.0
+    },
+    "case0089": {
+      "slowest": 1.020761626015883,
+      "limit": 1.0
+    },
+    "case0605": {
+      "slowest": 1.0198817099735606,
+      "limit": 1.0
+    },
+    "case0102": {
+      "slowest": 0.3580339469772298,
+      "limit": 1.0
+    },
+    "case0233": {
+      "slowest": 0.5735591739939991,
+      "limit": 1.0
+    },
+    "case0207": {
+      "slowest": 0.5273116390162613,
+      "limit": 1.0
+    },
+    "case0165": {
+      "slowest": 1.0218001050234307,
+      "limit": 1.0
+    },
+    "case0253": {
+      "slowest": 0.628984937997302,
+      "limit": 1.0
+    },
+    "case0328": {
+      "slowest": 0.4993062079884112,
+      "limit": 1.0
+    },
+    "case0513": {
+      "slowest": 6.852369426982477,
+      "limit": 300.0
+    },
+    "case0161": {
+      "slowest": 0.8844741329958197,
+      "limit": 1.0
+    },
+    "case0560": {
+      "slowest": 1.3074827720120084,
+      "limit": 300.0
+    },
+    "case0169": {
+      "slowest": 0.3693650799978059,
+      "limit": 1.0
+    },
+    "case0441": {
+      "slowest": 17.271226452983683,
+      "limit": 300.0
+    },
+    "case0093": {
+      "slowest": 0.36791343000368215,
+      "limit": 1.0
+    },
+    "case0179": {
+      "slowest": 0.7189341290213633,
+      "limit": 1.0
+    },
+    "case0017": {
+      "slowest": 0.15205727101420052,
+      "limit": 1.0
+    },
+    "case0153": {
+      "slowest": 0.35818856401601806,
+      "limit": 1.0
+    },
+    "case0251": {
+      "slowest": 5.49309743399499,
+      "limit": 7.046385
+    },
+    "case0590": {
+      "slowest": 3.235075285017956,
+      "limit": 300.0
+    },
+    "case0507": {
+      "slowest": 0.4020550590066705,
+      "limit": 1.0
+    },
+    "case0037": {
+      "slowest": 0.37845899199601263,
+      "limit": 1.0
+    },
+    "case0471": {
+      "slowest": 3.855942241003504,
+      "limit": 4.994286
+    },
+    "case0572": {
+      "slowest": 4.57917674901546,
+      "limit": 4.556446
+    },
+    "case0224": {
+      "slowest": 0.6934903109795414,
+      "limit": 300.0
+    },
+    "case0408": {
+      "slowest": 0.49008310300996527,
+      "limit": 1.0
+    },
+    "case0312": {
+      "slowest": 0.5393528160057031,
+      "limit": 300.0
+    },
+    "case0433": {
+      "slowest": 5.006469326996012,
+      "limit": 4.971836
+    },
+    "case0549": {
+      "slowest": 0.4529705450113397,
+      "limit": 1.0
+    },
+    "case0577": {
+      "slowest": 16.586808600986842,
+      "limit": 300.0
+    },
+    "case0332": {
+      "slowest": 0.6258167670166586,
+      "limit": 1.0
+    },
+    "case0368": {
+      "slowest": 0.9839056009950582,
+      "limit": 1.0
+    },
+    "case0647": {
+      "slowest": 0.5549046670203097,
+      "limit": 23.821619
+    },
+    "case0473": {
+      "slowest": 0.6193317330034915,
+      "limit": 1.0
+    },
+    "case0585": {
+      "slowest": 21.47547956800554,
+      "limit": 300.0
+    },
+    "case0191": {
+      "slowest": 1.024034636997385,
+      "limit": 1.0
+    },
+    "case0489": {
+      "slowest": 3.728174743009731,
+      "limit": 300.0
+    },
+    "case0264": {
+      "slowest": 5.4196735710138455,
+      "limit": 4.82447
+    },
+    "case0211": {
+      "slowest": 0.4921323470189236,
+      "limit": 1.0
+    },
+    "case0086": {
+      "slowest": 0.3604447210091166,
+      "limit": 300.0
+    },
+    "case0532": {
+      "slowest": 1.0345868619915564,
+      "limit": 1.095276
+    },
+    "case0395": {
+      "slowest": 0.379121728008613,
+      "limit": 1.020821
+    },
+    "case0598": {
+      "slowest": 1.6854131529980805,
+      "limit": 1.663573
+    },
+    "case0453": {
+      "slowest": 20.924603863997618,
+      "limit": 300.0
+    },
+    "case0423": {
+      "slowest": 27.896241216978524,
+      "limit": 27.789066
+    },
+    "case0391": {
+      "slowest": 0.5176740419992711,
+      "limit": 1.0
+    },
+    "case0069": {
+      "slowest": 1.0252852179983165,
+      "limit": 1.0
+    },
+    "case0595": {
+      "slowest": 1.0204762990179006,
+      "limit": 1.0
+    },
+    "case0139": {
+      "slowest": 0.3634267159795854,
+      "limit": 1.0
+    },
+    "case0638": {
+      "slowest": 0.37533083200105466,
+      "limit": 1.0
+    },
+    "case0412": {
+      "slowest": 0.49101727301604114,
+      "limit": 1.0
+    },
+    "case0466": {
+      "slowest": 0.6258001690148376,
+      "limit": 300.0
+    },
+    "case0496": {
+      "slowest": 4.195171190978726,
+      "limit": 300.0
+    },
+    "case0571": {
+      "slowest": 11.516890599014005,
+      "limit": 11.48243
+    },
+    "case0566": {
+      "slowest": 16.340280481992522,
+      "limit": 300.0
+    },
+    "case0600": {
+      "slowest": 21.58655890499358,
+      "limit": 38.375132
+    },
+    "case0265": {
+      "slowest": 27.21392722200835,
+      "limit": 25.803387
+    },
+    "case0041": {
+      "slowest": 0.37417569998069666,
+      "limit": 1.0
+    },
+    "case0599": {
+      "slowest": 10.130811256996822,
+      "limit": 10.108342
+    },
+    "case0339": {
+      "slowest": 0.5164833910239395,
+      "limit": 1.0
+    },
+    "case0539": {
+      "slowest": 0.4431824790081009,
+      "limit": 1.0
+    },
+    "case0106": {
+      "slowest": 0.3574506329896394,
+      "limit": 1.0
+    },
+    "case0455": {
+      "slowest": 1.021906714013312,
+      "limit": 1.0
+    },
+    "case0025": {
+      "slowest": 0.20624157198471949,
+      "limit": 1.0
+    },
+    "case0098": {
+      "slowest": 1.0223843969870359,
+      "limit": 1.0
+    },
+    "case0183": {
+      "slowest": 0.3580037880165037,
+      "limit": 1.0
+    },
+    "case0480": {
+      "slowest": 0.7792661919957027,
+      "limit": 1.0
+    },
+    "case0126": {
+      "slowest": 1.020295864000218,
+      "limit": 1.0
+    },
+    "case0524": {
+      "slowest": 6.399651162995724,
+      "limit": 300.0
+    },
+    "case0195": {
+      "slowest": 0.6838956360006705,
+      "limit": 1.0
+    },
+    "case0437": {
+      "slowest": 14.083101069991244,
+      "limit": 300.0
+    },
+    "case0052": {
+      "slowest": 0.43995973499841057,
+      "limit": 17.883705
+    },
+    "case0303": {
+      "slowest": 0.4949656690005213,
+      "limit": 1.0
+    },
+    "case0047": {
+      "slowest": 0.5140285300149117,
+      "limit": 300.0
+    },
+    "case0322": {
+      "slowest": 0.5146043229906354,
+      "limit": 1.0
+    },
+    "case0008": {
+      "slowest": 0.9394639389938675,
+      "limit": 1.0
+    },
+    "case0288": {
+      "slowest": 0.5912152570090257,
+      "limit": 1.0
+    },
+    "case0114": {
+      "slowest": 0.5011591279762797,
+      "limit": 1.0
+    },
+    "case0045": {
+      "slowest": 0.36894194601336494,
+      "limit": 1.0
+    },
+    "case0270": {
+      "slowest": 0.521522327006096,
+      "limit": 1.0
+    },
+    "case0033": {
+      "slowest": 0.1695846380025614,
+      "limit": 1.0
+    },
+    "case0494": {
+      "slowest": 4.096017739007948,
+      "limit": 6.432005
+    },
+    "case0432": {
+      "slowest": 0.516269245010335,
+      "limit": 1.0
+    },
+    "case0317": {
+      "slowest": 0.39936192901222967,
+      "limit": 1.666985
+    },
+    "case0199": {
+      "slowest": 1.0177212959970348,
+      "limit": 1.0
+    },
+    "case0404": {
+      "slowest": 0.36503418200300075,
+      "limit": 1.0
+    },
+    "case0215": {
+      "slowest": 0.5017504120187368,
+      "limit": 1.0
+    },
+    "case0110": {
+      "slowest": 1.022004143014783,
+      "limit": 1.0
+    },
+    "case0387": {
+      "slowest": 0.38764897000510246,
+      "limit": 1.0
+    },
+    "case0013": {
+      "slowest": 0.9276905019942205,
+      "limit": 28.760423
+    },
+    "case0545": {
+      "slowest": 1.0195786349941045,
+      "limit": 1.0
+    },
+    "case0074": {
+      "slowest": 0.36331027900450863,
+      "limit": 300.0
+    },
+    "case0645": {
+      "slowest": 0.5480628620134667,
+      "limit": 28.171387
+    },
+    "case0130": {
+      "slowest": 0.3622635880019516,
+      "limit": 1.0
+    },
+    "case0430": {
+      "slowest": 2.2222852209815755,
+      "limit": 2.200978
+    }
+  }
+}

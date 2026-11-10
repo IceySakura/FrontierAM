@@ -1,0 +1,10 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.2",
+ "setting": "单轮",
+ "submission": "conic-20261109T132523Z-751260",
+ "raw": "487 / 650（\\(p = 0.749\\)）",
+ "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
+ "score": 24.7,
+ "review": null
+}

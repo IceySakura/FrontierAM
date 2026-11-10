@@ -1,0 +1,23 @@
+{
+  "name": "species-tree-v2",
+  "title": "从短基因的估计树推断物种树（250 个物种）",
+  "status": "formal",
+  "status_reason": "Rebuilt by FrontierAM (results/SPECIES_TREE_SIM.md): S100-style simulation calibrated to the v1 data, 250 species, 50 genes of 200 bp, 200 held-out cases and 50 public cases. Grading runs the v1 package batch grader and sandbox with the taxon count lifted to 250 (scripts/seal/prepare_species_v2.py); both TREE-QMC references are measured on this machine as the 0- and 50-point anchors.",
+  "derived_from": "species-tree",
+  "references": {
+    "weak": "references:unweighted",
+    "strong": "references:weighted"
+  },
+  "images": {
+    "task": {
+      "tag": "frontieram-species-tree:amd64-b1",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": [
+        "sha256:1d48faa312f84fa5a6ace78b36fafe247eda2e6c5ac5d6ddd5da53ccf80a4c11",
+        "local/species-tree-cpu:b1"
+      ]
+    }
+  },
+  "submission_note": "Put the complete source, an executable run.sh and README.md in /workspace/submission, plus an optional executable no-argument build.sh; the evaluator builds once offline and runs ./run.sh INPUT OUTPUT per instance in a clean copy of this environment without the agent tools.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/public-dev. Implement the species-tree inference program described there."
+}

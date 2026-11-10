@@ -1,0 +1,10 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.2",
+ "setting": "单轮",
+ "submission": "exponential-v2-20261109T125907Z-5a6038",
+ "raw": "74/74 合格，R = 0.412",
+ "mapping": "\\(100/(1+R)\\)",
+ "score": 70.8,
+ "review": "待复核"
+}

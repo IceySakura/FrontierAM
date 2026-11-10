@@ -4,27 +4,30 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 
 看板（办公网）：http://9.135.91.91:18765/
 
-## 给出题人：从哪里读起
-
-**每道题一个目录，都在 [`problems/`](problems/README.md)。** 打开 `problems/<题目>/README.md`，按顺序是：
-
-1. **题目背景**：题目要解决什么问题。
-2. **题面原文** `statement.md`：给模型的版本，逐字相同。
-3. **数据与代码在哪里**：题包、公开开发材料（`public/`）、私有测试集、评测器、参照实现、详细文档的位置。
-4. **评测依据**：输入、规模、时限、判定规则、原始指标和换算公式。
-5. **Baseline**：参照方法和本机实测结果（`reference/` 为参照源码）。
-6. **模型成绩与解法**：每份提交的原始指标、换算和得分，我们对其做法的说明，以及完整源码（`solutions/<模型>-<设置>/`）。
+## 题目：每题一个目录，结构相同
 
 | 题目 | 目录 |
 | --- | --- |
-| 凸锥优化求解器（650 个隐藏实例） | [`problems/conic/`](problems/conic/README.md) |
-| 稀疏系统的指数传播（对标 7 个已发表方法） | [`problems/exponential-v2/`](problems/exponential-v2/README.md) |
-| 星系快照中的引力加速度（131,072 粒子） | [`problems/galaxy-gravity-v2/`](problems/galaxy-gravity-v2/README.md) |
-| 偏振马赛克图像重建 | [`problems/polarization-demosaicking/`](problems/polarization-demosaicking/README.md) |
-| 从一条 MCMC 轨迹估计长期协方差 | [`problems/trajectory-covariance/`](problems/trajectory-covariance/README.md) |
-| 从短基因的估计树推断物种树（250 物种） | [`problems/species-tree-v2/`](problems/species-tree-v2/README.md) |
+| 凸锥优化求解器（650 个隐藏实例） | [`tasks/conic/`](tasks/conic/README.md) |
+| 稀疏系统的指数传播（对标 7 个已发表方法） | [`tasks/exponential/`](tasks/exponential/README.md) |
+| 星系快照中的引力加速度 | [`tasks/galaxy-gravity/`](tasks/galaxy-gravity/README.md) |
+| 偏振马赛克图像重建 | [`tasks/polarization-demosaicking/`](tasks/polarization-demosaicking/README.md) |
+| 从一条 MCMC 轨迹估计长期协方差 | [`tasks/trajectory-covariance/`](tasks/trajectory-covariance/README.md) |
+| 从短基因的估计树推断物种树 | [`tasks/species-tree/`](tasks/species-tree/README.md) |
 
-`problems/` 由 `scripts/build_problem_pages.py` 生成，内容与看板同源；题目或成绩更新后重新生成。
+每个题目目录：
+
+```
+tasks/<题目>/
+├── README.md        阅读入口：背景、版本、题面/数据/评测器/参照的位置、评测依据、baseline、模型成绩与解法
+├── meta.json        本题的数据源：说明文字、版本列表、各部分位置、已发布成绩（README 与看板都由它生成）
+├── versions/<版本>/  每个题目版本一个目录：题面 statement.md、公开材料 public/、私有数据、评测器、数据生成流程、改版说明
+├── references/      参照实现：r1/ 为现行参照，candidates/ 为复核中的候选（参照升级时新增 r2/，旧成绩仍对应 r1）
+├── solutions/<协议>/<模型>-<设置>-<序号>/   模型冻结提交的源码 source/ 与成绩 result.json、score.json
+└── analysis/        这道题的专题分析与复核记录
+```
+
+新题：复制一个现有题目目录的结构，写 `versions/v1/` 与 `meta.json`；改版：新增 `versions/v2/` 并写明原因；参照升级：新增 `references/r2/`。生成 README 与看板：`scripts/site/build_task_pages.py`、`scripts/site/build_dashboard.py`。
 
 ## 最终得分约定（所有题目）
 
@@ -40,19 +43,19 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 
 ## 评测协议（v6.2）
 
-每个模型在每道题、每种设置下只尝试一次：一个物理核、4 GiB、断网，模型用各自原生的编程助手（Claude Code、Codex 等）。两种设置都是 2 小时：**单轮**（开发中没有反馈）和**迭代**（可在公开集上做测试评测，得到逐例结果和与 baseline 的对比）。只有时间结束时冻结的源码进入评测，评测在独立的评测核上进行。详见 [`results/PROTOCOL_V62.md`](results/PROTOCOL_V62.md)。
+每个模型在每道题、每种设置下的每次尝试独立进行：一个物理核、4 GiB、断网，模型用各自原生的编程助手（Claude Code、Codex 等）。两种设置都是 2 小时：**单轮**（开发中没有反馈）和**迭代**（可在公开集上做测试评测，得到逐例结果和与 baseline 的对比）。只有时间结束时冻结的源码进入评测，评测在独立的评测核上进行。详见 [`results/PROTOCOL_V62.md`](results/PROTOCOL_V62.md)。
 
 ## 仓库结构
 
 | 目录 | 内容 |
 | --- | --- |
-| `problems/` | **每道题的阅读入口**（生成） |
-| `results/` | 结果与分析：排行榜、协议、复核记录、各题专题文档、评分运行记录（索引见 [`results/README.md`](results/README.md)） |
-| `tasks/` | 题包、公开与私有数据、参照实现、我方重建题目的生成流程 |
-| `arena/` | 评测与开发框架：任务定义、评分、开发 harness、机器隔离 |
-| `scripts/` | 题目封存、评分流水线、分析与看板构建脚本（索引见 [`scripts/README.md`](scripts/README.md)） |
-| `dashboard/` | 看板内容（`tasks/*.json`）与样式；构建脚本 `scripts/build_dashboard.py` |
-| `docs/` | 平台与运维：服务器要求、安装、机器隔离、开发与评测流程（[`docs/PLATFORM.md`](docs/PLATFORM.md)） |
-| `nexus/`、`docker/`、`fixtures/`、`provenance/` | 固定版本的 Nexus 框架、镜像构建、测试夹具、来源记录 |
+| `tasks/` | **每道题的全部内容**（见上） |
+| `results/` | 跨题内容：排行榜、协议、参照原则与复核总览、新题接入记录、待讨论事项 |
+| `arena/` | 评测与开发框架：任务定义、评分、开发 harness、机器隔离（题目按 `tasks/*/versions/*/task.json` 自动发现） |
+| `scripts/` | 按用途分目录：`setup/`、`seal/`、`references/`、`rounds/`、`grade/`、`analyze/`、`site/`、`ops/`（索引见 [`scripts/README.md`](scripts/README.md)） |
+| `dashboard/` | 看板的全站文字（`site.json`）与样式；各题内容来自 `tasks/*/meta.json` |
+| `docs/` | 平台与运维（[`docs/PLATFORM.md`](docs/PLATFORM.md)、`docs/platform/`） |
+| `docker/` | 评测与开发镜像 |
+| `nexus/`、`fixtures/`、`provenance/` | 固定版本的 Nexus 框架、测试夹具、来源记录 |
 | `var/` | 本机运行数据（不进 git）：`var/stores/` 评测与开发记录库，`var/raw/` 出题方原始题包，`var/outputs/` 导出包，`var/dist/` 构建产物 |
 | `.runtime*/`、`.venv-*/` | 封存的运行副本与 Python 环境（隐藏目录，不进 git） |

@@ -1,6 +1,6 @@
 """exponential-v2: dataset v2 graded against the frozen human-SOTA panel (tasks/exponential/sota_v1).
 
-The v1 evaluator, tools, image and scorer run unchanged on a sealed copy (.runtime-exp2, scripts/prepare_exponential_v2.py);
+The v1 evaluator, tools, image and scorer run unchanged on a sealed copy (.runtime-exp2, scripts/seal/prepare_exponential_v2.py);
 only the manifest, the cases and the reference differ. A baseline grades every panel member in one job on one slot;
 a candidate is then scored against the per-case virtual best: for each case the member with the shortest median time
 among those whose three repetitions all passed. The v1 scorer turns those ratios into 100 / (1 + R), so the virtual
