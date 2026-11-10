@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "tolerance": 1e-08,
+  "checks": [
+    {
+      "input": "01-mixed-qp.input.npz",
+      "result": "01-mixed-qp.result.npz",
+      "expected": "accepted",
+      "status": "solved"
+    },
+    {
+      "input": "02-soc.input.npz",
+      "result": "02-soc.result.npz",
+      "expected": "accepted",
+      "status": "solved"
+    },
+    {
+      "input": "03-exponential.input.npz",
+      "result": "03-exponential.result.npz",
+      "expected": "accepted",
+      "status": "solved"
+    },
+    {
+      "input": "04-psd.input.npz",
+      "result": "04-psd.result.npz",
+      "expected": "accepted",
+      "status": "solved"
+    },
+    {
+      "input": "05-primal-infeasible.input.npz",
+      "result": "05-primal-infeasible.result.npz",
+      "expected": "accepted",
+      "status": "primal_infeasible"
+    },
+    {
+      "input": "06-dual-infeasible.input.npz",
+      "result": "06-dual-infeasible.result.npz",
+      "expected": "accepted",
+      "status": "dual_infeasible"
+    },
+    {
+      "input": "01-mixed-qp.input.npz",
+      "result": "01-mixed-qp.rejected.npz",
+      "expected": "rejected",
+      "status": "solved"
+    }
+  ]
+}

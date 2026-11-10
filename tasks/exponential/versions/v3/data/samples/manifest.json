@@ -1,0 +1,165 @@
+{
+ "version": 2,
+ "scope": "public reduced-size smoke",
+ "truth_qualified": true,
+ "truth_note": "scored y_ref arrays are placeholders; controls are qualified",
+ "cases": [
+  {
+   "id": "syn_diffusion2d_p4_k1",
+   "file": "syn_diffusion2d_p4_k1.npz",
+   "family": "mesh_diffusion",
+   "mother": "syn_diffusion2d",
+   "scenario": "one_shot",
+   "precision": "p4",
+   "role": "scored",
+   "n": 1024,
+   "nnz": 8836,
+   "request_count": 1,
+   "t": 1.2122841930625155e-07,
+   "eta_bucket": "low_eta_le_10",
+   "eta_target": 0.01,
+   "operator_scale": 1.0,
+   "rhs_categories": [
+    "rademacher"
+   ],
+   "truth_status": "chebyshev_audited_qualified",
+   "sha256": "cacfaf7a818db4ec0d0f01e85b39b3ba8c13107b9d306d155335264291b19c3b",
+   "truth": {
+    "qualified": true,
+    "audit_disagreement_fraction": 2.4922901856560077e-06,
+    "chebyshev_degree": 2,
+    "cpu_seconds": 0.005996726000000001
+   }
+  },
+  {
+   "id": "syn_geometric_p4_k1",
+   "file": "syn_geometric_p4_k1.npz",
+   "family": "geometric_graph",
+   "mother": "syn_geometric",
+   "scenario": "one_shot",
+   "precision": "p4",
+   "role": "scored",
+   "n": 1500,
+   "nnz": 12810,
+   "request_count": 1,
+   "t": 0.1332149167358392,
+   "eta_bucket": "mid_eta_10_to_1e3",
+   "eta_target": 100.0,
+   "operator_scale": 1.0,
+   "rhs_categories": [
+    "rademacher"
+   ],
+   "truth_status": "chebyshev_audited_qualified",
+   "sha256": "639700a8f7bd3e1b4c5fac9ff224a8793d4b7fde78178e2b2be92da77f296543",
+   "truth": {
+    "qualified": true,
+    "audit_disagreement_fraction": 0.0001815103733862441,
+    "chebyshev_degree": 38,
+    "cpu_seconds": 0.048154949
+   }
+  },
+  {
+   "id": "syn_heavytail_p4_k1",
+   "file": "syn_heavytail_p4_k1.npz",
+   "family": "network_operator",
+   "mother": "syn_heavytail",
+   "scenario": "one_shot",
+   "precision": "p4",
+   "role": "scored",
+   "n": 1500,
+   "nnz": 13480,
+   "request_count": 1,
+   "t": 20.98804708073682,
+   "eta_bucket": "high_eta_gt_1e3",
+   "eta_target": 10000.0,
+   "operator_scale": 1.0,
+   "rhs_categories": [
+    "rademacher"
+   ],
+   "truth_status": "chebyshev_audited_qualified",
+   "sha256": "ada2d2f21e93b517323baf52d879eaf31810257a32b07f4270d8ec2b3608d460",
+   "truth": {
+    "qualified": true,
+    "audit_disagreement_fraction": 0.0010873391964485864,
+    "chebyshev_degree": 369,
+    "cpu_seconds": 0.7614973999999997
+   }
+  },
+  {
+   "id": "syn_logspectrum_p4_k1",
+   "file": "syn_logspectrum_p4_k1.npz",
+   "family": "diagonal_local",
+   "mother": "syn_logspectrum",
+   "scenario": "one_shot",
+   "precision": "p4",
+   "role": "scored",
+   "n": 2000,
+   "nnz": 4000,
+   "request_count": 1,
+   "t": 10000.0,
+   "eta_bucket": "high_eta_gt_1e3",
+   "eta_target": 30000.0,
+   "operator_scale": 2.5552758752538973,
+   "rhs_categories": [
+    "rademacher"
+   ],
+   "truth_status": "chebyshev_audited_qualified",
+   "sha256": "f4b7f25a6d3691dbbd33a5205c92417acb65ec9dcc4c5d114ad54e5d778497d0",
+   "truth": {
+    "qualified": true,
+    "audit_disagreement_fraction": 0.002947849053306716,
+    "chebyshev_degree": 565,
+    "cpu_seconds": 2.4662868850000024
+   }
+  },
+  {
+   "id": "syn_signed_p4_k1",
+   "file": "syn_signed_p4_k1.npz",
+   "family": "signed_incidence",
+   "mother": "syn_signed",
+   "scenario": "one_shot",
+   "precision": "p4",
+   "role": "scored",
+   "n": 1200,
+   "nnz": 13150,
+   "request_count": 1,
+   "t": 125.02548902275804,
+   "eta_bucket": "high_eta_gt_1e3",
+   "eta_target": 100000.0,
+   "operator_scale": 1.0,
+   "rhs_categories": [
+    "rademacher"
+   ],
+   "truth_status": "chebyshev_audited_qualified",
+   "sha256": "10204d5ec9230c60e6a123874f8081f4dde90fc1b7370a215ba3a9bd810db6f4",
+   "truth": {
+    "qualified": true,
+    "audit_disagreement_fraction": 0.001602681164766717,
+    "chebyshev_degree": 1168,
+    "cpu_seconds": 8.606293264000001
+   }
+  },
+  {
+   "id": "control_diagonal",
+   "file": "control_diagonal.npz",
+   "family": "analytic",
+   "mother": "control_diagonal",
+   "scenario": "one_shot",
+   "precision": "p10",
+   "role": "control",
+   "n": 2,
+   "nnz": 1,
+   "request_count": 1,
+   "t": 0.5,
+   "eta_bucket": "low_eta_le_10",
+   "truth_status": "analytic_dense_eigh_qualified",
+   "sha256": "012335bc63c43261be91bc4d891de10f41732dda1bc08d5c650fe84bcbcc6682"
+  }
+ ],
+ "truth_method": {
+  "primary": "extended-precision Chebyshev, exp and phi1 expanded separately, envelope <= 1e-3 of threshold",
+  "audit": "Al-Mohy--Higham expm_multiply on the augmented operator (binary64)",
+  "arbitration": "dense eigendecomposition when the audit disagrees and n <= 6000",
+  "agreement": "<= 0.02 of the acceptance threshold per request"
+ }
+}

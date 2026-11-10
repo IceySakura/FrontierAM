@@ -1,0 +1,7 @@
+# Hidden public-feedback sets and held-out sets of each task version (docs/TASK_CHANGES.md): Git LFS on git.woa only;
+# scripts/ops/sync_github.sh removes them from the GitHub mirror. Manifests and notes stay plain text.
+tasks/*/versions/*/data/public/** filter=lfs diff=lfs merge=lfs -text
+tasks/*/versions/*/data/private/** filter=lfs diff=lfs merge=lfs -text
+tasks/*/versions/*/data/public/**/*.json -filter -diff -merge text
+tasks/*/versions/*/data/private/**/*.json -filter -diff -merge text
+tasks/*/versions/*/data/**/*.md -filter -diff -merge text

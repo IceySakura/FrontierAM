@@ -1,0 +1,13 @@
+{
+  "particles": 131072,
+  "cases": [
+    {
+      "case": "case-01",
+      "family": "smooth-hernquist",
+      "input": "cases/case-01.in",
+      "truth": "cases/case-01.ref",
+      "input_sha256": "e5057a0d53f2618635b8a10dd287a1da322306db4b434dd4704ad25ad09bfc80",
+      "truth_sha256": "b5fb84a0bc74a60f7fe0851e07a58575c739269ca9ae6058420b2563bbe10dae"
+    }
+  ]
+}

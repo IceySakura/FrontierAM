@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "purpose": "public_development_inputs",
+  "protocol": "candidate-v1",
+  "data_version": "split-candidate-v2",
+  "path_base": "directory containing this manifest",
+  "instances": [
+    {
+      "id": "dev-03815674e04a",
+      "group": "quadratic",
+      "status": "converted",
+      "path": "inputs/dev-03815674e04a.npz",
+      "sha256": "812b3947306cb1b32dd9fa1e52e0af87d5e7fde449f8e701d398317250bbff46",
+      "dims": {
+        "n": 27,
+        "m": 32,
+        "nnz_P": 19,
+        "nnz_A": 67
+      },
+      "cone_types": [
+        "nonnegative",
+        "zero"
+      ],
+      "time_limit_seconds": 1,
+      "memory_limit_bytes": 8589934592
+    },
+    {
+      "id": "dev-4a42fbac0fcf",
+      "group": "soc",
+      "status": "converted",
+      "path": "inputs/dev-4a42fbac0fcf.npz",
+      "sha256": "cbb3ad06cd6abb4ee8289788a8e01c6289bae7bf16822512b5c358a91f7cfc11",
+      "dims": {
+        "nnz_A": 2506,
+        "m": 1576,
+        "nnz_P": 0,
+        "n": 335
+      },
+      "cone_types": [
+        "nonnegative",
+        "soc",
+        "zero"
+      ],
+      "time_limit_seconds": 1,
+      "memory_limit_bytes": 8589934592
+    },
+    {
+      "id": "dev-610c3f371053",
+      "group": "exponential",
+      "status": "converted",
+      "path": "inputs/dev-610c3f371053.npz",
+      "sha256": "35c3f5db8fde57d38590e34aff7bdd7064756ba841b2ae44d93b19caac62bb00",
+      "dims": {
+        "n": 80,
+        "m": 113,
+        "nnz_P": 0,
+        "nnz_A": 236
+      },
+      "cone_types": [
+        "exponential",
+        "nonnegative",
+        "zero"
+      ],
+      "time_limit_seconds": 1,
+      "memory_limit_bytes": 8589934592
+    },
+    {
+      "id": "dev-8396c2285236",
+      "group": "linear",
+      "status": "converted",
+      "path": "inputs/dev-8396c2285236.npz",
+      "sha256": "a557d48a39577d00ae4a3ae2a39d776fcebc2a17e1b5d23e479ea6d8fdd3e2cb",
+      "dims": {
+        "n": 78,
+        "m": 128,
+        "nnz_P": 0,
+        "nnz_A": 226
+      },
+      "cone_types": [
+        "nonnegative",
+        "zero"
+      ],
+      "time_limit_seconds": 1,
+      "memory_limit_bytes": 8589934592
+    },
+    {
+      "id": "dev-afa1453420cc",
+      "group": "psd",
+      "status": "converted",
+      "path": "inputs/dev-afa1453420cc.npz",
+      "sha256": "5422b95c50333c80506a1cd75ec0c05346aea9014a1bf11b713bad9d47685641",
+      "dims": {
+        "n": 104,
+        "m": 1275,
+        "nnz_P": 0,
+        "nnz_A": 153
+      },
+      "cone_types": [
+        "psd"
+      ],
+      "time_limit_seconds": 18.0,
+      "memory_limit_bytes": 8589934592
+    }
+  ],
+  "time_budget_note": "\u6bcf\u4e2a\u5f00\u53d1\u5b9e\u4f8b\u516c\u5f00\u81ea\u5df1\u7684\u5f00\u53d1\u65f6\u9650\u3002\u8be5\u6e05\u5355\u7528\u4e8e\u66b4\u9732\u6b63\u5f0f\u8bc4\u6d4b\u7684\u65f6\u95f4\u538b\u529b\uff0c\u6b63\u5f0f\u8bc4\u6d4b\u4ecd\u4f7f\u7528\u79c1\u6709\u56fa\u5b9a\u6e05\u5355\u3002",
+  "time_budget_policy": "development_proxy_v1"
+}

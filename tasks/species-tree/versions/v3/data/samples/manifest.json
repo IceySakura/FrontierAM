@@ -1,0 +1,19 @@
+{
+  "schema": "frontieram/species-tree-v2-cases-1",
+  "cases": [
+    {
+      "case": "001",
+      "input": "cases/001/genes.tre",
+      "input_sha256": "2c46ac77432dcbc835ed067f76d7b80b40fefa36f8d70140a035310017247b39",
+      "truth": "cases/001/truth.tre",
+      "truth_sha256": "8d8bd00e1e1b96313f8039c9b14d843a6f9dae6737620989955f3625187975a9"
+    },
+    {
+      "case": "002",
+      "input": "cases/002/genes.tre",
+      "input_sha256": "cb181f41d797e08089dcd658f218d2c13125d3ebd93aeebe70417c2a58e8745b",
+      "truth": "cases/002/truth.tre",
+      "truth_sha256": "e335d38b7eeb4c0a3ff058e226e7968f7bdbf922c90cc9049b84aa4ee025e812"
+    }
+  ]
+}
