@@ -823,7 +823,7 @@ def main() -> None:
     host.add_argument('--housekeeping-cores', type=int, default=2)
     host.add_argument('--grade-cores', type=int, default=4)
     host.add_argument('--host-reserve-gib', type=float, default=6.0)
-    host.add_argument('--grade-placement', choices=['packed', 'spread'], default='packed')
+    host.add_argument('--grade-placement', choices=['packed', 'spread', 'paired'], default='packed')
     develop = sub.add_parser('develop')
     develop.add_argument('--task', choices=sorted(TASKS), required=True)
     develop.add_argument('--model', choices=MODELS, required=True)

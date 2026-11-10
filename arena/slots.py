@@ -131,54 +131,41 @@ class Broker:
                 live.append({'slot': slot_id, 'memory_bytes': 0, 'owner': 'unknown (record pending)'})
         return live
 
-    def reserve_path(self, slot_id: str) -> Path:
-        return self.root / f'reserve-{slot_id}.lock'
+    def _flag(self, prefix: str, owner: str) -> tuple[int, Path]:
+        """A request file held (flock) for as long as its owner needs it; a crashed owner drops it."""
+        path = self.root / f'{prefix}-{os.getpid()}-{time.monotonic_ns()}.request'
+        fd = os.open(path, os.O_RDWR | os.O_CREAT, 0o644)
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        os.write(fd, json.dumps({'owner': owner, 'pid': os.getpid(), 'since_unix': time.time()}).encode())
+        return fd, path
 
-    def reserved(self) -> set[str]:
-        """Grade slots reserved by a running v6.3 iterative attempt (an flock on reserve-<slot>.lock)."""
-        found = set()
-        for slot in self.layout['slots']:
-            path = self.reserve_path(slot['id'])
-            if slot['kind'] != 'grade' or not path.exists():
+    def _live(self, prefix: str) -> int:
+        """How many request files with this prefix are still held; stale ones are removed."""
+        count = 0
+        for path in self.root.glob(f'{prefix}-*.request'):
+            try:
+                fd = os.open(path, os.O_RDWR)
+            except FileNotFoundError:
                 continue
-            fd = os.open(path, os.O_RDWR)
             try:
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
-                found.add(slot['id'])
+                count += 1
+            else:
+                path.unlink(missing_ok=True)
             finally:
                 os.close(fd)
-        return found
+        return count
 
     @contextmanager
-    def reserve(self, owner: str, *, timeout: float | None = None, poll: float = 5.0):
-        """Reserve one grade slot for an iterative attempt's tests; yields its id. Preference: no lease on it now."""
-        deadline = None if timeout is None else time.monotonic() + timeout
-        found = None
-        while found is None:
-            with self._allocation():
-                leased = {row['slot'] for row in self.leases()}
-                grades = sorted((s['id'] for s in self.layout['slots'] if s['kind'] == 'grade'),
-                                key=lambda slot_id: slot_id in leased)
-                for slot_id in grades:
-                    fd = os.open(self.reserve_path(slot_id), os.O_RDWR | os.O_CREAT, 0o644)
-                    try:
-                        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                    except BlockingIOError:
-                        os.close(fd)
-                        continue
-                    os.ftruncate(fd, 0)
-                    os.write(fd, json.dumps({'owner': owner, 'pid': os.getpid(), 'reserved_unix': time.time()}).encode())
-                    found = (slot_id, fd)
-                    break
-            if found is None:
-                if deadline is not None and time.monotonic() >= deadline:
-                    raise TimeoutError(f'No grade slot free to reserve in {timeout}s')
-                time.sleep(poll)
+    def iterative_attempt(self, owner: str):
+        """Marks a running v6.3 iterative attempt: while any runs, non-priority grading leaves one grade slot free."""
+        fd, path = self._flag('attempt', owner)
         try:
-            yield found[0]
+            yield
         finally:
-            os.close(found[1])
+            path.unlink(missing_ok=True)
+            os.close(fd)
 
     def acquire(
         self,
@@ -190,8 +177,13 @@ class Broker:
         timeout: float | None = None,
         poll: float = 2.0,
         isolation: str = 'shared',
+        priority: bool = False,
     ) -> Lease:
-        """Lease one slot; isolation also holds every slot of the listed kinds idle for the lease's lifetime."""
+        """Lease one slot; isolation also holds every slot of the listed kinds idle for the lease's lifetime.
+
+        priority (v6.3 test evaluations): while a priority grade lease waits, other grade leases wait; while an
+        iterative attempt runs, other grade leases never take the last free grade slot.
+        """
         if memory_bytes > self.layout['memory_budget_bytes']:
             raise ValueError('Requested memory exceeds the whole machine budget')
         candidates = [s for s in self.layout['slots'] if s['kind'] == kind and (slot_id is None or s['id'] == slot_id)]
@@ -200,6 +192,7 @@ class Broker:
         holds = ISOLATION_HOLDS[isolation]
         deadline = None if timeout is None else time.monotonic() + timeout
         drain = self._drain_request(owner) if 'dev' in holds else None
+        urgent = self._flag('priority', owner) if priority and kind == 'grade' else None
         try:
             while True:
                 with self._allocation():
@@ -207,13 +200,12 @@ class Broker:
                     # A waiting quiet grade blocks new gradings at once (they are minutes long), but new development
                     # only after dev_drain_after: draining at once would serialise a whole batch of 2-hour attempts.
                     blocked = isolation != 'quiet' and self._draining(kind)
-                    # Reserved grade slots serve only leases that name them; holding grade slots idle waits for
-                    # every reservation to end, since it would stall an attempt's tests.
-                    reserved = self.reserved() if kind == 'grade' or 'grade' in holds else set()
-                    open_slots = [s for s in candidates if slot_id is not None or s['id'] not in reserved]
-                    blocked = blocked or ('grade' in holds and bool(reserved - {slot_id}))
-                    if not blocked and open_slots and used + memory_bytes <= self.layout['memory_budget_bytes']:
-                        lease = self._lock_set(open_slots, holds, memory_bytes, owner, isolation)
+                    if kind == 'grade' and not priority and not blocked:
+                        leased = {row['slot'] for row in self.leases()}
+                        free = [s for s in self.layout['slots'] if s['kind'] == 'grade' and s['id'] not in leased]
+                        blocked = self._live('priority') > 0 or (self._live('attempt') > 0 and len(free) <= 1)
+                    if not blocked and used + memory_bytes <= self.layout['memory_budget_bytes']:
+                        lease = self._lock_set(candidates, holds, memory_bytes, owner, isolation)
                         if lease is not None:
                             return lease
                 if deadline is not None and time.monotonic() >= deadline:
@@ -222,9 +214,10 @@ class Broker:
                     )
                 time.sleep(poll)
         finally:
-            if drain is not None:
-                drain[1].unlink(missing_ok=True)
-                os.close(drain[0])
+            for request in (drain, urgent):
+                if request is not None:
+                    request[1].unlink(missing_ok=True)
+                    os.close(request[0])
 
     def _drain_request(self, owner: str) -> tuple[int, Path]:
         """While a quiet grade waits, new gradings wait; new development waits once dev_drain_after has passed."""

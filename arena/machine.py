@@ -127,8 +127,18 @@ def plan(
         if grade_cores > len(domains):
             raise ValueError(f'spread placement needs one L3 domain per grade core; only {len(domains)} available')
         grade = [members[-1] for members in list(domains.values())[-grade_cores:]]
+    elif grade_placement == 'paired':
+        # At most two grade cores per L3 domain, the last cores of each domain, filled from the last domain back.
+        domains = {}
+        for core in rest:
+            domains.setdefault(core['l3'], []).append(core)
+        ordered = [core for members in reversed(list(domains.values())) for core in reversed(members[-2:])]
+        if grade_cores > len(ordered):
+            raise ValueError(f'paired placement holds at most {len(ordered)} grade cores here')
+        chosen = ordered[:grade_cores]
+        grade = [core for core in rest if core in chosen]
     else:
-        raise ValueError('grade_placement must be packed or spread')
+        raise ValueError('grade_placement must be packed, spread or paired')
     dev = [core for core in rest if core not in grade]
     slots = [_slot('dev', core) for core in dev] + [_slot('grade', core) for core in grade]
     layout = {
@@ -273,11 +283,14 @@ def grade_slots(layout: dict) -> list[dict]:
     return [slot for slot in layout['slots'] if slot['kind'] == 'grade']
 
 
-def install(layout: dict, path: Path = CONFIG) -> dict:
-    """Persist the layout and kernel isolation; safe to rerun. Requires root, never restarts the default dockerd."""
+def install(layout: dict, path: Path = CONFIG, *, own_pid: int | None = None) -> dict:
+    """Persist the layout and kernel isolation; safe to rerun. Requires root, never restarts the default dockerd.
+
+    own_pid: leases held by this process (a relayout that first drained the machine with a quiet lease) are allowed.
+    """
     if os.geteuid() != 0:
         raise PermissionError('Host setup must run as root')
-    if live_leases_present():
+    if live_leases_present(own_pid):
         raise RuntimeError('Slots are leased; finish running work before changing the machine layout')
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(layout, indent=2) + '\n')
@@ -337,11 +350,11 @@ def install(layout: dict, path: Path = CONFIG) -> dict:
     return status(layout)
 
 
-def live_leases_present() -> bool:
+def live_leases_present(own_pid: int | None = None) -> bool:
     from .slots import Broker
 
     try:
-        return bool(Broker(load()).leases())
+        return any(row.get('pid') != own_pid or own_pid is None for row in Broker(load()).leases())
     except RuntimeError:
         return False
 
