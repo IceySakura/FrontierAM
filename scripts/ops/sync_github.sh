@@ -5,14 +5,13 @@
 # keeps the same commit IDs from one sync to the next.
 # Excluded everywhere in history: */tests/private/*, */data/private/*, */cases/private/*, */docker_eval/private_pilot/*,
 # and the private seed and manifest files of exponential v2.
-# Usage: scripts/ops/sync_github.sh [branch ...]   (default: protocol-2h main)
+# Usage: scripts/ops/sync_github.sh [branch ...]   (default: protocol-2h)
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 REPO=$PWD
 REMOTE=git@github-frontieram:IceySakura/FrontierAM.git
-BRANCHES=("${@:-protocol-2h main}")
-[ $# -eq 0 ] && BRANCHES=(protocol-2h main)
-git show-ref --verify --quiet refs/heads/main || git branch main origin/main
+BRANCHES=("$@")
+[ $# -eq 0 ] && BRANCHES=(protocol-2h)
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 git clone -q --no-local --bare "$REPO" "$work/mirror.git"
