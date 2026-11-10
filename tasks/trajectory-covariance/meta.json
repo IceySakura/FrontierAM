@@ -54,10 +54,10 @@
       "01",
       "02"
     ],
-    "public": "反馈池：每种情形最后 10 条母链 × 5 个前缀，共 300 个输入（与正式子集不相交）",
+    "public": "反馈池：每种情形最后 5 条母链 × 5 个前缀，共 150 个输入（与正式子集不相交）",
     "groups": "六种情形（三种模拟 / 三种真实采样）",
     "feedback": {
-      "task": "trajectory-covariance",
+      "task": "trajectory-covariance-v2",
       "category": "setting",
       "accuracy": "whitened error",
       "lower_is_better": true,

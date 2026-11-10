@@ -44,6 +44,8 @@ PUBLIC = {
     'species-tree-v3': {'family': 'species-tree', 'store': STORE, 'env': {'FRONTIERAM_SPECIES_V2_DATA': 'public'}},
     'trajectory-covariance': {'family': 'trajectory-covariance', 'store': STORE,
                               'env': {'FRONTIERAM_TRAJ_POOL': 'feedback'}},
+    'trajectory-covariance-v2': {'family': 'trajectory-covariance', 'store': STORE,
+                                 'env': {'FRONTIERAM_TRAJ_POOL': 'feedback'}},
 }
 SUITE_TASKS = ('conic', 'exponential-v2')
 

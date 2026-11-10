@@ -85,6 +85,18 @@ TASKS = {
                                 'demosaicking program described there.'},
         'lock': {},
     },
+    'trajectory-covariance': {
+        'parent': 'trajectory-covariance', 'name': 'trajectory-covariance-v2', 'version': 'v2',
+        'keep': ['problem.md', 'public-dev/README.md', 'public-dev/check.py', 'public-dev/trajectory-dev.zip',
+                 'public-dev/01/input.npy', 'public-dev/01/reference.npy', 'public-dev/02/input.npy', 'public-dev/02/reference.npy'],
+        'edits': [('problem.md', '墙钟上限 30 秒', '墙钟上限 5 秒'),
+                  ('problem.md', '[下载公开开发包](public-dev/trajectory-dev.zip)。', '[下载样例包](samples/trajectory-dev.zip)（`samples/` 下已有解压后的同样内容）。')],
+        'task': {'instruction': 'Read /workspace/problem.md in full and inspect /workspace/samples. Implement the long-run '
+                                'covariance estimator described there.'},
+        # 5 s per input (the weak reference's slowest is 3.9 s); 80 parents x 5 prefixes x 6 settings = 2,400 formal inputs,
+        # 5 parents per setting = 150 public-feedback inputs (results/EVAL_TIME_LIMITS.md).
+        'lock': {'case_limit_s': 5, 'subset_parents': 80, 'feedback_parents': 5},
+    },
     'species-tree': {
         'parent': 'species-tree-v2', 'name': 'species-tree-v3', 'version': 'v3',
         'keep': ['problem.md', 'public-dev/README.md', 'public-dev/check_rf.py', 'public-dev/manifest.json',

@@ -11,7 +11,11 @@ swap, root verifier. Placement comes from the grading slot: its CPU, its slice a
 The only change to package code is the declared portability edit (the verifier accepts x86_64 besides aarch64). The
 private data are mounted read-only at /tests/private/data; the manifest copy lists the selected cases with those paths.
 
+--case-limit N replaces the verifier's 30-second per-input wall limit (protocol v6.3 versions,
+results/EVAL_TIME_LIMITS.md), matching exactly once like the portability edit.
+
 Usage: trajectory_batch.py MAINTAINER SOURCE OUTPUT --cases CASES.json --image ID --cpuset N --cgroup-parent SLICE
+       [--case-limit N]
 """
 
 import argparse
@@ -29,12 +33,20 @@ FORMAL = 'results/mcmc-long-run-covariance/formal-v1/private'
 EDIT = ("os.uname().machine != 'aarch64'", "os.uname().machine not in ('aarch64', 'x86_64')")
 
 
-def assemble(maintainer: Path, cases: list[dict], tests: Path) -> None:
+LIMIT = 'limit = 30 if inp else 300'
+
+
+def assemble(maintainer: Path, cases: list[dict], tests: Path, case_limit: int = 30) -> None:
     harbor = maintainer / 'harbor/mcmc-long-run-covariance/task/tests'
     shared = maintainer / 'harbor/xtrace/task/tests'
     tests.mkdir(parents=True)
     for name in ('grade.py', 'test.sh'):
         shutil.copy(harbor / name, tests / name)
+    if case_limit != 30:
+        grader = (tests / 'grade.py').read_text()
+        if grader.count(LIMIT) != 1:
+            raise RuntimeError('case-limit edit does not match the verifier exactly once')
+        (tests / 'grade.py').write_text(grader.replace(LIMIT, f'limit = {case_limit} if inp else 300'))
     isolation = (shared / 'grade.py').read_text()
     if isolation.count(EDIT[0]) != 1:
         raise RuntimeError('portability edit does not match the verifier exactly once')
@@ -58,8 +70,10 @@ def summarize(receipt: dict, cases: list[dict]) -> dict:
         loss = records[case['id']].get('loss')
         cells[(case['model'], case['length'])].append(loss if loss is not None else math.sqrt(case['d']))
     means = {f'{m}/{n}': sum(v) / len(v) for (m, n), v in sorted(cells.items())}
+    sums = {f'{m}/{n}': [sum(v), len(v)] for (m, n), v in sorted(cells.items())}  # shards merge these
     failures = collections.Counter(r['status'] for r in records.values() if r['status'] != 'ok')
-    return {'status': 'ok', 'raw_error': sum(means.values()) / len(means), 'cells': means, 'cases': len(records),
+    return {'status': 'ok', 'raw_error': sum(means.values()) / len(means), 'cells': means, 'cell_sums': sums,
+            'cases': len(records),
             'failures': dict(failures),
             'max_wall_s': max(r['wall_s'] for r in records.values()),
             'max_cpu_s': max(r['cpu_s'] for r in records.values()),
@@ -75,6 +89,7 @@ def main():
     parser.add_argument('--image', required=True)
     parser.add_argument('--cpuset', required=True)
     parser.add_argument('--cgroup-parent', required=True)
+    parser.add_argument('--case-limit', type=int, default=30)
     args = parser.parse_args()
     maintainer, out = args.maintainer.resolve(), args.output.resolve()
     out.mkdir(parents=True, exist_ok=False)
@@ -83,11 +98,11 @@ def main():
     every = {c['id']: c for c in json.loads((data / 'manifest.json').read_text())['cases']}
     cases = [every[i] for i in wanted]
     tests, logs, source = out / 'tests', out / 'verifier', out / 'submission'
-    assemble(maintainer, cases, tests)
+    assemble(maintainer, cases, tests, args.case_limit)
     logs.mkdir()
     shutil.copytree(args.source.resolve(), source, symlinks=True)
     os.chmod(logs, 0o777)
-    timeout = 600 + 30 * len(cases) + 300
+    timeout = 600 + args.case_limit * len(cases) + 300
     command = ['docker', 'run', '--rm', '--name', f'trajectory-verifier-{uuid.uuid4().hex[:12]}', '--network', 'none',
                '--cpuset-cpus', args.cpuset, '--cpus', '1', '--memory', '2147483648', '--memory-swap', '2147483648',
                '--cgroup-parent', args.cgroup_parent, '--security-opt', f'seccomp={tests / "seccomp.json"}',

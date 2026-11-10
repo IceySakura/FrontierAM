@@ -366,29 +366,48 @@ class TrajectoryCovariance(OperatorTask):
         manifest = self.root() / 'results/mcmc-long-run-covariance/formal-v1/private/manifest.json'
         cases = json.loads(manifest.read_text())['cases']
         feedback = os.environ.get('FRONTIERAM_TRAJ_POOL') == 'feedback'
+        lock = self.lock()
+        subset, pool = lock.get('subset_parents', self.subset_parents), lock.get('feedback_parents', self.feedback_parents)
         chosen = set()
         for model in sorted({c['model'] for c in cases}):
             parents = sorted({c['parent'] for c in cases if c['model'] == model})
-            if len(parents) < self.subset_parents + self.feedback_parents:
+            if len(parents) < subset + pool:
                 raise RuntimeError('trajectory: too few parents to keep the feedback pool disjoint from the formal subset')
-            chosen.update(parents[-self.feedback_parents:] if feedback else parents[:self.subset_parents])
+            chosen.update(parents[-pool:] if feedback else parents[:subset])
         return [c['id'] for c in cases if c['parent'] in chosen]
 
-    def run_grader(self, source, out, placement):
+    def suite(self, runtime=None) -> list[dict]:
+        """The formal subset as shardable cases (v6.3 versions grade it on several slots; scripts/grade/trajectory-suite-score.py)."""
+        manifest = self.root() / 'results/mcmc-long-run-covariance/formal-v1/private/manifest.json'
+        models = {c['id']: c['model'] for c in json.loads(manifest.read_text())['cases']}
+        limit = self.lock().get('case_limit_s', 30)
+        return [{'id': i, 'group': models[i], 'time_limit_seconds': limit} for i in self.case_ids()]
+
+    async def grade(self, runtime, placement, output, case_ids=None):
+        source = output / 'source'
+        if (source / PAIR).exists():
+            parts = {which: self.run_grader(source / which, output / which, placement, case_ids) for which in ('weak', 'strong')}
+            return {'exit_status': 'finished', 'kind': 'reference_pair', 'parts': parts}
+        return {'exit_status': 'finished', 'kind': 'candidate',
+                'parts': {'candidate': self.run_grader(source, output / 'candidate', placement, case_ids)}}
+
+    def run_grader(self, source, out, placement, case_ids=None):
         out.parent.mkdir(parents=True, exist_ok=True)
         cases = out.parent / f'{out.name}-cases.json'
-        cases.write_text(json.dumps(self.case_ids()) + '\n')
+        cases.write_text(json.dumps(list(case_ids) if case_ids else self.case_ids()) + '\n')
         driver = ROOT / 'arena/operator_drivers/trajectory_batch.py'
         env = {**os.environ, 'DOCKER_HOST': placement.docker_host}
         done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.root()), str(source), str(out),
                                '--cases', str(cases), '--image', self.lock()['image']['id'], '--cpuset', placement.cpuset,
-                               '--cgroup-parent', placement.cgroup_parent],
+                               '--cgroup-parent', placement.cgroup_parent,
+                               '--case-limit', str(self.lock().get('case_limit_s', 30))],
                               env=env, capture_output=True, text=True, timeout=self.grade_timeout)
         (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
         summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
         status = summary.get('status', 'infrastructure_failure')
         return {'status': status, 'raw_error': summary.get('raw_error'), 'reason': summary.get('reason'),
                 'package_score': None, 'cases': summary.get('cases'), 'failures': summary.get('failures'),
+                'cell_sums': summary.get('cell_sums'),
                 'max_wall_s': summary.get('max_wall_s'), 'max_cpu_s': summary.get('max_cpu_s'),
                 'scope': f'{len(json.loads(cases.read_text()))} of 30,000 formal inputs (fixed stratified subset)'}
 
@@ -417,7 +436,7 @@ def _finite(value) -> bool:
 CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2, 'galaxy-gravity-v3': GalaxyGravityV3,
            'polarization-demosaicking': PolarizationDemosaicking, 'polarization-demosaicking-v2': PolarizationDemosaicking,
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2, 'species-tree-v3': SpeciesTreeV2,
-           'trajectory-covariance': TrajectoryCovariance}
+           'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance}
 
 
 def operator_tasks() -> dict[str, OperatorTask]:

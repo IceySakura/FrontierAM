@@ -1,0 +1,76 @@
+{
+  "name": "trajectory-covariance-v2",
+  "title": "从一条采样轨迹估计长期协方差",
+  "status": "formal",
+  "status_reason": "Protocol v6.3 version (results/PROTOCOL_V63.md, results/EVAL_TIME_LIMITS.md): samples-only workspace; limits and set sizes for the evaluation time caps (scripts/seal/prepare_v63.py).",
+  "packages": {
+    "public": {
+      "file": "trajectory-covariance-public-v1(1).tar.gz",
+      "sha256": "48533e2f9c2d2990143a6ca04b4e9ef7e41cb4e83085309c8d5a2d1850ccb502",
+      "root": "trajectory-covariance-public-v1"
+    },
+    "operator": {
+      "file": "mcmc-long-run-covariance-maintainer-v1.tar.gz",
+      "sha256": "2ae141f707e7e05421fd90a7e194cbf7e5c4fda87a5404b5dd741d9adf177c89",
+      "root": "",
+      "extracted": "/srv/frontieram-raw/mcmc-long-run-covariance-maintainer-v1"
+    }
+  },
+  "integrity": [
+    {
+      "type": "sha256sums",
+      "package": "public",
+      "file": "SHA256SUMS"
+    },
+    {
+      "type": "sha256sums",
+      "package": "operator",
+      "file": "SHA256SUMS"
+    }
+  ],
+  "public_files": [
+    {
+      "from": "public:problem.md",
+      "to": "problem.md"
+    },
+    {
+      "from": "unzip:public:public-dev/trajectory-dev.zip",
+      "to": "public-dev"
+    },
+    {
+      "from": "public:public-dev/trajectory-dev.zip",
+      "to": "public-dev/trajectory-dev.zip"
+    }
+  ],
+  "portability_edits": [],
+  "driver_edits": [
+    {
+      "file": "harbor/xtrace/task/tests/grade.py (copied into the verifier task as isolation.py)",
+      "old": "os.uname().machine != 'aarch64'",
+      "new": "os.uname().machine not in ('aarch64', 'x86_64')",
+      "reason": "The verifier's environment check accepts the amd64 grading host; runtime_sandbox.py and the seccomp profile already support x86_64. Applied by arena/operator_drivers/trajectory_batch.py to its copy, exactly once."
+    }
+  ],
+  "images": {
+    "task": {
+      "tag": "frontieram-trajectory-covariance:amd64-b1",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": [
+        "local/trajectory-runtime:b1",
+        "sha256:85754f2997f9323ceee5942dc6f36e7afad70ac395316dcf6ec9d16534d8ae1a"
+      ]
+    }
+  },
+  "references": {
+    "weak": "tasks/mcmc-long-run-covariance/pilot/submissions/obm",
+    "strong": "tasks/mcmc-long-run-covariance/pilot/submissions/var1"
+  },
+  "maintainer_results": {
+    "weak_raw_error": 0.34971527598896246,
+    "strong_raw_error": 0.22978096981778934,
+    "scope": "all 30,000 formal inputs, Apple M5 ARM64"
+  },
+  "submission_note": "Put the complete source, an executable run.sh and README.md in /workspace/submission, plus an optional executable no-argument build.sh; the evaluator builds once offline and runs ./run.sh INPUT OUTPUT per trajectory in a clean copy of this environment without the agent tools.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/samples. Implement the long-run covariance estimator described there.",
+  "derived_from": "trajectory-covariance"
+}
