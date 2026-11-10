@@ -6,7 +6,7 @@
  "raw": "\\(L = 4.25\\times10^{-9}\\)，单次最多 4.45 CPU 秒",
  "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
  "score": 99.9996,
- "review": "待复核",
+ "review": "复核完成：承认算法创新（核拆分）；参照改为 r2 后计 58.7",
  "process": {
   "minutes": 106.2,
   "model_requests": 204,

@@ -9,7 +9,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | --- | --- | --- | --- | --- |
 | [conic](tasks/conic/README.md) | 0.0 | 0.0 | 24.7 / 18.8 | 41.2 |
 | [exponential](tasks/exponential/README.md) | 0.0 / 0.0 / 56.9* | 62.9* | 70.8* / 60.3* / 51.7* | 69.1* |
-| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 100.0* |  | 100.0† |  |
+| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 100.0† |  | 100.0† |  |
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 55.9* |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) |  |  | 51.9* |  |
 | [species-tree](tasks/species-tree/README.md) | 0.0 |  | 42.3 |  |
