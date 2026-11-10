@@ -79,6 +79,10 @@
 | GPT-6.1 Sol | 迭代 | 74/74 合格，R = 0.589 | \(100/(1+R)\) | 62.9 | 待复核 | 4 次提交，68 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.2/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.412 | \(100/(1+R)\) | 70.8 | 待复核 | 62 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | 74/74 合格，R = 0.448 | \(100/(1+R)\) | 69.1 | 待复核 | 10 次提交，60 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.2/claude-opus-5-5-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.659 | \(100/(1+R)\) | 60.3 | 待复核 | 53 分钟 | [`claude-opus-5-5-single-2/`](solutions/v6.2/claude-opus-5-5-single-2/) |
+| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.934 | \(100/(1+R)\) | 51.7 | 待复核 | 76 分钟 | [`claude-opus-5-5-single-3/`](solutions/v6.2/claude-opus-5-5-single-3/) |
+| GPT-6.1 Sol | 单轮 | 53 例精度不合格（无效提交） | \(100/(1+R)\) | 0.0 |  | 4 分钟 | [`gpt-6.1-sol-single-2/`](solutions/v6.2/gpt-6.1-sol-single-2/) |
+| GPT-6.1 Sol | 单轮 | 74/74 合格，R = 0.758 | \(100/(1+R)\) | 56.9 | 待复核 | 100 分钟 | [`gpt-6.1-sol-single-3/`](solutions/v6.2/gpt-6.1-sol-single-3/) |
 
 超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
 
@@ -105,6 +109,22 @@ C 实现的 Chebyshev 展开，长展开时用短 Lanczos 收紧谱上界，SELL
 把 \(\varphi_1\) 项写成增广矩阵的指数，一次 Chebyshev 递推同时得到两项；小连通分量直接对角化，几何图先做 RCM 重排。60 分钟内 10 次公开集测试（全量最高 63.7）后正式提交。私有集 \(S = 2.60\)，95% 区间 [1.88, 3.69]，与单轮尝试相当（区间重叠）。
 
 源码 [`solutions/v6.2/claude-opus-5-5-iterative-1/source/`](solutions/v6.2/claude-opus-5-5-iterative-1/source/)（提交 `exponential-v2-20261109T175508Z-fdfad8`）；未复制的二进制或大文件：expo（42,600 字节）。
+
+### Claude Opus 5.5（单轮）
+
+源码 [`solutions/v6.2/claude-opus-5-5-single-2/source/`](solutions/v6.2/claude-opus-5-5-single-2/source/)（提交 `exponential-v2-20261110T041026Z-22d0e1`）；未复制的二进制或大文件：bin/expprop_avx2（39,200 字节）、bin/expprop_generic（39,200 字节）。
+
+### Claude Opus 5.5（单轮）
+
+源码 [`solutions/v6.2/claude-opus-5-5-single-3/source/`](solutions/v6.2/claude-opus-5-5-single-3/source/)（提交 `exponential-v2-20261110T043349Z-380434`）；未复制的二进制或大文件：build/libk_avx2.so（19,792 字节）、build/libk_base.so（19,792 字节）。
+
+### GPT-6.1 Sol（单轮）
+
+源码 [`solutions/v6.2/gpt-6.1-sol-single-2/source/`](solutions/v6.2/gpt-6.1-sol-single-2/source/)（提交 `exponential-v2-20261110T031548Z-80934e`）。
+
+### GPT-6.1 Sol（单轮）
+
+源码 [`solutions/v6.2/gpt-6.1-sol-single-3/source/`](solutions/v6.2/gpt-6.1-sol-single-3/source/)（提交 `exponential-v2-20261110T053617Z-d8bb77`）；未复制的二进制或大文件：solver（288,792 字节）。
 
 ## 观察与说明
 

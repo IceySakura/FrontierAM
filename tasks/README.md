@@ -4,8 +4,8 @@
 
 | task | 已评提交 |
 | --- | --- |
-| [conic](conic/README.md) | 4 |
-| [exponential](exponential/README.md) | 4 |
+| [conic](conic/README.md) | 5 |
+| [exponential](exponential/README.md) | 8 |
 | [galaxy-gravity](galaxy-gravity/README.md) | 2 |
 | [polarization-demosaicking](polarization-demosaicking/README.md) | 1 |
 | [trajectory-covariance](trajectory-covariance/README.md) | 1 |

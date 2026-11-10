@@ -207,13 +207,13 @@ def write_board(metas: list[dict], names: list[str]) -> None:
         for model, setting in COLUMNS:
             hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting),
                           key=lambda r: r.get('attempt', 1))
-            row_s.append(' / '.join('—' if r.get('score') is None else f'{r["score"]:.1f}' + ('*' if r['score'] > 50 else '')
+            row_s.append(' / '.join('—' if r.get('score') is None else f'{r["score"]:.1f}' + (('†' if r.get('review', '待复核') != '待复核' else '*') if r['score'] > 50 else '')
                                     for r in hits))
             row_p.append(' / '.join(process_text(r.get('_process'), setting == '迭代') or '—' for r in hits))
         link = f'[{name}](tasks/{name}/README.md)'
         scores.append(f'| {link} | ' + ' | '.join(row_s) + ' |')
         process.append(f'| {link} | ' + ' | '.join(row_p) + ' |')
-    board = ('\n'.join(scores) + '\n\n满分 100，参照 = 50；* 待复核（`results/BASELINE_POLICY.md`）。\n\n**提交次数与用时**\n\n'
+    board = ('\n'.join(scores) + '\n\n满分 100，参照 = 50；* 待复核，† 复核完成（见题目 README，`results/BASELINE_REVIEW.md`）。\n\n**提交次数与用时**\n\n'
              + '\n'.join(process))
     readme = ROOT / 'README.md'
     text = readme.read_text()

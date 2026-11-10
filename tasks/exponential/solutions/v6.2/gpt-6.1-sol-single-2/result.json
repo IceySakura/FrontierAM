@@ -1,0 +1,20 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.2",
+ "setting": "单轮",
+ "submission": "exponential-v2-20261110T031548Z-80934e",
+ "raw": "53 例精度不合格（无效提交）",
+ "mapping": "\\(100/(1+R)\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 4.5,
+  "model_requests": 19,
+  "tool_calls": 23,
+  "public_tests": 0,
+  "public_test_minutes": 0.0,
+  "public_test_scores": [],
+  "ended": "自己结束",
+  "harness": "codex"
+ }
+}

@@ -6,7 +6,7 @@
  "raw": "\\(L = 1.06\\times10^{-7}\\)，单次最多 3.16 CPU 秒",
  "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
  "score": 99.991,
- "review": "待复核",
+ "review": "复核完成：本解法成为参照 r2；按 r2 计 50.0",
  "process": {
   "minutes": 63.4,
   "model_requests": 75,

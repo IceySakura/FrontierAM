@@ -79,6 +79,17 @@
           "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
           "score": 41.2,
           "notes_md": "原生 C++ 齐次自对偶嵌入（HSDE）内点法，只在 PSD 锥上调用 LAPACK；README 写明避开 Python 是因为导入 NumPy 和 SciPy 就要约 0.7 秒，1 秒时限的用例会做不完。5 次全量公开集测试 55.8、57.7、61.5、61.5、62.5，80 分钟正式提交。私有集上与 Clarabel 逐例比：只有它解出 48 例、只有 Clarabel 解出 57 例（p = 0.44），与参考没有显著差异；公开集分数高于 50，私有集略低于参考。"
+        },
+        {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.2",
+          "setting": "单轮",
+          "attempt": 2,
+          "submission": "conic-20261110T044139Z-e1ef6c",
+          "store": "var/stores/store-v62",
+          "raw": "481 / 650（\\(p = 0.740\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
+          "score": 18.8
         }
       ]
     }
