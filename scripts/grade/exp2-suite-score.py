@@ -49,9 +49,10 @@ def main():
     parser.add_argument('--panel', required=True)
     parser.add_argument('--candidate', required=True)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--task', default='exponential-v2', help='exponential-v3 validates with the v6.3 limits')
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
-    task = TASKS['exponential-v2']
+    task = TASKS[args.task]
     cases = task.cases()
     panel = {'kind': 'panel', 'parts': merged_parts(args.panel_store or args.store, args.panel, args.out)}
     candidate = merged_parts(args.store, args.candidate, args.out)['candidate']
