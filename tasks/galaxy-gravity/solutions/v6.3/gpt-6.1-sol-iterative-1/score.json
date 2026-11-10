@@ -10,5 +10,18 @@
  "worker_pid": 2453650,
  "status": "ok",
  "score": 63.99177386832138,
- "finished_utc": "2026-11-10T18:07:15+00:00"
+ "finished_utc": "2026-11-10T18:07:15+00:00",
+ "candidate": {
+  "status": "ok",
+  "raw_error": 6.905915159677596e-10,
+  "reason": null,
+  "package_score": null,
+  "calls": 60,
+  "max_cpu_s": 4.891293,
+  "cpu_limit_s": 5.0
+ },
+ "anchors": {
+  "weak": 0.0012518922651302462,
+  "strong": 1.2828525745272997e-07
+ }
 }

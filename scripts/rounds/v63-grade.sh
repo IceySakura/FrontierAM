@@ -103,7 +103,11 @@ from pathlib import Path
 store, sub, out = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
 done = [json.loads(p.read_text()) for p in (store / 'jobs/done').glob('*.json')]
 rows = [d for d in done if d.get('submission') == sub and d.get('kind') == 'candidate']
-json.dump(rows[-1] if rows else {'status': 'unmeasured'}, open(f'{out}/score.json', 'w'), indent=1)
+record = rows[-1] if rows else {'status': 'unmeasured'}
+metrics = store / 'results' / record.get('id', '-') / 'grade/metrics.json'
+if metrics.exists():  # raw error and the run details of the candidate part
+    record['candidate'] = json.loads(metrics.read_text())['parts'].get('candidate')
+json.dump(record, open(f'{out}/score.json', 'w'), indent=1)
 PY
             id=job ;;
     esac
