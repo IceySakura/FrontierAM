@@ -50,11 +50,16 @@ def main():
     parser.add_argument('--candidate', required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--task', default='exponential-v2', help='exponential-v3 validates with the v6.3 limits')
+    parser.add_argument('--extra-panel', action='append', default=[], metavar='STORE:SUITE',
+                        help='another panel measurement (e.g. one added member) joining the virtual best')
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     task = TASKS[args.task]
     cases = task.cases()
     panel = {'kind': 'panel', 'parts': merged_parts(args.panel_store or args.store, args.panel, args.out)}
+    for extra in args.extra_panel:
+        store, suite = extra.split(':', 1)
+        panel['parts'].update(merged_parts(Path(store), suite, args.out))
     candidate = merged_parts(args.store, args.candidate, args.out)['candidate']
     ok, reason = task.baseline_ok(panel)
     reference, winners, uncovered = task.virtual_best(panel)
