@@ -54,7 +54,9 @@ grade() {  # setting, task
     out=tasks/$(family "$task")/solutions/v6.3/gpt-6.1-sol-$setting-$N
     mkdir -p "$out"
     if [ "$sub" = - ]; then                          # no valid frozen submission: invalid (0) or unmeasured
-        cp "$(ls -d $STORE/dev-runs/*/ | tail -1)develop_result.json" "$out/develop_result.json" 2>/dev/null
+        run=$(python3 -c "import json,sys;print([json.loads(l) for l in open(sys.argv[1]) if 'develop_finished' in l][-1]['run'])" \
+              "var/stores/store/reruns/v63-sol-$label.log")
+        cp "$STORE/dev-runs/$run/develop_result.json" "$out/develop_result.json" 2>/dev/null
         log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": null"
         return 0
     fi
