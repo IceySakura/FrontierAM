@@ -6,7 +6,7 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `versions/` | 题目的各个版本；当前版本 `v2/`，题面 `versions/v2/statement.md` |
+| `versions/` | 题目的各个版本；当前版本 `v3/`，题面 `versions/v3/statement.md` |
 | `references/` | 参照实现（`r1/` 为现行参照；`candidates/` 为复核中的候选） |
 | `solutions/<协议>/<模型>-<设置>-<序号>/` | 模型冻结提交的源码（`source/`）与成绩（`result.json`、`score.json`） |
 | `analysis/` | 这道题的专题分析与复核记录 |
@@ -18,6 +18,7 @@
 | --- | --- | --- |
 | `v1` | `exponential` | 旧版：解释器中单个 KIOPS 作参考、私有用例几千维；已由 v2 取代 |
 | `v2` | `exponential-v2` | 对标 7 个已发表方法的参照组；数据集与设计见 versions/v2/（当前版本） |
+| `v3` | `exponential-v3` | 协议 v6.3 版本：单请求 15 秒、复用 60 秒、启动 10 秒；public 反馈 16 例；工作区只含 6 个样例（scripts/seal/prepare_exp_v3.py） |
 
 ## 题目背景
 
@@ -29,20 +30,18 @@
 
 | 内容 | 位置 |
 | --- | --- |
-| 题面 | 给模型的公开包封存在 .runtime-exp2/public.tar（task/INSTRUCTION.md、task/V2.md），已复制为 versions/v2/statement.md |
-| 公开开发材料 | versions/v2/public/（公开包文本文件）；公开用例清单 versions/v2/dataset/cases/public*/ |
-| 私有测试集 | versions/v2/dataset/cases/private/（私有用例清单与参考解流程） |
+| 题面 | versions/v3/statement.md |
+| 公开开发材料 | versions/v3/data/samples/（给模型的样例）；versions/v3/data/public/（不给模型的反馈集，只在内部仓库） |
+| 私有测试集 | versions/v3/data/private/（只在内部仓库） |
 | 评测器 | arena/exponential_v2.py（流式接口、精度检查、计时、virtual best） |
 | 参照实现 | references/r1/（7 个成员：Expokit、KIOPS、expmv、SciPy、Chebyshev、SLEPc、ExponentialUtilities.jl；标定 references/r1/calibration/）；复核中的候选 references/candidates/ |
 
-公开包中的数据文件未复制到仓库，清单见 `versions/v2/public/DATA_FILES.md`。
-
-## 数据划分（协议 v6.3 草案）
+## 数据划分（协议 v6.3）
 
 | 层 | 内容 |
 | --- | --- |
 | samples（给模型） | syn_diffusion2d_p4_k1, syn_geometric_p4_k1, syn_heavytail_p4_k1, syn_logspectrum_p4_k1, syn_signed_p4_k1, control_diagonal |
-| public（不给，反馈用） | 74 例全尺寸公开集（dataset/cases/public） |
+| public（不给，反馈用） | 16 例全尺寸公开用例（每个结构族单请求、复用各 1 例） |
 | 反馈分类 | 结构族（manifest 的 family 字段）：mesh_diffusion / standard_fem / geometric_graph / standard_graph / network_operator / signed_incidence / diagonal_local / analytic |
 
 ## 评测依据

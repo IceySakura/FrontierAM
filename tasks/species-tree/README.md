@@ -6,7 +6,7 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `versions/` | 题目的各个版本；当前版本 `v2/`，题面 `versions/v2/statement.md` |
+| `versions/` | 题目的各个版本；当前版本 `v3/`，题面 `versions/v3/statement.md` |
 | `references/` | 参照实现（`r1/` 为现行参照；`candidates/` 为复核中的候选） |
 | `solutions/<协议>/<模型>-<设置>-<序号>/` | 模型冻结提交的源码（`source/`）与成绩（`result.json`、`score.json`） |
 | `analysis/` | 这道题的专题分析与复核记录 |
@@ -18,6 +18,7 @@
 | --- | --- | --- |
 | `v1` | `species-tree` | 出题方原版：101 物种、50 例；出题人告知数据有误，暂停 |
 | `v2` | `species-tree-v2` | FrontierAM 重建：250 物种、200 例私有 + 50 例公开、每例 180 秒；模拟流程 versions/v2/generation/（当前版本） |
+| `v3` | `species-tree-v3` | 协议 v6.3 版本：每例 135 秒；private 96 例、public 5 例；工作区只含 2 个样例（scripts/seal/prepare_v63.py） |
 
 ## 题目背景
 
@@ -29,20 +30,18 @@
 
 | 内容 | 位置 |
 | --- | --- |
-| 题面 | versions/v2/statement.md（源文件 versions/v2/problem.md） |
-| 公开开发材料 | versions/v2/public/（文本文件）；50 个公开用例的清单见其中 |
-| 私有测试集 | 200 个私有用例（封存于 .runtime-ops/species-tree-v2/private/） |
+| 题面 | versions/v3/statement.md |
+| 公开开发材料 | versions/v3/data/samples/（给模型的样例）；versions/v3/data/public/（不给模型的反馈集，只在内部仓库） |
+| 私有测试集 | versions/v3/data/private/（只在内部仓库） |
 | 评测器 | 原包 1.0.1 的批量评测器与沙箱（物种数改为 250，时限 180 秒） |
 | 参照实现 | references/r1/（TREE-QMC 3.0.4 不加权 / 加权；锚点 anchors-private.json、anchors-public.json） |
 
-公开包中的数据文件未复制到仓库，清单见 `versions/v2/public/DATA_FILES.md`。
-
-## 数据划分（协议 v6.3 草案）
+## 数据划分（协议 v6.3）
 
 | 层 | 内容 |
 | --- | --- |
 | samples（给模型） | 001, 002 |
-| public（不给，反馈用） | 50 个公开用例 |
+| public（不给，反馈用） | 5 个公开用例（001–005） |
 | 反馈分类 | 不分类，只报总计 |
 
 ## 评测依据

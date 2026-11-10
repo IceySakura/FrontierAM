@@ -38,7 +38,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 tasks/<题目>/
 ├── README.md        阅读入口：背景、版本、题面/数据/评测器/参照的位置、评测依据、baseline、模型成绩与解法
 ├── meta.json        本题的数据源：说明文字、版本列表、各部分位置、已发布成绩（README 与看板都由它生成）
-├── versions/<版本>/  每个题目版本一个目录：题面 statement.md、公开材料 public/、私有数据、评测器、数据生成流程、改版说明
+├── versions/<版本>/  每个题目版本一个目录：题面 statement.md、data/samples/（给模型的样例）、data/public/ 与 data/private/（反馈集与私有集，只在内部仓库）、封存说明
 ├── references/      参照实现：r1/ 为现行参照，candidates/ 为复核中的候选（参照升级时新增 r2/，旧成绩仍对应 r1）
 ├── solutions/<协议>/<模型>-<设置>-<序号>/   模型冻结提交的源码 source/ 与成绩 result.json、score.json
 └── analysis/        这道题的专题分析与复核记录
@@ -58,9 +58,16 @@ tasks/<题目>/
 
 **超过参照的成绩要复核**：任何格子超过 50 分，都要解释超出的原因、寻找更强的人类方法并做消融，结论是“改进参照”或“承认模型的算法创新”，见 [`results/BASELINE_POLICY.md`](results/BASELINE_POLICY.md) 与 [`results/BASELINE_REVIEW.md`](results/BASELINE_REVIEW.md)。
 
-## 评测协议（v6.2）
+## 评测协议（v6.3）
 
-每个模型在每道题、每种设置下的每次尝试独立进行：一个物理核、4 GiB、断网，模型用各自原生的编程助手（Claude Code、Codex 等）。两种设置都是 2 小时：**单轮**（开发中没有反馈）和**迭代**（可在公开集上做测试评测，得到逐例结果和与 baseline 的对比）。只有时间结束时冻结的源码进入评测，评测在独立的评测核上进行。详见 [`results/PROTOCOL_V62.md`](results/PROTOCOL_V62.md)。
+每个模型在每道题、每种设置下的每次尝试独立进行：一个物理核、4 GiB、断网，模型用各自原生的编程助手。
+
+- **数据**：samples 给模型；public 不给，只用来在迭代设置中反馈；private 用于最终评分。
+- **单轮**：1 小时，开发中没有反馈。
+- **迭代**：4 小时，可随时提交测试：快照后在后台评测 public（时钟不停），报告给出 public 分数和按类别与参照的对比，不列逐例结果。
+- **评测时长**：public 每次最多 15 分钟，private 最多 1 小时。
+
+榜单当前展示的是 v6.2（单轮与迭代均为 2 小时）的成绩，v6.3 重跑后替换。详见 [`results/PROTOCOL_V63.md`](results/PROTOCOL_V63.md)。
 
 ## 仓库结构
 

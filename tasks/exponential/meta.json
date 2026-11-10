@@ -6,7 +6,7 @@
   "summary": "对大型稀疏对称半正定矩阵计算 \\(e^{-tL}b_0 + t\\varphi_1(-tL)b_1\\)，在给定精度下越快越好；参照是 7 个已发表方法逐例取最快者。",
   "statement": {
     "kind": "tar",
-    "path": ".runtime-exp2/public.tar",
+    "path": ".runtime-exp3/public.tar",
     "members": [
       "task/INSTRUCTION.md",
       "task/V2.md"
@@ -129,7 +129,7 @@
     }
   ],
   "notes_md": "- 逐例最快的参照成员有 60/74 是按文献实现的 Chebyshev 方法，不是作者代码；如果这一实现本身不够强，参照组会被低估。是否替换为作者代码仍在讨论。\n- sol 的单轮尝试 23 分钟就结束回合，最后改动源项处理后没有重新检验，私有集 58 例精度不合格；迭代设置下它做了 4 次公开集测试，成绩正常。",
-  "current_version": "v2",
+  "current_version": "v3",
   "versions": [
     {
       "dir": "v1",
@@ -140,12 +140,17 @@
       "dir": "v2",
       "registry": "exponential-v2",
       "note": "对标 7 个已发表方法的参照组；数据集与设计见 versions/v2/（当前版本）"
+    },
+    {
+      "dir": "v3",
+      "registry": "exponential-v3",
+      "note": "协议 v6.3 版本：单请求 15 秒、复用 60 秒、启动 10 秒；public 反馈 16 例；工作区只含 6 个样例（scripts/seal/prepare_exp_v3.py）"
     }
   ],
   "locations": {
-    "statement": "给模型的公开包封存在 .runtime-exp2/public.tar（task/INSTRUCTION.md、task/V2.md），已复制为 versions/v2/statement.md",
-    "public": "versions/v2/public/（公开包文本文件）；公开用例清单 versions/v2/dataset/cases/public*/",
-    "private": "versions/v2/dataset/cases/private/（私有用例清单与参考解流程）",
+    "statement": "versions/v3/statement.md",
+    "public": "versions/v3/data/samples/（给模型的样例）；versions/v3/data/public/（不给模型的反馈集，只在内部仓库）",
+    "private": "versions/v3/data/private/（只在内部仓库）",
     "grader": "arena/exponential_v2.py（流式接口、精度检查、计时、virtual best）",
     "references": "references/r1/（7 个成员：Expokit、KIOPS、expmv、SciPy、Chebyshev、SLEPc、ExponentialUtilities.jl；标定 references/r1/calibration/）；复核中的候选 references/candidates/"
   },

@@ -6,7 +6,7 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `versions/` | 题目的各个版本；当前版本 `v1/`，题面 `versions/v1/statement.md` |
+| `versions/` | 题目的各个版本；当前版本 `v2/`，题面 `versions/v2/statement.md` |
 | `references/` | 参照实现（`r1/` 为现行参照；`candidates/` 为复核中的候选） |
 | `solutions/<协议>/<模型>-<设置>-<序号>/` | 模型冻结提交的源码（`source/`）与成绩（`result.json`、`score.json`） |
 | `analysis/` | 这道题的专题分析与复核记录 |
@@ -17,6 +17,7 @@
 | 版本 | 评测系统中的名字 | 说明 |
 | --- | --- | --- |
 | `v1` | `trajectory-covariance` | 出题方包 mcmc-long-run-covariance-maintainer-v1；本机评测固定的 3,000 例分层子集（当前版本） |
+| `v2` | `trajectory-covariance-v2` | 协议 v6.3 版本：每例 5 秒；private 2,400 个输入（分片）、public 150 个；工作区只含 2 个样例（scripts/seal/prepare_v63.py） |
 
 ## 题目背景
 
@@ -26,20 +27,18 @@ MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标
 
 | 内容 | 位置 |
 | --- | --- |
-| 题面 | versions/v1/statement.md |
-| 公开开发材料 | versions/v1/public/ |
-| 私有测试集 | 3 万个私有输入与参考矩阵（出题方包，/srv/frontieram-raw/） |
+| 题面 | versions/v2/statement.md |
+| 公开开发材料 | versions/v2/data/samples/（给模型的样例）；versions/v2/data/public/（不给模型的反馈集，只在内部仓库） |
+| 私有测试集 | versions/v2/data/private/（只在内部仓库） |
 | 评测器 | 出题方包的验证器（arena/operator_drivers/trajectory_batch.py 启动其验证容器） |
 | 参照实现 | references/r1/（OBM，R 包 mcmcse；VAR(1)）；人类候选参照 references/candidates/ |
 
-公开包中的数据文件未复制到仓库，清单见 `versions/v1/public/DATA_FILES.md`。
-
-## 数据划分（协议 v6.3 草案）
+## 数据划分（协议 v6.3）
 
 | 层 | 内容 |
 | --- | --- |
 | samples（给模型） | 01, 02 |
-| public（不给，反馈用） | 反馈池：每种情形最后 10 条母链 × 5 个前缀，共 300 个输入（与正式子集不相交） |
+| public（不给，反馈用） | 反馈池：每种情形最后 5 条母链 × 5 个前缀，共 150 个输入（与正式子集不相交） |
 | 反馈分类 | 六种情形（三种模拟 / 三种真实采样） |
 
 ## 评测依据

@@ -6,7 +6,7 @@
   "summary": "50 棵互相矛盾的估计基因树、250 个物种、120 秒；数据由我们按标准模拟流程重建并校准到原题的统计量，200 个正式用例。",
   "statement": {
     "kind": "tar",
-    "path": ".runtime-ops/species-tree-v2/public.tar",
+    "path": ".runtime-ops/species-tree-v3/public.tar",
     "members": [
       "problem.md"
     ]
@@ -44,7 +44,7 @@
     }
   ],
   "notes_md": "- 数据、种子和生成流程见 `tasks/species-tree/analysis/SPECIES_TREE_SIM.md`（种子不公开）。",
-  "current_version": "v2",
+  "current_version": "v3",
   "versions": [
     {
       "dir": "v1",
@@ -55,12 +55,17 @@
       "dir": "v2",
       "registry": "species-tree-v2",
       "note": "FrontierAM 重建：250 物种、200 例私有 + 50 例公开、每例 180 秒；模拟流程 versions/v2/generation/（当前版本）"
+    },
+    {
+      "dir": "v3",
+      "registry": "species-tree-v3",
+      "note": "协议 v6.3 版本：每例 135 秒；private 96 例、public 5 例；工作区只含 2 个样例（scripts/seal/prepare_v63.py）"
     }
   ],
   "locations": {
-    "statement": "versions/v2/statement.md（源文件 versions/v2/problem.md）",
-    "public": "versions/v2/public/（文本文件）；50 个公开用例的清单见其中",
-    "private": "200 个私有用例（封存于 .runtime-ops/species-tree-v2/private/）",
+    "statement": "versions/v3/statement.md",
+    "public": "versions/v3/data/samples/（给模型的样例）；versions/v3/data/public/（不给模型的反馈集，只在内部仓库）",
+    "private": "versions/v3/data/private/（只在内部仓库）",
     "grader": "原包 1.0.1 的批量评测器与沙箱（物种数改为 250，时限 180 秒）",
     "references": "references/r1/（TREE-QMC 3.0.4 不加权 / 加权；锚点 anchors-private.json、anchors-public.json）"
   },

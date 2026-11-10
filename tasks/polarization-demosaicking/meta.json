@@ -6,7 +6,7 @@
   "summary": "从一张 1024×1024 的偏振马赛克中重建 0°/45°/90°/135° 四幅完整图像，每景 1 秒，RMSE 越小越好。",
   "statement": {
     "kind": "tar",
-    "path": ".runtime-ops/polarization-demosaicking/public.tar",
+    "path": ".runtime-ops/polarization-demosaicking-v2/public.tar",
     "members": [
       "problem.md"
     ]
@@ -33,18 +33,23 @@
     }
   ],
   "notes_md": "- 题目给 agent 的开发材料里只有两组用公式合成的样例，没有真实场景。我们找到并实测了 Wen 等 2019 的公开数据集（105 景，裁成 1024×1024 后耗时与正式输入一致，LEIC 在 100/105 景上优于双线性），作为公开反馈集，待出题人确认。\n- 测试场景经过按参照表现的筛选（去掉了双线性比 LEIC 更准的场景），这会放大两条参照之间的差距，已请出题人确认。\n- 评分时第一个运行的景总是比其余各景慢 0.14–0.5 秒，在 1 秒上限下可能导致整份提交失败；原因在排查中。",
-  "current_version": "v1.2",
+  "current_version": "v2",
   "versions": [
     {
       "dir": "v1.2",
       "registry": "polarization-demosaicking",
       "note": "出题方维护包 v1.2（32 景测试集）（当前版本）"
+    },
+    {
+      "dir": "v2",
+      "registry": "polarization-demosaicking-v2",
+      "note": "协议 v6.3 版本：工作区增加 2 景公开场景作样例，其余不变（scripts/seal/prepare_v63.py）"
     }
   ],
   "locations": {
-    "statement": "versions/v1.2/statement.md",
-    "public": "versions/v1.2/public/",
-    "private": "32 景测试集（出题方维护包内，原包在 var/raw/）；公开反馈集（Wen 2019，105 景）封存于 .runtime-ops/polarization-demosaicking-feedback/",
+    "statement": "versions/v2/statement.md",
+    "public": "versions/v2/data/samples/（给模型的样例）；versions/v2/data/public/（不给模型的反馈集，只在内部仓库）",
+    "private": "versions/v2/data/private/（只在内部仓库）",
     "grader": "维护包 harbor/polarization-demosaicking/grade_submission.py（只改 CPU 检查；评分前预热镜像文件缓存，quiet 隔离）",
     "references": "references/r1/（逐方向双线性；镜像 LEIC）"
   },

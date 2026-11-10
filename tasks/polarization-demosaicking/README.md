@@ -6,7 +6,7 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `versions/` | 题目的各个版本；当前版本 `v1.2/`，题面 `versions/v1.2/statement.md` |
+| `versions/` | 题目的各个版本；当前版本 `v2/`，题面 `versions/v2/statement.md` |
 | `references/` | 参照实现（`r1/` 为现行参照；`candidates/` 为复核中的候选） |
 | `solutions/<协议>/<模型>-<设置>-<序号>/` | 模型冻结提交的源码（`source/`）与成绩（`result.json`、`score.json`） |
 | `analysis/` | 这道题的专题分析与复核记录 |
@@ -17,6 +17,7 @@
 | 版本 | 评测系统中的名字 | 说明 |
 | --- | --- | --- |
 | `v1.2` | `polarization-demosaicking` | 出题方维护包 v1.2（32 景测试集）（当前版本） |
+| `v2` | `polarization-demosaicking-v2` | 协议 v6.3 版本：工作区增加 2 景公开场景作样例，其余不变（scripts/seal/prepare_v63.py） |
 
 ## 题目背景
 
@@ -26,17 +27,17 @@
 
 | 内容 | 位置 |
 | --- | --- |
-| 题面 | versions/v1.2/statement.md |
-| 公开开发材料 | versions/v1.2/public/ |
-| 私有测试集 | 32 景测试集（出题方维护包内，原包在 var/raw/）；公开反馈集（Wen 2019，105 景）封存于 .runtime-ops/polarization-demosaicking-feedback/ |
+| 题面 | versions/v2/statement.md |
+| 公开开发材料 | versions/v2/data/samples/（给模型的样例）；versions/v2/data/public/（不给模型的反馈集，只在内部仓库） |
+| 私有测试集 | versions/v2/data/private/（只在内部仓库） |
 | 评测器 | 维护包 harbor/polarization-demosaicking/grade_submission.py（只改 CPU 检查；评分前预热镜像文件缓存，quiet 隔离） |
 | 参照实现 | references/r1/（逐方向双线性；镜像 LEIC） |
 
-## 数据划分（协议 v6.3 草案）
+## 数据划分（协议 v6.3）
 
 | 层 | 内容 |
 | --- | --- |
-| samples（给模型） | check.py 的两组合成样例, wen-001, wen-002 |
+| samples（给模型） | check.py 的合成样例, wen-001, wen-002 |
 | public（不给，反馈用） | Wen 2019 反馈集 105 景 |
 | 反馈分类 | 不分类，只报总计 |
 

@@ -6,7 +6,7 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `versions/` | 题目的各个版本；当前版本 `solver-20261105/`，题面 `versions/solver-20261105/statement.md` |
+| `versions/` | 题目的各个版本；当前版本 `v3/`，题面 `versions/v3/statement.md` |
 | `references/` | 参照实现（`r1/` 为现行参照；`candidates/` 为复核中的候选） |
 | `solutions/<协议>/<模型>-<设置>-<序号>/` | 模型冻结提交的源码（`source/`）与成绩（`result.json`、`score.json`） |
 | `analysis/` | 这道题的专题分析与复核记录 |
@@ -18,6 +18,7 @@
 | --- | --- | --- |
 | `original` | `conic` | 出题方原版题包（650 例私有集）；协议 v6 的成绩基于此版本 |
 | `solver-20261105` | `conic` | 出题方 2026-11-05 修正版：公开开发集给出逐例时限；私有数据和评分不变（当前版本） |
+| `v3` | `conic（运行副本 .runtime-conic-v3）` | 协议 v6.3 版本：参照解不出的用例时限 300 → 18 秒；public 反馈 145 例；工作区只含 5 个样例（scripts/seal/prepare_conic_v3.py） |
 
 ## 题目背景
 
@@ -29,13 +30,13 @@
 
 | 内容 | 位置 |
 | --- | --- |
-| 题面 | versions/solver-20261105/package/instruction.md |
-| 公开开发材料 | versions/solver-20261105/package/environment/public-dev/（163 例公开开发集及逐例时限） |
-| 私有测试集 | versions/*/package/tests/private/（650 例私有集，两版相同） |
+| 题面 | versions/v3/statement.md |
+| 公开开发材料 | versions/v3/data/samples/（给模型的样例）；versions/v3/data/public/（不给模型的反馈集，只在内部仓库） |
+| 私有测试集 | versions/v3/data/private/（只在内部仓库） |
 | 评测器 | versions/*/package/tests/（题包自带评测器）；本机重标定时限见 versions/original/local_recal/ |
 | 参照实现 | references/r1/clarabel/（Clarabel 0.11.1） |
 
-## 数据划分（协议 v6.3 草案）
+## 数据划分（协议 v6.3）
 
 | 层 | 内容 |
 | --- | --- |

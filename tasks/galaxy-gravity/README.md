@@ -6,7 +6,7 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `versions/` | 题目的各个版本；当前版本 `v2/`，题面 `versions/v2/statement.md` |
+| `versions/` | 题目的各个版本；当前版本 `v3/`，题面 `versions/v3/statement.md` |
 | `references/` | 参照实现（`r1/` 为现行参照；`candidates/` 为复核中的候选） |
 | `solutions/<协议>/<模型>-<设置>-<序号>/` | 模型冻结提交的源码（`source/`）与成绩（`result.json`、`score.json`） |
 | `analysis/` | 这道题的专题分析与复核记录 |
@@ -18,6 +18,7 @@
 | --- | --- | --- |
 | `v1` | `galaxy-gravity` | 出题方原版：65,536 粒子、5 CPU 秒；直接求和可在预算内求精确解 |
 | `v2` | `galaxy-gravity-v2` | FrontierAM 重建：131,072 粒子、5 CPU 秒，快照用原包生成器以私有种子生成（当前版本） |
+| `v3` | `galaxy-gravity-v3` | 协议 v6.3 版本：参照 r2（高阶 FMM）为 50 分锚点、对数刻度；工作区只含样例（scripts/seal/prepare_v63.py） |
 
 ## 题目背景
 
@@ -29,15 +30,13 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 
 | 内容 | 位置 |
 | --- | --- |
-| 题面 | versions/v2/statement.md |
-| 公开开发材料 | versions/v2/public/（文本文件）；10 张公开快照见 versions/v2/public/public-dev/cases/ 的清单 |
-| 私有测试集 | 20 张私有快照与参考加速度（封存于 .runtime-ops/galaxy-gravity-v2/private/） |
+| 题面 | versions/v3/statement.md |
+| 公开开发材料 | versions/v3/data/samples/（给模型的样例）；versions/v3/data/public/（不给模型的反馈集，只在内部仓库） |
+| 私有测试集 | versions/v3/data/private/（只在内部仓库） |
 | 评测器 | 原包评测器 tasks/galaxy-gravity/harbor/tests/grade.py（只改输入大小检查与架构检查） |
 | 参照实现 | references/r1/（两条 Treecode2 参照）；复核中的候选 references/candidates/（Dehnen 式高阶 FMM） |
 
-公开包中的数据文件未复制到仓库，清单见 `versions/v2/public/DATA_FILES.md`。
-
-## 数据划分（协议 v6.3 草案）
+## 数据划分（协议 v6.3）
 
 | 层 | 内容 |
 | --- | --- |

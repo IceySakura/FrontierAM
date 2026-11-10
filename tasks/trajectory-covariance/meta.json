@@ -6,7 +6,7 @@
   "summary": "只给一条马尔可夫链轨迹，估计样本均值的长期协方差矩阵（MCMC 标准误的核心），30 种设置平均的白化误差越小越好。",
   "statement": {
     "kind": "tar",
-    "path": ".runtime-ops/trajectory-covariance/public.tar",
+    "path": ".runtime-ops/trajectory-covariance-v2/public.tar",
     "members": [
       "problem.md"
     ]
@@ -33,18 +33,23 @@
     }
   ],
   "notes_md": "- 全量 3 万例的评测在单核上约需 5 小时，需要分片到多个评测核；是否以全量作为正式规模仍待确定。",
-  "current_version": "v1",
+  "current_version": "v2",
   "versions": [
     {
       "dir": "v1",
       "registry": "trajectory-covariance",
       "note": "出题方包 mcmc-long-run-covariance-maintainer-v1；本机评测固定的 3,000 例分层子集（当前版本）"
+    },
+    {
+      "dir": "v2",
+      "registry": "trajectory-covariance-v2",
+      "note": "协议 v6.3 版本：每例 5 秒；private 2,400 个输入（分片）、public 150 个；工作区只含 2 个样例（scripts/seal/prepare_v63.py）"
     }
   ],
   "locations": {
-    "statement": "versions/v1/statement.md",
-    "public": "versions/v1/public/",
-    "private": "3 万个私有输入与参考矩阵（出题方包，/srv/frontieram-raw/）",
+    "statement": "versions/v2/statement.md",
+    "public": "versions/v2/data/samples/（给模型的样例）；versions/v2/data/public/（不给模型的反馈集，只在内部仓库）",
+    "private": "versions/v2/data/private/（只在内部仓库）",
     "grader": "出题方包的验证器（arena/operator_drivers/trajectory_batch.py 启动其验证容器）",
     "references": "references/r1/（OBM，R 包 mcmcse；VAR(1)）；人类候选参照 references/candidates/"
   },
