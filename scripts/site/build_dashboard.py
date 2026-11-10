@@ -202,15 +202,26 @@ def review_tag(r: dict) -> str:
     return f' <span class="tag warn">{html.escape(r.get("review", "待复核"))}</span>'
 
 
+def process_cell(task: dict, r: dict) -> str:
+    """Test submissions (iterative) and development time used, from the attempt's result.json (build_task_pages.py)."""
+    setting = {'单轮': 'single', '迭代': 'iterative'}.get(r.get('setting'), 'single')
+    path = ROOT / 'tasks' / task['name'] / 'solutions' / (r.get('protocol') or 'v6.2') / f'{r["model"]}-{setting}-{r.get("attempt", 1)}' / 'result.json'
+    process = json.loads(path.read_text()).get('process') if path.exists() else None
+    if not process:
+        return ''
+    return (f'{process["public_tests"]} 次提交，' if setting == 'iterative' else '') + f'{process["minutes"]:.0f} 分钟'
+
+
 def result_rows(task: dict, group: dict) -> str:
     rows = []
     for r in group['results']:
         rows.append(f'<tr><td><a href="#{anchor_of(r)}">{html.escape(model_name(r["model"]))}</a></td>'
                     f'<td>{html.escape(protocol_label(r))}</td>'
                     f'<td>{md(r["raw"])[3:-4]}</td><td>{md(r["mapping"])[3:-4]}</td>'
-                    f'<td class="num score {score_class(r["score"])}">{fmt_score(r["score"])}{review_tag(r)}</td></tr>')
-    return ('<table><tr><th>模型</th><th>协议</th><th>原始指标</th><th>换算</th><th class="num">得分（满分 100）</th></tr>'
-            + ''.join(rows) + '</table>')
+                    f'<td class="num score {score_class(r["score"])}">{fmt_score(r["score"])}{review_tag(r)}</td>'
+                    f'<td>{html.escape(process_cell(task, r))}</td></tr>')
+    return ('<table><tr><th>模型</th><th>协议</th><th>原始指标</th><th>换算</th><th class="num">得分（满分 100）</th>'
+            '<th>提交次数与用时</th></tr>' + ''.join(rows) + '</table>')
 
 
 def task_page(task: dict) -> str:
