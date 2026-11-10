@@ -98,7 +98,9 @@ with ExitStack() as stack:
         if marker not in text:
             print("ATR_REFUSED codex config has no Responses provider table to extend", flush=True)
             sys.exit(98)
-        config.write_text(text.replace(marker, marker + f"stream_idle_timeout_ms = {WINDOW_MS}\n", 1))
+        # Upstream 429 bursts outlast Codex's default retries (4 request, 5 stream); retrying is not model behaviour.
+        config.write_text(text.replace(marker, marker + f"stream_idle_timeout_ms = {WINDOW_MS}\n"
+                                       "request_max_retries = 30\nstream_max_retries = 30\n", 1))
     print("ATR_LAUNCH " + json.dumps({"argv": list(launch.argv)[:3], "stdin": launch.prompt_via_stdin}), flush=True)
     process = subprocess.Popen(list(launch.argv), env=environment, cwd="/workspace",
                                stdin=subprocess.PIPE if launch.prompt_via_stdin else subprocess.DEVNULL)

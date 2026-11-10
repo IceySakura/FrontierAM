@@ -22,7 +22,9 @@ family() { case $1 in conic) echo conic;; exponential-v3) echo exponential;; gal
     polarization-demosaicking-v2) echo polarization-demosaicking;; species-tree-v3) echo species-tree;;
     trajectory-covariance-v2) echo trajectory-covariance;; esac; }
 runtime() { [ "$1" = conic ] && echo "$CONIC_RT" || echo "$EXP_RT"; }
-frozen() { python3 -c "import json,sys;r=[json.loads(l) for l in open(sys.argv[1]) if 'develop_finished' in l];print(r[-1]['submission'] if r and r[-1]['status']=='frozen' else ('-' if r else ''))" "$1" 2>/dev/null; }
+# frozen submission ID; '-' for an invalid submission (scores 0); '' while running or after an infrastructure failure
+# (status unmeasured: the attempt is rerun, its log renamed, never graded)
+frozen() { python3 -c "import json,sys;r=[json.loads(l) for l in open(sys.argv[1]) if 'develop_finished' in l];print(r[-1]['submission'] if r and r[-1]['status']=='frozen' else ('-' if r and r[-1]['status']=='invalid_submission' else ''))" "$1" 2>/dev/null; }
 
 # Timing-sensitive held-out grading waits until no development runs (docs/platform/CONCURRENCY.md section 7).
 TIMED="conic exponential-v3 polarization-demosaicking-v2"

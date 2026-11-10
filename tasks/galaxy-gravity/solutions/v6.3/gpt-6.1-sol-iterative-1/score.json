@@ -1,0 +1,14 @@
+{
+ "id": "job-20261110T180106Z-0e5a5c",
+ "task": "galaxy-gravity-v3",
+ "submission": "galaxy-gravity-v3-20261110T145613Z-509fb2",
+ "kind": "candidate",
+ "note": null,
+ "isolation": null,
+ "enqueued_utc": "2026-11-10T18:01:06+00:00",
+ "claimed_utc": "2026-11-10T18:01:07+00:00",
+ "worker_pid": 2453650,
+ "status": "ok",
+ "score": 63.99177386832138,
+ "finished_utc": "2026-11-10T18:07:15+00:00"
+}
