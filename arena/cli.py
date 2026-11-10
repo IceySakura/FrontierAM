@@ -230,7 +230,7 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
     say(event='grade_waiting', job=job['id'], task=task.name, isolation=policy)
     # A job may name its slot, e.g. a control sentinel placed on the noisiest slot of a concurrent round.
     with broker.acquire('grade', task.grade_memory, f'grade {job["id"]}', slot_id=job.get('slot'),
-                        isolation=policy) as lease:
+                        isolation=policy, priority=bool(job.get('priority'))) as lease:
         placement = placement_for(lease, layout)
         say(event='grade_started', job=job['id'], task=task.name, kind=job['kind'], slot=lease.id)
         paired = None
@@ -476,7 +476,7 @@ def cmd_suite(args) -> dict:
     # reference and every candidate, so per-slot conditions apply to both sides alike.
     jobs = [
         store.enqueue(submission, kind='shard', isolation=args.isolation, note=f'{suite_id} shard {i + 1}/{len(shards)}',
-                      extra={'suite': suite_id, 'case_ids': ids, 'slot': slot},
+                      extra={'suite': suite_id, 'case_ids': ids, 'slot': slot, 'priority': getattr(args, 'priority', False)},
                       queue='held' if args.hold else 'pending')
         for i, (ids, slot) in enumerate(zip(shards, slots))
     ]
@@ -899,14 +899,14 @@ def main() -> None:
     public_eval.add_argument('--cap', type=float, default=None, help='seconds; stop and report finished cases')
     public_baseline_v63 = sub.add_parser('public-baseline-v63', help='v6.3: measure the references on the public set')
     public_baseline_v63.add_argument('--task', required=True)
-    public_baseline_v63.add_argument('--slot', required=True, help='grade slot, e.g. grade-06')
+    public_baseline_v63.add_argument('--slot', default=None, help='grade slot, e.g. grade-06 (default: any)')
     public_baseline_v63.add_argument('--replace', action='store_true')
     public_baseline_v63.add_argument('--provisional', action='store_true', help='dry-run measurement, not for scoring')
     public_eval_v63 = sub.add_parser('public-eval-v63', help='v6.3: one test evaluation on the attempt\'s grade slot')
     public_eval_v63.add_argument('--task', required=True)
     public_eval_v63.add_argument('--source', required=True)
     public_eval_v63.add_argument('--out', required=True)
-    public_eval_v63.add_argument('--slot', required=True)
+    public_eval_v63.add_argument('--slot', default=None, help='default: the first free grade slot')
     public_eval_v63.add_argument('--cap', type=float, default=None, help='seconds')
     public_eval_v63.add_argument('--label', default=None)
     board = sub.add_parser('leaderboard')

@@ -1,7 +1,7 @@
 """Protocol v6.3 public-set evaluation: grade one source tree on a task's public set on one grade slot.
 
-Every test of an iterative attempt runs on the grade slot the attempt reserved (arena/slots.py reserve), as one job in
-the task's public store, through the same staging and grader as formal grading. The task adapter below turns the
+Every test of an iterative attempt runs as one priority job on one grade slot (the first free one; tests go ahead of
+held-out grading, arena/slots.py), in the task's public store, through the same staging and grader as formal grading. The task adapter below turns the
 grader's per-case output into feedback rows (arena/feedback.py); the reference rows come from the public baseline
 measured once per task (`bench public-baseline-v63`), and the public score uses the task's final mapping anchored on
 it. Nothing here reads held-out data.
@@ -56,7 +56,7 @@ def baseline_path(task: str) -> Path:
 
 # Grading on one slot -------------------------------------------------------------------------------------------
 def _abort(store: Store, job: str) -> None:
-    """Stop a job past the cap: its grading scope and every container on its (reserved, otherwise idle) slot."""
+    """Stop a job past the cap: its grading scope and every container on its slot (leased by this job alone)."""
     subprocess.run(['systemctl', 'stop', f'frontieram-grade-{job}.scope'], capture_output=True, timeout=120)
     spec = store.result_dir(job) / 'spec.json'
     if spec.exists():
@@ -83,23 +83,25 @@ def _run(store: Store, runtime: dict, jobs: list[str], cap: float | None) -> lis
                                                                stop, [job]), daemon=True) for job in jobs}
     for thread in threads.values():
         thread.start()
-    deadline = None if cap is None else time.monotonic() + cap
+    deadline = None  # the cap counts from the moment grading holds its slot, not from the wait in the queue
     while any(t.is_alive() for t in threads.values()) and (deadline is None or time.monotonic() < deadline):
+        if deadline is None and cap is not None and any((store.result_dir(j) / 'spec.json').exists() for j in jobs):
+            deadline = time.monotonic() + cap
         time.sleep(2)
     stop.set()
     return [job for job, thread in threads.items() if thread.is_alive()]
 
 
-def queue(task, store: Store, runtime: dict, submission: str | None, slot: str) -> dict:
-    """One job on the given grade slot: a one-shard suite for the suite tasks, a plain job for operator tasks."""
+def queue(task, store: Store, runtime: dict, submission: str | None, slot: str | None) -> dict:
+    """One priority job on one grade slot: a one-shard suite for the suite tasks, a plain job for operator tasks."""
     from .cli import cmd_suite, freeze_reference
 
     if task.name in SUITE_TASKS:
         return cmd_suite(Namespace(store=store.root, task=task.name, shards=1, slots=slot, isolation='shared', hold=False,
-                                   cases=None, reference=submission is None, submission=submission))
+                                   cases=None, reference=submission is None, submission=submission, priority=True))
     kind = 'candidate' if submission else 'baseline'
     submission = submission or freeze_reference(store, runtime, task, kind='baseline')
-    job = store.enqueue(submission, kind=kind, isolation='shared', note='v6.3 public', extra={'slot': slot})
+    job = store.enqueue(submission, kind=kind, isolation='shared', note='v6.3 public', extra={'slot': slot, 'priority': True})
     return {'id': job, 'task': task.name, 'submission': submission, 'shards': [{'job': job}]}
 
 

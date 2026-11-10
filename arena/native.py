@@ -609,13 +609,13 @@ class EvalServiceV63:
     """v6.3 iterative setting: /opt/frontieram/bin/submit over a bind-mounted socket, without stopping the attempt.
 
     A test snapshots /workspace/submission from the running container (reviewed exporter, no pause) and returns at
-    once; the snapshot is graded on the public set in the background on the grade slot this attempt reserved
+    once; the snapshot is graded on the public set in the background on one grade slot, ahead of held-out grading
     (`bench public-eval-v63`), and the report is copied into /workspace/feedback/test-<n>/. One test at a time, each
     capped. A final request ends the attempt. Evaluations still running when the attempt ends finish unread.
     """
 
-    def __init__(self, task_name, docker, controller, name: str, output: Path, started: float, deadline: float, slot: str):
-        self.task, self.docker, self.controller, self.name, self.slot = task_name, docker, controller, name, slot
+    def __init__(self, task_name, docker, controller, name: str, output: Path, started: float, deadline: float):
+        self.task, self.docker, self.controller, self.name = task_name, docker, controller, name
         self.output, self.started, self.deadline = output / 'evaluations', started, deadline
         self.final, self.ended = threading.Event(), threading.Event()
         self.busy, self.container = threading.Lock(), threading.Lock()
@@ -638,7 +638,7 @@ class EvalServiceV63:
             self.server.close()
 
     def drain(self, timeout: float = TEST_CAP_SECONDS + 600) -> None:
-        """The reservation outlives the attempt until its last evaluation is done, so no test overlaps the next use."""
+        """Wait for the last evaluation, so the attempt's record holds every test's outcome."""
         for thread in self.threads:
             thread.join(timeout=timeout)
 
@@ -699,8 +699,7 @@ class EvalServiceV63:
         n = record['n']
         try:
             command = [sys.executable, '-m', 'arena.cli', 'public-eval-v63', '--task', self.task,
-                       '--source', str(directory / 'source'), '--out', str(directory / 'report'), '--slot', self.slot,
-                       '--cap', str(TEST_CAP_SECONDS), '--label', f'{self.output.parent.name} test {n}']
+                       '--source', str(directory / 'source'), '--out', str(directory / 'report'), '--cap', str(TEST_CAP_SECONDS), '--label', f'{self.output.parent.name} test {n}']
             with (directory / 'public-eval.log').open('wb') as log:
                 code = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
                                       timeout=TEST_CAP_SECONDS + 600).returncode
@@ -776,14 +775,12 @@ def develop(spec: dict, runtime: dict) -> dict:
     processes: list[subprocess.Popen] = []
     summary: dict = {'harness': harness, 'route': route, 'protocol': protocol, 'setting': setting}
     service = None
-    reservation = contextlib.ExitStack()
+    attempt_marker = contextlib.ExitStack()
     mounts = []
     if iterative:
         from .cli import context
 
-        waited = time.monotonic()
-        slot = reservation.enter_context(context()[1].reserve(f'v6.3 iterative {output.name}', timeout=4 * 3600))
-        summary.update(test_slot=slot, waited_for_test_slot_seconds=round(time.monotonic() - waited, 1))
+        attempt_marker.enter_context(context()[1].iterative_attempt(f'v6.3 iterative {output.name}'))
         eval_dir = Path('/run/frontieram/eval') / output.name
         eval_dir.mkdir(parents=True, exist_ok=False)
         eval_dir.chmod(0o777)
@@ -840,7 +837,7 @@ def develop(spec: dict, runtime: dict) -> dict:
         (output / 'prompt.txt').write_text(launcher_spec['prompt'])
         deadline = started + seconds
         if iterative:
-            service = EvalServiceV63(task.name, docker, assets.controller, name, output, started, deadline, slot)
+            service = EvalServiceV63(task.name, docker, assets.controller, name, output, started, deadline)
             service.start(eval_dir / 'eval.sock')
         launch = (['/bin/sh', '-c', script] if script else
                   ['/opt/atr-venv/bin/python', '-c', LAUNCHER, json.dumps(launcher_spec)])
@@ -891,7 +888,7 @@ def develop(spec: dict, runtime: dict) -> dict:
             summary['evaluations'] = service.records
             summary['test_submissions'] = sum(r['kind'] == 'test' for r in service.records)
             service.drain()
-        reservation.close()
+        attempt_marker.close()
     records = list((output / 'atr').rglob('events.jsonl'))
     requests = sum(1 for path in records for line in path.read_text().splitlines() if '"request"' in line)
     summary.update(task_status=summary.get('task_status', status), http_attempts=requests,
