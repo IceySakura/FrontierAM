@@ -15,6 +15,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 
 from pathlib import Path
 from types import SimpleNamespace
@@ -179,12 +180,35 @@ class PolarizationDemosaicking(OperatorTask):
     # FRONTIERAM_POLAR_DATA=wen grades the public-feedback scenes instead (protocol v6.2; results/OPEN_ITEMS.md).
     feedback = OPS / 'polarization-demosaicking-feedback'
 
+    def warm_image(self, placement, record: Path) -> None:
+        """Read the task image's layer files on the slot's daemon into the page cache before any timed scene.
+
+        A cold cache adds 0.2-0.5 s to the first scene's interpreter start-up and imports (1.000 s limit), while warm
+        runs show no first-scene penalty (results/polarization-first-scene.json). Untimed, and the submission is not run.
+        """
+        start, files, size = time.monotonic(), 0, 0
+        inspect = subprocess.run(['docker', '-H', placement.docker_host, 'image', 'inspect', self.lock()['image']['id'],
+                                  '--format', '{{index .GraphDriver.Data "LowerDir"}}:{{index .GraphDriver.Data "UpperDir"}}'],
+                                 capture_output=True, text=True, check=True)
+        for layer in filter(None, inspect.stdout.strip().split(':')):
+            for base, _, names in os.walk(layer):
+                for name in names:
+                    path = os.path.join(base, name)
+                    if os.path.islink(path) or not os.path.isfile(path):
+                        continue
+                    with open(path, 'rb', buffering=0) as stream:
+                        while chunk := stream.read(1 << 20):
+                            size += len(chunk)
+                    files += 1
+        record.write_text(json.dumps({'files': files, 'bytes': size, 'seconds': time.monotonic() - start}) + '\n')
+
     def run_grader(self, source, out, placement):
         root = self.root()
+        out.parent.mkdir(parents=True, exist_ok=True)
+        self.warm_image(placement, out.parent / f'{out.name}-warmup.json')
         if os.environ.get('FRONTIERAM_POLAR_DATA') == 'wen':
             return self.run_feedback(source, out, placement)
         grader = root / 'harbor/polarization-demosaicking/grade_submission.py'
-        out.parent.mkdir(parents=True, exist_ok=True)
         env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
         done = subprocess.run([str(GRADER_PYTHON), '-B', str(grader), '--submission', str(source), '--output', str(out),
                                '--mode', 'formal'], cwd=grader.parent, env=env, capture_output=True, text=True,
@@ -263,10 +287,11 @@ class SpeciesTreeV2(SpeciesTree):
 
     def suite(self, runtime=None) -> list[dict]:
         data = self.data()
+        limit = self.lock().get('case_limit_s', 120)
         if data.name == 'public-dev':
-            return [{'id': d.name, 'group': 'all', 'time_limit_seconds': 120}
+            return [{'id': d.name, 'group': 'all', 'time_limit_seconds': limit}
                     for d in sorted((data / 'cases').iterdir())]
-        return [{'id': c['case'], 'group': 'all', 'time_limit_seconds': 120}
+        return [{'id': c['case'], 'group': 'all', 'time_limit_seconds': limit}
                 for c in json.loads((data / 'manifest.json').read_text())['cases']]
 
     async def grade(self, runtime, placement, output, case_ids=None):

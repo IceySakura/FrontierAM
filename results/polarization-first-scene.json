@@ -1,0 +1,54 @@
+{
+ "submission": "polarization-demosaicking-20261109T124343Z-553533",
+ "runs": [
+  {
+   "condition": "as_is",
+   "resident_before": {
+    "files": 84,
+    "resident_bytes": 12824576,
+    "bytes": 80270892,
+    "fraction": 0.15976620765594582
+   },
+   "job": "job-20261110T024712Z-b2a322",
+   "slot": "grade-06",
+   "status": "ok",
+   "first_s": 0.5832965129520744,
+   "rest_median_s": 0.5780118179973215,
+   "rest_max_s": 0.5912424740381539,
+   "score": 55.907938926737415
+  },
+  {
+   "condition": "after_evicting_image_files",
+   "evicted_files": 125216,
+   "resident_before": {
+    "files": 84,
+    "resident_bytes": 0,
+    "bytes": 80270892,
+    "fraction": 0.0
+   },
+   "job": "job-20261110T024759Z-2dcd56",
+   "slot": "grade-06",
+   "status": "ok",
+   "first_s": 0.7896195709472522,
+   "rest_median_s": 0.571116911014542,
+   "rest_max_s": 0.5858679839875549,
+   "score": 55.907938926737415
+  },
+  {
+   "condition": "immediately_again",
+   "resident_before": {
+    "files": 84,
+    "resident_bytes": 13012992,
+    "bytes": 80270892,
+    "fraction": 0.16211345950908332
+   },
+   "job": "job-20261110T024841Z-a11a6b",
+   "slot": "grade-06",
+   "status": "ok",
+   "first_s": 0.5677750259637833,
+   "rest_median_s": 0.5699775289976969,
+   "rest_max_s": 0.5903503440786153,
+   "score": 55.907938926737415
+  }
+ ]
+}

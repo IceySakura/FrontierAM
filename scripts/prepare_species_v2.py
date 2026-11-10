@@ -1,8 +1,8 @@
 """Seal species-tree-v2: the rebuilt, larger species-tree task (results/SPECIES_TREE_SIM.md, SPECIES_TREE_SCALE.md).
 
 The operator side is the sealed v1 package (its batch grader, sandboxed worker, TREE-QMC references and portability
-edits), with the fixed taxon count lifted from 101 to TAXA in the scorer (every edit must match its original text
-exactly once). Data are our own S100-style simulations: DATA/formal (held out) and DATA/public (shipped). Layout:
+edits), with the fixed taxon count lifted from 101 to TAXA in the scorer and the per-case wall limit raised from 120 s
+to LIMIT seconds in the grader and sandbox (every edit must match its original text exactly once). Data are our own S100-style simulations: DATA/formal (held out) and DATA/public (shipped). Layout:
 
   packages/operator/        v1 operator directory without its private data, edited for TAXA
   private/                  cases/NNN/{genes.tre,truth.tre} and manifest.json (sha256 per file); never shipped
@@ -10,7 +10,7 @@ exactly once). Data are our own S100-style simulations: DATA/formal (held out) a
   public.tar                packages/public as shipped to the development container
   lock.json                 hashes of every sealed file, image, edits
 
-Usage: prepare_species_v2.py --data /data/datasets/species-sim/v2 [--taxa 250] [--force]
+Usage: prepare_species_v2.py --data /data/datasets/species-sim/v2 [--taxa 250] [--limit 180] [--force]
 """
 
 import argparse
@@ -34,9 +34,20 @@ def sha(path: Path) -> str:
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def edits(taxa: int) -> list[tuple[str, str, str]]:
+def edits(taxa: int, limit: int) -> list[tuple[str, str, str]]:
     splits = taxa - 3
-    return [
+    timing = [] if limit == 120 else [
+        ('grade.py', 'n=len(rows); cap=300+120*n', f'n=len(rows); cap=300+{limit}*n'),
+        ('grade.py', 'attempt,fresh=attempt_for(cid,120,out,cap,retry,incident)',
+         f'attempt,fresh=attempt_for(cid,{limit},out,cap,retry,incident)'),
+        ('grade.py', "if fresh: execute('run',artifact,work,120,MEMORY,Path(row['input']))",
+         f"if fresh: execute('run',artifact,work,{limit},MEMORY,Path(row['input']))"),
+        ('runtime/sandbox.py', 'if not (0 < limit <= (300 if mode == "build" else 120) and 0 < memory <= MEMORY):',
+         f'if not (0 < limit <= (300 if mode == "build" else {limit}) and 0 < memory <= MEMORY):'),
+        ('runtime/worker.py', 'limit_s not in {2, 300 if mode == "build" else 120}:',
+         f'limit_s not in {{2, 300 if mode == "build" else {limit}}}:'),
+    ]
+    return timing + [
         ('runtime/score.py', 'if taxa != {str(i) for i in range(101)} or len(truth) != 98:',
          f'if taxa != {{str(i) for i in range({taxa})}} or len(truth) != {splits}:'),
         ('runtime/score.py', '"Expected a binary truth tree on labels 0 through 100"',
@@ -75,6 +86,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--data', type=Path, required=True)
     parser.add_argument('--taxa', type=int, default=250)
+    parser.add_argument('--limit', type=int, default=180, help='per-case wall seconds')
     parser.add_argument('--force', action='store_true')
     args = parser.parse_args()
     if SEAL.exists():
@@ -85,7 +97,7 @@ def main():
     operator = SEAL / 'packages/operator'
     shutil.copytree(V1 / v1['roots']['operator'], operator, ignore=shutil.ignore_patterns('private-data', '__pycache__'))
     applied = []
-    for relative, old, new in edits(args.taxa):
+    for relative, old, new in edits(args.taxa, args.limit):
         path = operator / 'operator' / relative
         text = path.read_text()
         if text.count(old) != 1:
@@ -116,7 +128,7 @@ def main():
     lock = {
         'name': spec['name'], 'status': spec['status'], 'sealed_utc': datetime.now(timezone.utc).isoformat(),
         'spec_sha256': sha(SPEC / 'task.json'), 'derived_from': {'species-tree': v1['spec_sha256']},
-        'taxa': args.taxa, 'formal_cases': len(formal['cases']), 'public_cases': len(public['cases']),
+        'taxa': args.taxa, 'case_limit_s': args.limit, 'formal_cases': len(formal['cases']), 'public_cases': len(public['cases']),
         'scorer_edits': applied, 'public_tar_sha256': files['public.tar'], 'image': v1['image'],
         'roots': {'operator': 'packages/operator', 'public': 'packages/public'}, 'files': files,
     }
