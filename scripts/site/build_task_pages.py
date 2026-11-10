@@ -12,6 +12,7 @@ and tasks/README.md, the index. The same meta.json files feed the dashboard (scr
 Usage: build_task_pages.py
 """
 
+import argparse
 import glob
 import json
 import shutil
@@ -214,11 +215,33 @@ def write_board(metas: list[dict], names: list[str]) -> None:
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--task', action='append', help='Render only this family; preserve other task pages and their recorded results.')
+    args = parser.parse_args()
     index = []
     runs = run_index()
-    for meta_path in sorted(TASKS.glob('*/meta.json'), key=lambda p: json.loads(p.read_text())['order']):
+    meta_paths = sorted(TASKS.glob('*/meta.json'), key=lambda p: json.loads(p.read_text())['order'])
+    selected = set(args.task or [])
+    unknown = selected - {p.parent.name for p in meta_paths}
+    if unknown:
+        parser.error('Unknown task families: ' + ', '.join(sorted(unknown)))
+    for meta_path in meta_paths:
         family = meta_path.parent
         meta = json.loads(meta_path.read_text())
+        if selected and family.name not in selected:
+            # A light GitHub checkout has no sealed packages or local run stores.
+            # Preserve existing process receipts when adding just one task.
+            existing = []
+            for group in meta['result_groups']:
+                if not group['title'].startswith('协议 v6.2'):
+                    continue
+                for r in group['results']:
+                    previous = family / 'solutions' / 'v6.2' / attempt_dir(r) / 'result.json'
+                    if previous.exists():
+                        r['_process'] = json.loads(previous.read_text()).get('process')
+                    existing.append(r)
+            index.append((meta, family.name, len(existing)))
+            continue
         version = family / 'versions' / meta['current_version']
         (version / 'statement.md').write_text(statement(meta['statement']))
         listed = []

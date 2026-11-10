@@ -440,8 +440,12 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
 
 
 def operator_tasks() -> dict[str, OperatorTask]:
+    # Repository-native draft tasks do not pretend to have a sealed operator
+    # package or a calibrated deployment on this host.
+    from .operator_drivers.ihvp_sequence import IHVPSequence
+    handlers = {**CLASSES, 'ihvp-sequence': IHVPSequence}
     tasks = {}
     for path in sorted(SPECS.glob('*/versions/*/task.json')):
         spec = json.loads(path.read_text())
-        tasks[spec['name']] = CLASSES.get(spec['name'], DevelopmentOnlyTask)(spec)
+        tasks[spec['name']] = handlers.get(spec['name'], DevelopmentOnlyTask)(spec)
     return tasks

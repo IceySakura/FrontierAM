@@ -12,3 +12,5 @@
 | `analyze/` 分析 | `conic-final-report.py`、`conic-per-case-export.py`、`conic-case-times.py`、`conic-substantive.py`、`conic-suite-compare.py`、`trajectory-compare.py`、`trajectory-expected.py`、`polar-first-scene.py`、`polar-warmup-check.py` |
 | `site/` 看板与题目页 | `build_dashboard.py`、`build_task_pages.py` |
 | `ops/` 运维 | `run_leased.py`（在租用的开发 slot 上跑容器任务）、`data-maintenance.sh`、`overnight.sh`、`finish-orphan.py`、`release-after.py`、`release-when-free.py` |
+
+只含 GitHub 公开材料的 checkout 新增单题时，可用 `python scripts/site/build_task_pages.py --task ihvp-sequence` 生成该题 README 并更新索引和看板，其他题目的封存材料与历史页面保持不动。`python scripts/site/build_dashboard.py --task ihvp-sequence --out var/dist/ihvp-preview` 可生成单题预览，无需读取其他题目的维护端材料；正式全站构建仍使用原有默认命令。

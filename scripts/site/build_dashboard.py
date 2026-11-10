@@ -296,12 +296,19 @@ def main():
     global FOOTER
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, default=ROOT / 'var/dist/dashboard')
+    parser.add_argument('--task', action='append', help='Build a preview containing only these task families.')
     args = parser.parse_args()
     commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     FOOTER = (f'FrontierAM · 构建于 {datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M %Z")} · 代码版本 {commit} · '
               '所有分数为本机实测；隐藏测试数据不在本站公开')
     site = json.loads((SRC / 'site.json').read_text())
     tasks = sorted((json.loads(p.read_text()) for p in ROOT.glob('tasks/*/meta.json')), key=lambda t: t['order'])
+    if args.task:
+        selected = set(args.task)
+        unknown = selected - {t['name'] for t in tasks}
+        if unknown:
+            parser.error('Unknown task families: ' + ', '.join(sorted(unknown)))
+        tasks = [t for t in tasks if t['name'] in selected]
     staging = args.out.with_name(args.out.name + '.new')
     if staging.exists():
         shutil.rmtree(staging)

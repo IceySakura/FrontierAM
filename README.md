@@ -13,6 +13,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 55.9* |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) |  |  | 51.9* |  |
 | [species-tree](tasks/species-tree/README.md) | 0.0 |  | 42.3 |  |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) |  |  |  |  |
 
 满分 100，参照 = 50；* 待复核，† 复核完成（见题目 README，`results/BASELINE_REVIEW.md`）。
 
@@ -26,6 +27,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 46 分钟 |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) |  |  | 68 分钟 |  |
 | [species-tree](tasks/species-tree/README.md) | 4 分钟 |  | 66 分钟 |  |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) |  |  |  |  |
 <!-- board:end -->
 
 本仓库不含私有评测集（各题的私有测试数据另行保管，需要时单独提供）。
