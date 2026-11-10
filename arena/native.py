@@ -15,6 +15,7 @@ protocols v4/v5, so grading is unchanged.
 
 from __future__ import annotations
 
+import contextlib
 import fcntl
 import json
 import os
@@ -142,12 +143,15 @@ def _wait_port(port: int, process: subprocess.Popen, timeout: float = 60) -> Non
     raise RuntimeError('atr serve did not start listening')
 
 
-def freeze(controller, docker, name: str, output: Path, label: str = 'source', remove: bool = True) -> dict:
+def freeze(controller, docker, name: str, output: Path, label: str = 'source', remove: bool = True,
+           pause: bool = True) -> dict:
     """controller.freeze with the exporter under DEV_UID: /proc/1/root of the paused container is only readable by
     its own UID. The export script, size caps and archive validation are the reviewed ones, unchanged. A v6.2 test
-    submission keeps the (still paused) container."""
+    submission keeps the (still paused) container; a v6.3 test snapshot exports from the running container
+    (pause=False): a file changed during the export fails the snapshot, and the agent may retry."""
     output.mkdir(parents=True, exist_ok=True)
-    docker.pause(name)
+    if pause:
+        docker.pause(name)
     raw = output / f'{label}.docker.tar'
     image = docker.inspect(name)['Image']
     exporter = 'frontieram-export-' + secrets.token_hex(16)
@@ -178,7 +182,7 @@ def freeze(controller, docker, name: str, output: Path, label: str = 'source', r
         if code:
             raise controller.InfrastructureFailure('paused workspace export failed: ' + error.decode(errors='replace')[:500])
         result = controller.validate_and_extract(raw, output / label, output / f'{label}.tar')
-        result.update(paused_before_export=True, frozen_at_utc=controller.now(), raw_archive_bytes=total,
+        result.update(paused_before_export=pause, frozen_at_utc=controller.now(), raw_archive_bytes=total,
                       exporter_uid=DEV_UID)
         controller.save(output / f'{label}_manifest.json', result)
         raw.unlink()
@@ -305,6 +309,57 @@ TYPICAL_EVALUATION = {
                       'slower or failing solutions take longer and may reach the cap.',
 }
 
+# Protocol v6.3 (results/PROTOCOL_V63.md): the limit and the scoring rule are stated; nothing suggests using all of it.
+V63_SECONDS = {'single': 3600, 'iterative': 14400}
+SETTING_SINGLE_V63 = (
+    'One attempt with a limit of {minutes} minutes of wall-clock time, including model requests and tool time. When '
+    'you finish your turn, or when the limit is reached, /workspace/submission is frozen and graded once on a hidden '
+    'held-out set; only that score counts. The evaluator gives no feedback during development.'
+)
+SETTING_ITERATIVE_V63 = (
+    'One attempt with a limit of {minutes} minutes of wall-clock time, including model requests and tool time. '
+    '`/opt/frontieram/bin/submit --test` takes a snapshot of /workspace/submission and returns at once; the snapshot '
+    'is evaluated on a hidden public set of cases on a separate grading core while you keep working (the clock keeps '
+    'running). When the evaluation is done, /workspace/feedback/test-<n>/report.md gives the public-set score on the '
+    '100-point scale (reference = 50, the same mapping as the final score) and {detail}; it never lists individual '
+    'cases. One test is evaluated at a time, each capped at {cap} minutes. `/opt/frontieram/bin/submit --status` '
+    'shows the time left and the state of your tests. `/opt/frontieram/bin/submit --final` freezes '
+    '/workspace/submission as your final submission and ends the attempt; otherwise /workspace/submission as it '
+    'stands when the limit is reached is graded. Only the final score on the hidden held-out set counts; the '
+    'public-set score is feedback.'
+)
+FEEDBACK_DETAIL = {
+    True: 'a table with one row per category of cases: the numbers of passed, wrong, timed-out and crashed cases, your '
+          '{metrics} relative to the reference, and the category score',
+    False: 'the numbers of passed, wrong, timed-out and crashed cases and your {metrics} relative to the reference',
+}
+
+SUBMIT_CLIENT_V63 = r'''#!/usr/bin/env python3
+"""FrontierAM protocol v6.3: --test snapshots /workspace/submission for a public-set evaluation in the background;
+--status shows the time left and the tests; --final ends the attempt with /workspace/submission as it stands."""
+import argparse, json, socket, sys
+
+parser = argparse.ArgumentParser(description=__doc__)
+kind = parser.add_mutually_exclusive_group(required=True)
+kind.add_argument("--test", action="store_true", help="snapshot and evaluate on the hidden public set (returns at once)")
+kind.add_argument("--status", action="store_true", help="time left, tests so far, the running test")
+kind.add_argument("--final", action="store_true", help="freeze /workspace/submission and end the attempt")
+args = parser.parse_args()
+request = {"kind": "test" if args.test else "final" if args.final else "status"}
+connection = socket.socket(socket.AF_UNIX)
+connection.connect("/run/frontieram-eval/eval.sock")
+connection.sendall((json.dumps(request) + "\n").encode())
+data = b""
+while True:
+    chunk = connection.recv(65536)
+    if not chunk:
+        break
+    data += chunk
+reply = json.loads(data or b'{"ok": false, "message": "no reply"}')
+print(reply["message"])
+sys.exit(0 if reply.get("ok") else 1)
+'''
+
 SUBMIT_CLIENT = r'''#!/usr/bin/env python3
 """FrontierAM protocol v6.2: --test grades /workspace/submission on the public set; --final ends the attempt."""
 import argparse, json, socket, sys
@@ -339,13 +394,24 @@ PUBLIC_EVAL = {
     'exponential-v2': {'env': {'FRONTIERAM_EXP2_SEAL': str(ROOT / '.runtime-exp2-public')},
                        'store': ROOT / 'var/stores/store-public-exp2'},
 }
-# Test evaluations take every grading slot, so iterative attempts run one at a time and never queue for them.
-ITERATIVE_LOCK = Path('/run/frontieram/v62-iterative.lock')
+
+
+def feedback_detail(task_name: str) -> str:
+    from .public_v63 import config
+
+    cfg = config(task_name)
+    metrics = ' and '.join(m for m in (cfg.get('accuracy'), 'running time' if cfg.get('timed') else None) if m)
+    return FEEDBACK_DETAIL[bool(cfg.get('category'))].format(metrics=metrics or 'results')
 
 
 def prompt(task_name: str, runtime: dict, protocol: str = 'v6', setting: str = 'single', seconds: float = 7200) -> str:
     task = TASKS[task_name]
-    if protocol == 'v6.2':
+    if protocol == 'v6.3':
+        minutes = int(round(seconds / 60))
+        budget = (SETTING_ITERATIVE_V63.format(minutes=minutes, detail=feedback_detail(task_name), cap=TEST_CAP_SECONDS // 60)
+                  if setting == 'iterative' else SETTING_SINGLE_V63.format(minutes=minutes))
+        budget += ' How the final score is determined: ' + SCORING_DISCLOSURE[task_name]
+    elif protocol == 'v6.2':
         budget = (SETTING_ITERATIVE.format(seconds=int(seconds), cap=TEST_CAP_SECONDS // 60,
                                            typical=TYPICAL_EVALUATION.get(task_name, ''))
                   if setting == 'iterative' else SETTING_SINGLE.format(seconds=int(seconds)))
@@ -360,8 +426,8 @@ def prompt(task_name: str, runtime: dict, protocol: str = 'v6', setting: str = '
         + getattr(task, 'submission_note', SUBMISSION_NOTE) + ' '
         + budget
         + runtime['architecture_override_prompt']
-        + ((TIMING_NOTE_SESSION if task_name.startswith('exponential') and protocol == 'v6.2' else TIMING_NOTE)
-           if protocol in ('v6.1', 'v6.2') else '')
+        + ((TIMING_NOTE_SESSION if task_name.startswith('exponential') and protocol in ('v6.2', 'v6.3') else TIMING_NOTE)
+           if protocol in ('v6.1', 'v6.2', 'v6.3') else '')
     )
 
 
@@ -539,6 +605,138 @@ class EvalService:
         return '\n'.join(lines)
 
 
+class EvalServiceV63:
+    """v6.3 iterative setting: /opt/frontieram/bin/submit over a bind-mounted socket, without stopping the attempt.
+
+    A test snapshots /workspace/submission from the running container (reviewed exporter, no pause) and returns at
+    once; the snapshot is graded on the public set in the background on the grade slot this attempt reserved
+    (`bench public-eval-v63`), and the report is copied into /workspace/feedback/test-<n>/. One test at a time, each
+    capped. A final request ends the attempt. Evaluations still running when the attempt ends finish unread.
+    """
+
+    def __init__(self, task_name, docker, controller, name: str, output: Path, started: float, deadline: float, slot: str):
+        self.task, self.docker, self.controller, self.name, self.slot = task_name, docker, controller, name, slot
+        self.output, self.started, self.deadline = output / 'evaluations', started, deadline
+        self.final, self.ended = threading.Event(), threading.Event()
+        self.busy, self.container = threading.Lock(), threading.Lock()
+        self.records: list[dict] = []
+        self.threads: list[threading.Thread] = []
+        self.server = None
+
+    start = EvalService.start
+    _serve = EvalService._serve
+    _handle = EvalService._handle
+    _now = EvalService._now
+    _final = EvalService._final
+
+    def end(self) -> None:
+        """No report may be copied into the container after this (develop() pauses it next)."""
+        self.ended.set()
+        with self.container:
+            pass
+        if self.server is not None:
+            self.server.close()
+
+    def drain(self, timeout: float = TEST_CAP_SECONDS + 600) -> None:
+        """The reservation outlives the attempt until its last evaluation is done, so no test overlaps the next use."""
+        for thread in self.threads:
+            thread.join(timeout=timeout)
+
+    def _remaining(self) -> int:
+        return max(0, int(self.deadline - time.monotonic()))
+
+    def _status(self) -> dict:
+        tests = [r for r in self.records if r['kind'] == 'test']
+        lines = [f'Time left: {self._remaining()} s. Tests so far: {len(tests)}.']
+        for r in tests[-5:]:
+            state = r.get('status', 'running')
+            score = '' if r.get('score') is None else f', public-set score {r["score"]:.1f}'
+            lines.append(f'  test {r["n"]} (submitted at {r["requested_at_seconds"]:.0f} s): {state}{score}')
+        return {'ok': True, 'message': '\n'.join(lines)}
+
+    def _test(self, request: dict) -> dict:
+        if not self.busy.acquire(blocking=False):
+            running = next(r for r in reversed(self.records) if r['kind'] == 'test')
+            return {'ok': False, 'message': f'Test {running["n"]} is still being evaluated; one test at a time '
+                                            f'(`submit --status` shows its state).'}
+        release = True
+        try:
+            n = sum(r['kind'] == 'test' for r in self.records) + 1
+            record = {'kind': 'test', 'n': n, 'requested_at_seconds': self._now()}
+            self.records.append(record)
+            if self.ended.is_set():
+                record['status'] = 'refused_attempt_ended'
+                return {'ok': False, 'message': 'The attempt has ended.'}
+            directory = self.output / f'test-{n:02d}'
+            try:
+                with self.container:
+                    manifest = freeze(self.controller, self.docker, self.name, directory, remove=False, pause=False)
+                record['files'] = len(manifest['files'])
+            except self.controller.SubmissionFailure as error:
+                record.update(status='invalid_submission', score=0.0, finished_at_seconds=self._now())
+                report = {'task': self.task, 'status': 'invalid_submission', 'score': 0.0, 'reason': str(error)[:300],
+                          'categories': {}}
+                self._deliver(directory / 'report', report, n)
+                return {'ok': True, 'message': f'Test {n}: /workspace/submission cannot be frozen as a submission: '
+                                               f'{str(error)[:300]}'}
+            except Exception as error:
+                record.update(status='snapshot_failed', reason=f'{type(error).__name__}: {str(error)[:300]}')
+                return {'ok': False, 'message': f'Test {n}: the snapshot failed (files may have changed while it was '
+                                                f'taken); not a verdict on your submission, you may retry.'}
+            thread = threading.Thread(target=self._evaluate, args=(record, directory), daemon=True)
+            self.threads.append(thread)
+            thread.start()
+            release = False
+            return {'ok': True, 'message': f'Test {n} submitted at {record["requested_at_seconds"]:.0f} s and is being '
+                                           f'evaluated in the background (at most {TEST_CAP_SECONDS // 60} minutes). '
+                                           f'The report will appear in /workspace/feedback/test-{n:02d}/report.md; '
+                                           f'`submit --status` shows its state. Time left: {self._remaining()} s.'}
+        finally:
+            if release:
+                self.busy.release()
+
+    def _evaluate(self, record: dict, directory: Path) -> None:
+        n = record['n']
+        try:
+            command = [sys.executable, '-m', 'arena.cli', 'public-eval-v63', '--task', self.task,
+                       '--source', str(directory / 'source'), '--out', str(directory / 'report'), '--slot', self.slot,
+                       '--cap', str(TEST_CAP_SECONDS), '--label', f'{self.output.parent.name} test {n}']
+            with (directory / 'public-eval.log').open('wb') as log:
+                code = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
+                                      timeout=TEST_CAP_SECONDS + 600).returncode
+            path = directory / 'report/report.json'
+            report = json.loads(path.read_text()) if path.exists() else None
+            if code or report is None:
+                report = {'task': self.task, 'status': 'unmeasured', 'score': None, 'categories': {},
+                          'reason': 'evaluator-side failure; you may submit another test'}
+                record['exit_code'] = code
+            record.update(status=report['status'], score=report.get('score'), finished_at_seconds=self._now())
+            self._deliver(directory / 'report', report, n, write=code != 0 or not path.exists())
+        except Exception as error:
+            record.update(status='evaluation_error', reason=f'{type(error).__name__}: {str(error)[:300]}',
+                          finished_at_seconds=self._now())
+        finally:
+            self.busy.release()
+
+    def _deliver(self, folder: Path, report: dict, n: int, write: bool = True) -> None:
+        """Write report.json/report.md (if not written by the evaluator) and copy them into the running container."""
+        from .feedback import render
+
+        folder.mkdir(parents=True, exist_ok=True)
+        if write or not (folder / 'report.md').exists():
+            (folder / 'report.json').write_text(json.dumps(report, indent=1) + '\n')
+            (folder / 'report.md').write_text(render(report))
+        with self.container:
+            if self.ended.is_set():
+                return
+            target = f'/workspace/feedback/test-{n:02d}'
+            self.docker.run('exec', '--user', f'{DEV_UID}:{DEV_UID}', self.name, '/bin/mkdir', '-p', target)
+            payload = subprocess.run(['tar', '-C', str(folder), '-cf', '-', 'report.md', 'report.json'],
+                                     capture_output=True, check=True).stdout
+            self.docker.run('exec', '-i', '--user', f'{DEV_UID}:{DEV_UID}', '--workdir', target, self.name,
+                            '/bin/tar', '--no-same-owner', '-xf', '-', input=payload, timeout=60)
+
+
 def develop(spec: dict, runtime: dict) -> dict:
     """One v6 attempt; returns the same summary fields as a Nexus v4/v5 attempt."""
     task = TASKS[spec['task']]
@@ -550,18 +748,23 @@ def develop(spec: dict, runtime: dict) -> dict:
     frozen_dir.mkdir(parents=True, exist_ok=True)
     script = spec.get('agent_script')  # validation only: a shell script stands in for the model and its harness
     route = {'script': True} if script else resolve_route(model, harness)
-    seconds = spec.get('development_seconds') or 7200
     protocol = spec['protocol']
     setting = spec.get('setting') or 'single'
-    iterative = protocol == 'v6.2' and setting == 'iterative'
-    if iterative and task.name not in PUBLIC_EVAL:
-        raise ValueError(f'{task.name} has no public-feedback grader for the iterative setting')
+    seconds = spec.get('development_seconds') or (V63_SECONDS[setting] if protocol == 'v6.3' else 7200)
+    if protocol == 'v6.2' and setting == 'iterative':
+        raise ValueError('the v6.2 iterative setting is retired; use --protocol v6.3 (results/PROTOCOL_V63.md)')
+    iterative = protocol == 'v6.3' and setting == 'iterative'
+    if iterative:
+        from .public_v63 import PUBLIC, baseline_path
+        if task.name not in PUBLIC or not baseline_path(task.name).exists():
+            raise ValueError(f'{task.name} has no v6.3 public baseline (bench public-baseline-v63)')
     assets = task.assets(runtime)
     docker = assets.controller.Docker(runtime['docker_path'], placement.docker_host, placement.cpuset,
                                       placement.cgroup_parent)
     write(output / 'v6_conditions.json', {'harness': harness, 'route': route, 'image': HARNESS_IMAGES[task.name],
                                           'development_seconds': seconds, 'memory_bytes': MEMORY,
-                                          'protocol': protocol, 'setting': setting if protocol == 'v6.2' else None,
+                                          'protocol': protocol,
+                                          'setting': setting if protocol in ('v6.2', 'v6.3') else None,
                                           'test_cap_seconds': TEST_CAP_SECONDS if iterative else None})
     credential_env, credential_file = CREDENTIALS.get(model, DEFAULT_CREDENTIAL)
     token = secrets.token_urlsafe(32)
@@ -572,20 +775,21 @@ def develop(spec: dict, runtime: dict) -> dict:
     name = f'frontieram-v6-{secrets.token_hex(8)}'
     processes: list[subprocess.Popen] = []
     summary: dict = {'harness': harness, 'route': route, 'protocol': protocol, 'setting': setting}
-    lock = service = None
+    service = None
+    reservation = contextlib.ExitStack()
     mounts = []
     if iterative:
-        ITERATIVE_LOCK.parent.mkdir(parents=True, exist_ok=True)
-        lock = ITERATIVE_LOCK.open('a')
+        from .cli import context
+
         waited = time.monotonic()
-        fcntl.flock(lock, fcntl.LOCK_EX)
-        summary['waited_for_iterative_lock_seconds'] = round(time.monotonic() - waited, 1)
+        slot = reservation.enter_context(context()[1].reserve(f'v6.3 iterative {output.name}', timeout=4 * 3600))
+        summary.update(test_slot=slot, waited_for_test_slot_seconds=round(time.monotonic() - waited, 1))
         eval_dir = Path('/run/frontieram/eval') / output.name
         eval_dir.mkdir(parents=True, exist_ok=False)
         eval_dir.chmod(0o777)
         client_dir = output / 'client'
         (client_dir / 'bin').mkdir(parents=True)
-        (client_dir / 'bin/submit').write_text(SUBMIT_CLIENT)
+        (client_dir / 'bin/submit').write_text(SUBMIT_CLIENT_V63)
         (client_dir / 'bin/submit').chmod(0o755)
         mounts = ['--mount', f'type=bind,src={eval_dir},dst=/run/frontieram-eval',
                   '--mount', f'type=bind,src={client_dir},dst=/opt/frontieram,readonly']
@@ -636,7 +840,7 @@ def develop(spec: dict, runtime: dict) -> dict:
         (output / 'prompt.txt').write_text(launcher_spec['prompt'])
         deadline = started + seconds
         if iterative:
-            service = EvalService(task.name, docker, assets.controller, name, output, started, deadline)
+            service = EvalServiceV63(task.name, docker, assets.controller, name, output, started, deadline, slot)
             service.start(eval_dir / 'eval.sock')
         launch = (['/bin/sh', '-c', script] if script else
                   ['/opt/atr-venv/bin/python', '-c', LAUNCHER, json.dumps(launcher_spec)])
@@ -685,9 +889,9 @@ def develop(spec: dict, runtime: dict) -> dict:
                 process.kill()
         if service is not None:
             summary['evaluations'] = service.records
+            summary['test_submissions'] = sum(r['kind'] == 'test' for r in service.records)
             service.drain()
-        if lock is not None:
-            lock.close()
+        reservation.close()
     records = list((output / 'atr').rglob('events.jsonl'))
     requests = sum(1 for path in records for line in path.read_text().splitlines() if '"request"' in line)
     summary.update(task_status=summary.get('task_status', status), http_attempts=requests,

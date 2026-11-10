@@ -134,7 +134,7 @@ def develop_one(layout, broker, runtime, store, args, index: int) -> dict:
         'origin': 'agent',
         'model': args.model,
         'protocol': getattr(args, 'protocol', 'v4'),
-        'setting': getattr(args, 'setting', 'single') if getattr(args, 'protocol', 'v4') == 'v6.2' else None,
+        'setting': getattr(args, 'setting', 'single') if getattr(args, 'protocol', 'v4') in ('v6.2', 'v6.3') else None,
         'smoke': args.smoke or bool(getattr(args, 'development_seconds', None)),
         'dev_run': run_id,
         'dev_slot': lease.id,
@@ -205,36 +205,6 @@ def uid_tasks(uid: int) -> int:
     return count
 
 
-ITERATIVE_LOCK = Path('/run/frontieram/v62-iterative.lock')
-
-
-def iterative_attempt_running() -> bool:
-    """True while a protocol v6.2 iterative attempt holds the machine lock (arena/native.py)."""
-    import fcntl
-
-    if not ITERATIVE_LOCK.exists():
-        return False
-    with ITERATIVE_LOCK.open('a') as handle:
-        try:
-            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            return True
-        fcntl.flock(handle, fcntl.LOCK_UN)
-        return False
-
-
-def wait_for_iterative_attempts(job, store) -> None:
-    """Iterative attempts' test evaluations count against their budget, so no other grading may take the slots."""
-    if os.environ.get('FRONTIERAM_PUBLIC_EVAL') == '1' or store.root.name.startswith('store-public-'):
-        return
-    waited = False
-    while iterative_attempt_running():
-        if not waited:
-            say(event='grade_waiting_for_iterative_attempt', job=job['id'])
-            waited = True
-        time.sleep(30)
-
-
 def grade_job(layout, broker, runtime, store, job) -> dict:
     task = TASKS[job['task']]
     results = store.result_dir(job['id'])
@@ -255,7 +225,6 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
                 say(event='grade_waiting_uid_headroom', job=job['id'], uid=task.grader_uid, tasks=count)
                 waited = True
             time.sleep(30)
-    wait_for_iterative_attempts(job, store)
     # Interference probes measure concurrency on purpose; a job may carry an escalated policy from the load gate.
     policy = 'shared' if job['kind'] == 'probe' else job.get('isolation') or task.grade_isolation
     say(event='grade_waiting', job=job['id'], task=task.name, isolation=policy)
@@ -863,10 +832,10 @@ def main() -> None:
     develop.add_argument('--base-url', default=DEFAULT_BASE_URL)
     develop.add_argument('--no-grade', action='store_true', help='freeze only; do not queue for grading')
     develop.add_argument('--wait', type=float, default=None, help='seconds to wait for a free dev slot')
-    develop.add_argument('--protocol', choices=['v4', 'v5', 'v5.1', 'v6', 'v6.1', 'v6.2'], default='v4',
+    develop.add_argument('--protocol', choices=['v4', 'v5', 'v5.1', 'v6', 'v6.1', 'v6.2', 'v6.3'], default='v4',
                          help='v4: Responses converted to Chat; v5: native Responses (native_bridge.py)')
     develop.add_argument('--setting', choices=['single', 'iterative'], default='single',
-                         help='v6.2: single = no feedback; iterative = public-set test submissions and a formal one')
+                         help='v6.3: single = 1 h, no feedback; iterative = 4 h with background public-set tests')
     develop.add_argument('--development-seconds', type=float, default=None,
                          help='shorter budget for a validation run; such submissions never enter the leaderboard')
     develop.set_defaults(smoke=False)
@@ -928,6 +897,18 @@ def main() -> None:
     public_eval.add_argument('--cases', help='comma-separated case IDs')
     public_eval.add_argument('--label', default=None)
     public_eval.add_argument('--cap', type=float, default=None, help='seconds; stop and report finished cases')
+    public_baseline_v63 = sub.add_parser('public-baseline-v63', help='v6.3: measure the references on the public set')
+    public_baseline_v63.add_argument('--task', required=True)
+    public_baseline_v63.add_argument('--slot', required=True, help='grade slot, e.g. grade-06')
+    public_baseline_v63.add_argument('--replace', action='store_true')
+    public_baseline_v63.add_argument('--provisional', action='store_true', help='dry-run measurement, not for scoring')
+    public_eval_v63 = sub.add_parser('public-eval-v63', help='v6.3: one test evaluation on the attempt\'s grade slot')
+    public_eval_v63.add_argument('--task', required=True)
+    public_eval_v63.add_argument('--source', required=True)
+    public_eval_v63.add_argument('--out', required=True)
+    public_eval_v63.add_argument('--slot', required=True)
+    public_eval_v63.add_argument('--cap', type=float, default=None, help='seconds')
+    public_eval_v63.add_argument('--label', default=None)
     board = sub.add_parser('leaderboard')
     board.add_argument('--task', choices=sorted(TASKS), required=True)
     args = parser.parse_args()
@@ -950,6 +931,8 @@ def main() -> None:
         'leaderboard': cmd_leaderboard,
         'public-baseline': lambda a: __import__('arena.public_eval', fromlist=['x']).cmd_public_baseline(a),
         'public-eval': lambda a: __import__('arena.public_eval', fromlist=['x']).cmd_public_eval(a),
+        'public-baseline-v63': lambda a: __import__('arena.public_v63', fromlist=['x']).cmd_public_baseline_v63(a),
+        'public-eval-v63': lambda a: __import__('arena.public_v63', fromlist=['x']).cmd_public_eval_v63(a),
     }
     handlers[args.command](args)
 
