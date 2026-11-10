@@ -61,6 +61,8 @@ def script(task: str, setting: str) -> str:
                   'echo REPORT-BEGIN; cat /workspace/feedback/test-01/report.md; echo REPORT-END',
                   "echo 'v6.3 smoke submission (final)' > /workspace/submission/README.md",
                   '/opt/frontieram/bin/submit --final; echo "final-exit=$?"', 'sleep 120', 'echo NOT-REACHED']
+    elif setting == 'single-deadline':  # the agent never ends its turn: the limit must freeze it
+        lines += ['ls /opt/frontieram/bin/submit 2>&1; echo single-done', 'sleep 3600', 'echo NOT-REACHED']
     else:
         lines += ['ls /opt/frontieram/bin/submit 2>&1; echo single-done']
     return '\n'.join(lines) + '\n'
@@ -73,7 +75,8 @@ def main():
     out.mkdir(parents=True)
     with broker.acquire('dev', task.dev_memory, f'v6.3 smoke {out.name}', timeout=3600) as lease:
         spec = {'task': task_name, 'model': 'gpt-6.1-sol', 'placement': placement_for(lease, layout).__dict__,
-                'output': str(out), 'protocol': 'v6.3', 'setting': setting, 'development_seconds': seconds,
+                'output': str(out), 'protocol': 'v6.3', 'setting': setting.replace('-deadline', ''),
+                'development_seconds': seconds,
                 'agent_script': script(task_name, setting)}
         result = develop(spec, runtime)
     print(json.dumps({k: v for k, v in result.items() if k != 'route'}, indent=1))
@@ -97,8 +100,9 @@ def main():
                       final_frozen='(final)' in (out / 'task/source/README.md').read_text(),
                       tests_counted=result.get('test_submissions', 0) >= 1)
     else:
-        checks.update(no_submit_client='No such file or directory' in log,
-                      stop_reason=result.get('agent_stop_reason') in ('turn_completed', 'development_deadline'))
+        expected = 'development_deadline' if setting == 'single-deadline' else 'turn_completed'
+        checks.update(no_submit_client='No such file or directory' in log, stop_reason=result.get('agent_stop_reason') == expected,
+                      within_limit=result.get('development_seconds', 1e9) <= seconds + 15, never_reached='NOT-REACHED' not in log)
     print(json.dumps(checks))
     sys.exit(0 if all(checks.values()) else 1)
 
