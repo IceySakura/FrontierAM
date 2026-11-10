@@ -70,10 +70,10 @@
       "001",
       "002"
     ],
-    "public": "50 个公开用例",
+    "public": "5 个公开用例（001–005）",
     "groups": null,
     "feedback": {
-      "task": "species-tree-v2",
+      "task": "species-tree-v3",
       "category": null,
       "accuracy": "normalised RF error",
       "lower_is_better": true,

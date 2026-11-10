@@ -311,7 +311,7 @@ class SpeciesTreeV2(SpeciesTree):
     def suite(self, runtime=None) -> list[dict]:
         data = self.data()
         limit = self.lock().get('case_limit_s', 120)
-        if data.name == 'public-dev':
+        if data.name == 'public-dev' and not (data / 'manifest.json').exists():
             return [{'id': d.name, 'group': 'all', 'time_limit_seconds': limit}
                     for d in sorted((data / 'cases').iterdir())]
         return [{'id': c['case'], 'group': 'all', 'time_limit_seconds': limit}
@@ -416,7 +416,7 @@ def _finite(value) -> bool:
 
 CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2, 'galaxy-gravity-v3': GalaxyGravityV3,
            'polarization-demosaicking': PolarizationDemosaicking, 'polarization-demosaicking-v2': PolarizationDemosaicking,
-           'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2,
+           'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2, 'species-tree-v3': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance}
 
 

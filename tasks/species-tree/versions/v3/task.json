@@ -1,0 +1,23 @@
+{
+  "name": "species-tree-v3",
+  "title": "从短基因的估计树推断物种树（250 个物种）",
+  "status": "formal",
+  "status_reason": "Protocol v6.3 version (results/PROTOCOL_V63.md, results/EVAL_TIME_LIMITS.md): samples-only workspace; limits and set sizes for the evaluation time caps (scripts/seal/prepare_v63.py).",
+  "derived_from": "species-tree-v2",
+  "references": {
+    "weak": "references:unweighted",
+    "strong": "references:weighted"
+  },
+  "images": {
+    "task": {
+      "tag": "frontieram-species-tree:amd64-b1",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": [
+        "sha256:1d48faa312f84fa5a6ace78b36fafe247eda2e6c5ac5d6ddd5da53ccf80a4c11",
+        "local/species-tree-cpu:b1"
+      ]
+    }
+  },
+  "submission_note": "Put the complete source, an executable run.sh and README.md in /workspace/submission, plus an optional executable no-argument build.sh; the evaluator builds once offline and runs ./run.sh INPUT OUTPUT per instance in a clean copy of this environment without the agent tools.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/samples. Implement the species-tree inference program described there."
+}

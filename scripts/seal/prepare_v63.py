@@ -85,6 +85,35 @@ TASKS = {
                                 'demosaicking program described there.'},
         'lock': {},
     },
+    'species-tree': {
+        'parent': 'species-tree-v2', 'name': 'species-tree-v3', 'version': 'v3',
+        'keep': ['problem.md', 'public-dev/README.md', 'public-dev/check_rf.py', 'public-dev/manifest.json',
+                 'public-dev/cases/001/genes.tre', 'public-dev/cases/001/truth.tre',
+                 'public-dev/cases/002/genes.tre', 'public-dev/cases/002/truth.tre'],
+        'manifest_keep': ['001', '002'],
+        'edits': [('problem.md', '180 秒墙钟', '135 秒墙钟'),
+                  ('problem.md', '正式集含 200 棵独立生成的物种树', '正式集含 96 棵独立生成的物种树'),
+                  ('problem.md', '公开开发数据在 `public-dev/`：50 组', '样例数据在 `samples/`：2 组'),
+                  ('problem.md', 'dev=/workspace/public-dev', 'dev=/workspace/samples'),
+                  ('public-dev/README.md', '# 物种树推断开发数据（250 个物种）', '# 物种树推断样例数据（250 个物种）'),
+                  ('public-dev/README.md', '每个 `cases/001` 至 `cases/050` 目录包含', '`cases/001` 与 `cases/002` 两个目录各包含'),
+                  ('public-dev/README.md', 'dev=/workspace/public-dev', 'dev=/workspace/samples')],
+        # The per-case wall limit (results/EVAL_TIME_LIMITS.md): 1.25 x the strong reference's slowest case.
+        'operator_edits': [(f'packages/operator/operator/{f}', old, new) for f, old, new in (
+            ('grade.py', 'n=len(rows); cap=300+180*n', 'n=len(rows); cap=300+135*n'),
+            ('grade.py', 'attempt,fresh=attempt_for(cid,180,out,cap,retry,incident)', 'attempt,fresh=attempt_for(cid,135,out,cap,retry,incident)'),
+            ('grade.py', "if fresh: execute('run',artifact,work,180,MEMORY,Path(row['input']))",
+             "if fresh: execute('run',artifact,work,135,MEMORY,Path(row['input']))"),
+            ('runtime/sandbox.py', 'if not (0 < limit <= (300 if mode == "build" else 180) and 0 < memory <= MEMORY):',
+             'if not (0 < limit <= (300 if mode == "build" else 135) and 0 < memory <= MEMORY):'),
+            ('runtime/worker.py', 'limit_s not in {2, 300 if mode == "build" else 180}:',
+             'limit_s not in {2, 300 if mode == "build" else 135}:'))],
+        # Cases are independent draws with the same parameters, so leading cases are a random subset.
+        'data_manifests': {'private/manifest.json': ('case', 96), 'packages/public/public-dev/manifest.json': ('case', 5)},
+        'task': {'instruction': 'Read /workspace/problem.md in full and inspect /workspace/samples. Implement the species-tree '
+                                'inference program described there.'},
+        'lock': {'case_limit_s': 135, 'formal_cases': 96, 'public_cases': 5},
+    },
     'galaxy-gravity': {
         'parent': 'galaxy-gravity-v2', 'name': 'galaxy-gravity-v3', 'version': 'v3',
         'keep': ['problem.md', 'public-dev/README.md', 'public-dev/check_output.py', 'public-dev/generate.py',
@@ -144,6 +173,29 @@ def workspace(parent_tar: Path, out: Path, cfg: dict, seal: Path) -> dict:
     return {'files': sorted(n.replace('public-dev/', 'samples/', 1) for n in members), 'edits': edits}
 
 
+def rewrite(path: Path, data: bytes) -> None:
+    """Replace a hard-linked file without touching the parent seal's copy."""
+    path.unlink()
+    path.write_bytes(data)
+
+
+def seal_changes(seal: Path, cfg: dict) -> list[dict]:
+    applied = []
+    for relative, old, new in cfg.get('operator_edits', []):
+        path = seal / relative
+        before = sha(path)
+        rewrite(path, replace_once(path.read_text(), old, new, relative).encode())
+        applied.append({'file': relative, 'old': old, 'new': new, 'sha256_before': before, 'sha256_after': sha(path)})
+    for relative, (key, count) in cfg.get('data_manifests', {}).items():
+        path = seal / relative
+        manifest = json.loads(path.read_text())
+        before, manifest['cases'] = len(manifest['cases']), manifest['cases'][:count]
+        rewrite(path, (json.dumps(manifest, indent=1) + '\n').encode())
+        applied.append({'file': relative, 'cases_before': before, 'cases_after': len(manifest['cases']),
+                        'kept': [c[key] for c in manifest['cases']], 'sha256_after': sha(path)})
+    return applied
+
+
 def private_copy(parent: Path, seal: Path) -> None:
     """Hard-linked copy of the parent seal (symlinks kept), without its public package."""
     def link(src, dst):
@@ -165,10 +217,11 @@ def main():
         shutil.rmtree(seal)
     private_copy(parent, seal)
     record = workspace(parent / 'public.tar', seal / 'public.tar', cfg, seal)
+    changes = seal_changes(seal, cfg)
     lock = json.loads((parent / 'lock.json').read_text())
     (seal / 'lock.json').unlink()
     lock.update(cfg['lock'], name=cfg['name'], derived_from=cfg['parent'], public_tar_sha256=sha(seal / 'public.tar'),
-                workspace=record, sealed_utc=datetime.now(timezone.utc).isoformat(timespec='seconds'))
+                workspace=record, v63_changes=changes, sealed_utc=datetime.now(timezone.utc).isoformat(timespec='seconds'))
     (seal / 'lock.json').write_text(json.dumps(lock, indent=2) + '\n')
     spec_dir = ROOT / 'tasks' / args.task / 'versions' / cfg['version']
     spec_dir.mkdir(parents=True, exist_ok=True)
