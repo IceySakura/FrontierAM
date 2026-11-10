@@ -43,5 +43,5 @@
       ]
     }
   ],
-  "notes_md": "- 数据、种子和生成流程见 `results/SPECIES_TREE_SIM.md`（种子不公开）。"
+  "notes_md": "- 数据、种子和生成流程见 `results/species-tree/SPECIES_TREE_SIM.md`（种子不公开）。"
 }

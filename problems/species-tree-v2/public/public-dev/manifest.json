@@ -1,0 +1,355 @@
+{
+ "schema": "frontieram/species-tree-v2-cases-1",
+ "cases": [
+  {
+   "case": "001",
+   "input": "cases/001/genes.tre",
+   "input_sha256": "2c46ac77432dcbc835ed067f76d7b80b40fefa36f8d70140a035310017247b39",
+   "truth": "cases/001/truth.tre",
+   "truth_sha256": "8d8bd00e1e1b96313f8039c9b14d843a6f9dae6737620989955f3625187975a9"
+  },
+  {
+   "case": "002",
+   "input": "cases/002/genes.tre",
+   "input_sha256": "cb181f41d797e08089dcd658f218d2c13125d3ebd93aeebe70417c2a58e8745b",
+   "truth": "cases/002/truth.tre",
+   "truth_sha256": "e335d38b7eeb4c0a3ff058e226e7968f7bdbf922c90cc9049b84aa4ee025e812"
+  },
+  {
+   "case": "003",
+   "input": "cases/003/genes.tre",
+   "input_sha256": "d233f347254be8763ff97e9f02daa4d2916081a594d378aa8762dd7dd1e20e60",
+   "truth": "cases/003/truth.tre",
+   "truth_sha256": "365d335353379082d2ee1a5ba6016c8e3f193d31f818ccea563430f3547ba5aa"
+  },
+  {
+   "case": "004",
+   "input": "cases/004/genes.tre",
+   "input_sha256": "783d42bc44094e7e87026171f2cc0a55c230d677b65a1e9ec295995aee752fcd",
+   "truth": "cases/004/truth.tre",
+   "truth_sha256": "1b3ac783528acfe0749f93e6e2c98adf8edefaa1ab1ab30dbbc61f5250ab20d3"
+  },
+  {
+   "case": "005",
+   "input": "cases/005/genes.tre",
+   "input_sha256": "31349c6d336e04b40976587a2eacdfc3025cd38903e314fe395eddcd31e68056",
+   "truth": "cases/005/truth.tre",
+   "truth_sha256": "c01b72cd02c5d83d542312e8e67828cd4895a0cc31df48ba9db12754cc0a6066"
+  },
+  {
+   "case": "006",
+   "input": "cases/006/genes.tre",
+   "input_sha256": "268ac022496b4f8217aa3b300e894de6a58d85cea8b277444339ae60ab60d887",
+   "truth": "cases/006/truth.tre",
+   "truth_sha256": "70e9b6ec3cdde4795d3af3cd1397bac9363a0c67818b4c228b6a5797c27bd62f"
+  },
+  {
+   "case": "007",
+   "input": "cases/007/genes.tre",
+   "input_sha256": "51540e000bf555cfeb80bfb119285b2fdea01492ee71a62c2b46869e073f1c74",
+   "truth": "cases/007/truth.tre",
+   "truth_sha256": "dfa87e76324bf1521a0e92cd3906205fc7cb3080257472a376027f9e4a43db8c"
+  },
+  {
+   "case": "008",
+   "input": "cases/008/genes.tre",
+   "input_sha256": "4507d921300ca1b738538873187aebd6658843cf905860c45002330820547641",
+   "truth": "cases/008/truth.tre",
+   "truth_sha256": "29a8369109699c2024e83984d7c42f7c5071fd4857511c41bf3c5ad47ccbe875"
+  },
+  {
+   "case": "009",
+   "input": "cases/009/genes.tre",
+   "input_sha256": "34d1e3f9d7d5132d35a4a0525a78cdf0fe1e1b4bdadfd0ad51e428ed5a3e4f37",
+   "truth": "cases/009/truth.tre",
+   "truth_sha256": "39f859dd806fb5f86fa5f117305f0365eae333b3835296d3c5da32c388962794"
+  },
+  {
+   "case": "010",
+   "input": "cases/010/genes.tre",
+   "input_sha256": "fc35aed0fb83628047b012f82cbeba3d6e145676898f3f7ebd509c47a74a14a1",
+   "truth": "cases/010/truth.tre",
+   "truth_sha256": "777ba4406fc39ed3a54b8eb60dc339653dd43e2fd65ba265e4f4177ee6b87309"
+  },
+  {
+   "case": "011",
+   "input": "cases/011/genes.tre",
+   "input_sha256": "f3e07fa5b828af8f0c69b556319d0e2ff9b24ec7114e584e0cea100d5f731882",
+   "truth": "cases/011/truth.tre",
+   "truth_sha256": "26f8c4bc8830976db9aef2ce376ea8d83d0edecf5b62cf7c06788e2023c4c6cf"
+  },
+  {
+   "case": "012",
+   "input": "cases/012/genes.tre",
+   "input_sha256": "e1d4e618eca0fa9147a3555b516b650d0b99f0cd3eb871bd473b0f677a7a4d7f",
+   "truth": "cases/012/truth.tre",
+   "truth_sha256": "21cae498cc01b032bcc4065416e396627b3d6854801f59d61f580299a1929b3f"
+  },
+  {
+   "case": "013",
+   "input": "cases/013/genes.tre",
+   "input_sha256": "24178fd0b765e37742254bffe5a4a4b481366a4456435c3822149df504532aa6",
+   "truth": "cases/013/truth.tre",
+   "truth_sha256": "ab439a0e9edf3f6be1e72b379686044f552e5541fc78783ddcdff6e7b3724ce3"
+  },
+  {
+   "case": "014",
+   "input": "cases/014/genes.tre",
+   "input_sha256": "68f5e4d9b2da9b299515a4b919f72cf483e955246c0ca440132e8bdad846aefd",
+   "truth": "cases/014/truth.tre",
+   "truth_sha256": "0f345be58b206f124d3a7fc2a01bce5c74bee2713bf6770af006d7729f648c4c"
+  },
+  {
+   "case": "015",
+   "input": "cases/015/genes.tre",
+   "input_sha256": "fe8166617372ca4a9dc96aa24971a134b549a7e72db4b7745843d718d3c8f25c",
+   "truth": "cases/015/truth.tre",
+   "truth_sha256": "5d70b6057a523bc1929d891e3d248edd110a2efecc4e38bf6f5395a1e561fc49"
+  },
+  {
+   "case": "016",
+   "input": "cases/016/genes.tre",
+   "input_sha256": "b62da47a0028567ae2021c3a69546730c5525bccba7dbf6317d6ce90c77b4843",
+   "truth": "cases/016/truth.tre",
+   "truth_sha256": "6226205042afd6d397b2f41af20fb1de44b02b72aa0471589cbf4bad8b9cc555"
+  },
+  {
+   "case": "017",
+   "input": "cases/017/genes.tre",
+   "input_sha256": "a1203f7de96098f4eb05344fa3bf988816816549b9d74b97f4fe514fa8a62c1c",
+   "truth": "cases/017/truth.tre",
+   "truth_sha256": "4dc8dfe085064dd720b24b3d342051ec6941393d08ee0855fa43dd9dae1ff61e"
+  },
+  {
+   "case": "018",
+   "input": "cases/018/genes.tre",
+   "input_sha256": "f02521cb87ac6a64c74ec510ec30801a8ac8540c11c704c6c99115e3dd37d21f",
+   "truth": "cases/018/truth.tre",
+   "truth_sha256": "380579e306c0b2b70ed21f27bd1b24871674b9fdee9ed4e355565cee0fd95f5c"
+  },
+  {
+   "case": "019",
+   "input": "cases/019/genes.tre",
+   "input_sha256": "bec5e859b81cf9fe66547a04f5d01911bf9be654e3a679e2455d8ba970a429e0",
+   "truth": "cases/019/truth.tre",
+   "truth_sha256": "34a0e0599a4ef4b78d5fdc8b8ffc9dba26a261570a66f9e4422a97d5bd7e3c0a"
+  },
+  {
+   "case": "020",
+   "input": "cases/020/genes.tre",
+   "input_sha256": "b350d5c17b0cf82a34557a97af7119dc27981d6d515ba803540fb89ff8a77b91",
+   "truth": "cases/020/truth.tre",
+   "truth_sha256": "0da43acb1a6451197b93822aa000ca867f75f6f1c3f5e1367f88445813a1a1f4"
+  },
+  {
+   "case": "021",
+   "input": "cases/021/genes.tre",
+   "input_sha256": "75b4f71d59234a6f4a8d3e9110b166f2678dbab49e89061000cd28fbb35b0f4d",
+   "truth": "cases/021/truth.tre",
+   "truth_sha256": "d8c2b2bad4e8d99cd874a6c745f61d6326eb0ade7e0ec0b6bf5c89ed5a367142"
+  },
+  {
+   "case": "022",
+   "input": "cases/022/genes.tre",
+   "input_sha256": "054a90d208b6108c4fcbfffc07712ed0813c42ad903c3c12a1952a05e682fe15",
+   "truth": "cases/022/truth.tre",
+   "truth_sha256": "fc502d057bde6b2a9def31489b3fc4834016ced659a066028efe7a10798fb0f2"
+  },
+  {
+   "case": "023",
+   "input": "cases/023/genes.tre",
+   "input_sha256": "c956a05ca93983335b9d1d6ab5a98395a30f03ad02eecbf7ddb56907fbaba5b9",
+   "truth": "cases/023/truth.tre",
+   "truth_sha256": "703a7b24416a6ebd8da10f871b9f210e2d31d2aabfd8261e47fcdd0a4888162e"
+  },
+  {
+   "case": "024",
+   "input": "cases/024/genes.tre",
+   "input_sha256": "77efc1c50ee81de79f6fd7c0b0245602ba56a1cdb4b47928012fabc8043830f0",
+   "truth": "cases/024/truth.tre",
+   "truth_sha256": "51b4676b17a9e8747cd14b55c9d0096364e5d4042b69e510c5c1915b7ff9f26e"
+  },
+  {
+   "case": "025",
+   "input": "cases/025/genes.tre",
+   "input_sha256": "1f31f2f9a605631d67f5f95025bcd9a310ba93750f65ac62315ee7093286ec6b",
+   "truth": "cases/025/truth.tre",
+   "truth_sha256": "9ee3eb8e2a75f7a195e5e75422456fad24ab4779ddd5046ceecc81a2bf7435a3"
+  },
+  {
+   "case": "026",
+   "input": "cases/026/genes.tre",
+   "input_sha256": "a662cc67c2808268fb27b6cf4d1f05dbf2aae99e41cc2ae726f1e5ffe750ebe1",
+   "truth": "cases/026/truth.tre",
+   "truth_sha256": "12c731622e759520d427e2c3ebdd6ea96159998fc4a7f1b2044ec59175da2788"
+  },
+  {
+   "case": "027",
+   "input": "cases/027/genes.tre",
+   "input_sha256": "16098996df849cbaac4cf46f294485bc605c801b2702b4adfa972dc574d55023",
+   "truth": "cases/027/truth.tre",
+   "truth_sha256": "feb1f50a6cce740d120face8693b65094052185ca14ea87865c8f377eddd5393"
+  },
+  {
+   "case": "028",
+   "input": "cases/028/genes.tre",
+   "input_sha256": "804dd3056e9f917428e93a75d8aed13ee612e9e2716e1c74261ddcd68e3265e1",
+   "truth": "cases/028/truth.tre",
+   "truth_sha256": "c909c790509d73cdc20bd74fd384f4c8e64ae461960ee5bd53030efaa384ebfd"
+  },
+  {
+   "case": "029",
+   "input": "cases/029/genes.tre",
+   "input_sha256": "6c5bb1b06415385e306062888495cf5f5dc0487b2f1a0a7bfb706ceccc2ead29",
+   "truth": "cases/029/truth.tre",
+   "truth_sha256": "55261134d6f7fd2819ae1fa59a9d22c9810801150ce91d79a4c00f5c9378fd31"
+  },
+  {
+   "case": "030",
+   "input": "cases/030/genes.tre",
+   "input_sha256": "bd15127569714d6393dcc0ed45fe583ab64b1ab0cf36a139d45da1e70a25aaf8",
+   "truth": "cases/030/truth.tre",
+   "truth_sha256": "5573c873478298fa0870d76ab4c17063fb448dd9473f33b74bd1c4f49582ff50"
+  },
+  {
+   "case": "031",
+   "input": "cases/031/genes.tre",
+   "input_sha256": "55f2193779027c697bc24048c9584db824a271b8a84ea064cfcf5f9b8b61a4d9",
+   "truth": "cases/031/truth.tre",
+   "truth_sha256": "4d1c3d91ddea99cd5369c2b0e3d1fe087c29bd7b956dcbd18f7ed2a3701d1cb1"
+  },
+  {
+   "case": "032",
+   "input": "cases/032/genes.tre",
+   "input_sha256": "278e5d4e40b5ca3f43c76ebfe634846943a4e8982c1f6b94953a1719594cb184",
+   "truth": "cases/032/truth.tre",
+   "truth_sha256": "6d634b227da23977eddbff06c92f52e3111eccd05ca487a0eadb4da3ad45c38b"
+  },
+  {
+   "case": "033",
+   "input": "cases/033/genes.tre",
+   "input_sha256": "f0b7193505593b78eb493f22968f27e1cbce452ff548a61c1c9372584b6c00ef",
+   "truth": "cases/033/truth.tre",
+   "truth_sha256": "add24529d4c5e608ddbe8baf05e4f74b6f037f6c9a932e1ee3407854e94fcd31"
+  },
+  {
+   "case": "034",
+   "input": "cases/034/genes.tre",
+   "input_sha256": "30d667067380b7a4e4e772f8b438afafdf912a93e159e2e2ca1013d06832844d",
+   "truth": "cases/034/truth.tre",
+   "truth_sha256": "5eb494f77f7bb358e8f7d3bc8bd648d33512670f87cc9e87e6e71164ef352274"
+  },
+  {
+   "case": "035",
+   "input": "cases/035/genes.tre",
+   "input_sha256": "b34ebc46e679c63761a3e790f18e048ea0f041b92597158308be08a2c310a1d3",
+   "truth": "cases/035/truth.tre",
+   "truth_sha256": "64d7a292553c554e3bd4578d3b293d91bf46d1a52c933d7b44f0716d2e35d9df"
+  },
+  {
+   "case": "036",
+   "input": "cases/036/genes.tre",
+   "input_sha256": "86803315fa84fb9337e699a892002c6442a9a7cfa9ef98e843bbb2ed406ec492",
+   "truth": "cases/036/truth.tre",
+   "truth_sha256": "6cf104cc5cb2b6d6ca7714e33d8f1b5105032e2f3bb18e8d3ce86af1ddb45e68"
+  },
+  {
+   "case": "037",
+   "input": "cases/037/genes.tre",
+   "input_sha256": "2c5529867029e0da2e34b8d6ad13e8deceea7f6a80ec143924698be9e217acbc",
+   "truth": "cases/037/truth.tre",
+   "truth_sha256": "c541a40ae4a64a5b849cb329e404601759061e784936362abe0af85bc709c500"
+  },
+  {
+   "case": "038",
+   "input": "cases/038/genes.tre",
+   "input_sha256": "340fe741cbec9ad8b2d2db08ddad0d98d06f53ad7def4cfee983778f9e58e01b",
+   "truth": "cases/038/truth.tre",
+   "truth_sha256": "b7a99761ee8ea319e097f7b5c1479221fc44a5c6b0391cf446fe815fdcf08bc7"
+  },
+  {
+   "case": "039",
+   "input": "cases/039/genes.tre",
+   "input_sha256": "edd03a4250e58d38adf77a105a8f70bb0a4962bd2cac3bc72bc23ce54ce8b2c8",
+   "truth": "cases/039/truth.tre",
+   "truth_sha256": "e9d4669112c768ac074919b9f0b70d7bd77b7ba29b90aa69ecddc801331a4097"
+  },
+  {
+   "case": "040",
+   "input": "cases/040/genes.tre",
+   "input_sha256": "9b6230eb9e0ef051462c61b2b86304130b0bc50db0383b4ef1cd14eb30df9874",
+   "truth": "cases/040/truth.tre",
+   "truth_sha256": "810a9d337b2b424db7b29f686cfd3ec863df930d6511ae24bdf29f0eb1ffd2f0"
+  },
+  {
+   "case": "041",
+   "input": "cases/041/genes.tre",
+   "input_sha256": "7e325aa364c2d0c4c4a6cd1d58485ab78e566af953fd6f081f14484120157021",
+   "truth": "cases/041/truth.tre",
+   "truth_sha256": "54c541f1bf514a2b031d81ae56d8270e8da669552e4c6026ee20f7b9d5239475"
+  },
+  {
+   "case": "042",
+   "input": "cases/042/genes.tre",
+   "input_sha256": "74e07bf235015d3cd16cceaad39a3a59904e81e07b54d3385b725c8c92931758",
+   "truth": "cases/042/truth.tre",
+   "truth_sha256": "825ae45307654d4f1efe33fdd702952fc75afeb0ebc3434ca471ae1fdcbfe463"
+  },
+  {
+   "case": "043",
+   "input": "cases/043/genes.tre",
+   "input_sha256": "00239982d5608bb6f889bee9c650ccdd1529b6d9ad4d043f2cc5a0ad998339c5",
+   "truth": "cases/043/truth.tre",
+   "truth_sha256": "eef003ba8f32c64140eae603e8ababee964b17ff3c15bd0afdc02acfbf02bfdd"
+  },
+  {
+   "case": "044",
+   "input": "cases/044/genes.tre",
+   "input_sha256": "871d94d94d19bcf3f2fc9602740f31298aaaf5317ad1424a05effd600de1b310",
+   "truth": "cases/044/truth.tre",
+   "truth_sha256": "cdae664e2013f3de6ab1168020b43ebe7a3a471ffbf3afa6828be7c68391f12f"
+  },
+  {
+   "case": "045",
+   "input": "cases/045/genes.tre",
+   "input_sha256": "60f8545ec43538641d626e2187a60ee9177e8a5073e122d71f6e31c5271a37b3",
+   "truth": "cases/045/truth.tre",
+   "truth_sha256": "b799fcad96f75d56dbed9d03e0f09d23eaa309ece3dc773431f5a41b22ed1804"
+  },
+  {
+   "case": "046",
+   "input": "cases/046/genes.tre",
+   "input_sha256": "d4c62e393d739751f9893d49d91cfca684387b6b569a3f1dee5a8b11019c4b44",
+   "truth": "cases/046/truth.tre",
+   "truth_sha256": "42fe6ceb45a58e0225c5050765ddb04464a491e724a856538a1425af704d74d6"
+  },
+  {
+   "case": "047",
+   "input": "cases/047/genes.tre",
+   "input_sha256": "579f9dadfc5e737beb43f50780e28a4c72b48415ccadbb690aedb579eb472991",
+   "truth": "cases/047/truth.tre",
+   "truth_sha256": "7c3c0aabdc08fe8eb4cc92c21f8d04d065b27a45e1a1adb2db2bb633503150a1"
+  },
+  {
+   "case": "048",
+   "input": "cases/048/genes.tre",
+   "input_sha256": "20f17afeab7ce6fa3071c4593b80ad8a356c9b2c353a017a6230554910f34b52",
+   "truth": "cases/048/truth.tre",
+   "truth_sha256": "183f6cf4b25ad468cdacef6355b2b7b84fe4f081f2917cc843687dfbb1f99eb0"
+  },
+  {
+   "case": "049",
+   "input": "cases/049/genes.tre",
+   "input_sha256": "cdddc79ce70f711b5c895d5b4e2db09c392a6359c8e47b79476c7bb2a8ef41d6",
+   "truth": "cases/049/truth.tre",
+   "truth_sha256": "83e0dde085bea273cc881fa63443ad7addd63ef81dbfd6e644429aceeb659c4a"
+  },
+  {
+   "case": "050",
+   "input": "cases/050/genes.tre",
+   "input_sha256": "b69bd6f4a7090d403ad72a5afd326f1868be1dac1fc3d266b2d64d1b9c775fd3",
+   "truth": "cases/050/truth.tre",
+   "truth_sha256": "46a23e6ca2dd0317572f5b8ff9c00828df64de9d7eeb66a4ad897c37b886954b"
+  }
+ ]
+}

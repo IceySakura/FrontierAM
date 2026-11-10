@@ -2,7 +2,7 @@
 
 ## 动机
 
-conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写的测试脚本按统一的 15 秒上限而不是逐例时限判“通过”，把按真实时限只有 0.546 的结果读成了“满足短时限”，也无从知道这比参考（0.789）和自己上一次（0.718）差很多（`CONIC_REVISION_SOL.md`）。v6.2 由评测方在正式评测环境中替 agent 评测公开集，并给出与 baseline 的逐例对比，目的是：
+conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写的测试脚本按统一的 15 秒上限而不是逐例时限判“通过”，把按真实时限只有 0.546 的结果读成了“满足短时限”，也无从知道这比参考（0.789）和自己上一次（0.718）差很多（`results/conic/CONIC_REVISION_SOL.md`）。v6.2 由评测方在正式评测环境中替 agent 评测公开集，并给出与 baseline 的逐例对比，目的是：
 
 1. 消除 agent 自行评测的误差（开发核计时噪声、判定标准写错）；
 2. 让 agent 知道自己与 baseline 的差距在哪里，据此决定改进方向。
@@ -29,7 +29,7 @@ conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写
 
 - **计时**：测试评测的时间（包括导出、构建和评测）计入开发预算，评测期间开发容器暂停。
 - **次数**：不限，只受排队约束。
-- **上线范围**：先在公开集现成的题上线（conic 修正版、exponential-v2），sol 先在 v6.2 下重跑；species-tree 等修正版数据，galaxy、trajectory、polarization 补齐公开集后跟进（polarization 的公开场景需出题人提供，见 `POLARIZATION_PUBLIC_DEV_REQUEST.md`）。
+- **上线范围**：先在公开集现成的题上线（conic 修正版、exponential-v2），sol 先在 v6.2 下重跑；species-tree 等修正版数据，galaxy、trajectory、polarization 补齐公开集后跟进（polarization 的公开场景需出题人提供，见 `results/polarization/POLARIZATION_PUBLIC_DEV_REQUEST.md`）。
 - **评分说明**：题面告诉 agent 什么样的算法算好、最终的标准化分数考虑哪些方面，但不给出映射函数。
 
 ## 默认决定（待讨论）
@@ -100,7 +100,7 @@ exponential-v2 的映射和参照与 v6.1 相同：R 是相对 panel 逐例最�
 | claude-opus-5-5 | polarization-demosaicking | `polarization-demosaicking-20261109T124343Z-553533` | 重评 32/32 景，L = 0.978773（弱 1.80825，强 1.10992） | **55.9** | 第一次评分只有第一景 1.003 秒超时，按首景冷启动记未测，见 `NEW_TASKS.md` 第 5 节 |
 | claude-opus-5-5 | trajectory-covariance | `trajectory-covariance-20261109T130605Z-481cfb` | L = 0.221264（弱 0.350317，强 0.230050） | **51.9** | |
 
-conic（修正版题包，650 例私有集，p_B = 0.789；映射 p ≤ 0.9·p_B 记 0，0.9·p_B < p ≤ p_B 为 50·(p − 0.9·p_B)/(0.1·p_B)）。用跳过失败重复的评测器评分（等价性检查 16 例逐例一致，`results/conic-fast-grading-check.json`）；四次评分用时 107、26、22、25 分钟，均完整、无基础设施失败。
+conic（修正版题包，650 例私有集，p_B = 0.789；映射 p ≤ 0.9·p_B 记 0，0.9·p_B < p ≤ p_B 为 50·(p − 0.9·p_B)/(0.1·p_B)）。用跳过失败重复的评测器评分（等价性检查 16 例逐例一致，`results/conic/conic-fast-grading-check.json`）；四次评分用时 107、26、22、25 分钟，均完整、无基础设施失败。
 
 | 模型 | 设置 | 提交 | 原始指标 | 得分 | 备注 |
 | --- | --- | --- | --- | --- | --- |
@@ -129,6 +129,6 @@ exponential-v2 的计时从交付矩阵第一个字节开始，READY 之前的�
 ## 进度（11-10）
 
 1. 已完成：两个公开反馈评测器（conic 163 例、exponential-v2 72 例）与公开基线、`public-eval` 命令（15 分钟上限、部分结果、短时限先测）、harness 两种设置、`submit --test/--final/--status`、机器级迭代锁（代码强制），端到端冒烟测试（包括上限缩短到 60 秒的触顶测试）。
-2. 已完成：全部尝试（sol 单轮 4 题、迭代 2 题；opus 单轮 6 题、迭代 2 题）及其私有集评分，结果见上面各表；conic 私有评分使用跳过失败重复的评测器（`CONIC_FAST_GRADING.md`）。
+2. 已完成：全部尝试（sol 单轮 4 题、迭代 2 题；opus 单轮 6 题、迭代 2 题）及其私有集评分，结果见上面各表；conic 私有评分使用跳过失败重复的评测器（`results/conic/CONIC_FAST_GRADING.md`）。
 3. 只作记录、不计成绩：sol exponential-v2 单轮的第一次尝试（计时说明有误）和旧题面下的迭代试点。
 4. 待讨论事项见 `OPEN_ITEMS.md`（重复尝试以区分设置效应与波动、polarization 评分器预热、galaxy-gravity-v2 计分方式等）。

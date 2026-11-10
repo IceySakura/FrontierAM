@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "synthetic_only": true,
+  "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+  "methods": {
+    "bilinear": {
+      "constant": "1412d5c1858ec91ab1b1d224c1388c6f0923c43d80affc253e9217ae2923adf6",
+      "full": "641e827299e484e2e6b7ebaf4f50b2d3de4823a0a4c11e963bce60834e3b4e26",
+      "odd": "b69e3d7555074d5201b032d83e12b3762eba99b3367337ecf8ca3416070ce8d9",
+      "thin": "dc24c419ea5505160f22f83e04ae60d4f1fc4dbacdde633ade3f2a290799c1da",
+      "tile": "7d52800c251fcec2af8006826fc3368e623a1435459dbc5b8433b011a0531127"
+    },
+    "bilinear-edge": {
+      "constant": "1412d5c1858ec91ab1b1d224c1388c6f0923c43d80affc253e9217ae2923adf6",
+      "full": "9f2024dc2389911e2b8358894a00f51a17f6b6478790db1cf32df72f34538195",
+      "odd": "55454f24e235173643a61214b80f7e15172d28bc9c36b1d1ce664f4d6101fcea",
+      "thin": "dc24c419ea5505160f22f83e04ae60d4f1fc4dbacdde633ade3f2a290799c1da",
+      "tile": "7d52800c251fcec2af8006826fc3368e623a1435459dbc5b8433b011a0531127"
+    }
+  },
+  "independent_containers": 4,
+  "matching_output_pairs": 10,
+  "output_dtype": "float64"
+}

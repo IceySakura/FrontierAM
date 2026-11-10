@@ -1,4 +1,4 @@
-"""Simulate species-tree instances in the S100 style (rebuilt by FrontierAM; results/SPECIES_TREE_SCALE.md).
+"""Simulate species-tree instances in the S100 style (rebuilt by FrontierAM; results/species-tree/SPECIES_TREE_SCALE.md).
 
 One instance: SimPhy draws a species tree (birth process, n ingroup species plus one outgroup) and k gene trees under the
 multispecies coalescent; AliSim (IQ-TREE 2) evolves a sequence of the given length along each gene tree under a GTR+G

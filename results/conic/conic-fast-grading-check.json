@@ -1,0 +1,11 @@
+{
+ "unmodified_suite": "suite-conic-20261109T201240Z-a4a7a0",
+ "skip_suite": "suite-conic-20261109T201321Z-5853c3",
+ "cases": 16,
+ "complete": true,
+ "per_case_match": true,
+ "mismatches": [],
+ "successes": 8,
+ "skipped_repeat_records": 16,
+ "equivalent": true
+}

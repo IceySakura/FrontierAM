@@ -1,0 +1,14 @@
+{
+  "impl/full_frame.py": {
+    "upstream": "results/polarization-demosaicking/full-frame-leic/full_frame.py",
+    "sha256": "6ff38cdc32ac9576623c954e43a4b7ebc491298f6cb2c97053f1b6cac5684ac2"
+  },
+  "probe/methods/liu.py": {
+    "upstream": "results/polarization-demosaicking/probe/methods/liu.py",
+    "sha256": "54d84d24d1e69a9ffd731db31b37287ca0d49c0eaa347b7ffaaa3638b29da900"
+  },
+  "probe/metrics.py": {
+    "upstream": "results/polarization-demosaicking/probe/metrics.py",
+    "sha256": "c2bfe24ad3b527c252295c74ab59e7688e935d65939ff851f5093f71479b0e69"
+  }
+}

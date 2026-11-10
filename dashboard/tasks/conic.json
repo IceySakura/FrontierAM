@@ -19,19 +19,19 @@
         "paths": [
           {
             "label": "gpt-6.1-sol 单轮",
-            "path": "results/v62-sol-single-conic/score.json"
+            "path": "results/runs/v62-sol-single-conic/score.json"
           },
           {
             "label": "gpt-6.1-sol 迭代",
-            "path": "results/v62-sol-iterative-conic/score.json"
+            "path": "results/runs/v62-sol-iterative-conic/score.json"
           },
           {
             "label": "Claude Opus 5.5 单轮",
-            "path": "results/v62-opus-single-conic/score.json"
+            "path": "results/runs/v62-opus-single-conic/score.json"
           },
           {
             "label": "Claude Opus 5.5 迭代",
-            "path": "results/v62-opus-iterative-conic/score.json"
+            "path": "results/runs/v62-opus-iterative-conic/score.json"
           }
         ]
       },

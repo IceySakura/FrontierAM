@@ -5,7 +5,7 @@ A cgroup v2 cpuset partition (``frontieram.slice``) owns every benchmark CPU, so
 
 Every slot is one whole physical core: the slot's container runs on one hardware thread and only that slot's host-side
 process (the grading timer or the development controller) runs on the sibling. Attached container stdio is on the
-exponential timing path, and a shared relay was measured to dominate concurrent interference (results/CONCURRENCY.md),
+exponential timing path, and a shared relay was measured to dominate concurrent interference (results/platform/CONCURRENCY.md),
 so each grading slot has its own containerd + dockerd on its sibling thread; development uses the default daemon.
 Grading cores default to their own last-level cache domain.
 """

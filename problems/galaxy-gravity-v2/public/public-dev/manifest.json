@@ -1,0 +1,85 @@
+{
+ "particles": 131072,
+ "cases": [
+  {
+   "case": "case-01",
+   "family": "smooth-hernquist",
+   "input": "cases/case-01.in",
+   "truth": "cases/case-01.ref",
+   "input_sha256": "e5057a0d53f2618635b8a10dd287a1da322306db4b434dd4704ad25ad09bfc80",
+   "truth_sha256": "b5fb84a0bc74a60f7fe0851e07a58575c739269ca9ae6058420b2563bbe10dae"
+  },
+  {
+   "case": "case-02",
+   "family": "smooth-hernquist",
+   "input": "cases/case-02.in",
+   "truth": "cases/case-02.ref",
+   "input_sha256": "a8d0c2dcc2dc347fc6e1f8f4b6d94d5eeca2b3ffa96d297e3ab07bdc2a551733",
+   "truth_sha256": "cc7fb09d204fb2faa567abcda3a14a9fa5374ada805a8edb93e7c35f960ca893"
+  },
+  {
+   "case": "case-03",
+   "family": "jaffe",
+   "input": "cases/case-03.in",
+   "truth": "cases/case-03.ref",
+   "input_sha256": "db894c07a0a823383b9cd9ed59af1d8e3edf83df0d531ba72c56883112b2a9e7",
+   "truth_sha256": "c88bdbc76a3f7f15543b9a62d2499a3fd2c20f8d40ab6bda5eba1f6a3d2b46f4"
+  },
+  {
+   "case": "case-04",
+   "family": "jaffe",
+   "input": "cases/case-04.in",
+   "truth": "cases/case-04.ref",
+   "input_sha256": "6daca356202e5526facef6d5c21c176526a9183f84b1202057b929d8d1eb3883",
+   "truth_sha256": "d89b34a95f5fde37564fc7b1bc3dab63b0c587b42ff7523a16479792da90f5d2"
+  },
+  {
+   "case": "case-05",
+   "family": "einasto",
+   "input": "cases/case-05.in",
+   "truth": "cases/case-05.ref",
+   "input_sha256": "c0037109a1b7da80c164e02320ae97c32dbd81c186d077356e3a65e5068dd8c5",
+   "truth_sha256": "be73b6b531be32d1f40cb4a75b52345c5a9b4144d37cf51fef7169c05bad66eb"
+  },
+  {
+   "case": "case-06",
+   "family": "einasto",
+   "input": "cases/case-06.in",
+   "truth": "cases/case-06.ref",
+   "input_sha256": "4c55950cf9c88e66b78f84b58d5450230d967a1a1c9e01e8131fc98b6bb224cc",
+   "truth_sha256": "3b5bf7971dbb75305166974c92208d32479d14e8d45158da298e1abd9ac42fbc"
+  },
+  {
+   "case": "case-07",
+   "family": "disc",
+   "input": "cases/case-07.in",
+   "truth": "cases/case-07.ref",
+   "input_sha256": "6fd4518a1c10085c886615aca2bcf47e3795ce5a06e22b2e44c8c00d038424e5",
+   "truth_sha256": "890f6557e5be1ed36dfa9a24fc7c4396608c7c92f8f51991f348673627812bb4"
+  },
+  {
+   "case": "case-08",
+   "family": "disc",
+   "input": "cases/case-08.in",
+   "truth": "cases/case-08.ref",
+   "input_sha256": "956e15e6c5fc0b81e4838bb10d42dbd0f6379e7f51b36891bc5ddfd7df87580e",
+   "truth_sha256": "e51fdd6f5f684d31e0d129365ecea7d59356446e3858cf2492e5154ba03fc846"
+  },
+  {
+   "case": "case-09",
+   "family": "group",
+   "input": "cases/case-09.in",
+   "truth": "cases/case-09.ref",
+   "input_sha256": "7ba03ce9711d338e06249e4e3a18f306f8ed89dcf5475baf89a5bccb52b73498",
+   "truth_sha256": "091c86aa1b4684e8b1ffe007ce95fec6901871494753265c3e580b3e100102e0"
+  },
+  {
+   "case": "case-10",
+   "family": "group",
+   "input": "cases/case-10.in",
+   "truth": "cases/case-10.ref",
+   "input_sha256": "d7ba14938381138800b130e5ff3ef2eed051e5444c8084adae1010567de377bf",
+   "truth_sha256": "df5db189435841d2ccc17311811e0b3fff29f04bebd071df718dd8c74dd24324"
+  }
+ ]
+}

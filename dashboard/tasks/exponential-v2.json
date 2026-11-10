@@ -24,15 +24,15 @@
         "paths": [
           {
             "label": "gpt-6.1-sol 迭代",
-            "path": "results/v62-sol-iterative-exp2/score.json"
+            "path": "results/runs/v62-sol-iterative-exp2/score.json"
           },
           {
             "label": "Claude Opus 5.5 单轮",
-            "path": "results/v62-opus-single-exp2/score.json"
+            "path": "results/runs/v62-opus-single-exp2/score.json"
           },
           {
             "label": "Claude Opus 5.5 迭代",
-            "path": "results/v62-opus-iterative-exp2/score.json"
+            "path": "results/runs/v62-opus-iterative-exp2/score.json"
           }
         ]
       },

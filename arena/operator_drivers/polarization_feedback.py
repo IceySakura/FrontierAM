@@ -3,7 +3,7 @@
 Reuses the package grader's own build, sandboxed per-scene run and scorer (runner.build_submission, runner.run_scene,
 scoring.score_prediction, scoring.mosaic); only the scene source differs: DATA/manifest.json lists uint8 references of
 shape (4, 1024, 1024) in 0/45/90/135 order (Wen et al. 2019 CPDNet scenes, CC BY-NC, cropped and converted as in
-results/POLARIZATION_PUBLIC_DEV_REQUEST.md), each checked against its sha256. Unlike the formal batch, every scene is
+results/polarization/POLARIZATION_PUBLIC_DEV_REQUEST.md), each checked against its sha256. Unlike the formal batch, every scene is
 reported even after a failure, so feedback covers the whole set.
 
 Usage: polarization_feedback.py GRADER_DIR SOURCE OUTPUT DATA [--cases IDS.json]

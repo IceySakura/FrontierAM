@@ -70,7 +70,7 @@ class Task:
     grade_memory: int
     grade_timeout: float = 28800
     # How much of the machine must stay idle while this task is graded; chosen from measured interference
-    # (results/CONCURRENCY.md): 'shared', 'grade_pool' (no other grader) or 'quiet' (no grader, no development).
+    # (results/platform/CONCURRENCY.md): 'shared', 'grade_pool' (no other grader) or 'quiet' (no grader, no development).
     grade_isolation: str = 'grade_pool'
     # Highest accepted load factor (paired reference time / quiet baseline time); above it the grade is redone quiet.
     load_gate: float | None = None
@@ -190,7 +190,7 @@ class Exponential(Task):
     grade_timeout = 8 * 3600
     # Scored against the reference measured beside each candidate, so graders may share the machine. Pairing cancels
     # load only as far as both respond alike: at load factor 1.095 a real candidate drifted 1.1 points, so any grade
-    # measured above 1.04 is redone with the machine quiet (results/CONCURRENCY.md).
+    # measured above 1.04 is redone with the machine quiet (results/platform/CONCURRENCY.md).
     grade_isolation = 'shared'
     load_gate = 1.04
     # Reference measured for new baselines. The KIOPS/Octave pilot anchor (private_pilot/reference_submission) is
@@ -287,7 +287,7 @@ class Conic(Task):
     grade_memory = 8 * GIB + GIB // 2
     # Success is judged against fixed per-case deadlines, so pairing cannot correct it, and four pilot cases finish
     # within 1% of their deadline. Under 4 graders plus full development load the reference lost 3 of 10 successes;
-    # with no other grader and 9 real agents developing, every case stayed within 1% (results/CONCURRENCY.md).
+    # with no other grader and 9 real agents developing, every case stayed within 1% (results/platform/CONCURRENCY.md).
     # grade_pool trades that sub-percent risk for grading during development (operator choice, 2026-11-04); each
     # result records the development slots that were leased while it ran.
     grade_isolation = 'grade_pool'

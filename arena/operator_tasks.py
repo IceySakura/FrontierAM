@@ -176,7 +176,7 @@ class PolarizationDemosaicking(OperatorTask):
     grade_memory = 10 * GIB
     # Each scene has a 1.000-second wall limit including interpreter start-up, about 0.6 s of which a typical
     # submission uses; with development sessions running on the L3-sharing dev cores, scenes spiked to 0.9-1.0 s
-    # (results/polarization-first-scene.json), so the whole machine is kept quiet.
+    # (results/polarization/polarization-first-scene.json), so the whole machine is kept quiet.
     grade_isolation = 'quiet'
 
     # FRONTIERAM_POLAR_DATA=wen grades the public-feedback scenes instead (protocol v6.2; results/OPEN_ITEMS.md).
@@ -186,7 +186,7 @@ class PolarizationDemosaicking(OperatorTask):
         """Read the task image's layer files on the slot's daemon into the page cache before any timed scene.
 
         A cold cache adds 0.2-0.5 s to the first scene's interpreter start-up and imports (1.000 s limit), while warm
-        runs show no first-scene penalty (results/polarization-first-scene.json). Untimed, and the submission is not run.
+        runs show no first-scene penalty (results/polarization/polarization-first-scene.json). Untimed, and the submission is not run.
         """
         start, files, size = time.monotonic(), 0, 0
         inspect = subprocess.run(['docker', '-H', placement.docker_host, 'image', 'inspect', self.lock()['image']['id'],

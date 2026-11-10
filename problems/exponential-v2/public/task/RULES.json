@@ -1,0 +1,111 @@
+{
+  "version": "2.0-draft-2026-11-02",
+  "status": "implemented_local_revision_not_formal_calibration",
+  "track": "offline_open_tools",
+  "domain": {
+    "operator": "real symmetric positive semidefinite sparse L",
+    "n_max": 120000,
+    "nnz_max": 1000000,
+    "t_min": 0,
+    "t_max": 10000,
+    "operator_infinity_norm_max": 100000000,
+    "t_times_operator_norm_max": 100000,
+    "rhs_abs_max": 1
+  },
+  "scenarios": {
+    "one_shot": {
+      "requests": 1,
+      "wall_seconds": 60,
+      "cpu_seconds": 60
+    },
+    "reuse": {
+      "requests": 16,
+      "wall_seconds": 240,
+      "cpu_seconds": 240
+    }
+  },
+  "session": {
+    "same_operator_time_precision": true,
+    "sequential_rhs_reveal": true,
+    "state_across_requests": true,
+    "state_across_sessions": false,
+    "startup_wall_seconds": 15,
+    "timing_start": "controller before delivering first matrix byte after READY",
+    "timing_end": "after all exact outputs received and process exits zero",
+    "accuracy_checks_after_timing": true,
+    "repeat_count": 3,
+    "time_aggregate": "median",
+    "memory_aggregate": "maximum",
+    "cpu_budget_includes_startup": true
+  },
+  "precision_levels": {
+    "p4": {
+      "rtol": 0.0001,
+      "atol": 1e-07
+    },
+    "p7": {
+      "rtol": 1e-07,
+      "atol": 1e-10
+    },
+    "p10": {
+      "rtol": 1e-10,
+      "atol": 1e-13
+    }
+  },
+  "accuracy": {
+    "norm": "infinity",
+    "rule": "norm(y-y_ref,inf) <= atol + rtol*norm(y_ref,inf)",
+    "all_requests_all_repeats_required": true,
+    "unqualified_reference": "evaluator_error, no contestant score"
+  },
+  "resources": {
+    "logical_cpus": 1,
+    "memory_bytes": 4294967296,
+    "swap_bytes": 0,
+    "scratch_bytes": 268435456,
+    "stdout": "READY newline then exactly 8*n bytes per request",
+    "stderr_bytes": 4194304,
+    "pids": 32,
+    "file_descriptors": 128,
+    "network": false,
+    "gpu": false
+  },
+  "build": {
+    "wall_seconds": 600,
+    "cpu_seconds": 600,
+    "memory_bytes": 4294967296,
+    "artifact_bytes": 1073741824,
+    "hidden_input_visible": false,
+    "ordinary_build_in_primary_time": false,
+    "input_dependent_preparation_in_primary_time": true,
+    "statistical_repeats_do_not_amortize_build": true
+  },
+  "score": {
+    "primary_ratio": "mean(workload ratios within mother; mothers within family; families within scenario; scenarios within precision; precision levels)",
+    "primary_map": "100/(1+R)",
+    "ratio": "T/T_reference",
+    "complete_submission_required": true,
+    "invalid_submission_score": 0,
+    "missing_invalid_reference": "evaluator_error",
+    "memory_price": null,
+    "time_floor_seconds": 0,
+    "baseline_score": 50,
+    "weights_are_policy_not_field_consensus": true
+  },
+  "development": {
+    "wall_seconds": 7200,
+    "logical_cpus": 1,
+    "memory_bytes": 4294967296,
+    "public_evaluations": "unlimited within development resource budget",
+    "hidden_evaluations": 0,
+    "final_submissions": 1,
+    "submission_hash_locked_before_hidden_run": true,
+    "solver_agent_tools": [
+      "sandbox_terminal",
+      "sandbox_file_read_write_patch",
+      "local_public_tests"
+    ],
+    "solver_agent_subagents": false,
+    "model_inference": "Provided only by orchestrator; model/version and inference budget logged separately; no API credentials in program environment"
+  }
+}

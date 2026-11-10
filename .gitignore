@@ -23,3 +23,8 @@ staging/
 Raw_Resource/
 /conic-reference-submission-*.tar.gz
 .venv-harbor/
+
+# per-case timing records next to score.json (kept local)
+results/**/suite-*.json
+# internal migration guide from another project (not part of FrontierAM)
+docs/PLATFORM_MIGRATION_GUIDE.md

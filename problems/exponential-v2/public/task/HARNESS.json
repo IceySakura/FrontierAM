@@ -1,0 +1,42 @@
+{
+  "version": "offline-pilot-harness-v3-2h",
+  "development_wall_seconds": 7200,
+  "attempts_per_model": 1,
+  "max_total_http_attempts_including_retries_and_compaction": 800,
+  "max_output_tokens_per_response_including_reasoning": 64000,
+  "codex_common_context_window_tokens": 131072,
+  "codex_auto_compact_token_limit": 110000,
+  "reasoning_effort": "provider default; not overridden",
+  "upstream_streaming": false,
+  "request_wait_limit": "remaining shared development wall budget",
+  "provider_timeout_ceiling_seconds": {
+    "deepseek-v4-pro": 600,
+    "claude-opus-5-5": 3600,
+    "minimax-m3.1-flash": 3600,
+    "step-5-preview": 3600,
+    "hy4-preview": null
+  },
+  "http_retries": {
+    "status": [
+      429,
+      500,
+      502,
+      503,
+      504
+    ],
+    "requires_official_retryable_gateway_code": true,
+    "max_after_initial_attempt": 3,
+    "full_jitter_caps_seconds": [
+      1,
+      2,
+      4
+    ],
+    "retry_after_preferred": true,
+    "same_payload": true,
+    "waits_count_toward_development": true,
+    "provider_failover": false
+  },
+  "generation_truncation": "stop without executing partial tool calls; infrastructure/inference failure, not numerical zero",
+  "continuation_after_trial": false,
+  "hidden_feedback_during_development": false
+}

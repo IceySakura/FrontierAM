@@ -1,0 +1,33 @@
+{
+  "status": "pilot distribution, frozen before any solver-agent run",
+  "families": [
+    "mesh_diffusion",
+    "geometric_graph",
+    "network_operator"
+  ],
+  "mothers": 3,
+  "scored_sessions": 18,
+  "controls": 5,
+  "precision_levels": [
+    "p4",
+    "p7",
+    "p10"
+  ],
+  "scenario_requests": [
+    1,
+    16
+  ],
+  "generated_new_mothers": true,
+  "real_network_reused": false,
+  "network_note": "independently generated weighted network; signed PSD congruence allowed",
+  "independent_mother_split": "all precision/scenario variants of one operator stay together",
+  "score_scope": "difficulty pilot only; final benchmark not claimed",
+  "n_range_scored": [
+    1536,
+    3249
+  ],
+  "scaled_operator_norm_range_scored": [
+    320.0,
+    2200.0000000000005
+  ]
+}
