@@ -718,8 +718,12 @@ class EvalServiceV63:
         try:
             command = [sys.executable, '-m', 'arena.cli', 'public-eval-v63', '--task', self.task,
                        '--source', str(directory / 'source'), '--out', str(directory / 'report'), '--cap', str(TEST_CAP_SECONDS), '--label', f'{self.output.parent.name} test {n}']
+            from .public_v63 import PUBLIC
+            # The public data switches must be in the environment before the evaluator starts: the runtime of a
+            # native task is fixed at import time, and the attempt's own environment names the held-out runtime.
             with (directory / 'public-eval.log').open('wb') as log:
                 code = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
+                                      env={**os.environ, **PUBLIC[self.task]['env']},
                                       timeout=TEST_CAP_SECONDS + 600).returncode
             path = directory / 'report/report.json'
             report = json.loads(path.read_text()) if path.exists() else None

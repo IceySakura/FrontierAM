@@ -325,6 +325,20 @@ def evaluate(task, store: Store, runtime: dict, source: Path, slot: str, cap: fl
     return report_from(task, store, record, partial, unfinished)
 
 
+def public_scope(task, store: Store, job: str) -> bool:
+    """Did this job grade the public-feedback data? (Case IDs of some tasks overlap between public and held-out sets.)"""
+    grade = store.result_dir(job) / 'grade'
+    fam = family(task.name)
+    if fam == 'species-tree':
+        return read_json(grade / 'candidate/summary.json').get('scope') == 'public-dev' if (grade / 'candidate/summary.json').exists() else True
+    if fam == 'polarization-demosaicking':
+        return read_json(grade / 'candidate/summary.json').get('scope') == 'public-feedback' if (grade / 'candidate/summary.json').exists() else True
+    if fam == 'galaxy-gravity':
+        config = grade / 'candidate-config.json'
+        return all('/public-dev/' in c['input'] for c in read_json(config)['cases']) if config.exists() else True
+    return True
+
+
 def public_cases(task) -> set[str]:
     """The case IDs of this version's public-feedback set."""
     if family(task.name) == 'conic':
@@ -351,6 +365,8 @@ def report_from(task, store: Store, record: dict, partial: dict, unfinished: lis
             return feedback.invalid(task.name, str(reason or 'the submission failed before any case ran'))
         return feedback.unmeasured(task.name, 'no case finished within the cap' if unfinished else str(reason or 'grading failed'))
     universe = public_cases(task)
+    if not public_scope(task, store, job) or (family(task.name) not in SUITE_FAMILIES and any(r['id'] not in universe for r in rows)):
+        return feedback.unmeasured(task.name, 'evaluator-side check failed')  # never report on any other data
     rows = [r for r in rows if r['id'] in universe]
     ids = {r['id'] for r in rows}
     ref_rows = [r for r in reference['rows'] if r['id'] in ids]
@@ -388,6 +404,18 @@ def report_from(task, store: Store, record: dict, partial: dict, unfinished: lis
                           not_evaluated=max(0, total_cases - len(rows)), note=cfg.get('note', ''))
 
 
+def require_public(task) -> None:
+    """Refuse to grade unless the public-feedback data is the data this process will grade (never held-out data)."""
+    from . import runtime as runtime_module
+
+    env = PUBLIC[task.name]['env']
+    if 'FRONTIERAM_RUNTIME' in env and runtime_module.RUNTIME != Path(env['FRONTIERAM_RUNTIME']).resolve():
+        raise SystemExit(f'{task.name}: the evaluator runtime is {runtime_module.RUNTIME}, not the public-feedback runtime')
+    for name in ('FRONTIERAM_EXP2_SEAL', 'FRONTIERAM_EXP3_SEAL'):
+        if name in env and task.seal != Path(env[name]):
+            raise SystemExit(f'{task.name}: the sealed data is {task.seal}, not the public-feedback seal')
+
+
 def cmd_public_eval_v63(args) -> None:
     from .runtime import load_runtime
 
@@ -395,6 +423,7 @@ def cmd_public_eval_v63(args) -> None:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     os.environ.update(PUBLIC[task.name]['env'])
+    require_public(task)
     report = evaluate(task, Store(PUBLIC[task.name]['store']), runtime, Path(args.source), args.slot, args.cap,
                       args.label or 'v6.3 test')
     report['created_utc'] = utc()
