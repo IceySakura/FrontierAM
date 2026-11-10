@@ -38,7 +38,7 @@ async def develop(spec: dict) -> int:
     placement = Placement(**spec['placement'])
     output = Path(spec['output'])
     write(output / 'environment.json', environment_record(placement))
-    if spec.get('protocol') in ('v6', 'v6.1', 'v6.2'):
+    if spec.get('protocol') in ('v6', 'v6.1', 'v6.2', 'v6.3'):
         from .native import develop as develop_native
 
         await asyncio.to_thread(develop_native, spec, runtime)
