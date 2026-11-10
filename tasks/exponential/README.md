@@ -65,12 +65,12 @@
 
 ## 模型成绩与解法（协议 v6.2）
 
-| 模型 | 设置 | 原始指标 | 换算 | 得分（满分 100，参照 50） | 复核 | 目录 |
-| --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.1 Sol | 单轮 | 58 例精度不合格 | 任一例失败记 0 | 0.0 |  | [`gpt-6.1-sol-single-1/`](solutions/v6.2/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | 74/74 合格，R = 0.589 | \(100/(1+R)\) | 62.9 | 待复核 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.2/gpt-6.1-sol-iterative-1/) |
-| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.412 | \(100/(1+R)\) | 70.8 | 待复核 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
-| Claude Opus 5.5 | 迭代 | 74/74 合格，R = 0.448 | \(100/(1+R)\) | 69.1 | 待复核 | [`claude-opus-5-5-iterative-1/`](solutions/v6.2/claude-opus-5-5-iterative-1/) |
+| 模型 | 设置 | 原始指标 | 换算 | 得分（满分 100，参照 50） | 复核 | 开发过程 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | 58 例精度不合格 | 任一例失败记 0 | 0.0 |  | 23 分钟，53 次请求，56 次工具调用，自己结束 | [`gpt-6.1-sol-single-1/`](solutions/v6.2/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | 74/74 合格，R = 0.589 | \(100/(1+R)\) | 62.9 | 待复核 | 68 分钟，134 次请求，119 次工具调用，测试 4 次（评测 7 分钟），正式提交 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.2/gpt-6.1-sol-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.412 | \(100/(1+R)\) | 70.8 | 待复核 | 62 分钟，120 次请求，123 次工具调用，自己结束 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | 74/74 合格，R = 0.448 | \(100/(1+R)\) | 69.1 | 待复核 | 60 分钟，79 次请求，83 次工具调用，测试 10 次（评测 9 分钟），正式提交 | [`claude-opus-5-5-iterative-1/`](solutions/v6.2/claude-opus-5-5-iterative-1/) |
 
 超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
 

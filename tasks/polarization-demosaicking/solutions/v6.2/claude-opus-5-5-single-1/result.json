@@ -6,5 +6,15 @@
  "raw": "平均 RMSE 0.97877，32/32 景通过（每景最多 0.710 秒）",
  "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
  "score": 55.9,
- "review": "待复核"
+ "review": "待复核",
+ "process": {
+  "minutes": 46.2,
+  "model_requests": 56,
+  "tool_calls": 56,
+  "public_tests": 0,
+  "public_test_minutes": 0.0,
+  "public_test_scores": [],
+  "ended": "自己结束",
+  "harness": "claude"
+ }
 }

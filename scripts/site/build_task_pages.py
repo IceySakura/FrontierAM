@@ -12,7 +12,9 @@ and tasks/README.md, the index. The same meta.json files feed the dashboard (scr
 Usage: build_task_pages.py
 """
 
+import glob
 import json
+import re
 import shutil
 import tarfile
 
@@ -99,6 +101,51 @@ def extract_solution(store: str, submission: str, target: Path) -> list[str]:
     return omitted
 
 
+STOP = {'turn_completed': '自己结束', 'formal_submission': '正式提交', 'development_deadline': '时间到',
+        'harness_exited': '异常退出'}
+
+
+def run_index() -> tuple[dict, dict]:
+    """submission -> development run (from the run logs) and run -> its directory."""
+    sub2run = {}
+    for log in glob.glob(str(ROOT / 'var/stores/store/reruns/*.log')):
+        for line in open(log, errors='replace'):
+            if '"develop_finished"' in line:
+                try:
+                    event = json.loads(line)
+                except ValueError:
+                    continue
+                if event.get('submission'):
+                    sub2run[event['submission']] = event['run']
+    return sub2run, {Path(p).name: Path(p) for p in glob.glob(str(ROOT / 'var/stores/*/dev-runs/*'))}
+
+
+def process_stats(submission: str, index: tuple[dict, dict]) -> dict | None:
+    sub2run, rundirs = index
+    run = rundirs.get(sub2run.get(submission, ''))
+    if not run or not (run / 'develop_result.json').exists():
+        return None
+    r = json.loads((run / 'develop_result.json').read_text())
+    log = (run / 'cli.log').read_text(errors='replace') if (run / 'cli.log').exists() else ''
+    tools = len(re.findall(r'"type":"tool_use"', log)) if r.get('harness') == 'claude' else \
+        len(re.findall(r'"item.completed","item":\{"id":"[^"]+","type":"command_execution"', log))
+    tests = [e for e in r.get('evaluations', []) if e.get('kind') == 'test']
+    return {'minutes': round(r['development_seconds'] / 60, 1), 'model_requests': r.get('http_attempts'), 'tool_calls': tools,
+            'public_tests': len(tests), 'public_test_minutes': round(sum(e.get('finished_at_seconds', 0) - e['requested_at_seconds']
+                                                                         for e in tests) / 60, 1),
+            'public_test_scores': [round(e['score'], 1) for e in tests if e.get('score') is not None],
+            'ended': STOP.get(r.get('agent_stop_reason'), r.get('agent_stop_reason')), 'harness': r.get('harness')}
+
+
+def process_text(p: dict | None, iterative: bool) -> str:
+    if not p:
+        return ''
+    text = f'{p["minutes"]:.0f} 分钟，{p["model_requests"]} 次请求，{p["tool_calls"]} 次工具调用'
+    if iterative:
+        text += f'，测试 {p["public_tests"]} 次（评测 {p["public_test_minutes"]:.0f} 分钟）'
+    return text + f'，{p["ended"]}'
+
+
 def attempt_dir(r: dict) -> str:
     return f'{r["model"]}-{SETTING.get(r.get("setting"), "single")}-{r.get("attempt", 1)}'
 
@@ -123,12 +170,13 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
         lines += [f'公开包中的数据文件未复制到仓库，清单见 `versions/{cur}/public/DATA_FILES.md`。', '']
     lines += ['## 评测依据', '', meta['judge_md'], '', '## Baseline', '', meta['baseline_md'], '',
               '## 模型成绩与解法（协议 v6.2）', '',
-              '| 模型 | 设置 | 原始指标 | 换算 | 得分（满分 100，参照 50） | 复核 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- |']
+              '| 模型 | 设置 | 原始指标 | 换算 | 得分（满分 100，参照 50） | 复核 | 开发过程 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- | --- |']
     for r, folder, _ in solutions:
         score = '—' if r.get('score') is None else f'{r["score"]:.1f}'
         review = r.get('review', '待复核') if (r.get('score') or 0) > 50 else ''
         link = f'[`{folder}/`](solutions/v6.2/{folder}/)' if folder else ''
-        lines.append(f'| {MODEL.get(r["model"], r["model"])} | {r.get("setting", "")} | {r["raw"]} | {r["mapping"]} | {score} | {review} | {link} |')
+        process = process_text(r.get('_process'), r.get('setting') == '迭代')
+        lines.append(f'| {MODEL.get(r["model"], r["model"])} | {r.get("setting", "")} | {r["raw"]} | {r["mapping"]} | {score} | {review} | {process} | {link} |')
     lines += ['', '超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。', '']
     for r, folder, omitted in solutions:
         lines += [f'### {MODEL.get(r["model"], r["model"])}（{r.get("setting", "")}）', '']
@@ -167,8 +215,18 @@ def write_board(metas: list[dict], names: list[str]) -> None:
                 parts.append(text)
             cells.append(' / '.join(parts))
         rows.append(f'| [{meta["title"]}](tasks/{name}/README.md) | ' + ' | '.join(cells) + ' |')
+    rows2 = ['| 题目 | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in COLUMNS) + ' |', '| --- |' + ' --- |' * len(COLUMNS)]
+    for meta, name in zip(metas, names):
+        results = [r for g in meta['result_groups'] if g['title'].startswith('协议 v6.2') for r in g['results']]
+        cells = []
+        for model, setting in COLUMNS:
+            hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting), key=lambda r: r.get('attempt', 1))
+            cells.append(' / '.join(process_text(r.get('_process'), setting == '迭代') or '—' for r in hits))
+        rows2.append(f'| [{meta["title"]}](tasks/{name}/README.md) | ' + ' | '.join(cells) + ' |')
     board = '\n'.join(rows) + ('\n\n空格表示该模型没有在这道题的该设置下尝试；同一格有多次尝试时按次序列出；超过参照（50 分）的成绩在复核结论出来前标“待复核”。'
                                 '每格的原始指标、换算方式和模型的做法见各题 README；历史协议的成绩见 `results/LEADERBOARD.md`。本表由 `scripts/site/build_task_pages.py` 生成。')
+    board += ('\n\n### 开发过程（每次尝试：用时、模型请求数、工具调用数；迭代设置另列公开集测试次数与评测用时；结束方式）\n\n'
+              + '\n'.join(rows2) + '\n\n两种设置的预算都是 2 小时（迭代设置的公开集评测计入其中）；“自己结束”指模型在预算内主动结束回合，“正式提交”指迭代设置下主动提交最终版本。')
     readme = ROOT / 'README.md'
     text = readme.read_text()
     start, end = '<!-- board:start -->', '<!-- board:end -->'
@@ -178,6 +236,7 @@ def write_board(metas: list[dict], names: list[str]) -> None:
 
 def main():
     index = []
+    runs = run_index()
     for meta_path in sorted(TASKS.glob('*/meta.json'), key=lambda p: json.loads(p.read_text())['order']):
         family = meta_path.parent
         meta = json.loads(meta_path.read_text())
@@ -206,6 +265,9 @@ def main():
                 omitted = extract_solution(r['store'], r['submission'], target)
                 result = {k: r.get(k) for k in ('model', 'protocol', 'setting', 'submission', 'raw', 'mapping', 'score', 'review')}
                 result['review'] = result['review'] or ('待复核' if (r.get('score') or 0) > 50 else None)
+                previous = json.loads((target / 'result.json').read_text()).get('process') if (target / 'result.json').exists() else None
+                result['process'] = process_stats(r['submission'], runs) or previous
+                r['_process'] = result['process']
                 (target / 'result.json').write_text(json.dumps(result, ensure_ascii=False, indent=1) + '\n')
                 solutions.append((r, folder, omitted))
         (family / 'README.md').write_text(readme(meta, solutions, listed))

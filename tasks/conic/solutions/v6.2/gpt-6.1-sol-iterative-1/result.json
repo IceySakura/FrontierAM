@@ -6,5 +6,21 @@
  "raw": "387 / 650（\\(p = 0.595\\)）",
  "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
  "score": 0.0,
- "review": null
+ "review": null,
+ "process": {
+  "minutes": 120.0,
+  "model_requests": 206,
+  "tool_calls": 130,
+  "public_tests": 5,
+  "public_test_minutes": 15.7,
+  "public_test_scores": [
+   0.0,
+   0.0,
+   16.3,
+   4.5,
+   9.1
+  ],
+  "ended": "时间到",
+  "harness": "codex"
+ }
 }

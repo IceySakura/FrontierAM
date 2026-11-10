@@ -6,5 +6,15 @@
  "raw": "74/74 合格，R = 0.412",
  "mapping": "\\(100/(1+R)\\)",
  "score": 70.8,
- "review": "待复核"
+ "review": "待复核",
+ "process": {
+  "minutes": 61.7,
+  "model_requests": 120,
+  "tool_calls": 123,
+  "public_tests": 0,
+  "public_test_minutes": 0.0,
+  "public_test_scores": [],
+  "ended": "自己结束",
+  "harness": "claude"
+ }
 }

@@ -6,5 +6,15 @@
  "raw": "\\(L = 0.221264\\)，3000/3000 合格（单例最多 1.66 秒）",
  "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
  "score": 51.9,
- "review": "待复核"
+ "review": "待复核",
+ "process": {
+  "minutes": 68.5,
+  "model_requests": 79,
+  "tool_calls": 85,
+  "public_tests": 0,
+  "public_test_minutes": 0.0,
+  "public_test_scores": [],
+  "ended": "自己结束",
+  "harness": "claude"
+ }
 }
