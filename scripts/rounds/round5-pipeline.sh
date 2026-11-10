@@ -89,18 +89,22 @@ grade_conic conic-20261110T041406Z-762c81 r5-opus-single-conic-3
 grade_operator trajectory-covariance-20261110T035541Z-b16076 trajectory-covariance r5-sol-single-trajectory
 
 declare -A ITER
-for n in 2 3; do
-    for task in conic exponential-v2; do
-        runtime=$EXP_RT; [ $task = conic ] && runtime=$CONIC_DEV_RT
-        sub=$(develop_iterative "$task" "$runtime" "var/stores/store/reruns/r5-claude-iterative-$task-$n.log")
-        ITER[$task-$n]=$sub
-        log "\"event\": \"attempt_frozen\", \"model\": \"claude-opus-5-5\", \"task\": \"$task\", \"setting\": \"iterative\", \"n\": $n, \"submission\": \"$sub\""
+if [ -e /run/frontieram/hold-iterative ]; then
+    log "\"event\": \"iterative_held\", \"reason\": \"protocol under discussion\""
+else
+    for n in 2 3; do
+        for task in conic exponential-v2; do
+            runtime=$EXP_RT; [ $task = conic ] && runtime=$CONIC_DEV_RT
+            sub=$(develop_iterative "$task" "$runtime" "var/stores/store/reruns/r5-claude-iterative-$task-$n.log")
+            ITER[$task-$n]=$sub
+            log "\"event\": \"attempt_frozen\", \"model\": \"claude-opus-5-5\", \"task\": \"$task\", \"setting\": \"iterative\", \"n\": $n, \"submission\": \"$sub\""
+        done
     done
-done
-for n in 2 3; do
-    [ -n "${ITER[exponential-v2-$n]}" ] && grade_exp2 "${ITER[exponential-v2-$n]}" "r5-opus-iterative-exp2-$n"
-    [ -n "${ITER[conic-$n]}" ] && grade_conic "${ITER[conic-$n]}" "r5-opus-iterative-conic-$n"
-done
+    for n in 2 3; do
+        [ -n "${ITER[exponential-v2-$n]}" ] && grade_exp2 "${ITER[exponential-v2-$n]}" "r5-opus-iterative-exp2-$n"
+        [ -n "${ITER[conic-$n]}" ] && grade_conic "${ITER[conic-$n]}" "r5-opus-iterative-conic-$n"
+    done
+fi
 
 grade_operator polarization-demosaicking-20261110T035607Z-9748d5 polarization-demosaicking r5-sol-single-polarization
 .venv-ops/bin/python scripts/analyze/polar-warmup-check.py polarization-demosaicking-20261109T124343Z-553533 \
