@@ -35,6 +35,7 @@ PUBLIC = {
     'exponential-v2': {'family': 'exponential', 'store': ROOT / 'var/stores/store-public-exp2',
                        'env': {'FRONTIERAM_EXP2_SEAL': str(ROOT / '.runtime-exp2-public')}},
     'galaxy-gravity-v2': {'family': 'galaxy-gravity', 'store': STORE, 'env': {'FRONTIERAM_GALAXY_DATA': 'public'}},
+    'galaxy-gravity-v3': {'family': 'galaxy-gravity', 'store': STORE, 'env': {'FRONTIERAM_GALAXY_DATA': 'public'}},
     'polarization-demosaicking': {'family': 'polarization-demosaicking', 'store': STORE,
                                   'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
     'species-tree-v2': {'family': 'species-tree', 'store': STORE, 'env': {'FRONTIERAM_SPECIES_V2_DATA': 'public'}},
@@ -197,16 +198,17 @@ def _rows(task, store: Store, record: dict, partial: dict, which: str = 'candida
     out = store.result_dir(record['shards'][0]['job']) / 'grade' / which
     if not (out / 'summary.json').exists():
         return []
-    return {'galaxy-gravity-v2': _galaxy, 'polarization-demosaicking': _polarization,
-            'species-tree-v2': _species}.get(task.name, lambda o: _trajectory(task, o))(out)
+    family = PUBLIC[task.name]['family']
+    return {'galaxy-gravity': _galaxy, 'polarization-demosaicking': _polarization,
+            'species-tree': _species}.get(family, lambda o: _trajectory(task, o))(out)
 
 
 # Raw metrics and the final mapping -----------------------------------------------------------------------------
 def raw_error(task: str, rows: list[dict]) -> float | None:
     """The task's own aggregate over the given rows; None if a failure makes the formal submission invalid."""
-    if task in ('galaxy-gravity-v2', 'polarization-demosaicking') and any(r['status'] != 'passed' for r in rows):
+    if task.startswith(('galaxy-gravity', 'polarization-demosaicking')) and any(r['status'] != 'passed' for r in rows):
         return None
-    if task == 'galaxy-gravity-v2':
+    if task.startswith('galaxy-gravity'):
         families: dict[str, list[float]] = {}
         for r in rows:
             families.setdefault(r['category'], []).append(r['accuracy'])
@@ -236,7 +238,7 @@ def mapped(task: str, rows: list[dict], weak: list[dict], strong: list[dict]) ->
         return 0.0
     if low is None or high is None:
         return None
-    return (galaxy_score if task == 'galaxy-gravity-v2' else score_100)(raw, low, high)
+    return (galaxy_score if task.startswith('galaxy-gravity') else score_100)(raw, low, high)
 
 
 # Public baselines ------------------------------------------------------------------------------------------------

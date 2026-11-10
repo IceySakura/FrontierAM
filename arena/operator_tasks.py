@@ -181,6 +181,18 @@ class GalaxyGravityV2(GalaxyGravity):
     """galaxy-gravity at 131,072 particles (scripts/seal/prepare_galaxy_v2.py); same grader, references and budget."""
 
 
+class GalaxyGravityV3(GalaxyGravityV2):
+    """Protocol v6.3 version (scripts/seal/prepare_v63.py): reference r2 (a high-order FMM) as the 50-point anchor and
+    a log-scale mapping, since accuracies span many orders of magnitude (results/BASELINE_REVIEW.md)."""
+
+    def score(self, runtime, metrics, baseline):
+        result = super().score(runtime, metrics, baseline)
+        if result.get('status') == 'ok' and baseline is not None:
+            from .public_v63 import galaxy_score
+            result['score'] = galaxy_score(result['raw_error'], result['anchors']['weak'], result['anchors']['strong'])
+        return result
+
+
 class PolarizationDemosaicking(OperatorTask):
     grade_memory = 10 * GIB
     # Each scene has a 1.000-second wall limit including interpreter start-up, about 0.6 s of which a typical
@@ -402,7 +414,7 @@ def _finite(value) -> bool:
     return isinstance(value, (int, float)) and math.isfinite(value)
 
 
-CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2,
+CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2, 'galaxy-gravity-v3': GalaxyGravityV3,
            'polarization-demosaicking': PolarizationDemosaicking,
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance}

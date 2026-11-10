@@ -1,0 +1,23 @@
+{
+  "name": "galaxy-gravity-v3",
+  "title": "星系快照中的引力加速度（131,072 个粒子）",
+  "status": "formal",
+  "status_reason": "Protocol v6.3 version (results/PROTOCOL_V63.md, results/EVAL_TIME_LIMITS.md): samples-only workspace; limits and set sizes for the evaluation time caps (scripts/seal/prepare_v63.py).",
+  "derived_from": "galaxy-gravity-v2",
+  "references": {
+    "weak": "baselines/standard",
+    "strong": "repo:tasks/galaxy-gravity/references/r2/source"
+  },
+  "images": {
+    "task": {
+      "tag": "frontieram-galaxy-gravity:amd64-b2",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": [
+        "sha256:3effa53ebc6b4469ced04f611f8678de95fe793145141fc73486e2fa8ba3e2bc",
+        "local/galaxy-gravity-cpu:b2"
+      ]
+    }
+  },
+  "submission_note": "Put the complete source in /workspace/submission with an executable ./solve at its root, or an executable ./build.sh that creates ./solve; the evaluator builds once offline and runs ./solve INPUT OUTPUT per snapshot in a clean copy of this environment without the agent tools.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/samples. Implement the gravitational-acceleration program described there."
+}

@@ -75,7 +75,7 @@
     "public": "10 张公开快照",
     "groups": "Hernquist / Jaffe / Einasto / disc / group（各 2 张）",
     "feedback": {
-      "task": "galaxy-gravity-v2",
+      "task": "galaxy-gravity-v3",
       "category": "family",
       "accuracy": "relative acceleration error",
       "lower_is_better": true,

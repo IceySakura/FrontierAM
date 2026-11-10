@@ -37,6 +37,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'exponential-v2': 'frontieram-exponential-harness:v6',
                   'galaxy-gravity': 'frontieram-galaxy-gravity-harness:v6',
                   'galaxy-gravity-v2': 'frontieram-galaxy-gravity-harness:v6',
+                  'galaxy-gravity-v3': 'frontieram-galaxy-gravity-harness:v6',
                   'polarization-demosaicking': 'frontieram-polarization-demosaicking-harness:v6',
                   'species-tree': 'frontieram-species-tree-harness:v6',
                   'species-tree-v2': 'frontieram-species-tree-harness:v6',
@@ -260,6 +261,14 @@ SCORING_DISCLOSURE['galaxy-gravity-v2'] = (
     'on the same snapshots and budget: matching the weaker one scores zero, matching the stronger one is the midpoint '
     'of the scale and exact accelerations are the maximum. Using less CPU time earns nothing extra, so spend the budget '
     'on accuracy while keeping a safety margin under the limit.'
+)
+
+SCORING_DISCLOSURE['galaxy-gravity-v3'] = (
+    'Every call on every held-out snapshot must stay within the CPU, wall-clock and memory limits and return finite '
+    'accelerations for all particles; a single failed call makes the whole submission score zero. Given that, the '
+    'score depends only on the overall relative acceleration error, on a logarithmic scale: matching a classical tree '
+    'code scores zero, matching a high-order fast multipole reference is the midpoint of the scale, and an error of '
+    '1e-15 (double precision) is the maximum. Using less CPU time earns nothing extra.'
 )
 
 SCORING_DISCLOSURE['polarization-demosaicking'] = (
