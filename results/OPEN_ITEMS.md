@@ -21,3 +21,6 @@
 | v6.2 exponential-v2 单轮尝试 | 第一次尝试的提示有一句计时说明有误，只作记录（56.3 分）；以修正提示后的重跑为正式成绩 | `PROTOCOL_V62.md` |
 | v6.2 测试评测的重复次数 | 1 次（正式评测 3 次），以控制评测时间 | `PROTOCOL_V62.md` |
 | 看板的访问与内容范围 | 用户决定（11-10）：只在办公网访问（http://9.135.91.91:18765/），不做公网发布；只展示最新版本和 v6.2 成绩 | `DASHBOARD.md` |
+| 第 5 轮 sol 尝试遇到上游限流 | 11-10 11:11 同时启动 4 个 gpt-6.1-sol 会话，其中 3 个（exponential-v2 第 3 次、polarization、trajectory）在约 25–33 分钟时因上游 429 Too Many Requests 超过重试上限、harness 退出：属基础设施故障，记为未测、不评分；按每次最多 2 个 sol 会话重跑（`scripts/round5-sol-retry.sh`）。opus 会话也出现过少量 429，均重试成功 | 本文件 |
+| sol 的极短会话 | sol 的 exponential-v2 第 2 次单轮尝试 4.5 分钟结束回合（与 11-09 的 species-tree-v2 4.4 分钟、exponential-v2 重跑 23 分钟同一模式）：模型名、推理强度（max）、提示与 2 小时的会话完全相同，无限流或错误，每次请求的推理 token 明显更少；判为模型自身行为，尝试有效 | 本文件 |
+| 超过参照的成绩 | 一律标“待复核”，按 `BASELINE_POLICY.md` 第 6 条复核，记录在 `BASELINE_REVIEW.md` | `BASELINE_POLICY.md` |

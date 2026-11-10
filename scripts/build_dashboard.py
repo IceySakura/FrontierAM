@@ -195,13 +195,20 @@ def protocol_label(r: dict) -> str:
     return f'{r["protocol"]} {r["setting"]}' if r.get('setting') else r['protocol']
 
 
+def review_tag(r: dict) -> str:
+    """Above-reference scores stay 'pending review' until results/BASELINE_REVIEW.md records a conclusion."""
+    if r.get('score') is None or r['score'] <= 50:
+        return ''
+    return f' <span class="tag warn">{html.escape(r.get("review", "待复核"))}</span>'
+
+
 def result_rows(task: dict, group: dict) -> str:
     rows = []
     for r in group['results']:
         rows.append(f'<tr><td><a href="#{anchor_of(r)}">{html.escape(model_name(r["model"]))}</a></td>'
                     f'<td>{html.escape(protocol_label(r))}</td>'
                     f'<td>{md(r["raw"])[3:-4]}</td><td>{md(r["mapping"])[3:-4]}</td>'
-                    f'<td class="num score {score_class(r["score"])}">{fmt_score(r["score"])}</td></tr>')
+                    f'<td class="num score {score_class(r["score"])}">{fmt_score(r["score"])}{review_tag(r)}</td></tr>')
     return ('<table><tr><th>模型</th><th>协议</th><th>原始指标</th><th>换算</th><th class="num">得分（满分 100）</th></tr>'
             + ''.join(rows) + '</table>')
 
@@ -222,7 +229,7 @@ def task_page(task: dict) -> str:
     for group in task['result_groups']:
         for r in group['results']:
             body.append(f'<h3 id="{anchor_of(r)}">{html.escape(model_name(r["model"]))}（{html.escape(protocol_label(r))}）'
-                        f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span></h3>')
+                        f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}</h3>')
             if r.get('notes_md'):
                 body.append(f'<div class="note">{md(r["notes_md"])}</div>')
             text = readme(r['store'], r['submission']) if r.get('submission') else None
@@ -250,11 +257,11 @@ def index_page(site: dict, tasks: list[dict]) -> str:
             for m in models:
                 hit = [r for r in group['results'] if r['model'] == m]
                 if len(hit) == 1:
-                    cells.append(f'<td class="score {score_class(hit[0]["score"])}">{fmt_score(hit[0]["score"])}</td>')
+                    cells.append(f'<td class="score {score_class(hit[0]["score"])}">{fmt_score(hit[0]["score"])}{review_tag(hit[0])}</td>')
                 elif hit:
                     cells.append('<td>' + '<br>'.join(
                         f'<small>{html.escape(r.get("setting", ""))}</small> '
-                        f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>' for r in hit) + '</td>')
+                        f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}' for r in hit) + '</td>')
                 else:
                     cells.append('<td></td>')
             label = f'<a href="tasks/{task["id"]}.html">{html.escape(task["title"])}</a>'
@@ -266,7 +273,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     body = (f'<h1>{html.escape(site["title"])}</h1><p class="lead">{html.escape(site["subtitle"])}</p>{md(site["intro_md"])}'
             f'<h2>题目</h2><div class="cards">{cards}</div>'
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
-            '<p>只列每道题的最新版本和最新协议（v6.2）下的成绩。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。点击题目查看评测依据、baseline 和各模型的做法。</p>'
+            '<p>只列每道题的最新版本和最新协议（v6.2）下的成绩。超过参照（50 分）的成绩在复核结论出来前标“待复核”：复核会检查超出的原因，并寻找更强的人类方法。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。点击题目查看评测依据、baseline 和各模型的做法。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>')
     return page(site['title'], body)
 
