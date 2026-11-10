@@ -287,6 +287,15 @@ SCORING_DISCLOSURE['trajectory-covariance'] = (
     'of them rather than excel on one.'
 )
 
+# Protocol v6.3 task versions inherit the harness image and the scoring disclosure of the version they derive from,
+# unless they define their own (galaxy-gravity-v3).
+V63_VERSIONS = {'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree-v2',
+                'trajectory-covariance-v2': 'trajectory-covariance', 'exponential-v3': 'exponential-v2', 'conic-v3': 'conic'}
+for _new, _old in V63_VERSIONS.items():
+    HARNESS_IMAGES.setdefault(_new, HARNESS_IMAGES[_old])
+    if _old in SCORING_DISCLOSURE:
+        SCORING_DISCLOSURE.setdefault(_new, SCORING_DISCLOSURE[_old])
+
 SETTING_SINGLE = (
     'One attempt, at most {seconds} wall-clock seconds including model requests and tool time. Finishing your '
     'turn, or the deadline, freezes /workspace/submission for evaluation; the evaluator gives no feedback during '

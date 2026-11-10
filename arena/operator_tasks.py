@@ -415,7 +415,7 @@ def _finite(value) -> bool:
 
 
 CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2, 'galaxy-gravity-v3': GalaxyGravityV3,
-           'polarization-demosaicking': PolarizationDemosaicking,
+           'polarization-demosaicking': PolarizationDemosaicking, 'polarization-demosaicking-v2': PolarizationDemosaicking,
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance}
 

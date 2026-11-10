@@ -1,0 +1,61 @@
+{
+  "name": "polarization-demosaicking-v2",
+  "title": "从一张偏振马赛克重建四幅强度图",
+  "status": "formal",
+  "packages": {
+    "operator": {
+      "file": "polarization-demosaicking-maintenance-v1.2.tar.gz",
+      "sha256": "e5aeca33876b915c8186870915c1fd21745715b9b3b8fa9dd7c66ffd7f0a38bb",
+      "root": "polarization-demosaicking-maintenance-v1.2"
+    },
+    "public": {
+      "file": "polarization-demosaicking-v1.2.tar.gz",
+      "sha256": "48e21a8ebf38472bef18d75e17d75dea1ccd10eaff28a9189432d1480c2ccec4",
+      "root": "polarization-demosaicking"
+    }
+  },
+  "integrity": {
+    "type": "manifest_files",
+    "package": "operator",
+    "file": "MANIFEST.json"
+  },
+  "public_files": [
+    {
+      "from": "public:environment/problem.md",
+      "to": "problem.md"
+    },
+    {
+      "from": "public:environment/check.py",
+      "to": "public-dev/check.py"
+    }
+  ],
+  "portability_edits": [
+    {
+      "file": "harbor/polarization-demosaicking/worker.py",
+      "old": "if cpu != [0] or cpu_max",
+      "new": "if len(cpu) != 1 or cpu_max",
+      "reason": "Each grading slot pins the container to its own single CPU instead of CPU 0; the single-CPU, quota, memory and swap checks are unchanged."
+    }
+  ],
+  "images": {
+    "task": {
+      "tag": "frontieram-polarization-demosaicking:amd64-b1-v1.2",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": [
+        "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+        "sha256:c69ebaca83a17f044738532b67680211def71f69b170f75b13b7b269192ddc3a",
+        "songberg-cpu-probe:r4.2.2-33d65cf",
+        "sha256:4a9295506b18044d57cc218f3713d403b389a80e96b6767a9bf90be3a7ca370e",
+        "local/four-angle-public:b1-v1.2"
+      ]
+    }
+  },
+  "references": {
+    "weak": "harbor/polarization-demosaicking/references/bilinear",
+    "strong": "harbor/polarization-demosaicking/references/reflect"
+  },
+  "submission_note": "Put solution.py (defining reconstruct(raw)) and README.md in /workspace/submission, plus any sources it needs and an optional executable no-argument build.sh; the evaluator builds once offline and calls reconstruct per scene in a fresh process in a clean copy of this environment without the agent tools.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/samples. Implement the demosaicking program described there.",
+  "derived_from": "polarization-demosaicking",
+  "status_reason": "Protocol v6.3 version (results/PROTOCOL_V63.md, results/EVAL_TIME_LIMITS.md): samples-only workspace; limits and set sizes for the evaluation time caps (scripts/seal/prepare_v63.py)."
+}

@@ -50,7 +50,41 @@ GALAXY_README_PUBLIC_NEW = '''## 正式规模的样例快照
 
 `cases/` 下有 1 张正式规模（131,072 个粒子）的样例快照（`smooth-hernquist` 模型），种子与正式评测不同。`case-01.in` 为输入，`case-01.ref` 为按同一直接求和程序算出的参考加速度，`manifest.json` 列出它的模型和 SHA-256。其余各类模型的快照可用生成器自行生成。检查自己的输出：'''
 
+def polarization_samples(seal: Path) -> dict[str, bytes]:
+    """Two public Wen et al. scenes as samples: the mosaic input and the four-angle reference, via the grader's mosaic."""
+    import sys
+    import numpy as np
+
+    lock = json.loads((seal / 'lock.json').read_text())
+    sys.path.insert(0, str(seal / lock['roots']['operator'] / 'harbor/polarization-demosaicking'))
+    from scoring import mosaic
+
+    data = OPS / 'polarization-demosaicking-feedback'
+    files = {}
+    for scene in json.loads((data / 'manifest.json').read_text())['scenes'][:2]:
+        reference = np.load(data / scene['file'], allow_pickle=False)
+        for name, array in (('raw.npy', mosaic(reference)), ('reference.npy', reference)):
+            buffer = io.BytesIO()
+            np.save(buffer, array, allow_pickle=False)
+            files[f'public-dev/{scene["scene"]}/{name}'] = buffer.getvalue()
+    return files
+
+
 TASKS = {
+    'polarization-demosaicking': {
+        'parent': 'polarization-demosaicking', 'name': 'polarization-demosaicking-v2', 'version': 'v2',
+        'keep': ['problem.md', 'public-dev/check.py'],
+        'extra': polarization_samples,
+        'edits': [('problem.md', '下载[公开开发自检脚本](public-dev/check.py)。', '下载[样例自检脚本](samples/check.py)。'),
+                  ('problem.md', 'python3 public-dev/check.py /path/to/solution.py', 'python3 samples/check.py /path/to/solution.py'),
+                  ('problem.md', '正式时限在评测方逐景启动的独立进程中执行。',
+                   '正式时限在评测方逐景启动的独立进程中执行。\n\n`samples/wen-001/` 与 `samples/wen-002/` 各含一景真实场景：输入马赛克 '
+                   '`raw.npy`（`uint8`，形状 `(1024, 1024)`）和四方向参考图 `reference.npy`（`uint8`，形状 `(4, 1024, 1024)`，'
+                   '依次为 0°、45°、90°、135°）。它们取自公开数据集 Wen et al. 2019，与正式场景无关。')],
+        'task': {'instruction': 'Read /workspace/problem.md in full and inspect /workspace/samples. Implement the '
+                                'demosaicking program described there.'},
+        'lock': {},
+    },
     'galaxy-gravity': {
         'parent': 'galaxy-gravity-v2', 'name': 'galaxy-gravity-v3', 'version': 'v3',
         'keep': ['problem.md', 'public-dev/README.md', 'public-dev/check_output.py', 'public-dev/generate.py',
@@ -81,7 +115,7 @@ def replace_once(text: str, old: str, new: str, where: str) -> str:
     return text.replace(old, new)
 
 
-def workspace(parent_tar: Path, out: Path, cfg: dict) -> dict:
+def workspace(parent_tar: Path, out: Path, cfg: dict, seal: Path) -> dict:
     """The samples-only workspace: kept members of the parent's public package, public-dev/ renamed samples/."""
     members = {}
     with tarfile.open(parent_tar) as archive:
@@ -91,6 +125,8 @@ def workspace(parent_tar: Path, out: Path, cfg: dict) -> dict:
     missing = set(cfg['keep']) - set(members)
     if missing:
         raise SystemExit(f'not in the parent package: {sorted(missing)}')
+    if cfg.get('extra'):
+        members.update(cfg['extra'](seal))
     edits = []
     for name, old, new in cfg['edits']:
         before = hashlib.sha256(members[name]).hexdigest()
@@ -128,7 +164,7 @@ def main():
             raise SystemExit(f'{seal} exists; pass --force to reseal')
         shutil.rmtree(seal)
     private_copy(parent, seal)
-    record = workspace(parent / 'public.tar', seal / 'public.tar', cfg)
+    record = workspace(parent / 'public.tar', seal / 'public.tar', cfg, seal)
     lock = json.loads((parent / 'lock.json').read_text())
     (seal / 'lock.json').unlink()
     lock.update(cfg['lock'], name=cfg['name'], derived_from=cfg['parent'], public_tar_sha256=sha(seal / 'public.tar'),

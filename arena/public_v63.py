@@ -38,6 +38,8 @@ PUBLIC = {
     'galaxy-gravity-v3': {'family': 'galaxy-gravity', 'store': STORE, 'env': {'FRONTIERAM_GALAXY_DATA': 'public'}},
     'polarization-demosaicking': {'family': 'polarization-demosaicking', 'store': STORE,
                                   'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
+    'polarization-demosaicking-v2': {'family': 'polarization-demosaicking', 'store': STORE,
+                                     'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
     'species-tree-v2': {'family': 'species-tree', 'store': STORE, 'env': {'FRONTIERAM_SPECIES_V2_DATA': 'public'}},
     'trajectory-covariance': {'family': 'trajectory-covariance', 'store': STORE,
                               'env': {'FRONTIERAM_TRAJ_POOL': 'feedback'}},
