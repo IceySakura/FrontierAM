@@ -9,12 +9,6 @@
  "review": "复核完成：承认算法创新（核拆分）；参照改为 r2 后计 58.7",
  "process": {
   "minutes": 106.2,
-  "model_requests": 204,
-  "tool_calls": 147,
-  "public_tests": 0,
-  "public_test_minutes": 0.0,
-  "public_test_scores": [],
-  "ended": "自己结束",
-  "harness": "codex"
+  "public_tests": 0
  }
 }

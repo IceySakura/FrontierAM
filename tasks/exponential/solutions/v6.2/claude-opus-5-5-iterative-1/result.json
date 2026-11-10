@@ -9,23 +9,6 @@
  "review": "待复核",
  "process": {
   "minutes": 59.5,
-  "model_requests": 79,
-  "tool_calls": 83,
-  "public_tests": 10,
-  "public_test_minutes": 9.1,
-  "public_test_scores": [
-   60.2,
-   60.9,
-   62.0,
-   48.9,
-   54.2,
-   62.3,
-   63.5,
-   47.6,
-   63.7,
-   62.8
-  ],
-  "ended": "正式提交",
-  "harness": "claude"
+  "public_tests": 10
  }
 }

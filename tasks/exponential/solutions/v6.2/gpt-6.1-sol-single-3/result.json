@@ -9,12 +9,6 @@
  "review": "待复核",
  "process": {
   "minutes": 100.5,
-  "model_requests": 190,
-  "tool_calls": 118,
-  "public_tests": 0,
-  "public_test_minutes": 0.0,
-  "public_test_scores": [],
-  "ended": "自己结束",
-  "harness": "codex"
+  "public_tests": 0
  }
 }

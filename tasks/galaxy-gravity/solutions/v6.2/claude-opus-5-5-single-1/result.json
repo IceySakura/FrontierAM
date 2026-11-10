@@ -9,12 +9,6 @@
  "review": "复核完成：本解法成为参照 r2；按 r2 计 50.0",
  "process": {
   "minutes": 63.4,
-  "model_requests": 75,
-  "tool_calls": 73,
-  "public_tests": 0,
-  "public_test_minutes": 0.0,
-  "public_test_scores": [],
-  "ended": "自己结束",
-  "harness": "claude"
+  "public_tests": 0
  }
 }

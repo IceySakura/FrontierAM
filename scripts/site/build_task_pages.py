@@ -14,7 +14,6 @@ Usage: build_task_pages.py
 
 import glob
 import json
-import re
 import shutil
 import tarfile
 
@@ -101,9 +100,6 @@ def extract_solution(store: str, submission: str, target: Path) -> list[str]:
     return omitted
 
 
-STOP = {'turn_completed': '自己结束', 'formal_submission': '正式提交', 'development_deadline': '时间到',
-        'harness_exited': '异常退出'}
-
 
 def run_index() -> tuple[dict, dict]:
     """submission -> development run (from the run logs) and run -> its directory."""
@@ -121,20 +117,14 @@ def run_index() -> tuple[dict, dict]:
 
 
 def process_stats(submission: str, index: tuple[dict, dict]) -> dict | None:
+    """Only what the board shows: test submissions (iterative) and the development time actually used."""
     sub2run, rundirs = index
     run = rundirs.get(sub2run.get(submission, ''))
     if not run or not (run / 'develop_result.json').exists():
         return None
     r = json.loads((run / 'develop_result.json').read_text())
-    log = (run / 'cli.log').read_text(errors='replace') if (run / 'cli.log').exists() else ''
-    tools = len(re.findall(r'"type":"tool_use"', log)) if r.get('harness') == 'claude' else \
-        len(re.findall(r'"item.completed","item":\{"id":"[^"]+","type":"command_execution"', log))
-    tests = [e for e in r.get('evaluations', []) if e.get('kind') == 'test']
-    return {'minutes': round(r['development_seconds'] / 60, 1), 'model_requests': r.get('http_attempts'), 'tool_calls': tools,
-            'public_tests': len(tests), 'public_test_minutes': round(sum(e.get('finished_at_seconds', 0) - e['requested_at_seconds']
-                                                                         for e in tests) / 60, 1),
-            'public_test_scores': [round(e['score'], 1) for e in tests if e.get('score') is not None],
-            'ended': STOP.get(r.get('agent_stop_reason'), r.get('agent_stop_reason')), 'harness': r.get('harness')}
+    tests = r.get('test_submissions', sum(e.get('kind') == 'test' for e in r.get('evaluations', [])))
+    return {'minutes': round(r['development_seconds'] / 60, 1), 'public_tests': tests}
 
 
 def process_text(p: dict | None, iterative: bool) -> str:

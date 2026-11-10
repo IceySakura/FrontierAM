@@ -9,18 +9,6 @@
  "review": null,
  "process": {
   "minutes": 79.9,
-  "model_requests": 88,
-  "tool_calls": 88,
-  "public_tests": 5,
-  "public_test_minutes": 22.4,
-  "public_test_scores": [
-   55.8,
-   57.7,
-   61.5,
-   61.5,
-   62.5
-  ],
-  "ended": "正式提交",
-  "harness": "claude"
+  "public_tests": 5
  }
 }
