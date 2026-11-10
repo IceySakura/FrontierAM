@@ -241,3 +241,13 @@ def test_dev_idle_waits_for_development_and_runs_side_by_side(tmp_path):
     second = broker.acquire('grade', 2**30, 'timed grade 2', timeout=0, isolation='dev_idle')
     assert {first.id, second.id} == {'grade-24', 'grade-26'}
 
+
+def test_one_free_grade_slot_per_running_attempt(tmp_path):
+    broker = slots.Broker(layout(), tmp_path)
+    with broker.iterative_attempt('a'), broker.iterative_attempt('b'):
+        with pytest.raises(TimeoutError):
+            broker.acquire('grade', 2**30, 'formal', timeout=0)
+        first = broker.acquire('grade', 2**30, 'test a', timeout=0, priority=True)
+        second = broker.acquire('grade', 2**30, 'test b', timeout=0, priority=True)
+        assert first.id != second.id
+

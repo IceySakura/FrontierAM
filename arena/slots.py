@@ -161,7 +161,7 @@ class Broker:
 
     @contextmanager
     def iterative_attempt(self, owner: str):
-        """Marks a running v6.3 iterative attempt: while any runs, non-priority grading leaves one grade slot free."""
+        """Marks a running v6.3 iterative attempt: non-priority grading leaves one free grade slot per running attempt."""
         fd, path = self._flag('attempt', owner)
         try:
             yield
@@ -183,8 +183,8 @@ class Broker:
     ) -> Lease:
         """Lease one slot; isolation also holds every slot of the listed kinds idle for the lease's lifetime.
 
-        priority (v6.3 test evaluations): while a priority grade lease waits, other grade leases wait; while an
-        iterative attempt runs, other grade leases never take the last free grade slot.
+        priority (v6.3 test evaluations): while a priority grade lease waits, other grade leases wait; while iterative
+        attempts run, other grade leases leave one free grade slot per running attempt.
         """
         if memory_bytes > self.layout['memory_budget_bytes']:
             raise ValueError('Requested memory exceeds the whole machine budget')
@@ -208,7 +208,8 @@ class Broker:
                     if kind == 'grade' and not priority and not blocked:
                         leased = {row['slot'] for row in self.leases()}
                         free = [s for s in self.layout['slots'] if s['kind'] == 'grade' and s['id'] not in leased]
-                        blocked = self._live('priority') > 0 or (self._live('attempt') > 0 and len(free) <= 1)
+                        attempts = self._live('attempt')
+                        blocked = self._live('priority') > 0 or (attempts > 0 and len(free) <= attempts)
                     if not blocked and used + memory_bytes <= self.layout['memory_budget_bytes']:
                         lease = self._lock_set(candidates, holds, memory_bytes, owner, isolation)
                         if lease is not None:
