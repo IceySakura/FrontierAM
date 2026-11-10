@@ -201,7 +201,8 @@ class Broker:
                     used = sum(int(row.get('memory_bytes', 0)) for row in self.leases())
                     # A waiting quiet grade blocks new gradings at once (they are minutes long), but new development
                     # only after dev_drain_after: draining at once would serialise a whole batch of 2-hour attempts.
-                    blocked = isolation != 'quiet' and self._draining(kind)
+                    # v6.3 tests (priority) go ahead of everything, including a quiet grade waiting to drain.
+                    blocked = isolation != 'quiet' and not priority and self._draining(kind)
                     if isolation == 'dev_idle' and not blocked:
                         dev = {s['id'] for s in self.layout['slots'] if s['kind'] == 'dev'}
                         blocked = any(row.get('slot') in dev for row in self.leases())

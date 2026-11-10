@@ -46,7 +46,7 @@ anchors() {
     done
     for task in galaxy-gravity-v3 polarization-demosaicking-v2; do
         done_event anchor "$task" && continue
-        [ "$task" = polarization-demosaicking-v2 ] && attempts_running && continue   # quiet grading, after the attempts
+        attempts_running && continue   # both grade with quiet isolation (no development): after the attempts
         FRONTIERAM_RUNTIME=$EXP_RT ./bench --store $STORE baseline --task "$task" >> var/stores/store/reruns/v63-worker.log 2>&1 \
             && log "\"event\": \"anchor\", \"label\": \"$task\""
     done
