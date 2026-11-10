@@ -27,3 +27,5 @@
 | polarization 评测隔离 | 11-10 预热验证：清掉镜像缓存后第一景 0.601 秒，不慢于其余各景（中位 0.618 秒），预热有效；但当时 8 个开发会话在运行，有三景跳到 0.91–1.0002 秒（一景超时）。每景上限 1 秒、正常约 0.6 秒，余量太小，评测隔离由 grade_pool 改为 quiet（评测期间开发核也保持空闲）。该次验证评分属受干扰的测量，不计成绩；待开发核空闲时在 quiet 条件下再验证一次 | `polarization-first-scene.json` |
 | galaxy 给出题人的核对包 | 出题人复测两份提交为 0 分。两份提交都用 x86-64 AVX2 内联函数与编译选项，在 Apple M5（ARM64）上无法编译，判断为差异根源；核对包 `var/outputs/galaxy-v2-for-author.tar.gz`（两份提交源码、算法说明、私有集逐次调用结果、公开快照逐张结果，不含私有数据） | 本文件 |
 | sol 会话普遍变短（待决定） | 11-10 第 5 轮 sol 的单轮尝试：exponential-v2 第 2 次 4.5 分钟、polarization 重跑 4.4 分钟、trajectory 重跑 3.5 分钟，均为正常结束回合、无限流。开发镜像（含 Codex，11-04/06 构建）、模型名、推理强度 max、提示与 11-09 的 2 小时会话完全相同；每次请求的推理 token 约为长会话的 1/5，且与当天上游 429 限流同时段，疑为服务端在高负载下降低了实际推理量。按协议这些是有效尝试，照常评分；是否在上游负载低时另行重跑由用户决定 | 本文件 |
+| GitHub 镜像 | 用户决定（11-10）：整个仓库连同历史推送到 GitHub 私有仓库 github.com/IceySakura/FrontierAM（分支 protocol-2h、main），包含 tasks/conic 下的私有测试数据与 nexus/ 内部代码（已向用户说明风险）。推送用专用密钥 ~/.ssh/id_ed25519_frontieram（SSH 别名 github-frontieram，远程名 github）；nexus/ 文档里的 30 个 LFS 文件在本仓库从未有对象，只推了指针 | 本文件 |
+| 本机目录整理 | 11-10：运行数据收进 var/（var/stores、var/raw、var/outputs、var/dist），代码与文档引用全部更新，库内记录中的绝对路径同步改写；隐藏的 .runtime*/ 暂留原处（子代理在用），之后可再收进 var/runtime/ | README.md |
