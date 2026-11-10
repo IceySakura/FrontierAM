@@ -266,7 +266,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     body = (f'<h1>{html.escape(site["title"])}</h1><p class="lead">{html.escape(site["subtitle"])}</p>{md(site["intro_md"])}'
             f'<h2>题目</h2><div class="cards">{cards}</div>'
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
-            '<p>空格表示该模型没有在这道题的该版本上尝试；“—”表示尚未评测。点击题目查看评测依据、baseline 和各模型的做法。</p>'
+            '<p>只列每道题的最新版本和最新协议（v6.2）下的成绩。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。点击题目查看评测依据、baseline 和各模型的做法。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>')
     return page(site['title'], body)
 
