@@ -1,0 +1,165 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>从一条 MCMC 轨迹估计长期协方差</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script><script defer src="../assets/katex/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[
+{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false},
+{left:"$",right:"$",display:false}],throwOnError:false});});</script></head><body>
+<header><a class="brand" href="../index.html">FrontierAM 任务看板</a>
+<nav><a href="../index.html">总榜</a><a href="../protocol.html">评测协议</a></nav></header>
+<main><h1>从一条 MCMC 轨迹估计长期协方差 </h1><p class="lead">统计计算 · 只给一条马尔可夫链轨迹，估计样本均值的长期协方差矩阵（MCMC 标准误的核心），30 种设置平均的白化误差越小越好。</p>
+<h2>题目背景</h2>
+<p>MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标准误；需要估计“长期协方差” \(\Sigma = \lim n\,\mathrm{Cov}(\bar X_n)\)，它决定了有效样本量和收敛诊断。经典方法有批均值（BM/OBM）、谱方差估计和基于 VAR 模型的拟合；难点在于不同采样器（随机游走 Metropolis、NUTS、Pólya–Gamma Gibbs、有限状态链）的自相关结构差别很大，而且轨迹长度从几千到几万步不等。</p>
+<details><summary>公开题面原文（给模型的版本）</summary><div class="md"><h1>题目名称</h1>
+<p>从一条采样轨迹估计长期协方差</p>
+<h1>问题描述</h1>
+<p>研究者运行一次马尔可夫链蒙特卡洛采样，得到按时间排列的向量 $x_1,\ldots,x_M$，用它们的平均值估计多个量。若在同样条件下独立重跑，某些分量的平均值可能波动较大，两个分量的平均值也可能一起偏高。你的程序每次只得到其中一次运行的轨迹。</p>
+<h1>算法目标</h1>
+<p>给定这条轨迹，返回 $d\times d$ 的长期协方差估计 $H$。目标量为 $\Sigma=\lim_{n\to\infty}n\,\mathrm{Cov}(\bar X_n)$，其中 $\bar X_n$ 是一次长度为 $n$ 的运行的平均向量。对足够长的轨迹，$H/M$ 估计均值向量的协方差，$\sqrt{H_{jj}/M}$ 估计第 $j$ 个均值的标准误。<strong>交付的矩阵是 $H$。</strong></p>
+<h1>算法约束</h1>
+<p>同一程序处理六种情形。模拟轨迹有线性动态的四维观测和有限状态链的五维观测。真实数据部分对一个贝叶斯回归模型使用三种采样机制，每步给出六维观测。输入坐标可能经过固定于本条轨迹的可逆线性变换和平移。程序可反复读取本条轨迹、自选算法、拟合参数或使用现成数值库。估计必须来自本例输入与通用算法，禁止查表返回特定模型的参考答案、识别测试文件后套用答案、追加采样或跨调用传递数据。</p>
+<p>离线 Linux ARM64，每次调用独享一个逻辑 CPU，单线程，2 GiB 内存，无交换空间，墙钟上限 30 秒。时间包括程序启动、读取输入、计算和写完输出。需要随机性时用固定环境变量 <code>SEED=1</code>。可用 Python 3、NumPy、SciPy、R 或 C/C++，其他依赖随源码提供并能离线构建。</p>
+<h1>交付要求</h1>
+<p>在 <code>/workspace/submission/</code> 提交源码、可执行的 <code>run.sh</code> 和说明依赖、来源及运行方法的 <code>README.md</code>。需要构建时提供无参数的 <code>build.sh</code>，在评测前用相同 CPU 和内存配额构建一次，限 300 秒。每例启动全新进程，入口为</p>
+<pre><code class="language-sh">./run.sh /absolute/input/input.npy /absolute/output/pred.npy
+</code></pre>
+<p>输入和输出都是单个 NumPy .npy 数组，C 顺序、小端 float64、无 pickle。输入形状为 $(M,d)$，行序为采样时间，列序为本例的分量顺序。输入中没有情形标签或其他轨迹。请按相同列序写出形状为 $(d,d)$ 的有限、对称、半正定矩阵，正常退出。零特征值合法。</p>
+<h1>评测指标</h1>
+<p>评测方持有正定的参考矩阵 $S$。模拟情形的 $S$ 可从生成机制求出，真实数据情形的 $S$ 用独立长链估计。每次有效输出的误差为</p>
+<p>$$e=\left\|S^{-1/2}(H-S)S^{-1/2}\right\|_F.$$</p>
+<p>越小越好。数值验收取 $s=\max(1,\|H\|_F)$，要求 $\|H-H^\mathsf T\|_F\le10^{-10}s$，且对称化后最小特征值至少为 $-10^{-10}s$。评分前对允许的微小非对称取平均，并把容差内的负特征值置零。超时、超内存、非零退出、缺失或非法输出的该例按提交零矩阵计误差 $\sqrt d$，保留在平均数内。整份构建失败得 0 分。</p>
+<p>模拟三种情形各取 5,000、10,000、20,000、40,000、80,000 步，真实数据三种情形各取 2,500、5,000、10,000、20,000、40,000 步。每档先对 1,000 条轨迹分别算误差后取算术平均，再对全部 30 档等权平均，得总误差 $L$。模拟与真实数据各占 50%。每条母链的五个前缀分开调用。耗时只作限额与诊断。</p>
+<p>基础参照和强参照在相同正式输入上的总误差分别为 $a&gt;b&gt;0$。当 $L\ge a$ 得 0 分；当 $b\le L&lt;a$ 得 $5(a-L)/(a-b)$ 分；当 $0\le L&lt;b$ 得 $10-5L/b$ 分。对每份提交只换算一次，满分 10 分。</p>
+<h1>开发材料与数据入口</h1>
+<p>下载公开开发包。内含两条独立生成的练习轨迹、各自的参考矩阵和逐例误差检查器。将包解压，令 <code>DEV</code> 指向含 <code>check.py</code> 的目录，在自己的提交目录运行</p>
+<pre><code class="language-sh">./run.sh &quot;$DEV/01/input.npy" "$PWD/pred.npy&quot;
+python3 &quot;$DEV/check.py" "$DEV/01/reference.npy&quot; &quot;$PWD/pred.npy&quot;
+</code></pre>
+<p>对目录 <code>02</code> 可使用相同命令。自检报告本例的原始误差。正式运行时只提供当前的 <code>input.npy</code> 和输出路径。</p></div></details>
+<h2>评测依据</h2>
+<ul>
+<li><strong>输入</strong>：一条 \(M \times d\) 的轨迹（\(d\) = 4、5 或 6），坐标可能经过本条轨迹固定的可逆线性变换和平移。</li>
+<li><strong>正式集</strong>：6 种情形（3 种模拟、3 种真实数据采样器）× 5 种长度 = 30 档，每档 1,000 条母链；全量 3 万个输入。本机默认评测固定的 10% 分层子集（每档前 100 条母链，共 3,000 个输入），出题方的封存 agent 在同一子集上复评一致。</li>
+<li><strong>资源</strong>：每例单核、2 GiB、墙钟 30 秒（含启动）。</li>
+<li><strong>原始指标</strong>：每例白化误差 \(e = \|S^{-1/2}(H-S)S^{-1/2}\|_F\)；每档平均后 30 档等权平均得 \(L\)。失败的例按零矩阵记误差。</li>
+<li><strong>换算</strong>：设 OBM 的 \(L\) 为 \(a\)、拟合 VAR(1) 为 \(b\)。\(L \ge a\) 记 0 分；\(b \le L &lt; a\) 记 \(50(a-L)/(a-b)\)；\(L &lt; b\) 记 \(100-50L/b\)。</li>
+</ul>
+<h2>Baseline：做法与本机实测结果</h2>
+<table>
+<thead>
+<tr>
+<th>参照</th>
+<th>方法</th>
+<th>子集上的 \(L\)</th>
+<th>记分</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>弱参照</td>
+<td>重叠批均值（OBM，R 包 mcmcse）</td>
+<td>0.350317</td>
+<td>0</td>
+</tr>
+<tr>
+<td>强参照</td>
+<td>拟合 VAR(1) 模型的长期协方差</td>
+<td>0.230050</td>
+<td>50</td>
+</tr>
+</tbody>
+</table>
+<p>本机评测核实测，与出题方在同一子集上的记录相差不到 2e-15。</p>
+<h2>模型成绩</h2>
+<h3>协议 v6.2 单轮（2026-11-09 开发，11-10 评分，同一 3,000 例子集）</h3>
+<table><tr><th>模型</th><th>协议</th><th>原始指标</th><th>换算</th><th class="num">得分（满分 100）</th></tr><tr><td><a href="#claude-opus-5-5-v6.2-单轮">Claude Opus 5.5</a></td><td>v6.2 单轮</td><td>\(L = 0.221264\)，3000/3000 合格（单例最多 1.66 秒）</td><td>\(100 - 50\,L/\text{强}\)</td><td class="num score s-high">51.9 <span class="tag warn">待复核</span></td></tr></table>
+
+<h2>各模型的做法</h2>
+<h3 id="claude-opus-5-5-v6.2-单轮">Claude Opus 5.5（v6.2 单轮） <span class="score s-high">51.9</span> <span class="tag warn">待复核</span></h3>
+<div class="note"><p>比强参照（拟合 VAR(1)，0.230050）略好，比 sol 的 v6.1 提交（0.176933，61.5 分）差。</p></div>
+<details><summary>模型自己写的说明（提交中的 README.md）</summary><div class="md"><h1>Long-run covariance from one trajectory</h1>
+<p><code>./run.sh INPUT.npy OUTPUT.npy</code> reads one <code>(M, d)</code> float64 trajectory and writes the
+<code>(d, d)</code> estimate <code>H</code> of <code>Sigma = lim n Cov(mean_n)</code>: symmetric, PSD, <code>&lt;f8</code>, C order.</p>
+<h2>Dependencies</h2>
+<ul>
+<li>Python 3 with NumPy. Tested with Python 3.11 and NumPy 1.26.</li>
+<li>No other packages and no build step, so there is no <code>build.sh</code>.</li>
+<li>Runs single-threaded: <code>run.sh</code> sets the BLAS thread variables to 1.</li>
+<li>Randomness comes only from <code>numpy.random.default_rng(SEED)</code>. <code>SEED</code> defaults to 1, so
+  results are deterministic.</li>
+<li>All code is original and lives in <code>lrcov.py</code>.</li>
+</ul>
+<h2>Method</h2>
+<p>Every step is affine-equivariant (<code>x -&gt; A x + b</code> gives <code>H -&gt; A H A^T</code>). The program never uses
+a model label: it chooses between two general model classes using only the data.</p>
+<p><strong>0. Whitening.</strong> Centre the trajectory and whiten it with the symmetric inverse square root of
+its sample covariance. This keeps the numerics well conditioned whatever coordinates the input
+arrives in.</p>
+<p><strong>A. Finite-state branch.</strong> Taken only when all of the following hold:</p>
+<ul>
+<li>the trajectory visits few distinct points: <code>K &lt;= 200</code> and <code>M &gt;= 20 K</code>;</li>
+<li>every point is re-entered many times. This rules out continuous chains whose repeated rows
+  come from Metropolis rejections;</li>
+<li>a parametric-bootstrap G test does not reject a first-order Markov chain against a
+  second-order one. The test uses 20 chains simulated from the fitted transition matrix and
+  rejects at z &gt; 4. Lumped or hidden-state chains are rejected here.</li>
+</ul>
+<p>When it is taken:</p>
+<ol>
+<li>Put a Dirichlet posterior on the rows of the transition matrix, restricted to the observed
+   transition support.</li>
+<li>For each draw <code>P</code>, compute the exact long-run covariance:
+   <code>F_c^T (D Z + Z^T D - D) F_c</code>, where
+   - <code>Z = (I - P + 1 pi^T)^{-1}</code> is the fundamental matrix,
+   - <code>D = diag(pi)</code>,
+   - <code>F_c</code> holds the centred state values.</li>
+<li>Combine the draws with the Bayes step below.</li>
+</ol>
+<p><strong>B. VAR branch</strong> (everything else):</p>
+<ol>
+<li>Fit a VAR(p) by least squares. The order <code>p</code> is chosen by AIC with <code>p &lt;= min(40, M/(10 d))</code>.</li>
+<li>Draw from the Jeffreys-prior posterior: <code>Sigma_u ~ inverse Wishart</code>, then
+   <code>B | Sigma_u ~ matrix normal</code> around the OLS fit.</li>
+<li>When <code>p = 1</code>, first move the OLS centre by half of the Pope (1990) first-order bias
+   correction (persistent chains are otherwise under-estimated). The correction is shrunk if
+   needed to keep the fit stationary.</li>
+<li>Drop non-stationary draws (companion spectral radius at least 0.9995).</li>
+<li>Map each kept draw to <code>(I - sum A_j)^{-1} Sigma_u (I - sum A_j)^{-T}</code>.</li>
+</ol>
+<p><strong>Bayes step (both branches).</strong> Return the <code>H</code> that minimises the posterior mean of the
+evaluation loss <code>|| S^{-1/2} (H - S) S^{-1/2} ||_F</code> over the draws <code>S_s</code>.</p>
+<ul>
+<li>It is computed by iteratively reweighted least squares. Each step solves the <code>d^2 x d^2</code>
+  system <code>sum_s w_s P_s H P_s = sum_s w_s P_s</code>, where <code>P_s = S_s^{-1}</code> and
+  <code>w_s = 1 / loss_s</code>.</li>
+<li>The effect is to shrink the estimate exactly where it is uncertain. This matters most for
+  slowly mixing short chains, where the plug-in estimate is heavy-tailed. In development tests
+  it cut the mean error by up to 40% on such chains, and it never made things worse elsewhere.</li>
+</ul>
+<p><strong>Back-transform.</strong> Map <code>H</code> back to the input coordinates, then symmetrise and clip its
+eigenvalues at 0.</p>
+<p>If anything fails, the program falls back to multivariate batch means with batch size
+<code>floor(sqrt(M))</code>. If even that fails, it writes the zero matrix.</p>
+<p>The code also keeps some switches that are turned off because they did not help in development:
+a multi-resolution variant (VAR on m-block means with a Lepski choice of m) and alternative
+order rules (<code>P_RULE</code>).</p>
+<p>Background:</p>
+<ul>
+<li>VAR spectral estimation of long-run covariances: den Haan and Levin (1997), "VARHAC".</li>
+<li>Bias of OLS VAR(1) estimates: Nicholls and Pope (1988) and Pope (1990).</li>
+<li>Normal–inverse-Wishart / Jeffreys posterior for VARs: standard Bayesian VAR results.</li>
+<li>Long-run covariance of a finite Markov chain via the fundamental matrix: Kemeny and Snell.</li>
+<li>Testing Markov order with the G statistic: Anderson and Goodman (1957); here it is calibrated
+  by parametric bootstrap.</li>
+<li>Bayes estimation under the loss <code>tr((S^{-1}H - I)^2)</code>: Haff (1980) and Olkin and Selliah
+  (1977).</li>
+</ul>
+<h2>Running</h2>
+<pre><code class="language-sh">./run.sh /abs/input.npy /abs/pred.npy
+python3 check.py reference.npy /abs/pred.npy   # optional self-check with the dev pack
+</code></pre>
+<p>Run time is usually 0.3–3 s for <code>M &lt;= 80000</code> and <code>d &lt;= 6</code>. Peak memory is a few hundred MB.</p></div></details>
+<h2>观察与说明</h2>
+<ul>
+<li>全量 3 万例的评测在单核上约需 5 小时，需要分片到多个评测核；是否以全量作为正式规模仍待确定。</li>
+</ul></main><footer>FrontierAM · 构建于 2026-11-10 15:42 CST · 代码版本 6519454 · 所有分数为本机实测；隐藏测试数据不在本站公开</footer></body></html>

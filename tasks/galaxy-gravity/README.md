@@ -2,7 +2,7 @@
 
 粒子数加倍到 131,072、每次调用仍是 5 CPU 秒，使精确的直接求和无法在预算内完成，比较近似算法的精度。
 
-看板（办公网）：http://9.135.91.91:18765/tasks/galaxy-gravity-v2.html
+看板页面：[`dashboard/site/tasks/galaxy-gravity-v2.html`](../../dashboard/site/tasks/galaxy-gravity-v2.html)（克隆后用浏览器直接打开）
 
 ## 目录结构
 

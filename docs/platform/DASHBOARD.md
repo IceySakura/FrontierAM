@@ -28,3 +28,7 @@
 
 - 只在公司办公网内访问，不做公网发布。
 - 只展示每道题的最新版本（conic 修正版题包、exponential-v2、galaxy-gravity-v2、species-tree-v2、polarization、trajectory）和最新协议 v6.2 下的成绩；旧版本题目页面（galaxy-gravity 65,536 粒子版、species-tree 101 物种版）和 v6/v6.1 的成绩已从看板移除，历史成绩保留在 `results/LEADERBOARD.md` 和 git 历史中。
+
+## 仓库内的静态副本
+
+`scripts/site/build_dashboard.py` 默认生成到仓库的 `dashboard/site/`（随仓库提交，无法访问办公网的协作者克隆后用浏览器直接打开 `dashboard/site/index.html`）；办公网服务器的定时任务另外生成到 `/srv/frontieram-dashboard/`。成绩更新后两处都要重新生成。

@@ -2,7 +2,7 @@
 
 FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 AI 编程模型在断网环境里限时（2 小时）从零写出求解程序，再在隐藏测试集上用题目自带的评测器打分，并与在同一台机器上重测的人类参照实现（baseline）比较。
 
-看板（办公网）：http://9.135.91.91:18765/
+看板：[`dashboard/site/index.html`](dashboard/site/index.html)，克隆仓库后用浏览器直接打开（静态网页，不需要服务器；公司内网另有在线版 http://9.135.91.91:18765/）。
 
 完整仓库（含私有评测集）在 git.woa.com；GitHub 上的是不含私有评测集的镜像（`scripts/ops/sync_github.sh`）。
 

@@ -2,7 +2,7 @@
 
 只给一条马尔可夫链轨迹，估计样本均值的长期协方差矩阵（MCMC 标准误的核心），30 种设置平均的白化误差越小越好。
 
-看板（办公网）：http://9.135.91.91:18765/tasks/trajectory-covariance.html
+看板页面：[`dashboard/site/tasks/trajectory-covariance.html`](../../dashboard/site/tasks/trajectory-covariance.html)（克隆后用浏览器直接打开）
 
 ## 目录结构
 

@@ -5,7 +5,7 @@ Sources: dashboard/site.json and tasks/*/meta.json (curated text and published r
 aggregate breakdowns computed from result files. Nothing from held-out inputs, truths or seeds is read into a page;
 breakdowns are per group or family only.
 
-Usage: build_dashboard.py [--out var/dist/dashboard]
+Usage: build_dashboard.py [--out dashboard/site]   (the office-network server builds into /srv/frontieram-dashboard)
 """
 
 import argparse
@@ -284,7 +284,7 @@ FOOTER = ''
 def main():
     global FOOTER
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--out', type=Path, default=ROOT / 'var/dist/dashboard')
+    parser.add_argument('--out', type=Path, default=ROOT / 'dashboard/site')
     args = parser.parse_args()
     commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     FOOTER = (f'FrontierAM · 构建于 {datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M %Z")} · 代码版本 {commit} · '

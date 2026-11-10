@@ -2,7 +2,7 @@
 
 对大型稀疏对称半正定矩阵计算 \(e^{-tL}b_0 + t\varphi_1(-tL)b_1\)，在给定精度下越快越好；参照是 7 个已发表方法逐例取最快者。
 
-看板（办公网）：http://9.135.91.91:18765/tasks/exponential-v2.html
+看板页面：[`dashboard/site/tasks/exponential-v2.html`](../../dashboard/site/tasks/exponential-v2.html)（克隆后用浏览器直接打开）
 
 ## 目录结构
 

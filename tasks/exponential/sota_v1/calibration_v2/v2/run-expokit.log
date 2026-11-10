@@ -1,6 +1,0 @@
-expokit 0.0003 (True, {'accuracy_failures': [], 'resource_failures': ['syn_geometric_b_p4_k16', 'syn_geometric_b_p7_k16', 'syn_geometric_b_p10_k16'], 'max_scaled_error': 0.006760070793288198})
-expokit 0.0001 (False, {'accuracy_failures': ['syn_geometric_b_p10_k16'], 'resource_failures': ['syn_geometric_b_p4_k16', 'syn_geometric_b_p7_k16'], 'max_scaled_error': 0.006760070778945667})
-expokit 3e-05 (False, {'accuracy_failures': ['syn_geometric_b_p10_k1', 'syn_geometric_b_p10_k16'], 'resource_failures': ['syn_geometric_b_p4_k16', 'syn_geometric_b_p7_k16'], 'max_scaled_error': 0.006760070802849886})
-expokit 1e-05 (False, {'accuracy_failures': ['syn_geometric_b_p10_k1', 'syn_geometric_b_p10_k16'], 'resource_failures': ['syn_geometric_b_p4_k16', 'syn_geometric_b_p7_k16'], 'max_scaled_error': 0.006760070827778573})
-expokit 3e-06 (False, {'accuracy_failures': ['syn_geometric_b_p10_k1', 'syn_geometric_b_p10_k16'], 'resource_failures': ['syn_geometric_p10_k16', 'syn_geometric_b_p4_k16', 'syn_geometric_b_p7_k16'], 'max_scaled_error': 0.006760070828803039})
-expokit 1e-06 (False, {'accuracy_failures': ['syn_diffusion3d_p10_k16', 'syn_geometric_p10_k16', 'syn_geometric_b_p10_k16'], 'resource_failures': ['syn_geometric_b_p4_k16', 'syn_geometric_b_p7_k16'], 'max_scaled_error': 0.01434421518174178})

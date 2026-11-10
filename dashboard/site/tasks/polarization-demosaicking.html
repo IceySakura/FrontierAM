@@ -1,0 +1,190 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>偏振马赛克图像重建</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script><script defer src="../assets/katex/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[
+{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false},
+{left:"$",right:"$",display:false}],throwOnError:false});});</script></head><body>
+<header><a class="brand" href="../index.html">FrontierAM 任务看板</a>
+<nav><a href="../index.html">总榜</a><a href="../protocol.html">评测协议</a></nav></header>
+<main><h1>偏振马赛克图像重建 </h1><p class="lead">计算成像 · 从一张 1024×1024 的偏振马赛克中重建 0°/45°/90°/135° 四幅完整图像，每景 1 秒，RMSE 越小越好。</p>
+<h2>题目背景</h2>
+<p>偏振相机在每个像素前放一个微型偏振片，相邻 2×2 像素分别测 4 个偏振方向，所以每个方向只直接测到 1/4 的像素，其余要插值重建（去马赛克）。偏振信息用于识别材质、去除反光、工业检测和三维形状恢复，重建误差会直接放大到偏振度和偏振角的计算里。经典做法是逐方向双线性插值；更先进的方法（如 LEIC、EARI）利用不同方向之间的相关性和边缘信息。</p>
+<details><summary>公开题面原文（给模型的版本）</summary><div class="md"><h1>题目名称</h1>
+<p>从一张偏振马赛克重建四幅强度图</p>
+<h1>问题描述</h1>
+<p>相机在每个像素上只测量一个偏振方向的光强。给定一次曝光得到的单通道图像 <code>raw</code>，请估计同一画面在 0°、45°、90°、135° 下的四幅完整图像。滤片从图像左上角开始，按下表每两行、两列重复排列。行列从 0 开始。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;">偶数列</th>
+<th style="text-align: right;">奇数列</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>偶数行</td>
+<td style="text-align: right;">90°</td>
+<td style="text-align: right;">45°</td>
+</tr>
+<tr>
+<td>奇数行</td>
+<td style="text-align: right;">135°</td>
+<td style="text-align: right;">0°</td>
+</tr>
+</tbody>
+</table>
+<p>正式输入是形状为 <code>(1024, 1024)</code> 的 NumPy <code>uint8</code> 数组，读数在 0 至 255 之间。四幅目标图与输入坐标对齐。例如在偶数行、偶数列，输入给出了该位置的 90° 强度，其余三个方向需要估计。</p>
+<h1>算法目标</h1>
+<p>用同一个程序处理所有场景，使四幅重建图在<strong>完整画面</strong>上的强度误差尽可能小。一个像素的四个方向可以有不同亮度。程序可以使用整幅输入，自行决定怎样利用相邻像素以及不同方向的观测。</p>
+<h1>算法约束</h1>
+<p>每个场景在独立进程中离线运行，限 1 个逻辑 CPU、单线程、8 GiB 内存、无交换空间。每景墙钟时间上限为 <strong>1.000 秒</strong>，独立计时。计时从启动该景运行进程前开始，到完整写出结果且进程正常退出为止，包括 Python 启动、模块导入、输入读取、计算及输出写入。容器准备、一次性构建、评测端验分另计。平台提供 Linux ARM64、Python 3.11、NumPy 1.26.4 和 SciPy 1.12.0。</p>
+<p>开发时可查阅和复用公开方法。运行时只能使用本景马赛克和通用于各景的源码、参数。禁止使用正式场景的完整参考图或其衍生数据进行训练、调参、识别场景查表或硬编码答案。每景使用干净的工作目录，禁止跨景保存状态。若使用随机算法，统一以环境变量 <code>SEED=1</code> 为起点。</p>
+<h1>交付要求</h1>
+<p>在 <code>/workspace/submission/</code> 提交 <code>solution.py</code> 和 <code>README.md</code>。说明文件写明方法、依赖、第三方来源及运行方法。可随附所需源码。需要编译时提供可执行的无参数 <code>build.sh</code>，在相同 CPU 和内存配额下离线构建一次，限 300 秒。评测方逐景调用以下 Python 函数。</p>
+<pre><code class="language-python">def reconstruct(raw):
+    ...
+</code></pre>
+<p><code>raw</code> 为只读二维数组。返回一个形状为 <code>(4, H, W)</code> 的 NumPy 数组，类型为 <code>float32</code> 或 <code>float64</code>，所有元素均须有限。<code>pred[0]</code> 至 <code>pred[3]</code> 依次对应 <strong>0°、45°、90°、135°</strong>。输出与输入使用同一强度单位，允许小数。评测方按提交的数值直接评分，超出 0 至 255 的预测也原样计入误差。</p>
+<h1>评测指标</h1>
+<p>每景分别对四个方向计算全图均方根误差（RMSE）。若某方向的输出、参考图分别为 $P$、$R$，则该方向的误差为 $\sqrt{\sum_{i,j}(P_{ij}-R_{ij})^2/(HW)}$。图像四边、四角和已观测的像素都计入。每景先对四个方向的 RMSE 取算术平均，再对固定的 32 个场景等权平均，得到整批误差 $E$。每景评一次，$E$ 越低越好，整批只换算一次分数。</p>
+<p>0 分对应经典方法的表现，5 分对应现有较先进方法的表现，10 分对应零误差的理论最优。两条参照在固定测试集上的整批误差分别记为 $B$、$H_5$，满足 $B&gt;H_5&gt;0$。项目分满分 10，按下表计算。</p>
+<table>
+<thead>
+<tr>
+<th>整批误差</th>
+<th style="text-align: right;">项目分</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$E\ge B$</td>
+<td style="text-align: right;">$0$</td>
+</tr>
+<tr>
+<td>$H_5\le E&lt;B$</td>
+<td style="text-align: right;">$5(B-E)/(B-H_5)$</td>
+</tr>
+<tr>
+<td>$0\le E&lt;H_5$</td>
+<td style="text-align: right;">$10-5E/H_5$</td>
+</tr>
+</tbody>
+</table>
+<p>32 景均须成功。构建失败或任一景出现提交导致的超时、超内存、异常退出、缺失或非法输出，整份计 0 分。由提交导致的失败不重跑。平台故障修复后按原条件恢复。耗时和峰值内存另行记录，同分并列。</p>
+<h1>开发材料与数据入口</h1>
+<p>下载公开开发自检脚本。在题面所在目录运行以下命令，将最后一个参数替换为自己的提交路径。</p>
+<pre><code class="language-sh">python3 public-dev/check.py /path/to/solution.py
+</code></pre>
+<p>脚本的 <code>examples()</code> 生成两组合成马赛克及四方向参考图，尺寸分别是 48×64 和 1024×1024。可用它检查滤片相位、输出形状、通道顺序和全图误差。公开脚本用于检查接口和数值误差。正式时限在评测方逐景启动的独立进程中执行。</p></div></details>
+<h2>评测依据</h2>
+<ul>
+<li><strong>输入</strong>：1024×1024 的 <code>uint8</code> 马赛克，滤片相位固定（偶偶 90°、偶奇 45°、奇偶 135°、奇奇 0°）。</li>
+<li><strong>正式集</strong>：32 个真实场景（30 景普通照明、2 景偏振照明）。</li>
+<li><strong>资源</strong>：每景独立进程，单核、8 GiB、墙钟 1.000 秒（含 Python 启动和导入）。</li>
+<li><strong>有效性</strong>：任一景超时、超内存或输出非法，整份提交记 0 分。</li>
+<li><strong>原始指标</strong>：每景对 4 个方向分别算全图 RMSE 再平均，32 景等权平均。</li>
+<li><strong>换算</strong>：设双线性的误差为 \(B\)、镜像 LEIC 为 \(H_5\)。\(E \ge B\) 记 0 分；\(H_5 \le E &lt; B\) 记 \(50(B-E)/(B-H_5)\)；\(E &lt; H_5\) 记 \(100-50E/H_5\)。</li>
+</ul>
+<h2>Baseline：做法与本机实测结果</h2>
+<table>
+<thead>
+<tr>
+<th>参照</th>
+<th>方法</th>
+<th>整批 RMSE</th>
+<th>记分</th>
+<th>每景最大墙钟</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>弱参照</td>
+<td>逐方向双线性插值</td>
+<td>1.80825</td>
+<td>0</td>
+<td>0.198 秒</td>
+</tr>
+<tr>
+<td>强参照</td>
+<td>LEIC（边缘感知、利用方向间相关），边界做镜像延拓</td>
+<td>1.10992</td>
+<td>50</td>
+<td>0.701 秒</td>
+</tr>
+</tbody>
+</table>
+<p>本机评测核实测，与出题方记录（1.808 / 1.110）一致。</p>
+<h2>模型成绩</h2>
+<h3>协议 v6.2 单轮（2026-11-09 开发，11-10 评分）</h3>
+<table><tr><th>模型</th><th>协议</th><th>原始指标</th><th>换算</th><th class="num">得分（满分 100）</th></tr><tr><td><a href="#claude-opus-5-5-v6.2-单轮">Claude Opus 5.5</a></td><td>v6.2 单轮</td><td>平均 RMSE 0.97877，32/32 景通过（每景最多 0.710 秒）</td><td>\(100 - 50\,L/\text{强}\)</td><td class="num score s-high">55.9 <span class="tag warn">待复核</span></td></tr></table>
+
+<h2>各模型的做法</h2>
+<h3 id="claude-opus-5-5-v6.2-单轮">Claude Opus 5.5（v6.2 单轮） <span class="score s-high">55.9</span> <span class="tag warn">待复核</span></h3>
+<div class="note"><p>频率复用模型：把马赛克写成强度加两个偏振载波，载波用离线学到的 11×11 滤波器按局部结构方向加权解调，再在比值域做边缘感知平滑，只用 NumPy（FFT 卷积）。整批 RMSE 0.97877，比强参照（LEIC，1.10992）低 12%，也比 sol 的 v6.1 提交（1.09499）好。</p>
+<p>第一次评分（11-10 03:53）31/32 景通过，第一个运行的景 1.003 秒超过 1 秒上限，其余 31 景 0.56–0.58 秒。它的耗时只取决于图像尺寸、与内容无关，判为评测环境的首景冷启动（与 sol 11-06 第一次评分相同），第一次记为未测；07:14 重评 32/32 通过，第一景 0.710 秒，仍是最慢的一景，说明首景偏慢是系统性的，已建议评分器加不计时的预热运行。</p></div>
+<details><summary>模型自己写的说明（提交中的 README.md）</summary><div class="md"><h1>Four-angle polarization demosaicking</h1>
+<p><code>solution.py</code> defines <code>reconstruct(raw)</code>: given the 2-D <code>uint8</code> mosaic with the 2×2 tile
+<code>[90°, 45°] / [135°, 0°]</code> (rows/cols counted from 0), it returns a <code>float32</code> array of shape
+<code>(4, H, W)</code> with the 0°, 45°, 90° and 135° images, clipped to [0, 255].</p>
+<h2>Method</h2>
+<ol>
+<li><strong>Frequency-multiplexing model.</strong> With <code>X = (-1)^col</code>, <code>Y = (-1)^row</code>, every mosaic
+   value is exactly <code>r = L − X·C1 − Y·C2</code>, where <code>L = S0/2</code>, <code>C1 = (S1+S2)/4</code>,
+   <code>C2 = (S1−S2)/4</code>. The polarization signals sit on the (π,0) and (0,π) carriers, and
+   for ideal polarizers the (π,π) band holds only intensity (see step 4). Once C1 and C2
+   are estimated,
+   <code>L = r + X·C1 + Y·C2</code> and
+   <code>I0 = L+C1+C2, I45 = L+C1−C2, I90 = L−C1−C2, I135 = L−C1+C2</code>.
+   This reproduces every observed pixel exactly and keeps the full-resolution intensity
+   detail that is in <code>r</code>.</li>
+<li><strong>Steered learned filters.</strong> C1 and C2 come from the demodulated mosaics <code>−X·r</code> and
+   <code>−Y·r</code>. Each is filtered with five learned 11×11 kernels. Their responses are combined
+   per pixel with weights <code>1, cosφ, sinφ, cos2φ, sin2φ</code>, where φ = 2θ comes from a
+   smoothed structure tensor of same-phase gradients. Low-energy regions get small
+   weights through a threshold. The kernels were fitted offline by least squares on
+   synthetic polarization scenes built from SciPy's bundled <code>face</code>/<code>ascent</code> test images
+   (with random piecewise-smooth DoLP/AoP fields and sensor noise) and on generated
+   scenes like the public examples. Flips and transposes were used for augmentation.
+   No evaluation data was used. The coefficients are embedded in <code>solution.py</code>
+   (<code>kernels.npy</code> is the same array).</li>
+<li><strong>Edge-aware ratio-domain blend.</strong> Within a surface the polarization ratio C/L varies
+   more slowly than C itself. Each chroma becomes <code>0.4·C + 0.6·L·smooth(w·C·L) /
+   (smooth(w·L²) + 1)</code>, using a separable [1,4,6,4,1] window. The weight is
+   <code>w = 1/(1 + g²/36)</code>, where g is the same-phase gradient across the carrier direction
+   (horizontal for C1, vertical for C2). This down-weights the pixels next to edges,
+   which is where intensity leaks into the chroma estimate.</li>
+<li><strong>(π,π) component.</strong> <code>D = (I0+I90−I45−I135)/4</code> is zero for ideal polarizers. It can
+   still absorb smooth gain differences between the angle channels. It is estimated as
+   a strongly smoothed ratio <code>D/L</code> (à-trous [1,4,6,4,1] passes with dilations 1, 2, 4, 8)
+   of the (π,π)-demodulated mosaic, and is included in the output. The observed pixels
+   are still reproduced exactly.</li>
+<li>Mirror padding keeps the 2×2 phase at the borders. The filters are applied with
+   <code>numpy.fft</code> on a fast transform size (1040 for 1024² inputs). Inputs smaller than
+   12×12 use a nearest-sample fallback.</li>
+</ol>
+<h2>Dependencies and running</h2>
+<ul>
+<li>Python 3.11 and NumPy only. There is no SciPy import at run time, which keeps
+  start-up fast. Nothing needs compiling, so there is no <code>build.sh</code>.</li>
+<li>Files: <code>solution.py</code> (self-contained: the learned coefficients, shape <code>(2, 5, 11, 11)</code>, are
+  embedded in it as base64). <code>kernels.npy</code> holds the same coefficients for reference only.</li>
+<li>Usage: <code>from solution import reconstruct; pred = reconstruct(raw)</code>, or
+  <code>python3 public-dev/check.py submission/solution.py</code>.</li>
+<li>The method is deterministic, single-threaded and stateless. A full 1024×1024 scene
+  runs end to end (interpreter start, imports, compute) in about 0.45 s on the
+  development machine.</li>
+</ul>
+<h2>Third-party sources</h2>
+<p>The code is original. The modulation analysis follows the standard frequency-domain
+view of CFA/DoFP demosaicking (Alleysson et al.; Dubois). Steering learned filters by
+local orientation is in the spirit of RAISR (Romano et al.). The ratio smoothing is
+related to residual and guided interpolation. The training images are the public SciPy
+sample images <code>scipy.misc.face</code> and <code>scipy.misc.ascent</code>.</p></div></details>
+<h2>观察与说明</h2>
+<ul>
+<li>题目给 agent 的开发材料里只有两组用公式合成的样例，没有真实场景。我们找到并实测了 Wen 等 2019 的公开数据集（105 景，裁成 1024×1024 后耗时与正式输入一致，LEIC 在 100/105 景上优于双线性），作为公开反馈集，待出题人确认。</li>
+<li>测试场景经过按参照表现的筛选（去掉了双线性比 LEIC 更准的场景），这会放大两条参照之间的差距，已请出题人确认。</li>
+<li>评分时第一个运行的景总是比其余各景慢 0.14–0.5 秒，在 1 秒上限下可能导致整份提交失败；原因在排查中。</li>
+</ul></main><footer>FrontierAM · 构建于 2026-11-10 15:42 CST · 代码版本 6519454 · 所有分数为本机实测；隐藏测试数据不在本站公开</footer></body></html>

@@ -1,0 +1,48 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>评测协议</title>
+<link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/katex/katex.min.css">
+<script defer src="assets/katex/katex.min.js"></script><script defer src="assets/katex/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[
+{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false},
+{left:"$",right:"$",display:false}],throwOnError:false});});</script></head><body>
+<header><a class="brand" href="index.html">FrontierAM 任务看板</a>
+<nav><a href="index.html">总榜</a><a href="protocol.html">评测协议</a></nav></header>
+<main><h2>每次尝试的条件</h2>
+<ul>
+<li><strong>一次尝试</strong>：每个模型在每道题、每种设置下只开发一次，不挑选最好的一次。</li>
+<li><strong>独立开发环境</strong>：一个物理核、4 GiB 内存、断网；模型通过宿主机上的代理访问，凭据从不进入容器。模型使用各自原生的编程助手（Claude Code、Codex 等），推理强度和输出长度设为已验证的最高档。</li>
+<li><strong>墙钟预算</strong>：默认 7200 秒，包括模型请求、工具执行，以及（v6.2 迭代设置下的）公开集评测时间。到时由宿主机暂停容器并冻结 <code>/workspace/submission</code>。</li>
+<li><strong>只有冻结的源码进入评测</strong>，开发过程中的任何结果都不计分。</li>
+</ul>
+<h2>评测</h2>
+<ul>
+<li>在专用的评测核上运行，每个评测核独占一个 L3 缓存域里的一个物理核，有独立的 Docker 守护进程；评测期间不在同一缓存域运行其他计时任务。</li>
+<li>使用题目包自带的正式评测器（只做可移植性修改，例如 ARM64 到 amd64），隐藏测试集只在评测端可见。</li>
+<li>参照实现在同一台机器、同一条件下重新实测，作为 50 分的锚点；不使用其他机器上的历史数字。</li>
+</ul>
+<h2>协议版本</h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v6</td>
+<td>原生编程助手、最高推理档、断网开发</td>
+</tr>
+<tr>
+<td>v6.1</td>
+<td>在 v6 基础上告诉模型：开发核计时有噪声（比评测慢 10–30%），只适合做相对比较；计时覆盖整个进程</td>
+</tr>
+<tr>
+<td>v6.2</td>
+<td>在 v6.1 基础上，题面说明最终分数考虑哪些方面（不给映射公式）；分两种设置，总时长都是 2 小时：<strong>单轮</strong>（开发中没有反馈）和<strong>迭代</strong>（可随时做测试提交，在公开集上用正式评测器评测，得到逐例结果、与 baseline 的对比和公开集上的百分制分数；每次测试最多 15 分钟，到时返回已测完的用例，其余标为未测；题面写明 baseline 速度的解法一次全量公开评测的典型时长，conic 约 6 分钟、exponential-v2 约 4 分钟）。公开集评测时间计入预算。迭代设置以“正式提交”的版本为准；没有正式提交时，以时间耗尽时工作区里的最后一版为准</td>
+</tr>
+</tbody>
+</table>
+<p>不同协议的成绩不混排。看板只展示每道题的最新版本和最新协议（v6.2）下的成绩，历史成绩见仓库中的 <code>results/LEADERBOARD.md</code>。</p>
+<h2>本机环境</h2>
+<p>AMD EPYC 7K62 虚拟机，Linux x86_64；4 个评测核分别位于 4 个 L3 缓存域。</p></main><footer>FrontierAM · 构建于 2026-11-10 15:42 CST · 代码版本 6519454 · 所有分数为本机实测；隐藏测试数据不在本站公开</footer></body></html>

@@ -106,7 +106,7 @@ def attempt_dir(r: dict) -> str:
 def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: list[str]) -> str:
     loc, cur = meta['locations'], meta['current_version']
     lines = [f'# {meta["title"]}', '', meta['summary'], '',
-             f'看板（办公网）：http://9.135.91.91:18765/tasks/{meta["id"]}.html', '',
+             f'看板页面：[`dashboard/site/tasks/{meta["id"]}.html`](../../dashboard/site/tasks/{meta["id"]}.html)（克隆后用浏览器直接打开）', '',
              '## 目录结构', '',
              '| 目录 | 内容 |', '| --- | --- |',
              f'| `versions/` | 题目的各个版本；当前版本 `{cur}/`，题面 `versions/{cur}/statement.md` |',

@@ -1,0 +1,226 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>从短基因的估计树推断物种树（250 个物种，FrontierAM 重建版）</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script><script defer src="../assets/katex/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[
+{left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false},
+{left:"$",right:"$",display:false}],throwOnError:false});});</script></head><body>
+<header><a class="brand" href="../index.html">FrontierAM 任务看板</a>
+<nav><a href="../index.html">总榜</a><a href="../protocol.html">评测协议</a></nav></header>
+<main><h1>从短基因的估计树推断物种树（250 个物种，FrontierAM 重建版） </h1><p class="lead">计算生物 / 系统发育 · 50 棵互相矛盾的估计基因树、250 个物种、120 秒；数据由我们按标准模拟流程重建并校准到原题的统计量，200 个正式用例。</p>
+<h2>题目背景</h2>
+<p>不同基因的进化历史并不完全相同：祖先种群里的谱系分选不完全（ILS）会让基因树与物种树不一致，短序列又会带来基因树估计误差。系统基因组学的标准做法是“先估计每个基因的树，再汇总成物种树”，代表方法有基于四元组的 ASTRAL、TREE-QMC，以及基于距离的方法。题目考察在大量冲突和噪声下恢复物种树的能力。</p>
+<p><strong>为什么重建</strong>：原版（101 个物种、50 个正式用例）两条参照每例只用 5–7 秒、时限 120 秒，时间预算几乎不起约束；而 50 个用例上一个候选平均误差的标准误折合约 15 分。重建版把物种数扩到 250（强参照每例约 40–70 秒，时间开始真正约束算法），正式用例扩到 200（标准误约减半）。</p>
+<details><summary>公开题面原文（给模型的版本）</summary><div class="md"><h1>题目名称</h1>
+<p>从短基因的估计树推断物种树（250 个物种）</p>
+<h1>问题描述</h1>
+<p>一个实例包含 249 个内群物种和 1 个外群物种。对每个物种，在 50 个不同的基因座各有一段 200 bp 的序列。各基因座有自己的谱系历史，短序列又会引入估计误差，所以即使来自同一批物种，各基因估计出的亲缘关系也可能相互矛盾。</p>
+<p>程序收到一个 UTF-8 文本文件 <code>genes.tre</code>，每行是一个基因座的一棵 Newick 估计树，共 50 行。每棵都是覆盖 250 个叶子的无根二叉树，以分号结束。叶标签视为字符串：<code>0</code> 为外群，<code>1</code> 至 <code>249</code> 是当例的内群标识，独立于亲缘关系分配。冒号后的非负枝长以每个位点的预期替换数为单位，可以为零。内部右括号后、冒号前的数值若存在，是该边的近似贝叶斯支持度，取值在 [0,1]；缺省表示没有报告，不能假设每条边都有数值。输入没有 DNA 序列、真实基因树或生成数据的物种树。</p>
+<p>数据由多物种溯祖模型模拟：先生成物种树，再在其上模拟各基因座的真实谱系，沿谱系模拟序列，最后从序列估计每个基因座的树。</p>
+<h1>算法目标</h1>
+<p>对给定的 50 棵基因树推断一棵无根二叉物种树，使其尽可能恢复真实物种树的内部边。可使用或忽略枝长和支持度，自选推断方法。同一个程序处理全部实例。</p>
+<h1>算法约束</h1>
+<p>运行环境为离线 Linux，提供 POSIX shell、C/C++ 编译器和 Python 3。每例限 1 个逻辑 CPU、单线程、4 GiB 内存、无交换空间、180 秒墙钟。开发时可以查阅和使用公开方法，运行时所需的其他软件须随源码提交并能离线构建。求解只能使用本例输入和与实例无关的代码或参数；禁止按输入指纹查答案、跨例缓存或通信。每例独立启动一次；用到随机性时以环境变量 <code>SEED=1</code> 为固定起点。</p>
+<h1>交付要求</h1>
+<p>在 <code>/workspace/submission/</code> 提交源码、可执行的 <code>run.sh</code> 和说明依赖、来源及运行方法的 <code>README.md</code>。若需要构建，附无参数的可执行 <code>build.sh</code>；在同一 CPU 和内存配额下离线构建一次，时限 300 秒，构建时无评测输入。每例从提交目录启动：</p>
+<pre><code class="language-sh">./run.sh /absolute/input/genes.tre /absolute/output/pred.tre
+</code></pre>
+<p>在第二个路径写入恰好一棵以分号结束的 Newick 树并正常退出；输出的每个叶标签须与输入完全一致且恰好出现一次。最外层可从一个三度内部结点写起，也可在一条边上设临时二度根；消去该根后每个内部结点都须为三度。输出枝长和内部标签可省略。文件路径只作输入输出用途，日志写标准错误。180 秒从启动进程前算到输出文件关闭且程序退出，包括读取、推断及写出。</p>
+<h1>评测指标</h1>
+<p>删去一条内部边会把物种分成两组，称为一个分裂；两侧对调仍是同一个分裂。每棵 250 叶无根二叉树有 247 个这样的分裂。若提交和真树共有 $k$ 个分裂，本例归一化 Robinson–Foulds 误差为 $e=(247-k)/247$。只算拓扑：改写子树顺序、重定书写根或改变输出枝长不影响误差。提交与真树拓扑一致时 $e=0$。</p>
+<p>正式集含 200 棵独立生成的物种树，每棵对应一个输入，每例运行一次。超时、超内存、异常退出、缺失输出或非法树的该例取 $e=1$。整批原始指标 $E$ 是全部 200 个误差的算术平均，越低越好。构建或整份入口失败得 0 分；评测平台故障须恢复后再出总分。另报失败数和耗时，耗时不参与分数或破同分。</p>
+<p>基础参照、强参照在相同隐藏集与预算下实测的平均误差分别记为 $U,W$，满足 $U&gt;W&gt;0$。<strong>平均误差 $U$ 得 0 分，$W$ 得 5 分，零误差得 10 分。</strong> 先求整批 $E$ 再换算：</p>
+<table>
+<thead>
+<tr>
+<th>整批误差</th>
+<th style="text-align: right;">项目分（满分 10）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$E\ge U$</td>
+<td style="text-align: right;">$0$</td>
+</tr>
+<tr>
+<td>$W\le E&lt;U$</td>
+<td style="text-align: right;">$5(U-E)/(U-W)$</td>
+</tr>
+<tr>
+<td>$0\le E&lt;W$</td>
+<td style="text-align: right;">$10-5E/W$</td>
+</tr>
+</tbody>
+</table>
+<h1>开发材料与数据入口</h1>
+<p>公开开发数据在 <code>public-dev/</code>：50 组按同一方式生成的基因树、对应真树和 RF 自检工具。在提交目录运行：</p>
+<pre><code class="language-sh">dev=/workspace/public-dev
+./run.sh &quot;$dev/cases/001/genes.tre" "$PWD/pred.tre&quot;
+python3 &quot;$dev/check_rf.py" "$dev/cases/001/truth.tre&quot; &quot;$PWD/pred.tre&quot;
+</code></pre>
+<p>自检会报告叶数、漏掉的真实分裂数和该例误差。开发集用于选方法和自检；正式集的真树只对评测端可见。</p></div></details>
+<h2>评测依据</h2>
+<ul>
+<li><strong>输入</strong>：50 行 Newick，每行一棵覆盖 250 个叶子的估计基因树（外群 <code>0</code>，内群 <code>1</code>–<code>249</code>），带枝长和 aBayes 支持度。</li>
+<li><strong>数据生成</strong>：SimPhy 1.0.2 在多物种溯祖模型下生成物种树和基因树，AliSim 模拟每个基因 200 bp 的序列，IQ-TREE 2.3.6（快速搜索、GTR+G4、aBayes）估计基因树。参数在 101 个物种上校准到原题封签记录的统计量（真基因树不一致度 0.463、基因树估计误差 0.468），模拟数据上两条参照的误差（0.131 / 0.109）与原题锚点（0.128 / 0.108）几乎一致；250 个物种时调整树高使不一致度仍约 0.46。</li>
+<li><strong>正式集</strong>：200 个用例；<strong>公开开发集</strong>：50 个用例（种子不同）。</li>
+<li><strong>资源</strong>：每例单核、4 GiB、墙钟 120 秒。</li>
+<li><strong>原始指标</strong>：漏掉的真实分裂总数 / (用例数 × 247)，即平均归一化 RF 误差。</li>
+<li><strong>换算</strong>：与原题相同。设不加权 TREE-QMC 的误差为 \(U\)、加权版为 \(W\)：\(E \ge U\) 记 0 分；\(W \le E &lt; U\) 记 \(50(U-E)/(U-W)\)；\(E &lt; W\) 记 \(100-50E/W\)。</li>
+<li><strong>评分器</strong>：原题包的批量评分器和沙箱，只把固定的 101 个物种 / 98 个分裂改为 250 / 247。</li>
+</ul>
+<h2>Baseline：做法与本机实测结果</h2>
+<p>两条参照与原题相同（TREE-QMC 3.0.4 不加权 / 加权），在本机 4 个评测核上分片实测 200 个正式用例：</p>
+<table>
+<thead>
+<tr>
+<th>参照</th>
+<th>方法</th>
+<th>漏掉的分裂（/ 49,400）</th>
+<th>批误差</th>
+<th>记分</th>
+<th>每例耗时（中位 / 最多）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>弱参照</td>
+<td>不加权 TREE-QMC（只用基因树拓扑）</td>
+<td>7,423</td>
+<td>0.150263</td>
+<td>0</td>
+<td>32 / 62.5 秒</td>
+</tr>
+<tr>
+<td>强参照</td>
+<td>加权 TREE-QMC（按分支支持度和长度加权四元组）</td>
+<td>6,569</td>
+<td>0.132976</td>
+<td>50</td>
+<td>48 / 105.5 秒</td>
+</tr>
+</tbody>
+</table>
+<p>每例时限 120 秒，两条参照 200/200 例都在时限内；强参照最慢一例离时限只有 12%。</p>
+<p>公开开发集（50 例，给模型的公开数据）上两条参照的批误差为 0.158462 / 0.141700，公开集略难于私有集，两条参照的差距相近。</p>
+<h2>模型成绩</h2>
+<h3>协议 v6.2 单轮（2026-11-09 开发，11-10 评分）</h3>
+<table><tr><th>模型</th><th>协议</th><th>原始指标</th><th>换算</th><th class="num">得分（满分 100）</th></tr><tr><td><a href="#gpt-6.1-sol-v6.2-单轮">GPT-6.1 Sol</a></td><td>v6.2 单轮</td><td>漏掉 49,400 / 49,400 个分裂，\(E = 1.0\)</td><td>\(E \ge U\) 记 0</td><td class="num score s-low">0.0</td></tr><tr><td><a href="#claude-opus-5-5-v6.2-单轮">Claude Opus 5.5</a></td><td>v6.2 单轮</td><td>漏掉 6,700 个分裂，\(E = 0.135628\)</td><td>\(50\,(U-E)/(U-W)\)</td><td class="num score s-mid">42.3</td></tr></table>
+
+<h2>各模型的做法</h2>
+<h3 id="gpt-6.1-sol-v6.2-单轮">GPT-6.1 Sol（v6.2 单轮） <span class="score s-low">0.0</span></h3>
+<div class="note"><p>4.4 分钟就结束回合。程序每例 0.13 秒输出一棵 250 叶的二叉树，但与真树没有一个共同分裂：输出是一棵平衡树，最终说明写的是“选最大校正距离”合并，与邻接法（合并距离最近的一对）方向相反。它在公开用例 001 上用自带的 <code>check_rf.py</code> 测到 <code>normalized_rf = 1.0</code>（最差），没有处理，只检查了格式、可复现性和干净构建。</p></div>
+<details><summary>模型自己写的说明（提交中的 README.md）</summary><div class="md"><h1>Species-Tree Inference</h1>
+<h2>Build and Run</h2>
+<p>Requirements: Linux amd64, POSIX shell, and a C++17 compiler (<code>g++</code> by default).
+Only the C++ standard library is used. No downloads, Python packages, agent
+tools, or external phylogenetics programs are required.</p>
+<pre><code class="language-sh">./build.sh
+./run.sh /absolute/input/genes.tre /absolute/output/pred.tre
+</code></pre>
+<p><code>build.sh</code> accepts no arguments. Set <code>CXX</code> to select another C++17 compiler.
+<code>run.sh</code> also builds automatically if the executable is absent.
+The program reads only its input file and writes exactly one Newick tree to
+its output file. Diagnostics go to standard error.</p>
+<h2>Inference</h2>
+<p>The input is parsed as unrooted gene trees. A degree-two serialization root
+is suppressed. Quoted leaf names, scientific-notation branch lengths,
+comments, and optional internal support labels are supported.</p>
+<p>Each gene supplies a matrix of leaf-to-leaf path distances. Pendant edges
+have weight one. Internal edges with reported support <code>s</code> have weight</p>
+<pre><code class="language-text">0.05 + 0.95 * max(0, min(1, 1.5*s - 0.5)).
+</code></pre>
+<p>An absent support label gives an internal edge weight of one. Thus a
+reported support near one third contributes little without being confused
+with a missing report. Branch lengths are parsed and validated but are not
+used, avoiding sensitivity to locus-specific substitution rates.</p>
+<p>Each locus's distances are divided by their mean before averaging over
+loci. This prevents an unusually resolved or unresolved gene tree from
+dominating the aggregate.</p>
+<p>A row-sum-corrected neighbor-joining criterion then constructs the species
+tree. For <code>m</code> active groups, it joins the pair with the largest value of</p>
+<pre><code class="language-text">(m - 2) * distance(i,j) - row_sum(i) - row_sum(j).
+</code></pre>
+<p>Larger corrected separation provides stronger evidence for the split
+shared by the joined groups. Distances to the new group use the
+neighbor-joining update, and the final three groups form the unrooted
+serialization root. The result is fully binary and preserves every input
+leaf exactly once.</p>
+<p>There is no randomness, threading, persistent state, input-specific
+parameter table, or use of development truths at runtime. The program
+therefore gives identical results for every <code>SEED</code> value.</p>
+<h2>Source</h2>
+<p><code>solver.cpp</code> is an original implementation using support-weighted path
+distances and the classical neighbor-joining distance update. No third-party
+code is bundled.</p>
+<p>At 250 taxa and 50 genes, storage is quadratic in the number of taxa and
+the inference requires cubic time for joining plus gene-distance traversal.
+The implementation uses one thread and does not alter CPU affinity.</p></div></details>
+<h3 id="claude-opus-5-5-v6.2-单轮">Claude Opus 5.5（v6.2 单轮） <span class="score s-mid">42.3</span></h3>
+<div class="note"><p>C++ 实现的支持度加权四元组方法（思路同加权 ASTRAL）：按 aBayes 支持度给基因树四元组加权，在候选类簇集合上做精确动态规划，候选集由基因树类簇、邻接法树、NNI 邻居和 24 次基因自助重抽样逐步扩充。每例中位 4.2 秒、最多 11.1 秒。逐例与加权 TREE-QMC 比：82 例更好、18 例相同、100 例更差，平均每例多漏 0.66 个分裂（95% 区间 0.07–1.20），显著差于强参照；与不加权参照比 150 例更好。</p></div>
+<details><summary>模型自己写的说明（提交中的 README.md）</summary><div class="md"><h1>Species-tree inference from 50 estimated gene trees (250 taxa)</h1>
+<h2>Method</h2>
+<p><code>stree.cpp</code> is a single-file C++17 program with no third-party dependencies.
+It implements a support-weighted quartet species-tree method in the spirit of
+ASTRAL / weighted ASTRAL, plus a gene-bootstrap consensus step:</p>
+<ol>
+<li><strong>Input.</strong> The program parses each Newick gene tree, including labels, the
+   approximate-Bayes support after <code>)</code> and branch lengths. It re-roots every tree
+   on leaf <code>0</code>. This root is only a computational anchor; the trees are treated
+   as unrooted. Supports are mapped from the aBayes range <code>[1/3, 1]</code> to
+   <code>s' = (s-1/3)/(2/3)</code>. An edge with no reported support gets <code>s' = 0</code>; in the
+   data these are the near-zero-length edges.</li>
+<li><strong>Objective (weighted quartet score).</strong> A gene-tree quartet <code>ab|cd</code> whose
+   internal path is made of gene-tree edges <code>e1..ek</code> gets the weight
+   <code>1 - prod_i (1 - s'_i)</code>, the probability that at least one path edge is
+   correct. The species tree maximises the total weight of gene-tree quartets
+   that agree with it. For each species-tree node (a tripartition), the score
+   against one gene tree is computed exactly in O(n) with a post-order dynamic
+   programme over pair sums with path products of <code>1 - s'</code>. Monochromatic
+   subtrees are skipped. The scorer was checked against brute-force quartet
+   enumeration on small random trees. Scores are stored per gene for every
+   tripartition.</li>
+<li><strong>Search (exact DP over a constrained cluster set X).</strong> This is the
+   ASTRAL-style dynamic programme. X is first built from:
+   * all gene-tree clusters;
+   * the clusters of a neighbour-joining tree on average internode distances
+     (ASTRID-like).</li>
+</ol>
+<p>X then grows by:
+   * <em>NNI closure</em>: the clusters of every NNI neighbour of the current optimum
+     are added and the DP is solved again, until the score stops improving;
+   * <em>bootstrap expansion</em>: for 24 gene-bootstrap replicates (fixed seed), the DP
+     is solved under the replicate's gene multiplicities and NNI closure is run
+     on it. All new clusters are kept. The full-data DP is then solved again on
+     the enlarged X.</p>
+<p>Candidate splits are maintained incrementally, and tripartition scores are
+   cached, so solving the DP again is cheap.
+4. <strong>Consensus.</strong> 800 Bayesian gene-bootstrap replicates (exponential gene
+   weights) are solved by DP over the final X, re-using the cached per-gene
+   scores. The output is the binary tree in X
+   that maximises the sum of its clusters' bootstrap frequencies plus a small
+   multiple of the weighted quartet score. This targets expected RF accuracy.
+   On the dev set it lowered the mean normalised RF from about 0.147 (plain
+   optimum) to about 0.143.
+5. <strong>Output.</strong> The result is a fully binary unrooted tree written as <code>(0,A,B);</code>.</p>
+<p>Runtime safety: internal wall-clock checks stop the search phases early (DP
+solving is aborted after 95 s). An alarm-based emergency writer outputs the
+last complete tree at 108 s. The dev cases take about 3–20 s on one core.
+Memory use is well under 1 GB. All randomness uses fixed seeds offset by the
+<code>SEED</code> environment variable (default 1), so runs are deterministic.</p>
+<h2>Build and run</h2>
+<pre><code class="language-sh">./build.sh                       # offline, needs only g++ (C++17)
+./run.sh /abs/input/genes.tre /abs/output/pred.tre
+</code></pre>
+<p><code>build.sh</code> always builds a portable binary <code>stree_base</code>. If the CPU supports
+AVX2/FMA, it also builds <code>stree_avx2</code>. <code>run.sh</code> picks the best available binary
+and builds on the fly if the binaries are missing. Logs go to stderr.</p>
+<h2>Sources</h2>
+<p>The algorithmic ideas follow the published descriptions of ASTRAL (Mirarab et
+al. 2014; Zhang et al. 2018), weighted ASTRAL (Zhang &amp; Mirarab 2022) and ASTRID
+(Vachaspati &amp; Warnow 2015). All code here was written from scratch for this
+task. No external code or data is included.</p></div></details>
+<h2>观察与说明</h2>
+<ul>
+<li>数据、种子和生成流程见 <code>tasks/species-tree/analysis/SPECIES_TREE_SIM.md</code>（种子不公开）。</li>
+</ul></main><footer>FrontierAM · 构建于 2026-11-10 15:42 CST · 代码版本 6519454 · 所有分数为本机实测；隐藏测试数据不在本站公开</footer></body></html>

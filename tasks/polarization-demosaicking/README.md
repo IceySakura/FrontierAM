@@ -2,7 +2,7 @@
 
 从一张 1024×1024 的偏振马赛克中重建 0°/45°/90°/135° 四幅完整图像，每景 1 秒，RMSE 越小越好。
 
-看板（办公网）：http://9.135.91.91:18765/tasks/polarization-demosaicking.html
+看板页面：[`dashboard/site/tasks/polarization-demosaicking.html`](../../dashboard/site/tasks/polarization-demosaicking.html)（克隆后用浏览器直接打开）
 
 ## 目录结构
 

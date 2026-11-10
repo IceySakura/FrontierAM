@@ -1,1 +1,0 @@
-{"cases": 66, "qualified": 64, "worst_disagreement": 0.031063824668990055, "max_degree": 1817, "cpu_seconds": 17676.3, "unqualified": ["syn_diffusion2d_p10_k16", "syn_diffusion2d_b_p10_k16"]}

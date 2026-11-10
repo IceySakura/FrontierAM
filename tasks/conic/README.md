@@ -2,7 +2,7 @@
 
 从零实现一个通用凸锥优化求解器，覆盖线性、二次、二阶锥、半正定和指数锥，650 个隐藏实例，逐例时限 1–300 秒（出题方 2026-11-05 修正版题包）。
 
-看板（办公网）：http://9.135.91.91:18765/tasks/conic.html
+看板页面：[`dashboard/site/tasks/conic.html`](../../dashboard/site/tasks/conic.html)（克隆后用浏览器直接打开）
 
 ## 目录结构
 

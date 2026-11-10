@@ -2,7 +2,7 @@
 
 50 棵互相矛盾的估计基因树、250 个物种、120 秒；数据由我们按标准模拟流程重建并校准到原题的统计量，200 个正式用例。
 
-看板（办公网）：http://9.135.91.91:18765/tasks/species-tree-v2.html
+看板页面：[`dashboard/site/tasks/species-tree-v2.html`](../../dashboard/site/tasks/species-tree-v2.html)（克隆后用浏览器直接打开）
 
 ## 目录结构
 
