@@ -2,9 +2,22 @@
 
 FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 AI 编程模型在断网环境里限时（2 小时）从零写出求解程序，再在隐藏测试集上用题目自带的评测器打分，并与在同一台机器上重测的人类参照实现（baseline）比较。
 
-看板：[`dashboard/site/index.html`](dashboard/site/index.html)，克隆仓库后用浏览器直接打开（静态网页，不需要服务器；公司内网另有在线版 http://9.135.91.91:18765/）。
+## 榜单（协议 v6.2，满分 100，参照 = 50）
 
-完整仓库（含私有评测集）在 git.woa.com；GitHub 上的是不含私有评测集的镜像（`scripts/ops/sync_github.sh`）。
+<!-- board:start -->
+| 题目 | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
+| --- | --- | --- | --- | --- |
+| [凸锥优化求解器](tasks/conic/README.md) | 0.0 | 0.0 | 24.7 | 41.2 |
+| [稀疏系统的指数传播（对标人类 SOTA）](tasks/exponential/README.md) | 0.0 | 62.9（待复核） | 70.8（待复核） | 69.1（待复核） |
+| [星系快照中的引力加速度（131,072 个粒子）](tasks/galaxy-gravity/README.md) | 100.0（待复核） |  | 100.0（待复核） |  |
+| [偏振马赛克图像重建](tasks/polarization-demosaicking/README.md) |  |  | 55.9（待复核） |  |
+| [从一条 MCMC 轨迹估计长期协方差](tasks/trajectory-covariance/README.md) |  |  | 51.9（待复核） |  |
+| [从短基因的估计树推断物种树（250 个物种，FrontierAM 重建版）](tasks/species-tree/README.md) | 0.0 |  | 42.3 |  |
+
+空格表示该模型没有在这道题的该设置下尝试；同一格有多次尝试时按次序列出；超过参照（50 分）的成绩在复核结论出来前标“待复核”。每格的原始指标、换算方式和模型的做法见各题 README；历史协议的成绩见 `results/LEADERBOARD.md`。本表由 `scripts/site/build_task_pages.py` 生成。
+<!-- board:end -->
+
+本仓库不含私有评测集（各题的私有测试数据另行保管，需要时单独提供）。
 
 ## 题目：每题一个目录，结构相同
 

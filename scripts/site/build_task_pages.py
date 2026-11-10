@@ -106,7 +106,6 @@ def attempt_dir(r: dict) -> str:
 def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: list[str]) -> str:
     loc, cur = meta['locations'], meta['current_version']
     lines = [f'# {meta["title"]}', '', meta['summary'], '',
-             f'看板页面：[`dashboard/site/tasks/{meta["id"]}.html`](../../dashboard/site/tasks/{meta["id"]}.html)（克隆后用浏览器直接打开）', '',
              '## 目录结构', '',
              '| 目录 | 内容 |', '| --- | --- |',
              f'| `versions/` | 题目的各个版本；当前版本 `{cur}/`，题面 `versions/{cur}/statement.md` |',
@@ -142,6 +141,39 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
         lines += ['## 观察与说明', '', meta['notes_md'], '']
     lines += ['---', '', '本文件由 `scripts/site/build_task_pages.py` 从 `meta.json` 生成。', '']
     return '\n'.join(lines)
+
+
+COLUMNS = [('gpt-6.1-sol', '单轮'), ('gpt-6.1-sol', '迭代'), ('claude-opus-5-5', '单轮'), ('claude-opus-5-5', '迭代')]
+
+
+def write_board(metas: list[dict], names: list[str]) -> None:
+    """Scoreboard of the latest protocol (v6.2) into README.md between the board markers."""
+    head = '| 题目 | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in COLUMNS) + ' |'
+    rows = [head, '| --- |' + ' --- |' * len(COLUMNS)]
+    for meta, name in zip(metas, names):
+        results = [r for g in meta['result_groups'] if g['title'].startswith('协议 v6.2') for r in g['results']]
+        cells = []
+        for model, setting in COLUMNS:
+            hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting),
+                          key=lambda r: r.get('attempt', 1))
+            parts = []
+            for r in hits:
+                if r.get('score') is None:
+                    parts.append('—')
+                    continue
+                text = f'{r["score"]:.1f}'
+                if r['score'] > 50:
+                    text += f'（{r.get("review", "待复核")}）'
+                parts.append(text)
+            cells.append(' / '.join(parts))
+        rows.append(f'| [{meta["title"]}](tasks/{name}/README.md) | ' + ' | '.join(cells) + ' |')
+    board = '\n'.join(rows) + ('\n\n空格表示该模型没有在这道题的该设置下尝试；同一格有多次尝试时按次序列出；超过参照（50 分）的成绩在复核结论出来前标“待复核”。'
+                                '每格的原始指标、换算方式和模型的做法见各题 README；历史协议的成绩见 `results/LEADERBOARD.md`。本表由 `scripts/site/build_task_pages.py` 生成。')
+    readme = ROOT / 'README.md'
+    text = readme.read_text()
+    start, end = '<!-- board:start -->', '<!-- board:end -->'
+    i, j = text.index(start) + len(start), text.index(end)
+    readme.write_text(text[:i] + '\n' + board + '\n' + text[j:])
 
 
 def main():
@@ -183,6 +215,7 @@ def main():
              '| 题目 | 一句话 | 已评提交 |', '| --- | --- | --- |']
     lines += [f'| [{m["title"]}]({name}/README.md) | {m["summary"]} | {n} |' for m, name, n in index]
     (TASKS / 'README.md').write_text('\n'.join(lines) + '\n\n本文件由 `scripts/site/build_task_pages.py` 生成。\n')
+    write_board([m for m, _, _ in index], [name for _, name, _ in index])
     print(json.dumps({'tasks': [name for _, name, _ in index]}))
 
 
