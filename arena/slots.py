@@ -20,7 +20,9 @@ from pathlib import Path
 from . import machine
 
 
-ISOLATION_HOLDS = {'shared': (), 'grade_pool': ('grade',), 'quiet': ('grade', 'dev')}
+# dev_idle (protocol v6.3 timing-sensitive held-out grading): start only while no development slot is leased; gradings
+# still run side by side (docs/platform/CONCURRENCY.md section 7).
+ISOLATION_HOLDS = {'shared': (), 'grade_pool': ('grade',), 'quiet': ('grade', 'dev'), 'dev_idle': ()}
 
 
 class Lease:
@@ -200,6 +202,9 @@ class Broker:
                     # A waiting quiet grade blocks new gradings at once (they are minutes long), but new development
                     # only after dev_drain_after: draining at once would serialise a whole batch of 2-hour attempts.
                     blocked = isolation != 'quiet' and self._draining(kind)
+                    if isolation == 'dev_idle' and not blocked:
+                        dev = {s['id'] for s in self.layout['slots'] if s['kind'] == 'dev'}
+                        blocked = any(row.get('slot') in dev for row in self.leases())
                     if kind == 'grade' and not priority and not blocked:
                         leased = {row['slot'] for row in self.leases()}
                         free = [s for s in self.layout['slots'] if s['kind'] == 'grade' and s['id'] not in leased]

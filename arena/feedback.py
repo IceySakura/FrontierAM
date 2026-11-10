@@ -120,4 +120,7 @@ def render(report: dict) -> str:
                       f'evaluated cases only.']
     if report.get('note'):
         lines += ['', report['note']]
+    if report.get('timed'):
+        lines += ['', 'Times are measured while other attempts may be developing on the same machine; the final evaluation '
+                      'is timed on an idle machine, so treat the time ratios here as approximate.']
     return '\n'.join(lines) + '\n'

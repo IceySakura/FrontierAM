@@ -229,3 +229,15 @@ def test_running_attempt_keeps_one_grade_slot_free(tmp_path):
         formal.release()
     assert broker._live('attempt') == 0
     assert broker.acquire('grade', 2**30, 'formal c', timeout=0)
+
+
+def test_dev_idle_waits_for_development_and_runs_side_by_side(tmp_path):
+    broker = slots.Broker(layout(), tmp_path)
+    dev = broker.acquire('dev', 2**30, 'attempt', timeout=0)
+    with pytest.raises(TimeoutError):
+        broker.acquire('grade', 2**30, 'timed grade', timeout=0, isolation='dev_idle')
+    dev.release()
+    first = broker.acquire('grade', 2**30, 'timed grade 1', timeout=0, isolation='dev_idle')
+    second = broker.acquire('grade', 2**30, 'timed grade 2', timeout=0, isolation='dev_idle')
+    assert {first.id, second.id} == {'grade-24', 'grade-26'}
+

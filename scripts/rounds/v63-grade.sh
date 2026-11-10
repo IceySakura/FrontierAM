@@ -24,10 +24,15 @@ family() { case $1 in conic) echo conic;; exponential-v3) echo exponential;; gal
 runtime() { [ "$1" = conic ] && echo "$CONIC_RT" || echo "$EXP_RT"; }
 frozen() { python3 -c "import json,sys;r=[json.loads(l) for l in open(sys.argv[1]) if 'develop_finished' in l];print(r[-1]['submission'] if r and r[-1]['status']=='frozen' else ('-' if r else ''))" "$1" 2>/dev/null; }
 
+# Timing-sensitive held-out grading waits until no development runs (docs/platform/CONCURRENCY.md section 7).
+TIMED="conic exponential-v3 polarization-demosaicking-v2"
+attempts_running() { pgrep -f "scripts/rounds/v63-sol.sh" > /dev/null; }
+isolation() { case " $TIMED " in *" $1 "*) echo dev_idle;; *) echo shared;; esac; }
+
 suite() {  # task, submission|--reference -> suite id; grades it now
     local task=$1 target=$2 id
     id=$(FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE suite --task "$task" $target --shards 6 \
-         --isolation shared --cap-s $CAP | last_id) || return 1
+         --isolation "$(isolation "$task")" --cap-s $CAP | last_id) || return 1
     FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE grade-worker --task "$task" --workers 6 --drain \
         >> var/stores/store/reruns/v63-worker.log 2>&1
     echo "$id"
@@ -41,6 +46,7 @@ anchors() {
     done
     for task in galaxy-gravity-v3 polarization-demosaicking-v2; do
         done_event anchor "$task" && continue
+        [ "$task" = polarization-demosaicking-v2 ] && attempts_running && continue   # quiet grading, after the attempts
         FRONTIERAM_RUNTIME=$EXP_RT ./bench --store $STORE baseline --task "$task" >> var/stores/store/reruns/v63-worker.log 2>&1 \
             && log "\"event\": \"anchor\", \"label\": \"$task\""
     done
@@ -51,6 +57,7 @@ grade() {  # setting, task
     done_event graded "$label" && return 0
     sub=$(frozen "var/stores/store/reruns/v63-sol-$label.log")
     [ -z "$sub" ] && return 1                       # attempt still running
+    case " $TIMED " in *" $task "*) attempts_running && return 1;; esac
     out=tasks/$(family "$task")/solutions/v6.3/gpt-6.1-sol-$setting-$N
     mkdir -p "$out"
     if [ "$sub" = - ]; then                          # no valid frozen submission: invalid (0) or unmeasured
@@ -101,9 +108,9 @@ PY
     log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": \"$sub\", \"suite\": \"$id\""
 }
 
-anchors
 TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2"
 while :; do
+    anchors
     left=0
     for setting in single iterative; do
         for task in $TASKS; do

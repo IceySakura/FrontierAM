@@ -895,7 +895,7 @@ def main() -> None:
     target.add_argument('--submission')
     target.add_argument('--reference', action='store_true')
     suite.add_argument('--shards', type=int, default=4)
-    suite.add_argument('--isolation', default='shared', choices=['shared', 'grade_pool', 'quiet'])
+    suite.add_argument('--isolation', default='shared', choices=['shared', 'grade_pool', 'quiet', 'dev_idle'])
     suite.add_argument('--slots', help='comma-separated grade slot per shard, e.g. grade-06,grade-14,grade-22,grade-30')
     suite.add_argument('--hold', action='store_true', help='write the shards to jobs/held instead of the queue')
     suite.add_argument('--cap-s', type=float, default=None, help='stop each shard at this many seconds (v6.3: 3600)')
