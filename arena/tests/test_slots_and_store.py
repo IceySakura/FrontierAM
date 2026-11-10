@@ -202,3 +202,29 @@ def test_recover_requeues_only_abandoned_jobs(tmp_path):
     assert json.loads((tmp_path / 'jobs/pending' / f'{alive["id"]}.json').read_text())['requeued_utc']
     archived = list((tmp_path / 'results').glob(f'{alive["id"]}.abandoned-*/partial.log'))
     assert len(archived) == 1
+
+
+def test_reserved_grade_slot_serves_only_named_leases(tmp_path):
+    broker = slots.Broker(layout(), tmp_path)
+    with broker.reserve('attempt') as reserved:
+        assert broker.reserved() == {reserved}
+        other = broker.acquire('grade', 2**30, 'formal', timeout=0)
+        assert other.id != reserved
+        with pytest.raises(TimeoutError):
+            broker.acquire('grade', 2**30, 'formal 2', timeout=0)
+        pinned = broker.acquire('grade', 2**30, 'test', slot_id=reserved, timeout=0)
+        assert pinned.id == reserved
+        pinned.release()
+        other.release()
+        with pytest.raises(TimeoutError):
+            broker.acquire('dev', 2**30, 'quiet grade', timeout=0, isolation='quiet')
+    assert broker.reserved() == set()
+
+
+def test_reservations_are_exclusive(tmp_path):
+    broker = slots.Broker(layout(), tmp_path)
+    with broker.reserve('a') as first, broker.reserve('b') as second:
+        assert first != second
+        with pytest.raises(TimeoutError):
+            with broker.reserve('c', timeout=0, poll=0):
+                pass

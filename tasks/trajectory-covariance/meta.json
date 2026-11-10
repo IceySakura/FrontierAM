@@ -55,6 +55,14 @@
       "02"
     ],
     "public": "反馈池：每种情形最后 10 条母链 × 5 个前缀，共 300 个输入（与正式子集不相交）",
-    "groups": "六种情形（三种模拟 / 三种真实采样）"
+    "groups": "六种情形（三种模拟 / 三种真实采样）",
+    "feedback": {
+      "task": "trajectory-covariance",
+      "category": "setting",
+      "accuracy": "whitened error",
+      "lower_is_better": true,
+      "timed": false,
+      "note": "A failed input counts as the zero matrix. Time counts only against the limit."
+    }
   }
 }

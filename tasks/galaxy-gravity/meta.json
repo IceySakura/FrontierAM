@@ -73,6 +73,14 @@
       "case-01"
     ],
     "public": "10 张公开快照",
-    "groups": "Hernquist / Jaffe / Einasto / disc / group（各 2 张）"
+    "groups": "Hernquist / Jaffe / Einasto / disc / group（各 2 张）",
+    "feedback": {
+      "task": "galaxy-gravity-v2",
+      "category": "family",
+      "accuracy": "relative acceleration error",
+      "lower_is_better": true,
+      "timed": false,
+      "note": "Any failed call makes the final score 0. CPU time counts only against the limit."
+    }
   }
 }

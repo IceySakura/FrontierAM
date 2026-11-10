@@ -71,6 +71,14 @@
       "002"
     ],
     "public": "50 个公开用例",
-    "groups": null
+    "groups": null,
+    "feedback": {
+      "task": "species-tree-v2",
+      "category": null,
+      "accuracy": "normalised RF error",
+      "lower_is_better": true,
+      "timed": false,
+      "note": "A failed case counts as the worst error (1.0)."
+    }
   }
 }

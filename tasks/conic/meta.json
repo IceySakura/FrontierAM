@@ -125,6 +125,14 @@
       "dev-610c3f371053 (exponential)"
     ],
     "public": "163 例公开开发集",
-    "groups": "linear / quadratic / soc / psd / exponential（manifest 的 group 字段）"
+    "groups": "linear / quadratic / soc / psd / exponential（manifest 的 group 字段）",
+    "feedback": {
+      "task": "conic",
+      "category": "group",
+      "accuracy": "cases solved",
+      "lower_is_better": false,
+      "timed": true,
+      "note": "One run per case (the final evaluation runs three and needs all three to pass)."
+    }
   }
 }

@@ -160,6 +160,14 @@
       "control_diagonal"
     ],
     "public": "74 例全尺寸公开集（dataset/cases/public）",
-    "groups": "结构族（manifest 的 family 字段）：mesh_diffusion / standard_fem / geometric_graph / standard_graph / network_operator / signed_incidence / diagonal_local / analytic"
+    "groups": "结构族（manifest 的 family 字段）：mesh_diffusion / standard_fem / geometric_graph / standard_graph / network_operator / signed_incidence / diagonal_local / analytic",
+    "feedback": {
+      "task": "exponential-v2",
+      "category": "family",
+      "accuracy": null,
+      "lower_is_better": true,
+      "timed": true,
+      "note": "Any failed case makes the final score 0. Category scores use the plain mean time ratio of the category."
+    }
   }
 }

@@ -131,6 +131,55 @@ class Broker:
                 live.append({'slot': slot_id, 'memory_bytes': 0, 'owner': 'unknown (record pending)'})
         return live
 
+    def reserve_path(self, slot_id: str) -> Path:
+        return self.root / f'reserve-{slot_id}.lock'
+
+    def reserved(self) -> set[str]:
+        """Grade slots reserved by a running v6.3 iterative attempt (an flock on reserve-<slot>.lock)."""
+        found = set()
+        for slot in self.layout['slots']:
+            path = self.reserve_path(slot['id'])
+            if slot['kind'] != 'grade' or not path.exists():
+                continue
+            fd = os.open(path, os.O_RDWR)
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                found.add(slot['id'])
+            finally:
+                os.close(fd)
+        return found
+
+    @contextmanager
+    def reserve(self, owner: str, *, timeout: float | None = None, poll: float = 5.0):
+        """Reserve one grade slot for an iterative attempt's tests; yields its id. Preference: no lease on it now."""
+        deadline = None if timeout is None else time.monotonic() + timeout
+        found = None
+        while found is None:
+            with self._allocation():
+                leased = {row['slot'] for row in self.leases()}
+                grades = sorted((s['id'] for s in self.layout['slots'] if s['kind'] == 'grade'),
+                                key=lambda slot_id: slot_id in leased)
+                for slot_id in grades:
+                    fd = os.open(self.reserve_path(slot_id), os.O_RDWR | os.O_CREAT, 0o644)
+                    try:
+                        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    except BlockingIOError:
+                        os.close(fd)
+                        continue
+                    os.ftruncate(fd, 0)
+                    os.write(fd, json.dumps({'owner': owner, 'pid': os.getpid(), 'reserved_unix': time.time()}).encode())
+                    found = (slot_id, fd)
+                    break
+            if found is None:
+                if deadline is not None and time.monotonic() >= deadline:
+                    raise TimeoutError(f'No grade slot free to reserve in {timeout}s')
+                time.sleep(poll)
+        try:
+            yield found[0]
+        finally:
+            os.close(found[1])
+
     def acquire(
         self,
         kind: str,
@@ -158,8 +207,13 @@ class Broker:
                     # A waiting quiet grade blocks new gradings at once (they are minutes long), but new development
                     # only after dev_drain_after: draining at once would serialise a whole batch of 2-hour attempts.
                     blocked = isolation != 'quiet' and self._draining(kind)
-                    if not blocked and used + memory_bytes <= self.layout['memory_budget_bytes']:
-                        lease = self._lock_set(candidates, holds, memory_bytes, owner, isolation)
+                    # Reserved grade slots serve only leases that name them; holding grade slots idle waits for
+                    # every reservation to end, since it would stall an attempt's tests.
+                    reserved = self.reserved() if kind == 'grade' or 'grade' in holds else set()
+                    open_slots = [s for s in candidates if slot_id is not None or s['id'] not in reserved]
+                    blocked = blocked or ('grade' in holds and bool(reserved - {slot_id}))
+                    if not blocked and open_slots and used + memory_bytes <= self.layout['memory_budget_bytes']:
+                        lease = self._lock_set(open_slots, holds, memory_bytes, owner, isolation)
                         if lease is not None:
                             return lease
                 if deadline is not None and time.monotonic() >= deadline:

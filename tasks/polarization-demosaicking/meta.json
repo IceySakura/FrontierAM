@@ -56,6 +56,14 @@
       "wen-002"
     ],
     "public": "Wen 2019 反馈集 105 景",
-    "groups": null
+    "groups": null,
+    "feedback": {
+      "task": "polarization-demosaicking",
+      "category": null,
+      "accuracy": "RMSE",
+      "lower_is_better": true,
+      "timed": false,
+      "note": "Any failed scene makes the final score 0. Time counts only against the limit."
+    }
   }
 }

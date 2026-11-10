@@ -76,7 +76,9 @@ class OperatorTask(Task):
 
     # References ------------------------------------------------------------------------------------------------
     def reference_dir(self, which: str) -> Path:
-        return self.root() / self.spec['references'][which]
+        path = self.spec['references'][which]
+        # 'repo:<path>' names a reference kept in this repository (tasks/<family>/references/r<k>/).
+        return ROOT / path[len('repo:'):] if path.startswith('repo:') else self.root() / path
 
     def reference_archive(self, runtime: dict, output: Path) -> Path:
         output.mkdir(parents=True, exist_ok=True)
@@ -148,8 +150,15 @@ class GalaxyGravity(OperatorTask):
         root = self.root()
         official = json.loads((root / 'private/scoring-config.json').read_text())
         cases = [dict(c, input=str(root / c['input']), truth=str(root / c['truth'])) for c in official['cases']]
+        mode, repeats = 'calibration', official['repeats']
+        # FRONTIERAM_GALAXY_DATA=public grades the public snapshots, every call even after a failure (v6.3 feedback).
+        if os.environ.get('FRONTIERAM_GALAXY_DATA') == 'public':
+            public = self.root('public') / 'public-dev'
+            cases = [dict(c, input=str(public / c['input']), truth=str(public / c['truth']))
+                     for c in json.loads((public / 'manifest.json').read_text())['cases']]
+            mode, repeats = 'diagnostic', 1
         config = {'image': self.lock()['image']['id'], 'cpu': int(placement.cpuset), 'cpu_limit_s': official['cpu_limit_s'],
-                  'repeats': official['repeats'], 'mode': 'calibration', 'cases': cases}
+                  'repeats': repeats, 'mode': mode, 'cases': cases}
         out.parent.mkdir(parents=True, exist_ok=True)
         config_path = out.parent / f'{out.name}-config.json'
         config_path.write_text(json.dumps(config, indent=2) + '\n')
