@@ -4,14 +4,14 @@
 #   1. synthetic private mothers (sealed seeds) and the private standard operators (BFS-derived where too large);
 #   2. private cases and their reference solutions;
 #   3. re-seal .runtime-exp2 with the private cases graded and the public cases for development.
-# Log: store/reruns/exp2-private.log
+# Log: var/stores/store/reruns/exp2-private.log
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT=$PWD
 DATA=tasks/exponential/sota_v1/dataset_v2
 OUT=tasks/exponential/sota_v1/calibration_v2
 IMAGE=frontieram-exponential:port-v1
-LOG=store/reruns/exp2-private.log
+LOG=var/stores/store/reruns/exp2-private.log
 log() { echo "{\"time\": \"$(date +%FT%T)\", $1}" >> "$LOG"; }
 container() {
     local cpus=$1 memory=$2; shift 2

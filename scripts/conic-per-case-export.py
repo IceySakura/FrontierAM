@@ -1,9 +1,9 @@
 """Export per-case conic metrics for the reference and every graded model, for the task author.
 
 Writes:
-  results/conic-per-case-runs.csv     one row per case x solver x run x repeat (limit, time, outcome, reason, residuals)
-  results/conic-per-case-summary.csv  one row per case: limits and each solver's outcome under the recalibrated limits
-  results/conic-per-case-stats.json   aggregate statistics used in CONIC_PER_CASE.md
+  results/conic/conic-per-case-runs.csv     one row per case x solver x run x repeat (limit, time, outcome, reason, residuals)
+  results/conic/conic-per-case-summary.csv  one row per case: limits and each solver's outcome under the recalibrated limits
+  results/conic/conic-per-case-stats.json   aggregate statistics used in CONIC_PER_CASE.md
 """
 
 import csv
@@ -27,16 +27,16 @@ SOLVERS = {
                   ('remeasure_2x_limit', f'{ARCHIVE}/store-measure', 'suite-conic-20261104T130556Z-c921f0'),
                   ('remeasure_300s', f'{ARCHIVE}/store-measure2', 'suite-conic-20261104T162157Z-c36161')],
     'gpt-6.1-sol': [('original_limits', 'store', 'suite-conic-20261104T112642Z-4c4423'),
-                    ('recalibrated_regrade', 'store-recal', 'suite-conic-20261104T192406Z-37e06b')],
+                    ('recalibrated_regrade', 'var/stores/store-recal', 'suite-conic-20261104T192406Z-37e06b')],
     'gpt-6-astra': [('original_limits', 'store', 'suite-conic-20261104T120311Z-34c2e1'),
-                    ('recalibrated_regrade', 'store-recal', 'suite-conic-20261104T234302Z-f73c31')],
+                    ('recalibrated_regrade', 'var/stores/store-recal', 'suite-conic-20261104T234302Z-f73c31')],
     'hy4': [('original_limits', 'store', 'suite-conic-20261104T120314Z-3397f6'),
-            ('recalibrated_regrade', 'store-recal', 'suite-conic-20261105T023029Z-4a9356')],
+            ('recalibrated_regrade', 'var/stores/store-recal', 'suite-conic-20261105T023029Z-4a9356')],
     'claude-opus-5-5': [('original_limits', 'store', 'suite-conic-20261104T112644Z-62e345'),
-                        ('recalibrated_regrade', 'store-recal', 'suite-conic-20261104T201322Z-b5235a')],
+                        ('recalibrated_regrade', 'var/stores/store-recal', 'suite-conic-20261104T201322Z-b5235a')],
 }
-RECAL_RESULTS = {'gpt-6.1-sol': 'results/conic-recal-gpt-6.1-sol.json', 'gpt-6-astra': 'results/conic-recal-gpt-6-astra.json',
-                 'hy4': 'results/conic-recal-hy4.json', 'claude-opus-5-5': 'results/conic-recal-claude-opus-5-5.json'}
+RECAL_RESULTS = {'gpt-6.1-sol': 'results/conic/conic-recal-gpt-6.1-sol.json', 'gpt-6-astra': 'results/conic/conic-recal-gpt-6-astra.json',
+                 'hy4': 'results/conic/conic-recal-hy4.json', 'claude-opus-5-5': 'results/conic/conic-recal-claude-opus-5-5.json'}
 
 
 def load_runs(store: str, suite: str) -> dict:
@@ -66,7 +66,7 @@ def main():
         decisions[solver], detail[solver] = merged['decisions'], merged['detail']
     runs = {solver: [(name, load_runs(store, suite)) for name, store, suite in spec] for solver, spec in SOLVERS.items()}
 
-    with (ROOT / 'results/conic-per-case-runs.csv').open('w', newline='') as stream:
+    with (ROOT / 'results/conic/conic-per-case-runs.csv').open('w', newline='') as stream:
         writer = csv.writer(stream)
         writer.writerow(['case_id', 'group', 'n', 'm', 'nnz_P', 'nnz_A', 'cone_types', 'limit_original_s', 'limit_recalibrated_s',
                          'solver', 'run', 'run_limit_s', 'repeat', 'outcome', 'reason', 'status', 'elapsed_s',
@@ -100,7 +100,7 @@ def main():
         return name, max(r['elapsed_seconds'] for r in recs), reasons
 
     solver_names = list(SOLVERS)
-    with (ROOT / 'results/conic-per-case-summary.csv').open('w', newline='') as stream:
+    with (ROOT / 'results/conic/conic-per-case-summary.csv').open('w', newline='') as stream:
         writer = csv.writer(stream)
         header = ['case_id', 'group', 'n', 'm', 'nnz_A', 'cone_types', 'limit_original_s', 'limit_recalibrated_s']
         for s in solver_names:
@@ -162,7 +162,7 @@ def main():
     gaps = sorted(residuals(r)['gap_relative'] for r in failures if residuals(r)['gap_relative'] is not None)
     stats['reference_residual_failures'] = {'repeats': len(failures),
                                             'gap_relative_quantiles_10_50_90': [gaps[int(q * (len(gaps) - 1))] for q in (0.1, 0.5, 0.9)] if gaps else None}
-    (ROOT / 'results/conic-per-case-stats.json').write_text(json.dumps(stats, indent=2) + '\n')
+    (ROOT / 'results/conic/conic-per-case-stats.json').write_text(json.dumps(stats, indent=2) + '\n')
     print(json.dumps(stats, indent=2))
 
 

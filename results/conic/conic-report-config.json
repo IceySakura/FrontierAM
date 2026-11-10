@@ -1,5 +1,5 @@
 {
- "store": "store",
+ "store": "var/stores/store",
  "reference_suite": "suite-conic-20261104T112639Z-5805a6",
  "reference_recal": "tasks/conic/local_recal/recal-manifest-reference-outcomes.json",
  "candidates": [

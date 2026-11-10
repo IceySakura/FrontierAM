@@ -1,7 +1,7 @@
 """Final conic tables: each candidate against the locally rerun reference under both limit sets.
 
 Usage: conic-final-report.py CONFIG.json OUT.json
-CONFIG: {"store": "store", "reference_suite": ..., "reference_recal": "...-reference-outcomes.json",
+CONFIG: {"store": "var/stores/store", "reference_suite": ..., "reference_recal": "...-reference-outcomes.json",
          "candidates": [{"label": ..., "suite": ..., "recal": "merge output or null"}]}
 """
 

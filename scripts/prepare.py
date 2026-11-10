@@ -183,7 +183,7 @@ SKIP_NEW = """            for row in rows:
 
 
 def skip_failed_repeats(task: Path) -> dict:
-    """Score-preserving speed-up of the conic verifier (results/CONIC_FAST_GRADING.md)."""
+    """Score-preserving speed-up of the conic verifier (results/conic/CONIC_FAST_GRADING.md)."""
     path = task / 'tests/grade.py'
     text = path.read_text()
     if text.count(SKIP_OLD) != 1:
@@ -396,7 +396,7 @@ def main():
                 'prepared': True,
                 'architecture': architecture,
                 'codex_version': version,
-                'next': './bench smoke --task both --output outputs/first-smoke',
+                'next': './bench smoke --task both --output var/outputs/first-smoke',
             },
             ensure_ascii=False,
         )

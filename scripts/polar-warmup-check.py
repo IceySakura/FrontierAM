@@ -22,7 +22,7 @@ def main():
     evicted = first_scene.evict(dirs)
     run = {'condition': 'after_evicting_image_files_with_warmup', 'evicted_files': evicted,
            'resident_before': first_scene.resident(dirs), **first_scene.grade(submission)}
-    warmup = ROOT / 'store/results' / run['job'] / 'grade/candidate-warmup.json'
+    warmup = ROOT / 'var/stores/store/results' / run['job'] / 'grade/candidate-warmup.json'
     run['warmup'] = json.loads(warmup.read_text()) if warmup.exists() else None
     record = json.loads(out.read_text()) if out.exists() else {'submission': submission, 'runs': []}
     record['runs'].append(run)

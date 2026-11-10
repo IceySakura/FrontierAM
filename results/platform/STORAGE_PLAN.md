@@ -18,7 +18,7 @@
 
 | 路径 | 内容 | 大小 |
 | --- | --- | --- |
-| `workspace/FrontierAM/` | 仓库（代码、文档）和正在使用的运行数据：`.runtime`（默认）、`.runtime-suite`、`.runtime-recal`、`.runtime-ops`、`.runtime-exp2`，`store/`、`store-recal/` | 约 14 GB |
+| `workspace/FrontierAM/` | 仓库（代码、文档）和正在使用的运行数据：`.runtime`（默认）、`.runtime-suite`、`.runtime-recal`、`.runtime-ops`、`.runtime-exp2`，`var/stores/store/`、`var/stores/store-recal/` | 约 14 GB |
 | `workspace/agent-traffic-runtime/` | 开发 harness 依赖 | 0.1 GB |
 | `archive/` | 12 份退役运行副本、3 个已结束的测量/实验 store、锥优化原始参考包、最初的仓库快照 | 约 11.6 GB |
 | `trash/20261105/` | 调研时的解压目录、旧布局（grade-24/26/28 和最早的单守护进程）的评测守护进程目录 | 约 11 GB |
@@ -32,12 +32,12 @@
 | 类别 | 现在的位置 | 大小 | 处理 | 理由 |
 | --- | --- | --- | --- | --- |
 | 退役运行副本、已结束的 store、仓库快照 | `/data/archive/` | 11.6 GB | **上云**（打包成 tar.zst，加密） | 只用于追溯；12 份运行副本几乎相同，用 zstd 长窗口压缩后预计不到 2 GB |
-| 题目原包 | `Raw_Resource/`（0.7 GB）、`/srv/frontieram-raw/`（mcmc 19.6 GB） | 约 20 GB | **上云**（加密），本地只留封装好的副本 | 原包只在封装时读一次；以后新题直接下到云盘 |
+| 题目原包 | `var/raw/`（0.7 GB）、`/srv/frontieram-raw/`（mcmc 19.6 GB） | 约 20 GB | **上云**（加密），本地只留封装好的副本 | 原包只在封装时读一次；以后新题直接下到云盘 |
 | 交付包 | `dist/` | 20 MB | **上云**（加密） | 已交付 |
 | 指数题 v2 的参考解和正式用例 | `tasks/exponential/sota_v1/dataset_v2/cases/` | 预计 2–4 GB | **本地一份 + 云上备份** | 评测时要读，必须在本地；生成代价高，必须备份 |
 | 冻结镜像 | docker | 每个 1.3–3.5 GB | **本地 + 云上 `docker save` 冷备份** | 运行必须在本地；备份防止镜像丢失后无法复现 |
-| 已结束的开发记录 | `store/dev-runs/`（2.5 GB，持续增长） | 2.5 GB 起 | 按批次**上云**，本地留索引和摘要 | 每次开发尝试都会留下工作区和日志，增长最快 |
-| 已结束的评测明细 | `store/results/`（5.7 GB） | 5.7 GB | 结论定稿后按套件**上云**，本地留汇总 JSON | 锥优化逐用例输出占大头，只在复核时用 |
+| 已结束的开发记录 | `var/stores/store/dev-runs/`（2.5 GB，持续增长） | 2.5 GB 起 | 按批次**上云**，本地留索引和摘要 | 每次开发尝试都会留下工作区和日志，增长最快 |
+| 已结束的评测明细 | `var/stores/store/results/`（5.7 GB） | 5.7 GB | 结论定稿后按套件**上云**，本地留汇总 JSON | 锥优化逐用例输出占大头，只在复核时用 |
 | 可重建内容 | `/data/trash/`、无标签镜像、两个 ARM64 镜像 | 约 11 GB + 数 GB | **直接删** | 都能从原包或构建脚本重建 |
 | 代码、正在使用的运行副本、store 队列、评测守护进程镜像、venv | 原处 | — | **留在本地** | 在评测路径上 |
 
@@ -68,7 +68,7 @@
 ## 5. 待确认
 
 - 专属空间的实际配额和保留期，以及除本人外是否还有人（例如云研发管理员）能读取。在确认之前，私有材料一律先加密再上传。
-- 第 3 节第 1–3 步已获同意（11-05 16:00）：由 `scripts/data-maintenance.sh` 在新题基线全部完成、恢复锥优化评测之前的空闲窗口执行（`scripts/new-task-baselines.sh` 末尾调用），日志在 `store/reruns/data-maintenance.log`。归档用 gpg AES256 加密，口令在 `/root/.frontieram/archive-passphrase`，**需要另存一份到安全的地方**，否则云上归档无法解密。
+- 第 3 节第 1–3 步已获同意（11-05 16:00）：由 `scripts/data-maintenance.sh` 在新题基线全部完成、恢复锥优化评测之前的空闲窗口执行（`scripts/new-task-baselines.sh` 末尾调用），日志在 `var/stores/store/reruns/data-maintenance.log`。归档用 gpg AES256 加密，口令在 `/root/.frontieram/archive-passphrase`，**需要另存一份到安全的地方**，否则云上归档无法解密。
 
 ## 6. 工具
 

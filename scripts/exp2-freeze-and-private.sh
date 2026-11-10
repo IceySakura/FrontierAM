@@ -1,11 +1,11 @@
 #!/bin/bash
 # exponential-v2: once the public calibrations finish, select under calibration_v2/RULE.md, freeze the panel, then
-# (only then) generate the private split with its references and seal the task. Log: store/reruns/exp2-freeze.log
+# (only then) generate the private split with its references and seal the task. Log: var/stores/store/reruns/exp2-freeze.log
 set -uo pipefail
 cd "$(dirname "$0")/.."
 ROOT=$PWD
 C=tasks/exponential/sota_v1/calibration_v2
-LOG=store/reruns/exp2-freeze.log
+LOG=var/stores/store/reruns/exp2-freeze.log
 log() { echo "{\"time\": \"$(date +%FT%T)\", $1}" >> "$LOG"; }
 while docker ps --no-trunc --format '{{.Command}}' | grep -q calibrate_v2; do sleep 60; done
 log '"event": "calibrations_finished"'

@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 placement=$1
 
 idle() {
-    [ -z "$(ls store/jobs/running 2>/dev/null)" ] && ! pgrep -f "arena.cli.* develop " >/dev/null \
+    [ -z "$(ls var/stores/store/jobs/running 2>/dev/null)" ] && ! pgrep -f "arena.cli.* develop " >/dev/null \
         && [ -z "$(ls /run/frontieram/slots/*.json 2>/dev/null)" ]
 }
 until idle; do

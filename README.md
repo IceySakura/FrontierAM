@@ -54,4 +54,5 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | `dashboard/` | 看板内容（`tasks/*.json`）与样式；构建脚本 `scripts/build_dashboard.py` |
 | `docs/` | 平台与运维：服务器要求、安装、机器隔离、开发与评测流程（[`docs/PLATFORM.md`](docs/PLATFORM.md)） |
 | `nexus/`、`docker/`、`fixtures/`、`provenance/` | 固定版本的 Nexus 框架、镜像构建、测试夹具、来源记录 |
-| `store*/`、`.runtime*/`、`Raw_Resource/`、`outputs/`、`dist/` | 运行数据、封存副本、原始题包、导出包、构建产物（均不进 git） |
+| `var/` | 本机运行数据（不进 git）：`var/stores/` 评测与开发记录库，`var/raw/` 出题方原始题包，`var/outputs/` 导出包，`var/dist/` 构建产物 |
+| `.runtime*/`、`.venv-*/` | 封存的运行副本与 Python 环境（隐藏目录，不进 git） |

@@ -335,9 +335,9 @@ sys.exit(0 if reply.get("ok") else 1)
 ROOT = Path(__file__).resolve().parents[1]
 # The public-feedback graders (results/PROTOCOL_V62.md): their own runtimes or seals and their own stores.
 PUBLIC_EVAL = {
-    'conic': {'env': {'FRONTIERAM_RUNTIME': str(ROOT / '.runtime-conic-public')}, 'store': ROOT / 'store-public-conic'},
+    'conic': {'env': {'FRONTIERAM_RUNTIME': str(ROOT / '.runtime-conic-public')}, 'store': ROOT / 'var/stores/store-public-conic'},
     'exponential-v2': {'env': {'FRONTIERAM_EXP2_SEAL': str(ROOT / '.runtime-exp2-public')},
-                       'store': ROOT / 'store-public-exp2'},
+                       'store': ROOT / 'var/stores/store-public-exp2'},
 }
 # Test evaluations take every grading slot, so iterative attempts run one at a time and never queue for them.
 ITERATIVE_LOCK = Path('/run/frontieram/v62-iterative.lock')

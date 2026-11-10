@@ -28,3 +28,5 @@ Raw_Resource/
 results/**/suite-*.json
 # internal migration guide from another project (not part of FrontierAM)
 docs/PLATFORM_MIGRATION_GUIDE.md
+# all local run data: stores, raw packages, exports, build output
+var/

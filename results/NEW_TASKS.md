@@ -21,7 +21,7 @@
 | polarization-demosaicking | —（v6.1：50.7） | 55.9（重评；第一次评分只有第一景超时，记未测） |
 | trajectory-covariance | —（v6.1：61.5） | 51.9 |
 
-`Raw_Resource/` 中的 4 道新题已接入 FrontierAM 框架。原始包不进 git；`scripts/prepare_operator_tasks.py` 按 `tasks/operator/<题目>/task.json` 核对哈希、解压、校验包内清单、应用可移植性修改并封存到 `.runtime-ops/<题目>/`。评测时运行题目自带的评分器，通过 docker 垫片（`arena/docker_shim.py`）把它的 ARM64 平台、CPU 编号和镜像映射到本机评测 slot。
+`var/raw/` 中的 4 道新题已接入 FrontierAM 框架。原始包不进 git；`scripts/prepare_operator_tasks.py` 按 `tasks/operator/<题目>/task.json` 核对哈希、解压、校验包内清单、应用可移植性修改并封存到 `.runtime-ops/<题目>/`。评测时运行题目自带的评分器，通过 docker 垫片（`arena/docker_shim.py`）把它的 ARM64 平台、CPU 编号和镜像映射到本机评测 slot。
 
 ## 1. 各题概况
 
@@ -89,11 +89,11 @@
 | gpt-6.1-sol | 49,400 / 49,400 个分裂全部漏掉，E = 1.0 | E ≥ U 记 0 | **0** | 4.4 分钟就结束回合。程序每例 0.13 秒输出一棵 250 叶的二叉树，但与真树没有一个共同分裂（输出是平衡树，最终说明写“选最大校正距离”合并，与邻接法方向相反）。它在公开用例 001 上用 `check_rf.py` 测到 `normalized_rf = 1.0`，没有处理，只核对了格式和可复现性 |
 | claude-opus-5-5 | 漏 6,700 个，E = 0.135628 | 50·(U − E)/(U − W) | **42.3** | 类似加权 ASTRAL 的支持度加权四元组方法加精确动态规划，每例中位 4.2 秒、最多 11.1 秒。逐例与加权参照比：82 例更好、18 例相同、100 例更差，平均每例多漏 0.66 个分裂（95% bootstrap 区间 0.07–1.20），显著差于强参照、显著好于弱参照 |
 
-公开反馈基线（`scripts/species-v2-public-baseline.sh`，`FRONTIERAM_SPECIES_V2_DATA=public`，在 4 个评测核上分片，`store-public-species-v2`，`results/species-tree/species-tree-v2/public-anchors.json`）：50 个公开用例上不加权参照漏 1,957 / 12,350 个分裂（U = 0.158462），加权参照漏 1,750 个（W = 0.141700），两条参照 50/50 例无失败。公开集比私有集略难（私有 U = 0.150、W = 0.133），两条参照的差距相近；若以后对这道题开迭代设置，公开反馈分数以这两个值为锚点，换算与私有集相同。
+公开反馈基线（`scripts/species-v2-public-baseline.sh`，`FRONTIERAM_SPECIES_V2_DATA=public`，在 4 个评测核上分片，`var/stores/store-public-species-v2`，`results/species-tree/species-tree-v2/public-anchors.json`）：50 个公开用例上不加权参照漏 1,957 / 12,350 个分裂（U = 0.158462），加权参照漏 1,750 个（W = 0.141700），两条参照 50/50 例无失败。公开集比私有集略难（私有 U = 0.150、W = 0.133），两条参照的差距相近；若以后对这道题开迭代设置，公开反馈分数以这两个值为锚点，换算与私有集相同。
 
 参照耗时：加权参照每例中位 48 秒、最多 105.5 秒（上限 120 秒，余量 12%），不加权参照最多 62.5 秒；200/200 例都在时限内。余量偏紧，后续若有波动可能出现参照超时（待讨论：改为 180 秒）。
 
-**galaxy-gravity-v2**（20 张快照、60 次调用，每次 5 CPU 秒）。参照基线（`store-galaxy-v2`，grade-06）：弱 0.00125189（单次最多 4.05 CPU 秒），强 0.000590528（最多 3.71 CPU 秒）。
+**galaxy-gravity-v2**（20 张快照、60 次调用，每次 5 CPU 秒）。参照基线（`var/stores/store-galaxy-v2`，grade-06）：弱 0.00125189（单次最多 4.05 CPU 秒），强 0.000590528（最多 3.71 CPU 秒）。
 
 | 模型 | 原始指标 | 映射 | 得分 | 说明 |
 | --- | --- | --- | --- | --- |
@@ -106,4 +106,4 @@
 
 **trajectory-covariance（opus）**：3000/3000 合格，L = 0.221264，单例最多 1.66 秒；L < 强参照 0.230050，得 100 − 50·L/强 = **51.9**（sol v6.1 为 0.176933，61.5 分）。
 
-`mcmc-long-run-covariance-maintainer-v1`（19.6 GB）是 trajectory-covariance 的出题方包，正在从北大网盘下载到 `/srv/frontieram-raw/`（`Raw_Resource/` 中为软链接），下载完成后按同样流程接入。
+`mcmc-long-run-covariance-maintainer-v1`（19.6 GB）是 trajectory-covariance 的出题方包，正在从北大网盘下载到 `/srv/frontieram-raw/`（`var/raw/` 中为软链接），下载完成后按同样流程接入。

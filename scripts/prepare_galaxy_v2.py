@@ -4,7 +4,7 @@ Operator side: the sealed v1 package (grader, sandbox, Treecode2 references) wit
 lifted to N particles; private data are new snapshots from the public generator with private seeds and reference
 accelerations from the package's own direct-summation program (private/provenance/direct). The public package gets
 the updated statement, the same generator and smoke files, and public snapshots with their references.
-(results/GALAXY_SCALE.md)
+(results/galaxy-gravity/GALAXY_SCALE.md)
 
 Usage: prepare_galaxy_v2.py --data /data/datasets/galaxy-v2 [--n 131072] [--cpu-limit 5.0] [--force]
 """

@@ -1,5 +1,5 @@
 """Grade further conic submissions end to end, unattended: the full suite under the original limits on slot-pinned
-shards (store), then the undecided cases under the locally recalibrated limits (store-recal), then the merge.
+shards (store), then the undecided cases under the locally recalibrated limits (var/stores/store-recal), then the merge.
 
 Workers and release-when-free must be running for both stores. Usage:
   conic-grade-remaining.py LABEL=SUBMISSION [LABEL=SUBMISSION ...]
@@ -55,19 +55,19 @@ def main():
         undecided = ROOT / f'tasks/conic/local_recal/{label}-undecided.json'
         subprocess.run([sys.executable, 'scripts/conic-recal.py', 'subset', 'store', suites[label], RECAL, str(undecided)],
                        cwd=ROOT, check=True)
-        target = ROOT / 'store-recal/submissions' / sub
+        target = ROOT / 'var/stores/store-recal/submissions' / sub
         if not target.exists():
-            shutil.copytree(ROOT / 'store/submissions' / sub, target)
-        rerun = queue('store-recal', '.runtime-recal', sub, str(undecided))
-        if not any(p for p in os.popen('pgrep -f "release-when-free.py store-recal"').read().split()):
-            subprocess.Popen([sys.executable, 'scripts/release-when-free.py', 'store-recal', 'store'], cwd=ROOT,
-                             stdout=open(ROOT / 'store/reruns/release-recal.log', 'a'), stderr=subprocess.STDOUT,
+            shutil.copytree(ROOT / 'var/stores/store/submissions' / sub, target)
+        rerun = queue('var/stores/store-recal', '.runtime-recal', sub, str(undecided))
+        if not any(p for p in os.popen('pgrep -f "release-when-free.py var/stores/store-recal"').read().split()):
+            subprocess.Popen([sys.executable, 'scripts/release-when-free.py', 'var/stores/store-recal', 'store'], cwd=ROOT,
+                             stdout=open(ROOT / 'var/stores/store/reruns/release-recal.log', 'a'), stderr=subprocess.STDOUT,
                              start_new_session=True)
-        wait('store-recal', rerun)
-        subprocess.run([sys.executable, 'scripts/conic-recal.py', 'merge', 'store', suites[label], RECAL, 'store-recal',
-                        rerun, f'results/conic-recal-{label}.json'], cwd=ROOT, check=True)
+        wait('var/stores/store-recal', rerun)
+        subprocess.run([sys.executable, 'scripts/conic-recal.py', 'merge', 'store', suites[label], RECAL, 'var/stores/store-recal',
+                        rerun, f'results/conic/conic-recal-{label}.json'], cwd=ROOT, check=True)
         log(event='recalibrated_done', label=label, full_suite=suites[label], regrade=rerun,
-            result=f'results/conic-recal-{label}.json')
+            result=f'results/conic/conic-recal-{label}.json')
 
 
 if __name__ == '__main__':

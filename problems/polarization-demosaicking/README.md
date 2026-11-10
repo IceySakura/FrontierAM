@@ -21,7 +21,7 @@
 
 | 内容 | 位置 |
 | --- | --- |
-| 题包 | Raw_Resource/ 下的出题方维护包与公开包（git 忽略）；封存副本 .runtime-ops/polarization-demosaicking/ |
+| 题包 | var/raw/ 下的出题方维护包与公开包（git 忽略）；封存副本 .runtime-ops/polarization-demosaicking/ |
 | 公开开发材料 | public/（本目录）；公开反馈集（Wen 2019，105 景）封存在 .runtime-ops/polarization-demosaicking-feedback/ |
 | 私有测试集 | 32 景测试集，封存在维护包内（.runtime-ops/polarization-demosaicking/） |
 | 评测器 | 维护包 harbor/polarization-demosaicking/grade_submission.py（只改 CPU 检查；本机评分前预热镜像文件缓存） |

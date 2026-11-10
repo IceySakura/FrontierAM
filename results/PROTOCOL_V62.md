@@ -52,7 +52,7 @@ conic 修正版的 sol 尝试在开发中跑过全部公开用例，但它自写
   - exponential-v2：`FRONTIERAM_EXP2_SEAL=.runtime-exp2-public scripts/prepare_exponential_v2.py --graded cases/public --repeats 1`（72 例，冻结的 7 个 panel 成员）。
 - **公开评测命令**（`arena/public_eval.py`）：`bench --store store-public-<task> public-baseline --task T` 在全部评测 slot 上分片测参考并登记；`bench ... public-eval --task T --source DIR --out DIR [--groups] [--cases]` 导入源码（经正式的提交校验），按全集的分片和 slot 映射只评所选用例，与公开基线逐例对比，写 `report.json` 和 `report.md`。
 - **harness**（`arena/native.py`）：`./bench develop --protocol v6.2 --setting single|iterative [--development-seconds N]`。迭代设置向容器只读挂载 `/opt/frontieram/bin/submit`，并挂载评测 socket 目录；宿主侧 `EvalService` 处理测试和正式提交：测试时暂停容器、用正式导出器冻结快照（保留容器）、以子进程运行 `public-eval`、恢复容器并把报告写入 `/workspace/feedback/test-<n>/`。主循环每秒检查正式提交和截止时间；截止时立即暂停并冻结，未完成的评测继续跑完但结果不再送达，在释放迭代锁之前等它结束，因此它的评分任务不会与下一次迭代尝试重叠。迭代尝试先取得机器级锁 `/run/frontieram/v62-iterative.lock` 再开始计时。每次尝试把实际提示存为 `prompt.txt`，测试记录存入 `develop_result.json` 的 `evaluations`。
-- **验证脚本**：`scripts/v62-smoke.py TASK SETTING SECONDS OUT` 用 shell 脚本代替模型，在真实开发容器中走完一次尝试并检查结果。单轮设置已在 conic 上通过：结束回合即冻结，容器内没有评测接口和 socket（`store/reruns/v62-smoke/conic-single-1`）。
+- **验证脚本**：`scripts/v62-smoke.py TASK SETTING SECONDS OUT` 用 shell 脚本代替模型，在真实开发容器中走完一次尝试并检查结果。单轮设置已在 conic 上通过：结束回合即冻结，容器内没有评测接口和 socket（`var/stores/store/reruns/v62-smoke/conic-single-1`）。
 
 ## 定稿规则（用户 11-09 19:20 决定）
 

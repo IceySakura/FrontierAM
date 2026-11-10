@@ -46,7 +46,7 @@ def read_json(path: Path):
 
 class Store:
     def __init__(self, root: str | Path | None = None) -> None:
-        self.root = Path(root or os.environ.get('FRONTIERAM_STORE') or ROOT / 'store').resolve()
+        self.root = Path(root or os.environ.get('FRONTIERAM_STORE') or ROOT / 'var/stores/store').resolve()
         for state in JOB_STATES:
             (self.root / 'jobs' / state).mkdir(parents=True, exist_ok=True)
         (self.root / 'submissions').mkdir(exist_ok=True)

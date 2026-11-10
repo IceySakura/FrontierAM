@@ -35,4 +35,4 @@
 
 结论：修正版材料让 agent 正确地意识到了 1 秒时限，也确实把启动和简单用例做快了；但在 2 小时内，它用专用快速路径加一个启动昂贵、稳健性更差的回退，取代了一个慢而稳的通用求解器，净效果是退步。单次尝试无法区分这是材料引导的系统性倾向还是一次尝试的偶然，需要重复尝试才能确认（待讨论）。
 
-证据：`store-conic2/results/job-20261106T104650Z-*/grade/verifier/cases/*/repeat-*/{record.json,stderr.log}`，`results/conic/conic-per-case-summary.csv`（参考与旧提交的逐例结果），开发记录 `store/dev-runs/dev-conic-20261106T064339Z-8e5d0b/cli.log`。
+证据：`var/stores/store-conic2/results/job-20261106T104650Z-*/grade/verifier/cases/*/repeat-*/{record.json,stderr.log}`，`results/conic/conic-per-case-summary.csv`（参考与旧提交的逐例结果），开发记录 `var/stores/store/dev-runs/dev-conic-20261106T064339Z-8e5d0b/cli.log`。

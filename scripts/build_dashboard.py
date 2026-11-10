@@ -5,7 +5,7 @@ Sources: dashboard/site.json and dashboard/tasks/*.json (curated text and publis
 aggregate breakdowns computed from result files. Nothing from held-out inputs, truths or seeds is read into a page;
 breakdowns are per group or family only.
 
-Usage: build_dashboard.py [--out dist/dashboard]
+Usage: build_dashboard.py [--out var/dist/dashboard]
 """
 
 import argparse
@@ -120,7 +120,7 @@ def breakdown_html(spec: dict | None, results: list[dict]) -> str:
     if spec['kind'] == 'suite_report':
         sources = spec.get('paths') or [{'label': model_name(results[0]['model']), 'path': spec['path']}]
         reports = [(s['label'], json.loads((ROOT / s['path']).read_text())) for s in sources]
-        reference = conic_counts(ROOT / 'results/conic-per-case-summary.csv')
+        reference = conic_counts(ROOT / 'results/conic/conic-per-case-summary.csv')
         first = reports[0][1]
         groups = sorted(first['groups'], key=lambda g: list(GROUP_NAMES).index(g) if g in GROUP_NAMES else 9)
         head = ''.join(f'<th class="num">{html.escape(label)}</th>' for label, _ in reports)
@@ -284,7 +284,7 @@ FOOTER = ''
 def main():
     global FOOTER
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--out', type=Path, default=ROOT / 'dist/dashboard')
+    parser.add_argument('--out', type=Path, default=ROOT / 'var/dist/dashboard')
     args = parser.parse_args()
     commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     FOOTER = (f'FrontierAM · 构建于 {datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M %Z")} · 代码版本 {commit} · '

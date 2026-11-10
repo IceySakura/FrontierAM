@@ -97,4 +97,4 @@
 - 650 例中有 422 例的时限是 1 秒下限。候选提交每次运行比参考多出约 0.2–0.3 秒的启动开销，在这些小实例上大量刚好超时，这是成功率偏低的主要原因。在其余 228 个需要实际求解的实例上，gpt-6.1-sol 解出 132 例，参考解出 93 例，sol 显著更多（McNemar p = 0.004）。
 - Clarabel 是公认很强的开源求解器，但不是整体 SOTA（商业求解器 MOSEK、COPT 通常更快），结论应表述为"相对 Clarabel"。
 
-证据：`store/suites/`、`store-measure*/`、`store-recal/`、`tasks/conic/local_recal/`、`results/conic/conic-full.json`。原时限下的对比、按时限分层的完整数据和并发实测见 `results/conic/conic-full.json`、`results/conic/conic-substantive.json` 和 `results/platform/CONCURRENCY.md`。
+证据：`var/stores/store/suites/`、`store-measure*/`、`var/stores/store-recal/`、`tasks/conic/local_recal/`、`results/conic/conic-full.json`。原时限下的对比、按时限分层的完整数据和并发实测见 `results/conic/conic-full.json`、`results/conic/conic-substantive.json` 和 `results/platform/CONCURRENCY.md`。

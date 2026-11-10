@@ -65,15 +65,15 @@ def resident(dirs) -> dict:
 
 def grade(submission: str) -> dict:
     env = dict(os.environ, FRONTIERAM_RUNTIME=str(ROOT / '.runtime-recal'))
-    out = subprocess.run([str(ROOT / 'bench'), '--store', 'store', 'grade', '--submission', submission,
+    out = subprocess.run([str(ROOT / 'bench'), '--store', 'var/stores/store', 'grade', '--submission', submission,
                           '--task', 'polarization-demosaicking'], cwd=ROOT, env=env, capture_output=True, text=True)
     graded = [json.loads(l) for l in out.stdout.splitlines() if l.startswith('{') and '"graded"' in l]
     if not graded:
         raise SystemExit(out.stdout[-2000:] + out.stderr[-2000:])
     job = graded[-1]['job']
-    summary = json.loads((ROOT / 'store/results' / job / 'grade/candidate/summary.json').read_text())
+    summary = json.loads((ROOT / 'var/stores/store/results' / job / 'grade/candidate/summary.json').read_text())
     walls = [r['wall_s'] for r in summary['scene_rows']]
-    slot = json.loads((ROOT / 'store/results' / job / 'result.json').read_text())['slot']
+    slot = json.loads((ROOT / 'var/stores/store/results' / job / 'result.json').read_text())['slot']
     rest = sorted(walls[1:])
     return {'job': job, 'slot': slot, 'status': summary.get('status'), 'first_s': walls[0],
             'rest_median_s': rest[len(rest) // 2], 'rest_max_s': rest[-1], 'score': graded[-1].get('score')}

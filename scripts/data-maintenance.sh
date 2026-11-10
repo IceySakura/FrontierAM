@@ -2,14 +2,14 @@
 # Disk maintenance for an idle window (no timed grading): delete regenerable data, then move /data/archive to the
 # personal cloud disk. Each group is packed (tar + zstd), encrypted (gpg AES256, passphrase in /root/.frontieram),
 # uploaded, confirmed synced by the cloud-disk client, read back and checked, and only then removed locally.
-# Usage: scripts/data-maintenance.sh   (log: store/reruns/data-maintenance.log)
+# Usage: scripts/data-maintenance.sh   (log: var/stores/store/reruns/data-maintenance.log)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 SPACE=01a147b3-5c57-7911-b246-48568aab4f1b
 CLOUD=/agentdrive/Anydev/FrontierAM/archive/20261105
 STAGE=/data/archive-upload
 KEY=/root/.frontieram/archive-passphrase
-LOG=store/reruns/data-maintenance.log
+LOG=var/stores/store/reruns/data-maintenance.log
 QUIET=(taskset -c 0-3 nice -n 19 ionice -c3)
 log() { echo "{\"time\": \"$(date +%FT%T)\", $1}" >> "$LOG"; }
 synced() {

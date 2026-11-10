@@ -1,6 +1,6 @@
 """Seal operator-delivered tasks (tasks/operator/<name>/task.json) into .runtime-ops/<name>/.
 
-For each task: verify the raw packages in Raw_Resource by SHA-256, extract them, verify the package's own file list,
+For each task: verify the raw packages in var/raw by SHA-256, extract them, verify the package's own file list,
 apply the declared portability edits (each must match exactly once), assemble the development workspace files and
 their tar, stage the image build context, optionally build the amd64 image, and write lock.json with every digest.
 
@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RAW = ROOT / 'Raw_Resource'
+RAW = ROOT / 'var/raw'
 SPECS = ROOT / 'tasks/operator'
 OUT = ROOT / '.runtime-ops'
 

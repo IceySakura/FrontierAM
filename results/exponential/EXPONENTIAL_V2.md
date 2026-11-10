@@ -57,7 +57,7 @@
   - `arena/exponential_v2.py`：基线引用只带成员名单，评分时逐个成员从已校验哈希的封存目录读取，并各自作为独立提交校验（每个成员都受 1 GiB 上限）；`verify()` 增加检查，封存 panel 目录中不得有 lock 之外的文件。
   - 重新封存后数据、评测器、公开包等 81 个非 panel 文件与 11-06 的封存逐字节相同，所以 sol 的候选评测仍然有效，不重评。
 - **容器内功能检查**：SLEPc 和 ExponentialUtilities.jl 的标定是在宿主机上直接运行的（`run_local.py`），此前从未在评测镜像中跑过。在开发 slot 上按正式路径（离线构建、`run_docker.py`）检查：SLEPc 56 例中 55 例合格（1 例精度失败，属于正常的单例失败）；ExponentialUtilities.jl 修正后前 13 例全部合格，耗时与宿主机一致（中位比 0.97），其后为避免与计时评测同一 L3 域而停止。
-- **panel 基线重跑**：11-09 11:20 启动后发现上述检查留下的孤儿评测器仍在核 4（与 grade-06 同一 L3 域）上运行了约 50 秒，该次基线作废（`store/jobs/failed/job-20261109T032027Z-*`），11:22 在干净的机器上重新开始（`suite-exponential-v2-20261109T032227Z-c09381`），分片与 sol 的候选评测相同（同一用例划分、同一分片到 slot 的映射），评分前由 `scripts/exp2-panel-suite.sh` 核对。
+- **panel 基线重跑**：11-09 11:20 启动后发现上述检查留下的孤儿评测器仍在核 4（与 grade-06 同一 L3 域）上运行了约 50 秒，该次基线作废（`var/stores/store/jobs/failed/job-20261109T032027Z-*`），11:22 在干净的机器上重新开始（`suite-exponential-v2-20261109T032227Z-c09381`），分片与 sol 的候选评测相同（同一用例划分、同一分片到 slot 的映射），评分前由 `scripts/exp2-panel-suite.sh` 核对。
 
 ## 4d. gpt-6.1-sol 正式成绩（11-09 15:58，`results/exponential/exp2-sol-20261109/score.json`）
 

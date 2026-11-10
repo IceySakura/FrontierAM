@@ -80,7 +80,7 @@ export AIHUB_KEY_FILE=/secure/aihub.key     # 仓库外私有文件，权限 600
 ./bench status
 ```
 
-开发产物存放在 `store/dev-runs/`；只有冻结后的规范 `source.tar` 被复制到 `store/submissions/`，评测时用同一受审查的提取器重新校验后再解包。评测任务以原子重命名认领，同一提交不会被两个 worker 评测；崩溃的 worker 由 `./bench recover` 重新入队并保留残留证据。`./bench submit --source DIR` 可把任意源码目录作为提交入队；`./bench rescore` 在更换 baseline 后用已存的原始测量重算分数。
+开发产物存放在 `var/stores/store/dev-runs/`；只有冻结后的规范 `source.tar` 被复制到 `var/stores/store/submissions/`，评测时用同一受审查的提取器重新校验后再解包。评测任务以原子重命名认领，同一提交不会被两个 worker 评测；崩溃的 worker 由 `./bench recover` 重新入队并保留残留证据。`./bench submit --source DIR` 可把任意源码目录作为提交入队；`./bench rescore` 在更换 baseline 后用已存的原始测量重算分数。
 
 可用模型字段：`claude-opus-5-5`、`deepseek-v4-pro`、`hy4-preview`、`minimax-m3.1-flash`、`step-5-preview`。
 

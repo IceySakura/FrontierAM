@@ -4,9 +4,9 @@
 # the 11-06 sol regrade, see results/NEW_TASKS.md).
 set -uo pipefail
 cd "$(dirname "$0")/.."
-LOG=store/reruns/v62-final.log
+LOG=var/stores/store/reruns/v62-final.log
 log() { echo "{\"time\": \"$(date +%FT%T)\", $1}" >> "$LOG"; }
 while pgrep -f scripts/v62-final.sh > /dev/null; do sleep 60; done
-FRONTIERAM_RUNTIME=$PWD/.runtime-recal ./bench --store store grade --submission polarization-demosaicking-20261109T124343Z-553533 \
-    --task polarization-demosaicking >> store/reruns/v62-worker.log 2>&1
+FRONTIERAM_RUNTIME=$PWD/.runtime-recal ./bench --store var/stores/store grade --submission polarization-demosaicking-20261109T124343Z-553533 \
+    --task polarization-demosaicking >> var/stores/store/reruns/v62-worker.log 2>&1
 log '"event": "regraded", "label": "opus-single-polarization", "submission": "polarization-demosaicking-20261109T124343Z-553533"'

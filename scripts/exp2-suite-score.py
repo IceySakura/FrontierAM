@@ -44,7 +44,7 @@ def merged_parts(store: Path, suite: str, out: Path) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--store', type=Path, default=ROOT / 'store', help='store holding the candidate suite')
+    parser.add_argument('--store', type=Path, default=ROOT / 'var/stores/store', help='store holding the candidate suite')
     parser.add_argument('--panel-store', type=Path, help='store holding the panel suite (default: --store)')
     parser.add_argument('--panel', required=True)
     parser.add_argument('--candidate', required=True)

@@ -54,7 +54,7 @@ LOCATIONS = {
         'history': '原版 65,536 粒子（v6.1，sol 用直接求和得满分）见 `results/NEW_TASKS.md`。',
     },
     'polarization-demosaicking': {
-        'package': 'Raw_Resource/ 下的出题方维护包与公开包（git 忽略）；封存副本 .runtime-ops/polarization-demosaicking/',
+        'package': 'var/raw/ 下的出题方维护包与公开包（git 忽略）；封存副本 .runtime-ops/polarization-demosaicking/',
         'public': 'public/（本目录）；公开反馈集（Wen 2019，105 景）封存在 .runtime-ops/polarization-demosaicking-feedback/',
         'private': '32 景测试集，封存在维护包内（.runtime-ops/polarization-demosaicking/）',
         'grader': '维护包 harbor/polarization-demosaicking/grade_submission.py（只改 CPU 检查；本机评分前预热镜像文件缓存）',

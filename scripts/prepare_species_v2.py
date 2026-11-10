@@ -1,4 +1,4 @@
-"""Seal species-tree-v2: the rebuilt, larger species-tree task (results/SPECIES_TREE_SIM.md, SPECIES_TREE_SCALE.md).
+"""Seal species-tree-v2: the rebuilt, larger species-tree task (results/species-tree/SPECIES_TREE_SIM.md, SPECIES_TREE_SCALE.md).
 
 The operator side is the sealed v1 package (its batch grader, sandboxed worker, TREE-QMC references and portability
 edits), with the fixed taxon count lifted from 101 to TAXA in the scorer and the per-case wall limit raised from 120 s

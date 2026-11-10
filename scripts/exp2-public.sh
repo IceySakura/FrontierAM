@@ -6,7 +6,7 @@
 #      precision levels), and validation of the members without a parameter (scipy, chebyshev);
 #   4. the one_shot subset for the development package (cases/public_dev_full).
 # Private cases are generated only after the panel is frozen (scripts/exp2-private.sh).
-# Log: store/reruns/exp2-public.log; reports under tasks/exponential/sota_v1/calibration_v2/.
+# Log: var/stores/store/reruns/exp2-public.log; reports under tasks/exponential/sota_v1/calibration_v2/.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT=$PWD
@@ -14,7 +14,7 @@ V2=tasks/exponential/sota_v1
 DATA=$V2/dataset_v2
 OUT=$V2/calibration_v2
 IMAGE=frontieram-exponential:port-v1
-LOG=store/reruns/exp2-public.log
+LOG=var/stores/store/reruns/exp2-public.log
 log() { echo "{\"time\": \"$(date +%FT%T)\", $1}" >> "$LOG"; }
 container() {  # container CPUSET MEMORY COMMAND...  (development slice, offline, repository mounted at the same path)
     local cpus=$1 memory=$2; shift 2

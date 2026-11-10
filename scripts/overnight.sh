@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Unattended campaign: fresh exponential anchor, conic baseline, five models x two tasks, grading under the
-# measured isolation policies, a closing sentinel and a report. Every step logs to store/overnight/.
+# measured isolation policies, a closing sentinel and a report. Every step logs to var/stores/store/overnight/.
 set -uo pipefail
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$root"
 export PATH="$HOME/.local/bin:$PATH"
 KEY=${AIHUB_KEY_FILE:-/root/.frontieram/aihub.key}
 MODELS=(claude-opus-5-5 deepseek-v4-pro hy4-preview minimax-m3.1-flash step-5-preview)
-log=store/overnight
+log=var/stores/store/overnight
 mkdir -p "$log"
 note() { echo "[$(date '+%F %T')] $*" | tee -a "$log/timeline.log"; }
 queue_open() {

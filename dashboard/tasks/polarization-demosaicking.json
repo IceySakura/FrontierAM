@@ -23,7 +23,7 @@
           "protocol": "v6.2",
           "setting": "单轮",
           "submission": "polarization-demosaicking-20261109T124343Z-553533",
-          "store": "store",
+          "store": "var/stores/store",
           "raw": "平均 RMSE 0.97877，32/32 景通过（每景最多 0.710 秒）",
           "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
           "score": 55.9,
