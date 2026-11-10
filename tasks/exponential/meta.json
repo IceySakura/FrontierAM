@@ -159,10 +159,10 @@
       "syn_signed_p4_k1",
       "control_diagonal"
     ],
-    "public": "74 例全尺寸公开集（dataset/cases/public）",
+    "public": "16 例全尺寸公开用例（每个结构族单请求、复用各 1 例）",
     "groups": "结构族（manifest 的 family 字段）：mesh_diffusion / standard_fem / geometric_graph / standard_graph / network_operator / signed_incidence / diagonal_local / analytic",
     "feedback": {
-      "task": "exponential-v2",
+      "task": "exponential-v3",
       "category": "family",
       "accuracy": null,
       "lower_is_better": true,

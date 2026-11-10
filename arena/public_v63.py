@@ -34,6 +34,9 @@ PUBLIC = {
               'env': {'FRONTIERAM_RUNTIME': str(ROOT / '.runtime-conic-public')}},
     'exponential-v2': {'family': 'exponential', 'store': ROOT / 'var/stores/store-public-exp2',
                        'env': {'FRONTIERAM_EXP2_SEAL': str(ROOT / '.runtime-exp2-public')}},
+    # Same public cases (a subset) and panel as v2, so the v2 public panel measurement is the reference.
+    'exponential-v3': {'family': 'exponential', 'store': ROOT / 'var/stores/store-public-exp2', 'baseline_task': 'exponential-v2',
+                       'env': {'FRONTIERAM_EXP3_SEAL': str(ROOT / '.runtime-exp3-public')}},
     'galaxy-gravity-v2': {'family': 'galaxy-gravity', 'store': STORE, 'env': {'FRONTIERAM_GALAXY_DATA': 'public'}},
     'galaxy-gravity-v3': {'family': 'galaxy-gravity', 'store': STORE, 'env': {'FRONTIERAM_GALAXY_DATA': 'public'}},
     'polarization-demosaicking': {'family': 'polarization-demosaicking', 'store': STORE,
@@ -47,7 +50,11 @@ PUBLIC = {
     'trajectory-covariance-v2': {'family': 'trajectory-covariance', 'store': STORE,
                                  'env': {'FRONTIERAM_TRAJ_POOL': 'feedback'}},
 }
-SUITE_TASKS = ('conic', 'exponential-v2')
+SUITE_FAMILIES = ('conic', 'exponential')
+
+
+def family(task: str) -> str:
+    return PUBLIC[task]['family']
 
 
 def config(task: str) -> dict:
@@ -102,7 +109,7 @@ def queue(task, store: Store, runtime: dict, submission: str | None, slot: str |
     """One priority job on one grade slot: a one-shard suite for the suite tasks, a plain job for operator tasks."""
     from .cli import cmd_suite, freeze_reference
 
-    if task.name in SUITE_TASKS:
+    if family(task.name) in SUITE_FAMILIES:
         return cmd_suite(Namespace(store=store.root, task=task.name, shards=1, slots=slot, isolation='shared', hold=False,
                                    cases=None, reference=submission is None, submission=submission, priority=True))
     kind = 'candidate' if submission else 'baseline'
@@ -198,14 +205,13 @@ def _trajectory(task, out: Path) -> list[dict]:
 
 
 def _rows(task, store: Store, record: dict, partial: dict, which: str = 'candidate') -> list[dict]:
-    if task.name == 'conic':
+    if family(task.name) == 'conic':
         return _conic(store, record, partial)
     out = store.result_dir(record['shards'][0]['job']) / 'grade' / which
     if not (out / 'summary.json').exists():
         return []
-    family = PUBLIC[task.name]['family']
     return {'galaxy-gravity': _galaxy, 'polarization-demosaicking': _polarization,
-            'species-tree': _species}.get(family, lambda o: _trajectory(task, o))(out)
+            'species-tree': _species}.get(family(task.name), lambda o: _trajectory(task, o))(out)
 
 
 # Raw metrics and the final mapping -----------------------------------------------------------------------------
@@ -256,8 +262,8 @@ def cmd_public_baseline_v63(args) -> None:
     if baseline_path(task.name).exists() and not args.replace:
         raise SystemExit(f'{task.name} already has a v6.3 public baseline; pass --replace to measure another')
     store = Store(PUBLIC[task.name]['store'])
-    if task.name in SUITE_TASKS:  # measured for v6.2 in the task's public store (arena/public_eval.py)
-        old = read_json(store.root / 'public-baselines' / f'{task.name}.json')
+    if family(task.name) in SUITE_FAMILIES:  # measured for v6.2 in the task's public store (arena/public_eval.py)
+        old = read_json(store.root / 'public-baselines' / f'{PUBLIC[task.name].get("baseline_task", task.name)}.json')
         baseline = {'task': task.name, 'suite': old['suite'], 'source': 'v6.2 public baseline', 'created_utc': utc()}
     else:
         record = queue(task, store, runtime, None, args.slot)
@@ -275,10 +281,10 @@ def cmd_public_baseline_v63(args) -> None:
 def _reference(task, store: Store) -> dict:
     """Reference rows (and, for the suite tasks, what their scoring needs) from the task's public baseline."""
     baseline = read_json(baseline_path(task.name))
-    if task.name == 'conic':
+    if family(task.name) == 'conic':
         record = read_json(store.root / 'suites' / f'{baseline["suite"]}.json')
         return {'rows': _conic(store, record, {})}
-    if task.name == 'exponential-v2':
+    if family(task.name) == 'exponential':
         record = read_json(store.root / 'suites' / f'{baseline["suite"]}.json')
         panel, _ = exp2_parts(store, record)
         best, _, _ = task.virtual_best({'parts': panel})
@@ -308,14 +314,14 @@ def evaluate(task, store: Store, runtime: dict, source: Path, slot: str, cap: fl
     unfinished = _run(store, runtime, [job], cap)
     partial = {}
     if unfinished:
-        if task.name == 'conic':
+        if family(task.name) == 'conic':
             partial[job] = _harvest_conic(store, job)
-        elif task.name == 'exponential-v2':
+        elif family(task.name) == 'exponential':
             report = store.result_dir(job) / 'grade/evaluation.json'
             partial[job] = read_json(report).get('aggregates', {}) if report.exists() else {}
         _abort(store, job)
     reference = _reference(task, store)
-    if task.name == 'exponential-v2':
+    if family(task.name) == 'exponential':
         rows, candidate = _exp2(task, store, record, partial)
     else:
         rows, candidate = _rows(task, store, record, partial), None
@@ -329,11 +335,11 @@ def evaluate(task, store: Store, runtime: dict, source: Path, slot: str, cap: fl
     ref_rows = [r for r in reference['rows'] if r['id'] in ids]
     total_cases = len(reference['rows'])
 
-    if task.name == 'conic':
+    if family(task.name) == 'conic':
         def score_of(mine, theirs):
             return conic_score(sum(r['accuracy'] for r in mine) / len(mine), sum(r['accuracy'] for r in theirs) / len(theirs)) \
                 if mine and theirs else None
-    elif task.name == 'exponential-v2':
+    elif family(task.name) == 'exponential':
         def score_of(mine, theirs):
             if not mine:
                 return None
@@ -349,7 +355,7 @@ def evaluate(task, store: Store, runtime: dict, source: Path, slot: str, cap: fl
             return mapped(task.name, mine, [weak[r['id']] for r in mine if r['id'] in weak], theirs)
 
     total = score_of(rows, ref_rows)
-    if task.name == 'exponential-v2' and all(r['status'] == 'passed' for r in rows):
+    if family(task.name) == 'exponential' and all(r['status'] == 'passed' for r in rows):
         cases = [c for c in task.cases() if c['id'] in ids]
         if any(c['role'] == 'scored' for c in cases):  # the formal hierarchical mean, as in the final score
             total = task.scoring().score_submission(cases, candidate['aggregates'],
