@@ -827,11 +827,16 @@ def develop(spec: dict, runtime: dict) -> dict:
             )
             processes.append(serve)
             _wait_port(port, serve)
+            # Retries transient upstream rate limits (arena/atr_relay.py); v6 used a plain socat relay here.
             relay = subprocess.Popen(
-                ['socat', f'UNIX-LISTEN:{socket_dir}/atr.sock,fork,mode=666', f'TCP:127.0.0.1:{port}'],
-                stdout=subprocess.DEVNULL, stderr=(output / 'socat.log').open('wb'),
+                [sys.executable, '-m', 'arena.atr_relay', f'{socket_dir}/atr.sock', str(port), str(output / 'relay.jsonl')],
+                cwd=ROOT, stdout=subprocess.DEVNULL, stderr=(output / 'relay.log').open('wb'),
             )
             processes.append(relay)
+            for _ in range(100):
+                if (socket_dir / 'atr.sock').exists():
+                    break
+                time.sleep(0.05)
         create = [
             *docker.prefix, 'create', '--name', name, '--network', 'none', '--read-only', '--cap-drop', 'ALL',
             '--security-opt', 'no-new-privileges:true', '--cgroupns', 'private',
