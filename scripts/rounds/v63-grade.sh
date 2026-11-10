@@ -28,7 +28,7 @@ frozen() { python3 -c "import json,sys;r=[json.loads(l) for l in open(sys.argv[1
 
 # Timing-sensitive held-out grading waits until no development runs (docs/platform/CONCURRENCY.md section 7).
 TIMED="conic exponential-v3 polarization-demosaicking-v2"
-attempts_running() { pgrep -f "scripts/rounds/v63-sol.sh" > /dev/null; }
+attempts_running() { pgrep -f "scripts/rounds/v63-sol.sh|v63-singles-lane" > /dev/null; }
 isolation() { case " $TIMED " in *" $1 "*) echo dev_idle;; *) echo shared;; esac; }
 
 suite() {  # task, submission|--reference -> suite id; grades it now
