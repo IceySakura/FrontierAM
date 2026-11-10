@@ -44,7 +44,7 @@ tasks/<题目>/
 └── analysis/        这道题的专题分析与复核记录
 ```
 
-新题：复制一个现有题目目录的结构，写 `versions/v1/` 与 `meta.json`；改版：新增 `versions/v2/` 并写明原因；参照升级：新增 `references/r2/`。生成 README 与看板：`scripts/site/build_task_pages.py`、`scripts/site/build_dashboard.py`。
+**增加题目、检查或修改现有题目**：流程见 [`docs/TASK_CHANGES.md`](docs/TASK_CHANGES.md)。
 
 ## 最终得分约定（所有题目）
 

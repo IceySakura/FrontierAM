@@ -37,6 +37,14 @@
 
 公开包中的数据文件未复制到仓库，清单见 `versions/v2/public/DATA_FILES.md`。
 
+## 数据划分（协议 v6.3 草案）
+
+| 层 | 内容 |
+| --- | --- |
+| samples（给模型） | syn_diffusion2d_p4_k1, syn_geometric_p4_k1, syn_heavytail_p4_k1, syn_logspectrum_p4_k1, syn_signed_p4_k1, control_diagonal |
+| public（不给，反馈用） | 74 例全尺寸公开集（dataset/cases/public） |
+| 反馈分类 | 结构族（manifest 的 family 字段）：mesh_diffusion / standard_fem / geometric_graph / standard_graph / network_operator / signed_incidence / diagonal_local / analytic |
+
 ## 评测依据
 
 - **输入**：会话给定稀疏矩阵 \(L\)（\(n\) 为 3.5 万–12 万，非零元最多约 90 万）、时间 \(t\) 和精度档；依次收到 1 个（one_shot）或 16 个（reuse）右端向量对，每次返回完整向量。

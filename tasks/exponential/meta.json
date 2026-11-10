@@ -105,5 +105,17 @@
     "grader": "arena/exponential_v2.py（流式接口、精度检查、计时、virtual best）",
     "references": "references/r1/（7 个成员：Expokit、KIOPS、expmv、SciPy、Chebyshev、SLEPc、ExponentialUtilities.jl；标定 references/r1/calibration/）；复核中的候选 references/candidates/"
   },
-  "name": "exponential"
+  "name": "exponential",
+  "v63_data": {
+    "samples": [
+      "syn_diffusion2d_p4_k1",
+      "syn_geometric_p4_k1",
+      "syn_heavytail_p4_k1",
+      "syn_logspectrum_p4_k1",
+      "syn_signed_p4_k1",
+      "control_diagonal"
+    ],
+    "public": "74 例全尺寸公开集（dataset/cases/public）",
+    "groups": "结构族（manifest 的 family 字段）：mesh_diffusion / standard_fem / geometric_graph / standard_graph / network_operator / signed_incidence / diagonal_local / analytic"
+  }
 }

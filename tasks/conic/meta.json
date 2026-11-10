@@ -104,5 +104,16 @@
     "grader": "versions/*/package/tests/（题包自带评测器）；本机重标定时限见 versions/original/local_recal/",
     "references": "references/r1/clarabel/（Clarabel 0.11.1）"
   },
-  "name": "conic"
+  "name": "conic",
+  "v63_data": {
+    "samples": [
+      "dev-8396c2285236 (linear)",
+      "dev-03815674e04a (quadratic)",
+      "dev-4a42fbac0fcf (soc)",
+      "dev-afa1453420cc (psd)",
+      "dev-610c3f371053 (exponential)"
+    ],
+    "public": "163 例公开开发集",
+    "groups": "linear / quadratic / soc / psd / exponential（manifest 的 group 字段）"
+  }
 }

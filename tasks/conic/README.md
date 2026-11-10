@@ -35,6 +35,14 @@
 | 评测器 | versions/*/package/tests/（题包自带评测器）；本机重标定时限见 versions/original/local_recal/ |
 | 参照实现 | references/r1/clarabel/（Clarabel 0.11.1） |
 
+## 数据划分（协议 v6.3 草案）
+
+| 层 | 内容 |
+| --- | --- |
+| samples（给模型） | dev-8396c2285236 (linear), dev-03815674e04a (quadratic), dev-4a42fbac0fcf (soc), dev-afa1453420cc (psd), dev-610c3f371053 (exponential) |
+| public（不给，反馈用） | 163 例公开开发集 |
+| 反馈分类 | linear / quadratic / soc / psd / exponential（manifest 的 group 字段） |
+
 ## 评测依据
 
 - **输入**：每个实例给出稀疏矩阵 \(P, A\)、向量 \(q, b\) 和锥块列表；求解程序每次在新进程中处理一个实例。

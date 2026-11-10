@@ -48,5 +48,14 @@
     "grader": "维护包 harbor/polarization-demosaicking/grade_submission.py（只改 CPU 检查；评分前预热镜像文件缓存，quiet 隔离）",
     "references": "references/r1/（逐方向双线性；镜像 LEIC）"
   },
-  "name": "polarization-demosaicking"
+  "name": "polarization-demosaicking",
+  "v63_data": {
+    "samples": [
+      "check.py 的两组合成样例",
+      "wen-001",
+      "wen-002"
+    ],
+    "public": "Wen 2019 反馈集 105 景",
+    "groups": null
+  }
 }

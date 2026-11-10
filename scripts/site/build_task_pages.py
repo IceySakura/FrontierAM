@@ -165,6 +165,11 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
               f'| 评测器 | {loc["grader"]} |', f'| 参照实现 | {loc["references"]} |', '']
     if listed:
         lines += [f'公开包中的数据文件未复制到仓库，清单见 `versions/{cur}/public/DATA_FILES.md`。', '']
+    if meta.get('v63_data'):
+        d = meta['v63_data']
+        lines += ['## 数据划分（协议 v6.3 草案）', '', '| 层 | 内容 |', '| --- | --- |',
+                  f'| samples（给模型） | {", ".join(d["samples"])} |', f'| public（不给，反馈用） | {d["public"]} |',
+                  f'| 反馈分类 | {d["groups"] or "不分类，只报总计"} |', '']
     lines += ['## 评测依据', '', meta['judge_md'], '', '## Baseline', '', meta['baseline_md'], '',
               '## 模型成绩与解法（协议 v6.2）', '',
               '| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- | --- |']

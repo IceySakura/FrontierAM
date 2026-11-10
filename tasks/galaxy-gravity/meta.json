@@ -64,5 +64,13 @@
     "grader": "原包评测器 tasks/galaxy-gravity/harbor/tests/grade.py（只改输入大小检查与架构检查）",
     "references": "references/r1/（两条 Treecode2 参照）；复核中的候选 references/candidates/（Dehnen 式高阶 FMM）"
   },
-  "name": "galaxy-gravity"
+  "name": "galaxy-gravity",
+  "v63_data": {
+    "samples": [
+      "smoke",
+      "case-01"
+    ],
+    "public": "10 张公开快照",
+    "groups": "Hernquist / Jaffe / Einasto / disc / group（各 2 张）"
+  }
 }

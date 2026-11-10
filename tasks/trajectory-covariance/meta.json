@@ -48,5 +48,13 @@
     "grader": "出题方包的验证器（arena/operator_drivers/trajectory_batch.py 启动其验证容器）",
     "references": "references/r1/（OBM，R 包 mcmcse；VAR(1)）；人类候选参照 references/candidates/"
   },
-  "name": "trajectory-covariance"
+  "name": "trajectory-covariance",
+  "v63_data": {
+    "samples": [
+      "01",
+      "02"
+    ],
+    "public": "反馈池：每种情形最后 10 条母链 × 5 个前缀，共 300 个输入（与正式子集不相交）",
+    "groups": "六种情形（三种模拟 / 三种真实采样）"
+  }
 }

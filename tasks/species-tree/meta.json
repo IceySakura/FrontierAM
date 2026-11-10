@@ -64,5 +64,13 @@
     "grader": "原包 1.0.1 的批量评测器与沙箱（物种数改为 250，时限 180 秒）",
     "references": "references/r1/（TREE-QMC 3.0.4 不加权 / 加权；锚点 anchors-private.json、anchors-public.json）"
   },
-  "name": "species-tree"
+  "name": "species-tree",
+  "v63_data": {
+    "samples": [
+      "001",
+      "002"
+    ],
+    "public": "50 个公开用例",
+    "groups": null
+  }
 }

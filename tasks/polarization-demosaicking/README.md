@@ -32,6 +32,14 @@
 | 评测器 | 维护包 harbor/polarization-demosaicking/grade_submission.py（只改 CPU 检查；评分前预热镜像文件缓存，quiet 隔离） |
 | 参照实现 | references/r1/（逐方向双线性；镜像 LEIC） |
 
+## 数据划分（协议 v6.3 草案）
+
+| 层 | 内容 |
+| --- | --- |
+| samples（给模型） | check.py 的两组合成样例, wen-001, wen-002 |
+| public（不给，反馈用） | Wen 2019 反馈集 105 景 |
+| 反馈分类 | 不分类，只报总计 |
+
 ## 评测依据
 
 - **输入**：1024×1024 的 `uint8` 马赛克，滤片相位固定（偶偶 90°、偶奇 45°、奇偶 135°、奇奇 0°）。
