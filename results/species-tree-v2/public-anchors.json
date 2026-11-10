@@ -1,0 +1,22 @@
+{
+ "reference_suite": "suite-species-tree-v2-20261110T014539Z-be90df",
+ "weak": {
+  "status": "ok",
+  "missed_splits": 1957,
+  "denominator": 12350,
+  "cases": 50,
+  "failed_cases": 0,
+  "reasons": [],
+  "raw_error": 0.15846153846153846
+ },
+ "strong": {
+  "status": "ok",
+  "missed_splits": 1750,
+  "denominator": 12350,
+  "cases": 50,
+  "failed_cases": 0,
+  "reasons": [],
+  "raw_error": 0.1417004048582996
+ },
+ "anchors_ok": true
+}

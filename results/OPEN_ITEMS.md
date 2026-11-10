@@ -11,6 +11,7 @@
 | galaxy-gravity 规模 | 粒子数 65,536 → 131,072，保持 5 CPU 秒。评测核复测：弱参照单次最多 4.05 CPU 秒（余量 19%，低于约定的 25%），按约定后续尝试改为 6 CPU 秒；本轮两份提交在 5 秒下开发和评测，成绩按 5 秒保留 | `GALAXY_SCALE.md`、`NEW_TASKS.md` 第 5 节 |
 | galaxy-gravity-v2 的区分度 | sol、opus 都用高阶快速多极方法达到 1e-7 以下误差（99.99 分以上），现映射在强参照以下压缩为 100 − 50·L/强，无法区分强解法；需反馈出题人（例如改用误差对数或给定误差下的耗时计分），本轮不改 | `NEW_TASKS.md` 第 5 节 |
 | species-tree 新版本 | 自建 S100 式模拟（已校准），250 个物种、200 个正式用例、每例 120 秒，新的公开开发集；已评分 | `SPECIES_TREE_SIM.md`、`SPECIES_TREE_SCALE.md` |
+| species-tree-v2 公开反馈 | 公开反馈评测器为 `FRONTIERAM_SPECIES_V2_DATA=public`（50 个公开用例）；基线已在评测核上测得 U = 0.158462、W = 0.141700（`results/species-tree-v2/public-anchors.json`）。v6.2 只对 conic 和 exponential-v2 开迭代设置，species 暂不接入 `public-eval` 命令，需要时再接 | `NEW_TASKS.md` 第 5 节 |
 | species-tree-v2 时限 | 加权参照每例最多 105.5 秒（上限 120 秒，余量 12%），200/200 例通过；本轮保持 120 秒，下一轮建议 180 秒 | `NEW_TASKS.md` 第 5 节 |
 | trajectory-covariance 正式规模 | 继续用固定的 10% 分层子集（3,000 个输入）作为正式成绩；全量 3 万例只在需要时分片评测 | `NEW_TASKS.md` |
 | trajectory-covariance 公开反馈集 | 公开开发集只有 2 条练习轨迹，不具代表性；NUTS 采样器只有 macOS ARM64 二进制，无法在本机重生成。从每档第 991–1000 条母链（不参与正式评分）中取 300 个输入作为反馈池，agent 只看到误差、看不到数据；已实现（`FRONTIERAM_TRAJ_POOL=feedback`），核对与正式子集零重叠 | 本文件 |
