@@ -7,7 +7,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 <!-- board:start -->
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
 | --- | --- | --- | --- | --- |
-| [conic](tasks/conic/README.md) | 0.0 | 0.0 | 24.7 / 18.8 | 41.2 |
+| [conic](tasks/conic/README.md) | 0.0 | 0.0 | 24.7 / 18.8 / 0.0 | 41.2 |
 | [exponential](tasks/exponential/README.md) | 0.0 / 0.0 / 56.9* | 62.9* | 70.8* / 60.3* / 51.7* | 69.1* |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 100.0† |  | 100.0† |  |
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 55.9* |  |
@@ -20,7 +20,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
 | --- | --- | --- | --- | --- |
-| [conic](tasks/conic/README.md) | 120 分钟 | 5 次提交，120 分钟 | 88 分钟 / 90 分钟 | 5 次提交，80 分钟 |
+| [conic](tasks/conic/README.md) | 120 分钟 | 5 次提交，120 分钟 | 88 分钟 / 90 分钟 / 57 分钟 | 5 次提交，80 分钟 |
 | [exponential](tasks/exponential/README.md) | 23 分钟 / 4 分钟 / 100 分钟 | 4 次提交，68 分钟 | 62 分钟 / 53 分钟 / 76 分钟 | 10 次提交，60 分钟 |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 106 分钟 |  | 63 分钟 |  |
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 46 分钟 |  |

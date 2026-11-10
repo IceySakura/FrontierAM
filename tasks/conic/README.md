@@ -65,6 +65,7 @@
 | Claude Opus 5.5 | 单轮 | 487 / 650（\(p = 0.749\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\) | 24.7 |  | 88 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | 504 / 650（\(p = 0.775\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\) | 41.2 |  | 5 次提交，80 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.2/claude-opus-5-5-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 481 / 650（\(p = 0.740\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\) | 18.8 |  | 90 分钟 | [`claude-opus-5-5-single-2/`](solutions/v6.2/claude-opus-5-5-single-2/) |
+| Claude Opus 5.5 | 单轮 | 390 / 650（\(p = 0.600\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\) | 0.0 |  | 57 分钟 | [`claude-opus-5-5-single-3/`](solutions/v6.2/claude-opus-5-5-single-3/) |
 
 超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
 
@@ -95,6 +96,10 @@ Python + C++ 辅助模块的锥求解器。5 次公开集测试（其中两次�
 ### Claude Opus 5.5（单轮）
 
 源码 [`solutions/v6.2/claude-opus-5-5-single-2/source/`](solutions/v6.2/claude-opus-5-5-single-2/source/)（提交 `conic-20261110T044139Z-e1ef6c`）；未复制的二进制或大文件：libkkt.so（19,952 字节）。
+
+### Claude Opus 5.5（单轮）
+
+源码 [`solutions/v6.2/claude-opus-5-5-single-3/source/`](solutions/v6.2/claude-opus-5-5-single-3/source/)（提交 `conic-20261110T041406Z-762c81`）；未复制的二进制或大文件：bin/conic_solver（184,888 字节）。
 
 ## 观察与说明
 
