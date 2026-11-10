@@ -16,7 +16,7 @@ from pathlib import Path
 from arena.cli import context, placement_for
 
 IMAGE = 'frontieram-species-tree:amd64-b1'
-ROOT = Path(__file__).resolve().parents[4]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def worker(broker, layout, jobs: queue.Queue, out: Path, index: int, image: str, mounts: list[str]) -> None:
