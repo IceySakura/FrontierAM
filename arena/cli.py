@@ -58,9 +58,13 @@ def placement_for(lease: Lease, layout: dict) -> Placement:
 
 
 def run_in_slot(lease: Lease, spec: dict, spec_path: Path, log: Path, extra_fds: tuple[int, ...] = ()) -> int:
-    """Run one job pinned to the slot's host CPU inside the partition; the lease descriptor goes with it."""
+    """Run one job pinned to the slot's host CPU inside the partition; the lease descriptor goes with it.
+
+    spec['cap_s'] (protocol v6.3 held-out grading, results/EVAL_TIME_LIMITS.md) stops the whole job at the cap.
+    """
     write_json(spec_path, spec)
     unit = f'frontieram-{spec["mode"]}-{spec_path.parent.name}'[:200]
+    cap = ['-p', f'RuntimeMaxSec={int(spec["cap_s"])}'] if spec.get('cap_s') else []
     command = [
         'systemd-run',
         '--scope',
@@ -68,6 +72,7 @@ def run_in_slot(lease: Lease, spec: dict, spec_path: Path, log: Path, extra_fds:
         '--collect',
         f'--unit={unit}',
         f'--slice={machine.SLICES["host"]}',
+        *cap,
         '-p',
         f'AllowedCPUs={lease.host_cpu}',
         '--',
@@ -102,6 +107,9 @@ def context() -> tuple[dict, Broker, dict]:
 
 
 # Development -------------------------------------------------------------------------------------------------------
+
+# Protocol v6.3: a held-out evaluation never runs longer than this (results/EVAL_TIME_LIMITS.md).
+V63_PRIVATE_CAP_S = 3600
 
 
 def develop_one(layout, broker, runtime, store, args, index: int) -> dict:
@@ -148,7 +156,8 @@ def develop_one(layout, broker, runtime, store, args, index: int) -> dict:
         shutil.copy2(frozen / 'source.tar', directory / 'source.tar')
         shutil.copy2(frozen / 'source_manifest.json', directory / 'source_manifest.json')
         store.update_submission(submission_id, status='frozen', source_sha256=sha(directory / 'source.tar'))
-        job = store.enqueue(submission_id) if not args.no_grade else None
+        cap = {'cap_s': V63_PRIVATE_CAP_S} if getattr(args, 'protocol', None) == 'v6.3' else None
+        job = store.enqueue(submission_id, extra=cap) if not args.no_grade else None
     elif result.get('task_status') == 'invalid_submission':
         store.update_submission(submission_id, status='invalid_submission', score=0.0)
         job = None
@@ -249,8 +258,16 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
             'archive': str(archive),
             'paired_reference': str(paired) if paired else None,
             'case_ids': job.get('case_ids'),
+            'cap_s': job.get('cap_s'),
         }
+        started_run = time.monotonic()
         code = run_in_slot(lease, spec, results / 'spec.json', results / 'job.log', extra_fds=(job['lock_fd'],))
+        capped = bool(job.get('cap_s')) and time.monotonic() - started_run >= job['cap_s'] - 5
+        if capped:  # the slot's private daemon may still run the job's containers
+            names = subprocess.run(['docker', '--host', placement.docker_host, 'ps', '-aq'], capture_output=True,
+                                   text=True, timeout=60).stdout.split()
+            if names:
+                subprocess.run(['docker', '--host', placement.docker_host, 'rm', '-f', *names], capture_output=True, timeout=120)
         isolation = {'policy': lease.isolation, 'held_idle': [slot_id for slot_id, _ in lease.held]}
         after = broker.leases()
     metrics_path = results / 'grade/metrics.json'
@@ -273,9 +290,11 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
         'concurrent_leases_at_end': [r for r in after if r.get('slot') != lease.id],
     }
     if code or not metrics_path.exists():
-        record.update(status='unmeasured', reason='grading_job_failed')
+        # Past the cap the evaluation is not measured: the limits were designed to fit it, so this needs a look.
+        reason = 'evaluation_cap' if capped else 'grading_job_failed'
+        record.update(status='unmeasured', reason=reason)
         write_json(results / 'result.json', record)
-        return store.finish(job, 'failed', status='unmeasured', reason='grading_job_failed')
+        return store.finish(job, 'failed', status='unmeasured', reason=reason)
     metrics = read_json(metrics_path)
     write_json(results / 'result.json', record)
     if job['kind'] == 'baseline':
@@ -476,7 +495,8 @@ def cmd_suite(args) -> dict:
     # reference and every candidate, so per-slot conditions apply to both sides alike.
     jobs = [
         store.enqueue(submission, kind='shard', isolation=args.isolation, note=f'{suite_id} shard {i + 1}/{len(shards)}',
-                      extra={'suite': suite_id, 'case_ids': ids, 'slot': slot, 'priority': getattr(args, 'priority', False)},
+                      extra={'suite': suite_id, 'case_ids': ids, 'slot': slot, 'priority': getattr(args, 'priority', False),
+                             'cap_s': getattr(args, 'cap_s', None)},
                       queue='held' if args.hold else 'pending')
         for i, (ids, slot) in enumerate(zip(shards, slots))
     ]
@@ -878,6 +898,7 @@ def main() -> None:
     suite.add_argument('--isolation', default='shared', choices=['shared', 'grade_pool', 'quiet'])
     suite.add_argument('--slots', help='comma-separated grade slot per shard, e.g. grade-06,grade-14,grade-22,grade-30')
     suite.add_argument('--hold', action='store_true', help='write the shards to jobs/held instead of the queue')
+    suite.add_argument('--cap-s', type=float, default=None, help='stop each shard at this many seconds (v6.3: 3600)')
     suite.add_argument('--cases', help='JSON list of case IDs: grade this subset, each case in its full-suite shard')
     suite_report = sub.add_parser('suite-report')
     suite_report.add_argument('--suite', required=True)
