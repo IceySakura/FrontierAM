@@ -1,7 +1,8 @@
 """Seal exponential-v3, the protocol v6.3 version of exponential-v2 (results/EVAL_TIME_LIMITS.md, results/PROTOCOL_V63.md).
 
 Same data, panel, image, evaluator and scorer as exponential-v2, with three changes:
-  - per-session limits: one_shot 60 -> 15 s, reuse 240 -> 60 s, READY startup 15 -> 10 s (evaluator, local runner,
+  - per-session limits: one_shot 60 -> 15 s, reuse 240 -> 150 s, READY startup 15 -> 10 s (reuse: 1.25 x the panel's slowest
+    virtual-best session, 118 s on syn_geometric_p7_k16) (evaluator, local runner,
     scorer, RULES.json and the documents that state them); every edit must match exactly once;
   - the workspace: documents, tools, SDK, starter and samples/ (meta.json v63_data samples from the smoke set);
     the full smoke set and the full-size public cases (dev_full/, part of the public-feedback set) are no longer given;
@@ -32,7 +33,7 @@ TOOL_EDITS = {
         ('def run_session(command, case_path, repeat=1, *, startup_timeout=15.0,',
          'def run_session(command, case_path, repeat=1, *, startup_timeout=10.0,'),
         ('    cap = 60.0 if metadata["scenario"] == "one_shot" else 240.0',
-         '    cap = 15.0 if metadata["scenario"] == "one_shot" else 60.0'),
+         '    cap = 15.0 if metadata["scenario"] == "one_shot" else 150.0'),
         ('    for value, name, upper in ((startup_timeout, "startup_timeout", 15.0),',
          '    for value, name, upper in ((startup_timeout, "startup_timeout", 10.0),'),
     ],
@@ -40,18 +41,18 @@ TOOL_EDITS = {
         ('"one_shot": {"wall_seconds": 60.0, "cpu_seconds": 60.0, "requests": 1},',
          '"one_shot": {"wall_seconds": 15.0, "cpu_seconds": 15.0, "requests": 1},'),
         ('"reuse": {"wall_seconds": 240.0, "cpu_seconds": 240.0, "requests": 16},',
-         '"reuse": {"wall_seconds": 60.0, "cpu_seconds": 60.0, "requests": 16},'),
+         '"reuse": {"wall_seconds": 150.0, "cpu_seconds": 150.0, "requests": 16},'),
     ],
 }
 EVALUATOR_EDITS = [
     ('startup_timeout=15, wall_timeout=None, cpu_timeout=None,', 'startup_timeout=10, wall_timeout=None, cpu_timeout=None,'),
-    ("    cap = 60 if metadata['requests'] == 1 else 240", "    cap = 15 if metadata['requests'] == 1 else 60"),
+    ("    cap = 60 if metadata['requests'] == 1 else 240", "    cap = 15 if metadata['requests'] == 1 else 150"),
     ('for val, upper in ((wall_timeout, cap), (cpu_timeout, cap), (startup_timeout, 15)):',
      'for val, upper in ((wall_timeout, cap), (cpu_timeout, cap), (startup_timeout, 10)):'),
 ]
 DOC_EDITS = {
     'task/V2.md': [
-        ('（one_shot 60 秒，reuse 240 秒）', '（one_shot 15 秒，reuse 60 秒）'),
+        ('（one_shot 60 秒，reuse 240 秒）', '（one_shot 15 秒，reuse 150 秒）'),
         ('## 3. 公开开发数据', '## 3. 样例数据'),
         ('- `dev/`：缩小规模的冒烟集，56 个用例（8 个母算子 × 3 精度 × 2 场景，加 8 个解析控制例），覆盖全部结构族与场景。\n',
          '- `samples/`：缩小规模的样例，6 个用例（5 个合成结构族各 1 例，加 1 个解析控制例）。\n'),
@@ -60,7 +61,7 @@ DOC_EDITS = {
     ],
     'task/INSTRUCTION.md': [
         ('| one_shot | 数值会话墙钟60秒；整个进程CPU累计60秒，包含初始化 |', '| one_shot | 数值会话墙钟15秒；整个进程CPU累计15秒，包含初始化 |'),
-        ('| reuse | 数值会话墙钟240秒；整个进程CPU累计240秒，包含初始化 |', '| reuse | 数值会话墙钟60秒；整个进程CPU累计60秒，包含初始化 |'),
+        ('| reuse | 数值会话墙钟240秒；整个进程CPU累计240秒，包含初始化 |', '| reuse | 数值会话墙钟150秒；整个进程CPU累计150秒，包含初始化 |'),
         ('python tools/run_local.py --manifest dev/manifest.json', 'python tools/run_local.py --manifest samples/manifest.json'),
     ],
     'task/API.md': [('初始化墙钟最多15秒', '初始化墙钟最多10秒')],
@@ -114,7 +115,7 @@ def workspace(parent_tar: Path) -> dict[str, bytes]:
         members[f'task/tools/{name}'] = text.encode()
     rules = json.loads(members['task/RULES.json'])
     rules['scenarios']['one_shot'].update(wall_seconds=15, cpu_seconds=15)
-    rules['scenarios']['reuse'].update(wall_seconds=60, cpu_seconds=60)
+    rules['scenarios']['reuse'].update(wall_seconds=150, cpu_seconds=150)
     rules['session']['startup_wall_seconds'] = 10
     members['task/RULES.json'] = (json.dumps(rules, indent=2) + '\n').encode()
     return members
@@ -180,7 +181,7 @@ def main():
             if relative in lock['files'] or relative == 'data/manifest.json':
                 lock['files'][relative] = sha_bytes((seal / relative).read_bytes())
         lock.update(schema=lock.get('schema'), public_tar_sha256=lock['files']['public.tar'], task='exponential-v3',
-                    derived_from=parent.name, v63={'one_shot_s': 15, 'reuse_s': 60, 'startup_s': 10, 'samples': SAMPLES,
+                    derived_from=parent.name, v63={'one_shot_s': 15, 'reuse_s': 150, 'startup_s': 10, 'samples': SAMPLES,
                                                    'public_cases': kept})
         (seal / 'lock.json').write_text(json.dumps(lock, indent=1) + '\n')
         print(json.dumps({'sealed': str(seal), 'public_cases': len(kept) if kept else None}))

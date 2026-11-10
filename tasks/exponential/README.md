@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | `v1` | `exponential` | 旧版：解释器中单个 KIOPS 作参考、私有用例几千维；已由 v2 取代 |
 | `v2` | `exponential-v2` | 对标 7 个已发表方法的参照组；数据集与设计见 versions/v2/（当前版本） |
-| `v3` | `exponential-v3` | 协议 v6.3 版本：单请求 15 秒、复用 60 秒、启动 10 秒；public 反馈 16 例；工作区只含 6 个样例（scripts/seal/prepare_exp_v3.py） |
+| `v3` | `exponential-v3` | 协议 v6.3 版本：单请求 15 秒、复用 150 秒、启动 10 秒；public 反馈 16 例；工作区只含 6 个样例（scripts/seal/prepare_exp_v3.py） |
 
 ## 题目背景
 

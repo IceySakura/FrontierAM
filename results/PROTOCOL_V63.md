@@ -43,7 +43,7 @@ Public-set score: 47.0 / 100 (reference = 50, same mapping as the final score).
 | task | 版本（评测系统中的名字） | samples | public（反馈） | 分类 | 时限与规模的改动（`results/EVAL_TIME_LIMITS.md`） |
 | --- | --- | --- | --- | --- | --- |
 | conic | v3（`conic`，运行副本 `.runtime-conic-v3`，反馈 `.runtime-conic-v3-public`） | 每类最小 1 例，共 5 例 | 145 例 | 锥类型 | 参照解不出的用例 300 → 18 秒 |
-| exponential | v3（`exponential-v3`，`.runtime-exp3`，反馈 `.runtime-exp3-public`） | 6 例 | 16 例 | 结构族 | 单请求 15 秒、复用 60 秒、启动 10 秒 |
+| exponential | v3（`exponential-v3`，`.runtime-exp3`，反馈 `.runtime-exp3-public`） | 6 例 | 16 例 | 结构族 | 单请求 15 秒、复用 150 秒、启动 10 秒 |
 | galaxy-gravity | v3（`galaxy-gravity-v3`） | smoke + case-01 | 10 张快照 | 场景 | 参照 r2（高阶 FMM）为 50 分锚点，对数刻度 |
 | polarization-demosaicking | v2（`polarization-demosaicking-v2`） | 合成样例 + 2 景 | 105 景 | 不分类 | 无 |
 | species-tree | v3（`species-tree-v3`） | 001、002 | 001–005 | 不分类 | 每例 135 秒；private 96 例 |

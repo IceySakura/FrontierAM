@@ -3,5 +3,5 @@
   "runtime": ".runtime-exp3",
   "public_feedback_runtime": ".runtime-exp3-public",
   "task": "exponential-v3",
-  "note": "scripts/seal/prepare_exp_v3.py：单请求 15 秒、复用 60 秒、启动 10 秒；public 反馈 16 例；工作区只含 6 个样例"
+  "note": "scripts/seal/prepare_exp_v3.py：单请求 15 秒、复用 150 秒、启动 10 秒；public 反馈 16 例；工作区只含 6 个样例"
 }
