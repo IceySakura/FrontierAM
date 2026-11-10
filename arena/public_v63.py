@@ -30,8 +30,10 @@ ROOT = Path(__file__).resolve().parents[1]
 STORE = ROOT / 'var/stores/store-public-v63'
 # Public data switches (the graders read them at grading time) and the store each task's public grading uses.
 PUBLIC = {
+    # conic v3 (scripts/seal/prepare_conic_v3.py): the public-feedback runtime holds a subset of the v2 public cases,
+    # so the v2 public reference measurement in the same store anchors it.
     'conic': {'family': 'conic', 'store': ROOT / 'var/stores/store-public-conic',
-              'env': {'FRONTIERAM_RUNTIME': str(ROOT / '.runtime-conic-public')}},
+              'env': {'FRONTIERAM_RUNTIME': str(ROOT / '.runtime-conic-v3-public')}},
     'exponential-v2': {'family': 'exponential', 'store': ROOT / 'var/stores/store-public-exp2',
                        'env': {'FRONTIERAM_EXP2_SEAL': str(ROOT / '.runtime-exp2-public')}},
     # Same public cases (a subset) and panel as v2, so the v2 public panel measurement is the reference.

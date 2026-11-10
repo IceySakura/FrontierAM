@@ -1,0 +1,7 @@
+{
+  "protocol": "v6.3",
+  "runtime": ".runtime-conic-v3",
+  "public_feedback_runtime": ".runtime-conic-v3-public",
+  "task": "conic",
+  "note": "scripts/seal/prepare_conic_v3.py：参照解不出的用例时限 300 → 18 秒；public 反馈 145 例；工作区只含 5 个样例"
+}
