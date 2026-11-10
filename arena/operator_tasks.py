@@ -174,8 +174,10 @@ class GalaxyGravityV2(GalaxyGravity):
 
 class PolarizationDemosaicking(OperatorTask):
     grade_memory = 10 * GIB
-    # Each scene has a 1.000-second wall limit including interpreter start-up, so no other grader runs meanwhile.
-    grade_isolation = 'grade_pool'
+    # Each scene has a 1.000-second wall limit including interpreter start-up, about 0.6 s of which a typical
+    # submission uses; with development sessions running on the L3-sharing dev cores, scenes spiked to 0.9-1.0 s
+    # (results/polarization-first-scene.json), so the whole machine is kept quiet.
+    grade_isolation = 'quiet'
 
     # FRONTIERAM_POLAR_DATA=wen grades the public-feedback scenes instead (protocol v6.2; results/OPEN_ITEMS.md).
     feedback = OPS / 'polarization-demosaicking-feedback'

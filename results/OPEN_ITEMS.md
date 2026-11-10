@@ -24,3 +24,5 @@
 | 第 5 轮 sol 尝试遇到上游限流 | 11-10 11:11 同时启动 4 个 gpt-6.1-sol 会话，其中 3 个（exponential-v2 第 3 次、polarization、trajectory）在约 25–33 分钟时因上游 429 Too Many Requests 超过重试上限、harness 退出：属基础设施故障，记为未测、不评分；按每次最多 2 个 sol 会话重跑（`scripts/round5-sol-retry.sh`）。opus 会话也出现过少量 429，均重试成功 | 本文件 |
 | sol 的极短会话 | sol 的 exponential-v2 第 2 次单轮尝试 4.5 分钟结束回合（与 11-09 的 species-tree-v2 4.4 分钟、exponential-v2 重跑 23 分钟同一模式）：模型名、推理强度（max）、提示与 2 小时的会话完全相同，无限流或错误，每次请求的推理 token 明显更少；判为模型自身行为，尝试有效 | 本文件 |
 | 超过参照的成绩 | 一律标“待复核”，按 `BASELINE_POLICY.md` 第 6 条复核，记录在 `BASELINE_REVIEW.md` | `BASELINE_POLICY.md` |
+| polarization 评测隔离 | 11-10 预热验证：清掉镜像缓存后第一景 0.601 秒，不慢于其余各景（中位 0.618 秒），预热有效；但当时 8 个开发会话在运行，有三景跳到 0.91–1.0002 秒（一景超时）。每景上限 1 秒、正常约 0.6 秒，余量太小，评测隔离由 grade_pool 改为 quiet（评测期间开发核也保持空闲）。该次验证评分属受干扰的测量，不计成绩；待开发核空闲时在 quiet 条件下再验证一次 | `polarization-first-scene.json` |
+| galaxy 给出题人的核对包 | 出题人复测两份提交为 0 分。两份提交都用 x86-64 AVX2 内联函数与编译选项，在 Apple M5（ARM64）上无法编译，判断为差异根源；核对包 `outputs/galaxy-v2-for-author.tar.gz`（两份提交源码、算法说明、私有集逐次调用结果、公开快照逐张结果，不含私有数据） | 本文件 |
