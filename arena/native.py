@@ -319,6 +319,8 @@ SETTING_ITERATIVE = (
     'hidden held-out set determines your score; the public-set score is feedback.'
 )
 TEST_CAP_SECONDS = int(os.environ.get('FRONTIERAM_V62_TEST_CAP') or 900)  # override only for validation runs
+# v6.3: the cap counts from the moment the test holds a grade slot; this bounds queueing plus evaluation.
+TEST_WAIT_SECONDS = 3600
 # Measured full public evaluations of baseline-speed solutions on this machine (results/PROTOCOL_V62.md).
 TYPICAL_EVALUATION = {
     'conic': 'A full public evaluation of a solver about as fast and robust as the baseline takes about 6 minutes; '
@@ -655,7 +657,7 @@ class EvalServiceV63:
         if self.server is not None:
             self.server.close()
 
-    def drain(self, timeout: float = TEST_CAP_SECONDS + 600) -> None:
+    def drain(self, timeout: float = TEST_WAIT_SECONDS) -> None:
         """Wait for the last evaluation, so the attempt's record holds every test's outcome."""
         for thread in self.threads:
             thread.join(timeout=timeout)
@@ -724,7 +726,7 @@ class EvalServiceV63:
             with (directory / 'public-eval.log').open('wb') as log:
                 code = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
                                       env={**os.environ, **PUBLIC[self.task]['env']},
-                                      timeout=TEST_CAP_SECONDS + 600).returncode
+                                      timeout=TEST_WAIT_SECONDS).returncode
             path = directory / 'report/report.json'
             report = json.loads(path.read_text()) if path.exists() else None
             if code or report is None:
