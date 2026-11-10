@@ -5,6 +5,8 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 ## 榜单（协议 v6.2）
 
 <!-- board:start -->
+协议 v6.2。
+
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
 | --- | --- | --- | --- | --- |
 | [conic](tasks/conic/README.md) | 0.0 | 0.0 | 24.7 / 18.8 / 0.0 | 41.2 |

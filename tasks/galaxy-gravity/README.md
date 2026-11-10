@@ -74,13 +74,13 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 
 超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
 
-### GPT-6.1 Sol（单轮）
+### GPT-6.1 Sol（单轮，v6.2）
 
 二叉空间树上的高阶调和多极展开（16 阶）处理牛顿核，软化核与牛顿核之差用 10 阶笛卡尔展开，近场直接求和；按当前输入标定的代价模型选择精度，并带计时保护。误差比强参照小五个数量级。
 
 源码 [`solutions/v6.2/gpt-6.1-sol-single-1/source/`](solutions/v6.2/gpt-6.1-sol-single-1/source/)（提交 `galaxy-gravity-v2-20261109T132936Z-9e4112`）；未复制的二进制或大文件：solve（1,241,096 字节）。
 
-### Claude Opus 5.5（单轮）
+### Claude Opus 5.5（单轮，v6.2）
 
 笛卡尔坐标快速多极方法（FMM，双树遍历，11 阶展开，AVX2 向量化，Plummer 软化，双精度）。提交里没有 README。
 

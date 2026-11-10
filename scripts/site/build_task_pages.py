@@ -161,23 +161,27 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
         lines += ['## 数据划分（协议 v6.3）', '', '| 层 | 内容 |', '| --- | --- |',
                   f'| samples（给模型） | {", ".join(d["samples"])} |', f'| public（不给，反馈用） | {d["public"]} |',
                   f'| 反馈分类 | {d["groups"] or "不分类，只报总计"} |', '']
-    lines += ['## 评测依据', '', meta['judge_md'], '', '## Baseline', '', meta['baseline_md'], '',
-              '## 模型成绩与解法（协议 v6.2）', '',
-              '| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- | --- |']
-    for r, folder, _ in solutions:
-        score = '—' if r.get('score') is None else f'{r["score"]:.1f}'
-        review = r.get('review', '待复核') if (r.get('score') or 0) > 50 else ''
-        link = f'[`{folder}/`](solutions/v6.2/{folder}/)' if folder else ''
-        process = process_text(r.get('_process'), r.get('setting') == '迭代')
-        lines.append(f'| {MODEL.get(r["model"], r["model"])} | {r.get("setting", "")} | {r["raw"]} | {r["mapping"]} | {score} | {review} | {process} | {link} |')
-    lines += ['', '超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。', '']
-    for r, folder, omitted in solutions:
-        lines += [f'### {MODEL.get(r["model"], r["model"])}（{r.get("setting", "")}）', '']
-        if r.get('notes_md'):
-            lines += [r['notes_md'], '']
-        if folder:
-            note = f'源码 [`solutions/v6.2/{folder}/source/`](solutions/v6.2/{folder}/source/)（提交 `{r["submission"]}`）'
-            lines += [note + ('；未复制的二进制或大文件：' + '、'.join(omitted) if omitted else '') + '。', '']
+    lines += ['## 评测依据', '', meta['judge_md'], '', '## Baseline', '', meta['baseline_md'], '']
+    for protocol in PROTOCOLS:
+        rows = [(r, folder, omitted) for r, folder, omitted in solutions if r.get('protocol', 'v6.2') == protocol]
+        if not rows:
+            continue
+        lines += [f'## 模型成绩与解法（协议 {protocol}）', '',
+                  '| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- | --- |']
+        for r, folder, _ in rows:
+            score = '—' if r.get('score') is None else f'{r["score"]:.1f}'
+            review = r.get('review', '待复核') if (r.get('score') or 0) > 50 else ''
+            link = f'[`{folder}/`](solutions/{protocol}/{folder}/)' if folder else ''
+            process = process_text(r.get('_process'), r.get('setting') == '迭代')
+            lines.append(f'| {MODEL.get(r["model"], r["model"])} | {r.get("setting", "")} | {r["raw"]} | {r["mapping"]} | {score} | {review} | {process} | {link} |')
+        lines += ['', '超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。', '']
+        for r, folder, omitted in rows:
+            lines += [f'### {MODEL.get(r["model"], r["model"])}（{r.get("setting", "")}，{protocol}）', '']
+            if r.get('notes_md'):
+                lines += [r['notes_md'], '']
+            if folder:
+                note = f'源码 [`solutions/{protocol}/{folder}/source/`](solutions/{protocol}/{folder}/source/)（提交 `{r["submission"]}`）'
+                lines += [note + ('；未复制的二进制或大文件：' + '、'.join(omitted) if omitted else '') + '。', '']
     if meta.get('notes_md'):
         lines += ['## 观察与说明', '', meta['notes_md'], '']
     lines += ['---', '', '本文件由 `scripts/site/build_task_pages.py` 从 `meta.json` 生成。', '']
@@ -185,15 +189,18 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
 
 
 COLUMNS = [('gpt-6.1-sol', '单轮'), ('gpt-6.1-sol', '迭代'), ('claude-opus-5-5', '单轮'), ('claude-opus-5-5', '迭代')]
+PROTOCOLS = ('v6.3', 'v6.2')  # newest first; the board shows the newest one that has results
 
 
 def write_board(metas: list[dict], names: list[str]) -> None:
-    """Scoreboard of the latest protocol (v6.2) into README.md between the board markers."""
+    """Scoreboard of the newest protocol with results into README.md between the board markers."""
+    protocol = next(p for p in PROTOCOLS if any(g['title'].startswith(f'协议 {p}') and g['results']
+                                                 for m in metas for g in m['result_groups']))
     head = '| task | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in COLUMNS) + ' |'
     rule = '| --- |' + ' --- |' * len(COLUMNS)
     scores, process = [head, rule], [head, rule]
     for meta, name in zip(metas, names):
-        results = [r for g in meta['result_groups'] if g['title'].startswith('协议 v6.2') for r in g['results']]
+        results = [r for g in meta['result_groups'] if g['title'].startswith(f'协议 {protocol}') for r in g['results']]
         row_s, row_p = [], []
         for model, setting in COLUMNS:
             hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting),
@@ -204,7 +211,8 @@ def write_board(metas: list[dict], names: list[str]) -> None:
         link = f'[{name}](tasks/{name}/README.md)'
         scores.append(f'| {link} | ' + ' | '.join(row_s) + ' |')
         process.append(f'| {link} | ' + ' | '.join(row_p) + ' |')
-    board = ('\n'.join(scores) + '\n\n满分 100，参照 = 50；* 待复核，† 复核完成（见题目 README，`results/BASELINE_REVIEW.md`）。\n\n**提交次数与用时**\n\n'
+    board = (f'协议 {protocol}' + ('' if protocol == PROTOCOLS[-1] else '；更早协议的成绩见各题 README') + '。\n\n'
+             + '\n'.join(scores) + '\n\n满分 100，参照 = 50；* 待复核，† 复核完成（见题目 README，`results/BASELINE_REVIEW.md`）。\n\n**提交次数与用时**\n\n'
              + '\n'.join(process))
     readme = ROOT / 'README.md'
     text = readme.read_text()
@@ -232,14 +240,16 @@ def main():
                 copy_tree(src, target)
         solutions = []
         for group in meta['result_groups']:
-            if not group['title'].startswith('协议 v6.2'):
+            protocol = next((p for p in PROTOCOLS if group['title'].startswith(f'协议 {p}')), None)
+            if protocol is None:
                 continue
             for r in group['results']:
                 if not r.get('submission'):
                     solutions.append((r, '', []))
                     continue
                 folder = attempt_dir(r)
-                target = family / 'solutions' / 'v6.2' / folder
+                r.setdefault('protocol', protocol)
+                target = family / 'solutions' / protocol / folder
                 target.mkdir(parents=True, exist_ok=True)
                 omitted = extract_solution(r['store'], r['submission'], target)
                 result = {k: r.get(k) for k in ('model', 'protocol', 'setting', 'submission', 'raw', 'mapping', 'score', 'review')}
