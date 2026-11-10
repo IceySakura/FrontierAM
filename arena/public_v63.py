@@ -322,6 +322,23 @@ def evaluate(task, store: Store, runtime: dict, source: Path, slot: str, cap: fl
             report = store.result_dir(job) / 'grade/evaluation.json'
             partial[job] = read_json(report).get('aggregates', {}) if report.exists() else {}
         _abort(store, job)
+    return report_from(task, store, record, partial, unfinished)
+
+
+def public_cases(task) -> set[str]:
+    """The case IDs of this version's public-feedback set."""
+    if family(task.name) == 'conic':
+        from .runtime import load_runtime
+        return {c['id'] for c in task.suite(load_runtime())}
+    if family(task.name) == 'exponential':
+        return {c['id'] for c in task.cases()}
+    return {r['id'] for r in _reference(task, Store(PUBLIC[task.name]['store']))['rows']}
+
+
+def report_from(task, store: Store, record: dict, partial: dict, unfinished: list | None = None) -> dict:
+    """The feedback report for one graded public job (also usable on an earlier graded suite, for checks)."""
+    cfg = config(task.name)
+    job = record['shards'][0]['job']
     reference = _reference(task, store)
     if family(task.name) == 'exponential':
         rows, candidate = _exp2(task, store, record, partial)
@@ -333,9 +350,11 @@ def evaluate(task, store: Store, runtime: dict, source: Path, slot: str, cap: fl
         if result.exists() and read_json(result).get('status') == 'submission_failure':
             return feedback.invalid(task.name, str(reason or 'the submission failed before any case ran'))
         return feedback.unmeasured(task.name, 'no case finished within the cap' if unfinished else str(reason or 'grading failed'))
+    universe = public_cases(task)
+    rows = [r for r in rows if r['id'] in universe]
     ids = {r['id'] for r in rows}
     ref_rows = [r for r in reference['rows'] if r['id'] in ids]
-    total_cases = len(reference['rows'])
+    total_cases = len(universe)
 
     if family(task.name) == 'conic':
         def score_of(mine, theirs):
@@ -360,7 +379,8 @@ def evaluate(task, store: Store, runtime: dict, source: Path, slot: str, cap: fl
     if family(task.name) == 'exponential' and all(r['status'] == 'passed' for r in rows):
         cases = [c for c in task.cases() if c['id'] in ids]
         if any(c['role'] == 'scored' for c in cases):  # the formal hierarchical mean, as in the final score
-            total = task.scoring().score_submission(cases, candidate['aggregates'],
+            measured = {k: v for k, v in candidate['aggregates'].items() if k in ids}
+            total = task.scoring().score_submission(cases, measured,
                                                     {c['id']: reference['best'][c['id']] for c in cases})['score']
     return feedback.build(task.name, rows, ref_rows, score=total, categorized=bool(cfg.get('category')),
                           accuracy_name=cfg.get('accuracy'), lower_is_better=cfg.get('lower_is_better', True),
