@@ -1,0 +1,31 @@
+{
+ "suite": "suite-conic-20261109T224912Z-9dceab",
+ "complete": true,
+ "successes": 504,
+ "cases": 650,
+ "p": 0.7753846153846153,
+ "p_B": 0.7892307692307692,
+ "score": 41.22807017543857,
+ "groups": {
+  "exponential": {
+   "cases": 37,
+   "successes": 33
+  },
+  "quadratic": {
+   "cases": 253,
+   "successes": 231
+  },
+  "linear": {
+   "cases": 184,
+   "successes": 160
+  },
+  "soc": {
+   "cases": 134,
+   "successes": 64
+  },
+  "psd": {
+   "cases": 42,
+   "successes": 16
+  }
+ }
+}

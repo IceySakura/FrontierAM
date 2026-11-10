@@ -118,16 +118,21 @@ def breakdown_html(spec: dict | None, results: list[dict]) -> str:
         return (f'<h4>按问题类型的解出数（本机重标定时限）</h4><table><tr><th>类型</th><th class="num">实例</th>{head}</tr>'
                 f'{rows}{total}</table>')
     if spec['kind'] == 'suite_report':
-        report = json.loads((ROOT / spec['path']).read_text())
+        sources = spec.get('paths') or [{'label': model_name(results[0]['model']), 'path': spec['path']}]
+        reports = [(s['label'], json.loads((ROOT / s['path']).read_text())) for s in sources]
         reference = conic_counts(ROOT / 'results/conic-per-case-summary.csv')
-        groups = sorted(report['groups'], key=lambda g: list(GROUP_NAMES).index(g) if g in GROUP_NAMES else 9)
-        rows = ''.join(f'<tr><td>{GROUP_NAMES.get(g, g)}</td><td class="num">{report["groups"][g]["cases"]}</td>'
-                       f'<td class="num">{reference["reference"][g]}</td><td class="num">{report["groups"][g]["successes"]}</td></tr>'
+        first = reports[0][1]
+        groups = sorted(first['groups'], key=lambda g: list(GROUP_NAMES).index(g) if g in GROUP_NAMES else 9)
+        head = ''.join(f'<th class="num">{html.escape(label)}</th>' for label, _ in reports)
+        rows = ''.join(f'<tr><td>{GROUP_NAMES.get(g, g)}</td><td class="num">{first["groups"][g]["cases"]}</td>'
+                       f'<td class="num">{reference["reference"][g]}</td>'
+                       + ''.join(f'<td class="num">{r["groups"][g]["successes"]}</td>' for _, r in reports) + '</tr>'
                        for g in groups)
+        total = first.get('cases_graded', first.get('cases'))
         return ('<h4>按问题类型的解出数</h4><table><tr><th>类型</th><th class="num">实例</th><th class="num">Clarabel（参考）</th>'
-                f'<th class="num">{html.escape(model_name(results[0]["model"]))}</th></tr>{rows}'
-                f'<tr><th>合计</th><th class="num">{report["cases_graded"]}</th><th class="num">{sum(reference["reference"].values())}</th>'
-                f'<th class="num">{report["successes"]}</th></tr></table>')
+                f'{head}</tr>{rows}'
+                f'<tr><th>合计</th><th class="num">{total}</th><th class="num">{sum(reference["reference"].values())}</th>'
+                + ''.join(f'<th class="num">{r["successes"]}</th>' for _, r in reports) + '</tr></table>')
     if spec['kind'] == 'exp2_score':
         cases = {c['id']: c for c in json.loads((ROOT / spec['manifest']).read_text())['cases']}
         sources = spec.get('paths') or [{'label': model_name(results[0]['model']), 'path': spec['path']}]

@@ -97,10 +97,30 @@ exponential-v2 的映射和参照与 v6.1 相同：R 是相对 panel 逐例最�
 | claude-opus-5-5 | species-tree-v2 | `species-tree-v2-20261109T134305Z-2caffd` | E = 0.135628 | **42.3** | |
 | gpt-6.1-sol | galaxy-gravity-v2 | `galaxy-gravity-v2-20261109T132936Z-9e4112` | 4.25e-9（弱 0.00125189，强 0.000590528） | **99.9996** | 106 分钟 |
 | claude-opus-5-5 | galaxy-gravity-v2 | `galaxy-gravity-v2-20261109T130056Z-aea0a3` | 1.06e-7 | **99.991** | 63 分钟 |
-| claude-opus-5-5 | polarization-demosaicking | `polarization-demosaicking-20261109T124343Z-553533` | 第一次评分 31/32 景，第一景 1.003 秒超时 | 待重评 | 首景冷启动，见 `NEW_TASKS.md` 第 5 节 |
+| claude-opus-5-5 | polarization-demosaicking | `polarization-demosaicking-20261109T124343Z-553533` | 重评 32/32 景，L = 0.978773（弱 1.80825，强 1.10992） | **55.9** | 第一次评分只有第一景 1.003 秒超时，按首景冷启动记未测，见 `NEW_TASKS.md` 第 5 节 |
 | claude-opus-5-5 | trajectory-covariance | `trajectory-covariance-20261109T130605Z-481cfb` | L = 0.221264（弱 0.350317，强 0.230050） | **51.9** | |
 
-conic 的四次尝试（sol 单轮与迭代、opus 单轮与迭代）正在用跳过失败重复的评测器评分（等价性检查通过：16 例逐例一致，`results/conic-fast-grading-check.json`），见 `store/reruns/v62-final.log`。
+conic（修正版题包，650 例私有集，p_B = 0.789；映射 p ≤ 0.9·p_B 记 0，0.9·p_B < p ≤ p_B 为 50·(p − 0.9·p_B)/(0.1·p_B)）。用跳过失败重复的评测器评分（等价性检查 16 例逐例一致，`results/conic-fast-grading-check.json`）；四次评分用时 107、26、22、25 分钟，均完整、无基础设施失败。
+
+| 模型 | 设置 | 提交 | 原始指标 | 得分 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| gpt-6.1-sol | 单轮 | `conic-20261109T065544Z-ff7b81` | 428/650，p = 0.658 | **0** | 用满 2 小时；失败 222 例中超时 174 例 |
+| gpt-6.1-sol | 迭代 | `conic-20261109T142802Z-f6e6e3` | 387/650，p = 0.595 | **0** | 截止时无正式提交，以截止时工作区评分；公开集最后一次 9.1 |
+| claude-opus-5-5 | 单轮 | `conic-20261109T132523Z-751260` | 487/650，p = 0.749 | **24.7** | 88 分钟结束回合 |
+| claude-opus-5-5 | 迭代 | `conic-20261109T165533Z-b71add` | 504/650，p = 0.775 | **41.2** | 80 分钟正式提交；公开集最后一次 62.5；与参考逐例比 48 / 57，McNemar p = 0.44 |
+
+## 小结：单轮与迭代（11-10）
+
+| 题目 | 模型 | 单轮 | 迭代 | 迭代设置的最后一次公开集分数 |
+| --- | --- | --- | --- | --- |
+| conic | gpt-6.1-sol | 0（p = 0.658） | 0（p = 0.595） | 9.1 |
+| conic | claude-opus-5-5 | 24.7（p = 0.749） | 41.2（p = 0.775） | 62.5 |
+| exponential-v2 | gpt-6.1-sol | 0（58 例精度不合格） | 62.9 | 59.5 |
+| exponential-v2 | claude-opus-5-5 | 70.8 | 69.1 | 62.8 |
+
+- 迭代设置防住了“最后改动不重测”这类致命错误（sol exponential-v2：单轮 0 分，迭代 62.9 分，与 v6.1 的 62.7 相当）。
+- 公开集分数与私有集分数方向一致，但不精确：conic 上 opus 公开集 62.5、私有集 41.2；exponential-v2 上私有集比公开集高 3–7 分。原因包括公开集只做 1 次重复、用例构成不同、公开集上的参照是另行测量的。
+- sol 在 conic 迭代设置下没有利用好反馈（5 次测试都远低于参考，到截止也没有正式提交）。每个模型、每种设置只有一次尝试，单轮与迭代的差别不足以与尝试间波动区分（待讨论：是否对关键题重复尝试）。
 
 ## 更正（11-09 16:40）：exponential-v2 的计时说明
 
