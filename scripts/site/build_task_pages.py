@@ -97,6 +97,7 @@ def extract_solution(store: str, submission: str, target: Path) -> list[str]:
             path = source / member.name.lstrip('./')
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
+            path.chmod(0o755 if member.mode & 0o111 else 0o644)
     return omitted
 
 
