@@ -1,9 +1,9 @@
 """Change the machine's slot layout safely (results/EVAL_TIME_LIMITS.md: 7 grade + 7 dev slots, paired placement).
 
-1. Drain: take a quiet grade lease through the broker. It waits until every grade and dev slot is free, and blocks new
-   gradings at once and new development after the broker's drain delay, so running work finishes and nothing new
-   starts.
-2. Install the new layout while still holding that lease (machine.install allows only this process's leases).
+1. Hold every slot that changes: all grade slots (their daemons restart) and the development slots that leave or
+   change kind. Development slots that exist unchanged in the new layout keep running: install never touches the
+   development daemon or their CPUs.
+2. Install the new layout while holding those leases (machine.install allows only them and the unchanged slots).
 3. Copy every image of an existing grading daemon into each new grading daemon, by ID.
 4. Record the new grading daemons in every sealed runtime (runtime-lock.json grade_docker_hosts) and check that
    `arena.cli.context()` accepts the layout.
@@ -12,7 +12,9 @@ Usage (root): relayout.py [--grade-cores 7] [--placement paired] [--dry-run]
 """
 
 import argparse
+import contextlib
 import json
+import os
 import subprocess
 import sys
 import time
@@ -68,10 +70,16 @@ def main():
     if args.dry_run:
         return
     broker = Broker(old)
-    say(event='draining')
-    with broker.acquire('grade', 2**30, 'relayout (drain for a new slot layout)', isolation='quiet'):
-        say(event='drained')
-        machine.install(new, own_pid=__import__('os').getpid())
+    unchanged = frozenset(s['id'] for s in old['slots'] if s['kind'] == 'dev' and
+                          any(n['id'] == s['id'] and n['kind'] == 'dev' for n in new['slots']))
+    changing = [s for s in old['slots'] if s['id'] not in unchanged]
+    say(event='holding', slots=[s['id'] for s in changing], unchanged=sorted(unchanged))
+    with contextlib.ExitStack() as held:
+        for slot in changing:
+            held.enter_context(broker.acquire(slot['kind'], 2**28, 'relayout (slot changes in the new layout)',
+                                              slot_id=slot['id'], priority=slot['kind'] == 'grade'))
+        say(event='held')
+        machine.install(new, own_pid=os.getpid(), keep=unchanged)
         say(event='installed', layout_sha256=new['layout_sha256'])
     source = next(s['docker_host'] for s in old['slots'] if s['kind'] == 'grade' and s['id'] in {n['id'] for n in new['slots']})
     for slot in added:

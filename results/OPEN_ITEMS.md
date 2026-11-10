@@ -36,4 +36,5 @@
 | trajectory 人类参照筛选暂停 | 为让布局切换尽快完成，11-10 停掉了筛选调度（已跑 21/30 个任务；进行中的 2 个在容器里跑完）。剩余 9 个任务在 `var/stores/store/reruns/traj-ref-screen/jobs-rest.txt`，切换后用 `scripts/ops/run_leased.py` 续跑 | 本文件 |
 | conic 构建时限 1,800 秒 | 题面允许构建最多 30 分钟，会占用 private 评测的 1 小时封顶。默认不改（构建通常不到 1 分钟）；若实际出现长构建，需与出题人商定缩短 | `results/EVAL_TIME_LIMITS.md` |
 | v6.3 参照基线 | 各题 v6.3 版本的 public 参照（`bench public-baseline-v63`）与 private 参照需在评测槽上测量；按用户“先不跑评测”的决定，开跑 v6.3 前再做 | `results/PROTOCOL_V63.md` |
+| 计划调整（用户决定 11-10 18:00） | 改造完成后直接进入真实评测，在评测中发现并修正题目、数据、时限和设施的问题：按需重跑参照；跑 gpt-6.1-sol 在 v6.3 全部 6 道题上的单轮（1 小时）与迭代（4 小时）；核对评测效率（public ≤ 15 分钟、private ≤ 1 小时）；超过参照的格子走复核流程；最后给出结论报告 | 本文件 |
 

@@ -283,14 +283,15 @@ def grade_slots(layout: dict) -> list[dict]:
     return [slot for slot in layout['slots'] if slot['kind'] == 'grade']
 
 
-def install(layout: dict, path: Path = CONFIG, *, own_pid: int | None = None) -> dict:
+def install(layout: dict, path: Path = CONFIG, *, own_pid: int | None = None, keep: frozenset = frozenset()) -> dict:
     """Persist the layout and kernel isolation; safe to rerun. Requires root, never restarts the default dockerd.
 
-    own_pid: leases held by this process (a relayout that first drained the machine with a quiet lease) are allowed.
+    own_pid: leases held by this process (a relayout holding the slots that change) are allowed; so are leases on the
+    slots in keep (development slots that exist unchanged in the new layout, whose containers are not touched).
     """
     if os.geteuid() != 0:
         raise PermissionError('Host setup must run as root')
-    if live_leases_present(own_pid):
+    if live_leases_present(own_pid, keep):
         raise RuntimeError('Slots are leased; finish running work before changing the machine layout')
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(layout, indent=2) + '\n')
@@ -350,11 +351,12 @@ def install(layout: dict, path: Path = CONFIG, *, own_pid: int | None = None) ->
     return status(layout)
 
 
-def live_leases_present(own_pid: int | None = None) -> bool:
+def live_leases_present(own_pid: int | None = None, keep: frozenset = frozenset()) -> bool:
     from .slots import Broker
 
     try:
-        return any(row.get('pid') != own_pid or own_pid is None for row in Broker(load()).leases())
+        return any((own_pid is None or row.get('pid') != own_pid) and row.get('slot') not in keep
+                   for row in Broker(load()).leases())
     except RuntimeError:
         return False
 
