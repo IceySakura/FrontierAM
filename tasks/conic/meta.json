@@ -103,5 +103,6 @@
     "private": "versions/*/package/tests/private/（650 例私有集，两版相同）",
     "grader": "versions/*/package/tests/（题包自带评测器）；本机重标定时限见 versions/original/local_recal/",
     "references": "references/r1/clarabel/（Clarabel 0.11.1）"
-  }
+  },
+  "name": "conic"
 }

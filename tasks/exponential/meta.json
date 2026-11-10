@@ -104,5 +104,6 @@
     "private": "versions/v2/dataset/cases/private/（私有用例清单与参考解流程）",
     "grader": "arena/exponential_v2.py（流式接口、精度检查、计时、virtual best）",
     "references": "references/r1/（7 个成员：Expokit、KIOPS、expmv、SciPy、Chebyshev、SLEPc、ExponentialUtilities.jl；标定 references/r1/calibration/）；复核中的候选 references/candidates/"
-  }
+  },
+  "name": "exponential"
 }

@@ -47,5 +47,6 @@
     "private": "3 万个私有输入与参考矩阵（出题方包，/srv/frontieram-raw/）",
     "grader": "出题方包的验证器（arena/operator_drivers/trajectory_batch.py 启动其验证容器）",
     "references": "references/r1/（OBM，R 包 mcmcse；VAR(1)）；人类候选参照 references/candidates/"
-  }
+  },
+  "name": "trajectory-covariance"
 }

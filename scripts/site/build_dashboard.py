@@ -215,7 +215,7 @@ def result_rows(task: dict, group: dict) -> str:
 
 def task_page(task: dict) -> str:
     status = '<span class="tag stop">评测暂停</span>' if task.get('status') == 'paused' else ''
-    body = [f'<h1>{html.escape(task["title"])} {status}</h1><p class="lead">{html.escape(task["category"])} · '
+    body = [f'<h1>{html.escape(task.get("name", task["title"]))} {status}</h1><p class="lead">{html.escape(task["category"])} · '
             f'{md(task["summary"])[3:-4]}</p>',
             '<h2>题目背景</h2>', md(task['background_md']),
             f'<details><summary>公开题面原文（给模型的版本）</summary><div class="md">{md(statement(task["statement"]))}</div></details>',
@@ -264,10 +264,10 @@ def index_page(site: dict, tasks: list[dict]) -> str:
                         f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}' for r in hit) + '</td>')
                 else:
                     cells.append('<td></td>')
-            label = f'<a href="tasks/{task["id"]}.html">{html.escape(task["title"])}</a>'
+            label = f'<a href="tasks/{task["id"]}.html">{html.escape(task.get("name", task["title"]))}</a>'
             rows.append(f'<tr><td>{label}<br><small>{html.escape(group["title"])}</small></td>{"".join(cells)}</tr>')
     cards = ''.join(
-        f'<div class="card"><h3><a href="tasks/{t["id"]}.html">{html.escape(t["title"])}</a></h3>'
+        f'<div class="card"><h3><a href="tasks/{t["id"]}.html">{html.escape(t.get("name", t["title"]))}</a></h3>'
         f'<p>{html.escape(t["category"])}</p><p>{md(t["summary"])[3:-4]}</p>'
         + ('<p><span class="tag stop">评测暂停</span></p>' if t.get('status') == 'paused' else '') + '</div>' for t in tasks)
     body = (f'<h1>{html.escape(site["title"])}</h1><p class="lead">{html.escape(site["subtitle"])}</p>{md(site["intro_md"])}'

@@ -2,46 +2,35 @@
 
 FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 AI 编程模型在断网环境里限时（2 小时）从零写出求解程序，再在隐藏测试集上用题目自带的评测器打分，并与在同一台机器上重测的人类参照实现（baseline）比较。
 
-## 榜单（协议 v6.2，满分 100，参照 = 50）
+## 榜单（协议 v6.2）
 
 <!-- board:start -->
-| 题目 | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
+| task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
 | --- | --- | --- | --- | --- |
-| [凸锥优化求解器](tasks/conic/README.md) | 0.0 | 0.0 | 24.7 | 41.2 |
-| [稀疏系统的指数传播（对标人类 SOTA）](tasks/exponential/README.md) | 0.0 | 62.9（待复核） | 70.8（待复核） | 69.1（待复核） |
-| [星系快照中的引力加速度（131,072 个粒子）](tasks/galaxy-gravity/README.md) | 100.0（待复核） |  | 100.0（待复核） |  |
-| [偏振马赛克图像重建](tasks/polarization-demosaicking/README.md) |  |  | 55.9（待复核） |  |
-| [从一条 MCMC 轨迹估计长期协方差](tasks/trajectory-covariance/README.md) |  |  | 51.9（待复核） |  |
-| [从短基因的估计树推断物种树（250 个物种，FrontierAM 重建版）](tasks/species-tree/README.md) | 0.0 |  | 42.3 |  |
+| [conic](tasks/conic/README.md) | 0.0 | 0.0 | 24.7 | 41.2 |
+| [exponential](tasks/exponential/README.md) | 0.0 | 62.9* | 70.8* | 69.1* |
+| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 100.0* |  | 100.0* |  |
+| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 55.9* |  |
+| [trajectory-covariance](tasks/trajectory-covariance/README.md) |  |  | 51.9* |  |
+| [species-tree](tasks/species-tree/README.md) | 0.0 |  | 42.3 |  |
 
-空格表示该模型没有在这道题的该设置下尝试；同一格有多次尝试时按次序列出；超过参照（50 分）的成绩在复核结论出来前标“待复核”。每格的原始指标、换算方式和模型的做法见各题 README；历史协议的成绩见 `results/LEADERBOARD.md`。本表由 `scripts/site/build_task_pages.py` 生成。
+满分 100，参照 = 50；* 待复核（`results/BASELINE_POLICY.md`）。
 
-### 开发过程（每次尝试：用时、模型请求数、工具调用数；迭代设置另列公开集测试次数与评测用时；结束方式）
+**提交次数与用时**
 
-| 题目 | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
+| task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
 | --- | --- | --- | --- | --- |
-| [凸锥优化求解器](tasks/conic/README.md) | 120 分钟，210 次请求，127 次工具调用，时间到 | 120 分钟，206 次请求，130 次工具调用，测试 5 次（评测 16 分钟），时间到 | 88 分钟，195 次请求，190 次工具调用，自己结束 | 80 分钟，88 次请求，88 次工具调用，测试 5 次（评测 22 分钟），正式提交 |
-| [稀疏系统的指数传播（对标人类 SOTA）](tasks/exponential/README.md) | 23 分钟，53 次请求，56 次工具调用，自己结束 | 68 分钟，134 次请求，119 次工具调用，测试 4 次（评测 7 分钟），正式提交 | 62 分钟，120 次请求，123 次工具调用，自己结束 | 60 分钟，79 次请求，83 次工具调用，测试 10 次（评测 9 分钟），正式提交 |
-| [星系快照中的引力加速度（131,072 个粒子）](tasks/galaxy-gravity/README.md) | 106 分钟，204 次请求，147 次工具调用，自己结束 |  | 63 分钟，75 次请求，73 次工具调用，自己结束 |  |
-| [偏振马赛克图像重建](tasks/polarization-demosaicking/README.md) |  |  | 46 分钟，56 次请求，56 次工具调用，自己结束 |  |
-| [从一条 MCMC 轨迹估计长期协方差](tasks/trajectory-covariance/README.md) |  |  | 68 分钟，79 次请求，85 次工具调用，自己结束 |  |
-| [从短基因的估计树推断物种树（250 个物种，FrontierAM 重建版）](tasks/species-tree/README.md) | 4 分钟，17 次请求，28 次工具调用，自己结束 |  | 66 分钟，97 次请求，97 次工具调用，自己结束 |  |
-
-两种设置的预算都是 2 小时（迭代设置的公开集评测计入其中）；“自己结束”指模型在预算内主动结束回合，“正式提交”指迭代设置下主动提交最终版本。
+| [conic](tasks/conic/README.md) | 120 分钟 | 5 次提交，120 分钟 | 88 分钟 | 5 次提交，80 分钟 |
+| [exponential](tasks/exponential/README.md) | 23 分钟 | 4 次提交，68 分钟 | 62 分钟 | 10 次提交，60 分钟 |
+| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 106 分钟 |  | 63 分钟 |  |
+| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 46 分钟 |  |
+| [trajectory-covariance](tasks/trajectory-covariance/README.md) |  |  | 68 分钟 |  |
+| [species-tree](tasks/species-tree/README.md) | 4 分钟 |  | 66 分钟 |  |
 <!-- board:end -->
 
 本仓库不含私有评测集（各题的私有测试数据另行保管，需要时单独提供）。
 
-## 题目：每题一个目录，结构相同
-
-| 题目 | 目录 |
-| --- | --- |
-| 凸锥优化求解器（650 个隐藏实例） | [`tasks/conic/`](tasks/conic/README.md) |
-| 稀疏系统的指数传播（对标 7 个已发表方法） | [`tasks/exponential/`](tasks/exponential/README.md) |
-| 星系快照中的引力加速度 | [`tasks/galaxy-gravity/`](tasks/galaxy-gravity/README.md) |
-| 偏振马赛克图像重建 | [`tasks/polarization-demosaicking/`](tasks/polarization-demosaicking/README.md) |
-| 从一条 MCMC 轨迹估计长期协方差 | [`tasks/trajectory-covariance/`](tasks/trajectory-covariance/README.md) |
-| 从短基因的估计树推断物种树 | [`tasks/species-tree/`](tasks/species-tree/README.md) |
+## 题目目录结构
 
 每个题目目录：
 

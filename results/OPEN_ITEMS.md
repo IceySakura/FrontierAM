@@ -29,3 +29,4 @@
 | sol 会话普遍变短（待决定） | 11-10 第 5 轮 sol 的单轮尝试：exponential-v2 第 2 次 4.5 分钟、polarization 重跑 4.4 分钟、trajectory 重跑 3.5 分钟，均为正常结束回合、无限流。开发镜像（含 Codex，11-04/06 构建）、模型名、推理强度 max、提示与 11-09 的 2 小时会话完全相同；每次请求的推理 token 约为长会话的 1/5，且与当天上游 429 限流同时段，疑为服务端在高负载下降低了实际推理量。按协议这些是有效尝试，照常评分；是否在上游负载低时另行重跑由用户决定 | 本文件 |
 | GitHub 镜像 | 用户决定（11-10 15:31）：私有评测集只放 git.woa.com（完整仓库）；GitHub（github.com/IceySakura/FrontierAM，私有）是过滤后的镜像，由 `scripts/ops/sync_github.sh` 生成：从全部历史中剔除 `*/tests/private/*`、`*/data/private/*`、`*/cases/private/*`、`*/docker_eval/private_pilot/*` 及 exponential v2 的私有种子与清单，再强制推送；`github` 远程的直接推送地址已停用。中午第一次推送曾含完整历史，强制推送后旧提交在 GitHub 上已不可达，但要彻底清除需删除并重建该仓库（或请 GitHub 支持回收），待用户决定 | 本文件 |
 | 本机目录整理 | 11-10：运行数据收进 var/（var/stores、var/raw、var/outputs、var/dist），代码与文档引用全部更新，库内记录中的绝对路径同步改写；隐藏的 .runtime*/ 暂留原处（子代理在用），之后可再收进 var/runtime/ | README.md |
+| 数据三层划分（用户决定 11-10） | 每题分 samples（给模型，理解题意与格式，从 public 中选取）、public（不给模型，只在服务端评测，给迭代设置提供反馈与当前分数）、private（最终评测）。待评测协议定稿后统一整理各题数据与迭代反馈 | 本文件 |

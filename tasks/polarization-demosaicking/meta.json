@@ -47,5 +47,6 @@
     "private": "32 景测试集（出题方维护包内，原包在 var/raw/）；公开反馈集（Wen 2019，105 景）封存于 .runtime-ops/polarization-demosaicking-feedback/",
     "grader": "维护包 harbor/polarization-demosaicking/grade_submission.py（只改 CPU 检查；评分前预热镜像文件缓存，quiet 隔离）",
     "references": "references/r1/（逐方向双线性；镜像 LEIC）"
-  }
+  },
+  "name": "polarization-demosaicking"
 }
