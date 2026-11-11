@@ -99,16 +99,19 @@
 
 **opus 的做法**：AIC 定阶的 VAR(p)（等同 VARHAC，Den Haan & Levin 1997）；有限状态链用基本矩阵公式求精确长期协方差（Kemeny & Snell）；VAR(1) 的 Pope (1990) 偏差修正；贝叶斯后验抽样后求使评分指标期望损失最小的估计（针对本题指标）。L = 0.2213，比参照 VAR(1) 的 0.2301 好 4%。
 
-**人类候选筛选**（3,000 个输入子集，脚本 `scripts/references/traj-ref-screen.py`，开发核上运行，计分与正式验证器的汇总一致；越小越好）：
+**人类候选筛选**（3,000 个输入子集，脚本 `scripts/references/traj-ref-screen.py`，开发核上运行，每个输入限 30 秒，失败按 √d 计；计分与正式验证器的汇总一致；越小越好；11-11 全部完成）：
 
-| 候选 | L | 状态 |
+| 候选 | L | 失败（超时） |
 | --- | --- | --- |
-| Andrews–Monahan 预白化 QS 核（1992） | 0.3189 | 完成 |
-| 重叠批均值 + over-lugsail（mcmcse，Vats & Flegal 2022） | 0.4990 | 完成（比 OBM 还差，过度修正） |
-| VARHAC，AIC / BIC 定阶 | — | 筛选中 |
-| mcmcse 默认（批均值 + over-lugsail，最优批长） | — | 筛选中 |
-| Tukey 谱方差 + over-lugsail | — | 筛选中 |
-| 多元初始序列（Dai & Jones 2017，调整版） | — | 筛选中 |
+| VARHAC，BIC 定阶（Den Haan & Levin 1997） | 0.2551 | 31 |
+| VARHAC，AIC 定阶 | 0.2872 | 92 |
+| Andrews–Monahan 预白化 QS 核（1992） | 0.3189 | 0 |
+| 多元初始序列（Dai & Jones 2017，调整版） | 0.4060 | 0 |
+| 重叠批均值 + over-lugsail（Vats & Flegal 2022） | 0.4990 | 0 |
+| Tukey 谱方差 + over-lugsail | 0.5465 | 0 |
+| mcmcse 默认（批均值 + over-lugsail，最优批长） | 0.5932 | 0 |
+
+没有候选好于强参照 VAR(1)（0.2301），最好的是 VARHAC-BIC（0.2551，含 31 次超时）。按修订后的原则参照本来就不变，这些结果只作参考材料。
 
 参照：OBM 0.3503（0 分），VAR(1) 0.2301（50 分）。
 
