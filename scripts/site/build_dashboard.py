@@ -279,7 +279,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     models = models_of(newest_groups)   # only models with a result in the newest version of some task
     head = ''.join(f'<th>{html.escape(model_name(m))}</th>' for m in models)
 
-    def cells_for(group: dict, models: list[str]) -> str:
+    def cells_for(task: dict, group: dict, models: list[str]) -> str:
         cells = []
         for m in models:
             hit = ordered([r for r in group['results'] if r['model'] == m])
@@ -290,7 +290,8 @@ def index_page(site: dict, tasks: list[dict]) -> str:
                     scores = ' / '.join(f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>'
                                         for r in same)
                     count = f'（{len(same)} 次）' if len(same) > 1 else ''
-                    lines.append(f'<small>{setting}{count}</small> {scores}')
+                    process = ' / '.join(filter(None, (process_cell(task, r) for r in same)))
+                    lines.append(f'<small>{setting}{count}</small> {scores}' + (f'<br><small>{process}</small>' if process else ''))
             cells.append('<td>' + '<br>'.join(lines) + '</td>')
         return ''.join(cells)
 
@@ -303,8 +304,8 @@ def index_page(site: dict, tasks: list[dict]) -> str:
         newest, *older = task['result_groups']
         name = html.escape(task.get('name', task['title']))
         rows.append(f'<tr><td><a href="tasks/{task["id"]}.html">{name}</a><br><small>{html.escape(group_label(newest))}</small></td>'
-                    f'{cells_for(newest, models)}</tr>')
-        history += [f'<tr><td>{name}<br><small>{html.escape(group_label(g))}</small></td>{cells_for(g, old_models)}</tr>'
+                    f'{cells_for(task, newest, models)}</tr>')
+        history += [f'<tr><td>{name}<br><small>{html.escape(group_label(g))}</small></td>{cells_for(task, g, old_models)}</tr>'
                     for g in older]
     cards = ''.join(
         f'<div class="card"><h3><a href="tasks/{t["id"]}.html">{html.escape(t.get("name", t["title"]))}</a></h3>'
