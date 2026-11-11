@@ -183,7 +183,7 @@ def page(title: str, body: str, depth: int = 0) -> str:
 {{left:"$$",right:"$$",display:true}},{{left:"\\\\[",right:"\\\\]",display:true}},{{left:"\\\\(",right:"\\\\)",display:false}},
 {{left:"$",right:"$",display:false}}],throwOnError:false}});}});</script></head><body>
 <header><a class="brand" href="{up}index.html">FrontierAM 任务看板</a>
-<nav><a href="{up}index.html">总榜</a><a href="{up}insights.html">结果解读</a><a href="{up}protocol.html">评测协议</a></nav></header>
+<nav><a href="{up}index.html">总榜</a><a href="{up}process.html">评测流程</a><a href="{up}insights.html">结果解读</a><a href="{up}protocol.html">评测协议</a></nav></header>
 <main>{body}</main><footer>{FOOTER}</footer></body></html>'''
 
 
@@ -379,6 +379,7 @@ def main():
     (staging / 'index.html').write_text(index_page(site, tasks))
     (staging / 'protocol.html').write_text(page('评测协议', md(site['protocol_md'])))
     (staging / 'insights.html').write_text(insights_page(tasks))
+    (staging / 'process.html').write_text(page('评测流程', md((ROOT / 'docs/BENCH_PROCESS.md').read_text())))
     for task in tasks:
         (staging / 'tasks' / f'{task["id"]}.html').write_text(task_page(task))
     if args.out.exists():
