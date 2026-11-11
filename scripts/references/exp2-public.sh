@@ -10,9 +10,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 ROOT=$PWD
-V2=tasks/exponential/sota_v1
-DATA=$V2/dataset_v2
-OUT=$V2/calibration_v2
+DATA=tasks/exponential/versions/v2/dataset
+OUT=tasks/exponential/references/r1/calibration
 IMAGE=frontieram-exponential:port-v1
 LOG=var/stores/store/reruns/exp2-public.log
 log() { echo "{\"time\": \"$(date +%FT%T)\", $1}" >> "$LOG"; }
@@ -33,7 +32,7 @@ log "\"event\": \"public_truth\", \"summary\": $(tail -1 "$OUT/truth-public.log"
 
 MANIFEST=$ROOT/$DATA/cases/public/manifest.json
 TOOLS=$ROOT/tasks/exponential/versions/v1/public/tools
-P=$ROOT/$V2/panel
+P=$ROOT/tasks/exponential/references/r1
 container 8 6g "python3 $P/expokit/calibrate.py $TOOLS $MANIFEST $P/expokit/expokit_avx2 $ROOT/$OUT/expokit.json" > "$OUT/expokit.log" 2>&1 &
 container 10 6g "python3 $P/expmv/calibrate.py $TOOLS $MANIFEST $ROOT/$OUT/expmv.json" > "$OUT/expmv.log" 2>&1 &
 container 16-23,24-26 40g "python3 $P/kiops/calibrate.py $TOOLS $MANIFEST $ROOT/$OUT/kiops.json --jobs 11" > "$OUT/kiops.log" 2>&1 &

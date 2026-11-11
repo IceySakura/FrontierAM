@@ -32,5 +32,3 @@ docs/PLATFORM_MIGRATION_GUIDE.md
 # all local run data: stores, raw packages, exports, build output
 var/
 # temporary links for jobs still running against pre-migration paths (2026-11-10); remove with the links
-tasks/exponential/sota_v1/
-tasks/operator/

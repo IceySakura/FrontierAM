@@ -1,4 +1,4 @@
-"""exponential-v2: dataset v2 graded against the frozen human-SOTA panel (tasks/exponential/sota_v1).
+"""exponential-v2: dataset v2 graded against the frozen human-SOTA panel (tasks/exponential/references/r1).
 
 The v1 evaluator, tools, image and scorer run unchanged on a sealed copy (.runtime-exp2, scripts/seal/prepare_exponential_v2.py);
 only the manifest, the cases and the reference differ. A baseline grades every panel member in one job on one slot;

@@ -20,11 +20,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-V2 = ROOT / 'tasks/exponential/sota_v1'
-PANEL = V2 / 'panel'
-CAL = V2 / 'calibration_v2'
+EXP = ROOT / 'tasks/exponential'
+PANEL = EXP / 'references/r1'
+CAL = EXP / 'references/r1/calibration'
 IMAGE = 'frontieram-exponential:port-v1'
-MANIFEST = V2 / 'dataset_v2/cases/public/manifest.json'
+MANIFEST = EXP / 'versions/v2/dataset/cases/public/manifest.json'
 
 
 def sha(path: Path) -> str:

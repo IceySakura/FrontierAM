@@ -28,7 +28,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 EXP = ROOT / 'tasks/exponential'
-V2 = EXP / 'sota_v1'
+PANEL_DIR, CAL_DIR = EXP / 'references/r1', EXP / 'references/r1/calibration'
+DATASET, PUBLIC_V2 = EXP / 'versions/v2/dataset', EXP / 'versions/v2/public/V2.md'
 SEAL = Path(os.environ.get('FRONTIERAM_EXP2_SEAL') or ROOT / '.runtime-exp2')
 PANEL = ('expokit', 'kiops', 'expmv', 'scipy', 'chebyshev', 'slepc', 'rational', 'exputils')
 QUALIFIED = {'chebyshev_audited_qualified', 'analytic_dense_eigh_qualified'}
@@ -111,7 +112,7 @@ def public_tar(path: Path, dev: Path, full: Path | None) -> None:
             if member.name.startswith(('task/dev/', './task/dev/')):
                 continue
             out.addfile(clean(member), v1.extractfile(member) if member.isfile() else None)
-        payload = (V2 / 'public/V2.md').read_bytes()
+        payload = PUBLIC_V2.read_bytes()
         info = tarfile.TarInfo('task/V2.md')
         info.size, info.mode = len(payload), 0o644
         out.addfile(clean(info), io.BytesIO(payload))
@@ -127,7 +128,7 @@ def public_tar(path: Path, dev: Path, full: Path | None) -> None:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--graded', type=Path, required=True, help='truth-qualified case directory graded by the task')
-    parser.add_argument('--public-dev', type=Path, default=V2 / 'dataset_v2/cases/public_smoke')
+    parser.add_argument('--public-dev', type=Path, default=DATASET / 'cases/public_smoke')
     parser.add_argument('--public-full', type=Path, help='full-size public cases shipped as task/dev_full')
     parser.add_argument('--runtime', type=Path, default=ROOT / '.runtime-suite', help='runtime holding the v1 image ID')
     parser.add_argument('--repeats', type=int, default=3, help='timed repeats per case (1 for the v6.2 public-feedback seal)')
@@ -151,16 +152,16 @@ def main():
         (SEAL / 'docker_eval/evaluator').mkdir(parents=True, exist_ok=True)
         shutil.copyfile(EXP / 'docker_eval/evaluator' / name, SEAL / 'docker_eval/evaluator' / name)
     graded = copy_cases(args.graded.resolve(), SEAL / 'data')
-    panel, frozen_path = [m for m in PANEL if (V2 / 'panel' / m / 'run.sh').exists()], V2 / 'calibration_v2/FROZEN.json'
+    panel, frozen_path = [m for m in PANEL if (PANEL_DIR / m / 'run.sh').exists()], CAL_DIR / 'FROZEN.json'
     if frozen_path.exists():
         # After public calibration only the frozen members, byte-identical to their frozen state, form the reference.
         frozen = json.loads(frozen_path.read_text())
         panel = [m for m in PANEL if m in frozen['members']]
         for relative, digest in frozen['panel_files_sha256'].items():
-            if relative.split('/')[0] in panel and sha(V2 / 'panel' / relative) != digest:
+            if relative.split('/')[0] in panel and sha(PANEL_DIR / relative) != digest:
                 raise SystemExit(f'panel file changed since freezing: {relative}')
-    loaded = json.loads((V2 / 'calibration_v2/loader_names.json').read_text())['members']
-    sealing = {member: seal_member(V2 / 'panel' / member, SEAL / 'panel' / member, set(loaded.get(member, ())))
+    loaded = json.loads((CAL_DIR / 'loader_names.json').read_text())['members']
+    sealing = {member: seal_member(PANEL_DIR / member, SEAL / 'panel' / member, set(loaded.get(member, ())))
                for member in panel}
     public_tar(SEAL / 'public.tar', args.public_dev.resolve(), args.public_full.resolve() if args.public_full else None)
     image = json.loads((args.runtime / 'runtime-lock.json').read_text())['images']['exponential']

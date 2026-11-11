@@ -1,5 +1,5 @@
 """Seal .runtime-exp3-cheb2: exponential-v3 with a one-member panel, the Chebyshev v2 reference (independent human
-implementation of published techniques, tasks/exponential/sota_v1/panel/chebyshev2), so that member alone can be measured
+implementation of published techniques, tasks/exponential/references/candidates/chebyshev2), so that member alone can be measured
 on the held-out cases; its measurement then joins the v2 panel's for the virtual best (results/BASELINE_REVIEW.md).
 
 Usage: prepare_exp_v3_cheb2.py [--force]
@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PARENT, SEAL = ROOT / '.runtime-exp3', ROOT / '.runtime-exp3-cheb2'
-MEMBER = ROOT / 'tasks/exponential/sota_v1/panel/chebyshev2'
+MEMBER = ROOT / 'tasks/exponential/references/candidates/chebyshev2'
 
 
 def sha(path: Path) -> str:
