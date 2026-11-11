@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.1",
+ "setting": null,
+ "submission": "species-tree-20261106T053955Z-34ce6b",
+ "raw": "暂停评测（提交已冻结）",
+ "mapping": "—",
+ "score": null,
+ "review": null,
+ "process": {
+  "minutes": 100.9,
+  "public_tests": 0
+ }
+}

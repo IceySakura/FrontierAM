@@ -40,7 +40,25 @@
           "score": 42.3,
           "notes_md": "C++ 实现的支持度加权四元组方法（思路同加权 ASTRAL）：按 aBayes 支持度给基因树四元组加权，在候选类簇集合上做精确动态规划，候选集由基因树类簇、邻接法树、NNI 邻居和 24 次基因自助重抽样逐步扩充。每例中位 4.2 秒、最多 11.1 秒。逐例与加权 TREE-QMC 比：82 例更好、18 例相同、100 例更差，平均每例多漏 0.66 个分裂（95% 区间 0.07–1.20），显著差于强参照；与不加权参照比 150 例更好。"
         }
-      ]
+      ],
+      "version": "v2",
+      "protocol": "v6.2"
+    },
+    {
+      "title": "协议 v6.1（2026-11-06）",
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.1",
+          "submission": "species-tree-20261106T053955Z-34ce6b",
+          "store": "var/stores/store",
+          "raw": "暂停评测（提交已冻结）",
+          "mapping": "—",
+          "score": null
+        }
+      ],
+      "version": "v1",
+      "protocol": "v6.1"
     }
   ],
   "notes_md": "- 数据、种子和生成流程见 `tasks/species-tree/analysis/SPECIES_TREE_SIM.md`（种子不公开）。",

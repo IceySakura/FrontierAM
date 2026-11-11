@@ -1,0 +1,23 @@
+{
+ "id": "job-20261110T234340Z-ae174b",
+ "task": "galaxy-gravity-v3",
+ "submission": "galaxy-gravity-v3-20261110T233945Z-494532",
+ "kind": "candidate",
+ "note": null,
+ "isolation": null,
+ "enqueued_utc": "2026-11-10T23:43:40+00:00",
+ "claimed_utc": "2026-11-10T23:43:41+00:00",
+ "worker_pid": 3237902,
+ "status": "ok",
+ "score": 50.14537616957195,
+ "finished_utc": "2026-11-10T23:48:41+00:00",
+ "candidate": {
+  "status": "ok",
+  "raw_error": 1.2150720654633856e-07,
+  "reason": null,
+  "package_score": null,
+  "calls": 60,
+  "max_cpu_s": 4.557526,
+  "cpu_limit_s": 5.0
+ }
+}

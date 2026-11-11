@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.1",
+ "setting": null,
+ "submission": "polarization-demosaicking-20261106T050331Z-a6d746",
+ "raw": "整批 RMSE 1.09499，32/32 景通过（每景最多 0.591 秒）",
+ "mapping": "\\(100-50E/H_5\\)",
+ "score": 50.7,
+ "review": "待复核",
+ "process": {
+  "minutes": 66.4,
+  "public_tests": 0
+ }
+}

@@ -162,11 +162,12 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
                   f'| samples（给模型） | {", ".join(d["samples"])} |', f'| public（不给，反馈用） | {d["public"]} |',
                   f'| 反馈分类 | {d["groups"] or "不分类，只报总计"} |', '']
     lines += ['## 评测依据', '', meta['judge_md'], '', '## Baseline', '', meta['baseline_md'], '']
-    for protocol in PROTOCOLS:
-        rows = [(r, folder, omitted) for r, folder, omitted in solutions if r.get('protocol', 'v6.2') == protocol]
+    for group in meta['result_groups']:
+        protocol = group.get('protocol')
+        rows = [(r, folder, omitted) for r, folder, omitted in solutions if r.get('_group') is group]
         if not rows:
             continue
-        lines += [f'## 模型成绩与解法（协议 {protocol}）', '',
+        lines += [f'## 模型成绩与解法（题目版本 {group.get("version")} · 协议 {protocol}）', '', group['title'], '',
                   '| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- | --- |']
         for r, folder, _ in rows:
             score = '—' if r.get('score') is None else f'{r["score"]:.1f}'
@@ -189,18 +190,17 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
 
 
 COLUMNS = [('gpt-6.1-sol', '单轮'), ('gpt-6.1-sol', '迭代'), ('claude-opus-5-5', '单轮'), ('claude-opus-5-5', '迭代')]
-PROTOCOLS = ('v6.3', 'v6.2')  # newest first; the board shows the newest one that has results
+PROTOCOLS = ('v6.3', 'v6.2', 'v6.1', 'v6')  # newest first; the board shows the newest one that has results
 
 
 def write_board(metas: list[dict], names: list[str]) -> None:
     """Scoreboard of the newest protocol with results into README.md between the board markers."""
-    protocol = next(p for p in PROTOCOLS if any(g['title'].startswith(f'协议 {p}') and g['results']
-                                                 for m in metas for g in m['result_groups']))
+    protocol = next(p for p in PROTOCOLS if any(g.get('protocol') == p and g['results'] for m in metas for g in m['result_groups']))
     head = '| task | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in COLUMNS) + ' |'
     rule = '| --- |' + ' --- |' * len(COLUMNS)
     scores, process = [head, rule], [head, rule]
     for meta, name in zip(metas, names):
-        results = [r for g in meta['result_groups'] if g['title'].startswith(f'协议 {protocol}') for r in g['results']]
+        results = [r for g in meta['result_groups'] if g.get('protocol') == protocol for r in g['results']]
         row_s, row_p = [], []
         for model, setting in COLUMNS:
             hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting),
@@ -211,7 +211,7 @@ def write_board(metas: list[dict], names: list[str]) -> None:
         link = f'[{name}](tasks/{name}/README.md)'
         scores.append(f'| {link} | ' + ' | '.join(row_s) + ' |')
         process.append(f'| {link} | ' + ' | '.join(row_p) + ' |')
-    board = (f'协议 {protocol}' + ('' if protocol == PROTOCOLS[-1] else '；更早协议的成绩见各题 README') + '。\n\n'
+    board = (f'协议 {protocol}；更早协议与题目版本的成绩见各题 README。' + '\n\n'
              + '\n'.join(scores) + '\n\n满分 100，参照 = 50；* 待复核，† 复核完成（见题目 README，`results/BASELINE_REVIEW.md`）。\n\n**提交次数与用时**\n\n'
              + '\n'.join(process))
     readme = ROOT / 'README.md'
@@ -240,10 +240,11 @@ def main():
                 copy_tree(src, target)
         solutions = []
         for group in meta['result_groups']:
-            protocol = next((p for p in PROTOCOLS if group['title'].startswith(f'协议 {p}')), None)
+            protocol = group.get('protocol')
             if protocol is None:
                 continue
             for r in group['results']:
+                r['_group'] = group
                 if not r.get('submission'):
                     solutions.append((r, '', []))
                     continue

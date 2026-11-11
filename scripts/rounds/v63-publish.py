@@ -63,7 +63,7 @@ def main():
     for task, family in TASKS.items():
         path = ROOT / 'tasks' / family / 'meta.json'
         meta = json.loads(path.read_text())
-        old = next((g for g in meta['result_groups'] if g['title'].startswith('协议 v6.3')), None)
+        old = next((g for g in meta['result_groups'] if g.get('protocol') == 'v6.3'), None)
         reviews = {(r['model'], r['setting']): {k: r[k] for k in ('review', 'notes_md') if k in r}
                    for r in (old or {}).get('results', [])}
         results = []
@@ -78,8 +78,9 @@ def main():
                             'submission': submission_of(task, setting, 1), 'store': 'var/stores/store-v63', 'raw': raw,
                             'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),
                             **reviews.get(('gpt-6.1-sol', SETTING[setting]), {})})
-        group = {'title': TITLE, 'results': results}
-        meta['result_groups'] = [group] + [g for g in meta['result_groups'] if not g['title'].startswith('协议 v6.3')]
+        version = 'v3' if family not in ('polarization-demosaicking', 'trajectory-covariance') else 'v2'
+        group = {'title': TITLE, 'version': version, 'protocol': 'v6.3', 'results': results}
+        meta['result_groups'] = [group] + [g for g in meta['result_groups'] if g.get('protocol') != 'v6.3']
         path.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + '\n')
         print(json.dumps({'task': family, 'cells': [(r['setting'], r['score']) for r in results]}, ensure_ascii=False))
 

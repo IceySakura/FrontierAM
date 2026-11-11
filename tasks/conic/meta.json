@@ -105,7 +105,90 @@
           "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)",
           "score": 0.0
         }
-      ]
+      ],
+      "version": "solver-20261105",
+      "protocol": "v6.2"
+    },
+    {
+      "title": "修正版题包（出题方 2026-11-05 版：公开开发集给出逐例时限；私有数据和评分不变）",
+      "breakdown": {
+        "kind": "suite_report",
+        "path": "var/stores/store/reruns/conic2-sol-report.json"
+      },
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.1",
+          "submission": "conic-20261106T084017Z-a0cb85",
+          "store": "var/stores/store-conic2",
+          "raw": "350/650（p = 0.538）",
+          "mapping": "\\(p \\le 0.9p_B\\)",
+          "score": 0.0,
+          "notes_md": "新的一次 2 小时尝试。修正版公开集里 111/163 例为 1 秒时限，agent 因此把精力放在压缩启动开销和专用快速路径上：两次都解出的实例上耗时只有上一版的 0.52 倍，但用专用路径替代了通用内点法，回退路径要加载完整 SciPy（约 1.2 秒），在病态二次规划和大规模二阶锥上不收敛，丢了上一版能解的 129 例。它自己最后一次全公开集扫描按逐例时限重算是 89/163（0.546），与私有集结果几乎相同，但它的测试脚本只按统一的 15 秒上限判通过，没有发现退步。"
+        }
+      ],
+      "version": "solver-20261105",
+      "protocol": "v6.1"
+    },
+    {
+      "title": "原版题包（协议 v6，2026-11-04/05，本机重标定时限）",
+      "breakdown": {
+        "kind": "conic_csv",
+        "path": "tasks/conic/analysis/conic-per-case-summary.csv"
+      },
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6",
+          "submission": "conic-20261104T095122Z-0642fc",
+          "store": "var/stores/store",
+          "raw": "467/650（p = 0.718）",
+          "mapping": "\\(50(p-0.9p_B)/(0.1p_B)\\)",
+          "score": 5.2,
+          "csv_key": "gpt-6.1-sol",
+          "notes_md": "整体比参考少解 46 例，但在需要真正求解的 228 个时限大于 1 秒的实例上显著优于 Clarabel（132 对 93）。失分主要在 1 秒时限的小实例：每次运行多出 0.2–0.3 秒的 Python 启动开销，大量刚好超时。"
+        },
+        {
+          "model": "gpt-6-astra",
+          "protocol": "v6",
+          "submission": "conic-20261104T104719Z-2fc1ea",
+          "store": "var/stores/store",
+          "raw": "404/650（p = 0.622）",
+          "mapping": "\\(p \\le 0.9p_B\\)",
+          "score": 0.0,
+          "csv_key": "gpt-6-astra"
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6",
+          "submission": "conic-20261104T101315Z-23c3fc",
+          "store": "var/stores/store",
+          "raw": "339/650（p = 0.522）",
+          "mapping": "\\(p \\le 0.9p_B\\)",
+          "score": 0.0,
+          "csv_key": "hy4"
+        },
+        {
+          "model": "claude-opus-5-5",
+          "protocol": "v6",
+          "submission": "conic-20261104T092638Z-cc17fc",
+          "store": "var/stores/store",
+          "raw": "334/650（p = 0.514）",
+          "mapping": "\\(p \\le 0.9p_B\\)",
+          "score": 0.0,
+          "csv_key": "claude-opus-5-5"
+        },
+        {
+          "model": "step-5-preview",
+          "protocol": "v6",
+          "submission": null,
+          "raw": "2 小时内无有效提交",
+          "mapping": "无效提交",
+          "score": 0.0
+        }
+      ],
+      "version": "original",
+      "protocol": "v6"
     }
   ],
   "notes_md": "- 650 例中 422 例的时限是 1 秒，而计时包括解释器启动和导入；Python 加 SciPy 的求解器光启动就要约 0.7 秒。opus 两种设置都写了运行时不加载 Python 的原生 C++ 内点法，这是它接近参考的主要原因；sol 两种设置都还是 Python + SciPy，超时是主要失分。\n- opus 迭代版与 Clarabel 逐例比没有显著差异（48 对 57，McNemar p = 0.44）；其余三份提交都显著落后。\n- 迭代设置的公开集反馈对 opus 有帮助（+17 例），对 sol 没有帮助（5 次测试都远低于参考，到截止也没有正式提交）；每种设置只有一次尝试，不足以区分设置效应与尝试间波动。",

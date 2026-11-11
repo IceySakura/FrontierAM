@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.1",
+ "setting": null,
+ "submission": "galaxy-gravity-20261106T040942Z-5de3b4",
+ "raw": "相对 RMS 误差 3.5e-15，60/60 次有效",
+ "mapping": "\\(100-50E/W\\)",
+ "score": 100.0,
+ "review": "待复核",
+ "process": {
+  "minutes": 14.7,
+  "public_tests": 0
+ }
+}

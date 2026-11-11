@@ -1,0 +1,11 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6",
+ "setting": null,
+ "submission": "conic-20261104T095122Z-0642fc",
+ "raw": "467/650（p = 0.718）",
+ "mapping": "\\(50(p-0.9p_B)/(0.1p_B)\\)",
+ "score": 5.2,
+ "review": null,
+ "process": null
+}

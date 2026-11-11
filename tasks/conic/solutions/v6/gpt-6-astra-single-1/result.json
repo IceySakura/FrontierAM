@@ -1,0 +1,11 @@
+{
+ "model": "gpt-6-astra",
+ "protocol": "v6",
+ "setting": null,
+ "submission": "conic-20261104T104719Z-2fc1ea",
+ "raw": "404/650（p = 0.622）",
+ "mapping": "\\(p \\le 0.9p_B\\)",
+ "score": 0.0,
+ "review": null,
+ "process": null
+}

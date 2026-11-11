@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.1",
+ "setting": null,
+ "submission": "trajectory-covariance-20261106T045544Z-58f573",
+ "raw": "L = 0.176933，3000/3000 合格（单例最多 1.06 秒）",
+ "mapping": "\\(100-50L/b\\)",
+ "score": 61.5,
+ "review": "待复核",
+ "process": {
+  "minutes": 54.7,
+  "public_tests": 0
+ }
+}

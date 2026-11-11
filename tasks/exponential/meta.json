@@ -125,7 +125,31 @@
           "mapping": "\\(100/(1+R)\\)",
           "score": 56.9
         }
-      ]
+      ],
+      "version": "v2",
+      "protocol": "v6.2"
+    },
+    {
+      "title": "协议 v6.1（2026-11-06 开发，11-09 评测）",
+      "breakdown": {
+        "kind": "exp2_score",
+        "path": "tasks/exponential/analysis/exp2-sol-20261109/score.json",
+        "manifest": ".runtime-exp2/data/manifest.json"
+      },
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.1",
+          "submission": "exponential-v2-20261106T043748Z-9f6d55",
+          "store": "var/stores/store",
+          "raw": "74/74 合格，R = 0.596",
+          "mapping": "\\(100/(1+R)\\)",
+          "score": 62.7,
+          "notes_md": "几何速度比 \\(S = 2.01\\)，95% 区间 [1.45, 2.91]，下限大于 1：在这个私有集上显著快于参照组的逐例最快者。优势集中在几何图（耗时为参照的 0.14 倍）、有限元标准矩阵（0.29）和网格扩散（0.34）；66 个计分会话中有 7 个比参照慢（最多 1.34 倍）。复用 16 个右端的场景优势更大。"
+        }
+      ],
+      "version": "v2",
+      "protocol": "v6.1"
     }
   ],
   "notes_md": "- 逐例最快的参照成员有 60/74 是按文献实现的 Chebyshev 方法，不是作者代码；如果这一实现本身不够强，参照组会被低估。是否替换为作者代码仍在讨论。\n- sol 的单轮尝试 23 分钟就结束回合，最后改动源项处理后没有重新检验，私有集 58 例精度不合格；迭代设置下它做了 4 次公开集测试，成绩正常。",
