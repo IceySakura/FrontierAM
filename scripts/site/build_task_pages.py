@@ -135,7 +135,8 @@ def process_text(p: dict | None, iterative: bool) -> str:
 
 
 def attempt_dir(r: dict) -> str:
-    return f'{r["model"]}-{SETTING.get(r.get("setting"), "single")}-{r.get("attempt", 1)}'
+    """solutions/<protocol>/<folder>; a later task version within one protocol keeps its own subfolder (r['folder'])."""
+    return r.get('folder') or f'{r["model"]}-{SETTING.get(r.get("setting"), "single")}-{r.get("attempt", 1)}'
 
 
 ATTENTION = {'author': '**需出题人处理**', 'review': '建议人工复核'}

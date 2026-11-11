@@ -20,7 +20,7 @@ value() { grep "\"event\": \"$1\", \"label\": \"$2\"" "$LOG" | tail -1 | python3
 last_id() { python3 -c "import json,sys;print(json.loads(sys.stdin.readlines()[-1])['id'])"; }
 family() { case $1 in conic) echo conic;; exponential-v3) echo exponential;; galaxy-gravity-v3) echo galaxy-gravity;;
     polarization-demosaicking-v2) echo polarization-demosaicking;; species-tree-v3) echo species-tree;;
-    trajectory-covariance-v2) echo trajectory-covariance;; ihvp-sequence) echo ihvp-sequence;; esac; }
+    trajectory-covariance-v2) echo trajectory-covariance;; ihvp-sequence|ihvp-sequence-v2) echo ihvp-sequence;; esac; }
 runtime() { [ "$1" = conic ] && echo "$CONIC_RT" || echo "$EXP_RT"; }
 # frozen submission ID; '-' for an invalid submission (scores 0); '' while running or after an infrastructure failure
 # (status unmeasured: the attempt is rerun, its log renamed, never graded)
@@ -60,7 +60,7 @@ grade() {  # setting, task
     sub=$(frozen "var/stores/store/reruns/v63-sol-$label.log")
     [ -z "$sub" ] && return 1                       # attempt still running
     case " $TIMED " in *" $task "*) attempts_running && return 1;; esac
-    out=tasks/$(family "$task")/solutions/v6.3/gpt-6.1-sol-$setting-$N
+    out=tasks/$(family "$task")/solutions/v6.3/$([ "$task" = ihvp-sequence-v2 ] && echo v2/)gpt-6.1-sol-$setting-$N
     mkdir -p "$out"
     if [ "$sub" = - ]; then                          # no valid frozen submission: invalid (0) or unmeasured
         run=$(python3 -c "import json,sys;print([json.loads(l) for l in open(sys.argv[1]) if 'develop_finished' in l][-1]['run'])" \
@@ -115,7 +115,7 @@ PY
     log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": \"$sub\", \"suite\": \"$id\""
 }
 
-TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence"
+TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v2"
 while :; do
     anchors
     left=0

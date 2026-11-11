@@ -15,7 +15,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TASKS = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3': 'galaxy-gravity',
          'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
-         'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence'}
+         'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
+         'ihvp-sequence-v2': 'ihvp-sequence'}
+SUBFOLDER = {'ihvp-sequence-v2': 'v2'}  # later task versions within protocol v6.3 keep their own solutions subfolder
 SETTING = {'single': '单轮', 'iterative': '迭代'}
 NOTES = {
     ('conic', 'single'): 'HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。',
@@ -85,12 +87,15 @@ def main():
     for task, family in TASKS.items():
         path = ROOT / 'tasks' / family / 'meta.json'
         meta = json.loads(path.read_text())
-        old = next((g for g in meta['result_groups'] if g.get('protocol') == 'v6.3'), None)
+        version = {'polarization-demosaicking': 'v2', 'trajectory-covariance': 'v2', 'ihvp-sequence': 'v1'}.get(family, 'v3')
+        version = SUBFOLDER.get(task, version)
+        old = next((g for g in meta['result_groups'] if g.get('protocol') == 'v6.3' and g.get('version') == version), None)
         reviews = {(r['model'], r['setting']): {k: r[k] for k in ('review',) if k in r}
                    for r in (old or {}).get('results', [])}
         results = []
         for setting in ('single', 'iterative'):
-            folder = ROOT / 'tasks' / family / 'solutions/v6.3' / f'gpt-6.1-sol-{setting}-1'
+            name = '/'.join(filter(None, (SUBFOLDER.get(task), f'gpt-6.1-sol-{setting}-1')))
+            folder = ROOT / 'tasks' / family / 'solutions/v6.3' / name
             if not (folder / 'score.json').exists():
                 continue
             score = json.loads((folder / 'score.json').read_text())
@@ -99,12 +104,11 @@ def main():
             results.append({'model': 'gpt-6.1-sol', 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': 1,
                             'submission': submission_of(task, setting, 1), 'store': 'var/stores/store-v63', 'raw': raw,
                             'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),
-                            'notes_md': NOTES.get((task, setting), ''), **reviews.get(('gpt-6.1-sol', SETTING[setting]), {})})
+                            'notes_md': NOTES.get((task, setting), ''), **({'folder': name} if task in SUBFOLDER else {}), **reviews.get(('gpt-6.1-sol', SETTING[setting]), {})})
         if not results:
             continue
-        version = {'polarization-demosaicking': 'v2', 'trajectory-covariance': 'v2', 'ihvp-sequence': 'v1'}.get(family, 'v3')
         group = {'title': TITLE, 'version': version, 'protocol': 'v6.3', 'results': results}
-        meta['result_groups'] = [group] + [g for g in meta['result_groups'] if g.get('protocol') != 'v6.3']
+        meta['result_groups'] = [group] + [g for g in meta['result_groups'] if not (g.get('protocol') == 'v6.3' and g.get('version') == version)]
         path.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + '\n')
         print(json.dumps({'task': family, 'cells': [(r['setting'], r['score']) for r in results]}, ensure_ascii=False))
 

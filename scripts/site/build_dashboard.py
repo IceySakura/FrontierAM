@@ -188,7 +188,7 @@ def page(title: str, body: str, depth: int = 0) -> str:
 
 
 def anchor_of(r: dict) -> str:
-    return re.sub(r'[^\w.]+', '-', f'{r["model"]}-{r["protocol"]}-{r.get("setting", "")}-{r.get("attempt", 1)}').strip('-')
+    return re.sub(r'[^\w.]+', '-', f'{r["model"]}-{r["protocol"]}-{r.get("folder", "")}-{r.get("setting", "")}-{r.get("attempt", 1)}').strip('-')
 
 
 def protocol_label(r: dict) -> str:
@@ -212,7 +212,8 @@ def group_label(group: dict) -> str:
 def process_cell(task: dict, r: dict) -> str:
     """Test submissions (iterative) and development time used, from the attempt's result.json (build_task_pages.py)."""
     setting = {'单轮': 'single', '迭代': 'iterative'}.get(r.get('setting'), 'single')
-    path = ROOT / 'tasks' / task['name'] / 'solutions' / (r.get('protocol') or 'v6.2') / f'{r["model"]}-{setting}-{r.get("attempt", 1)}' / 'result.json'
+    folder = r.get('folder') or f'{r["model"]}-{setting}-{r.get("attempt", 1)}'
+    path = ROOT / 'tasks' / task['name'] / 'solutions' / (r.get('protocol') or 'v6.2') / folder / 'result.json'
     process = json.loads(path.read_text()).get('process') if path.exists() else None
     if not process:
         return ''
