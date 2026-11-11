@@ -210,7 +210,9 @@ class Broker:
                         leased = {row['slot'] for row in self.leases()}
                         free = [s for s in self.layout['slots'] if s['kind'] == 'grade' and s['id'] not in leased]
                         attempts = self._live('attempt')
-                        blocked = self._live('priority') > 0 or (attempts > 0 and len(free) <= attempts)
+                        # Holding the grade slots idle (grade_pool, quiet) would lock out the attempts' tests for the
+                        # whole grading, so it waits for the attempts to end.
+                        blocked = self._live('priority') > 0 or (attempts > 0 and (len(free) <= attempts or 'grade' in holds))
                     if not blocked and used + memory_bytes <= self.layout['memory_budget_bytes']:
                         lease = self._lock_set(candidates, holds, memory_bytes, owner, isolation)
                         if lease is not None:

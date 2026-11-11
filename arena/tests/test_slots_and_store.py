@@ -251,3 +251,11 @@ def test_one_free_grade_slot_per_running_attempt(tmp_path):
         second = broker.acquire('grade', 2**30, 'test b', timeout=0, priority=True)
         assert first.id != second.id
 
+
+def test_pool_isolation_waits_for_running_attempts(tmp_path):
+    broker = slots.Broker(layout(), tmp_path)
+    with broker.iterative_attempt('a'):
+        with pytest.raises(TimeoutError):
+            broker.acquire('grade', 2**30, 'pool grade', timeout=0, isolation='grade_pool')
+    assert broker.acquire('grade', 2**30, 'pool grade', timeout=0, isolation='grade_pool')
+
