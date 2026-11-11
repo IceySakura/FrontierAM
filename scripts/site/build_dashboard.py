@@ -273,14 +273,20 @@ def task_page(task: dict) -> str:
 
 
 def index_page(site: dict, tasks: list[dict]) -> str:
-    models = []
-    for task in tasks:
-        for group in task['result_groups']:
+    def models_of(groups) -> list[str]:
+        found = []
+        for group in groups:
             for r in group['results']:
-                if r['model'] not in models:
-                    models.append(r['model'])
+                if r['model'] not in found:
+                    found.append(r['model'])
+        return found
+
+    newest_groups = [t['result_groups'][0] for t in tasks if t['result_groups']]
+    older_groups = [g for t in tasks for g in t['result_groups'][1:]]
+    models = models_of(newest_groups)   # only models with a result in the newest version of some task
     head = ''.join(f'<th>{html.escape(model_name(m))}</th>' for m in models)
-    def cells_for(group: dict) -> str:
+
+    def cells_for(group: dict, models: list[str]) -> str:
         cells = []
         for m in models:
             hit = ordered([r for r in group['results'] if r['model'] == m])
@@ -295,6 +301,8 @@ def index_page(site: dict, tasks: list[dict]) -> str:
             cells.append('<td>' + '<br>'.join(lines) + '</td>')
         return ''.join(cells)
 
+    old_models = models_of(older_groups)
+    old_head = ''.join(f'<th>{html.escape(model_name(m))}</th>' for m in old_models)
     rows, history = [], []
     for task in tasks:
         if not task['result_groups']:
@@ -302,8 +310,9 @@ def index_page(site: dict, tasks: list[dict]) -> str:
         newest, *older = task['result_groups']
         name = html.escape(task.get('name', task['title']))
         rows.append(f'<tr><td><a href="tasks/{task["id"]}.html">{name}</a><br><small>{html.escape(group_label(newest))}</small></td>'
-                    f'{cells_for(newest)}</tr>')
-        history += [f'<tr><td>{name}<br><small>{html.escape(group_label(g))}</small></td>{cells_for(g)}</tr>' for g in older]
+                    f'{cells_for(newest, models)}</tr>')
+        history += [f'<tr><td>{name}<br><small>{html.escape(group_label(g))}</small></td>{cells_for(g, old_models)}</tr>'
+                    for g in older]
     cards = ''.join(
         f'<div class="card"><h3><a href="tasks/{t["id"]}.html">{html.escape(t.get("name", t["title"]))}</a></h3>'
         f'<p>{html.escape(t["category"])}</p><p>{md(t["summary"])[3:-4]}</p>'
@@ -314,7 +323,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
             '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。超过参照（50 分）的成绩在复核结论出来前标“待复核”。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。旧版本的成绩在表格下方折叠。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>'
             + (f'<details><summary>旧版本的成绩（{len(history)} 组）</summary>'
-               f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(history)}</table></details>' if history else ''))
+               f'<table class="matrix"><tr><th>题目 / 版本</th>{old_head}</tr>{"".join(history)}</table></details>' if history else ''))
     return page(site['title'], body)
 
 
