@@ -188,11 +188,30 @@ def page(title: str, body: str, depth: int = 0) -> str:
 
 
 def anchor_of(r: dict) -> str:
-    return re.sub(r'[^\w.]+', '-', f'{r["model"]}-{r["protocol"]}-{r.get("setting", "")}').strip('-')
+    return re.sub(r'[^\w.]+', '-', f'{r["model"]}-{r["protocol"]}-{r.get("setting", "")}-{r.get("attempt", 1)}').strip('-')
 
 
 def protocol_label(r: dict) -> str:
-    return f'{r["protocol"]} {r["setting"]}' if r.get('setting') else r['protocol']
+    return f'{r["protocol"]} {r["setting"]} 第 {r.get("attempt", 1)} 次' if r.get('setting') else r['protocol']
+
+
+SETTING_ORDER = {'单轮': 0, '迭代': 1}
+
+
+def ordered(results: list[dict], models: list[str] | None = None) -> list[dict]:
+    """Model, then setting (single before iterative), then attempt."""
+    rank = {m: i for i, m in enumerate(models or [])}
+    return sorted(results, key=lambda r: (rank.get(r['model'], len(rank)), r['model'], SETTING_ORDER.get(r.get('setting'), 2),
+                                          r.get('attempt', 1)))
+
+
+def newest_group(task: dict) -> dict | None:
+    """The result group of the newest protocol (the dashboard lists only the latest protocol's results)."""
+    for protocol in ('v6.3', 'v6.2', 'v6.1', 'v6'):
+        for group in task['result_groups']:
+            if group['title'].startswith(f'协议 {protocol}') and group['results']:
+                return group
+    return task['result_groups'][0] if task['result_groups'] else None
 
 
 def review_tag(r: dict) -> str:
@@ -214,7 +233,7 @@ def process_cell(task: dict, r: dict) -> str:
 
 def result_rows(task: dict, group: dict) -> str:
     rows = []
-    for r in group['results']:
+    for r in ordered(group['results']):
         rows.append(f'<tr><td><a href="#{anchor_of(r)}">{html.escape(model_name(r["model"]))}</a></td>'
                     f'<td>{html.escape(protocol_label(r))}</td>'
                     f'<td>{md(r["raw"])[3:-4]}</td><td>{md(r["mapping"])[3:-4]}</td>'
@@ -238,7 +257,7 @@ def task_page(task: dict) -> str:
                  breakdown_html(group.get('breakdown'), group['results'])]
     body.append('<h2>各模型的做法</h2>')
     for group in task['result_groups']:
-        for r in group['results']:
+        for r in ordered(group['results']):
             body.append(f'<h3 id="{anchor_of(r)}">{html.escape(model_name(r["model"]))}（{html.escape(protocol_label(r))}）'
                         f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}</h3>')
             if r.get('notes_md'):
@@ -261,22 +280,26 @@ def index_page(site: dict, tasks: list[dict]) -> str:
                 if r['model'] not in models:
                     models.append(r['model'])
     head = ''.join(f'<th>{html.escape(model_name(m))}</th>' for m in models)
-    rows = []
+    rows, protocols = [], set()
     for task in tasks:
-        for group in task['result_groups']:
-            cells = []
-            for m in models:
-                hit = [r for r in group['results'] if r['model'] == m]
-                if len(hit) == 1:
-                    cells.append(f'<td class="score {score_class(hit[0]["score"])}">{fmt_score(hit[0]["score"])}{review_tag(hit[0])}</td>')
-                elif hit:
-                    cells.append('<td>' + '<br>'.join(
-                        f'<small>{html.escape(r.get("setting", ""))}</small> '
-                        f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}' for r in hit) + '</td>')
-                else:
-                    cells.append('<td></td>')
-            label = f'<a href="tasks/{task["id"]}.html">{html.escape(task.get("name", task["title"]))}</a>'
-            rows.append(f'<tr><td>{label}<br><small>{html.escape(group["title"])}</small></td>{"".join(cells)}</tr>')
+        group = newest_group(task)
+        if group is None:
+            continue
+        protocols.add(group['title'].split('（')[0].replace('协议 ', '').split(' ')[0])
+        cells = []
+        for m in models:
+            hit = ordered([r for r in group['results'] if r['model'] == m])
+            lines = []
+            for setting in ('单轮', '迭代'):
+                same = [r for r in hit if r.get('setting', '单轮') == setting]
+                if same:
+                    scores = ' / '.join(f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}'
+                                        for r in same)
+                    count = f'（{len(same)} 次）' if len(same) > 1 else ''
+                    lines.append(f'<small>{setting}{count}</small> {scores}')
+            cells.append('<td>' + '<br>'.join(lines) + '</td>')
+        label = f'<a href="tasks/{task["id"]}.html">{html.escape(task.get("name", task["title"]))}</a>'
+        rows.append(f'<tr><td>{label}<br><small>{html.escape(group["title"])}</small></td>{"".join(cells)}</tr>')
     cards = ''.join(
         f'<div class="card"><h3><a href="tasks/{t["id"]}.html">{html.escape(t.get("name", t["title"]))}</a></h3>'
         f'<p>{html.escape(t["category"])}</p><p>{md(t["summary"])[3:-4]}</p>'
@@ -284,7 +307,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     body = (f'<h1>{html.escape(site["title"])}</h1><p class="lead">{html.escape(site["subtitle"])}</p>{md(site["intro_md"])}'
             f'<h2>题目</h2><div class="cards">{cards}</div>'
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
-            '<p>只列每道题的最新版本和最新协议（v6.2）下的成绩。超过参照（50 分）的成绩在复核结论出来前标“待复核”：复核会检查超出的原因，并寻找更强的人类方法。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。点击题目查看评测依据、baseline 和各模型的做法。</p>'
+            f'<p>只列每道题的最新版本和最新协议（{"、".join(sorted(protocols))}）下的成绩；同一格多次尝试按次数依次列出，更早的成绩见各题页面。超过参照（50 分）的成绩在复核结论出来前标“待复核”：复核会检查超出的原因，并寻找更强的人类方法。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。点击题目查看评测依据、baseline 和各模型的做法。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>')
     return page(site['title'], body)
 
