@@ -1,5 +1,7 @@
 # galaxy-gravity-v2 参照 r2
 
+> **已撤下（2026-11-11）**：按修订后的 `results/BASELINE_POLICY.md`，参照只用人类方法的人类实现，不用被评模型的提交。galaxy-gravity-v3 用出题方的 Treecode2（r1）。以下为当时的说明，留作记录。
+
 - **来源**：claude-opus-5-5 在协议 v6.2 单轮中的冻结提交 `galaxy-gravity-v2-20261109T130056Z-aea0a3`（`source/` 原样复制）。
 - **为什么用模型解法当参照**：复核结论为“改进参照”（`results/BASELINE_REVIEW.md`）。它用的技术全部有人类来源：Dehnen 2002/2014 的笛卡尔 FMM（11 阶）、双树遍历与互惠作用、M2P、代码生成的展开核、运行时成本模型选张角。按论文独立实现的人类版本（`../candidates/fmm-dehnen/`）在同阶同张角下慢约 2.3 倍、误差大 3–190 倍，差距来自实现质量，不是方法。按 `results/BASELINE_POLICY.md` 第 4 条，采用该解法作为新参照。
 - **锚点**：私有集 20 张快照上 \(W = 1.06\times10^{-7}\)，单次最多 3.16 CPU 秒（5 秒预算，余量 37%）。

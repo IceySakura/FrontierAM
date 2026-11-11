@@ -6,7 +6,7 @@
  "raw": "74/74 合格，R = 0.659",
  "mapping": "\\(100/(1+R)\\)",
  "score": 60.3,
- "review": "待复核",
+ "review": null,
  "process": {
   "minutes": 53.1,
   "public_tests": 0

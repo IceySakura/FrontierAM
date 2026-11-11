@@ -173,14 +173,13 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
             lines += ['<details><summary>旧版本的成绩与解法</summary>', '']
             folded = True
         lines += [f'## 模型成绩与解法（题目版本 {group.get("version")} · 协议 {protocol}）', '', group['title'], '',
-                  '| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- | --- |']
+                  '| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- |']
         for r, folder, _ in rows:
             score = '—' if r.get('score') is None else f'{r["score"]:.1f}'
-            review = r.get('review', '待复核') if (r.get('score') or 0) > 50 else ''
             link = f'[`{folder}/`](solutions/{protocol}/{folder}/)' if folder else ''
             process = process_text(r.get('_process'), r.get('setting') == '迭代')
-            lines.append(f'| {MODEL.get(r["model"], r["model"])} | {r.get("setting", "")} | {r["raw"]} | {r["mapping"]} | {score} | {review} | {process} | {link} |')
-        lines += ['', '超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。', '']
+            lines.append(f'| {MODEL.get(r["model"], r["model"])} | {r.get("setting", "")} | {r["raw"]} | {r["mapping"]} | {score} | {process} | {link} |')
+        lines.append('')
         for r, folder, omitted in rows:
             lines += [f'### {MODEL.get(r["model"], r["model"])}（{r.get("setting", "")}，{protocol}）', '']
             if r.get('notes_md'):
@@ -203,23 +202,25 @@ PROTOCOLS = ('v6.3', 'v6.2', 'v6.1', 'v6')  # newest first; the board shows the 
 def write_board(metas: list[dict], names: list[str]) -> None:
     """Scoreboard of the newest protocol with results into README.md between the board markers."""
     protocol = next(p for p in PROTOCOLS if any(g.get('protocol') == p and g['results'] for m in metas for g in m['result_groups']))
-    head = '| task | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in COLUMNS) + ' |'
-    rule = '| --- |' + ' --- |' * len(COLUMNS)
+    newest = [r for m in metas for g in m['result_groups'] if g.get('protocol') == protocol for r in g['results']]
+    columns = [(m, s) for m, s in COLUMNS if any(r['model'] == m and r.get('setting', '单轮') == s for r in newest)]
+    head = '| task | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in columns) + ' |'
+    rule = '| --- |' + ' --- |' * len(columns)
     scores, process = [head, rule], [head, rule]
     for meta, name in zip(metas, names):
         results = [r for g in meta['result_groups'] if g.get('protocol') == protocol for r in g['results']]
         row_s, row_p = [], []
-        for model, setting in COLUMNS:
+        for model, setting in columns:
             hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting),
                           key=lambda r: r.get('attempt', 1))
-            row_s.append(' / '.join('—' if r.get('score') is None else f'{r["score"]:.1f}' + (('†' if r.get('review', '待复核') != '待复核' else '*') if r['score'] > 50 else '')
+            row_s.append(' / '.join('—' if r.get('score') is None else f'{r["score"]:.1f}'
                                     for r in hits))
             row_p.append(' / '.join(process_text(r.get('_process'), setting == '迭代') or '—' for r in hits))
         link = f'[{name}](tasks/{name}/README.md)'
         scores.append(f'| {link} | ' + ' | '.join(row_s) + ' |')
         process.append(f'| {link} | ' + ' | '.join(row_p) + ' |')
     board = (f'协议 {protocol}；更早协议与题目版本的成绩见各题 README。' + '\n\n'
-             + '\n'.join(scores) + '\n\n满分 100，参照 = 50；* 待复核，† 复核完成（见题目 README，`results/BASELINE_REVIEW.md`）。\n\n**提交次数与用时**\n\n'
+             + '\n'.join(scores) + '\n\n满分 100，参照 = 50。\n\n**提交次数与用时**\n\n'
              + '\n'.join(process))
     readme = ROOT / 'README.md'
     text = readme.read_text()
@@ -261,7 +262,6 @@ def main():
                 target.mkdir(parents=True, exist_ok=True)
                 omitted = extract_solution(r['store'], r['submission'], target)
                 result = {k: r.get(k) for k in ('model', 'protocol', 'setting', 'submission', 'raw', 'mapping', 'score', 'review')}
-                result['review'] = result['review'] or ('待复核' if (r.get('score') or 0) > 50 else None)
                 previous = json.loads((target / 'result.json').read_text()).get('process') if (target / 'result.json').exists() else None
                 result['process'] = process_stats(r['submission'], runs) or previous
                 r['_process'] = result['process']

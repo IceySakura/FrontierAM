@@ -59,15 +59,36 @@
 
 本机评测核实测，与出题方记录（1.808 / 1.110）一致。
 
+## 模型成绩与解法（题目版本 v2 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | RMSE \(E = 1.0320\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.5 | 52 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | RMSE \(E = 1.0456\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.9 | 23 次提交，211 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+
+### GPT-6.1 Sol（单轮，v6.3）
+
+低通估计通道差、把马赛克细节转移到四个通道，再用约 7.7k 参数的残差卷积网络修正（只用 2 张公开样例加增强训练），最后做以强度为引导的局部仿射回归。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `polarization-demosaicking-v2-20261110T224315Z-da6c17`）；未复制的二进制或大文件：weights.npz（33,421 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+逐格双线性插值加通道差的偏振估计，用全部测量恢复共同细节引导，再用小型残差卷积网络修正，带结构门控与残差校准。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `polarization-demosaicking-v2-20261110T231338Z-f36b08`）；未复制的二进制或大文件：weights.npz（104,886 字节）。
+
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v1.2 · 协议 v6.2）
 
 协议 v6.2 单轮（2026-11-09 开发，11-10 评分）
 
-| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Claude Opus 5.5 | 单轮 | 平均 RMSE 0.97877，32/32 景通过（每景最多 0.710 秒） | \(100 - 50\,L/\text{强}\) | 55.9 | 待复核 | 46 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
-
-超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Claude Opus 5.5 | 单轮 | 平均 RMSE 0.97877，32/32 景通过（每景最多 0.710 秒） | \(100 - 50\,L/\text{强}\) | 55.9 | 46 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
 
 ### Claude Opus 5.5（单轮，v6.2）
 
@@ -77,17 +98,13 @@
 
 源码 [`solutions/v6.2/claude-opus-5-5-single-1/source/`](solutions/v6.2/claude-opus-5-5-single-1/source/)（提交 `polarization-demosaicking-20261109T124343Z-553533`）；未复制的二进制或大文件：kernels.npy（9,808 字节）。
 
-<details><summary>旧版本的成绩与解法</summary>
-
 ## 模型成绩与解法（题目版本 v1.2 · 协议 v6.1）
 
 协议 v6.1（2026-11-06）
 
-| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.1 Sol |  | 整批 RMSE 1.09499，32/32 景通过（每景最多 0.591 秒） | \(100-50E/H_5\) | 50.7 | 待复核 | 66 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.1/gpt-6.1-sol-single-1/) |
-
-超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol |  | 整批 RMSE 1.09499，32/32 景通过（每景最多 0.591 秒） | \(100-50E/H_5\) | 50.7 | 66 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.1/gpt-6.1-sol-single-1/) |
 
 ### GPT-6.1 Sol（，v6.1）
 

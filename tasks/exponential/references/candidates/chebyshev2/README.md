@@ -1,5 +1,9 @@
 # Chebyshev literature implementation v2 (`chebyshev2`)
 
+> Not part of the reference panel (decision 2026-11-11, `results/BASELINE_POLICY.md`): the implementer saw no model
+> submission, but its technique list was taken from the model solutions under review, so it is kept as an ablation
+> study only.
+
 This directory contains `chebyshev2`, a second independent C99 human-baseline
 implementation in the Chebyshev polynomial family for the FAMEXP2
 exponential-propagation task:

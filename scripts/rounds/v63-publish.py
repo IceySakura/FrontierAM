@@ -2,7 +2,7 @@
 
 Reads tasks/<family>/solutions/v6.3/<model>-<setting>-<n>/score.json (written by scripts/rounds/v63-grade.sh) and the
 attempt logs for the submission IDs; writes raw metric, mapping and score per cell. Reviews (results/BASELINE_REVIEW.md)
-are kept from an earlier publish. Cells without a score.json are left out.
+are kept from an earlier publish; method notes come from NOTES. Cells without a score.json are left out.
 
 Usage: v63-publish.py
 """
@@ -17,6 +17,20 @@ TASKS = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3':
          'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
          'trajectory-covariance-v2': 'trajectory-covariance'}
 SETTING = {'single': '单轮', 'iterative': '迭代'}
+NOTES = {
+    ('conic', 'single'): 'HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。',
+    ('conic', 'iterative'): '按结构分派：可分 LP / 对角 QP 解析解、锥结构化简与等式消元、几何规划段的约化牛顿法、HiGHS，其余用齐次原始对偶内点法（Mehrotra 步，Nesterov–Todd 缩放）。',
+    ('exponential-v3', 'single'): 'C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递推，正向量加权 Gershgorin 收紧谱区间；小连通块扩展精度对角化。',
+    ('exponential-v3', 'iterative'): '对角与 2×2 块解析求解，小连通块扩展精度特征分解；其余用 Chebyshev 展开，两种矩阵函数共用一条 Clenshaw 递推，按输出大小自适应截断，另有自适应 Lanczos 试探。',
+    ('galaxy-gravity-v3', 'single'): '笛卡尔与调和多极展开结合的 FMM，远场也保留 Plummer 软化修正；按相互作用选展开阶数，按进程 CPU 时间控制工作量。',
+    ('galaxy-gravity-v3', 'iterative'): '核拆分：牛顿部分用调和多极展开，软化差项用笛卡尔修正；按调用规划精度，剩余 CPU 时间对部分粒子做完整直接求和。',
+    ('polarization-demosaicking-v2', 'single'): '低通估计通道差、把马赛克细节转移到四个通道，再用约 7.7k 参数的残差卷积网络修正（只用 2 张公开样例加增强训练），最后做以强度为引导的局部仿射回归。',
+    ('polarization-demosaicking-v2', 'iterative'): '逐格双线性插值加通道差的偏振估计，用全部测量恢复共同细节引导，再用小型残差卷积网络修正，带结构门控与残差校准。',
+    ('species-tree-v3', 'single'): '支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；最多 60 个基因座自助树，再用动态规划求兼容分裂频率最大的共识树。',
+    ('species-tree-v3', 'iterative'): '支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；四元组按悬挂枝长降权（加权方式与 Weighted ASTRAL 相同）。',
+    ('trajectory-covariance-v2', 'single'): '白化后自适应窗宽的重叠批均值；README 写明把估计除以了轨迹长度，与题目要求的尺度不符，误差约为强参照的 10 倍。会话只用了 2 分钟。',
+    ('trajectory-covariance-v2', 'iterative'): '白化后用 AICc 权重组合独立观测与 VAR(1) 谱估计，系数不确定度用三明治估计并向共同衰减率收缩；有限状态链用 Markov 泊松方程。',
+}
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
@@ -41,13 +55,13 @@ def cell(task: str, score: dict) -> tuple[str, str]:
     if family == 'exponential':
         if score.get('status') != 'ok':
             return f'无效提交（{len(score.get("failed_cases") or {})} 例不合格）', '任一用例不合格记 0'
-        return (f'74/74 合格，\\(R = {score["relative_time"]:.3f}\\)（对参照组逐例最快成员，含 Chebyshev v2）',
+        return (f'74/74 合格，\\(R = {score["relative_time"]:.3f}\\)（对 7 方法参照组逐例最快成员）',
                 '\\(100/(1+R)\\)')
     candidate = score.get('candidate') or {}
     raw = candidate.get('raw_error')
     if family == 'galaxy-gravity':
         anchors = baseline_anchors(task)
-        return (f'\\(E = {raw:.3g}\\)，单次最多 {candidate.get("max_cpu_s", 0):.2f} CPU 秒（参照 r2：\\(W = {anchors["strong"]:.3g}\\)）',
+        return (f'\\(E = {raw:.3g}\\)，单次最多 {candidate.get("max_cpu_s", 0):.2f} CPU 秒（出题方 Treecode2：\\(U = {anchors["weak"]:.3g}\\)，\\(W = {anchors["strong"]:.3g}\\)）',
                 '对数刻度：\\(E < W\\) 为 \\(50 + 50\\,\\log(W/E)/\\log(W/10^{-15})\\)；\\(W \\le E < U\\) 为 \\(50\\,\\log(U/E)/\\log(U/W)\\)')
     if family == 'polarization-demosaicking':
         anchors = baseline_anchors(task)
@@ -64,7 +78,7 @@ def main():
         path = ROOT / 'tasks' / family / 'meta.json'
         meta = json.loads(path.read_text())
         old = next((g for g in meta['result_groups'] if g.get('protocol') == 'v6.3'), None)
-        reviews = {(r['model'], r['setting']): {k: r[k] for k in ('review', 'notes_md') if k in r}
+        reviews = {(r['model'], r['setting']): {k: r[k] for k in ('review',) if k in r}
                    for r in (old or {}).get('results', [])}
         results = []
         for setting in ('single', 'iterative'):
@@ -77,7 +91,7 @@ def main():
             results.append({'model': 'gpt-6.1-sol', 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': 1,
                             'submission': submission_of(task, setting, 1), 'store': 'var/stores/store-v63', 'raw': raw,
                             'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),
-                            **reviews.get(('gpt-6.1-sol', SETTING[setting]), {})})
+                            'notes_md': NOTES[(task, setting)], **reviews.get(('gpt-6.1-sol', SETTING[setting]), {})})
         version = 'v3' if family not in ('polarization-demosaicking', 'trajectory-covariance') else 'v2'
         group = {'title': TITLE, 'version': version, 'protocol': 'v6.3', 'results': results}
         meta['result_groups'] = [group] + [g for g in meta['result_groups'] if g.get('protocol') != 'v6.3']

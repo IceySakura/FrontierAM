@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | `v1` | `galaxy-gravity` | 出题方原版：65,536 粒子、5 CPU 秒；直接求和可在预算内求精确解 |
 | `v2` | `galaxy-gravity-v2` | FrontierAM 重建：131,072 粒子、5 CPU 秒，快照用原包生成器以私有种子生成（当前版本） |
-| `v3` | `galaxy-gravity-v3` | 协议 v6.3 版本：参照 r2（高阶 FMM）为 50 分锚点、对数刻度；工作区只含样例（scripts/seal/prepare_v63.py） |
+| `v3` | `galaxy-gravity-v3` | 协议 v6.3 版本：出题方的两条 Treecode2 参照（r1），对数刻度、对数刻度；工作区只含样例（scripts/seal/prepare_v63.py） |
 
 ## 题目背景
 
@@ -34,7 +34,7 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | 公开开发材料 | versions/v3/data/samples/（给模型的样例）；versions/v3/data/public/（不给模型的反馈集，只在内部仓库） |
 | 私有测试集 | versions/v3/data/private/（只在内部仓库） |
 | 评测器 | 原包评测器 tasks/galaxy-gravity/harbor/tests/grade.py（只改输入大小检查与架构检查） |
-| 参照实现 | references/r1/（两条 Treecode2 参照）；复核中的候选 references/candidates/（Dehnen 式高阶 FMM） |
+| 参照实现 | references/r1/（出题方的两条 Treecode2 参照，各版本使用）；参考材料：references/r3/（agent 按 Dehnen 论文写的高阶 FMM）、references/r2/（opus 解法），均不作锚点（results/BASELINE_POLICY.md） |
 
 ## 数据划分（协议 v6.3）
 
@@ -65,16 +65,37 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 
 同样的硬件上，直接两两求和约需 15 CPU 秒，超出上限约 3 倍。
 
+## 模型成绩与解法（题目版本 v3 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | \(E = 1.22e-07\)，单次最多 4.56 CPU 秒（出题方 Treecode2：\(U = 0.00125\)，\(W = 0.000591\)） | 对数刻度：\(E < W\) 为 \(50 + 50\,\log(W/E)/\log(W/10^{-15})\)；\(W \le E < U\) 为 \(50\,\log(U/E)/\log(U/W)\) | 65.7 | 56 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | \(E = 6.91e-10\)，单次最多 4.89 CPU 秒（出题方 Treecode2：\(U = 0.00125\)，\(W = 0.000591\)） | 对数刻度：\(E < W\) 为 \(50 + 50\,\log(W/E)/\log(W/10^{-15})\)；\(W \le E < U\) 为 \(50\,\log(U/E)/\log(U/W)\) | 75.2 | 5 次提交，226 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+
+### GPT-6.1 Sol（单轮，v6.3）
+
+笛卡尔与调和多极展开结合的 FMM，远场也保留 Plummer 软化修正；按相互作用选展开阶数，按进程 CPU 时间控制工作量。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `galaxy-gravity-v3-20261110T233945Z-494532`）；未复制的二进制或大文件：solve（103,872 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+核拆分：牛顿部分用调和多极展开，软化差项用笛卡尔修正；按调用规划精度，剩余 CPU 时间对部分粒子做完整直接求和。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `galaxy-gravity-v3-20261110T145613Z-509fb2`）；未复制的二进制或大文件：solve（545,312 字节）。
+
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v2 · 协议 v6.2）
 
 协议 v6.2 单轮（2026-11-09 开发，11-10 评分）
 
-| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.1 Sol | 单轮 | \(L = 4.25\times10^{-9}\)，单次最多 4.45 CPU 秒 | \(100 - 50\,L/\text{强}\) | 100.0 | 复核完成：承认算法创新（核拆分）；参照改为 r2 后计 58.7 | 106 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.2/gpt-6.1-sol-single-1/) |
-| Claude Opus 5.5 | 单轮 | \(L = 1.06\times10^{-7}\)，单次最多 3.16 CPU 秒 | \(100 - 50\,L/\text{强}\) | 100.0 | 复核完成：本解法成为参照 r2；按 r2 计 50.0 | 63 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
-
-超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | \(L = 4.25\times10^{-9}\)，单次最多 4.45 CPU 秒 | \(100 - 50\,L/\text{强}\) | 100.0 | 106 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.2/gpt-6.1-sol-single-1/) |
+| Claude Opus 5.5 | 单轮 | \(L = 1.06\times10^{-7}\)，单次最多 3.16 CPU 秒 | \(100 - 50\,L/\text{强}\) | 100.0 | 63 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.2）
 
@@ -88,17 +109,13 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 
 源码 [`solutions/v6.2/claude-opus-5-5-single-1/source/`](solutions/v6.2/claude-opus-5-5-single-1/source/)（提交 `galaxy-gravity-v2-20261109T130056Z-aea0a3`）；未复制的二进制或大文件：solve（430,048 字节）。
 
-<details><summary>旧版本的成绩与解法</summary>
-
 ## 模型成绩与解法（题目版本 v1 · 协议 v6.1）
 
 协议 v6.1（2026-11-06）
 
-| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.1 Sol |  | 相对 RMS 误差 3.5e-15，60/60 次有效 | \(100-50E/W\) | 100.0 | 待复核 | 15 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.1/gpt-6.1-sol-single-1/) |
-
-超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol |  | 相对 RMS 误差 3.5e-15，60/60 次有效 | \(100-50E/W\) | 100.0 | 15 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.1/gpt-6.1-sol-single-1/) |
 
 ### GPT-6.1 Sol（，v6.1）
 

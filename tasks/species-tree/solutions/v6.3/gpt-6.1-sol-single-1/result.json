@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "species-tree-v3-20261110T201658Z-e087ed",
+ "raw": "nRF \\(E = 0.1323\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 49.324,
+ "review": null,
+ "process": {
+  "minutes": 58.4,
+  "public_tests": 0
+ }
+}

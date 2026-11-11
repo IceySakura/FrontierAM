@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "galaxy-gravity-v3-20261110T233945Z-494532",
+ "raw": "\\(E = 1.22e-07\\)，单次最多 4.56 CPU 秒（出题方 Treecode2：\\(U = 0.00125\\)，\\(W = 0.000591\\)）",
+ "mapping": "对数刻度：\\(E < W\\) 为 \\(50 + 50\\,\\log(W/E)/\\log(W/10^{-15})\\)；\\(W \\le E < U\\) 为 \\(50\\,\\log(U/E)/\\log(U/W)\\)",
+ "score": 65.66,
+ "review": null,
+ "process": {
+  "minutes": 56.4,
+  "public_tests": 0
+ }
+}

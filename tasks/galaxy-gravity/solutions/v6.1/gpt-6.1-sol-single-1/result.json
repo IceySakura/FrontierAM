@@ -6,7 +6,7 @@
  "raw": "相对 RMS 误差 3.5e-15，60/60 次有效",
  "mapping": "\\(100-50E/W\\)",
  "score": 100.0,
- "review": "待复核",
+ "review": null,
  "process": {
   "minutes": 14.7,
   "public_tests": 0

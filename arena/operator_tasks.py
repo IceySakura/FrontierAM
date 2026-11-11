@@ -182,8 +182,8 @@ class GalaxyGravityV2(GalaxyGravity):
 
 
 class GalaxyGravityV3(GalaxyGravityV2):
-    """Protocol v6.3 version (scripts/seal/prepare_v63.py): reference r2 (a high-order FMM) as the 50-point anchor and
-    a log-scale mapping, since accuracies span many orders of magnitude (results/BASELINE_REVIEW.md)."""
+    """Protocol v6.3 version (scripts/seal/prepare_v63.py): the task author's references (r1, two Treecode2 settings) with
+    a log-scale mapping, since accuracies span many orders of magnitude (results/BASELINE_POLICY.md)."""
 
     def score(self, runtime, metrics, baseline):
         result = super().score(runtime, metrics, baseline)
@@ -440,8 +440,12 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
 
 
 def operator_tasks() -> dict[str, OperatorTask]:
+    # Repository-native draft tasks do not pretend to have a sealed operator
+    # package or a calibrated deployment on this host.
+    from .operator_drivers.ihvp_sequence import IHVPSequence
+    handlers = {**CLASSES, 'ihvp-sequence': IHVPSequence}
     tasks = {}
     for path in sorted(SPECS.glob('*/versions/*/task.json')):
         spec = json.loads(path.read_text())
-        tasks[spec['name']] = CLASSES.get(spec['name'], DevelopmentOnlyTask)(spec)
+        tasks[spec['name']] = handlers.get(spec['name'], DevelopmentOnlyTask)(spec)
     return tasks

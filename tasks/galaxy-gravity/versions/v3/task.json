@@ -6,7 +6,7 @@
   "derived_from": "galaxy-gravity-v2",
   "references": {
     "weak": "baselines/standard",
-    "strong": "repo:tasks/galaxy-gravity/references/r2/source"
+    "strong": "baselines/modified"
   },
   "images": {
     "task": {

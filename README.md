@@ -5,29 +5,31 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 ## 榜单（协议 v6.2）
 
 <!-- board:start -->
-协议 v6.2；更早协议与题目版本的成绩见各题 README。
+协议 v6.3；更早协议与题目版本的成绩见各题 README。
 
-| task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
-| --- | --- | --- | --- | --- |
-| [conic](tasks/conic/README.md) | 0.0 | 0.0 | 24.7 / 18.8 / 0.0 | 41.2 |
-| [exponential](tasks/exponential/README.md) | 0.0 / 0.0 / 56.9* | 62.9* | 70.8* / 60.3* / 51.7* | 69.1* |
-| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 100.0† |  | 100.0† |  |
-| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 55.9* |  |
-| [trajectory-covariance](tasks/trajectory-covariance/README.md) |  |  | 51.9* |  |
-| [species-tree](tasks/species-tree/README.md) | 0.0 |  | 42.3 |  |
+| task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 |
+| --- | --- | --- |
+| [conic](tasks/conic/README.md) | 0.0 | 0.0 |
+| [exponential](tasks/exponential/README.md) | 55.2 | 59.6 |
+| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 65.7 | 75.2 |
+| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 53.5 | 52.9 |
+| [trajectory-covariance](tasks/trajectory-covariance/README.md) | 0.0 | 62.3 |
+| [species-tree](tasks/species-tree/README.md) | 49.3 | 52.6 |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) |  |  |
 
-满分 100，参照 = 50；* 待复核，† 复核完成（见题目 README，`results/BASELINE_REVIEW.md`）。
+满分 100，参照 = 50。
 
 **提交次数与用时**
 
-| task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
-| --- | --- | --- | --- | --- |
-| [conic](tasks/conic/README.md) | 120 分钟 | 5 次提交，120 分钟 | 88 分钟 / 90 分钟 / 57 分钟 | 5 次提交，80 分钟 |
-| [exponential](tasks/exponential/README.md) | 23 分钟 / 4 分钟 / 100 分钟 | 4 次提交，68 分钟 | 62 分钟 / 53 分钟 / 76 分钟 | 10 次提交，60 分钟 |
-| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 106 分钟 |  | 63 分钟 |  |
-| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 46 分钟 |  |
-| [trajectory-covariance](tasks/trajectory-covariance/README.md) |  |  | 68 分钟 |  |
-| [species-tree](tasks/species-tree/README.md) | 4 分钟 |  | 66 分钟 |  |
+| task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 |
+| --- | --- | --- |
+| [conic](tasks/conic/README.md) | 57 分钟 | 7 次提交，238 分钟 |
+| [exponential](tasks/exponential/README.md) | 54 分钟 | 7 次提交，186 分钟 |
+| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 56 分钟 | 5 次提交，226 分钟 |
+| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 52 分钟 | 23 次提交，211 分钟 |
+| [trajectory-covariance](tasks/trajectory-covariance/README.md) | 2 分钟 | 19 次提交，127 分钟 |
+| [species-tree](tasks/species-tree/README.md) | 58 分钟 | 13 次提交，237 分钟 |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) |  |  |
 <!-- board:end -->
 
 本仓库不含私有评测集（各题的私有测试数据另行保管，需要时单独提供）。
@@ -41,7 +43,7 @@ tasks/<题目>/
 ├── README.md        阅读入口：背景、版本、题面/数据/评测器/参照的位置、评测依据、baseline、模型成绩与解法
 ├── meta.json        本题的数据源：说明文字、版本列表、各部分位置、已发布成绩（README 与看板都由它生成）
 ├── versions/<版本>/  每个题目版本一个目录：题面 statement.md、data/samples/（给模型的样例）、data/public/ 与 data/private/（反馈集与私有集，只在内部仓库）、封存说明
-├── references/      参照实现：r1/ 为现行参照，candidates/ 为复核中的候选（参照升级时新增 r2/，旧成绩仍对应 r1）
+├── references/      参照实现：r1/ 为现行参照，candidates/ 为候选（更换参照时新增 r<k>/，旧成绩仍对应原参照）
 ├── solutions/<协议>/<模型>-<设置>-<序号>/   模型冻结提交的源码 source/ 与成绩 result.json、score.json
 └── analysis/        这道题的专题分析与复核记录
 ```

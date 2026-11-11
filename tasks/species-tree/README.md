@@ -67,16 +67,37 @@
 
 公开开发集（50 例，给模型的公开数据）上两条参照的批误差为 0.158462 / 0.141700，公开集略难于私有集，两条参照的差距相近。
 
+## 模型成绩与解法（题目版本 v3 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | nRF \(E = 0.1323\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.3 | 58 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | nRF \(E = 0.1251\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6 | 13 次提交，237 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+
+### GPT-6.1 Sol（单轮，v6.3）
+
+支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；最多 60 个基因座自助树，再用动态规划求兼容分裂频率最大的共识树。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `species-tree-v3-20261110T201658Z-e087ed`）；未复制的二进制或大文件：solver（112,720 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；四元组按悬挂枝长降权（加权方式与 Weighted ASTRAL 相同）。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `species-tree-v3-20261110T233945Z-40316d`）；未复制的二进制或大文件：infer（382,248 字节）。
+
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v2 · 协议 v6.2）
 
 协议 v6.2 单轮（2026-11-09 开发，11-10 评分）
 
-| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.1 Sol | 单轮 | 漏掉 49,400 / 49,400 个分裂，\(E = 1.0\) | \(E \ge U\) 记 0 | 0.0 |  | 4 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.2/gpt-6.1-sol-single-1/) |
-| Claude Opus 5.5 | 单轮 | 漏掉 6,700 个分裂，\(E = 0.135628\) | \(50\,(U-E)/(U-W)\) | 42.3 |  | 66 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
-
-超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | 漏掉 49,400 / 49,400 个分裂，\(E = 1.0\) | \(E \ge U\) 记 0 | 0.0 | 4 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.2/gpt-6.1-sol-single-1/) |
+| Claude Opus 5.5 | 单轮 | 漏掉 6,700 个分裂，\(E = 0.135628\) | \(50\,(U-E)/(U-W)\) | 42.3 | 66 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.2）
 
@@ -90,17 +111,13 @@ C++ 实现的支持度加权四元组方法（思路同加权 ASTRAL）：按 aB
 
 源码 [`solutions/v6.2/claude-opus-5-5-single-1/source/`](solutions/v6.2/claude-opus-5-5-single-1/source/)（提交 `species-tree-v2-20261109T134305Z-2caffd`）。
 
-<details><summary>旧版本的成绩与解法</summary>
-
 ## 模型成绩与解法（题目版本 v1 · 协议 v6.1）
 
 协议 v6.1（2026-11-06）
 
-| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.1 Sol |  | 暂停评测（提交已冻结） | — | — |  | 101 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.1/gpt-6.1-sol-single-1/) |
-
-超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol |  | 暂停评测（提交已冻结） | — | — | 101 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.1/gpt-6.1-sol-single-1/) |
 
 ### GPT-6.1 Sol（，v6.1）
 

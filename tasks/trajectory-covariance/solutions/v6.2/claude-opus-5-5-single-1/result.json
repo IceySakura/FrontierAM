@@ -6,7 +6,7 @@
  "raw": "\\(L = 0.221264\\)，3000/3000 合格（单例最多 1.66 秒）",
  "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
  "score": 51.9,
- "review": "待复核",
+ "review": null,
  "process": {
   "minutes": 68.5,
   "public_tests": 0

@@ -1,0 +1,51 @@
+{
+  "schema": "frontieram/ihvp-sequence-v1-sample-recipes-1",
+  "samples": [
+    {
+      "id": "sample_01",
+      "source_public_feedback_id": "case_04",
+      "family": "wide_spectrum_smooth",
+      "profile": "easy",
+      "dimension": 16384,
+      "steps": 50,
+      "condition_target": 1000.0,
+      "seed": 2026113101,
+      "repeat": 1,
+      "logical_arrays_sha256_on_source_environment": "9edd85c6c0fa9aac3bfdbeb8045ea6c8ef8aeda2f117cf602aed8dd9a5005212",
+      "source_teacher_sha256": "f347f64c26513946944aec769b93fca412614154130d5edd0fb1b7971f2f83d2"
+    },
+    {
+      "id": "sample_02",
+      "source_public_feedback_id": "case_14",
+      "family": "phase_jump",
+      "profile": "medium",
+      "dimension": 16384,
+      "steps": 50,
+      "condition_target": 100000.0,
+      "seed": 2026113411,
+      "repeat": 1,
+      "logical_arrays_sha256_on_source_environment": "6fa62ea9f07e7b223df87fca85b3cdc0c6bba891f54bb196439108e9f287cd2a",
+      "source_teacher_sha256": "123618ec94d6a1191b2d10b2ce4fec1204432d2b84a82d42845d67fe6d466cad"
+    }
+  ],
+  "role": "Only these two development cases are exposed to model developers; they are selected from the 15-case public feedback pool.",
+  "logical_array_keys": [
+    "spectrum",
+    "V",
+    "permutation",
+    "sign_in",
+    "sign_out",
+    "control",
+    "phase",
+    "diagonal_features",
+    "rank_features",
+    "diagonal_weights",
+    "lowrank_weights",
+    "forcing_basis",
+    "forcing_initial",
+    "validation_latent",
+    "validation_target_eigen",
+    "b",
+    "z_star"
+  ]
+}

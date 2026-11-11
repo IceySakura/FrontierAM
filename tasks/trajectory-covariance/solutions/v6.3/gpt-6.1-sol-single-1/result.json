@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "trajectory-covariance-v2-20261110T164002Z-c19fe6",
+ "raw": "白化误差 \\(E = 2.2638\\)（\\(U = 0.3493\\)，\\(W = 0.2290\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 2.5,
+  "public_tests": 0
+ }
+}

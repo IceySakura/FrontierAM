@@ -17,6 +17,37 @@
   "baseline_md": "参照组（panel）7 个成员，全部在公开数据上按事先声明的规则标定后冻结（2026-11-06 17:04）：\n\n| 成员 | 来源 |\n| --- | --- |\n| Expokit | Sidje 1998，作者 Fortran 代码 |\n| KIOPS | Gaudreault 等 2018，作者代码 |\n| expmv | Al-Mohy & Higham 2011，作者代码 |\n| SciPy `expm_multiply` | SciPy 库 |\n| Chebyshev | Tal-Ezer & Kosloff 等，由未接触任何模型提交的独立 agent 按文献实现 |\n| SLEPc MFN | SLEPc 3.26.1 库 |\n| ExponentialUtilities.jl | SciML Julia 库 |\n\n每个用例取三次都合格的成员中最快者作为参考时间（virtual best），在本机评测核上实测，覆盖全部 74 例。逐例最快的成员：Chebyshev 60 例、Expokit 9 例、SLEPc 4 例、ExponentialUtilities.jl 1 例。有理（移位求逆）Krylov 成员因在一个公开用例上精度略超余量未能入选。",
   "result_groups": [
     {
+      "title": "协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）",
+      "version": "v3",
+      "protocol": "v6.3",
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "exponential-v3-20261111T003322Z-4a23d6",
+          "store": "var/stores/store-v63",
+          "raw": "74/74 合格，\\(R = 0.813\\)（对 7 方法参照组逐例最快成员）",
+          "mapping": "\\(100/(1+R)\\)",
+          "score": 55.156,
+          "notes_md": "C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递推，正向量加权 Gershgorin 收紧谱区间；小连通块扩展精度对角化。"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "exponential-v3-20261110T141618Z-f78745",
+          "store": "var/stores/store-v63",
+          "raw": "74/74 合格，\\(R = 0.679\\)（对 7 方法参照组逐例最快成员）",
+          "mapping": "\\(100/(1+R)\\)",
+          "score": 59.568,
+          "notes_md": "对角与 2×2 块解析求解，小连通块扩展精度特征分解；其余用 Chebyshev 展开，两种矩阵函数共用一条 Clenshaw 递推，按输出大小自适应截断，另有自适应 Lanczos 试探。"
+        }
+      ]
+    },
+    {
       "title": "协议 v6.2（2 小时，单轮 / 迭代，2026-11-09 开发，11-10 评测）",
       "breakdown": {
         "kind": "exp2_score",

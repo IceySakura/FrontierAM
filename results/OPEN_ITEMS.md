@@ -43,3 +43,8 @@
 | v6.3 首轮：trajectory 迭代尝试遇上游 429（11-10） | 第 79 分钟上游返回 429 超过重试上限，harness 退出（此前 20 次测试，public 分数 51→64.5）。属基础设施故障，记为未测；日志改名为 `.429.log` 留档，第一轮结束后自动重跑 | `var/stores/store/reruns/` |
 | v6.3 首轮：测试再次被饿死（11-11 09:04–10:04，已修复） | 一个重复的 species 整集评分（grade_pool 隔离，锁住全部评测槽）在只有 1 个迭代尝试运行时被放行，占用 89 分钟；trajectory 迭代尝试的第 19 次测试排队 1 小时未拿到评测槽（该尝试随后在第 127 分钟正式提交）。修复：有迭代尝试运行时，锁住评测槽的隔离（grade_pool、quiet）一律等待 | `arena/slots.py` |
 
+| 参照原则修订（用户决定 11-11） | 参照是出题人自己做或深度参与的一版，固定锚点，不声称是 SOTA；不因被模型超过而升级，不再判断“调参还是创新”、不标“待复核”；任一格子 ≥ 80 分或高分段分不开时请出题人来改参照。galaxy-gravity-v3 参照退回出题方 Treecode2（r1），opus 解法（r2）与 agent 按论文写的 FMM（r3）只作参考材料；exponential-v3 保留原 7 方法参照组，Chebyshev 第二版不并入 | `results/BASELINE_POLICY.md`、`results/BASELINE_REVIEW.md` |
+| 题面公开映射、反馈给比值（用户决定 11-11） | 保持：参照在公开集上的水平刻意可见，私有锚点、私有数据与参照代码不公开；观察“过线即停” | `results/PROTOCOL_V63.md` |
+| galaxy-gravity-v3 题面需重新封签（下一轮前） | 本轮尝试看到的题面与反馈写“50 分锚点为高阶快速多极方法参照”，public 反馈按 r2 的公开锚点计分；参照已改为 r1。`scripts/seal/prepare_v63.py` 与 `arena/native.py` 的说明已改，封签与 public 锚点在下一轮前重做。本轮最终评分不受影响 | `scripts/seal/prepare_v63.py` |
+| galaxy-gravity 弱参照余量不足（待反馈出题人） | 私有集上弱参照单次最多 4.05 CPU 秒（上限 5 秒），余量 19%，低于 25% | `results/BASELINE_REVIEW.md` |
+| 新题 ihvp-sequence 纳入本轮（用户决定 11-11） | GitHub PR #1（出题人 Zhang Hengrui），草稿：题面、样例、生成器、评测器、两份出题人参照（CG 0 分，L-BFGS-PCG 50 分）齐全，无私有内容。缺：反馈集与私有集（在出题人处，用户暂缓决定是要原包还是用自带生成器重生成）、amd64 镜像、容器隔离评测、v6.3 接线、参照时间余量（困难例接近 30 秒）与分数饱和检查（参照之上线性映射）。本轮目标：与其他六题一样完成锚点、sol 单轮与迭代、评分、发布 | `tasks/ihvp-sequence/analysis/INTEGRATION.md` |

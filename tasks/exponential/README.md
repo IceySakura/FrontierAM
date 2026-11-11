@@ -70,22 +70,43 @@
 
 每个用例取三次都合格的成员中最快者作为参考时间（virtual best），在本机评测核上实测，覆盖全部 74 例。逐例最快的成员：Chebyshev 60 例、Expokit 9 例、SLEPc 4 例、ExponentialUtilities.jl 1 例。有理（移位求逆）Krylov 成员因在一个公开用例上精度略超余量未能入选。
 
+## 模型成绩与解法（题目版本 v3 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | 74/74 合格，\(R = 0.813\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 55.2 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.679\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 59.6 | 7 次提交，186 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+
+### GPT-6.1 Sol（单轮，v6.3）
+
+C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递推，正向量加权 Gershgorin 收紧谱区间；小连通块扩展精度对角化。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `exponential-v3-20261111T003322Z-4a23d6`）；未复制的二进制或大文件：solver（151,704 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+对角与 2×2 块解析求解，小连通块扩展精度特征分解；其余用 Chebyshev 展开，两种矩阵函数共用一条 Clenshaw 递推，按输出大小自适应截断，另有自适应 Lanczos 试探。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `exponential-v3-20261110T141618Z-f78745`）；未复制的二进制或大文件：solver（175,184 字节）。
+
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v2 · 协议 v6.2）
 
 协议 v6.2（2 小时，单轮 / 迭代，2026-11-09 开发，11-10 评测）
 
-| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.1 Sol | 单轮 | 58 例精度不合格 | 任一例失败记 0 | 0.0 |  | 23 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.2/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | 74/74 合格，R = 0.589 | \(100/(1+R)\) | 62.9 | 待复核 | 4 次提交，68 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.2/gpt-6.1-sol-iterative-1/) |
-| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.412 | \(100/(1+R)\) | 70.8 | 待复核 | 62 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
-| Claude Opus 5.5 | 迭代 | 74/74 合格，R = 0.448 | \(100/(1+R)\) | 69.1 | 待复核 | 10 次提交，60 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.2/claude-opus-5-5-iterative-1/) |
-| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.659 | \(100/(1+R)\) | 60.3 | 待复核 | 53 分钟 | [`claude-opus-5-5-single-2/`](solutions/v6.2/claude-opus-5-5-single-2/) |
-| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.934 | \(100/(1+R)\) | 51.7 | 待复核 | 76 分钟 | [`claude-opus-5-5-single-3/`](solutions/v6.2/claude-opus-5-5-single-3/) |
-| GPT-6.1 Sol | 单轮 | 53 例精度不合格（无效提交） | \(100/(1+R)\) | 0.0 |  | 4 分钟 | [`gpt-6.1-sol-single-2/`](solutions/v6.2/gpt-6.1-sol-single-2/) |
-| GPT-6.1 Sol | 单轮 | 74/74 合格，R = 0.758 | \(100/(1+R)\) | 56.9 | 待复核 | 100 分钟 | [`gpt-6.1-sol-single-3/`](solutions/v6.2/gpt-6.1-sol-single-3/) |
-
-超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | 58 例精度不合格 | 任一例失败记 0 | 0.0 | 23 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.2/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | 74/74 合格，R = 0.589 | \(100/(1+R)\) | 62.9 | 4 次提交，68 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.2/gpt-6.1-sol-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.412 | \(100/(1+R)\) | 70.8 | 62 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.2/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | 74/74 合格，R = 0.448 | \(100/(1+R)\) | 69.1 | 10 次提交，60 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.2/claude-opus-5-5-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.659 | \(100/(1+R)\) | 60.3 | 53 分钟 | [`claude-opus-5-5-single-2/`](solutions/v6.2/claude-opus-5-5-single-2/) |
+| Claude Opus 5.5 | 单轮 | 74/74 合格，R = 0.934 | \(100/(1+R)\) | 51.7 | 76 分钟 | [`claude-opus-5-5-single-3/`](solutions/v6.2/claude-opus-5-5-single-3/) |
+| GPT-6.1 Sol | 单轮 | 53 例精度不合格（无效提交） | \(100/(1+R)\) | 0.0 | 4 分钟 | [`gpt-6.1-sol-single-2/`](solutions/v6.2/gpt-6.1-sol-single-2/) |
+| GPT-6.1 Sol | 单轮 | 74/74 合格，R = 0.758 | \(100/(1+R)\) | 56.9 | 100 分钟 | [`gpt-6.1-sol-single-3/`](solutions/v6.2/gpt-6.1-sol-single-3/) |
 
 ### GPT-6.1 Sol（单轮，v6.2）
 
@@ -127,17 +148,13 @@ C 实现的 Chebyshev 展开，长展开时用短 Lanczos 收紧谱上界，SELL
 
 源码 [`solutions/v6.2/gpt-6.1-sol-single-3/source/`](solutions/v6.2/gpt-6.1-sol-single-3/source/)（提交 `exponential-v2-20261110T053617Z-d8bb77`）；未复制的二进制或大文件：solver（288,792 字节）。
 
-<details><summary>旧版本的成绩与解法</summary>
-
 ## 模型成绩与解法（题目版本 v2 · 协议 v6.1）
 
 协议 v6.1（2026-11-06 开发，11-09 评测）
 
-| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.1 Sol |  | 74/74 合格，R = 0.596 | \(100/(1+R)\) | 62.7 | 待复核 | 34 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.1/gpt-6.1-sol-single-1/) |
-
-超过参照（50 分）的成绩在复核结论出来之前标“待复核”，见 `analysis/` 与 `results/BASELINE_POLICY.md`。
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol |  | 74/74 合格，R = 0.596 | \(100/(1+R)\) | 62.7 | 34 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.1/gpt-6.1-sol-single-1/) |
 
 ### GPT-6.1 Sol（，v6.1）
 

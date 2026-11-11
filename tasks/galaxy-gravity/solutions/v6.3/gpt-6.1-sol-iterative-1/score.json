@@ -9,7 +9,7 @@
  "claimed_utc": "2026-11-10T18:01:07+00:00",
  "worker_pid": 2453650,
  "status": "ok",
- "score": 63.99177386832138,
+ "score": 75.19708587528017,
  "finished_utc": "2026-11-10T18:07:15+00:00",
  "candidate": {
   "status": "ok",
@@ -21,6 +21,13 @@
   "cpu_limit_s": 5.0
  },
  "anchors": {
+  "weak": 0.0012518922651302462,
+  "strong": 0.0005905277151693238,
+  "reference": "r1 (task author Treecode2)",
+  "baseline": "galaxy-gravity-v3-20261111T031111Z-1a3104"
+ },
+ "score_r2": 63.99177386832138,
+ "anchors_r2": {
   "weak": 0.0012518922651302462,
   "strong": 1.2828525745272997e-07
  }

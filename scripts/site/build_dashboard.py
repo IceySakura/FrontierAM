@@ -209,13 +209,6 @@ def group_label(group: dict) -> str:
     return f'题目版本 {group.get("version", "?")} · 协议 {group.get("protocol", "?")}'
 
 
-def review_tag(r: dict) -> str:
-    """Above-reference scores stay 'pending review' until results/BASELINE_REVIEW.md records a conclusion."""
-    if r.get('score') is None or r['score'] <= 50:
-        return ''
-    return f' <span class="tag warn">{html.escape(r.get("review", "待复核"))}</span>'
-
-
 def process_cell(task: dict, r: dict) -> str:
     """Test submissions (iterative) and development time used, from the attempt's result.json (build_task_pages.py)."""
     setting = {'单轮': 'single', '迭代': 'iterative'}.get(r.get('setting'), 'single')
@@ -232,7 +225,7 @@ def result_rows(task: dict, group: dict) -> str:
         rows.append(f'<tr><td><a href="#{anchor_of(r)}">{html.escape(model_name(r["model"]))}</a></td>'
                     f'<td>{html.escape(protocol_label(r))}</td>'
                     f'<td>{md(r["raw"])[3:-4]}</td><td>{md(r["mapping"])[3:-4]}</td>'
-                    f'<td class="num score {score_class(r["score"])}">{fmt_score(r["score"])}{review_tag(r)}</td>'
+                    f'<td class="num score {score_class(r["score"])}">{fmt_score(r["score"])}</td>'
                     f'<td>{html.escape(process_cell(task, r))}</td></tr>')
     return ('<table><tr><th>模型</th><th>协议</th><th>原始指标</th><th>换算</th><th class="num">得分（满分 100）</th>'
             '<th>提交次数与用时</th></tr>' + ''.join(rows) + '</table>')
@@ -257,7 +250,7 @@ def task_page(task: dict) -> str:
             body.append('<details><summary>旧版本的做法</summary>')
         for r in ordered(group['results']):
             body.append(f'<h3 id="{anchor_of(r)}">{html.escape(model_name(r["model"]))}（{html.escape(protocol_label(r))}）'
-                        f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}</h3>')
+                        f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span></h3>')
             if r.get('notes_md'):
                 body.append(f'<div class="note">{md(r["notes_md"])}</div>')
             text = readme(r['store'], r['submission']) if r.get('submission') else None
@@ -294,7 +287,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
             for setting in ('单轮', '迭代'):
                 same = [r for r in hit if r.get('setting', '单轮') == setting]
                 if same:
-                    scores = ' / '.join(f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}'
+                    scores = ' / '.join(f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>'
                                         for r in same)
                     count = f'（{len(same)} 次）' if len(same) > 1 else ''
                     lines.append(f'<small>{setting}{count}</small> {scores}')
@@ -320,7 +313,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     body = (f'<h1>{html.escape(site["title"])}</h1><p class="lead">{html.escape(site["subtitle"])}</p>{md(site["intro_md"])}'
             f'<h2>题目</h2><div class="cards">{cards}</div>'
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
-            '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。超过参照（50 分）的成绩在复核结论出来前标“待复核”。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。旧版本的成绩在表格下方折叠。</p>'
+            '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。旧版本的成绩在表格下方折叠。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>'
             + (f'<details><summary>旧版本的成绩（{len(history)} 组）</summary>'
                f'<table class="matrix"><tr><th>题目 / 版本</th>{old_head}</tr>{"".join(history)}</table></details>' if history else ''))

@@ -33,7 +33,7 @@ S(E)=
 10-5E/E_5,& 0\\le E<E_5.
 \\end{cases}
 $$'''
-GALAXY_SCORING_NEW = '''**满分 100，参照 = 50，按原始误差的对数计分。** 0 分锚点 $E_0$ 是经典树算法参照的原始误差，50 分锚点 $E_{50}$ 是高阶快速多极方法参照的原始误差，两者都在评测机上按相同资源和汇总规则标定。$E\\le 10^{-15}$（双精度可达的误差下限）对应 100 分。
+GALAXY_SCORING_NEW = '''**满分 100，参照 = 50，按原始误差的对数计分。** 0 分锚点 $E_0$ 是标准树算法参照的原始误差，50 分锚点 $E_{50}$ 是改进树算法参照的原始误差，两者都在评测机上按相同资源和汇总规则标定。$E\\le 10^{-15}$（双精度可达的误差下限）对应 100 分。
 
 $$
 S(E)=
@@ -137,7 +137,7 @@ TASKS = {
                    '[样例数据、文件说明与本地自检入口](samples/README.md)'),
                   ('public-dev/README.md', '# 星系快照引力题 · 公开开发材料', '# 星系快照引力题 · 样例'),
                   ('public-dev/README.md', GALAXY_README_PUBLIC_OLD, GALAXY_README_PUBLIC_NEW)],
-        'task': {'references': {'weak': 'baselines/standard', 'strong': 'repo:tasks/galaxy-gravity/references/r2/source'},
+        'task': {'references': {'weak': 'baselines/standard', 'strong': 'baselines/modified'},
                  'instruction': 'Read /workspace/problem.md in full and inspect /workspace/samples. Implement the '
                                 'gravitational-acceleration program described there.'},
         'lock': {},

@@ -16,6 +16,37 @@
   "baseline_md": "参考实现是 **Clarabel 0.11.1**（Rust 编写的工业级内点法求解器，带齐次自对偶嵌入和不可行证书），在本机评测核上按本机标定的时限实测：**650 例中解出 513 例，\\(p_B = 0.789\\)**，记 50 分。参考在大规模二阶锥和半正定问题上也会失败（例如时限内给出的解没有通过残差检查）。",
   "result_groups": [
     {
+      "title": "协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）",
+      "version": "v3",
+      "protocol": "v6.3",
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "conic-20261111T003659Z-0c8cf8",
+          "store": "var/stores/store-v63",
+          "raw": "363 / 650（\\(p = 0.558\\)，参照 \\(p_B = 0.789\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+          "score": 0.0,
+          "notes_md": "HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "conic-20261110T150847Z-0ad892",
+          "store": "var/stores/store-v63",
+          "raw": "433 / 650（\\(p = 0.666\\)，参照 \\(p_B = 0.789\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+          "score": 0.0,
+          "notes_md": "按结构分派：可分 LP / 对角 QP 解析解、锥结构化简与等式消元、几何规划段的约化牛顿法、HiGHS，其余用齐次原始对偶内点法（Mehrotra 步，Nesterov–Todd 缩放）。"
+        }
+      ]
+    },
+    {
       "title": "协议 v6.2（修正版题包，2 小时，单轮 / 迭代；2026-11-09 开发，11-10 评分）",
       "breakdown": {
         "kind": "suite_report",

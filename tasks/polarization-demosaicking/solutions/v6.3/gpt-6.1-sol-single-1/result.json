@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "polarization-demosaicking-v2-20261110T224315Z-da6c17",
+ "raw": "RMSE \\(E = 1.0320\\)（\\(U = 1.8082\\)，\\(W = 1.1099\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 53.51,
+ "review": null,
+ "process": {
+  "minutes": 51.6,
+  "public_tests": 0
+ }
+}

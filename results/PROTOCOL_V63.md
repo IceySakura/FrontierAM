@@ -37,6 +37,7 @@ Public-set score: 47.0 / 100 (reference = 50, same mapping as the final score).
 
 - 精度和速度只给“你 ÷ 参照”的比值；不给逐例结果，不给参照的绝对数值。
 - 只有当用例明显分成本质不同的几类时才分类；否则只报一行总计。每题在 `meta.json` 的 `v63_data.feedback` 中声明类别字段、精度指标及方向、是否计时。
+- **参照在公开集上的水平刻意可见（用户确定，11-11）。** 题面公开计分映射，反馈给分数和比值，模型能由此推出参照在公开集上的原始指标；这是“告诉模型哪里不如参照”的必然结果，与 Kaggle（公开榜 + 私有榜）、ALE-Bench（公开打分器与公开测试）、AlgoTune / KernelBench（直接返回相对参照的加速比）一致。不公开的是私有集上的锚点数值、私有输入与真值、参照代码。观察项：迭代尝试是否在公开分刚过 50 后就停止（“过线即停”）。
 
 ## 各题 v6.3 版本
 
@@ -44,7 +45,7 @@ Public-set score: 47.0 / 100 (reference = 50, same mapping as the final score).
 | --- | --- | --- | --- | --- | --- |
 | conic | v3（`conic`，运行副本 `.runtime-conic-v3`，反馈 `.runtime-conic-v3-public`） | 每类最小 1 例，共 5 例 | 145 例 | 锥类型 | 参照解不出的用例 300 → 18 秒 |
 | exponential | v3（`exponential-v3`，`.runtime-exp3`，反馈 `.runtime-exp3-public`） | 6 例 | 16 例 | 结构族 | 单请求 15 秒、复用 150 秒、启动 10 秒 |
-| galaxy-gravity | v3（`galaxy-gravity-v3`） | smoke + case-01 | 10 张快照 | 场景 | 参照 r2（高阶 FMM）为 50 分锚点，对数刻度 |
+| galaxy-gravity | v3（`galaxy-gravity-v3`） | smoke + case-01 | 10 张快照 | 场景 | 参照为出题方的两条 Treecode2（r1），对数刻度 |
 | polarization-demosaicking | v2（`polarization-demosaicking-v2`） | 合成样例 + 2 景 | 105 景 | 不分类 | 无 |
 | species-tree | v3（`species-tree-v3`） | 001、002 | 001–005 | 不分类 | 每例 135 秒；private 96 例 |
 | trajectory-covariance | v2（`trajectory-covariance-v2`） | 01、02 | 150 个输入 | 情形 | 每例 5 秒；private 2,400 个输入，分片评测 |

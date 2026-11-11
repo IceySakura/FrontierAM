@@ -16,6 +16,37 @@
   "baseline_md": "两条参照与原题相同（Treecode2 的两组参数），在本机评测核 grade-06 上实测 20 张快照、60 次调用：\n\n| 参照 | 加速度相对 RMS 误差 | 记分 | 单次最多 CPU 秒（上限 5） |\n| --- | --- | --- | --- |\n| 弱参照 | 0.00125189 | 0 | 4.05 |\n| 强参照 | 0.000590528 | 50 | 3.71 |\n\n同样的硬件上，直接两两求和约需 15 CPU 秒，超出上限约 3 倍。",
   "result_groups": [
     {
+      "title": "协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）",
+      "version": "v3",
+      "protocol": "v6.3",
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v3-20261110T233945Z-494532",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 1.22e-07\\)，单次最多 4.56 CPU 秒（出题方 Treecode2：\\(U = 0.00125\\)，\\(W = 0.000591\\)）",
+          "mapping": "对数刻度：\\(E < W\\) 为 \\(50 + 50\\,\\log(W/E)/\\log(W/10^{-15})\\)；\\(W \\le E < U\\) 为 \\(50\\,\\log(U/E)/\\log(U/W)\\)",
+          "score": 65.66,
+          "notes_md": "笛卡尔与调和多极展开结合的 FMM，远场也保留 Plummer 软化修正；按相互作用选展开阶数，按进程 CPU 时间控制工作量。"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v3-20261110T145613Z-509fb2",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 6.91e-10\\)，单次最多 4.89 CPU 秒（出题方 Treecode2：\\(U = 0.00125\\)，\\(W = 0.000591\\)）",
+          "mapping": "对数刻度：\\(E < W\\) 为 \\(50 + 50\\,\\log(W/E)/\\log(W/10^{-15})\\)；\\(W \\le E < U\\) 为 \\(50\\,\\log(U/E)/\\log(U/W)\\)",
+          "score": 75.197,
+          "notes_md": "核拆分：牛顿部分用调和多极展开，软化差项用笛卡尔修正；按调用规划精度，剩余 CPU 时间对部分粒子做完整直接求和。"
+        }
+      ]
+    },
+    {
       "title": "协议 v6.2 单轮（2026-11-09 开发，11-10 评分）",
       "results": [
         {
@@ -27,8 +58,7 @@
           "raw": "\\(L = 4.25\\times10^{-9}\\)，单次最多 4.45 CPU 秒",
           "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
           "score": 99.9996,
-          "notes_md": "二叉空间树上的高阶调和多极展开（16 阶）处理牛顿核，软化核与牛顿核之差用 10 阶笛卡尔展开，近场直接求和；按当前输入标定的代价模型选择精度，并带计时保护。误差比强参照小五个数量级。",
-          "review": "复核完成：承认算法创新（核拆分）；参照改为 r2 后计 58.7"
+          "notes_md": "二叉空间树上的高阶调和多极展开（16 阶）处理牛顿核，软化核与牛顿核之差用 10 阶笛卡尔展开，近场直接求和；按当前输入标定的代价模型选择精度，并带计时保护。误差比强参照小五个数量级。"
         },
         {
           "model": "claude-opus-5-5",
@@ -39,8 +69,7 @@
           "raw": "\\(L = 1.06\\times10^{-7}\\)，单次最多 3.16 CPU 秒",
           "mapping": "\\(100 - 50\\,L/\\text{强}\\)",
           "score": 99.991,
-          "notes_md": "笛卡尔坐标快速多极方法（FMM，双树遍历，11 阶展开，AVX2 向量化，Plummer 软化，双精度）。提交里没有 README。",
-          "review": "复核完成：本解法成为参照 r2；按 r2 计 50.0"
+          "notes_md": "笛卡尔坐标快速多极方法（FMM，双树遍历，11 阶展开，AVX2 向量化，Plummer 软化，双精度）。提交里没有 README。"
         }
       ],
       "version": "v2",
@@ -80,7 +109,7 @@
     {
       "dir": "v3",
       "registry": "galaxy-gravity-v3",
-      "note": "协议 v6.3 版本：参照 r2（高阶 FMM）为 50 分锚点、对数刻度；工作区只含样例（scripts/seal/prepare_v63.py）"
+      "note": "协议 v6.3 版本：出题方的两条 Treecode2 参照（r1），对数刻度、对数刻度；工作区只含样例（scripts/seal/prepare_v63.py）"
     }
   ],
   "locations": {
@@ -88,7 +117,7 @@
     "public": "versions/v3/data/samples/（给模型的样例）；versions/v3/data/public/（不给模型的反馈集，只在内部仓库）",
     "private": "versions/v3/data/private/（只在内部仓库）",
     "grader": "原包评测器 tasks/galaxy-gravity/harbor/tests/grade.py（只改输入大小检查与架构检查）",
-    "references": "references/r1/（两条 Treecode2 参照）；复核中的候选 references/candidates/（Dehnen 式高阶 FMM）"
+    "references": "references/r1/（出题方的两条 Treecode2 参照，各版本使用）；参考材料：references/r3/（agent 按 Dehnen 论文写的高阶 FMM）、references/r2/（opus 解法），均不作锚点（results/BASELINE_POLICY.md）"
   },
   "name": "galaxy-gravity",
   "v63_data": {

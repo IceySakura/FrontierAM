@@ -268,8 +268,8 @@ SCORING_DISCLOSURE['galaxy-gravity-v2'] = (
 SCORING_DISCLOSURE['galaxy-gravity-v3'] = (
     'Every call on every held-out snapshot must stay within the CPU, wall-clock and memory limits and return finite '
     'accelerations for all particles; a single failed call makes the whole submission score zero. Given that, the '
-    'score depends only on the overall relative acceleration error, on a logarithmic scale: matching a classical tree '
-    'code scores zero, matching a high-order fast multipole reference is the midpoint of the scale, and an error of '
+    'score depends only on the overall relative acceleration error, on a logarithmic scale: matching a standard tree '
+    'code scores zero, matching an improved tree-code reference is the midpoint of the scale, and an error of '
     '1e-15 (double precision) is the maximum. Using less CPU time earns nothing extra.'
 )
 
