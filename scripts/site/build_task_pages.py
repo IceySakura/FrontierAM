@@ -138,6 +138,36 @@ def attempt_dir(r: dict) -> str:
     return f'{r["model"]}-{SETTING.get(r.get("setting"), "single")}-{r.get("attempt", 1)}'
 
 
+ATTENTION = {'author': '**需出题人处理**', 'review': '建议人工复核'}
+
+
+def insight_table(meta: dict) -> list[str]:
+    """The task's result reading (meta.json insights): one row per finding with confidence, attention and evidence."""
+    lines = ['| 类别 | 结论 | 置信度 | 关注 |', '| --- | --- | --- | --- |']
+    for i in meta.get('insights', []):
+        lines.append(f'| {i["category"]} | {i["claim"]}（证据：{i["evidence"]}） | {i["confidence"]} | {ATTENTION.get(i["attention"], "")} |')
+    return lines
+
+
+def write_insights(metas: list[dict]) -> None:
+    """results/INSIGHTS.md: what the results so far say about each task, attention items first."""
+    path = ROOT / 'results' / 'INSIGHTS.md'
+    text = path.read_text() if path.exists() else ''
+    head = text.split('<!-- insights:start -->')[0] if '<!-- insights:start -->' in text else text
+    lines = ['<!-- insights:start -->', '## 需要人类关注', '']
+    for level in ('author', 'review'):
+        for meta in metas:
+            for i in meta.get('insights', []):
+                if i['attention'] == level:
+                    lines.append(f'- {ATTENTION[level]} · [{meta["name"]}](../tasks/{meta["name"]}/README.md) · {i["category"]}：{i["claim"]}')
+    lines += ['', '## 各题', '']
+    for meta in metas:
+        if meta.get('insights'):
+            lines += [f'### [{meta["name"]}](../tasks/{meta["name"]}/README.md)', '', *insight_table(meta), '']
+    lines += ['<!-- insights:end -->', '', '本节由 `scripts/site/build_task_pages.py` 从各题 `meta.json` 的 `insights` 生成。']
+    path.write_text(head + '\n'.join(lines) + '\n')
+
+
 def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: list[str]) -> str:
     loc, cur = meta['locations'], meta['current_version']
     lines = [f'# {meta["name"]}', '', meta['summary'], '',
@@ -162,6 +192,8 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
                   f'| samples（给模型） | {", ".join(d["samples"])} |', f'| public（不给，反馈用） | {d["public"]} |',
                   f'| 反馈分类 | {d["groups"] or "不分类，只报总计"} |', '']
     lines += ['## 评测依据', '', meta['judge_md'], '', '## Baseline', '', meta['baseline_md'], '']
+    if meta.get('insights'):
+        lines += ['## 结果解读', '', *insight_table(meta), '']
     folded = False
     for group in meta['result_groups']:
         protocol = group.get('protocol')
@@ -274,6 +306,7 @@ def main():
     lines += [f'| [{name}]({name}/README.md) | {n} |' for m, name, n in index]
     (TASKS / 'README.md').write_text('\n'.join(lines) + '\n\n本文件由 `scripts/site/build_task_pages.py` 生成。\n')
     write_board([m for m, _, _ in index], [name for _, name, _ in index])
+    write_insights([m for m, _, _ in index])
     print(json.dumps({'tasks': [name for _, name, _ in index]}))
 
 

@@ -120,5 +120,21 @@
       "timed": false,
       "note": "Any failed scene makes the final score 0. Time counts only against the limit."
     }
-  }
+  },
+  "insights": [
+    {
+      "category": "工程或组合小幅超过参照",
+      "claim": "v6.3 单轮 53.5（95% 区间 51.8–54.9）、迭代 52.9（51.4–54.4），都确实高于参照 LEIC；v6.2 opus 55.9。sol 用约 7.7k 参数的小卷积网络，只用 2 张公开场景训练；opus 用频域解调加学习滤波。提升来自组合还是参照偏弱，需要组件消融。",
+      "confidence": "实测（区间）/ 待查（归因）",
+      "attention": null,
+      "evidence": "`scripts/analyze/v63-bootstrap.py`"
+    },
+    {
+      "category": "数据",
+      "claim": "私有集 32 景，分数区间约 ±1.5 分，能区分 2 分以上的差距。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`results/INSIGHTS.md`"
+    }
+  ]
 }

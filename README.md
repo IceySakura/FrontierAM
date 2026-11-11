@@ -32,6 +32,8 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 13 分钟 | 1 次提交，9 分钟 |  |  |
 <!-- board:end -->
 
+成绩能说明什么（参照、数据、映射、模型做法）以及需要人类关注的事项：[结果解读](results/INSIGHTS.md)。
+
 本仓库不含私有评测集（各题的私有测试数据另行保管，需要时单独提供）。
 
 ## 题目目录结构

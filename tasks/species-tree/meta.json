@@ -134,5 +134,28 @@
       "timed": false,
       "note": "A failed case counts as the worst error (1.0)."
     }
-  }
+  },
+  "insights": [
+    {
+      "category": "工程或调参小幅超过参照",
+      "claim": "迭代 52.6（95% 区间 51.3–53.9），确实高于参照，但幅度小；单轮 49.3（39.8–51.2）；迭代比单轮高 1.9–11.9 分。做法与 Weighted ASTRAL 同类（支持度加权四元组、NJ 起点、NNI）。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`scripts/analyze/v63-bootstrap.py`"
+    },
+    {
+      "category": "参照不弱",
+      "claim": "更强候选 Weighted ASTRAL（ASTER，文档默认设置）实测更差：E = 0.1896，6/96 例超时；参照 TREE-QMC 加权版保留。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`results/BASELINE_REVIEW.md`"
+    },
+    {
+      "category": "题目或数据缺陷（已修复）",
+      "claim": "v1 原始数据有误（出题人告知），v6.1 成绩基于 v1；v2 起为重建数据。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`tasks/species-tree/README.md`"
+    }
+  ]
 }

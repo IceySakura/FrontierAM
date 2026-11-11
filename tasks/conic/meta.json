@@ -267,5 +267,28 @@
       "timed": true,
       "note": "One run per case (the final evaluation runs three and needs all three to pass)."
     }
-  }
+  },
+  "insights": [
+    {
+      "category": "模型未能解决",
+      "claim": "v6.3 单轮 p = 0.558、迭代 0.666，均低于及格线 0.9·p_B = 0.710（参照 Clarabel 解出 513/650）。差距集中在超时：二阶锥 134 例只解出 23 / 40，半正定 42 例 21 / 25，指数锥 37 例 18 / 21；线性与二次规划大多能解。v6.2 opus 迭代 41.2（同一私有集）。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`tasks/conic/solutions/v6.3/*/score.json`"
+    },
+    {
+      "category": "评分映射问题",
+      "claim": "断崖：迭代解出参照的 84% 仍记 0 分；按 50·p/p_B 线性换算为 42.2（单轮 35.4）。迭代尝试连续 5 次看到 public 0 分，进步只能从比值看出。是否放缓断崖由出题人决定。",
+      "confidence": "实测",
+      "attention": "review",
+      "evidence": "`results/INSIGHTS.md`"
+    },
+    {
+      "category": "设施影响",
+      "claim": "迭代格子有 2 次测试因评测排队故障没有反馈，已在重跑，评完替换。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`results/OPEN_ITEMS.md`"
+    }
+  ]
 }

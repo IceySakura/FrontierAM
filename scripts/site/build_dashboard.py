@@ -183,7 +183,7 @@ def page(title: str, body: str, depth: int = 0) -> str:
 {{left:"$$",right:"$$",display:true}},{{left:"\\\\[",right:"\\\\]",display:true}},{{left:"\\\\(",right:"\\\\)",display:false}},
 {{left:"$",right:"$",display:false}}],throwOnError:false}});}});</script></head><body>
 <header><a class="brand" href="{up}index.html">FrontierAM 任务看板</a>
-<nav><a href="{up}index.html">总榜</a><a href="{up}protocol.html">评测协议</a></nav></header>
+<nav><a href="{up}index.html">总榜</a><a href="{up}insights.html">结果解读</a><a href="{up}protocol.html">评测协议</a></nav></header>
 <main>{body}</main><footer>{FOOTER}</footer></body></html>'''
 
 
@@ -231,6 +231,37 @@ def result_rows(task: dict, group: dict) -> str:
             '<th>提交次数与用时</th></tr>' + ''.join(rows) + '</table>')
 
 
+ATTENTION = {'author': ('需出题人处理', 'stop'), 'review': ('建议人工复核', 'warn')}
+
+
+def insight_rows(task: dict) -> str:
+    rows = []
+    for i in task.get('insights', []):
+        label, tag = ATTENTION.get(i['attention'], ('', ''))
+        mark = f'<span class="tag {tag}">{label}</span>' if label else ''
+        rows.append(f'<tr><td>{html.escape(i["category"])}</td><td>{md(i["claim"])[3:-4]}<br><small>证据：{md(i["evidence"])[3:-4]}</small></td>'
+                    f'<td>{html.escape(i["confidence"])}</td><td>{mark}</td></tr>')
+    return '<table><tr><th>类别</th><th>结论</th><th>置信度</th><th>关注</th></tr>' + ''.join(rows) + '</table>'
+
+
+def insights_page(tasks: list[dict]) -> str:
+    """Attention items first, then every task's result reading (meta.json insights; results/INSIGHTS.md)."""
+    items = []
+    for level in ('author', 'review'):
+        label, tag = ATTENTION[level]
+        for task in tasks:
+            for i in task.get('insights', []):
+                if i['attention'] == level:
+                    items.append(f'<li><span class="tag {tag}">{label}</span> <a href="tasks/{task["id"]}.html">{html.escape(task["name"])}</a>'
+                                 f' · {html.escape(i["category"])}：{md(i["claim"])[3:-4]}</li>')
+    body = ['<h1>结果解读</h1><p class="lead">已有成绩说明了什么：参照是否偏弱、题目或数据是否有缺陷、评分映射是否合适、模型是否解决不了、'
+            '超过参照靠的是工程调参还是方法创新。</p>', '<h2>需要人类关注</h2>', '<ul>' + ''.join(items) + '</ul>', '<h2>各题</h2>']
+    for task in tasks:
+        if task.get('insights'):
+            body += [f'<h3><a href="tasks/{task["id"]}.html">{html.escape(task["name"])}</a></h3>', insight_rows(task)]
+    return page('结果解读', '\n'.join(body))
+
+
 def task_page(task: dict) -> str:
     status = '<span class="tag stop">评测暂停</span>' if task.get('status') == 'paused' else ''
     body = [f'<h1>{html.escape(task.get("name", task["title"]))} {status}</h1><p class="lead">{html.escape(task["category"])} · '
@@ -239,6 +270,7 @@ def task_page(task: dict) -> str:
             f'<details><summary>公开题面原文（给模型的版本）</summary><div class="md">{md(statement(task["statement"]))}</div></details>',
             '<h2>评测依据</h2>', md(task['judge_md']),
             '<h2>Baseline：做法与本机实测结果</h2>', md(task['baseline_md']),
+            *(['<h2>结果解读</h2>', insight_rows(task)] if task.get('insights') else []),
             '<h2>模型成绩</h2>']
     for n, group in enumerate(task['result_groups']):
         part = [f'<h3>{html.escape(group_label(group))}</h3><p class="lead">{html.escape(group["title"])}</p>', result_rows(task, group),
@@ -345,6 +377,7 @@ def main():
     shutil.copytree(SRC / 'assets', staging / 'assets')
     (staging / 'index.html').write_text(index_page(site, tasks))
     (staging / 'protocol.html').write_text(page('评测协议', md(site['protocol_md'])))
+    (staging / 'insights.html').write_text(insights_page(tasks))
     for task in tasks:
         (staging / 'tasks' / f'{task["id"]}.html').write_text(task_page(task))
     if args.out.exists():

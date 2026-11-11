@@ -119,5 +119,28 @@
       "timed": false,
       "note": "A failed input counts as the zero matrix. Time counts only against the limit."
     }
-  }
+  },
+  "insights": [
+    {
+      "category": "工程或调参超过参照",
+      "claim": "迭代 62.3（L = 0.1725，参照 VAR(1) 0.2290）：白化后用 AICc 组合独立观测与 VAR(1) 估计、向共同衰减率收缩、有限状态链用 Markov 泊松方程。实测 7 个人类方法都不如参照（最好的 VARHAC-BIC 为 0.2551），模型的组合超过了所有测过的人类方法。",
+      "confidence": "实测（成绩）/ 推断（归因）",
+      "attention": null,
+      "evidence": "`results/BASELINE_REVIEW.md`"
+    },
+    {
+      "category": "模型失误",
+      "claim": "单轮只用 2 分钟就结束，把估计除以了轨迹长度，误差约为参照的 10 倍；题面已加粗写明“交付的矩阵是 H”，属于模型失误，不是题面问题。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`tasks/trajectory-covariance/versions/v2/statement.md`"
+    },
+    {
+      "category": "设施影响",
+      "claim": "迭代第 19 次测试排队 60 分钟后报错，模型没有拿到反馈就提交；已在重跑，评完替换。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`results/OPEN_ITEMS.md`"
+    }
+  ]
 }

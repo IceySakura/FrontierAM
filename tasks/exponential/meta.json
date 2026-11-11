@@ -229,5 +229,28 @@
       "timed": true,
       "note": "Any failed case makes the final score 0. Category scores use the plain mean time ratio of the category."
     }
-  }
+  },
+  "insights": [
+    {
+      "category": "工程或调参超过参照",
+      "claim": "v6.3 sol 55.2 / 59.6（R = 0.813 / 0.679）；v6.2 opus 70.8 / 69.1（v2，时限不同）。做法都是 Chebyshev 展开加工程：两项合并为一条递推、Lanczos 收紧谱上界、按输出自适应截断、SELL 稀疏格式；在稀疏矩阵乘主导的结构族上快 3–10 倍。",
+      "confidence": "实测（成绩）/ 推断（归因）",
+      "attention": null,
+      "evidence": "`results/BASELINE_REVIEW.md`"
+    },
+    {
+      "category": "参照偏弱（可能）",
+      "claim": "参照组 74 例中 60 例最快的是 agent 按文献写的 Chebyshev 实现，参数保守（Gershgorin 上界、两条递推、截断安全系数 8）；按文献补上这些技术的第二版并入后，两格降为 51.3 / 56.0。按原则参照不改，是否换成更强的人类实现由出题人判断。",
+      "confidence": "推断",
+      "attention": "review",
+      "evidence": "`tasks/exponential/references/`"
+    },
+    {
+      "category": "设施影响",
+      "claim": "迭代格子有 1 次测试因评测排队故障没有反馈，已在重跑，评完替换。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`results/OPEN_ITEMS.md`"
+    }
+  ]
 }

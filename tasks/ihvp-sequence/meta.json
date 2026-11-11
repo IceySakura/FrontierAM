@@ -84,5 +84,28 @@
       "timed": false,
       "note": "Any failed sequence makes the final score 0. Time and memory count only against the limits."
     }
-  }
+  },
+  "insights": [
+    {
+      "category": "题目或数据缺陷",
+      "claim": "生成结构（带符号 DCT 对角化 + rank-12 修正）可由少量 HVP 查询识别，生成代码又在样例包里；sol 单轮和迭代都精确求解，得 100 / 100，每条序列不到 2 秒（参照用 28.5 秒）。",
+      "confidence": "实测",
+      "attention": "author",
+      "evidence": "`tasks/ihvp-sequence/analysis/INTEGRATION.md`"
+    },
+    {
+      "category": "题目或数据缺陷",
+      "claim": "隐藏生成代码的实验版 v2 进行中：迭代尝试开始半小时 public 已到 97 分，模型在探查样例的结构；是否仍识别出 DCT 待最终代码确认。",
+      "confidence": "待查",
+      "attention": "author",
+      "evidence": "`tasks/ihvp-sequence/versions/v2/`"
+    },
+    {
+      "category": "评分映射问题",
+      "claim": "批误差几乎全部来自 3 条条件数 1e7 的困难序列，50 分以上为线性映射，有饱和风险；参照按剩余时间用满预算，25% 余量门槛不适用。",
+      "confidence": "推断",
+      "attention": "author",
+      "evidence": "`tasks/ihvp-sequence/analysis/INTEGRATION.md`"
+    }
+  ]
 }
