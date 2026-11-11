@@ -48,3 +48,4 @@
 | galaxy-gravity-v3 题面需重新封签（下一轮前） | 本轮尝试看到的题面与反馈写“50 分锚点为高阶快速多极方法参照”，public 反馈按 r2 的公开锚点计分；参照已改为 r1。`scripts/seal/prepare_v63.py` 与 `arena/native.py` 的说明已改，封签与 public 锚点在下一轮前重做。本轮最终评分不受影响 | `scripts/seal/prepare_v63.py` |
 | galaxy-gravity 弱参照余量不足（待反馈出题人） | 私有集上弱参照单次最多 4.05 CPU 秒（上限 5 秒），余量 19%，低于 25% | `results/BASELINE_REVIEW.md` |
 | 新题 ihvp-sequence 纳入本轮（用户决定 11-11） | GitHub PR #1（出题人 Zhang Hengrui），草稿：题面、样例、生成器、评测器、两份出题人参照（CG 0 分，L-BFGS-PCG 50 分）齐全，无私有内容。缺：反馈集与私有集（在出题人处，用户暂缓决定是要原包还是用自带生成器重生成）、amd64 镜像、容器隔离评测、v6.3 接线、参照时间余量（困难例接近 30 秒）与分数饱和检查（参照之上线性映射）。本轮目标：与其他六题一样完成锚点、sol 单轮与迭代、评分、发布 | `tasks/ihvp-sequence/analysis/INTEGRATION.md` |
+| ihvp-sequence 开放（11-11） | 出题人题包导入（哈希一致），私有锚点 CG 0.1213 / L-BFGS-PCG 0.0543，public 锚点 0.1215 / 0.0581；状态改为 formal，演练通过，sol 单轮与迭代已开始。待出题人：时间余量门槛、50 分以上的对数映射（分数由 3 条困难序列决定）；反馈比值在简单类别上失去意义（观察项） | `tasks/ihvp-sequence/analysis/INTEGRATION.md` |

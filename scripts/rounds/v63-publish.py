@@ -15,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TASKS = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3': 'galaxy-gravity',
          'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
-         'trajectory-covariance-v2': 'trajectory-covariance'}
+         'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence'}
 SETTING = {'single': '单轮', 'iterative': '迭代'}
 NOTES = {
     ('conic', 'single'): 'HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。',
@@ -63,6 +63,12 @@ def cell(task: str, score: dict) -> tuple[str, str]:
         anchors = baseline_anchors(task)
         return (f'\\(E = {raw:.3g}\\)，单次最多 {candidate.get("max_cpu_s", 0):.2f} CPU 秒（出题方 Treecode2：\\(U = {anchors["weak"]:.3g}\\)，\\(W = {anchors["strong"]:.3g}\\)）',
                 '对数刻度：\\(E < W\\) 为 \\(50 + 50\\,\\log(W/E)/\\log(W/10^{-15})\\)；\\(W \\le E < U\\) 为 \\(50\\,\\log(U/E)/\\log(U/W)\\)')
+    if family == 'ihvp-sequence':
+        anchors = baseline_anchors(task)
+        if raw is None:
+            return f'无效提交（{candidate.get("reason") or "有序列失败"}）', '任一序列失败记 0'
+        return (f'\\(E = {raw:.4g}\\)，最长序列 {candidate.get("max_wall_s") or 0:.1f} 秒（CG：\\(U = {anchors["weak"]:.4f}\\)，'
+                f'L-BFGS-PCG：\\(W = {anchors["strong"]:.4f}\\)）', LINEAR)
     if family == 'polarization-demosaicking':
         anchors = baseline_anchors(task)
         if raw is None:
@@ -91,8 +97,10 @@ def main():
             results.append({'model': 'gpt-6.1-sol', 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': 1,
                             'submission': submission_of(task, setting, 1), 'store': 'var/stores/store-v63', 'raw': raw,
                             'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),
-                            'notes_md': NOTES[(task, setting)], **reviews.get(('gpt-6.1-sol', SETTING[setting]), {})})
-        version = 'v3' if family not in ('polarization-demosaicking', 'trajectory-covariance') else 'v2'
+                            'notes_md': NOTES.get((task, setting), ''), **reviews.get(('gpt-6.1-sol', SETTING[setting]), {})})
+        if not results:
+            continue
+        version = {'polarization-demosaicking': 'v2', 'trajectory-covariance': 'v2', 'ihvp-sequence': 'v1'}.get(family, 'v3')
         group = {'title': TITLE, 'version': version, 'protocol': 'v6.3', 'results': results}
         meta['result_groups'] = [group] + [g for g in meta['result_groups'] if g.get('protocol') != 'v6.3']
         path.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + '\n')

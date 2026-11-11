@@ -20,7 +20,7 @@ value() { grep "\"event\": \"$1\", \"label\": \"$2\"" "$LOG" | tail -1 | python3
 last_id() { python3 -c "import json,sys;print(json.loads(sys.stdin.readlines()[-1])['id'])"; }
 family() { case $1 in conic) echo conic;; exponential-v3) echo exponential;; galaxy-gravity-v3) echo galaxy-gravity;;
     polarization-demosaicking-v2) echo polarization-demosaicking;; species-tree-v3) echo species-tree;;
-    trajectory-covariance-v2) echo trajectory-covariance;; esac; }
+    trajectory-covariance-v2) echo trajectory-covariance;; ihvp-sequence) echo ihvp-sequence;; esac; }
 runtime() { [ "$1" = conic ] && echo "$CONIC_RT" || echo "$EXP_RT"; }
 # frozen submission ID; '-' for an invalid submission (scores 0); '' while running or after an infrastructure failure
 # (status unmeasured: the attempt is rerun, its log renamed, never graded)
@@ -46,9 +46,9 @@ anchors() {
         done_event anchor "$task" && continue
         id=$(suite "$task" --reference) && log "\"event\": \"anchor\", \"label\": \"$task\", \"suite\": \"$id\""
     done
-    for task in galaxy-gravity-v3 polarization-demosaicking-v2; do
+    for task in galaxy-gravity-v3 polarization-demosaicking-v2 ihvp-sequence; do
         done_event anchor "$task" && continue
-        attempts_running && continue   # both grade with quiet isolation (no development): after the attempts
+        attempts_running && continue   # all grade with quiet isolation (no development): after the attempts
         FRONTIERAM_RUNTIME=$EXP_RT ./bench --store $STORE baseline --task "$task" >> var/stores/store/reruns/v63-worker.log 2>&1 \
             && log "\"event\": \"anchor\", \"label\": \"$task\""
     done
@@ -115,7 +115,7 @@ PY
     log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": \"$sub\", \"suite\": \"$id\""
 }
 
-TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2"
+TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence"
 while :; do
     anchors
     left=0

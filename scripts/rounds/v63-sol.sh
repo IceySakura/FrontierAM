@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Protocol v6.3 validation round (results/PROTOCOL_V63.md): gpt-6.1-sol on the six v6.3 task versions, iterative (4 h)
+# Protocol v6.3 validation round (results/PROTOCOL_V63.md): gpt-6.1-sol on the v6.3 task versions (ihvp-sequence added 11-11), iterative (4 h)
 # and single (1 h), at most V63_CONCURRENCY attempts at a time (default 3: the model's API rate limit); iterative first.
 # Each attempt leases its own dev slot; no grading here (scripts/rounds/v63-grade.sh grades finished attempts).
 # Rerun-safe: an attempt whose log already exists (started or finished) is skipped; infrastructure failures are
@@ -12,7 +12,7 @@ KEY=/root/.frontieram/aihub.key
 STORE=var/stores/store-v63
 MAX=${V63_CONCURRENCY:-3}
 N=${V63_ATTEMPT:-1}
-TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2"
+TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence"
 
 attempt() {
     local setting=$1 task=$2 log=var/stores/store/reruns/v63-sol-$1-$2-$N.log runtime=$R/.runtime-recal

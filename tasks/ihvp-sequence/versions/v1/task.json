@@ -1,8 +1,8 @@
 {
   "name": "ihvp-sequence",
   "title": "在线 SPD 时序求解",
-  "status": "draft",
-  "status_reason": "New GitHub public-only integration. Target-machine amd64 offline build, isolated deployment, local reference calibration, 25% deadline headroom, two-run stability and non-saturation review are pending. Historical Apple measurements are not active anchors.",
+  "status": "formal",
+  "status_reason": "Activated 2026-11-11: author bundle imported (SHA-256 matches analysis/PROVENANCE.md), amd64 images, isolated grading container, anchors re-measured on the grade slots (analysis/INTEGRATION.md). Time-margin and saturation questions are with the author.",
   "driver": "ihvp_sequence",
   "references": {
     "weak": "repo:tasks/ihvp-sequence/versions/v1/grader/calibration_references/cold_cg",
@@ -43,5 +43,5 @@
     "calibration": "maintainer-local; no historical active numeric anchors"
   },
   "submission_note": "Submit solver.py exposing make_solver(d,seed,options), returning a stateful object with solve(hvp,b,context)->x or (x,diagnostics). An optional ./build.sh is run once, offline, in a clean copy of this environment before the sequences (not timed, at most 600 seconds). No teacher arrays or future systems are solver inputs.",
-  "instruction": "Read /workspace/problem.md and inspect /workspace/samples. Implement the online SPD sequence solver. The task is draft and is not open for formal scored attempts before maintainer release gates pass."
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/samples. Implement the online SPD sequence solver described there."
 }
