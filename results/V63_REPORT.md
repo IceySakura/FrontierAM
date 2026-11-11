@@ -14,6 +14,7 @@
 | polarization-demosaicking（v2） | RMSE 1.032 / 1.046（U = 1.808，W = 1.110） | W ≤ E < U：50·(U − E)/(U − W)；E < W：100 − 50·E/W | 53.5 | 52.9 |
 | species-tree（v3） | nRF 0.1323 / 0.1251（U = 0.1476，W = 0.1320） | 同上 | 49.3 | 52.6 |
 | trajectory-covariance（v2） | L = 2.26 / 0.1725（U = 0.3493，W = 0.2290） | 同上 | 0.0 | 62.3 |
+| ihvp-sequence（v2，工作区不含生成代码） | E = 3.0e-4 / 评分中 | 同上 | 99.7 | 评分中（public 99.8） |
 | ihvp-sequence（v1） | E = 2.9e-26 / 9.8e-24（U = 0.1213，W = 0.0543） | 同上 | 100.0 | 100.0 |
 
 - 迭代比单轮高的有 4 题（exponential、galaxy、species、trajectory），polarization 两者持平，conic 两者都未过 0.9·p_B。

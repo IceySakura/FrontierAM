@@ -4,7 +4,7 @@ Reads tasks/<family>/solutions/v6.3/<model>-<setting>-<n>/score.json (written by
 attempt logs for the submission IDs; writes raw metric, mapping and score per cell. Reviews (results/BASELINE_REVIEW.md)
 are kept from an earlier publish; method notes come from NOTES. Cells without a score.json are left out.
 
-Usage: v63-publish.py
+Usage: v63-publish.py [TASK ...]   (default: every task version below)
 """
 
 import json
@@ -34,6 +34,8 @@ NOTES = {
     ('trajectory-covariance-v2', 'iterative'): '白化后用 AICc 权重组合独立观测与 VAR(1) 谱估计，系数不确定度用三明治估计并向共同衰减率收缩；有限状态链用 Markov 泊松方程。',
     ('ihvp-sequence', 'single'): '用少量 HVP 查询识别生成结构（带符号 DCT 对角化、对角项与 rank-12 修正），再精确求解；误差到机器精度，每条序列约 1.7 秒。题目设计缺陷，已触发请出题人修改（`tasks/ihvp-sequence/analysis/INTEGRATION.md`）。',
     ('ihvp-sequence', 'iterative'): '同一思路：从查询恢复 DCT 坐标符号与低秩部分，构造精确预条件后求解；1 次测试即得 public 满分并提交。题目设计缺陷，已触发请出题人修改。',
+    ('ihvp-sequence-v2', 'single'): '工作区不含生成代码；Galerkin 回收 CG：在历史解张成的子空间上投影热启动，再用 C 写的 CG 内核修正。没有识别矩阵结构；困难序列被“解序列沿时间平滑”绕开，误差为参照的约 1/180。',
+    ('ihvp-sequence-v2', 'iterative'): '工作区不含生成代码；最近 16 个解做 QR，在子空间上精确投影得到初始解，再跑 CG，按剩余步数分配时间（阶段突变时多给），Gauss–Radau 上界停止。没有识别矩阵结构；public 分数 83.7 → 99.8。',
 }
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
@@ -84,7 +86,11 @@ def cell(task: str, score: dict) -> tuple[str, str]:
 
 
 def main():
+    import sys
+    chosen = sys.argv[1:] or list(TASKS)
     for task, family in TASKS.items():
+        if task not in chosen:
+            continue
         path = ROOT / 'tasks' / family / 'meta.json'
         meta = json.loads(path.read_text())
         version = {'polarization-demosaicking': 'v2', 'trajectory-covariance': 'v2', 'ihvp-sequence': 'v1'}.get(family, 'v3')

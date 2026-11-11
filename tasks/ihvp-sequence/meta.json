@@ -17,6 +17,26 @@
   "result_groups": [
     {
       "title": "协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）",
+      "version": "v2",
+      "protocol": "v6.3",
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v2-20261111T073210Z-66b579",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.0003006\\)，最长序列 28.4 秒（CG：\\(U = 0.1213\\)，L-BFGS-PCG：\\(W = 0.0543\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 99.723,
+          "notes_md": "工作区不含生成代码；Galerkin 回收 CG：在历史解张成的子空间上投影热启动，再用 C 写的 CG 内核修正。没有识别矩阵结构；困难序列被“解序列沿时间平滑”绕开，误差为参照的约 1/180。",
+          "folder": "v2/gpt-6.1-sol-single-1"
+        }
+      ]
+    },
+    {
+      "title": "协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）",
       "version": "v1",
       "protocol": "v6.3",
       "results": [
@@ -48,7 +68,7 @@
     }
   ],
   "notes_md": "- 出题人题包已导入（反馈集与私有集各 15 条，只在维护端）；镜像、隔离评测与 v6.3 接线见 `analysis/INTEGRATION.md`。\n- 待出题人决定：时间余量门槛（参照按剩余时间用满预算）、50 分以上是否改为对数映射（分数由 3 条困难序列决定）。",
-  "current_version": "v1",
+  "current_version": "v2",
   "versions": [
     {
       "dir": "v1",
@@ -58,7 +78,7 @@
     {
       "dir": "v2",
       "registry": "ihvp-sequence-v2",
-      "note": "实验：工作区不含生成代码与构造数组，完整样例只通过评测方的 HVP 服务运行；数据、参照、评测与 v1 相同"
+      "note": "工作区不含生成代码与构造数组，完整样例只通过评测方的 HVP 服务运行；数据、参照、评测与 v1 相同（当前版本）"
     }
   ],
   "locations": {
@@ -88,24 +108,45 @@
   "insights": [
     {
       "category": "题目或数据缺陷",
-      "claim": "生成结构（带符号 DCT 对角化 + rank-12 修正）可由少量 HVP 查询识别，生成代码又在样例包里；sol 单轮和迭代都精确求解，得 100 / 100，每条序列不到 2 秒（参照用 28.5 秒）。",
+      "claim": "v1：生成结构（带符号 DCT 对角化 + 秩 12 修正）能用少量 HVP 查询识别，生成代码又在样例包里；sol 精确求解，单轮和迭代都是 100 分，每条序列不到 2 秒（参照用 28.5 秒）。v2 已把生成代码移出工作区。",
+      "confidence": "实测",
+      "attention": null,
+      "evidence": "`tasks/ihvp-sequence/analysis/INTEGRATION.md`"
+    },
+    {
+      "category": "题目或数据缺陷",
+      "claim": "v2（不含生成代码）：模型不再识别矩阵结构，改用通用的历史解子空间投影加 CG，单轮私有集仍得 99.7（误差为参照的约 1/180），迭代 public 到 99.8。时变量全由 6 维、低频、平滑的控制量驱动，右端项只在 7 维子空间里，解序列近似低秩，病态这个难点被绕开。需要出题人调整生成器（控制维度、路径频率、满秩强迫项、突变强度）。",
       "confidence": "实测",
       "attention": "author",
       "evidence": "`tasks/ihvp-sequence/analysis/INTEGRATION.md`"
     },
     {
-      "category": "题目或数据缺陷",
-      "claim": "隐藏生成代码的实验版 v2 进行中：迭代尝试开始半小时 public 已到 97 分，模型在探查样例的结构；是否仍识别出 DCT 待最终代码确认。",
-      "confidence": "待查",
+      "category": "参照偏弱",
+      "claim": "50 分锚点 L-BFGS-PCG 没有利用题目鼓励的历史复用（子空间回收、Galerkin 热启动），在 3 条困难序列上停在 0.24–0.32；任何用上历史解的通用方法都远超它。",
+      "confidence": "实测",
       "attention": "author",
-      "evidence": "`tasks/ihvp-sequence/versions/v2/`"
+      "evidence": "`tasks/ihvp-sequence/analysis/INTEGRATION.md`"
     },
     {
       "category": "评分映射问题",
-      "claim": "批误差几乎全部来自 3 条条件数 1e7 的困难序列，50 分以上为线性映射，有饱和风险；参照按剩余时间用满预算，25% 余量门槛不适用。",
-      "confidence": "推断",
+      "claim": "误差跨多个数量级，50 分以上为线性映射，通用方法就到 99.7–99.8，高分段分不开；可考虑对数刻度。参照按剩余时间用满预算，25% 余量门槛不适用。",
+      "confidence": "实测",
       "attention": "author",
       "evidence": "`tasks/ihvp-sequence/analysis/INTEGRATION.md`"
+    },
+    {
+      "category": "题面或接口问题",
+      "claim": "反馈的类别分数在两份参照都解到机器精度的类别上锚点倒挂（弱参照比强参照还准），比值 1e-5 仍记 0 分；总分和比值不受影响。可改为类别锚点倒挂时只显示比值。",
+      "confidence": "实测",
+      "attention": "review",
+      "evidence": "`arena/feedback.py`"
+    },
+    {
+      "category": "待评分",
+      "claim": "v2 迭代的私有集评分要求整机安静，等当前其他尝试结束后进行。",
+      "confidence": "待查",
+      "attention": null,
+      "evidence": "`results/OPEN_ITEMS.md`"
     }
   ]
 }
