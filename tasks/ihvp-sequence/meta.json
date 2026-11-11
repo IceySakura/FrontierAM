@@ -54,6 +54,11 @@
       "dir": "v1",
       "registry": "ihvp-sequence",
       "note": "初始接入草稿：公开题面、样例配方、生成与评测入口、两份参照；目标平台封存与本机标定待验收。"
+    },
+    {
+      "dir": "v2",
+      "registry": "ihvp-sequence-v2",
+      "note": "实验：工作区不含生成代码与构造数组，完整样例只通过评测方的 HVP 服务运行；数据、参照、评测与 v1 相同"
     }
   ],
   "locations": {

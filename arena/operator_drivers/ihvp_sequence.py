@@ -53,6 +53,31 @@ if __name__ != '__main__':
                         'reason': 'draft task: no formal score before activation (task.json status)'}
             return super().score(runtime, metrics, baseline)
 
+        def dev_service(self, output: Path):
+            """ihvp-sequence-v2: the samples' HVPs come from a host-side service; v1 ships them in the workspace."""
+            cases = self.lock().get('sample_service') if (self.sealed / 'lock.json').exists() else None
+            if not cases:
+                return [], None
+            from ..operator_tasks import GRADER_PYTHON
+            directory = Path('/run/frontieram/ihvp-samples') / output.name
+            directory.mkdir(parents=True)
+            directory.chmod(0o755)
+            paths = json.dumps({name: str(ROOT / path) for name, path in cases.items()})
+            process = subprocess.Popen([str(GRADER_PYTHON), '-B', '-m', 'arena.operator_drivers.ihvp_oracle', str(directory), paths],
+                                       cwd=ROOT, env={**os.environ, 'PYTHONPATH': str(ROOT)}, stdout=subprocess.PIPE,
+                                       stderr=(output / 'sample-service.log').open('wb'), text=True)
+            if process.stdout.readline().strip() != 'ready':
+                process.kill()
+                raise RuntimeError(f'ihvp sample service did not start ({output / "sample-service.log"})')
+
+            def stop():
+                process.terminate()
+                try:
+                    process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+            return ['--mount', f'type=bind,src={directory},dst=/run/ihvp-samples'], stop
+
         def run_grader(self, source, out, placement):
             data = self.data_dir()
             if data is None or not (data / 'manifest.json').is_file():

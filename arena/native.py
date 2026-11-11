@@ -42,7 +42,8 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'species-tree': 'frontieram-species-tree-harness:v6',
                   'species-tree-v2': 'frontieram-species-tree-harness:v6',
                   'trajectory-covariance': 'frontieram-trajectory-covariance-harness:v6',
-                  'ihvp-sequence': 'frontieram-ihvp-sequence-harness:v6'}
+                  'ihvp-sequence': 'frontieram-ihvp-sequence-harness:v6',
+                  'ihvp-sequence-v2': 'frontieram-ihvp-sequence-harness:v6'}
 # The vendor's own client where ATR has one; Claude Code for Messages models without one, Codex for Responses ones.
 HARNESS = {
     'claude-opus-5-5': 'claude',
@@ -300,7 +301,7 @@ SCORING_DISCLOSURE['trajectory-covariance'] = (
 
 # Protocol v6.3 task versions inherit the harness image and the scoring disclosure of the version they derive from,
 # unless they define their own (galaxy-gravity-v3).
-V63_VERSIONS = {'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree-v2',
+V63_VERSIONS = {'ihvp-sequence-v2': 'ihvp-sequence', 'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree-v2',
                 'trajectory-covariance-v2': 'trajectory-covariance', 'exponential-v3': 'exponential-v2', 'conic-v3': 'conic'}
 for _new, _old in V63_VERSIONS.items():
     HARNESS_IMAGES.setdefault(_new, HARNESS_IMAGES[_old])
@@ -825,6 +826,10 @@ def develop(spec: dict, runtime: dict) -> dict:
         (client_dir / 'bin/submit').chmod(0o755)
         mounts = ['--mount', f'type=bind,src={eval_dir},dst=/run/frontieram-eval',
                   '--mount', f'type=bind,src={client_dir},dst=/opt/frontieram,readonly']
+    stop_dev_service = None
+    if hasattr(task, 'dev_service'):  # host-side services the workspace talks to (ihvp-sequence-v2 sample HVPs)
+        extra, stop_dev_service = task.dev_service(output)
+        mounts = [*mounts, *extra]
     started = time.monotonic()
     try:
         if not script:
@@ -928,6 +933,8 @@ def develop(spec: dict, runtime: dict) -> dict:
             summary['evaluations'] = service.records
             summary['test_submissions'] = sum(r['kind'] == 'test' for r in service.records)
             service.drain()
+        if stop_dev_service is not None:
+            stop_dev_service()
         attempt_marker.close()
     records = list((output / 'atr').rglob('events.jsonl'))
     requests = sum(1 for path in records for line in path.read_text().splitlines() if '"request"' in line)
