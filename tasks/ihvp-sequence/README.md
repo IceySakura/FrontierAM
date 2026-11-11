@@ -64,6 +64,27 @@
 
 早期 Apple M3 Max 试验在 30 秒 / 256 MiB 规则下通过 60 次参照运行和 3000 个输出复核；记录仅作来源证据，详见 `analysis/PROVENANCE.md`。这些数值不进入本机评分。
 
+## 模型成绩与解法（题目版本 v1 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | \(E = 2.94e-26\)，最长序列 1.7 秒（CG：\(U = 0.1213\)，L-BFGS-PCG：\(W = 0.0543\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 100.0 | 13 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | \(E = 9.813e-24\)，最长序列 2.0 秒（CG：\(U = 0.1213\)，L-BFGS-PCG：\(W = 0.0543\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 100.0 | 1 次提交，9 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+
+### GPT-6.1 Sol（单轮，v6.3）
+
+用少量 HVP 查询识别生成结构（带符号 DCT 对角化、对角项与 rank-12 修正），再精确求解；误差到机器精度，每条序列约 1.7 秒。题目设计缺陷，已触发请出题人修改（`tasks/ihvp-sequence/analysis/INTEGRATION.md`）。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `ihvp-sequence-20261111T051550Z-144fe2`）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+同一思路：从查询恢复 DCT 坐标符号与低秩部分，构造精确预条件后求解；1 次测试即得 public 满分并提交。题目设计缺陷，已触发请出题人修改。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `ihvp-sequence-20261111T052259Z-ce34b8`）。
+
 ## 观察与说明
 
 - 出题人题包已导入（反馈集与私有集各 15 条，只在维护端）；镜像、隔离评测与 v6.3 接线见 `analysis/INTEGRATION.md`。

@@ -30,6 +30,8 @@ NOTES = {
     ('species-tree-v3', 'iterative'): '支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；四元组按悬挂枝长降权（加权方式与 Weighted ASTRAL 相同）。',
     ('trajectory-covariance-v2', 'single'): '白化后自适应窗宽的重叠批均值；README 写明把估计除以了轨迹长度，与题目要求的尺度不符，误差约为强参照的 10 倍。会话只用了 2 分钟。',
     ('trajectory-covariance-v2', 'iterative'): '白化后用 AICc 权重组合独立观测与 VAR(1) 谱估计，系数不确定度用三明治估计并向共同衰减率收缩；有限状态链用 Markov 泊松方程。',
+    ('ihvp-sequence', 'single'): '用少量 HVP 查询识别生成结构（带符号 DCT 对角化、对角项与 rank-12 修正），再精确求解；误差到机器精度，每条序列约 1.7 秒。题目设计缺陷，已触发请出题人修改（`tasks/ihvp-sequence/analysis/INTEGRATION.md`）。',
+    ('ihvp-sequence', 'iterative'): '同一思路：从查询恢复 DCT 坐标符号与低秩部分，构造精确预条件后求解；1 次测试即得 public 满分并提交。题目设计缺陷，已触发请出题人修改。',
 }
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
