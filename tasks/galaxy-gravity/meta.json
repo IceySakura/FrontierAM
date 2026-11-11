@@ -109,7 +109,7 @@
     {
       "dir": "v3",
       "registry": "galaxy-gravity-v3",
-      "note": "协议 v6.3 版本：出题方的两条 Treecode2 参照（r1），对数刻度、对数刻度；工作区只含样例（scripts/seal/prepare_v63.py）"
+      "note": "协议 v6.3 版本：出题方的两条 Treecode2 参照（r1），对数刻度；工作区只含样例（scripts/seal/prepare_v63.py）"
     }
   ],
   "locations": {
