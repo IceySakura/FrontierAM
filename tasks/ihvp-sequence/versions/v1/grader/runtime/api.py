@@ -144,8 +144,16 @@ def run_case(submission, case, *, wall_seconds=30., memory_mib=256.,
     start = time.monotonic()
     hard = start+wall_seconds-.3
     soft = max(start,hard-min(1.2,wall_seconds*.1))
+    # FrontierAM grading container: the evaluator runs as root next to root-only teacher data and starts the
+    # worker as this unprivileged UID, so the submission can reach only the current RHS and HVP replies.
+    drop = {}
+    if os.environ.get("IHVP_WORKER_UID") and os.geteuid() == 0:
+        uid = int(os.environ["IHVP_WORKER_UID"])
+        drop = {"user":uid,"group":uid,"extra_groups":[]}
+        env.pop("IHVP_WORKER_UID",None)
+        env["HOME"] = str(submission)
     process = subprocess.Popen(argv,cwd=submission,env=env,stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,stderr=log,bufsize=0)
+                               stdout=subprocess.PIPE,stderr=log,bufsize=0,**drop)
     child = psutil.Process(process.pid)
     def monitor():
         while not stop.is_set():

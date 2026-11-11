@@ -2,7 +2,7 @@
 
 Usage: v63-smoke.py TASK SETTING SECONDS OUT
   TASK: a v6.3 task version (conic with FRONTIERAM_RUNTIME=.runtime-conic-v3, exponential-v3, galaxy-gravity-v3,
-  polarization-demosaicking-v2, species-tree-v3, trajectory-covariance-v2); SETTING: single / iterative.
+  polarization-demosaicking-v2, species-tree-v3, trajectory-covariance-v2, ihvp-sequence); SETTING: single / iterative.
   The script checks the workspace (statement and samples only), writes a trivial submission, and in the iterative
   setting submits a test, polls --status until the report arrives, checks it lists no case IDs, then submits --final.
   Prints develop_result.json and the checks; exits 1 if any check fails.
@@ -43,10 +43,13 @@ SUBMISSIONS = {
     'trajectory-covariance': ("cat > run.sh <<'EOF'\n#!/bin/sh\nexec python3 -c \"import numpy as np,sys; x=np.load(sys.argv[1]); "
                               "np.save(sys.argv[2], np.cov(x, rowvar=False).reshape(x.shape[1], x.shape[1]))\" \"$@\"\nEOF\n"
                               "chmod +x run.sh"),
+    'ihvp-sequence': ("cat > solver.py <<'EOF'\nimport numpy as np\n\nclass Zero:\n    def __init__(self, d):\n        self.d = d\n\n"
+                      "    def solve(self, hvp, b, context):\n        return np.zeros(self.d)\n\n\n"
+                      "def make_solver(d, seed, options):\n    return Zero(d)\nEOF"),
 }
 FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3': 'galaxy-gravity',
           'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
-          'trajectory-covariance-v2': 'trajectory-covariance'}
+          'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence'}
 
 
 def script(task: str, setting: str) -> str:

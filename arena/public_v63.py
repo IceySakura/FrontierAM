@@ -51,6 +51,7 @@ PUBLIC = {
                               'env': {'FRONTIERAM_TRAJ_POOL': 'feedback'}},
     'trajectory-covariance-v2': {'family': 'trajectory-covariance', 'store': STORE,
                                  'env': {'FRONTIERAM_TRAJ_POOL': 'feedback'}},
+    'ihvp-sequence': {'family': 'ihvp-sequence', 'store': STORE, 'env': {'FRONTIERAM_IHVP_DATA': 'public'}},
 }
 SUITE_FAMILIES = ('conic', 'exponential')
 
@@ -206,20 +207,32 @@ def _trajectory(task, out: Path) -> list[dict]:
     return rows
 
 
+def _ihvp(out: Path) -> list[dict]:
+    rows = []
+    for r in read_json(out / 'summary.json').get('records', []):
+        reason = str(r.get('reason') or '')
+        status = ('passed' if r['status'] == 'ok' else 'timeout' if 'wall_limit' in reason else
+                  'crash' if r['status'] == 'infrastructure_failure' or reason.startswith(
+                      ('memory_limit', 'submission_exception', 'unexpected_worker_exit', 'nonzero_worker_exit')) else 'wrong')
+        rows.append({'id': r['case'], 'category': r['family'], 'status': status,
+                     'accuracy': r.get('energy_loss') if status == 'passed' else None, 'seconds': r.get('wall_s')})
+    return rows
+
+
 def _rows(task, store: Store, record: dict, partial: dict, which: str = 'candidate') -> list[dict]:
     if family(task.name) == 'conic':
         return _conic(store, record, partial)
     out = store.result_dir(record['shards'][0]['job']) / 'grade' / which
     if not (out / 'summary.json').exists():
         return []
-    return {'galaxy-gravity': _galaxy, 'polarization-demosaicking': _polarization,
-            'species-tree': _species}.get(family(task.name), lambda o: _trajectory(task, o))(out)
+    return {'galaxy-gravity': _galaxy, 'polarization-demosaicking': _polarization, 'species-tree': _species,
+            'ihvp-sequence': _ihvp}.get(family(task.name), lambda o: _trajectory(task, o))(out)
 
 
 # Raw metrics and the final mapping -----------------------------------------------------------------------------
 def raw_error(task: str, rows: list[dict]) -> float | None:
     """The task's own aggregate over the given rows; None if a failure makes the formal submission invalid."""
-    if task.startswith(('galaxy-gravity', 'polarization-demosaicking')) and any(r['status'] != 'passed' for r in rows):
+    if task.startswith(('galaxy-gravity', 'polarization-demosaicking', 'ihvp-sequence')) and any(r['status'] != 'passed' for r in rows):
         return None
     if task.startswith('galaxy-gravity'):
         families: dict[str, list[float]] = {}

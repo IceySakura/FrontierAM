@@ -33,3 +33,27 @@ python scripts/site/build_dashboard.py --task ihvp-sequence --out var/dist/ihvp-
 6. 维护者确认全部发布条件后接通正式驱动并激活。缺少平台、数据或校准证据的结果保持“未测”，不能填成 0 分。
 
 完整原题来源与历史聚合记录见 [PROVENANCE.md](PROVENANCE.md)。这些本地检查不替代目标平台性能校准或发布验收。
+
+## FrontierAM 接入（2026-11-11，维护端）
+
+已完成：
+
+- 任务镜像 `frontieram-ihvp-sequence:amd64-v1`：按 PR 的 Dockerfile 离线构建（四个锁定 wheel 从镜像源下载，基础镜像自带 NumPy 2.3.5 / SciPy 1.16.3），镜像内 `check.py --verify-package` 通过；已复制到 7 个评测守护进程。开发镜像 `frontieram-ihvp-sequence-harness:v6` 在其上构建。
+- 封签 `scripts/seal/seal_ihvp_sequence.py`：开发工作区（题面 + 样例）与数据根目录写入 `.runtime-ops/ihvp-sequence/lock.json`。样例在本机由生成器重建，逐位哈希与源环境不同（BLAS/FFT 舍入，生成说明已预期），参考解复核通过。
+- 隔离评测（`arena/operator_drivers/ihvp_sequence.py`）：出题方评测器在任务镜像内运行，断网、绑定一个评测核；评测器以 root 读取只对 root 可读的教师数据（目录 0700），提交的 worker 以 UID 1000 启动（`runtime/api.py` 的 `IHVP_WORKER_UID`，默认关闭），只能通过管道拿到当前右端项与 HVP 回复。256 MiB 峰值 RSS 仍由评测器检查，容器内存上限 4 GiB 作兜底。
+- v6.3 接线：反馈适配（按五类场景分类，`arena/public_v63.py`）、开发镜像与计分说明（`arena/native.py`）、演练脚本。
+- 单元测试：完整 `arena/tests` 93 项通过。
+
+两条样例上的参照实测（评测核 grade-06，单次）：
+
+| 样例 | 冷启动 CG：loss / 墙钟 | L-BFGS-PCG：loss / 墙钟 | 峰值 RSS |
+| --- | --- | --- | --- |
+| sample_01（宽谱平滑，条件数 1e3） | 2.1e-17 / 15.7 秒 | 3.9e-17 / 23.5 秒 | 65 MiB |
+| sample_02（阶段突变，条件数 1e5） | 1.7e-3 / 28.5 秒 | 8.2e-5 / 28.5 秒 | 76 MiB |
+
+待出题人决定或提供：
+
+1. 反馈集与私有集（各 15 条）的原始题包；或同意用自带生成器以维护端私有种子重新生成（按 PR 说明属于新版本）。
+2. 时间余量：两份参照按剩余时间分配计算，困难序列用到约 28.5 秒（预留 1.2 秒清理），25% 余量的门槛对这类“用满预算”的参照不适用；建议改为“重复评测无超时”。
+3. 计分饱和：简单序列两份参照都解到机器精度，分数由困难序列决定；sample_02 上两份参照差 20 倍，误差跨数量级，而 50 分以上为线性映射 \(100-50E/E_{50}\)，误差比参照小 10 倍即得 95 分。可考虑对数映射（galaxy-gravity-v3 的做法）。
+4. 题面第 105 行“本次接入为草稿……”在开放模型尝试时需要改写；`task.json` 的 instruction 同理。

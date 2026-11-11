@@ -41,7 +41,8 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'polarization-demosaicking': 'frontieram-polarization-demosaicking-harness:v6',
                   'species-tree': 'frontieram-species-tree-harness:v6',
                   'species-tree-v2': 'frontieram-species-tree-harness:v6',
-                  'trajectory-covariance': 'frontieram-trajectory-covariance-harness:v6'}
+                  'trajectory-covariance': 'frontieram-trajectory-covariance-harness:v6',
+                  'ihvp-sequence': 'frontieram-ihvp-sequence-harness:v6'}
 # The vendor's own client where ATR has one; Claude Code for Messages models without one, Codex for Responses ones.
 HARNESS = {
     'claude-opus-5-5': 'claude',
@@ -273,6 +274,14 @@ SCORING_DISCLOSURE['galaxy-gravity-v3'] = (
     '1e-15 (double precision) is the maximum. Using less CPU time earns nothing extra.'
 )
 
+SCORING_DISCLOSURE['ihvp-sequence'] = (
+    'Every held-out sequence must finish within 30 wall-clock seconds (start-up, imports, communication and all HVP '
+    'work included; the batch mean must also stay within 30 seconds) with a solver-process peak RSS of at most 256 MiB, '
+    'and return 50 finite vectors; a single failure makes the whole submission score zero. Given that, the score '
+    'depends only on the mean normalized squared H-energy error, compared with two reference solvers measured on the '
+    'same sequences and limits: matching cold-start CG scores zero, matching the provided L-BFGS-PCG reference is the '
+    'midpoint of the scale and zero error is the maximum. Finishing faster or using less memory earns nothing extra.'
+)
 SCORING_DISCLOSURE['polarization-demosaicking'] = (
     'Every held-out scene must be reconstructed within its wall-clock limit (startup and imports included), memory '
     'limit and output contract; a single failed scene makes the whole submission score zero. Given that, the score '

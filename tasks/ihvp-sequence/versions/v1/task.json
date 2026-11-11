@@ -8,10 +8,40 @@
     "weak": "repo:tasks/ihvp-sequence/versions/v1/grader/calibration_references/cold_cg",
     "strong": "repo:tasks/ihvp-sequence/references/r1"
   },
-  "images": {"task": {"tag": "frontieram-ihvp-sequence:amd64-v1", "dockerfile": "Dockerfile", "replaces": []}},
-  "data": {"root": "var/raw/ihvp-sequence-v1/data", "samples": "data/samples", "public": "public/manifest.json", "private": "private/manifest.json", "private_bodies_in_git": false},
-  "limits": {"dimension": 16384, "steps": 50, "sequence_wall_seconds": 30, "mean_sequence_wall_seconds": 30, "worker_memory_mib": 256, "numerical_threads": 1, "max_hvp_block_columns": 64},
-  "scoring": {"raw": "mean relative H-energy error squared", "native_anchors": {"cold_cg": 0, "r1": 5, "zero_error": 10}, "final_multiplier": 10, "mapping": "piecewise-linear", "calibration": "maintainer-local; no historical active numeric anchors"},
-  "submission_note": "Submit solver.py exposing make_solver(d,seed,options), returning a stateful object with solve(hvp,b,context)->x or (x,diagnostics). Optional offline build.sh is run manually before freezing. No teacher arrays or future systems are solver inputs.",
+  "images": {
+    "task": {
+      "tag": "frontieram-ihvp-sequence:amd64-v1",
+      "dockerfile": "Dockerfile",
+      "replaces": []
+    }
+  },
+  "data": {
+    "root": "var/raw/ihvp-sequence-v1/data",
+    "samples": "data/samples",
+    "public": "public/manifest.json",
+    "private": "private/manifest.json",
+    "private_bodies_in_git": false
+  },
+  "limits": {
+    "dimension": 16384,
+    "steps": 50,
+    "sequence_wall_seconds": 30,
+    "mean_sequence_wall_seconds": 30,
+    "worker_memory_mib": 256,
+    "numerical_threads": 1,
+    "max_hvp_block_columns": 64
+  },
+  "scoring": {
+    "raw": "mean relative H-energy error squared",
+    "native_anchors": {
+      "cold_cg": 0,
+      "r1": 5,
+      "zero_error": 10
+    },
+    "final_multiplier": 10,
+    "mapping": "piecewise-linear",
+    "calibration": "maintainer-local; no historical active numeric anchors"
+  },
+  "submission_note": "Submit solver.py exposing make_solver(d,seed,options), returning a stateful object with solve(hvp,b,context)->x or (x,diagnostics). An optional ./build.sh is run once, offline, in a clean copy of this environment before the sequences (not timed, at most 600 seconds). No teacher arrays or future systems are solver inputs.",
   "instruction": "Read /workspace/problem.md and inspect /workspace/samples. Implement the online SPD sequence solver. The task is draft and is not open for formal scored attempts before maintainer release gates pass."
 }
