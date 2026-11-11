@@ -202,8 +202,7 @@ PROTOCOLS = ('v6.3', 'v6.2', 'v6.1', 'v6')  # newest first; the board shows the 
 def write_board(metas: list[dict], names: list[str]) -> None:
     """Scoreboard of the newest protocol with results into README.md between the board markers."""
     protocol = next(p for p in PROTOCOLS if any(g.get('protocol') == p and g['results'] for m in metas for g in m['result_groups']))
-    newest = [r for m in metas for g in m['result_groups'] if g.get('protocol') == protocol for r in g['results']]
-    columns = [(m, s) for m, s in COLUMNS if any(r['model'] == m and r.get('setting', '单轮') == s for r in newest)]
+    columns = COLUMNS  # GPT-6.1 Sol and Claude Opus 5.5 always; cells stay empty without a result
     head = '| task | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in columns) + ' |'
     rule = '| --- |' + ' --- |' * len(columns)
     scores, process = [head, rule], [head, rule]

@@ -265,6 +265,9 @@ def task_page(task: dict) -> str:
     return page(task['title'], '\n'.join(body), depth=1)
 
 
+BOARD_MODELS = ['gpt-6.1-sol', 'claude-opus-5-5']
+
+
 def index_page(site: dict, tasks: list[dict]) -> str:
     def models_of(groups) -> list[str]:
         found = []
@@ -276,7 +279,8 @@ def index_page(site: dict, tasks: list[dict]) -> str:
 
     newest_groups = [t['result_groups'][0] for t in tasks if t['result_groups']]
     older_groups = [g for t in tasks for g in t['result_groups'][1:]]
-    models = models_of(newest_groups)   # only models with a result in the newest version of some task
+    # The main board always lists these models (empty cells where they have no result), then any other with results.
+    models = [*BOARD_MODELS, *(m for m in models_of(newest_groups) if m not in BOARD_MODELS)]
     head = ''.join(f'<th>{html.escape(model_name(m))}</th>' for m in models)
 
     def cells_for(task: dict, group: dict, models: list[str]) -> str:
