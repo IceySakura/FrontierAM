@@ -104,6 +104,8 @@ Python + C++ 辅助模块的锥求解器。5 次公开集测试（其中两次�
 
 源码 [`solutions/v6.2/claude-opus-5-5-single-3/source/`](solutions/v6.2/claude-opus-5-5-single-3/source/)（提交 `conic-20261110T041406Z-762c81`）；未复制的二进制或大文件：bin/conic_solver（184,888 字节）。
 
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 solver-20261105 · 协议 v6.1）
 
 修正版题包（出题方 2026-11-05 版：公开开发集给出逐例时限；私有数据和评分不变）
@@ -153,6 +155,8 @@ Python + C++ 辅助模块的锥求解器。5 次公开集测试（其中两次�
 源码 [`solutions/v6/claude-opus-5-5-single-1/source/`](solutions/v6/claude-opus-5-5-single-1/source/)（提交 `conic-20261104T092638Z-cc17fc`）。
 
 ### step-5-preview（，v6）
+
+</details>
 
 ## 观察与说明
 

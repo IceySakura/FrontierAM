@@ -88,6 +88,8 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 
 源码 [`solutions/v6.2/claude-opus-5-5-single-1/source/`](solutions/v6.2/claude-opus-5-5-single-1/source/)（提交 `galaxy-gravity-v2-20261109T130056Z-aea0a3`）；未复制的二进制或大文件：solve（430,048 字节）。
 
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v1 · 协议 v6.1）
 
 协议 v6.1（2026-11-06）
@@ -103,6 +105,8 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 没有用近似算法，而是在 5 CPU 秒内用**直接两两求和**算出了精确解（本机每次 3.81–3.84 CPU 秒）：AVX2/FMA 向量化、单精度倒数平方根加修正回到双精度、利用牛顿第三定律对称减半、分块和等质量特化。这说明题目的规模与时限组合允许暴力求精确解，近似算法的优劣无法区分；已反馈出题人，建议增大粒子数或收紧时限。
 
 源码 [`solutions/v6.1/gpt-6.1-sol-single-1/source/`](solutions/v6.1/gpt-6.1-sol-single-1/source/)（提交 `galaxy-gravity-20261106T040942Z-5de3b4`）；未复制的二进制或大文件：solve（22,408 字节）。
+
+</details>
 
 ## 观察与说明
 

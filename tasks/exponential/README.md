@@ -127,6 +127,8 @@ C 实现的 Chebyshev 展开，长展开时用短 Lanczos 收紧谱上界，SELL
 
 源码 [`solutions/v6.2/gpt-6.1-sol-single-3/source/`](solutions/v6.2/gpt-6.1-sol-single-3/source/)（提交 `exponential-v2-20261110T053617Z-d8bb77`）；未复制的二进制或大文件：solver（288,792 字节）。
 
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v2 · 协议 v6.1）
 
 协议 v6.1（2026-11-06 开发，11-09 评测）
@@ -142,6 +144,8 @@ C 实现的 Chebyshev 展开，长展开时用短 Lanczos 收紧谱上界，SELL
 几何速度比 \(S = 2.01\)，95% 区间 [1.45, 2.91]，下限大于 1：在这个私有集上显著快于参照组的逐例最快者。优势集中在几何图（耗时为参照的 0.14 倍）、有限元标准矩阵（0.29）和网格扩散（0.34）；66 个计分会话中有 7 个比参照慢（最多 1.34 倍）。复用 16 个右端的场景优势更大。
 
 源码 [`solutions/v6.1/gpt-6.1-sol-single-1/source/`](solutions/v6.1/gpt-6.1-sol-single-1/source/)（提交 `exponential-v2-20261106T043748Z-9f6d55`）；未复制的二进制或大文件：solver（179,048 字节）。
+
+</details>
 
 ## 观察与说明
 

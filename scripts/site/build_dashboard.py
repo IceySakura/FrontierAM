@@ -247,11 +247,14 @@ def task_page(task: dict) -> str:
             '<h2>评测依据</h2>', md(task['judge_md']),
             '<h2>Baseline：做法与本机实测结果</h2>', md(task['baseline_md']),
             '<h2>模型成绩</h2>']
-    for group in task['result_groups']:
-        body += [f'<h3>{html.escape(group_label(group))}</h3><p class="lead">{html.escape(group["title"])}</p>', result_rows(task, group),
-                 breakdown_html(group.get('breakdown'), group['results'])]
+    for n, group in enumerate(task['result_groups']):
+        part = [f'<h3>{html.escape(group_label(group))}</h3><p class="lead">{html.escape(group["title"])}</p>', result_rows(task, group),
+                breakdown_html(group.get('breakdown'), group['results'])]
+        body += part if n == 0 else [f'<details><summary>旧版本：{html.escape(group_label(group))}</summary>', *part, '</details>']
     body.append('<h2>各模型的做法</h2>')
-    for group in task['result_groups']:
+    for n, group in enumerate(task['result_groups']):
+        if n == 1:
+            body.append('<details><summary>旧版本的做法</summary>')
         for r in ordered(group['results']):
             body.append(f'<h3 id="{anchor_of(r)}">{html.escape(model_name(r["model"]))}（{html.escape(protocol_label(r))}）'
                         f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}</h3>')
@@ -262,6 +265,8 @@ def task_page(task: dict) -> str:
                 body.append(f'<details><summary>模型自己写的说明（提交中的 README.md）</summary><div class="md">{md(text)}</div></details>')
             elif not r.get('notes_md'):
                 body.append('<p>没有可展示的提交。</p>')
+    if len(task['result_groups']) > 1:
+        body.append('</details>')
     if task.get('notes_md'):
         body += ['<h2>观察与说明</h2>', md(task['notes_md'])]
     return page(task['title'], '\n'.join(body), depth=1)
@@ -275,24 +280,30 @@ def index_page(site: dict, tasks: list[dict]) -> str:
                 if r['model'] not in models:
                     models.append(r['model'])
     head = ''.join(f'<th>{html.escape(model_name(m))}</th>' for m in models)
-    rows = []
+    def cells_for(group: dict) -> str:
+        cells = []
+        for m in models:
+            hit = ordered([r for r in group['results'] if r['model'] == m])
+            lines = []
+            for setting in ('单轮', '迭代'):
+                same = [r for r in hit if r.get('setting', '单轮') == setting]
+                if same:
+                    scores = ' / '.join(f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}'
+                                        for r in same)
+                    count = f'（{len(same)} 次）' if len(same) > 1 else ''
+                    lines.append(f'<small>{setting}{count}</small> {scores}')
+            cells.append('<td>' + '<br>'.join(lines) + '</td>')
+        return ''.join(cells)
+
+    rows, history = [], []
     for task in tasks:
-        for n, group in enumerate(task['result_groups']):
-            cells = []
-            for m in models:
-                hit = ordered([r for r in group['results'] if r['model'] == m])
-                lines = []
-                for setting in ('单轮', '迭代'):
-                    same = [r for r in hit if r.get('setting', '单轮') == setting]
-                    if same:
-                        scores = ' / '.join(f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>{review_tag(r)}'
-                                            for r in same)
-                        count = f'（{len(same)} 次）' if len(same) > 1 else ''
-                        lines.append(f'<small>{setting}{count}</small> {scores}')
-                cells.append('<td>' + '<br>'.join(lines) + '</td>')
-            name = html.escape(task.get('name', task['title']))
-            label = f'<a href="tasks/{task["id"]}.html">{name}</a>' if n == 0 else f'<span class="muted">{name}</span>'
-            rows.append(f'<tr><td>{label}<br><small>{html.escape(group_label(group))}</small></td>{"".join(cells)}</tr>')
+        if not task['result_groups']:
+            continue
+        newest, *older = task['result_groups']
+        name = html.escape(task.get('name', task['title']))
+        rows.append(f'<tr><td><a href="tasks/{task["id"]}.html">{name}</a><br><small>{html.escape(group_label(newest))}</small></td>'
+                    f'{cells_for(newest)}</tr>')
+        history += [f'<tr><td>{name}<br><small>{html.escape(group_label(g))}</small></td>{cells_for(g)}</tr>' for g in older]
     cards = ''.join(
         f'<div class="card"><h3><a href="tasks/{t["id"]}.html">{html.escape(t.get("name", t["title"]))}</a></h3>'
         f'<p>{html.escape(t["category"])}</p><p>{md(t["summary"])[3:-4]}</p>'
@@ -300,8 +311,10 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     body = (f'<h1>{html.escape(site["title"])}</h1><p class="lead">{html.escape(site["subtitle"])}</p>{md(site["intro_md"])}'
             f'<h2>题目</h2><div class="cards">{cards}</div>'
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
-            '<p>每道题按协议从新到旧列出全部成绩，每行注明题目版本与协议；同一格多次尝试按次数依次列出（同一模型、同一设置的重复尝试）。超过参照（50 分）的成绩在复核结论出来前标“待复核”。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。点击题目查看评测依据、baseline 和各模型的做法。</p>'
-            f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>')
+            '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。超过参照（50 分）的成绩在复核结论出来前标“待复核”。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。旧版本的成绩在表格下方折叠。</p>'
+            f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>'
+            + (f'<details><summary>旧版本的成绩（{len(history)} 组）</summary>'
+               f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(history)}</table></details>' if history else ''))
     return page(site['title'], body)
 
 

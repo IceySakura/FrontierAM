@@ -74,6 +74,8 @@ MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标
 
 源码 [`solutions/v6.2/claude-opus-5-5-single-1/source/`](solutions/v6.2/claude-opus-5-5-single-1/source/)（提交 `trajectory-covariance-20261109T130605Z-481cfb`）。
 
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v1 · 协议 v6.1）
 
 协议 v6.1（2026-11-06，3,000 例固定子集）
@@ -89,6 +91,8 @@ MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标
 按母链配对，VAR(1) 与 sol 的误差差为 0.0531，95% 区间 [0.0441, 0.0622]，显著优于强参照。但只在 30 档中的 15 档更好：优势主要来自随机游走 Metropolis（0.215 对 0.504）和有限状态 MH 链（0.147 对 0.196），在 NUTS、Pólya–Gamma 和全正线性链上略差。出题方封存的 agent 在同一子集上为 0.217481（52.7 分）。
 
 源码 [`solutions/v6.1/gpt-6.1-sol-single-1/source/`](solutions/v6.1/gpt-6.1-sol-single-1/source/)（提交 `trajectory-covariance-20261106T045544Z-58f573`）。
+
+</details>
 
 ## 观察与说明
 

@@ -77,6 +77,8 @@
 
 源码 [`solutions/v6.2/claude-opus-5-5-single-1/source/`](solutions/v6.2/claude-opus-5-5-single-1/source/)（提交 `polarization-demosaicking-20261109T124343Z-553533`）；未复制的二进制或大文件：kernels.npy（9,808 字节）。
 
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v1.2 · 协议 v6.1）
 
 协议 v6.1（2026-11-06）
@@ -92,6 +94,8 @@
 比强参照略好（19/32 景更好）。第一次评分时第一景因评测机调度核上的其他编译负载超过 1 秒被终止，按“平台故障不计”的约定记为未测，正式成绩取重评（默认决定，待讨论）。
 
 源码 [`solutions/v6.1/gpt-6.1-sol-single-1/source/`](solutions/v6.1/gpt-6.1-sol-single-1/source/)（提交 `polarization-demosaicking-20261106T050331Z-a6d746`）。
+
+</details>
 
 ## 观察与说明
 

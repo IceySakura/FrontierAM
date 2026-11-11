@@ -162,11 +162,16 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
                   f'| samples（给模型） | {", ".join(d["samples"])} |', f'| public（不给，反馈用） | {d["public"]} |',
                   f'| 反馈分类 | {d["groups"] or "不分类，只报总计"} |', '']
     lines += ['## 评测依据', '', meta['judge_md'], '', '## Baseline', '', meta['baseline_md'], '']
+    folded = False
     for group in meta['result_groups']:
         protocol = group.get('protocol')
         rows = [(r, folder, omitted) for r, folder, omitted in solutions if r.get('_group') is group]
         if not rows:
             continue
+        newest = group is meta['result_groups'][0]
+        if not newest and not folded:
+            lines += ['<details><summary>旧版本的成绩与解法</summary>', '']
+            folded = True
         lines += [f'## 模型成绩与解法（题目版本 {group.get("version")} · 协议 {protocol}）', '', group['title'], '',
                   '| 模型 | 设置 | 原始指标 | 换算 | 得分 | 复核 | 提交次数与用时 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- | --- |']
         for r, folder, _ in rows:
@@ -183,6 +188,8 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
             if folder:
                 note = f'源码 [`solutions/{protocol}/{folder}/source/`](solutions/{protocol}/{folder}/source/)（提交 `{r["submission"]}`）'
                 lines += [note + ('；未复制的二进制或大文件：' + '、'.join(omitted) if omitted else '') + '。', '']
+    if folded:
+        lines += ['</details>', '']
     if meta.get('notes_md'):
         lines += ['## 观察与说明', '', meta['notes_md'], '']
     lines += ['---', '', '本文件由 `scripts/site/build_task_pages.py` 从 `meta.json` 生成。', '']

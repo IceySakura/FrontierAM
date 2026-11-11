@@ -90,6 +90,8 @@ C++ 实现的支持度加权四元组方法（思路同加权 ASTRAL）：按 aB
 
 源码 [`solutions/v6.2/claude-opus-5-5-single-1/source/`](solutions/v6.2/claude-opus-5-5-single-1/source/)（提交 `species-tree-v2-20261109T134305Z-2caffd`）。
 
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v1 · 协议 v6.1）
 
 协议 v6.1（2026-11-06）
@@ -103,6 +105,8 @@ C++ 实现的支持度加权四元组方法（思路同加权 ASTRAL）：按 aB
 ### GPT-6.1 Sol（，v6.1）
 
 源码 [`solutions/v6.1/gpt-6.1-sol-single-1/source/`](solutions/v6.1/gpt-6.1-sol-single-1/source/)（提交 `species-tree-20261106T053955Z-34ce6b`）；未复制的二进制或大文件：infer（283,384 字节）。
+
+</details>
 
 ## 观察与说明
 
