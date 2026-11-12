@@ -19,6 +19,7 @@
 | `v1` | `galaxy-gravity` | 出题方原版：65,536 粒子、5 CPU 秒；直接求和可在预算内求精确解 |
 | `v2` | `galaxy-gravity-v2` | FrontierAM 重建：131,072 粒子、5 CPU 秒，快照用原包生成器以私有种子生成（当前版本） |
 | `v3` | `galaxy-gravity-v3` | 协议 v6.3 版本：出题方的两条 Treecode2 参照（r1），对数刻度；工作区只含样例（scripts/seal/prepare_v63.py） |
+| `v4` | `galaxy-gravity-v4` | 出题人 B.4 预标定公开包（0.4.0-precalibration，草稿）：四档规模 65,536–4,194,304 粒子、逐例 CPU 时限、theta=0.8/0.7 两条树作锚点；只含题面与开发数据，私有数据、时限、锚点程序和汇总规则待交付（analysis/B4_PRECALIBRATION.md） |
 
 ## 题目背景
 

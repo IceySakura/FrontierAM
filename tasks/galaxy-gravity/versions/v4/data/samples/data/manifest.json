@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "scope": "public fixed development data; not formal evaluation",
+  "numpy": "2.3.5",
+  "particle_count": 65536,
+  "cases": [
+    {
+      "id": "dev-hernquist",
+      "family": "smooth-hernquist",
+      "n": 65536,
+      "input_sha256": "6bc716852afe5941d8a5f0d563da326dab11b845c0483226006c264882321542",
+      "reference_sha256": "70d23aaecb75444585fc02e09fd68751a1c6d99e87d580df168b2c68c2f1cedf",
+      "input_bytes": 2097152,
+      "reference_bytes": 1572864
+    },
+    {
+      "id": "dev-disc",
+      "family": "disc",
+      "n": 65536,
+      "input_sha256": "b32e6822b8e6b8f9c68fe87d20de799b18e47bf489f8dc9af5b532a3744875ab",
+      "reference_sha256": "42477f289fd49bd63408a4b71e169d2fda856e2a3fbf550b3684af50cd11091c",
+      "input_bytes": 2097152,
+      "reference_bytes": 1572864
+    },
+    {
+      "id": "dev-group",
+      "family": "group",
+      "n": 65536,
+      "input_sha256": "f317892ec5072f1e92977ee6f4c5f5b433be9fb38693eac506a85cd4e0033461",
+      "reference_sha256": "bb99365ca809eb3a71fa29db3c46339e02044b889d82aee1be9fec7bb522e44e",
+      "input_bytes": 2097152,
+      "reference_bytes": 1572864
+    },
+    {
+      "id": "dev-jaffe",
+      "family": "jaffe",
+      "n": 65536,
+      "input_sha256": "95c4b083684c7cebdad25f07b3db24376d45206022a1ac4e9e3baf2d1a5541bb",
+      "reference_sha256": "d1b6be2ee5e060c7895f1800b544a9c743dde82d62b5ce6f135b18931013a26b",
+      "input_bytes": 2097152,
+      "reference_bytes": 1572864
+    },
+    {
+      "id": "dev-einasto",
+      "family": "einasto",
+      "n": 65536,
+      "input_sha256": "85b0bd190ee01da87478dab79b642899297f75782364df36c227f9634bf2fa9c",
+      "reference_sha256": "293b74fe9126bb49d7b0d1c11e89e6a532ae7a57ed7cd6e89b9721896a62e8a1",
+      "input_bytes": 2097152,
+      "reference_bytes": 1572864
+    }
+  ],
+  "formal_overlap_checked": true
+}

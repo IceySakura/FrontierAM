@@ -1,0 +1,14 @@
+{
+  "name": "galaxy-gravity-v4",
+  "title": "星系快照中的引力加速度（四档规模、逐例时限）",
+  "status": "draft",
+  "status_reason": "Author package galaxy-gravity-b4-public 0.4.0-precalibration (B.4): statement and public development data only. The 80 formal snapshots with references, the per-snapshot CPU limits, the two anchor programs (theta=0.8 classic tree, theta=0.7 improved tree), the evaluator and the frozen weights/aggregation are not delivered yet (tasks/galaxy-gravity/analysis/B4_PRECALIBRATION.md).",
+  "derived_from": "galaxy-gravity-v3",
+  "source_package": {
+    "name": "galaxy-gravity-b4-public",
+    "version": "0.4.0-precalibration",
+    "sha256": "43b92ecc1740c9e1ddeb2fa722aaa352d4f7e6c012664aa9265c5f0e8767618a"
+  },
+  "submission_note": "Put the complete source in /workspace/submission with an executable ./solve at its root, or an executable ./build.sh that creates ./solve; the evaluator builds once offline and runs ./solve INPUT OUTPUT per snapshot with GALAXY_CPU_LIMIT_S and GALAXY_RUN_SEED set.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/samples. Implement the gravitational-acceleration program described there."
+}
