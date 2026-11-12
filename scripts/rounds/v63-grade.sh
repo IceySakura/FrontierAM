@@ -28,8 +28,8 @@ runtime() { [ "$1" = conic ] && echo "$CONIC_RT" || echo "$EXP_RT"; }
 # (status unmeasured: the attempt is rerun, its log renamed, never graded)
 frozen() { python3 -c "import json,sys;r=[json.loads(l) for l in open(sys.argv[1]) if 'develop_finished' in l];print(r[-1]['submission'] if r and r[-1]['status']=='frozen' else ('-' if r and r[-1]['status']=='invalid_submission' else ''))" "$1" 2>/dev/null; }
 
-# Timing-sensitive held-out grading waits until no development runs (docs/platform/CONCURRENCY.md section 7).
-TIMED="conic exponential-v3 polarization-demosaicking-v2"
+# Full concurrency since 2026-11-12 (docs/platform/CONCURRENCY.md section 7): no grading waits for development.
+TIMED=""
 attempts_running() { pgrep -f "scripts/rounds/v63-sol.sh|v63-singles-lane" > /dev/null; }
 isolation() { case " $TIMED " in *" $1 "*) echo dev_idle;; *) echo shared;; esac; }
 
@@ -50,7 +50,6 @@ anchors() {
     done
     for task in galaxy-gravity-v3 polarization-demosaicking-v2 ihvp-sequence ihvp-sequence-v3; do
         done_event anchor "$task" && continue
-        attempts_running && continue   # all grade with quiet isolation (no development): after the attempts
         FRONTIERAM_RUNTIME=$EXP_RT ./bench --store $STORE baseline --task "$task" >> var/stores/store/reruns/v63-worker.log 2>&1 \
             && log "\"event\": \"anchor\", \"label\": \"$task\""
     done

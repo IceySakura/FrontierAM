@@ -63,3 +63,4 @@
 | 评分隔离：`quiet` 改为 `dev_idle`（11-12） | 7+7 布局实测：7 路评测并行负载系数 1.039–1.046（与单路相同）；只有开发负载会拖慢计时（同 L3 域最坏 2.0–2.8 倍，跨域约 1.2 倍）。polarization-demosaicking 与 ihvp-sequence 改为 `dev_idle`（开发槽全空、评测可并行）。待做：有计时评分排队时自动开评分窗口（暂停新开发），不再手动 | `docs/platform/CONCURRENCY.md` 第 7 节 |
 | 真实开发负载下的干扰（11-12 实测） | 3 个真实尝试开发时，评测负载系数 1.053（安静 1.037），只多约 1.5%；压力程序（2.0–2.8 倍）是人为最坏情况。ihvp-sequence 与 polarization-demosaicking 的私有评分改为 `shared` | `docs/platform/CONCURRENCY.md` 第 7 节 |
 | opus trajectory 迭代因上游余额不足中断（11-12 15:11） | 上游返回 400 “Credit balance is too low”，harness 退出，记为未测，日志改名 `.credit.log`，待重跑。它是第一个带 `cache_task_id` 启动的 opus 尝试（前 14 次请求正常后失败）；同时在跑、没带 `cache_task_id` 的 opus species 正常。疑似账户亲和把请求固定到余额耗尽的账户上，待确认 | `arena/native.py` |
+| 默认全并发 + 异常报警（用户决定 11-12） | 所有评分 `shared`，基线不强制 `quiet`，不为测试预留空闲槽；每次评分前后约 0.7 秒的负载小测（慢于该槽历史最佳 25% 报警），exponential 闸门超标只报警；报警显示在看板“实时占用”页，逐条单独处理。实测 3 路评测 + 3 个真实开发：负载系数 1.041–1.064 | `docs/platform/CONCURRENCY.md` 第 7 节 |

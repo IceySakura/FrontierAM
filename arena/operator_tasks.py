@@ -40,7 +40,7 @@ def score_100(raw: float, weak: float, strong: float) -> float:
 
 
 class OperatorTask(Task):
-    grade_isolation = 'grade_pool'
+    grade_isolation = 'shared'
     paired = False
     grade_timeout = 6 * 3600
 

@@ -93,8 +93,16 @@ def snapshot() -> dict:
             except (OSError, ValueError):
                 pass
     attempts = sum(1 for p in SLOTS.glob('attempt-*.request') if held(p))
+    alerts_path = ROOT / 'var/stores/alerts.jsonl'
+    alerts = []
+    if alerts_path.exists():
+        for line in alerts_path.read_text().splitlines()[-20:]:
+            try:
+                alerts.append(json.loads(line))
+            except ValueError:
+                pass
     return {'generated_unix': now, 'generated': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(now)),
-            'cores': cores, 'holds': holds, 'iterative_attempts': attempts}
+            'cores': cores, 'holds': holds, 'iterative_attempts': attempts, 'alerts': alerts[::-1]}
 
 
 def main():

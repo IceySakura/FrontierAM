@@ -69,10 +69,12 @@ class Task:
     dev_memory: int = 4 * GIB + GIB // 2
     grade_memory: int
     grade_timeout: float = 28800
-    # How much of the machine must stay idle while this task is graded; chosen from measured interference
-    # (docs/platform/CONCURRENCY.md): 'shared', 'grade_pool' (no other grader) or 'quiet' (no grader, no development).
-    grade_isolation: str = 'grade_pool'
-    # Highest accepted load factor (paired reference time / quiet baseline time); above it the grade is redone quiet.
+    # How much of the machine must stay idle while this task is graded. Full concurrency by default (2026-11-12): with
+    # real development and concurrent grading the measured load stays within a few percent (docs/platform/CONCURRENCY.md
+    # section 7); the per-job load probe raises an alert instead (arena/load_probe.py). 'grade_pool' and 'quiet' remain
+    # for explicit, case-by-case regrades.
+    grade_isolation: str = 'shared'
+    # Load factor (paired reference time / baseline time) above which the result is flagged with an alert.
     load_gate: float | None = None
     # UID whose host-wide task count the grader's RLIMIT_NPROC budget depends on; grading waits for headroom.
     grader_uid: int | None = None
@@ -288,9 +290,8 @@ class Conic(Task):
     # Success is judged against fixed per-case deadlines, so pairing cannot correct it, and four pilot cases finish
     # within 1% of their deadline. Under 4 graders plus full development load the reference lost 3 of 10 successes;
     # with no other grader and 9 real agents developing, every case stayed within 1% (docs/platform/CONCURRENCY.md).
-    # grade_pool trades that sub-percent risk for grading during development (operator choice, 2026-11-04); each
-    # result records the development slots that were leased while it ran.
-    grade_isolation = 'grade_pool'
+    # Each result records the slots that were leased while it ran; full concurrency since 2026-11-12 (base class note).
+    grade_isolation = 'shared'
     # The verifier sets RLIMIT_NPROC=128 for candidate UID 1000, counted across the host; keep 96 of it free.
     grader_uid = 1000
     grader_uid_headroom = 96

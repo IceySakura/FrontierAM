@@ -218,17 +218,16 @@ def test_waiting_priority_lease_goes_first(tmp_path):
     second.release()
 
 
-def test_running_attempt_keeps_one_grade_slot_free(tmp_path):
+def test_running_attempts_keep_no_grade_slot_idle(tmp_path):
+    # Full concurrency (2026-11-12): ordinary grading may take every free grade slot while attempts run.
     broker = slots.Broker(layout(), tmp_path)
     with broker.iterative_attempt('attempt'):
-        formal = broker.acquire('grade', 2**30, 'formal a', timeout=0)
-        with pytest.raises(TimeoutError):
-            broker.acquire('grade', 2**30, 'formal b', timeout=0)
-        test = broker.acquire('grade', 2**30, 'test', timeout=0, priority=True)
-        test.release()
-        formal.release()
+        first = broker.acquire('grade', 2**30, 'formal a', timeout=0)
+        second = broker.acquire('grade', 2**30, 'formal b', timeout=0)
+        assert {first.id, second.id} == {'grade-24', 'grade-26'}
+        first.release()
+        second.release()
     assert broker._live('attempt') == 0
-    assert broker.acquire('grade', 2**30, 'formal c', timeout=0)
 
 
 def test_dev_idle_waits_for_development_and_runs_side_by_side(tmp_path):
@@ -242,14 +241,19 @@ def test_dev_idle_waits_for_development_and_runs_side_by_side(tmp_path):
     assert {first.id, second.id} == {'grade-24', 'grade-26'}
 
 
-def test_one_free_grade_slot_per_running_attempt(tmp_path):
+def test_waiting_test_goes_before_ordinary_grading(tmp_path):
+    # A v6.3 test waiting for a slot holds back ordinary grading, so it takes the next free slot.
     broker = slots.Broker(layout(), tmp_path)
-    with broker.iterative_attempt('a'), broker.iterative_attempt('b'):
+    flag = broker._flag('priority', 'waiting test')
+    try:
         with pytest.raises(TimeoutError):
             broker.acquire('grade', 2**30, 'formal', timeout=0)
-        first = broker.acquire('grade', 2**30, 'test a', timeout=0, priority=True)
-        second = broker.acquire('grade', 2**30, 'test b', timeout=0, priority=True)
-        assert first.id != second.id
+        test = broker.acquire('grade', 2**30, 'test', timeout=0, priority=True)
+        test.release()
+    finally:
+        flag[1].unlink(missing_ok=True)
+        os.close(flag[0])
+    assert broker.acquire('grade', 2**30, 'formal', timeout=0)
 
 
 def test_pool_isolation_waits_for_running_attempts(tmp_path):

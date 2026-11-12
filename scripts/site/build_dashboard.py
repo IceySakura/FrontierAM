@@ -322,6 +322,13 @@ async function refresh() {
                               (c.role === 'housekeeping' ? '系统与守护进程' : '空闲')) + '</div></div>';
     }).join('') + '</div>').join('');
   document.getElementById('grid').innerHTML = html;
+  const KIND = {slow_slot: '评测槽变慢（负载小测）', load_gate: '负载系数超闸门'};
+  const alerts = d.alerts || [];
+  document.getElementById('alerts').innerHTML = alerts.length ?
+    '<h2>异常报警（最近 ' + alerts.length + ' 条，需单独处理）</h2><ul>' + alerts.map(a => '<li class="alert">' + esc(a.time) + ' · ' +
+      esc(KIND[a.kind] || a.kind) + ' · ' + esc(a.task || '') + ' · ' + esc(a.slot || '') + ' · ' + esc(a.job || '') +
+      (a.before != null ? ' · 前 ' + a.before + ' / 后 ' + a.after : '') + (a.load_factor != null ? ' · 负载 ' + a.load_factor : '') +
+      '</li>').join('') + '</ul>' : '<p>异常报警：无</p>';
   document.getElementById('summary').textContent = '开发槽 ' + used.dev + ' / ' + total.dev + ' 占用 · 评测槽 ' + used.grade + ' / ' + total.grade + ' 占用';
 }
 refresh(); setInterval(refresh, 5000);
@@ -337,6 +344,7 @@ MONITOR_CSS = """
 .core.dev{border-left-color:#3b82f6}.core.dev.busy{background:#dbeafe}
 .core.grade{border-left-color:#16a34a}.core.grade.busy{background:#dcfce7}
 .core.held{background:#fef3c7;border-left-color:#d97706}
+.alert{color:#b91c1c}
 """
 
 
@@ -344,8 +352,9 @@ def monitor_page() -> str:
     body = ('<h1>实时占用</h1><p class="lead">16 个物理核：2 个杂务核、7 个开发槽、7 个评测槽，按共享 L3 缓存的域分组；每 5 秒刷新。'
             '每个槽占一个物理核，第二个硬件线程留给该任务在宿主上的配套进程。</p>'
             f'<style>{MONITOR_CSS}</style><p id="stamp"></p><p id="holds"></p><p id="summary"></p>'
-            '<div id="grid" class="l3grid"></div>'
-            '<p><small>颜色：灰＝杂务核；蓝＝开发槽（深色为占用）；绿＝评测槽（深色为占用）；黄＝为隔离而空着。</small></p>'
+            '<div id="grid" class="l3grid"></div><div id="alerts"></div>'
+            '<p><small>颜色：灰＝杂务核；蓝＝开发槽（深色为占用）；绿＝评测槽（深色为占用）；黄＝为隔离而空着。'
+            '默认全并发；每次评分前后在该核的兄弟线程上做约 0.7 秒的内存拷贝小测，比该槽历史最佳慢 25% 以上即报警。</small></p>'
             f'<script>{MONITOR_JS}</script>')
     return page('实时占用', body)
 

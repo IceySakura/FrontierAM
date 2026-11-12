@@ -39,8 +39,8 @@ class ExponentialV2(Task):
     grade_memory = 4 * GIB + GIB // 2
     # Five panel members and the candidate each run every case three times on the slot's one CPU.
     grade_timeout = 24 * 3600
-    # Timing ratios against a baseline measured earlier on the same slot: no other grader may share the machine.
-    grade_isolation = 'grade_pool'
+    # Timing ratios against the panel's earlier measurement; concurrency allowed, the load probe flags anomalies.
+    grade_isolation = 'shared'
     paired = False
     # The public-feedback grader is the same task sealed elsewhere (public cases, one repeat), named by the variable.
     seal_env, default_seal = 'FRONTIERAM_EXP2_SEAL', ROOT / '.runtime-exp2'

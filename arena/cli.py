@@ -248,6 +248,8 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
             # A baseline is paired with itself; everything else with the reference its score is anchored to.
             active = store.active_baseline(task.name)
             paired = archive if job['kind'] == 'baseline' else store.submission_dir(active['id']) / 'source.tar'
+        from .load_probe import SLOW, probe
+        probe_before = probe(lease.id, lease.host_cpu)
         before = broker.leases()
         started = time.time()
         spec = {
@@ -270,6 +272,13 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
                 subprocess.run(['docker', '--host', placement.docker_host, 'rm', '-f', *names], capture_output=True, timeout=120)
         isolation = {'policy': lease.isolation, 'held_idle': [slot_id for slot_id, _ in lease.held]}
         after = broker.leases()
+        probe_after = probe(lease.id, lease.host_cpu)
+        slow = [p for p in (probe_before, probe_after) if (p.get('ratio') or 0) > SLOW]
+        if slow:
+            from .alerts import alert
+            alert('slow_slot', job=job['id'], task=task.name, kind=job['kind'], slot=lease.id,
+                  before=probe_before.get('ratio'), after=probe_after.get('ratio'),
+                  concurrent=[r.get('owner') for r in before if r.get('slot') != lease.id])
     metrics_path = results / 'grade/metrics.json'
     record = {
         'job': job['id'],
@@ -288,6 +297,7 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
         'grading_wall_seconds': time.time() - started,
         'concurrent_leases_at_start': [r for r in before if r.get('slot') != lease.id],
         'concurrent_leases_at_end': [r for r in after if r.get('slot') != lease.id],
+        'load_probe': {'before': probe_before, 'after': probe_after},
     }
     if code or not metrics_path.exists():
         # Past the cap the evaluation is not measured: the limits were designed to fit it, so this needs a look.
@@ -315,12 +325,12 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
     write_json(results / 'score.json', {**score, 'baseline': (store.active_baseline(task.name) or {}).get('id')})
     gate = task.load_gate
     if gate is not None and policy != 'quiet' and (score.get('load_factor') or 0) > gate:
-        # Pairing cancels load only as far as candidate and reference respond to it alike; above the gate that
-        # assumption is not trusted, so the submission is measured again with the machine kept quiet.
-        regrade = store.enqueue(job['submission'], isolation='quiet', note=f'load gate {score["load_factor"]:.3f}')
-        say(event='load_gate', job=job['id'], load_factor=score['load_factor'], gate=gate, regrade=regrade)
-        return store.finish(job, 'done', status='superseded_by_quiet_regrade', regrade=regrade,
-                            load_factor=score['load_factor'])
+        # Pairing cancels load only as far as candidate and reference respond to it alike; above the gate the result
+        # stands but is flagged for case-by-case handling (no automatic exclusive regrade since 2026-11-12).
+        from .alerts import alert
+        alert('load_gate', job=job['id'], task=task.name, submission=job['submission'], slot=lease.id,
+              load_factor=score['load_factor'], gate=gate)
+        say(event='load_gate', job=job['id'], load_factor=score['load_factor'], gate=gate)
     store.update_submission(job['submission'], status='graded', score=score.get('score'), score_status=score.get('status'))
     say(event='graded', job=job['id'], submission=job['submission'], score=score.get('score'), status=score.get('status'))
     return store.finish(job, 'done', status=score.get('status'), score=score.get('score'))
@@ -441,9 +451,9 @@ def cmd_baseline(args) -> None:
     task = TASKS[args.task]
     if store.active_baseline(task.name) and not args.replace:
         raise SystemExit(f'{task.name} already has an active baseline; pass --replace to measure and activate another')
-    # Load factors divide by baseline times, so the baseline itself is always measured on a quiet machine.
+    # Full concurrency (2026-11-12): the baseline grades like any job; its load probe flags a disturbed measurement.
     jobs = [enqueue_reference(store, runtime, task, kind='baseline', note='activate' if args.replace else None,
-                              isolation='quiet')]
+                              isolation=task.grade_isolation)]
     args.drain, args.task = True, [task.name]
     run_workers(args, job_ids=jobs)
 
