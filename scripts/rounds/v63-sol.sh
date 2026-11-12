@@ -12,7 +12,7 @@ KEY=/root/.frontieram/aihub.key
 STORE=var/stores/store-v63
 MAX=${V63_CONCURRENCY:-3}
 N=${V63_ATTEMPT:-1}
-TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence"
+TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v3"
 
 attempt() {
     local setting=$1 task=$2 log=var/stores/store/reruns/v63-sol-$1-$2-$N.log runtime=$R/.runtime-recal

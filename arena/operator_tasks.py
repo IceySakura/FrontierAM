@@ -443,7 +443,9 @@ def operator_tasks() -> dict[str, OperatorTask]:
     # Repository-native draft tasks do not pretend to have a sealed operator
     # package or a calibrated deployment on this host.
     from .operator_drivers.ihvp_sequence import IHVPSequence
-    handlers = {**CLASSES, 'ihvp-sequence': IHVPSequence, 'ihvp-sequence-v2': IHVPSequence}
+    from .operator_drivers.ihvp_hard_v3 import IHVPHardV3
+    handlers = {**CLASSES, 'ihvp-sequence': IHVPSequence, 'ihvp-sequence-v2': IHVPSequence,
+                'ihvp-sequence-v3': IHVPHardV3}
     tasks = {}
     for path in sorted(SPECS.glob('*/versions/*/task.json')):
         spec = json.loads(path.read_text())

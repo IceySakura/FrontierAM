@@ -55,3 +55,4 @@
 | ihvp-sequence-v2 阶段观察（11-11 16:55） | 隐藏生成代码后两次尝试都不识别 DCT 结构，改用历史解子空间投影 + CG，迭代 public 仍到 99.6–99.8：参照偏弱、数据结构过简单、映射饱和，需出题人处理。反馈的类别分数在类别锚点倒挂时失去意义（观察项，可改为只显示比值） | `tasks/ihvp-sequence/analysis/INTEGRATION.md` |
 | ihvp-sequence v2 结果（11-11 19:15） | 单轮私有集 99.7（E = 3.0e-4），迭代 public 99.8、私有评分待整机安静（当前 trajectory 重跑结束后）。两次都没有识别矩阵结构，靠历史解子空间投影 + CG；当前版本改为 v2，v1 成绩折叠。待出题人：生成器（解序列近似低秩）、参照（不用历史）、映射（饱和） | `tasks/ihvp-sequence/analysis/INTEGRATION.md` |
 | 重跑完成并替换（11-12） | conic 迭代 426/650（0 分，原 433/650），exponential 迭代 63.8（原 59.6），trajectory 迭代 62.3（原 62.3）；三次重跑共 45 次测试全部拿到报告，最长周转 9.2 分钟，无设施错误。ihvp-sequence v2 迭代私有集 99.9（E = 1.5e-4），代码不识别结构。看板、README、LEADERBOARD、V63_REPORT、结果解读已更新，“设施影响”条目已移除 | `results/V63_REPORT.md` |
+| ihvp-sequence v3（出题人 PR #2，11-12） | 代码已并入：v3 评测器与困难数据导入、Galerkin-CG 审计候选；反馈只用新增 15 条困难序列，私有集 30 条（用户决定）；评分容器加固（worker 只能读协议文件）；v3 镜像已构建。待出题人总包（Release 附件本机无法下载）后导入、标定、演练并跑 sol 单轮与迭代（用户决定） | `tasks/ihvp-sequence/analysis/INTEGRATION.md` |

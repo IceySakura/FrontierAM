@@ -50,14 +50,14 @@ SUBMISSIONS = {
 FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3': 'galaxy-gravity',
           'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
           'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
-          'ihvp-sequence-v2': 'ihvp-sequence'}
+          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence'}
 
 
 def script(task: str, setting: str) -> str:
     family = FAMILY[task]
     lines = ['set -x', 'echo WORKSPACE-BEGIN; find /workspace -maxdepth 3 -not -path "*/submission*" | sort; echo WORKSPACE-END',
              'cd /workspace/submission', SUBMISSIONS[family], "echo 'v6.3 smoke submission' > README.md", 'cd /workspace']
-    if task == 'ihvp-sequence-v2':  # samples run through the host-side service
+    if task in ('ihvp-sequence-v2', 'ihvp-sequence-v3'):  # samples run through the host-side service
         lines += ['python3 /workspace/samples/run_sample.py smoke', 'python3 /workspace/samples/run_sample.py sample_02']
     if setting == 'iterative':
         lines += ['/opt/frontieram/bin/submit --test; echo "test-exit=$?"',

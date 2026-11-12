@@ -29,6 +29,7 @@ if __name__ != '__main__':
     from ..tasks import GIB
 
     class IHVPSequence(OperatorTask):
+        grader_version = 'v1'  # versions/<v>/grader evaluates this task version (v1 and v2 share it)
         grade_memory = 5 * GIB
         grade_timeout = 3600
         grade_isolation = 'quiet'  # wall-clock limits (30 s per sequence), as polarization-demosaicking
@@ -63,7 +64,9 @@ if __name__ != '__main__':
             directory.mkdir(parents=True)
             directory.chmod(0o755)
             paths = json.dumps({name: str(ROOT / path) for name, path in cases.items()})
-            process = subprocess.Popen([str(GRADER_PYTHON), '-B', '-m', 'arena.operator_drivers.ihvp_oracle', str(directory), paths],
+            grader = TASK / 'versions' / self.grader_version / 'grader'
+            process = subprocess.Popen([str(GRADER_PYTHON), '-B', '-m', 'arena.operator_drivers.ihvp_oracle', str(directory), paths,
+                                        str(grader)],
                                        cwd=ROOT, env={**os.environ, 'PYTHONPATH': str(ROOT)}, stdout=subprocess.PIPE,
                                        stderr=(output / 'sample-service.log').open('wb'), text=True)
             if process.stdout.readline().strip() != 'ready':
@@ -86,9 +89,16 @@ if __name__ != '__main__':
             if data.stat().st_mode & 0o077:
                 raise RuntimeError(f'{data} must be mode 0700 (teacher data is root-only inside the container)')
             out.mkdir(parents=True, exist_ok=True)
-            evaluate = '/repo/tasks/ihvp-sequence/versions/v1/grader/evaluate.py'
+            grader = f'/opt/repo/tasks/ihvp-sequence/versions/{self.grader_version}/grader'
+            evaluate = f'{grader}/evaluate.py'
+            # The task directory is mounted under /root (mode 0700). The evaluator runs from a root-only copy of it
+            # (generators, references, analysis) in which only the worker's protocol files are readable by its UID.
+            readable = ' '.join(['/opt/repo', '/opt/repo/tasks', '/opt/repo/tasks/ihvp-sequence', '/opt/repo/tasks/ihvp-sequence/versions',
+                                 f'/opt/repo/tasks/ihvp-sequence/versions/{self.grader_version}', grader])
             # An optional ./build.sh runs once, offline, as the worker UID and outside the sequence clock.
-            script = ('cp -r /submission /tmp/candidate && chown -R 1000:1000 /tmp/candidate && cd /tmp/candidate && '
+            script = ('mkdir -p /opt/repo/tasks && cp -r /root/task-src /opt/repo/tasks/ihvp-sequence && chmod -R go-rwx /opt/repo && '
+                      f'chmod go+x {readable} && chmod go+rx {grader}/runtime && chmod go+r {grader}/runtime/worker.py {grader}/runtime/api.py && '
+                      'cp -r /submission /tmp/candidate && chown -R 1000:1000 /tmp/candidate && cd /tmp/candidate && '
                       f'if [ -f build.sh ]; then timeout {BUILD_SECONDS} setpriv --reuid 1000 --regid 1000 --clear-groups '
                       'sh build.sh > /out/build.log 2>&1 || { touch /out/build_failed; exit 0; }; fi && '
                       f'exec python3 -B {evaluate} --submission /tmp/candidate --manifest /data/manifest.json --out /out/run')
@@ -99,7 +109,7 @@ if __name__ != '__main__':
                        '--security-opt', 'no-new-privileges:true', '--user', '0:0', '--log-driver', 'none',
                        '--tmpfs', '/tmp:rw,exec,nosuid,nodev,size=1g,mode=1777',
                        '-e', f'IHVP_WORKER_UID={WORKER_UID}',
-                       '-v', f'{TASK}:/repo/tasks/ihvp-sequence:ro', '-v', f'{Path(source).resolve()}:/submission:ro',
+                       '-v', f'{TASK}:/root/task-src:ro', '-v', f'{Path(source).resolve()}:/submission:ro',
                        '-v', f'{data}:/data:ro', '-v', f'{out.resolve()}:/out',
                        '--entrypoint', 'sh', self.lock()['image']['id'], '-c', script]
             done = subprocess.run(command, capture_output=True, text=True, timeout=self.grade_timeout)

@@ -43,7 +43,8 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'species-tree-v2': 'frontieram-species-tree-harness:v6',
                   'trajectory-covariance': 'frontieram-trajectory-covariance-harness:v6',
                   'ihvp-sequence': 'frontieram-ihvp-sequence-harness:v6',
-                  'ihvp-sequence-v2': 'frontieram-ihvp-sequence-harness:v6'}
+                  'ihvp-sequence-v2': 'frontieram-ihvp-sequence-harness:v6',
+                  'ihvp-sequence-v3': 'frontieram-ihvp-sequence-v3-harness:v6'}
 # The vendor's own client where ATR has one; Claude Code for Messages models without one, Codex for Responses ones.
 HARNESS = {
     'claude-opus-5-5': 'claude',
@@ -301,7 +302,7 @@ SCORING_DISCLOSURE['trajectory-covariance'] = (
 
 # Protocol v6.3 task versions inherit the harness image and the scoring disclosure of the version they derive from,
 # unless they define their own (galaxy-gravity-v3).
-V63_VERSIONS = {'ihvp-sequence-v2': 'ihvp-sequence', 'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree-v2',
+V63_VERSIONS = {'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree-v2',
                 'trajectory-covariance-v2': 'trajectory-covariance', 'exponential-v3': 'exponential-v2', 'conic-v3': 'conic'}
 for _new, _old in V63_VERSIONS.items():
     HARNESS_IMAGES.setdefault(_new, HARNESS_IMAGES[_old])

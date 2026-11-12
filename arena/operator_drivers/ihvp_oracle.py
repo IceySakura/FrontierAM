@@ -7,7 +7,7 @@ service writes SOCKET_DIR/results/<case>.json (validity, wall time, HVP count, p
 Teacher arrays, generator parameters and reference solutions never enter the container.
 
 Runs as its own process under the graders' environment (NumPy/SciPy), started by IHVPSequence.dev_service:
-python -m arena.operator_drivers.ihvp_oracle SOCKET_DIR CASES_JSON
+python -m arena.operator_drivers.ihvp_oracle SOCKET_DIR CASES_JSON [GRADER_DIR]  (default: the v1 grader)
 """
 from __future__ import annotations
 
@@ -159,6 +159,9 @@ class SampleService:
 
 def main():
     import signal
+    global GRADER
+    if len(sys.argv) > 3:
+        GRADER = Path(sys.argv[3])
     service = SampleService(Path(sys.argv[1]), {k: Path(v) for k, v in json.loads(sys.argv[2]).items()})
     service.start()
     signal.signal(signal.SIGTERM, lambda *_: service.stopped.set())
