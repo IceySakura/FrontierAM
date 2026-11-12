@@ -240,7 +240,8 @@ def write_board(metas: list[dict], names: list[str]) -> None:
     rule = '| --- |' + ' --- |' * len(columns)
     scores, process = [head, rule], [head, rule]
     for meta, name in zip(metas, names):
-        results = [r for g in meta['result_groups'] if g.get('protocol') == protocol for r in g['results']]
+        newest = next((g for g in meta['result_groups'] if g.get('protocol') == protocol), None)  # newest task version
+        results = newest['results'] if newest else []
         row_s, row_p = [], []
         for model, setting in columns:
             hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting),

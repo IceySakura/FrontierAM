@@ -1,0 +1,24 @@
+{
+ "id": "job-20261111T073354Z-5ab3e5",
+ "task": "ihvp-sequence-v2",
+ "submission": "ihvp-sequence-v2-20261111T073210Z-66b579",
+ "kind": "candidate",
+ "note": null,
+ "isolation": null,
+ "enqueued_utc": "2026-11-11T07:33:54+00:00",
+ "claimed_utc": "2026-11-11T07:33:55+00:00",
+ "worker_pid": 430989,
+ "status": "ok",
+ "score": 99.72319428870536,
+ "finished_utc": "2026-11-11T10:53:45+00:00",
+ "candidate": {
+  "status": "ok",
+  "raw_error": 0.0003005515520611362,
+  "reason": null,
+  "package_score": null,
+  "sequences": 15,
+  "max_wall_s": 28.374577061040327,
+  "mean_wall_s": 12.62759416612486,
+  "max_peak_rss_mib": 76.84375
+ }
+}
