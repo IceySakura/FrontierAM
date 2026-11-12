@@ -1,4 +1,4 @@
-"""Publish the v6.3 validation round (gpt-6.1-sol) into tasks/<family>/meta.json as a "协议 v6.3" result group.
+"""Publish the v6.3 round (gpt-6.1-sol, claude-opus-5-5) into tasks/<family>/meta.json as a "协议 v6.3" result group.
 
 Reads tasks/<family>/solutions/v6.3/<model>-<setting>-<n>/score.json (written by scripts/rounds/v63-grade.sh) and the
 attempt logs for the submission IDs; writes raw metric, mapping and score per cell. Reviews (results/BASELINE_REVIEW.md)
@@ -37,12 +37,15 @@ NOTES = {
     ('ihvp-sequence-v2', 'single'): '工作区不含生成代码；Galerkin 回收 CG：在历史解张成的子空间上投影热启动，再用 C 写的 CG 内核修正。没有识别矩阵结构；困难序列被“解序列沿时间平滑”绕开，误差为参照的约 1/180。',
     ('ihvp-sequence-v2', 'iterative'): '工作区不含生成代码；最近 16 个解做 QR，在子空间上精确投影得到初始解，再跑 CG，按剩余步数分配时间（阶段突变时多给），Gauss–Radau 上界停止。没有识别矩阵结构；public 分数 83.7 → 99.8。',
 }
-TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）'
+TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
 
-def submission_of(task: str, setting: str, n: int) -> str | None:
-    log = ROOT / f'var/stores/store/reruns/v63-sol-{setting}-{task}-{n}.log'
+MODELS = [('gpt-6.1-sol', 'sol'), ('claude-opus-5-5', 'opus')]  # (model, attempt-log tag); NOTES keys add the model for opus
+
+
+def submission_of(task: str, setting: str, n: int, tag: str = 'sol') -> str | None:
+    log = ROOT / f'var/stores/store/reruns/v63-{tag}-{setting}-{task}-{n}.log'
     rows = [json.loads(line) for line in log.read_text().splitlines() if 'develop_finished' in line] if log.exists() else []
     return rows[-1]['submission'] if rows else None
 
@@ -99,18 +102,20 @@ def main():
         reviews = {(r['model'], r['setting']): {k: r[k] for k in ('review',) if k in r}
                    for r in (old or {}).get('results', [])}
         results = []
-        for setting in ('single', 'iterative'):
-            name = '/'.join(filter(None, (SUBFOLDER.get(task), f'gpt-6.1-sol-{setting}-1')))
-            folder = ROOT / 'tasks' / family / 'solutions/v6.3' / name
-            if not (folder / 'score.json').exists():
-                continue
-            score = json.loads((folder / 'score.json').read_text())
-            raw, mapping = cell(task, score)
-            value = score.get('score')
-            results.append({'model': 'gpt-6.1-sol', 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': 1,
-                            'submission': submission_of(task, setting, 1), 'store': 'var/stores/store-v63', 'raw': raw,
-                            'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),
-                            'notes_md': NOTES.get((task, setting), ''), **({'folder': name} if task in SUBFOLDER else {}), **reviews.get(('gpt-6.1-sol', SETTING[setting]), {})})
+        for model, tag in MODELS:
+            for setting in ('single', 'iterative'):
+                name = '/'.join(filter(None, (SUBFOLDER.get(task), f'{model}-{setting}-1')))
+                folder = ROOT / 'tasks' / family / 'solutions/v6.3' / name
+                if not (folder / 'score.json').exists():
+                    continue
+                score = json.loads((folder / 'score.json').read_text())
+                raw, mapping = cell(task, score)
+                value = score.get('score')
+                note = NOTES.get((task, setting) if tag == 'sol' else (task, setting, model), '')
+                results.append({'model': model, 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': 1,
+                                'submission': submission_of(task, setting, 1, tag), 'store': 'var/stores/store-v63', 'raw': raw,
+                                'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),
+                                'notes_md': note, **({'folder': name} if task in SUBFOLDER else {}), **reviews.get((model, SETTING[setting]), {})})
         if not results:
             continue
         group = {'title': TITLE, 'version': version, 'protocol': 'v6.3', 'results': results}

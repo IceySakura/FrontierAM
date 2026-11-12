@@ -9,6 +9,8 @@ R=$PWD
 STORE=var/stores/store-v63
 LOG=var/stores/store/reruns/v63-grade.log
 N=${V63_ATTEMPT:-1}
+MODEL=${V63_MODEL:-gpt-6.1-sol}   # grade-log labels: <setting>-<task>-<n> for sol, opus-<setting>-<task>-<n> for opus
+case $MODEL in gpt-6.1-sol) TAG=sol PFX=;; claude-opus-5-5) TAG=opus PFX=opus-;; esac
 EXP_RT=$R/.runtime-recal
 CONIC_RT=$R/.runtime-conic-v3
 P_B=0.7892307692307692          # conic v3 keeps every calibrated limit; the reference solves the same 513 of 650
@@ -55,16 +57,16 @@ anchors() {
 }
 
 grade() {  # setting, task
-    local setting=$1 task=$2 label="$1-$2-$N" sub id out
+    local setting=$1 task=$2 label="$PFX$1-$2-$N" attempt_log="var/stores/store/reruns/v63-$TAG-$1-$2-$N.log" sub id out
     done_event graded "$label" && return 0
-    sub=$(frozen "var/stores/store/reruns/v63-sol-$label.log")
+    sub=$(frozen "$attempt_log")
     [ -z "$sub" ] && return 1                       # attempt still running
     case " $TIMED " in *" $task "*) attempts_running && return 1;; esac
-    out=tasks/$(family "$task")/solutions/v6.3/$(case $task in ihvp-sequence-v2) echo v2/;; ihvp-sequence-v3) echo v3/;; esac)gpt-6.1-sol-$setting-$N
+    out=tasks/$(family "$task")/solutions/v6.3/$(case $task in ihvp-sequence-v2) echo v2/;; ihvp-sequence-v3) echo v3/;; esac)$MODEL-$setting-$N
     mkdir -p "$out"
     if [ "$sub" = - ]; then                          # no valid frozen submission: invalid (0) or unmeasured
         run=$(python3 -c "import json,sys;print([json.loads(l) for l in open(sys.argv[1]) if 'develop_finished' in l][-1]['run'])" \
-              "var/stores/store/reruns/v63-sol-$label.log")
+              "$attempt_log")
         cp "$STORE/dev-runs/$run/develop_result.json" "$out/develop_result.json" 2>/dev/null
         log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": null"
         return 0
@@ -115,7 +117,7 @@ PY
     log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": \"$sub\", \"suite\": \"$id\""
 }
 
-TASKS="conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v2 ihvp-sequence-v3"
+TASKS=${V63_TASKS:-"conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v2 ihvp-sequence-v3"}
 while :; do
     anchors
     left=0
