@@ -96,7 +96,8 @@ def main():
                 0o755 if os.access(path, os.X_OK) else 0o644)
     if args.version == 'v3':
         hard_feedback_split()
-        data = {'private': f'{DATA_V3}/private', 'public': f'{DATA_V3}/public-hard', 'samples': f'{DATA_V3}/samples'}
+        data = {'private': f'{DATA_V3}/private', 'public': f'{DATA_V3}/public-hard', 'samples': f'{DATA_V3}/samples',
+                'public_all': f'{DATA_V3}/public'}  # all 30 feedback-pool sequences: reference and replay reports only
     else:
         samples_split(samples)
         data = {split: f'{DATA}/{split}' for split in ('private', 'public', 'samples')}

@@ -6,7 +6,7 @@ current right-hand side and HVP replies over its pipes. The worker's 256 MiB pea
 check; the container memory limit is a backstop for the evaluator and teacher data.
 
 Data: FRONTIERAM_IHVP_DATA = private (default) | public (v6.3 feedback) | samples (the two full-size samples, for
-infrastructure checks). Sealed workspace material and data roots come from scripts/seal/seal_ihvp_sequence.py.
+infrastructure checks) | public_all (v3: all 30 feedback-pool sequences, for reference and replay reports). Sealed workspace material and data roots come from scripts/seal/seal_ihvp_sequence.py.
 
 Explicit local diagnostics without a slot: python arena/operator_drivers/ihvp_sequence.py --smoke --out DIR
 """
@@ -36,7 +36,7 @@ if __name__ != '__main__':
 
         def data_dir(self) -> Path | None:
             split = os.environ.get('FRONTIERAM_IHVP_DATA', 'private')
-            if split not in ('private', 'public', 'samples'):
+            if split not in ('private', 'public', 'samples', 'public_all'):
                 raise ValueError(f'FRONTIERAM_IHVP_DATA={split}')
             if not (self.sealed / 'lock.json').exists():
                 return None
