@@ -183,7 +183,7 @@ def page(title: str, body: str, depth: int = 0) -> str:
 {{left:"$$",right:"$$",display:true}},{{left:"\\\\[",right:"\\\\]",display:true}},{{left:"\\\\(",right:"\\\\)",display:false}},
 {{left:"$",right:"$",display:false}}],throwOnError:false}});}});</script></head><body>
 <header><a class="brand" href="{up}index.html">FrontierAM 任务看板</a>
-<nav><a href="{up}index.html">总榜</a><a href="{up}process.html">评测流程</a><a href="{up}insights.html">结果解读</a><a href="{up}protocol.html">评测协议</a></nav></header>
+<nav><a href="{up}index.html">总榜</a><a href="{up}monitor.html">实时占用</a><a href="{up}process.html">评测流程</a><a href="{up}insights.html">结果解读</a><a href="{up}protocol.html">评测协议</a></nav></header>
 <main>{body}</main><footer>{FOOTER}</footer></body></html>'''
 
 
@@ -293,6 +293,61 @@ def insights_page(tasks: list[dict]) -> str:
         if task.get('insights'):
             body += [f'<h3><a href="tasks/{task["id"]}.html">{html.escape(task["name"])}</a></h3>', insight_rows(task)]
     return page('结果解读', '\n'.join(body))
+
+
+MONITOR_JS = r"""
+const ROLE = {housekeeping: '杂务', dev: '开发', grade: '评测', other: '其他'};
+function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c])); }
+async function refresh() {
+  let d;
+  try { d = await (await fetch('status.json?t=' + Date.now(), {cache: 'no-store'})).json(); }
+  catch (e) { document.getElementById('stamp').textContent = '状态暂不可用（' + e + '）'; return; }
+  const age = Math.round(Date.now() / 1000 - d.generated_unix);
+  document.getElementById('stamp').textContent = '更新于 ' + d.generated + (age > 30 ? '（' + age + ' 秒前，采集可能已停止）' : '');
+  const holds = d.holds.filter(h => h.blocks_dev_now);
+  document.getElementById('holds').innerHTML =
+    (holds.length ? '<span class="tag warn">新开发暂停中</span> ' + holds.map(h => esc(h.owner)).join('；') : '新开发：正常调度') +
+    ' · 运行中的迭代尝试：' + d.iterative_attempts;
+  const domains = {};
+  for (const c of d.cores) (domains[c.l3] = domains[c.l3] || []).push(c);
+  let used = {dev: 0, grade: 0}, total = {dev: 0, grade: 0};
+  const html = Object.entries(domains).map(([l3, cores]) => '<div class="l3"><div class="l3h">L3 域 · CPU ' + esc(l3) + '</div>' +
+    cores.map(c => {
+      const l = c.lease;
+      if (c.role in total) { total[c.role]++; if (l && l.kind !== 'held') used[c.role]++; }
+      const state = !l ? 'idle' : (l.kind === 'held' ? 'held' : 'busy');
+      return '<div class="core ' + c.role + ' ' + state + '"><div class="ch">' + esc(c.slot || ROLE[c.role]) +
+        ' <small>核 ' + c.core + ' · CPU ' + c.cpus.join(',') + '</small></div>' +
+        '<div class="cb">' + (l ? esc(l.label) + (l.minutes != null ? ' <small>· ' + l.minutes + ' 分钟</small>' : '') :
+                              (c.role === 'housekeeping' ? '系统与守护进程' : '空闲')) + '</div></div>';
+    }).join('') + '</div>').join('');
+  document.getElementById('grid').innerHTML = html;
+  document.getElementById('summary').textContent = '开发槽 ' + used.dev + ' / ' + total.dev + ' 占用 · 评测槽 ' + used.grade + ' / ' + total.grade + ' 占用';
+}
+refresh(); setInterval(refresh, 5000);
+"""
+
+MONITOR_CSS = """
+.l3grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:12px 0}
+.l3{border:1px solid #ccc;border-radius:6px;padding:8px;background:#fafafa}
+.l3h{font-weight:600;margin-bottom:6px}
+.core{border-radius:4px;padding:6px 8px;margin:6px 0;border-left:6px solid #999;background:#fff}
+.core .ch{font-weight:600}.core .cb{font-size:13px;margin-top:2px}
+.core.housekeeping{border-left-color:#999;background:#f0f0f0}
+.core.dev{border-left-color:#3b82f6}.core.dev.busy{background:#dbeafe}
+.core.grade{border-left-color:#16a34a}.core.grade.busy{background:#dcfce7}
+.core.held{background:#fef3c7;border-left-color:#d97706}
+"""
+
+
+def monitor_page() -> str:
+    body = ('<h1>实时占用</h1><p class="lead">16 个物理核：2 个杂务核、7 个开发槽、7 个评测槽，按共享 L3 缓存的域分组；每 5 秒刷新。'
+            '每个槽占一个物理核，第二个硬件线程留给该任务在宿主上的配套进程。</p>'
+            f'<style>{MONITOR_CSS}</style><p id="stamp"></p><p id="holds"></p><p id="summary"></p>'
+            '<div id="grid" class="l3grid"></div>'
+            '<p><small>颜色：灰＝杂务核；蓝＝开发槽（深色为占用）；绿＝评测槽（深色为占用）；黄＝为隔离而空着。</small></p>'
+            f'<script>{MONITOR_JS}</script>')
+    return page('实时占用', body)
 
 
 def task_page(task: dict) -> str:
@@ -413,6 +468,7 @@ def main():
     (staging / 'index.html').write_text(index_page(site, tasks))
     (staging / 'protocol.html').write_text(page('评测协议', md(site['protocol_md'])))
     (staging / 'insights.html').write_text(insights_page(tasks))
+    (staging / 'monitor.html').write_text(monitor_page())
     (staging / 'process.html').write_text(page('评测流程', md((ROOT / 'docs/BENCH_PROCESS.md').read_text())))
     for task in tasks:
         (staging / 'tasks' / f'{task["id"]}.html').write_text(task_page(task))
