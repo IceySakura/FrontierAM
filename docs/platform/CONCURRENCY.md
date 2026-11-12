@@ -138,3 +138,5 @@ hy4 有一片（171 例）为了赶在交付前完成，被拆到 grade-14 和 g
 
 原始记录：`var/stores/store/interference/exponential-20261110T104219Z-e7c1f9.json`（有负载）、最新一份（无负载对照）。
 
+2026-11-12：polarization-demosaicking 与 ihvp-sequence 的私有评分也由 `quiet`（整机安静，连其他评测槽也空着）改为 `dev_idle`。按上表，评测之间几乎没有干扰，需要排除的只是开发负载；`quiet` 是 7+7 布局实测之前的设置。代价是计时敏感的评分要等开发槽全空；开发尝试连续排队时，需要临时阻止新的开发启动来开评分窗口。
+
