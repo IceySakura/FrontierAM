@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "ihvp-sequence-v3-20261112T050536Z-76585a",
+ "raw": "\\(E = 0.03811\\)，最长序列 28.5 秒（CG：\\(U = 0.1502\\)，L-BFGS-PCG：\\(W = 0.0805\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 76.319,
+ "review": null,
+ "process": {
+  "minutes": 56.1,
+  "public_tests": 0
+ }
+}

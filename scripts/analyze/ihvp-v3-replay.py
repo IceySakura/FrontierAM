@@ -112,6 +112,66 @@ def run_v3() -> None:
         list(pool.map(one, V3_PROGRAMS))
 
 
+SINGLE, ITERATIVE = V3_PROGRAMS[0][1], V3_PROGRAMS[1][1]
+ABLATIONS = [  # (label, base submission, [(exact text in solver.py, replacement)], description)
+    ('s-no-history', SINGLE, [('bank = self.history[-rank:]', 'bank = []'),
+                              ('pred = self._prediction(b, normb, tick)', 'pred = None')],
+     '单轮去掉历史子空间投影（冷启动，其余不变）'),
+    ('s-no-predict', SINGLE, [('self.predict_rhs = self.options.get("predict_rhs", True)', 'self.predict_rhs = False')],
+     '单轮去掉右端项预测'),
+    ('s-even-time', SINGLE, [('weight = float(self.options.get("weight", min(6.0, max(1.0, 2.0 * log_condition - 9.0))))',
+                              'weight = 1.0')],
+     '单轮改为每步平均分配时间'),
+    ('i-no-basis', ITERATIVE, [('self.learn_basis = bool(options.get("learn_basis", True))', 'self.learn_basis = False')],
+     '迭代去掉学习的正交基'),
+    ('i-no-structure', ITERATIVE, [('self.structured = bool(options.get("structured", True))', 'self.structured = False')],
+     '迭代去掉全部预条件（正交基、对角加低秩、对角）'),
+    ('i-even-time', ITERATIVE, [('self.frontload = float(options.get("frontload", 4.0))', 'self.frontload = 1.0')],
+     '迭代改为每步平均分配时间'),
+]
+
+
+def ablation_source(label: str, submission: str, patches: list) -> Path:
+    target = OUT / 'ablation-sources' / label
+    if target.exists():
+        shutil.rmtree(target)
+    shutil.copytree(source_dir(submission), target, ignore=shutil.ignore_patterns('__pycache__', '*.so'))
+    solver = target / 'solver.py'
+    text = solver.read_text()
+    for old, new in patches:
+        assert text.count(old) == 1, (label, old)
+        text = text.replace(old, new)
+    solver.write_text(text)
+    return target
+
+
+def ablate() -> None:
+    import arena.tasks  # noqa: F401
+    from arena.cli import context, placement_for
+    from arena.slots import Broker
+    from arena.tasks import TASKS
+
+    layout, _, _ = context()
+    broker = Broker(layout)
+    task = TASKS['ihvp-sequence-v3']
+
+    def one(ablation):
+        label, submission, patches, _ = ablation
+        out = OUT / f'ablation-{label}-private'
+        if (out / 'summary.json').exists():
+            return
+        if out.exists():
+            shutil.rmtree(out)
+        source = ablation_source(label, submission, patches)
+        with broker.acquire('grade', task.grade_memory, f'ihvp v3 ablation {label}', isolation='shared') as lease:
+            result = task.run_grader(source, out, placement_for(lease, layout), split='private')
+        print(json.dumps({'event': 'graded', 'job': label, 'slot': lease.id,
+                          **{k: result.get(k) for k in ('status', 'raw_error', 'max_wall_s', 'max_peak_rss_mib')}}), flush=True)
+
+    with ThreadPoolExecutor(max_workers=len(ABLATIONS)) as pool:
+        list(pool.map(one, ABLATIONS))
+
+
 def records(path: Path) -> list[dict]:
     return json.loads(path.read_text()).get('records', []) if path.exists() else []
 
@@ -169,4 +229,4 @@ def report() -> None:
 
 
 if __name__ == '__main__':
-    {'run': run, 'run-v3': run_v3, 'report': report}[sys.argv[1]]()
+    {'run': run, 'run-v3': run_v3, 'ablate': ablate, 'report': report}[sys.argv[1]]()
