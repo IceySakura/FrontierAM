@@ -1,8 +1,9 @@
 """ihvp-sequence-v3 replay and reference report for the author (tasks/ihvp-sequence/analysis/V3_RESULTS.md).
 
-run:    on one quiet grade lease (no development, other grade slots idle; new development is held back at once), grade the
-        frozen v2 high-score programs, then the two references on all 30 public sequences, then the v1 programs, with the
-        v3 deployment (arena/operator_drivers/ihvp_sequence.py: single thread, 30 s per sequence, worker peak RSS 256 MiB).
+run:    holding new development back from the start, grade on dev_idle leases (no development running; grade slots in
+        parallel, grade-to-grade interference negligible) the frozen v2 high-score programs, the two references on all 30
+        public sequences and the v1 programs, with the v3 deployment (arena/operator_drivers/ihvp_sequence.py: single
+        thread, 30 s per sequence, worker peak RSS 256 MiB); development stays held until gpt-6.1-sol's v3 cells are graded.
         Private references come from the v3 anchor measurement. Outputs: var/stores/store-v63/ihvp-v3-replay/.
 report: per public/private split and per group (retained 15, added 15, all 30): mean loss, mean/max wall time,
         peak RSS and failures for every program; writes aggregates only (no case data) to V3_RESULTS.md.
@@ -14,6 +15,8 @@ import os
 import shutil
 import sys
 import tarfile
+import time
+from concurrent.futures import ThreadPoolExecutor
 
 from pathlib import Path
 
@@ -47,24 +50,33 @@ def run() -> None:
     from arena.tasks import TASKS
 
     layout, _, _ = context()
-    broker = Broker(layout, dev_drain_after=60)
+    broker = Broker(layout, dev_drain_after=0)
+    drain = broker._drain_request('ihvp v3 replay and grading')  # new development waits from now on
     task = TASKS['ihvp-sequence-v3']
     jobs = [(label, source_dir(sub), split) for label, sub, _ in PROGRAMS[:2] for split in ('private', 'public_all')]
     jobs += [(name, task.reference_dir(which), 'public_all') for name, which, _ in REFERENCES]
     jobs += [(label, source_dir(sub), split) for label, sub, _ in PROGRAMS[2:] for split in ('private', 'public_all')]
-    print(json.dumps({'event': 'waiting_for_quiet', 'jobs': len(jobs)}), flush=True)
-    with broker.acquire('grade', task.grade_memory, 'ihvp v3 replay batch', isolation='quiet') as lease:
-        placement = placement_for(lease, layout)
-        for label, source, split in jobs:
-            out = OUT / f'{label}-{split}'
-            if (out / 'summary.json').exists():
-                continue
-            if out.exists():
-                shutil.rmtree(out)
-            os.environ['FRONTIERAM_IHVP_DATA'] = split
-            result = task.run_grader(source, out, placement)
-            print(json.dumps({'event': 'graded', 'job': f'{label}-{split}', 'slot': lease.id,
-                              **{k: result.get(k) for k in ('status', 'raw_error', 'max_wall_s', 'max_peak_rss_mib')}}), flush=True)
+    print(json.dumps({'event': 'waiting_for_dev_idle', 'jobs': len(jobs)}), flush=True)
+    def one(job):
+        label, source, split = job
+        out = OUT / f'{label}-{split}'
+        if (out / 'summary.json').exists():
+            return
+        if out.exists():
+            shutil.rmtree(out)
+        with broker.acquire('grade', task.grade_memory, f'ihvp v3 replay {label}-{split}', isolation='dev_idle') as lease:
+            result = task.run_grader(source, out, placement_for(lease, layout), split=split)
+        print(json.dumps({'event': 'graded', 'job': f'{label}-{split}', 'slot': lease.id,
+                          **{k: result.get(k) for k in ('status', 'raw_error', 'max_wall_s', 'max_peak_rss_mib')}}), flush=True)
+
+    with ThreadPoolExecutor(max_workers=6) as pool:  # one grade slot stays free for gpt-6.1-sol's v3 gradings
+        list(pool.map(one, jobs))
+    log = ROOT / 'var/stores/store/reruns/v63-grade.log'
+    while not all(f'"label": "{s}-ihvp-sequence-v3-1"' in log.read_text() for s in ('single', 'iterative')):
+        time.sleep(30)
+    drain[1].unlink(missing_ok=True)
+    os.close(drain[0])
+    print(json.dumps({'event': 'done', 'development': 'released'}), flush=True)
 
 
 def records(path: Path) -> list[dict]:

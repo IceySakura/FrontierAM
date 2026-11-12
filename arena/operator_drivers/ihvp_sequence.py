@@ -32,10 +32,12 @@ if __name__ != '__main__':
         grader_version = 'v1'  # versions/<v>/grader evaluates this task version (v1 and v2 share it)
         grade_memory = 5 * GIB
         grade_timeout = 3600
-        grade_isolation = 'quiet'  # wall-clock limits (30 s per sequence), as polarization-demosaicking
+        # Wall-clock limits (30 s per sequence): no development may run (dev bandwidth load doubles timing on a shared L3);
+        # other gradings may, since grade-to-grade interference is negligible (docs/platform/CONCURRENCY.md section 7).
+        grade_isolation = 'dev_idle'
 
-        def data_dir(self) -> Path | None:
-            split = os.environ.get('FRONTIERAM_IHVP_DATA', 'private')
+        def data_dir(self, split: str | None = None) -> Path | None:
+            split = split or os.environ.get('FRONTIERAM_IHVP_DATA', 'private')
             if split not in ('private', 'public', 'samples', 'public_all'):
                 raise ValueError(f'FRONTIERAM_IHVP_DATA={split}')
             if not (self.sealed / 'lock.json').exists():
@@ -81,8 +83,8 @@ if __name__ != '__main__':
                     process.kill()
             return ['--mount', f'type=bind,src={directory},dst=/run/ihvp-samples'], stop
 
-        def run_grader(self, source, out, placement):
-            data = self.data_dir()
+        def run_grader(self, source, out, placement, split: str | None = None):
+            data = self.data_dir(split)
             if data is None or not (data / 'manifest.json').is_file():
                 return {'status': 'infrastructure_failure', 'raw_error': None,
                         'reason': 'not sealed (scripts/seal/seal_ihvp_sequence.py)' if data is None else f'no data manifest in {data}'}

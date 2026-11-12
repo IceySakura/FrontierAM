@@ -437,6 +437,6 @@ def test_draft_dispatch_never_activates_reference_or_awards_formal_scores(tmp_pa
     assert ok is False and reason
     result = task.score({}, {"parts": parts}, {"metrics": {"parts": parts}})
     assert result["status"] == "unmeasured" and result["score"] is None
-    task.data_dir = lambda: tmp_path / "no_data"
+    task.data_dir = lambda split=None: tmp_path / "no_data"
     grade = task.run_grader(tmp_path / "unused_source", tmp_path / "unused_output", None)
     assert grade["status"] == "infrastructure_failure" and grade["raw_error"] is None
