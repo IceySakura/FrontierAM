@@ -74,6 +74,8 @@ def package(a):
                 add('source/'+str(path.relative_to(ROOT)),path)
     for name in ('design-freeze.json','public-qualification.json','private-mathematical-audit.json'):
         add('validation/'+name,evidence/name)
+    add('validation/summary.json',ROOT/'tasks/ihvp-sequence/analysis/hard_v4_validation_summary.json')
+    add('validation/sample-protocol-test.json',evidence/'sample-protocol-test.json')
     add('validation/public-benchmark/aggregate.json',a.benchmark)
     add('validation/public-benchmark/run_manifest.json',a.benchmark.with_name('run_manifest.json'))
     add('README-MAINTAINER.zh.md',version/'USAGE_GUIDE.zh.md')
