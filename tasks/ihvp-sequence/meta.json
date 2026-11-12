@@ -143,6 +143,11 @@
       "dir": "v3",
       "registry": "ihvp-sequence-v3",
       "note": "出题人困难扩展（PR #2）：私有集 30 条（原 15 条 + 新增 15 条，高维随机创新、全秩变化），反馈集为新增 15 条；锚点在本机重新标定"
+    },
+    {
+      "dir": "v4",
+      "registry": "ihvp-sequence-v4",
+      "note": "草稿：全新 public 15 / private 30，旧数据仅回放；独立随机旋转配对和混合正交配置；public 仅汇总反馈，private 冻结后最终评测；目标机重测和验收待完成。"
     }
   ],
   "locations": {

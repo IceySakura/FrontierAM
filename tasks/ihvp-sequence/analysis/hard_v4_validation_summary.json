@@ -1,0 +1,80 @@
+{
+  "version": "v4",
+  "status": "local_public_qualified_private_math_validated_target_acceptance_pending",
+  "data": {
+    "public": 15,
+    "private": 30,
+    "dimension": 16384,
+    "steps": 50,
+    "legacy_scoring_weight": 0
+  },
+  "public_methods": {
+    "cold_cg": {
+      "status": "ok",
+      "sequences": 15,
+      "valid_sequences": 15,
+      "resource_compliant_sequences": 15,
+      "mean_energy_loss": 0.205845698864744,
+      "mean_energy_loss_finite_diagnostic": 0.205845698864744,
+      "mean_wall_attempt_seconds": 28.51072728339932,
+      "max_wall_attempt_seconds": 28.51347779200296,
+      "mean_peak_rss_mib": 55.88229166666667,
+      "max_peak_rss_mib": 61.78125,
+      "score": null,
+      "native_score": null
+    },
+    "lbfgs_pcg": {
+      "status": "ok",
+      "sequences": 15,
+      "valid_sequences": 15,
+      "resource_compliant_sequences": 15,
+      "mean_energy_loss": 0.1131478697793864,
+      "mean_energy_loss_finite_diagnostic": 0.1131478697793864,
+      "mean_wall_attempt_seconds": 28.510804277866068,
+      "max_wall_attempt_seconds": 28.5147798750113,
+      "mean_peak_rss_mib": 110.18125,
+      "max_peak_rss_mib": 119.515625,
+      "score": null,
+      "native_score": null
+    },
+    "frozen_v3_iterative": {
+      "status": "ok",
+      "sequences": 15,
+      "valid_sequences": 15,
+      "resource_compliant_sequences": 15,
+      "mean_energy_loss": 0.0897651762277883,
+      "mean_energy_loss_finite_diagnostic": 0.0897651762277883,
+      "mean_wall_attempt_seconds": 28.38528840020105,
+      "max_wall_attempt_seconds": 28.386759583008825,
+      "mean_peak_rss_mib": 124.19583333333334,
+      "max_peak_rss_mib": 164.0,
+      "score": null,
+      "native_score": null
+    }
+  },
+  "public_frozen_v3_iterative_diagnostic_score": 60.3328032587751,
+  "public_basis_probe": {
+    "trials": 21,
+    "accepted": 0,
+    "first_layer_commutator_residual_min": 1.186030388686863,
+    "first_layer_commutator_residual_max": 1.3490676361656622,
+    "scope": "Unmodified frozen v3 basis learner at first system and each announced phase change; 30s generous probe budget, outside candidate timing"
+  },
+  "public_true_past_history16_projection_mean_loss_range": [
+    0.09694394845520642,
+    0.27861995932927053
+  ],
+  "audit": {
+    "public_systems": 750,
+    "private_systems": 1500,
+    "max_reference_relative_residual": 7.520537092725066e-13,
+    "max_independent_backend_relative_difference": 0.0
+  },
+  "scope": "One local ARM64/macOS run. No private algorithm tuning, Linux calibration, formal score, SOTA or unlearnability claim.",
+  "checks": {
+    "focused_pytest": "108 passed",
+    "sample_roundtrips": "3 passed",
+    "full_15_30_import": "PASS",
+    "linux_amd64_docker": "not run; unavailable locally"
+  }
+}
