@@ -1,0 +1,14 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "species-tree-v3-20261112T080924Z-453688",
+ "raw": "nRF \\(E = 0.1389\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 28.108,
+ "review": null,
+ "process": {
+  "minutes": 25.7,
+  "public_tests": 0
+ }
+}

@@ -79,12 +79,14 @@
 
 ## 模型成绩与解法（题目版本 v3 · 协议 v6.3）
 
-协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
 
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.1 Sol | 单轮 | 74/74 合格，\(R = 0.813\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 55.2 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.567\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 63.8 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 28 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | 74/74 合格，\(R = 0.552\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 64.4 | 10 次提交，125 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -99,6 +101,16 @@ C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递�
 public 分数随测试提交：49.2（5 分钟） → 54.6（19 分钟） → 57.2（38 分钟） → 57.1（45 分钟） → 57.0（65 分钟） → 57.9（84 分钟） → 57.7（132 分钟） → 59.4（180 分钟）
 
 源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `exponential-v3-20261111T101604Z-fa725b`）；未复制的二进制或大文件：solver（226,200 字节）。
+
+### Claude Opus 5.5（单轮，v6.3）
+
+源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `exponential-v3-20261112T074603Z-e693ee`）；未复制的二进制或大文件：libcheb_avx2.so（19,736 字节）、libcheb_generic.so（19,736 字节）。
+
+### Claude Opus 5.5（迭代，v6.3）
+
+public 分数随测试提交：56.4（41 分钟） → 0.0（58 分钟） → 61.0（74 分钟） → 59.7（88 分钟） → 60.0（97 分钟） → 60.3（102 分钟） → 60.8（106 分钟） → 60.0（112 分钟） → 59.1（117 分钟） → 59.5（120 分钟）
+
+源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `exponential-v3-20261112T055633Z-fc1f9e`）；未复制的二进制或大文件：expo_avx2（123,192 字节）、expo_generic（119,096 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

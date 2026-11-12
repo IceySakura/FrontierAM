@@ -1,0 +1,36 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261112T074642Z-0c4419",
+ "raw": "nRF \\(E = 0.1288\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 51.246,
+ "review": null,
+ "process": {
+  "minutes": 110.0,
+  "public_tests": 4,
+  "public_curve": [
+   {
+    "minute": 11.1,
+    "score": 38.09523809523807,
+    "status": "ok"
+   },
+   {
+    "minute": 22.3,
+    "score": 54.63576158940397,
+    "status": "ok"
+   },
+   {
+    "minute": 56.4,
+    "score": 55.62913907284768,
+    "status": "ok"
+   },
+   {
+    "minute": 92.4,
+    "score": 55.62913907284768,
+    "status": "ok"
+   }
+  ]
+ }
+}

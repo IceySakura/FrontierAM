@@ -131,7 +131,8 @@ while :; do
             [ -e "$INFLIGHT/$label" ] && continue
             [ -z "$(frozen "var/stores/store/reruns/v63-$TAG-$setting-$task-$N.log")" ] && continue
             touch "$INFLIGHT/$label"
-            ( grade "$setting" "$task"; rm -f "$INFLIGHT/$label" ) &
+            # one grading per task at a time: a suite's grade-worker drains the task's shared queue
+            ( flock 9; grade "$setting" "$task"; rm -f "$INFLIGHT/$label" ) 9> "$INFLIGHT/$task.lock" &
         done
     done
     [ "$left" = 0 ] && break
