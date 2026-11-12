@@ -50,14 +50,14 @@ SUBMISSIONS = {
 FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3': 'galaxy-gravity',
           'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
           'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
-          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence'}
+          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence'}
 
 
 def script(task: str, setting: str) -> str:
     family = FAMILY[task]
     lines = ['set -x', 'echo WORKSPACE-BEGIN; find /workspace -maxdepth 3 -not -path "*/submission*" | sort; echo WORKSPACE-END',
              'cd /workspace/submission', SUBMISSIONS[family], "echo 'v6.3 smoke submission' > README.md", 'cd /workspace']
-    if task in ('ihvp-sequence-v2', 'ihvp-sequence-v3'):  # samples run through the host-side service
+    if task in ('ihvp-sequence-v2', 'ihvp-sequence-v3', 'ihvp-sequence-v4'):  # samples run through the host-side service
         lines += ['python3 /workspace/samples/run_sample.py smoke', 'python3 /workspace/samples/run_sample.py sample_02']
     if setting == 'iterative':
         lines += ['/opt/frontieram/bin/submit --test; echo "test-exit=$?"',
@@ -105,6 +105,15 @@ def main():
                       no_case_ids_in_report='"id"' not in json.dumps(ids) and 'case_id' not in report,
                       final_frozen='(final)' in (out / 'task/source/README.md').read_text(),
                       tests_counted=result.get('test_submissions', 0) >= 1)
+        if task_name == 'ihvp-sequence-v4':  # aggregate-only feedback: the total row and nothing per group or case
+            rows = [l for l in report.splitlines() if l.startswith('| ') and not l.startswith(('| category', '| ---'))]
+            checks.update(aggregate_only=not ids.get('categories') and bool(rows) and all('**total**' in l for l in rows))
+    if task_name == 'ihvp-sequence-v4':
+        files = sorted(l for l in workspace.splitlines() if l.startswith('/workspace/') and '.' in l.rsplit('/', 1)[-1]
+                       and not l.startswith(('/workspace/submission', '/workspace/feedback')))
+        checks.update(six_files=files == ['/workspace/problem.md', '/workspace/samples/README.md', '/workspace/samples/run_sample.py',
+                                          '/workspace/samples/smoke.json', '/workspace/samples/support/api.py',
+                                          '/workspace/samples/support/worker.py'])
     else:
         expected = 'development_deadline' if setting == 'single-deadline' else 'turn_completed'
         checks.update(no_submit_client='No such file or directory' in log, stop_reason=result.get('agent_stop_reason') == expected,
