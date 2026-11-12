@@ -1,0 +1,14 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "ihvp-sequence-v3-20261112T085044Z-66669b",
+ "raw": "\\(E = 0.04904\\)，最长序列 27.6 秒（CG：\\(U = 0.1502\\)，L-BFGS-PCG：\\(W = 0.0805\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 69.522,
+ "review": null,
+ "process": {
+  "minutes": 14.3,
+  "public_tests": 0
+ }
+}

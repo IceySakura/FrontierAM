@@ -45,6 +45,19 @@
           "score": 82.263,
           "notes_md": "回收 CG 加三层预条件选择：对角加低秩精确拟合、对角探测、从 HVP 逐层学出 14 层蝶形正交基后做对角预条件。原有 15 条 98.1 分，新增 15 条 74.4 分：学习基只在两个 butterfly 族成立（87–88 分），DCT 三族退回无预条件（66–71 分）。超过 80，已请出题人决定（`tasks/ihvp-sequence/analysis/V3_SOL_ANALYSIS.md`）。",
           "folder": "v3/gpt-6.1-sol-iterative-1"
+        },
+        {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v3-20261112T085044Z-66669b",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.04904\\)，最长序列 27.6 秒（CG：\\(U = 0.1502\\)，L-BFGS-PCG：\\(W = 0.0805\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 69.522,
+          "notes_md": "",
+          "folder": "v3/claude-opus-5-5-single-1"
         }
       ]
     },

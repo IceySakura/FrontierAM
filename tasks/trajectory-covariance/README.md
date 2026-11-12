@@ -74,6 +74,7 @@ MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标
 | GPT-6.1 Sol | 单轮 | 白化误差 \(E = 2.2638\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 2 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 白化误差 \(E = 0.1728\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.3 | 28 次提交，116 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 白化误差 \(E = 0.2172\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6 | 14 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | 白化误差 \(E = 0.1711\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.6 | 18 次提交，127 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -92,6 +93,12 @@ public 分数随测试提交：51.0（2 分钟） → 50.8（7 分钟） → 52.
 ### Claude Opus 5.5（单轮，v6.3）
 
 源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `trajectory-covariance-v2-20261112T075745Z-f9b326`）。
+
+### Claude Opus 5.5（迭代，v6.3）
+
+public 分数随测试提交：50.8（4 分钟） → 52.2（18 分钟） → 59.1（25 分钟） → 59.0（41 分钟） → 60.0（48 分钟） → 60.6（64 分钟） → 62.1（67 分钟） → 62.0（71 分钟） → 62.8（73 分钟） → 62.8（77 分钟） → 63.0（80 分钟） → 63.0（82 分钟） → 62.5（94 分钟） → 63.0（98 分钟） → 63.1（104 分钟） → 59.8（110 分钟） → 62.8（115 分钟） → 63.1（118 分钟）
+
+源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `trajectory-covariance-v2-20261112T095021Z-e3c24c`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

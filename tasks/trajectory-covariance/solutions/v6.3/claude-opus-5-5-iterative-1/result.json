@@ -1,0 +1,106 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "trajectory-covariance-v2-20261112T095021Z-e3c24c",
+ "raw": "白化误差 \\(E = 0.1711\\)（\\(U = 0.3493\\)，\\(W = 0.2290\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 62.645,
+ "review": null,
+ "process": {
+  "minutes": 126.6,
+  "public_tests": 18,
+  "public_curve": [
+   {
+    "minute": 4.2,
+    "score": 50.838039897164755,
+    "status": "ok"
+   },
+   {
+    "minute": 17.7,
+    "score": 52.21941729703011,
+    "status": "ok"
+   },
+   {
+    "minute": 24.8,
+    "score": 59.06430415733873,
+    "status": "ok"
+   },
+   {
+    "minute": 40.8,
+    "score": 58.96019001326738,
+    "status": "ok"
+   },
+   {
+    "minute": 48.1,
+    "score": 59.95726259519292,
+    "status": "ok"
+   },
+   {
+    "minute": 63.9,
+    "score": 60.556063541648484,
+    "status": "ok"
+   },
+   {
+    "minute": 67.0,
+    "score": 62.089407147738605,
+    "status": "ok"
+   },
+   {
+    "minute": 71.2,
+    "score": 62.01433788529815,
+    "status": "ok"
+   },
+   {
+    "minute": 73.4,
+    "score": 62.76253088496622,
+    "status": "ok"
+   },
+   {
+    "minute": 77.1,
+    "score": 62.8163680113393,
+    "status": "ok"
+   },
+   {
+    "minute": 79.5,
+    "score": 63.04198067627876,
+    "status": "ok"
+   },
+   {
+    "minute": 82.5,
+    "score": 62.96525354935448,
+    "status": "ok"
+   },
+   {
+    "minute": 94.1,
+    "score": 62.5384542777001,
+    "status": "ok"
+   },
+   {
+    "minute": 97.9,
+    "score": 63.027017844622904,
+    "status": "ok"
+   },
+   {
+    "minute": 103.7,
+    "score": 63.06107171566831,
+    "status": "ok"
+   },
+   {
+    "minute": 109.6,
+    "score": 59.836826624362466,
+    "status": "ok"
+   },
+   {
+    "minute": 115.3,
+    "score": 62.83149978926565,
+    "status": "ok"
+   },
+   {
+    "minute": 117.8,
+    "score": 63.06107171566831,
+    "status": "ok"
+   }
+  ]
+ }
+}

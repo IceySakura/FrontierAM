@@ -77,12 +77,13 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 
 ## 模型成绩与解法（题目版本 v3 · 协议 v6.3）
 
-协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 至 11-11）
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
 
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.1 Sol | 单轮 | \(E = 1.22e-07\)，单次最多 4.56 CPU 秒（出题方 Treecode2：\(U = 0.00125\)，\(W = 0.000591\)） | 对数刻度：\(E < W\) 为 \(50 + 50\,\log(W/E)/\log(W/10^{-15})\)；\(W \le E < U\) 为 \(50\,\log(U/E)/\log(U/W)\) | 65.7 | 56 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | \(E = 6.91e-10\)，单次最多 4.89 CPU 秒（出题方 Treecode2：\(U = 0.00125\)，\(W = 0.000591\)） | 对数刻度：\(E < W\) 为 \(50 + 50\,\log(W/E)/\log(W/10^{-15})\)；\(W \le E < U\) 为 \(50\,\log(U/E)/\log(U/W)\) | 75.2 | 5 次提交，226 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | \(E = 0.000107\)，单次最多 3.09 CPU 秒（出题方 Treecode2：\(U = 0.00125\)，\(W = 0.000591\)） | 对数刻度：\(E < W\) 为 \(50 + 50\,\log(W/E)/\log(W/10^{-15})\)；\(W \le E < U\) 为 \(50\,\log(U/E)/\log(U/W)\) | 53.1 | 15 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -97,6 +98,10 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 public 分数随测试提交：45.2（29 分钟） → 56.8（67 分钟） → 60.1（181 分钟） → 62.1（205 分钟） → 63.5（212 分钟）
 
 源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `galaxy-gravity-v3-20261110T145613Z-509fb2`）；未复制的二进制或大文件：solve（545,312 字节）。
+
+### Claude Opus 5.5（单轮，v6.3）
+
+源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `galaxy-gravity-v3-20261112T085134Z-da2912`）；未复制的二进制或大文件：fmm_avx2.o（29,104 字节）、fmm_gen.o（23,880 字节）、main.o（4,264 字节）、solve（52,664 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

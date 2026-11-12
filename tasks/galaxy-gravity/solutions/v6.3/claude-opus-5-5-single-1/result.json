@@ -1,0 +1,14 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "galaxy-gravity-v3-20261112T085134Z-da2912",
+ "raw": "\\(E = 0.000107\\)，单次最多 3.09 CPU 秒（出题方 Treecode2：\\(U = 0.00125\\)，\\(W = 0.000591\\)）",
+ "mapping": "对数刻度：\\(E < W\\) 为 \\(50 + 50\\,\\log(W/E)/\\log(W/10^{-15})\\)；\\(W \\le E < U\\) 为 \\(50\\,\\log(U/E)/\\log(U/W)\\)",
+ "score": 53.144,
+ "review": null,
+ "process": {
+  "minutes": 15.2,
+  "public_tests": 0
+ }
+}

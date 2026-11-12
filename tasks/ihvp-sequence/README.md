@@ -85,6 +85,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.1 Sol | 单轮 | \(E = 0.03811\)，最长序列 28.5 秒（CG：\(U = 0.1502\)，L-BFGS-PCG：\(W = 0.0805\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 76.3 | 56 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | \(E = 0.02854\)，最长序列 28.4 秒（CG：\(U = 0.1502\)，L-BFGS-PCG：\(W = 0.0805\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 82.3 | 8 次提交，178 分钟 | [`v3/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | \(E = 0.04904\)，最长序列 27.6 秒（CG：\(U = 0.1502\)，L-BFGS-PCG：\(W = 0.0805\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 69.5 | 14 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -99,6 +100,10 @@
 public 分数随测试提交：57.1（12 分钟） → 61.7（30 分钟） → 65.6（44 分钟） → 64.9（66 分钟） → 73.3（80 分钟） → 73.0（100 分钟） → 72.4（121 分钟） → 73.9（150 分钟）
 
 源码 [`solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/)（提交 `ihvp-sequence-v3-20261112T070724Z-5b8c9b`）；未复制的二进制或大文件：_rotations.so（15,104 字节）。
+
+### Claude Opus 5.5（单轮，v6.3）
+
+源码 [`solutions/v6.3/v3/claude-opus-5-5-single-1/source/`](solutions/v6.3/v3/claude-opus-5-5-single-1/source/)（提交 `ihvp-sequence-v3-20261112T085044Z-66669b`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
