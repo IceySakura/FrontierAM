@@ -55,6 +55,7 @@ PUBLIC = {
     'ihvp-sequence': {'family': 'ihvp-sequence', 'store': STORE, 'env': {'FRONTIERAM_IHVP_DATA': 'public'}},
     'ihvp-sequence-v2': {'family': 'ihvp-sequence', 'store': STORE, 'env': {'FRONTIERAM_IHVP_DATA': 'public'}},
     'ihvp-sequence-v3': {'family': 'ihvp-sequence', 'store': STORE, 'env': {'FRONTIERAM_IHVP_DATA': 'public'}},
+    'ihvp-sequence-v4': {'family': 'ihvp-sequence', 'store': STORE, 'env': {'FRONTIERAM_IHVP_DATA': 'public'}},
 }
 SUITE_FAMILIES = ('conic', 'exponential')
 
@@ -65,6 +66,8 @@ def family(task: str) -> str:
 
 def config(task: str) -> dict:
     """The task's feedback declaration in tasks/<family>/meta.json (v63_data.feedback)."""
+    if task == 'ihvp-sequence-v4':
+        return read_json(ROOT / 'tasks/ihvp-sequence/versions/v4/task.json')['feedback']
     meta = read_json(ROOT / 'tasks' / PUBLIC[task]['family'] / 'meta.json')
     return meta['v63_data']['feedback']
 
