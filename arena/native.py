@@ -834,7 +834,9 @@ def develop(spec: dict, runtime: dict) -> dict:
     started = time.monotonic()
     try:
         if not script:
-            environment = {**os.environ, credential_env: credential_file.read_text().strip()}
+            # `atr serve` sends no cache_task_id unless asked; `auto` derives one per run from the serve run ID (stable
+            # within the attempt, distinct across attempts), as ATR's own sessions do by default.
+            environment = {**os.environ, credential_env: credential_file.read_text().strip(), 'ATR_CACHE_TASK_ID': 'auto'}
             serve = subprocess.Popen(
                 [str(ATR_ROOT / '.venv/bin/atr'), 'serve', '--model', model, '--host', '127.0.0.1', '--port', str(port),
                  '--token', token, '--record-dir', str(output / 'atr'), '--max-output', 'max'],
