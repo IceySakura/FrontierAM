@@ -40,6 +40,10 @@ suite() {  # task, submission|--reference -> suite id; grades it now
          --isolation "$(isolation "$task")" --cap-s $CAP | last_id) || return 1
     FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE grade-worker --task "$task" --workers 7 --drain \
         >> var/stores/store/reruns/v63-worker.log 2>&1
+    # another loop's worker for the same task may still be grading some of this suite's shards
+    until python3 -c "import json,os,sys;r=json.load(open('$STORE/suites/$id.json'));sys.exit(any(not os.path.exists('$STORE/jobs/done/'+s['job']+'.json') for s in r['shards']))"; do
+        sleep 30
+    done
     echo "$id"
 }
 
@@ -49,7 +53,9 @@ anchors() {
         done_event anchor "$task" && continue
         # galaxy-gravity-v4 is anchored only under the per-case limits calibrated on this machine (prepare_galaxy_v4.py)
         [ "$task" = galaxy-gravity-v4 ] && ! grep -q '"calibrated": true' .runtime-ops/galaxy-gravity-v4/lock.json && continue
-        id=$(suite "$task" --reference) && log "\"event\": \"anchor\", \"label\": \"$task\", \"suite\": \"$id\""
+        # several loops may reach the same anchor; the first measures it, the others wait and reuse it
+        ( flock 8; done_event anchor "$task" || { id=$(suite "$task" --reference) && log "\"event\": \"anchor\", \"label\": \"$task\", \"suite\": \"$id\""; } ) \
+            8> "var/stores/store/reruns/anchor-$task.lock"
     done
     for task in galaxy-gravity-v3 polarization-demosaicking-v2 ihvp-sequence ihvp-sequence-v3; do
         done_event anchor "$task" && continue
@@ -125,7 +131,7 @@ PY
 }
 
 TASKS=${V63_TASKS:-"conic exponential-v3 galaxy-gravity-v3 galaxy-gravity-v4 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v2 ihvp-sequence-v3"}
-INFLIGHT=var/stores/store/reruns/v63-grade-inflight-$TAG   # one marker per grading running in the background
+INFLIGHT=var/stores/store/reruns/v63-grade-inflight-$TAG-$(echo "$TASKS" | md5sum | cut -c1-8)   # per loop: one marker per background grading
 rm -rf "$INFLIGHT" && mkdir -p "$INFLIGHT"
 while :; do
     anchors

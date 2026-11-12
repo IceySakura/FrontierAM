@@ -84,6 +84,7 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | GPT-6.1 Sol | 单轮 | \(E = 1.22e-07\)，单次最多 4.56 CPU 秒（出题方 Treecode2：\(U = 0.00125\)，\(W = 0.000591\)） | 对数刻度：\(E < W\) 为 \(50 + 50\,\log(W/E)/\log(W/10^{-15})\)；\(W \le E < U\) 为 \(50\,\log(U/E)/\log(U/W)\) | 65.7 | 56 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | \(E = 6.91e-10\)，单次最多 4.89 CPU 秒（出题方 Treecode2：\(U = 0.00125\)，\(W = 0.000591\)） | 对数刻度：\(E < W\) 为 \(50 + 50\,\log(W/E)/\log(W/10^{-15})\)；\(W \le E < U\) 为 \(50\,\log(U/E)/\log(U/W)\) | 75.2 | 5 次提交，226 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | \(E = 0.000107\)，单次最多 3.09 CPU 秒（出题方 Treecode2：\(U = 0.00125\)，\(W = 0.000591\)） | 对数刻度：\(E < W\) 为 \(50 + 50\,\log(W/E)/\log(W/10^{-15})\)；\(W \le E < U\) 为 \(50\,\log(U/E)/\log(U/W)\) | 53.1 | 15 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | \(E = 1.47e-09\)，单次最多 3.95 CPU 秒（出题方 Treecode2：\(U = 0.00125\)，\(W = 0.000591\)） | 对数刻度：\(E < W\) 为 \(50 + 50\,\log(W/E)/\log(W/10^{-15})\)；\(W \le E < U\) 为 \(50\,\log(U/E)/\log(U/W)\) | 73.8 | 12 次提交，181 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -102,6 +103,12 @@ public 分数随测试提交：45.2（29 分钟） → 56.8（67 分钟） → 6
 ### Claude Opus 5.5（单轮，v6.3）
 
 源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `galaxy-gravity-v3-20261112T085134Z-da2912`）；未复制的二进制或大文件：fmm_avx2.o（29,104 字节）、fmm_gen.o（23,880 字节）、main.o（4,264 字节）、solve（52,664 字节）。
+
+### Claude Opus 5.5（迭代，v6.3）
+
+public 分数随测试提交：45.5（74 分钟） → 53.9（100 分钟） → 56.7（106 分钟） → 59.8（120 分钟） → 0.0（124 分钟） → 58.7（137 分钟） → 58.8（144 分钟） → 59.8（150 分钟） → 60.4（158 分钟） → 61.3（165 分钟） → 61.4（169 分钟） → 61.6（174 分钟）
+
+源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `galaxy-gravity-v3-20261112T113721Z-0c35f8`）；未复制的二进制或大文件：solve（370,112 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
