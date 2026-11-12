@@ -193,6 +193,72 @@ class GalaxyGravityV3(GalaxyGravityV2):
         return result
 
 
+class GalaxyGravityV4(GalaxyGravityV3):
+    """v3 with the author's B.4 data (scripts/seal/prepare_galaxy_v4.py): 80 snapshots at four scales, each with its own
+    CPU limit, graded in shards with the B.4 grader's diagnostic mode (any case subset, per-case limits, three calls
+    each); scripts/grade/galaxy-v4-suite-score.py averages the four snapshots of each scale x family cell and the 20
+    cells with equal weight, then applies the v3 log mapping.
+
+    FRONTIERAM_GALAXY_DATA=public grades the feedback pool. FRONTIERAM_GALAXY_V4_TIMING=<seconds> replaces every case
+    limit by that value (limit calibration, scripts/analyze/galaxy-v4-calibrate.py)."""
+    grade_timeout = 8 * 3600
+
+    def cases(self) -> list[dict]:
+        if os.environ.get('FRONTIERAM_GALAXY_DATA') == 'public':
+            base = self.root('public') / 'public-dev'
+            cases = json.loads((base / 'manifest.json').read_text())['cases']
+        else:
+            base = self.root()
+            cases = json.loads((base / 'private/scoring-config.json').read_text())['cases']
+        timing = os.environ.get('FRONTIERAM_GALAXY_V4_TIMING')
+        out = []
+        for c in cases:
+            limit = float(timing) if timing else c.get('cpu_limit_s')
+            if limit is None:
+                raise RuntimeError(f'{self.name}: {c["case"]} has no calibrated CPU limit (run galaxy-v4-calibrate.py)')
+            out.append({k: c[k] for k in ('case', 'family', 'n', 'input_sha256', 'truth_sha256')} |
+                       {'input': str(base / c['input']), 'truth': str(base / c['truth']), 'cpu_limit_s': limit})
+        return out
+
+    def suite(self, runtime=None) -> list[dict]:
+        return [{'id': c['case'], 'group': f'{c["n"]}/{c["family"]}', 'time_limit_seconds': c['cpu_limit_s'],
+                 'cost': 3 * (c['cpu_limit_s'] + 2)} for c in self.cases()]
+
+    async def grade(self, runtime, placement, output, case_ids=None):
+        source = output / 'source'
+        if (source / PAIR).exists():
+            parts = {which: self.run_grader(source / which, output / which, placement, case_ids) for which in ('weak', 'strong')}
+            return {'exit_status': 'finished', 'kind': 'reference_pair', 'parts': parts}
+        return {'exit_status': 'finished', 'kind': 'candidate',
+                'parts': {'candidate': self.run_grader(source, output / 'candidate', placement, case_ids)}}
+
+    def run_grader(self, source, out, placement, case_ids=None):
+        root = self.root()
+        cases = self.cases()
+        if case_ids:
+            wanted = set(case_ids)
+            cases = [c for c in cases if c['case'] in wanted]
+        config = {'image': self.lock()['image']['id'], 'cpu': int(placement.cpuset), 'repeats': 3, 'mode': 'diagnostic',
+                  'cases': cases}
+        out.parent.mkdir(parents=True, exist_ok=True)
+        config_path = out.parent / f'{out.name}-config.json'
+        config_path.write_text(json.dumps(config, indent=2) + '\n')
+        grader = root / 'tasks/galaxy-gravity/harbor/tests/grade.py'
+        env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
+        done = subprocess.run([str(GRADER_PYTHON), '-IB', str(grader), '--submission', str(source), '--output', str(out),
+                               '--config', str(config_path)], env=env, capture_output=True, text=True, timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
+        by_case = (summary.get('strata') or {}).get('by_case', {})
+        return {'status': summary.get('status', 'infrastructure_failure'), 'reason': summary.get('reason'),
+                'raw_error': None, 'package_score': None, 'calls': len(summary.get('records', [])),
+                'cases': [{'case': k, 'n': v['n'], 'family': v['family'], 'complete': v['complete'],
+                           'raw_error': v['raw_error'], 'cpu_s': v['cpu_s'], 'peak_bytes': v['peak_bytes'],
+                           'statuses': v['statuses'], 'cpu_limit_s': next(c['cpu_limit_s'] for c in cases if c['case'] == k)}
+                          for k, v in by_case.items()],
+                'max_cpu_s': max((r.get('cpu_s') or 0 for r in summary.get('records', [])), default=None)}
+
+
 class PolarizationDemosaicking(OperatorTask):
     grade_memory = 10 * GIB
     # Each scene has a 1.000-second wall limit including interpreter start-up, about 0.6 s of which a typical
@@ -435,6 +501,7 @@ def _finite(value) -> bool:
 
 
 CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2, 'galaxy-gravity-v3': GalaxyGravityV3,
+           'galaxy-gravity-v4': GalaxyGravityV4,
            'polarization-demosaicking': PolarizationDemosaicking, 'polarization-demosaicking-v2': PolarizationDemosaicking,
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2, 'species-tree-v3': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance}

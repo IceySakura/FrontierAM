@@ -38,6 +38,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'galaxy-gravity': 'frontieram-galaxy-gravity-harness:v6',
                   'galaxy-gravity-v2': 'frontieram-galaxy-gravity-harness:v6',
                   'galaxy-gravity-v3': 'frontieram-galaxy-gravity-harness:v6',
+                  'galaxy-gravity-v4': 'frontieram-galaxy-gravity-harness:v6',
                   'polarization-demosaicking': 'frontieram-polarization-demosaicking-harness:v6',
                   'species-tree': 'frontieram-species-tree-harness:v6',
                   'species-tree-v2': 'frontieram-species-tree-harness:v6',
@@ -274,6 +275,16 @@ SCORING_DISCLOSURE['galaxy-gravity-v3'] = (
     'score depends only on the overall relative acceleration error, on a logarithmic scale: matching a standard tree '
     'code scores zero, matching an improved tree-code reference is the midpoint of the scale, and an error of '
     '1e-15 (double precision) is the maximum. Using less CPU time earns nothing extra.'
+)
+
+SCORING_DISCLOSURE['galaxy-gravity-v4'] = (
+    'Every call on every held-out snapshot must stay within that snapshot\'s own CPU limit (given in GALAXY_CPU_LIMIT_S), '
+    'the wall-clock and memory limits, and return finite accelerations for all particles; a single failed call makes '
+    'the whole submission score zero. Snapshots come in four sizes from 65,536 to 4,194,304 particles. Given validity, '
+    'the score depends only on the relative acceleration error averaged with equal weight over the 20 size x scene '
+    'combinations, on a logarithmic scale: matching a standard tree code scores zero, matching an improved tree-code '
+    'reference is the midpoint of the scale, and an error of 1e-15 (double precision) is the maximum. Using less CPU '
+    'time earns nothing extra.'
 )
 
 SCORING_DISCLOSURE['ihvp-sequence'] = (

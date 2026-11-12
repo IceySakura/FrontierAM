@@ -41,6 +41,7 @@ PUBLIC = {
                        'env': {'FRONTIERAM_EXP3_SEAL': str(ROOT / '.runtime-exp3-public')}},
     'galaxy-gravity-v2': {'family': 'galaxy-gravity', 'store': STORE, 'env': {'FRONTIERAM_GALAXY_DATA': 'public'}},
     'galaxy-gravity-v3': {'family': 'galaxy-gravity', 'store': STORE, 'env': {'FRONTIERAM_GALAXY_DATA': 'public'}},
+    'galaxy-gravity-v4': {'family': 'galaxy-gravity', 'store': STORE, 'env': {'FRONTIERAM_GALAXY_DATA': 'public'}},
     'polarization-demosaicking': {'family': 'polarization-demosaicking', 'store': STORE,
                                   'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
     'polarization-demosaicking-v2': {'family': 'polarization-demosaicking', 'store': STORE,
@@ -164,7 +165,9 @@ def _galaxy(out: Path) -> list[dict]:
     summary = read_json(out / 'summary.json')
     cases: dict[str, dict] = {}
     for rec in summary.get('records', []):
-        row = cases.setdefault(rec['case'], {'id': rec['case'], 'category': rec['family'], 'errors': [], 'seconds': 0.0,
+        # v4 snapshots come in several sizes; its raw error weights each size x family cell equally
+        category = f'{rec["family"]} · {rec["n"]}' if rec.get('n') and rec['n'] != 131072 else rec['family']
+        row = cases.setdefault(rec['case'], {'id': rec['case'], 'category': category, 'errors': [], 'seconds': 0.0,
                                              'status': 'passed'})
         row['seconds'] = max(row['seconds'], rec.get('cpu_s') or 0.0)
         status = feedback.status_of(rec['status'])

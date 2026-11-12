@@ -16,8 +16,9 @@ ROOT = Path(__file__).resolve().parents[2]
 TASKS = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3': 'galaxy-gravity',
          'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
          'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
-         'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence'}
-SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3'}  # later task versions within protocol v6.3 keep their own solutions subfolder
+         'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence',
+         'galaxy-gravity-v4': 'galaxy-gravity'}
+SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity-v4': 'v4'}  # later task versions within protocol v6.3 keep their own solutions subfolder
 SETTING = {'single': '单轮', 'iterative': '迭代'}
 NOTES = {
     ('conic', 'single'): 'HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。',
@@ -70,6 +71,12 @@ def cell(task: str, score: dict) -> tuple[str, str]:
                 '\\(100/(1+R)\\)')
     candidate = score.get('candidate') or {}
     raw = candidate.get('raw_error')
+    if task == 'galaxy-gravity-v4':
+        if score.get('score') == 0.0 and raw is None:
+            return f'无效提交（{"；".join(filter(None, candidate.get("reasons") or [])) or "有调用失败"}）', '任一调用失败记 0'
+        return (f'\\(E = {raw:.3g}\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 {100 * (candidate.get("max_cpu_fraction") or 0):.0f}%'
+                f'（经典树 theta 0.8：\\(E_0 = {score["weak"]["raw_error"]:.3g}\\)，改进树 theta 0.7：\\(E_{{50}} = {score["strong"]["raw_error"]:.3g}\\)）',
+                '对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)')
     if family == 'galaxy-gravity':
         anchors = baseline_anchors(task)
         return (f'\\(E = {raw:.3g}\\)，单次最多 {candidate.get("max_cpu_s", 0):.2f} CPU 秒（出题方 Treecode2：\\(U = {anchors["weak"]:.3g}\\)，\\(W = {anchors["strong"]:.3g}\\)）',
