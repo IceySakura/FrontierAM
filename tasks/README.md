@@ -10,6 +10,6 @@
 | [polarization-demosaicking](polarization-demosaicking/README.md) | 4 |
 | [trajectory-covariance](trajectory-covariance/README.md) | 4 |
 | [species-tree](species-tree/README.md) | 5 |
-| [ihvp-sequence](ihvp-sequence/README.md) | 3 |
+| [ihvp-sequence](ihvp-sequence/README.md) | 4 |
 
 本文件由 `scripts/site/build_task_pages.py` 生成。

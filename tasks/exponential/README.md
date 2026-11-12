@@ -74,9 +74,8 @@
 
 | 类别 | 结论 | 置信度 | 关注 |
 | --- | --- | --- | --- |
-| 工程或调参超过参照 | v6.3 sol 55.2 / 59.6（R = 0.813 / 0.679）；v6.2 opus 70.8 / 69.1（v2，时限不同）。做法都是 Chebyshev 展开加工程：两项合并为一条递推、Lanczos 收紧谱上界、按输出自适应截断、SELL 稀疏格式；在稀疏矩阵乘主导的结构族上快 3–10 倍。（证据：`results/BASELINE_REVIEW.md`） | 实测（成绩）/ 推断（归因） |  |
+| 工程或调参超过参照 | v6.3 sol 单轮 55.2、迭代 63.8（R = 0.813 / 0.567；迭代为重跑，原尝试 59.6）；v6.2 opus 70.8 / 69.1（v2，时限不同）。做法都是 Chebyshev 展开加工程：两项合并为一条递推、收紧谱区间、按输出自适应截断、稀疏格式；迭代重跑另对刚度小的会话改用自适应 Taylor，并用扩展精度处理小块。（证据：`results/BASELINE_REVIEW.md`） | 实测（成绩）/ 推断（归因） |  |
 | 参照偏弱（可能） | 参照组 74 例中 60 例最快的是 agent 按文献写的 Chebyshev 实现，参数保守（Gershgorin 上界、两条递推、截断安全系数 8）；按文献补上这些技术的第二版并入后，两格降为 51.3 / 56.0。按原则参照不改，是否换成更强的人类实现由出题人判断。（证据：`tasks/exponential/references/`） | 推断 | 建议人工复核 |
-| 设施影响 | 迭代格子有 1 次测试因评测排队故障没有反馈，已在重跑，评完替换。（证据：`results/OPEN_ITEMS.md`） | 实测 |  |
 
 ## 模型成绩与解法（题目版本 v3 · 协议 v6.3）
 
@@ -85,7 +84,7 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.1 Sol | 单轮 | 74/74 合格，\(R = 0.813\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 55.2 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.679\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 59.6 | 7 次提交，186 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+| GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.567\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 63.8 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -95,9 +94,9 @@ C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递�
 
 ### GPT-6.1 Sol（迭代，v6.3）
 
-对角与 2×2 块解析求解，小连通块扩展精度特征分解；其余用 Chebyshev 展开，两种矩阵函数共用一条 Clenshaw 递推，按输出大小自适应截断，另有自适应 Lanczos 试探。
+刚度小的会话直接用自适应 Taylor；对角和小连通块扩展精度谱分解；一般情形用合并的 Chebyshev 展开（行和与 Collatz 界给谱区间，Reinsch 形式的 Clenshaw 递推）。重跑（原尝试受测试排队故障影响）。
 
-源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `exponential-v3-20261110T141618Z-f78745`）；未复制的二进制或大文件：solver（175,184 字节）。
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `exponential-v3-20261111T101604Z-fa725b`）；未复制的二进制或大文件：solver（226,200 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

@@ -1,7 +1,8 @@
-#!/bin/bash
-set -euo pipefail
+#!/bin/sh
+set -eu
 cd "$(dirname "$0")"
-export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
+export OMP_NUM_THREADS=1
 export MKL_NUM_THREADS=1
+unset FAMEXP_BLOCK FAMEXP_KRYLOV FAMEXP_DIAGONAL FAMEXP_SLICED FAMEXP_PIPE_SIZE FAMEXP_DEBUG
 exec ./solver

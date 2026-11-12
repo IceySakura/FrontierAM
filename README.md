@@ -10,12 +10,12 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
 | --- | --- | --- | --- | --- |
 | [conic](tasks/conic/README.md) | 0.0 | 0.0 |  |  |
-| [exponential](tasks/exponential/README.md) | 55.2 | 59.6 |  |  |
+| [exponential](tasks/exponential/README.md) | 55.2 | 63.8 |  |  |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 65.7 | 75.2 |  |  |
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 53.5 | 52.9 |  |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 0.0 | 62.3 |  |  |
 | [species-tree](tasks/species-tree/README.md) | 49.3 | 52.6 |  |  |
-| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 99.7 |  |  |  |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 99.7 | 99.9 |  |  |
 
 满分 100，参照 = 50。
 
@@ -23,13 +23,13 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 |
 | --- | --- | --- | --- | --- |
-| [conic](tasks/conic/README.md) | 57 分钟 | 7 次提交，238 分钟 |  |  |
-| [exponential](tasks/exponential/README.md) | 54 分钟 | 7 次提交，186 分钟 |  |  |
+| [conic](tasks/conic/README.md) | 57 分钟 | 9 次提交，240 分钟 |  |  |
+| [exponential](tasks/exponential/README.md) | 54 分钟 | 8 次提交，205 分钟 |  |  |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 56 分钟 | 5 次提交，226 分钟 |  |  |
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 52 分钟 | 23 次提交，211 分钟 |  |  |
-| [trajectory-covariance](tasks/trajectory-covariance/README.md) | 2 分钟 | 19 次提交，127 分钟 |  |  |
+| [trajectory-covariance](tasks/trajectory-covariance/README.md) | 2 分钟 | 28 次提交，116 分钟 |  |  |
 | [species-tree](tasks/species-tree/README.md) | 58 分钟 | 13 次提交，237 分钟 |  |  |
-| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 60 分钟 |  |  |  |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 60 分钟 | 24 次提交，211 分钟 |  |  |
 <!-- board:end -->
 
 评测从接入到计分的完整流程：[评测流程](docs/BENCH_PROCESS.md)。成绩能说明什么以及需要人类关注的事项：[结果解读](results/INSIGHTS.md)。

@@ -2,13 +2,13 @@
  "model": "gpt-6.1-sol",
  "protocol": "v6.3",
  "setting": "迭代",
- "submission": "exponential-v3-20261110T141618Z-f78745",
- "raw": "74/74 合格，\\(R = 0.679\\)（对 7 方法参照组逐例最快成员）",
+ "submission": "exponential-v3-20261111T101604Z-fa725b",
+ "raw": "74/74 合格，\\(R = 0.567\\)（对 7 方法参照组逐例最快成员）",
  "mapping": "\\(100/(1+R)\\)",
- "score": 59.568,
+ "score": 63.829,
  "review": null,
  "process": {
-  "minutes": 185.8,
-  "public_tests": 7
+  "minutes": 205.4,
+  "public_tests": 8
  }
 }

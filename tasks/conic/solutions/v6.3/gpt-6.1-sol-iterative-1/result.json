@@ -2,13 +2,13 @@
  "model": "gpt-6.1-sol",
  "protocol": "v6.3",
  "setting": "迭代",
- "submission": "conic-20261110T150847Z-0ad892",
- "raw": "433 / 650（\\(p = 0.666\\)，参照 \\(p_B = 0.789\\)）",
+ "submission": "conic-20261111T105029Z-6008cf",
+ "raw": "426 / 650（\\(p = 0.655\\)，参照 \\(p_B = 0.789\\)）",
  "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
  "score": 0.0,
  "review": null,
  "process": {
-  "minutes": 238.2,
-  "public_tests": 7
+  "minutes": 239.8,
+  "public_tests": 9
  }
 }

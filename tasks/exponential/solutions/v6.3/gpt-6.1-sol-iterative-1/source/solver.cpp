@@ -1,13 +1,14 @@
 #include <algorithm>
-#include <array>
-#include <cerrno>
-#include <chrono>
 #include <cmath>
+#include <complex>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cerrno>
+#include <fcntl.h>
 #include <limits>
+#include <map>
 #include <memory>
 #include <numeric>
 #include <stdexcept>
@@ -15,1248 +16,1216 @@
 #include <utility>
 #include <vector>
 #include <unistd.h>
-#include <sys/mman.h>
+#include <sys/uio.h>
 #include <cblas.h>
-#include <Eigen/Eigenvalues>
+#include <eigen3/Eigen/Eigenvalues>
 
-using std::size_t;
 using Vec = std::vector<double>;
+using Complex = std::complex<long double>;
 
-static void read_exact(void* buffer, size_t bytes) {
-    char* p = static_cast<char*>(buffer);
-    while (bytes) {
-        ssize_t count = ::read(STDIN_FILENO, p, bytes);
+static const Complex cram_theta[8] = {
+    {-10.843917078696988026L, 19.277446167181652284L},
+    {-5.2649713434426468895L, 16.220221473167927305L},
+    {5.9481522689511774808L, 3.5874573620183222829L},
+    {3.5091036084149180974L, 8.4361989858843750826L},
+    {6.4161776990994341923L, 1.1941223933701386874L},
+    {1.4193758971856659786L, 10.925363484496723585L},
+    {4.9931747377179963991L, 5.9968817136039422260L},
+    {-1.4139284624888862114L, 13.497725698892745389L}
+};
+static const Complex cram_alpha[8] = {
+    {-5.0901521865224915650e-7L, -2.4220017652852287970e-5L},
+    {2.1151742182466030907e-4L, 4.3892969647380673918e-3L},
+    {1.1339775178483930527e2L, 1.0194721704215856450e2L},
+    {1.5059585270023467528e1L, -5.7514052776421819979L},
+    {-6.4500878025539646595e1L, -2.2459440762652096056e2L},
+    {-1.4793007113557999718L, 1.7686588323782937906L},
+    {-6.2518392463207918892e1L, -1.1190391094283228480e1L},
+    {4.1023136835410021273e-2L, -1.5743466173455468191e-1L}
+};
+static constexpr long double cram_constant = 2.1248537104952237488e-16L;
+// Fixed-pole relative minimax approximation to phi1 on the negative real axis.
+static const Complex cram_phi[8] = {
+    {-0.000000943138965014723220831127554738380053822237382L,
+      0.000000556892896167077762098098149920167813860726799L},
+    {0.000240984021734263136868225084511722990765120359L,
+     -0.0000912622479158473536129000292693692938014311988L},
+    {21.5591812519046214481645711112823065850673011L,
+      4.13650689390269193429363759315798300396163367L},
+    {0.051814557348988608498647127084319537446543309L,
+     -1.76356236935603769978973878950963776650559855L},
+    {-16.012914459296421895707418734052741842556935L,
+     -32.0242110819312588052006495337262280772480842L},
+    {0.141899907972796316274616466698353250547004182L,
+     0.153835614588617785394234803005579840576811793L},
+    {-6.22836919143921772625528370316983325866371936L,
+      5.23923242356449077944867617317707962286124273L},
+    {-0.0118521073735330801138466425629997724405316888L,
+     -0.00179771374832688432925715180241717388437112753L}
+};
+
+static long double norm2(const Vec& x) {
+    long double s = 0;
+    for (double v : x) s += static_cast<long double>(v) * v;
+    return std::sqrt(s);
+}
+
+#include "shifted.hpp"
+#include "diagonal.hpp"
+#include "sliced.hpp"
+
+static void read_all(void* ptr, size_t count) {
+    auto* p = static_cast<unsigned char*>(ptr);
+    while (count) {
+        ssize_t got = ::read(0, p, count);
+        if (got < 0 && errno == EINTR) continue;
+        if (got <= 0) throw std::runtime_error("short input");
+        p += got;
+        count -= static_cast<size_t>(got);
+    }
+}
+
+static void read_blocks(std::vector<iovec> blocks) {
+    size_t first = 0;
+    while (first < blocks.size()) {
+        while (first < blocks.size() && blocks[first].iov_len == 0) ++first;
+        if (first == blocks.size()) break;
+        ssize_t count = ::readv(0, blocks.data() + first,
+                               static_cast<int>(blocks.size() - first));
         if (count < 0 && errno == EINTR) continue;
         if (count <= 0) throw std::runtime_error("short input");
-        p += count;
-        bytes -= static_cast<size_t>(count);
+        size_t got = static_cast<size_t>(count);
+        while (first < blocks.size() && got >= blocks[first].iov_len) {
+            got -= blocks[first].iov_len;
+            ++first;
+        }
+        if (first < blocks.size()) {
+            blocks[first].iov_base = static_cast<unsigned char*>(blocks[first].iov_base) + got;
+            blocks[first].iov_len -= got;
+        }
     }
 }
 
-static void write_exact(const void* buffer, size_t bytes) {
-    const char* p = static_cast<const char*>(buffer);
-    while (bytes) {
-        ssize_t count = ::write(STDOUT_FILENO, p, bytes);
-        if (count < 0 && errno == EINTR) continue;
-        if (count <= 0) throw std::runtime_error("output failure");
-        p += count;
-        bytes -= static_cast<size_t>(count);
+static void configure_pipe(int fd) {
+    int size = 1 << 20;
+    if (const char* setting = std::getenv("FAMEXP_PIPE_SIZE")) size = std::atoi(setting);
+    for (; size >= 65536; size /= 2) {
+        if (::fcntl(fd, F_SETPIPE_SZ, size) >= 0) break;
     }
 }
 
-static void prefer_huge_pages(void* pointer, size_t bytes, size_t minimum = 16 * 1024 * 1024) {
-    if (!pointer || bytes < minimum || std::getenv("FAM_NO_HUGEPAGES")) return;
-    long page = ::sysconf(_SC_PAGESIZE);
-    if (page <= 0) return;
-    std::uintptr_t address = reinterpret_cast<std::uintptr_t>(pointer);
-    std::uintptr_t begin = (address + page - 1) / page * page;
-    std::uintptr_t end = (address + bytes) / page * page;
-    if (end > begin) ::madvise(reinterpret_cast<void*>(begin), end - begin, MADV_HUGEPAGE);
+static bool zero_rhs(const Vec& b0, const Vec& b1) {
+    for (size_t i = 0; i < b0.size(); ++i)
+        if (b0[i] != 0 || b1[i] != 0) return false;
+    return true;
 }
 
-// The wire header is a flat JSON object, with numeric and string values.
-struct Header {
-    int n = 0, nnz = 0, requests = 0;
-    double t = 0, rtol = 0, atol = 0;
+static void write_all(const void* ptr, size_t count) {
+    const auto* p = static_cast<const unsigned char*>(ptr);
+    while (count) {
+        ssize_t sent = ::write(1, p, count);
+        if (sent < 0 && errno == EINTR) continue;
+        if (sent <= 0) throw std::runtime_error("output failure");
+        p += sent;
+        count -= static_cast<size_t>(sent);
+    }
+}
 
-    explicit Header(const std::string& text) {
-        size_t pos = 0;
-        auto space = [&]() {
-            while (pos < text.size() && static_cast<unsigned char>(text[pos]) <= 32) ++pos;
-        };
-        auto quoted = [&]() {
-            if (text.at(pos++) != '"') throw std::runtime_error("JSON string expected");
-            std::string out;
-            while (pos < text.size()) {
-                char c = text[pos++];
-                if (c == '"') return out;
-                if (c == '\\') {
-                    c = text.at(pos++);
-                    if (c != '\\' && c != '"' && c != '/') {
-                        throw std::runtime_error("unsupported JSON escape");
-                    }
-                }
-                out += c;
+// The protocol object has only string and numeric scalar values.
+static std::map<std::string, std::string> parse_header(const std::string& s) {
+    std::map<std::string, std::string> out;
+    size_t i = 0;
+    auto space = [&]() {
+        while (i < s.size() && (s[i] == ' ' || s[i] == '\n' ||
+                                s[i] == '\t' || s[i] == '\r')) ++i;
+    };
+    auto quoted = [&]() {
+        if (s.at(i++) != '"') throw std::runtime_error("invalid JSON string");
+        std::string value;
+        while (i < s.size() && s[i] != '"') {
+            if (s[i] == '\\') {
+                ++i;
+                if (i == s.size()) throw std::runtime_error("invalid JSON escape");
             }
-            throw std::runtime_error("unterminated JSON string");
-        };
+            value += s[i++];
+        }
+        if (i == s.size()) throw std::runtime_error("unterminated JSON");
+        ++i;
+        return value;
+    };
+    space();
+    if (s.at(i++) != '{') throw std::runtime_error("invalid JSON object");
+    while (true) {
         space();
-        if (text.at(pos++) != '{') throw std::runtime_error("JSON object expected");
-        while (true) {
-            space();
-            if (text.at(pos) == '}') break;
-            std::string key = quoted();
-            space();
-            if (text.at(pos++) != ':') throw std::runtime_error("JSON colon expected");
-            space();
-            if (text.at(pos) == '"') {
-                quoted();
-            } else {
-                char* end = nullptr;
-                double value = std::strtod(text.c_str() + pos, &end);
-                if (end == text.c_str() + pos) throw std::runtime_error("JSON number expected");
-                pos = static_cast<size_t>(end - text.c_str());
-                if (key == "n") n = static_cast<int>(value);
-                else if (key == "nnz") nnz = static_cast<int>(value);
-                else if (key == "requests") requests = static_cast<int>(value);
-                else if (key == "t") t = value;
-                else if (key == "rtol") rtol = value;
-                else if (key == "atol") atol = value;
-            }
-            space();
-            if (text.at(pos) == '}') break;
-            if (text.at(pos++) != ',') throw std::runtime_error("JSON comma expected");
+        if (s.at(i) == '}') break;
+        std::string key = quoted();
+        space();
+        if (s.at(i++) != ':') throw std::runtime_error("missing JSON colon");
+        space();
+        std::string value;
+        if (s.at(i) == '"') value = quoted();
+        else {
+            size_t first = i;
+            while (i < s.size() && s[i] != ',' && s[i] != '}') ++i;
+            value = s.substr(first, i - first);
         }
-        if (n < 1 || nnz < 0 || (requests != 1 && requests != 16)) {
-            throw std::runtime_error("invalid dimensions");
+        out.emplace(std::move(key), std::move(value));
+        space();
+        if (s.at(i) == '}') break;
+        if (s.at(i++) != ',') throw std::runtime_error("missing JSON comma");
+    }
+    return out;
+}
+
+struct DisjointSet {
+    std::vector<int> p, sz;
+    explicit DisjointSet(int n) : p(n), sz(n, 1) {
+        std::iota(p.begin(), p.end(), 0);
+    }
+    int find(int i) {
+        while (i != p[i]) {
+            p[i] = p[p[i]];
+            i = p[i];
         }
+        return i;
+    }
+    void join(int i, int j) {
+        i = find(i);
+        j = find(j);
+        if (i == j) return;
+        if (sz[i] < sz[j]) std::swap(i, j);
+        p[j] = i;
+        sz[i] += sz[j];
     }
 };
 
-static double phi1(double x) {
-    if (std::abs(x) < 1e-6) {
-        return 1.0 + x * (0.5 + x * (1.0 / 6 + x * (1.0 / 24 + x / 120)));
+struct Block {
+    std::vector<int> ids;
+    std::vector<long double> q, ex, ph;
+};
+
+template <typename Real>
+struct PairBlock {
+    int i, j;
+    Real q0, q1, e0, e1, p0, p1;
+};
+
+static double phi(double x) {
+    if (std::abs(x) < 1e-8) {
+        return 1 + x * (0.5 + x * (1.0 / 6 + x / 24));
     }
     return std::expm1(x) / x;
 }
 
-static long double phi1_long(long double x) {
-    if (std::abs(x) < 1e-7L) {
+static long double phi_extended(long double x) {
+    if (std::abs(x) < 1e-10L)
         return 1 + x * (0.5L + x * (1.0L / 6 + x * (1.0L / 24 + x / 120)));
-    }
     return std::expm1(x) / x;
 }
 
-static double norm_inf(const Vec& x) {
-    double result = 0;
-    for (double value : x) result = std::max(result, std::abs(value));
-    return result;
-}
+struct Solver {
+    int n, requests;
+    double t, rtol, atol, upper = 0, input_norm = 0, mean_diagonal = 0, mean_distance = 0;
+    std::vector<int> row;
+    std::vector<uint32_t> col;
+    Vec val, diagonal, rowsum;
+    std::vector<int8_t> signs;
+    Vec ce, cp;
+    std::vector<long double> tail_e, tail_p;
+    std::vector<Block> blocks;
+    std::vector<PairBlock<long double>> pairs;
+    std::vector<PairBlock<double>> fast_pairs;
+    Vec diagonal_exp, diagonal_phi;
+    bool direct = false, diagonal_only = false, identity_step = false, raw_taylor = false;
+    bool small_operator = false;
+    mutable bool block_disabled = false, krylov_disabled = false;
+    mutable std::unique_ptr<DiagonalKernel> diagonal_kernel;
+    mutable bool diagonal_checked = false;
+    mutable std::unique_ptr<SlicedKernel> sliced_kernel;
+    mutable bool sliced_checked = false;
+    mutable int constant_null_status = 0;
 
-static double norm_two(const Vec& x) {
-    double result = 0;
-    for (double value : x) result += value * value;
-    return std::sqrt(result);
-}
-
-struct Coefficients {
-    Vec ex, ph, ex_tail, ph_tail;
-    std::vector<long double> ex_long, ph_long, ph2_long;
-
-    explicit Coefficients(double r) {
-        int length = std::max(40, static_cast<int>(std::ceil(std::sqrt(110 * r) + 150)));
-        std::vector<long double> ratios(length + 2), bessel(length + 1);
-        long double next = 0;
-        for (int k = length; k >= 1; --k) {
-            next = 1 / (2 * static_cast<long double>(k) / r + next);
-            ratios[k] = next;
-        }
-        bessel[0] = 1;
-        long double total = 1;
-        for (int k = 1; k <= length; ++k) {
-            bessel[k] = bessel[k - 1] * ratios[k];
-            total += 2 * bessel[k];
-        }
-        ex.resize(length + 1);
-        ph.resize(length + 1);
-        ex_long.resize(length + 1);
-        ph_long.resize(length + 1);
-        ph2_long.resize(length + 1);
-        ex[0] = static_cast<double>(1 / total);
-        ex_long[0] = 1 / total;
-        for (int k = 1; k <= length; ++k) {
-            ex_long[k] = 2 * bessel[k] / total;
-            ex[k] = static_cast<double>(ex_long[k]);
-        }
-        long double tail = 0, weighted = 0;
-        for (int k = length; k >= 1; --k) {
-            ph_long[k] = 2 * weighted / r;
-            ph[k] = static_cast<double>(ph_long[k]);
-            tail += 2 * bessel[k] / total;
-            weighted += tail;
-        }
-        ph[0] = static_cast<double>(weighted / r);
-        ph_long[0] = weighted / r;
-        tail = weighted = 0;
-        for (int k = length; k >= 1; --k) {
-            ph2_long[k] = 2 * weighted / r;
-            tail += ph_long[k];
-            weighted += tail;
-        }
-        ph2_long[0] = weighted / r;
-        ex_tail.resize(length + 1);
-        ph_tail.resize(length + 1);
-        long double te = 0, tp = 0;
-        for (int k = length; k >= 0; --k) {
-            ex_tail[k] = static_cast<double>(te);
-            ph_tail[k] = static_cast<double>(tp);
-            te += ex[k];
-            tp += ph[k];
-        }
-    }
-
-    int degree(double nb0, double nb1, double t, double target) const {
-        for (size_t k = 0; k < ex.size(); ++k) {
-            if (nb0 * ex_tail[k] + (t * nb1) * ph_tail[k] <= target) {
-                return static_cast<int>(k);
-            }
-        }
-        return static_cast<int>(ex.size()) - 1;
-    }
-};
-
-struct Matrix {
-    int n;
-    std::unique_ptr<uint64_t[]> row;
-    std::unique_ptr<uint32_t[]> col;
-    std::unique_ptr<double[]> val;
-    Vec diag, row_sum;
-    std::vector<long double> row_sum_long;
-    double bound = 0;
-    double lower = 0;
-    double conservation_residual = 0;
-    Vec lower_weights, inverse_barrier;
-    double barrier_minimum = 0;
-    bool pairs = true;
-    bool extended = false;
-    bool extended_products = false;
-    bool diffusion = true;
-    bool difference_products = true;
-    bool diagonally_dominant = true;
-    std::vector<int8_t> gauge;
-
-    explicit Matrix(const Header& h) : n(h.n), row(new uint64_t[n + 1]), col(new uint32_t[h.nnz]),
-        val(new double[h.nnz]), diag(n), row_sum(n), row_sum_long(n), extended(h.rtol <= 1e-10),
-        extended_products(h.rtol <= 1e-10 && !std::getenv("FAM_MAT_DOUBLE")),
-        difference_products(h.rtol <= 1e-10 || !std::getenv("FAM_DIRECT")) {
-        size_t nonzeros = static_cast<size_t>(h.nnz);
-        prefer_huge_pages(col.get(), nonzeros * sizeof(uint32_t), 4 * 1024 * 1024);
-        prefer_huge_pages(val.get(), nonzeros * sizeof(double), 4 * 1024 * 1024);
-        read_exact(row.get(), static_cast<size_t>(n + 1) * sizeof(uint64_t));
-        read_exact(col.get(), nonzeros * sizeof(uint32_t));
-        read_exact(val.get(), nonzeros * sizeof(double));
-        Vec dominance(n);
-        uint64_t position = 0;
-        long double smallest_gap = std::numeric_limits<long double>::infinity();
+    void prepare(const std::vector<uint64_t>& ptr,
+                 std::vector<uint32_t> idx, Vec data) {
         for (int i = 0; i < n; ++i) {
-            long double sum = 0, absolute = 0;
-            long double correction = 0, absolute_correction = 0;
-            int off = 0;
-            uint64_t begin = row[i], end = row[i + 1];
-            row[i] = position;
-            for (uint64_t j = begin; j < end; ++j) {
-                long double increment = static_cast<long double>(val[j]) - correction;
-                long double next_sum = sum + increment;
-                correction = (next_sum - sum) - increment;
-                sum = next_sum;
-                increment = static_cast<long double>(std::abs(val[j])) - absolute_correction;
-                next_sum = absolute + increment;
-                absolute_correction = (next_sum - absolute) - increment;
-                absolute = next_sum;
-                if (col[j] == static_cast<uint32_t>(i)) diag[i] = val[j];
-                else if (val[j] != 0) {
-                    if (val[j] > 0) diffusion = false;
-                    ++off;
-                    col[position] = col[j];
-                    val[position] = val[j];
-                    ++position;
-                }
+            double s0 = 0, s1 = 0, s2 = 0, s3 = 0;
+            size_t k = ptr[i], end = ptr[i + 1];
+            for (; k + 3 < end; k += 4) {
+                s0 += std::abs(data[k]);
+                s1 += std::abs(data[k + 1]);
+                s2 += std::abs(data[k + 2]);
+                s3 += std::abs(data[k + 3]);
             }
-            row_sum[i] = static_cast<double>(sum);
-            row_sum_long[i] = sum;
-            if (sum < -1e-13L * absolute) diffusion = false;
-            if (2 * static_cast<long double>(diag[i]) - absolute < -1e-13L * absolute) {
-                diagonally_dominant = false;
-            }
-            long double gap = 2 * static_cast<long double>(diag[i]) - absolute;
-            dominance[i] = static_cast<double>(gap);
-            smallest_gap = std::min(smallest_gap, gap);
-            bound = std::max(bound, static_cast<double>(absolute));
-            pairs = pairs && off <= 1;
+            double sum = (s0 + s1) + (s2 + s3);
+            for (; k < end; ++k) sum += std::abs(data[k]);
+            upper = std::max(upper, sum);
         }
-        row[n] = position;
-        if (h.rtol <= 1e-10 && h.t * bound >= 100 && diagonally_dominant &&
-                !diffusion && !pairs && n > 48 && !std::getenv("FAM_NO_GAUGE")) {
-            signed_diffusion_transform();
+        upper *= 1 + 4e-11;
+        input_norm = upper;
+        if (t == 0 || upper == 0) return;
+        if (t * upper <= 1e-16) {
+            identity_step = true;
+            return;
         }
-        if (diffusion && !std::getenv("FAM_FORCE_LONG")) extended_products = false;
-        if (diffusion && h.rtol <= 1e-7) difference_products = true;
-        if (bound > 0) bound = std::nextafter(bound, std::numeric_limits<double>::infinity());
-        lower = std::max(0.0, static_cast<double>(smallest_gap) - 1e-13 * bound);
-        if (lower > 0) {
-            inverse_barrier = std::move(dominance);
-            for (double& value : inverse_barrier) value -= 1e-13 * bound;
-            barrier_minimum = lower;
+        if (t * upper <= 0.25) {
+            raw_taylor = true;
+            row.resize(n + 1);
+            for (int i = 0; i <= n; ++i) row[i] = static_cast<int>(ptr[i]);
+            col = std::move(idx);
+            val = std::move(data);
+            return;
         }
-        long double residual_square = 0;
-        long double row_guard = 32 * std::numeric_limits<long double>::epsilon() * bound;
-        for (long double value : row_sum_long) {
-            long double magnitude = std::abs(value) + row_guard;
-            residual_square += magnitude * magnitude;
-        }
-        conservation_residual = static_cast<double>(std::sqrt(residual_square)) * (1 + 1e-12);
-    }
-
-    bool signed_diffusion_transform() {
-        std::vector<int8_t> signs(n);
-        std::vector<int> queue;
-        queue.reserve(n);
-        for (int start = 0; start < n; ++start) {
-            if (signs[start]) continue;
-            signs[start] = 1;
-            queue.clear();
-            queue.push_back(start);
-            for (size_t at = 0; at < queue.size(); ++at) {
-                int i = queue[at];
-                for (uint64_t j = row[i]; j < row[i + 1]; ++j) {
-                    int other = static_cast<int>(col[j]);
-                    int8_t expected = val[j] < 0 ? signs[i] : -signs[i];
-                    if (!signs[other]) {
-                        signs[other] = expected;
-                        queue.push_back(other);
-                    } else if (signs[other] != expected) {
-                        return false;
-                    }
-                }
-            }
-        }
-        gauge = std::move(signs);
+        diagonal.assign(n, 0);
+        rowsum.assign(n, 0);
+        row.resize(n + 1);
+        col = std::move(idx);
+        val = std::move(data);
+        size_t out = 0;
+        uint64_t distance = 0;
+        bool positive_off_diagonal = false;
+        int max_off = 0;
         for (int i = 0; i < n; ++i) {
-            long double sum = diag[i], correction = 0;
-            for (uint64_t j = row[i]; j < row[i + 1]; ++j) {
-                if (gauge[i] != gauge[col[j]]) val[j] = -val[j];
-                long double term = static_cast<long double>(val[j]) - correction;
-                long double next = sum + term;
-                correction = (next - sum) - term;
-                sum = next;
-            }
-            row_sum_long[i] = sum;
-            row_sum[i] = static_cast<double>(sum);
-        }
-        diffusion = true;
-        if (std::getenv("FAM_DEBUG")) std::fprintf(stderr, "balanced sign transform\n");
-        return true;
-    }
-
-    double robust_row_product(int i, const Vec& x, double scale,
-            double shift, bool differences) const {
-        long double xi = x[i];
-        long double sum = ((differences ? row_sum_long[i] : diag[i]) - shift) * xi;
-        long double correction = 0;
-        for (uint64_t j = row[i]; j < row[i + 1]; ++j) {
-            long double z = x[col[j]];
-            if (differences) z -= xi;
-            long double term = static_cast<long double>(val[j]) * z - correction;
-            long double next = sum + term;
-            correction = (next - sum) - term;
-            sum = next;
-        }
-        return static_cast<double>(sum * scale);
-    }
-
-    void refine_bound(int requests, double estimated_degree) {
-        Vec x(n, 1), y(n);
-        double original = bound;
-        bool full = std::getenv("FAM_FULL_BOUND");
-        for (int iteration = 0; iteration < 10; ++iteration) {
-            double before = bound;
-            double upper = 0, largest = 0;
-            for (int i = 0; i < n; ++i) {
-                long double sum = static_cast<long double>(diag[i]) * x[i];
-                for (uint64_t j = row[i]; j < row[i + 1]; ++j) {
-                    sum += static_cast<long double>(std::abs(val[j])) * x[col[j]];
+            row[i] = static_cast<int>(out);
+            long double sum = 0, correction = 0;
+            bool compensate = ptr[i + 1] - ptr[i] > 64;
+            for (size_t k = ptr[i]; k < ptr[i + 1]; ++k) {
+                int j = static_cast<int>(col[k]);
+                double v = val[k];
+                if (compensate) {
+                    long double add = static_cast<long double>(v) - correction;
+                    long double next = sum + add;
+                    correction = (next - sum) - add;
+                    sum = next;
+                } else sum += v;
+                if (i == j) diagonal[i] = v;
+                else if (v != 0) {
+                    col[out] = static_cast<uint32_t>(j);
+                    val[out++] = v;
+                    distance += std::abs(j - i);
+                    positive_off_diagonal = positive_off_diagonal || v > 0;
                 }
-                y[i] = static_cast<double>(sum / original) + x[i];
-                upper = std::max(upper, y[i] / x[i]);
-                largest = std::max(largest, y[i]);
             }
-            double candidate = (upper - 1) * original * (1 + 1e-12);
-            bound = std::min(bound, candidate);
-            if (iteration == 2 && bound >= original * 0.998) break;
-            if (iteration >= 2 && !full &&
-                    (before - bound) * estimated_degree * requests < 2 * bound) break;
-            for (int i = 0; i < n; ++i) x[i] = y[i] / largest;
+            max_off = std::max(max_off, static_cast<int>(out) - row[i]);
+            rowsum[i] = static_cast<double>(sum);
         }
-    }
-
-    void refine_lower(double t) {
-        if (!diffusion || !bound) return;
-        double largest_row_sum = 0;
-        for (double value : row_sum) largest_row_sum = std::max(largest_row_sum, value);
-        if (t * largest_row_sum <= 24 || t * lower >= 60) return;
-        Vec x(n, 1), next(n), barrier(n);
-        for (int iteration = 0; iteration < 12; ++iteration) {
-            double candidate = std::numeric_limits<double>::infinity();
-            double smallest_barrier = std::numeric_limits<double>::infinity();
-            double largest = 0;
+        row[n] = static_cast<int>(out);
+        mean_distance = out ? static_cast<double>(distance) / out : 0;
+        val.resize(out);
+        col.resize(out);
+        long double trace = 0;
+        for (double v : diagonal) trace += v;
+        mean_diagonal = static_cast<double>(trace / n);
+        if (max_off == 0) {
+            diagonal_only = true;
+            diagonal_exp.resize(n);
+            diagonal_phi.resize(n);
             for (int i = 0; i < n; ++i) {
-                double z = robust_row_product(i, x, 1, 0, true);
-                barrier[i] = z - 1e-13 * bound;
-                smallest_barrier = std::min(smallest_barrier, barrier[i]);
-                candidate = std::min(candidate, z / x[i]);
-                next[i] = 2 * x[i] - z / bound;
-                largest = std::max(largest, next[i]);
-            }
-            candidate -= 1e-13 * bound;
-            if (candidate > lower) {
-                lower = candidate;
-                lower_weights = x;
-            }
-            if (smallest_barrier > barrier_minimum) {
-                inverse_barrier = barrier;
-                barrier_minimum = smallest_barrier;
-            }
-            for (int i = 0; i < n; ++i) x[i] = next[i] / largest;
-        }
-    }
-
-    void accurate_residual(const Vec& x, const Vec& b, Vec& residual) const {
-        for (int i = 0; i < n; ++i) {
-            double high = 0, low = 0;
-            auto product = [&](double coefficient, double value) {
-                double p = coefficient * value;
-                double error = std::fma(coefficient, value, -p);
-                double sum = high + p;
-                double z = sum - high;
-                low += ((high - (sum - z)) + (p - z)) + error;
-                high = sum;
-            };
-            product(diag[i], x[i]);
-            for (uint64_t j = row[i]; j < row[i + 1]; ++j) product(val[j], x[col[j]]);
-            residual[i] = static_cast<double>(static_cast<long double>(b[i]) -
-                (static_cast<long double>(high) + low));
-        }
-    }
-
-    void multiply_scaled(const Vec& x, Vec& y, double scale, double shift = 0) const {
-        if (!extended_products && !difference_products) {
-            for (int i = 0; i < n; ++i) {
-                double s0 = 0, s1 = 0, s2 = 0, s3 = 0;
-                uint64_t j = row[i], end = row[i + 1];
-                if (end - j > 1024) {
-                    y[i] = robust_row_product(i, x, scale, shift, false);
-                    continue;
-                }
-                for (; j + 3 < end; j += 4) {
-                    s0 = std::fma(val[j], x[col[j]], s0);
-                    s1 = std::fma(val[j + 1], x[col[j + 1]], s1);
-                    s2 = std::fma(val[j + 2], x[col[j + 2]], s2);
-                    s3 = std::fma(val[j + 3], x[col[j + 3]], s3);
-                }
-                double sum = (s0 + s1) + (s2 + s3);
-                for (; j < end; ++j) sum = std::fma(val[j], x[col[j]], sum);
-                y[i] = std::fma(diag[i] - shift, x[i], sum) * scale;
+                double z = -t * diagonal[i];
+                diagonal_exp[i] = std::exp(z);
+                diagonal_phi[i] = t * phi(z);
             }
             return;
         }
-        if (extended_products) {
-            for (int i = 0; i < n; ++i) {
-                long double sum = 0;
-                long double second = 0;
-                long double xi = x[i];
-                uint64_t j = row[i], end = row[i + 1];
-                if (end - j > 1024) {
-                    y[i] = robust_row_product(i, x, scale, shift, true);
-                    continue;
+        if (max_off <= 1) {
+            if (rtol >= 1e-7) prepare_pairs(fast_pairs);
+            else prepare_pairs(pairs);
+            direct = true;
+            return;
+        }
+        DisjointSet ds(n);
+        bool small = true;
+        for (int i = 0; i < n && small; ++i) {
+            for (int k = row[i]; k < row[i + 1]; ++k) {
+                if (col[k] > i) {
+                    ds.join(i, col[k]);
+                    if (ds.sz[ds.find(i)] > 64) {
+                        small = false;
+                        break;
+                    }
                 }
-                for (; j + 1 < end; j += 2) {
-                    sum += static_cast<long double>(val[j]) *
-                        (static_cast<long double>(x[col[j]]) - xi);
-                    second += static_cast<long double>(val[j + 1]) *
-                        (static_cast<long double>(x[col[j + 1]]) - xi);
-                }
-                sum += second;
-                for (; j < end; ++j) {
-                    sum += static_cast<long double>(val[j]) *
-                        (static_cast<long double>(x[col[j]]) - xi);
-                }
-                sum += (row_sum_long[i] - shift) * xi;
-                y[i] = static_cast<double>(sum * scale);
-            }
-        } else {
-            for (int i = 0; i < n; ++i) {
-                double sum = 0, s1 = 0, s2 = 0, s3 = 0;
-                double xi = x[i];
-                uint64_t j = row[i], end = row[i + 1];
-                if (end - j > 1024) {
-                    y[i] = robust_row_product(i, x, scale, shift, true);
-                    continue;
-                }
-                for (; j + 3 < end; j += 4) {
-                    sum = std::fma(val[j], x[col[j]] - xi, sum);
-                    s1 = std::fma(val[j + 1], x[col[j + 1]] - xi, s1);
-                    s2 = std::fma(val[j + 2], x[col[j + 2]] - xi, s2);
-                    s3 = std::fma(val[j + 3], x[col[j + 3]] - xi, s3);
-                }
-                sum = (sum + s1) + (s2 + s3);
-                for (; j < end; ++j) {
-                    sum = std::fma(val[j], x[col[j]] - xi, sum);
-                }
-                y[i] = (sum + (row_sum[i] - shift) * xi) * scale;
             }
         }
-    }
-};
-
-class Solver {
-    Header h;
-    Matrix a;
-    std::vector<long double> dense_vectors, dense_exp, dense_phi;
-    bool dense = false;
-    std::vector<std::array<long double, 6>> pair_functions;
-    std::vector<std::array<double, 6>> pair_functions_fast;
-    std::vector<int> mate;
-    std::vector<Coefficients> coefficients;
-    std::unique_ptr<double[]> lanczos_basis;
-    size_t lanczos_capacity = 0;
-    std::vector<int> block_ptr, block_order;
-    std::vector<size_t> block_storage;
-    std::vector<long double> block_exp, block_phi;
-    Vec inverse_diagonal;
-    double output_lower = 0;
-    double rhs_norm0 = 0, rhs_norm1 = 0;
-    bool steady_disabled = false;
-
-    double known_output_lower(const Vec& b0, const Vec& b1, double n0, double n1) const {
-        double root_n = std::sqrt(h.n);
-        double argument_lower = h.t * n1 * (1 - 1e-9) - n0 * (1 + 1e-9);
-        double result = std::max(0.0, argument_lower) * phi1(-h.t * a.bound) / root_n;
-        result *= 1 - 1e-12;
-        long double sum0 = 0, sum1 = 0;
-        double maximum0 = 0, maximum1 = 0;
-        for (int i = 0; i < h.n; ++i) {
-            sum0 += b0[i];
-            sum1 += b1[i];
-            maximum0 = std::max(maximum0, std::abs(b0[i]));
-            maximum1 = std::max(maximum1, std::abs(b1[i]));
-            if (a.row[i] == a.row[i + 1]) {
-                long double z = -static_cast<long double>(h.t) * a.diag[i];
-                long double value = std::exp(z) * b0[i] +
-                    static_cast<long double>(h.t) * phi1_long(z) * b1[i];
-                long double guard = 1e-14L * (std::abs(b0[i]) + h.t * std::abs(b1[i]));
-                result = std::max(result, static_cast<double>(std::abs(value) - guard));
+        if (small && n > 64) {
+            uint64_t work = 0;
+            for (int i = 0; i < n; ++i) {
+                if (ds.find(i) == i) {
+                    uint64_t size = ds.sz[i];
+                    work += size * size * size;
+                }
             }
+            small = work <= 64000000;
         }
-        long double mean = (sum0 + static_cast<long double>(h.t) * sum1) / h.n;
-        double defect = a.conservation_residual / h.n *
-            (h.t * n0 + (0.5 * h.t * h.t) * n1) * (1 + 1e-9);
-        double guard = 1e-12 * (maximum0 + h.t * maximum1);
-        result = std::max(result, static_cast<double>(std::abs(mean)) - defect - guard);
-        return result;
+        if (small && n > 64) {
+            if (prepare_blocks(ds, true)) {
+                direct = true;
+                return;
+            }
+            blocks.clear();
+        }
+        small_operator = n <= 64;
+        if (positive_off_diagonal) normalize_signs();
+        if (t * upper > 100) tighten_upper();
+        upper *= 1 + 2e-14;
+        if (t * upper > 0.25) prepare_coefficients();
     }
 
-    bool try_steady(const Vec& b0, const Vec& b1, Vec& y) {
-        if (a.lower <= 0 || h.t * a.lower < 24 || std::getenv("FAM_NO_STEADY")) return false;
-        auto weighted_norm = [&](const Vec& x) {
-            if (a.lower_weights.empty()) return norm_inf(x);
-            double result = 0;
-            for (int i = 0; i < h.n; ++i) {
-                result = std::max(result, std::abs(x[i]) / a.lower_weights[i]);
+    void normalize_signs() {
+        signs.assign(n, 0);
+        std::vector<int> queue;
+        queue.reserve(n);
+        for (int root = 0; root < n; ++root) {
+            if (signs[root]) continue;
+            signs[root] = 1;
+            queue.push_back(root);
+            for (size_t head = 0; head < queue.size(); ++head) {
+                int i = queue[head];
+                for (int k = row[i]; k < row[i + 1]; ++k) {
+                    int j = col[k];
+                    int8_t desired = val[k] < 0 ? signs[i] : -signs[i];
+                    if (!signs[j]) {
+                        signs[j] = desired;
+                        queue.push_back(j);
+                    } else if (signs[j] != desired) {
+                        signs.clear();
+                        return;
+                    }
+                }
             }
-            return result;
-        };
-        auto residual_error = [&](const Vec& x) {
-            if (a.inverse_barrier.empty()) return weighted_norm(x) / a.lower;
-            double result = 0;
-            for (int i = 0; i < h.n; ++i) {
-                result = std::max(result, std::abs(x[i]) / a.inverse_barrier[i]);
+            queue.clear();
+        }
+        for (int i = 0; i < n; ++i) {
+            long double sum = diagonal[i], correction = 0;
+            for (int k = row[i]; k < row[i + 1]; ++k) {
+                val[k] *= signs[i] * signs[col[k]];
+                long double add = static_cast<long double>(val[k]) - correction;
+                long double next = sum + add;
+                correction = (next - sum) - add;
+                sum = next;
             }
-            return result;
+            rowsum[i] = static_cast<double>(sum);
+        }
+    }
+
+    bool exact_constant_null() const {
+        if (constant_null_status) return constant_null_status > 0;
+        constant_null_status = -1;
+        for (double v : rowsum) if (v != 0) return false;
+        int minimum_bit = 2048;
+        auto inspect = [&](double value) {
+            if (value == 0) return;
+            uint64_t bits;
+            std::memcpy(&bits, &value, sizeof(bits));
+            int exponent = static_cast<int>((bits >> 52) & 2047);
+            uint64_t mantissa = bits & ((uint64_t(1) << 52) - 1);
+            int base = -1074;
+            if (exponent) {
+                mantissa |= uint64_t(1) << 52;
+                base = exponent - 1023 - 52;
+            }
+            minimum_bit = std::min(minimum_bit, base + __builtin_ctzll(mantissa));
         };
-        double nb0 = weighted_norm(b0), nb1 = weighted_norm(b1);
-        double transient = std::exp(-h.t * a.lower) * (nb0 + nb1 / a.lower);
-        if (transient > 0.01 * h.atol) return false;
-        if (nb1 / a.lower <= h.atol * 0.02) {
-            y.assign(h.n, 0);
+        for (double v : diagonal) inspect(v);
+        for (double v : val) inspect(v);
+        int largest_bit = 0;
+        std::frexp(input_norm, &largest_bit);
+        // Every intermediate sum then fits exactly in the long-double mantissa.
+        if (largest_bit - minimum_bit <= std::numeric_limits<long double>::digits - 1) {
+            constant_null_status = 1;
             return true;
         }
-        if (steady_disabled) return false;
-        y.assign(h.n, 0);
-        if (inverse_diagonal.empty()) {
-            inverse_diagonal.resize(h.n);
-            for (int i = 0; i < h.n; ++i) inverse_diagonal[i] = 1 / a.diag[i];
-        }
-        Vec r = b1, z(h.n), p(h.n), ap(h.n);
-        for (int i = 0; i < h.n; ++i) p[i] = z[i] = r[i] * inverse_diagonal[i];
-        double rho = cblas_ddot(h.n, r.data(), 1, z.data(), 1);
-        const auto& c = coefficients[0];
-        int polynomial_degree = c.degree(rhs_norm0, rhs_norm1, h.t,
-            0.04 * (h.atol + h.rtol * output_lower));
-        int maximum = std::min(256, std::max(32, polynomial_degree / 5));
-        double previous_error = std::numeric_limits<double>::infinity();
-        int stagnant_checks = 0;
-        for (int k = 0; k < maximum; ++k) {
-            a.multiply_scaled(p, ap, 1);
-            double denominator = cblas_ddot(h.n, p.data(), 1, ap.data(), 1);
-            if (!(denominator > 0) || !(rho > 0)) {
-                steady_disabled = true;
-                return false;
-            }
-            double alpha = rho / denominator;
-            for (int i = 0; i < h.n; ++i) {
-                y[i] = std::fma(alpha, p[i], y[i]);
-                r[i] = std::fma(-alpha, ap[i], r[i]);
-            }
-            double target = 0.04 * (h.atol + h.rtol * norm_inf(y));
-            bool checked = false;
-            if ((k + 1) % 64 == 0 || residual_error(r) < target) {
-                a.accurate_residual(y, b1, r);
-                double error_bound = residual_error(r) + transient;
-                if (error_bound < target) {
-                    if (std::getenv("FAM_DEBUG")) {
-                        std::fprintf(stderr, "steady CG iterations=%d lower=%.5g bound=%.3g\n",
-                            k + 1, a.lower, error_bound);
-                    }
-                    return true;
-                }
-                if (error_bound >= previous_error * 0.9) ++stagnant_checks;
-                else stagnant_checks = 0;
-                previous_error = error_bound;
-                if (stagnant_checks >= 2 && k >= 32) {
-                    steady_disabled = true;
-                    if (std::getenv("FAM_DEBUG")) {
-                        std::fprintf(stderr, "steady CG stagnation iterations=%d\n", k + 1);
-                    }
-                    return false;
-                }
-                checked = true;
-            }
-            for (int i = 0; i < h.n; ++i) z[i] = r[i] * inverse_diagonal[i];
-            double next_rho = cblas_ddot(h.n, r.data(), 1, z.data(), 1);
-            double beta = checked ? 0 : next_rho / rho;
-            for (int i = 0; i < h.n; ++i) p[i] = std::fma(beta, p[i], z[i]);
-            rho = next_rho;
-        }
-        steady_disabled = true;
-        if (std::getenv("FAM_DEBUG")) std::fprintf(stderr, "steady CG fallback iterations=%d\n", maximum);
         return false;
     }
 
-    Vec apply_expansion(const Vec& b0, const Vec& b1, const Vec& ex, const Vec& ph,
-            int degree, double phi_scale, double right, double left = 0) const {
-        Vec y(h.n), u(h.n), d(h.n), work(h.n), uc, dc;
-        if (a.extended) {
-            uc.resize(h.n);
-            dc.resize(h.n);
-        }
-        double scale = 2 / (right - left);
-        double ce = ex[degree], cp = phi_scale * ph[degree];
-        for (int i = 0; i < h.n; ++i) u[i] = d[i] = ce * b0[i] + cp * b1[i];
-        for (int k = degree - 1; k >= 1; --k) {
-            a.multiply_scaled(u, work, scale, left);
-            ce = ex[k];
-            cp = phi_scale * ph[k];
-            if (a.extended) {
-                for (int i = 0; i < h.n; ++i) {
-                    double q = std::fma(ce, b0[i], cp * b1[i]);
-                    double step = std::fma(-2.0, work[i], q) - dc[i];
-                    double next = d[i] + step;
-                    dc[i] = (next - d[i]) - step;
-                    d[i] = next;
-                    step = next - uc[i];
-                    next = u[i] + step;
-                    uc[i] = (next - u[i]) - step;
-                    u[i] = next;
-                }
+    template <typename Real>
+    void prepare_pairs(std::vector<PairBlock<Real>>& destination) {
+        destination.reserve(n / 2 + 1);
+        for (int i = 0; i < n; ++i) {
+            int j = row[i] < row[i + 1] ? col[row[i]] : -1;
+            if (j < i && j >= 0) continue;
+            PairBlock<Real> b;
+            b.i = i;
+            b.j = j;
+            if (j < 0) {
+                double z = -t * diagonal[i];
+                b.q0 = 1;
+                b.q1 = 0;
+                b.e0 = std::exp(z);
+                b.p0 = t * phi(z);
+                b.e1 = b.p1 = 0;
             } else {
-                for (int i = 0; i < h.n; ++i) {
-                    d[i] += std::fma(-2.0, work[i], std::fma(ce, b0[i], cp * b1[i]));
-                    u[i] += d[i];
+                Real a = diagonal[i], d = diagonal[j], c = val[row[i]];
+                if (static_cast<long double>(t) *
+                    std::max(std::abs(a) + std::abs(c), std::abs(d) + std::abs(c)) <= 1e-16L) {
+                    b.q0 = 1;
+                    b.q1 = 0;
+                    b.e0 = b.e1 = 1;
+                    b.p0 = b.p1 = t;
+                    destination.push_back(b);
+                    continue;
                 }
-            }
-        }
-        if (degree > 0) {
-            a.multiply_scaled(u, work, scale, left);
-            for (int i = 0; i < h.n; ++i) {
-                y[i] = (ex[0] * b0[i] + phi_scale * ph[0] * b1[i]) + (d[i] - work[i]);
-            }
-        } else {
-            for (int i = 0; i < h.n; ++i) y[i] = ex[0] * b0[i] + phi_scale * ph[0] * b1[i];
-        }
-        return y;
-    }
-
-    bool try_stable_cancellation(const Vec& b0, const Vec& b1, Vec& y) const {
-        Vec residual(h.n), v(h.n);
-        for (int i = 0; i < h.n; ++i) {
-            residual[i] = std::fma(h.t, b1[i], b0[i]);
-            double high = 0, low = 0;
-            auto product = [&](double coefficient, double x) {
-                double p = coefficient * x;
-                double error = std::fma(coefficient, x, -p);
-                double sum = high + p;
-                double z = sum - high;
-                low += ((high - (sum - z)) + (p - z)) + error;
-                high = sum;
-            };
-            product(a.diag[i], b0[i]);
-            for (uint64_t j = a.row[i]; j < a.row[i + 1]; ++j) product(a.val[j], b0[a.col[j]]);
-            v[i] = static_cast<double>(-static_cast<long double>(h.t) *
-                (static_cast<long double>(high) + low));
-        }
-        double size = norm_two(residual) + norm_two(v);
-        if (size > 1e-4) return false;
-        const auto& c = coefficients[0];
-        Vec difference(c.ph.size());
-        for (size_t k = 0; k < difference.size(); ++k) {
-            difference[k] = static_cast<double>(c.ph_long[k] - c.ph2_long[k]);
-        }
-        int degree = c.degree(0, size, 1, h.atol * 0.02);
-        y = apply_expansion(residual, v, c.ph, difference, degree, 1, a.bound);
-        if (std::getenv("FAM_DEBUG")) {
-            std::fprintf(stderr, "stable cancellation size=%.3g degree=%d\n", size, degree);
-        }
-        return true;
-    }
-
-    Vec sensitive_clenshaw(const Vec& b0, const Vec& b1) const {
-        const auto& c = coefficients[0];
-        int degree = c.degree(rhs_norm0, rhs_norm1, h.t, h.atol * 0.02);
-        std::vector<long double> u(h.n), d(h.n), work(h.n);
-        long double scale = 2 / static_cast<long double>(a.bound);
-        long double time = h.t;
-        long double ce = c.ex_long[degree], cp = time * c.ph_long[degree];
-        for (int i = 0; i < h.n; ++i) u[i] = d[i] = ce * b0[i] + cp * b1[i];
-        Vec y(h.n);
-        auto update = [&](long double ec, long double pc, bool finish) {
-            for (int i = 0; i < h.n; ++i) {
-                long double sum = 0, second = 0;
-                uint64_t j = a.row[i], end = a.row[i + 1];
-                for (; j + 1 < end; j += 2) {
-                    sum += static_cast<long double>(a.val[j]) * (u[a.col[j]] - u[i]);
-                    second += static_cast<long double>(a.val[j + 1]) * (u[a.col[j + 1]] - u[i]);
-                }
-                for (; j < end; ++j) sum += static_cast<long double>(a.val[j]) * (u[a.col[j]] - u[i]);
-                long double applied = (sum + second + a.row_sum_long[i] * u[i]) * scale;
-                if (finish) {
-                    y[i] = static_cast<double>(ec * b0[i] + pc * b1[i] + d[i] - applied);
+                Real delta = (a - d) / 2;
+                Real radius = std::hypot(delta, c);
+                Real high = (a + d) / 2 + radius;
+                Real low = high != 0 ? (a * d - c * c) / high : 0;
+                if (delta >= 0) {
+                    b.q0 = std::sqrt((1 + delta / radius) / 2);
+                    b.q1 = (c / radius) / (2 * b.q0);
                 } else {
-                    d[i] += ec * b0[i] + pc * b1[i] - 2 * applied;
-                    work[i] = u[i] + d[i];
+                    b.q1 = std::copysign(std::sqrt((1 - delta / radius) / 2), c);
+                    b.q0 = (c / radius) / (2 * b.q1);
                 }
+                Real z0 = -static_cast<Real>(t) * high;
+                Real z1 = -static_cast<Real>(t) * low;
+                b.e0 = z0 < -50 ? 0 : std::exp(z0);
+                b.e1 = z1 < -50 ? 0 : std::exp(z1);
+                b.p0 = z0 == 0 ? t : (z0 < -50 ? -1 : std::expm1(z0)) / (-high);
+                b.p1 = z1 == 0 ? t : (z1 < -50 ? -1 : std::expm1(z1)) / (-low);
             }
-        };
-        for (int k = degree - 1; k >= 1; --k) {
-            ce = c.ex_long[k];
-            cp = time * c.ph_long[k];
-            update(ce, cp, false);
-            u.swap(work);
+            destination.push_back(b);
         }
-        if (degree > 0) {
-            update(c.ex_long[0], time * c.ph_long[0], true);
-        } else {
-            for (int i = 0; i < h.n; ++i) {
-                y[i] = static_cast<double>(c.ex_long[0] * b0[i] + time * c.ph_long[0] * b1[i]);
-            }
-        }
-        if (std::getenv("FAM_DEBUG")) std::fprintf(stderr, "extended recurrence degree=%d\n", degree);
-        return y;
     }
 
-    bool prepare_small_blocks() {
-        std::vector<int> parent(h.n), count(h.n, 1);
-        std::iota(parent.begin(), parent.end(), 0);
-        auto root = [&](int i) {
-            while (parent[i] != i) {
-                parent[i] = parent[parent[i]];
-                i = parent[i];
-            }
-            return i;
-        };
-        for (int i = 0; i < h.n; ++i) {
-            for (uint64_t j = a.row[i]; j < a.row[i + 1]; ++j) {
-                int v = static_cast<int>(a.col[j]);
-                if (v <= i) continue;
-                int p = root(i), q = root(v);
-                if (p == q) continue;
-                if (count[p] + count[q] > 24) return false;
-                if (count[p] < count[q]) std::swap(p, q);
-                parent[q] = p;
-                count[p] += count[q];
-            }
-        }
-        std::vector<int> group(h.n, -1);
-        block_ptr.push_back(0);
-        for (int i = 0; i < h.n; ++i) {
-            if (parent[i] == i) {
-                group[i] = static_cast<int>(block_ptr.size()) - 1;
-                block_ptr.push_back(block_ptr.back() + count[i]);
-            }
-        }
-        block_order.resize(h.n);
-        std::vector<int> position = block_ptr;
-        std::vector<int> local(h.n);
-        for (int i = 0; i < h.n; ++i) {
-            int g = group[root(i)];
-            int p = position[g]++;
-            block_order[p] = i;
-            local[i] = p - block_ptr[g];
-        }
-        using LongMatrix = Eigen::Matrix<long double, Eigen::Dynamic, Eigen::Dynamic>;
-        block_storage.push_back(0);
-        for (size_t g = 0; g + 1 < block_ptr.size(); ++g) {
-            int begin = block_ptr[g], m = block_ptr[g + 1] - begin;
-            LongMatrix matrix = LongMatrix::Zero(m, m);
-            for (int j = 0; j < m; ++j) {
-                int i = block_order[begin + j];
-                matrix(j, j) = a.diag[i];
-                for (uint64_t k = a.row[i]; k < a.row[i + 1]; ++k) {
-                    matrix(j, local[a.col[k]]) = a.val[k];
-                }
-            }
-            Eigen::SelfAdjointEigenSolver<LongMatrix> eigen(matrix);
-            if (eigen.info() != Eigen::Success) throw std::runtime_error("block eigensolver failure");
-            Eigen::Matrix<long double, Eigen::Dynamic, 1> ex(m), ph(m);
-            for (int j = 0; j < m; ++j) {
-                long double z = -h.t * eigen.eigenvalues()[j];
-                ex[j] = std::exp(z);
-                ph[j] = h.t * phi1_long(z);
-            }
-            LongMatrix f = eigen.eigenvectors() * ex.asDiagonal() * eigen.eigenvectors().transpose();
-            LongMatrix p = eigen.eigenvectors() * ph.asDiagonal() * eigen.eigenvectors().transpose();
-            block_exp.insert(block_exp.end(), f.data(), f.data() + static_cast<size_t>(m) * m);
-            block_phi.insert(block_phi.end(), p.data(), p.data() + static_cast<size_t>(m) * m);
-            block_storage.push_back(block_exp.size());
-        }
-        return true;
-    }
-
-    std::vector<long double> projected_function(
-            const Vec& alpha, const Vec& beta, int m,
-            const std::vector<long double>& cf) const {
-        std::vector<long double> u(m), d(m), work(m);
-        const int degree = static_cast<int>(cf.size()) - 1;
-        u[0] = d[0] = cf[degree];
-        for (int k = degree - 1; k >= 1; --k) {
-            for (int i = 0; i < m; ++i) {
-                long double z = static_cast<long double>(alpha[i]) * u[i];
-                if (i) z += static_cast<long double>(beta[i - 1]) * u[i - 1];
-                if (i + 1 < m) z += static_cast<long double>(beta[i]) * u[i + 1];
-                work[i] = z;
-            }
-            d[0] += cf[k];
-            for (int i = 0; i < m; ++i) {
-                d[i] -= 4 * work[i];
-                u[i] += d[i];
-            }
-        }
-        for (int i = 0; i < m; ++i) {
-            long double z = static_cast<long double>(alpha[i]) * u[i];
-            if (i) z += static_cast<long double>(beta[i - 1]) * u[i - 1];
-            if (i + 1 < m) z += static_cast<long double>(beta[i]) * u[i + 1];
-            work[i] = d[i] - 2 * z;
-        }
-        work[0] += cf[0];
-        return work;
-    }
-
-    bool try_lanczos(const Vec& b, bool source, Vec& y,
-            double* achieved_error = nullptr, double absolute_budget = 0, int iteration_cap = 0,
-            bool complete_output = false) {
-        double magnitude = cblas_dnrm2(h.n, b.data(), 1);
-        if (magnitude == 0) {
-            std::fill(y.begin(), y.end(), 0);
-            if (achieved_error) *achieved_error = 0;
-            return true;
-        }
-        double upper = magnitude * (source ? h.t : 1);
-        if (upper <= h.atol * 0.01) {
-            std::fill(y.begin(), y.end(), 0);
-            if (achieved_error) *achieved_error = upper;
-            return true;
-        }
-        const auto& c = coefficients[0];
-        double eta = h.t * a.bound;
-        int policy_maximum = h.rtol >= 1e-4 ? 256 : h.rtol >= 1e-7 ? 352 : 512;
-        if (const char* requested = std::getenv("FAM_KRYLOV_MAX")) {
-            policy_maximum = std::clamp(std::atoi(requested), 48, 1536);
-        }
-        int full_degree = source ? c.degree(0, magnitude, h.t, h.atol * 0.04) :
-            c.degree(magnitude, 0, 1, std::max(h.atol * 0.04, absolute_budget * 0.01));
-        int maximum = std::min(h.n, std::min(policy_maximum, std::max(48, full_degree * 3 / 4)));
-        if (iteration_cap > 0) maximum = std::min(maximum, std::max(48, iteration_cap));
-        size_t required = static_cast<size_t>(h.n) * (maximum + 1);
-        if (required > lanczos_capacity) {
-            size_t block = 1U << 20;
-            size_t allocation = (required + block - 1) / block * block;
-            lanczos_basis.reset(new double[allocation]);
-            lanczos_capacity = allocation;
-            prefer_huge_pages(lanczos_basis.get(), allocation * sizeof(double));
-        }
-        double* first = lanczos_basis.get();
-        for (int i = 0; i < h.n; ++i) first[i] = b[i] / magnitude;
-        Vec alpha(maximum), beta(maximum), q(h.n), w(h.n);
-        std::vector<long double> previous;
-        int successful_checks = 0;
-        int expensive_predictions = 0;
-        double previous_residual = std::numeric_limits<double>::infinity();
-        std::array<int, 96> sampled_rows;
-        for (int s = 0; s < 96; ++s) {
-            sampled_rows[s] = static_cast<int>((static_cast<int64_t>(s) * (h.n - 1)) / 95);
-        }
-        double known_size = 0;
-        for (int i = 0; i < h.n; ++i) {
-            if (a.row[i] == a.row[i + 1]) {
-                double z = -h.t * a.diag[i];
-                double factor = source ? h.t * phi1(z) : std::exp(z);
-                known_size = std::max(known_size, std::abs(factor * b[i]));
-            }
-        }
-        for (int k = 0; k < maximum; ++k) {
-            const double* current = lanczos_basis.get() + static_cast<size_t>(k) * h.n;
-            std::copy(current, current + h.n, q.begin());
-            a.multiply_scaled(q, w, 1 / a.bound);
-            if (k) {
-                const double* old = current - h.n;
-                for (int i = 0; i < h.n; ++i) w[i] -= beta[k - 1] * old[i];
-            }
-            alpha[k] = cblas_ddot(h.n, current, 1, w.data(), 1);
-            for (int i = 0; i < h.n; ++i) w[i] -= alpha[k] * current[i];
-            double correction = cblas_ddot(h.n, current, 1, w.data(), 1);
-            alpha[k] += correction;
-            for (int i = 0; i < h.n; ++i) w[i] -= correction * current[i];
-            beta[k] = cblas_dnrm2(h.n, w.data(), 1);
-            const int m = k + 1;
-            bool breakdown = beta[k] < 1e-15 || m == h.n;
-            if ((m >= 24 && m % 16 == 0) || breakdown || m == maximum) {
-                auto g = projected_function(alpha, beta, m, source ? c.ph_long : c.ex_long);
-                auto integral = projected_function(alpha, beta, m, source ? c.ph2_long : c.ph_long);
-                long double scale = magnitude * (source ? h.t : 1);
-                long double gnorm = 0, difference = 0;
-                for (int j = 0; j < m; ++j) {
-                    gnorm += g[j] * g[j];
-                    long double delta = g[j] - (j < static_cast<int>(previous.size()) ? previous[j] : 0);
-                    difference += delta * delta;
-                }
-                std::array<double, 96> sampled{};
-                for (int j = 0; j < m; ++j) {
-                    const double* column = lanczos_basis.get() + static_cast<size_t>(j) * h.n;
-                    double coefficient = static_cast<double>(scale * g[j]);
-                    for (int s = 0; s < 96; ++s) {
-                        sampled[s] = std::fma(coefficient, column[sampled_rows[s]], sampled[s]);
-                    }
-                }
-                double size_estimate = std::max(known_size,
-                    static_cast<double>(scale * std::sqrt(gnorm) / std::sqrt(h.n)));
-                double sample_maximum = 0;
-                for (double value : sampled) sample_maximum = std::max(sample_maximum, std::abs(value));
-                size_estimate = std::max(size_estimate, sample_maximum);
-                double target = std::max(absolute_budget, 0.025 * (h.atol + h.rtol * size_estimate));
-                double residual_bound = static_cast<double>(scale * eta * beta[k] * std::abs(integral.back()));
-                double change_bound = static_cast<double>(scale * std::sqrt(m * difference));
-                if (complete_output) {
-                    double guard = static_cast<double>(128 * std::numeric_limits<double>::epsilon() *
-                        eta * scale * std::sqrt(m));
-                    output_lower = std::max(output_lower, sample_maximum - 2 * residual_bound - guard);
-                }
-                bool acceptable = residual_bound < target &&
-                    (change_bound < 2 * target || breakdown);
-                if (acceptable) ++successful_checks;
-                else successful_checks = 0;
-                if ((successful_checks >= 2 || breakdown) && acceptable) {
-                    Vec weights(m);
-                    for (int j = 0; j < m; ++j) weights[j] = static_cast<double>(scale * g[j]);
-                    cblas_dgemv(CblasColMajor, CblasNoTrans, h.n, m, 1,
-                        lanczos_basis.get(), h.n, weights.data(), 1, 0, y.data(), 1);
-                    double actual_target = std::max(absolute_budget, 0.025 * (h.atol + h.rtol * norm_inf(y)));
-                    if (residual_bound < actual_target && (change_bound < 2 * actual_target || breakdown)) {
-                        if (achieved_error) {
-                            *achieved_error = breakdown ? residual_bound : std::max(residual_bound, change_bound);
-                        }
-                        if (std::getenv("FAM_DEBUG")) {
-                            std::fprintf(stderr, "Lanczos m=%d residual=%.3g change=%.3g target=%.3g\n",
-                                m, residual_bound, change_bound, actual_target);
-                        }
-                        return true;
-                    }
-                }
-                if (m >= 96 && residual_bound > 8 * target) {
-                    double ratio = residual_bound / previous_residual;
-                    double predicted = std::numeric_limits<double>::infinity();
-                    if (ratio > 0 && ratio < 0.99) {
-                        predicted = m + 16 * std::log(target / residual_bound) / std::log(ratio);
-                    }
-                    if (predicted > maximum * 1.4) ++expensive_predictions;
-                    else expensive_predictions = 0;
-                    if (expensive_predictions >= 2) {
-                        if (std::getenv("FAM_DEBUG")) {
-                            std::fprintf(stderr, "Lanczos early fallback m=%d estimate=%.0f\n", m, predicted);
-                        }
-                        return false;
-                    }
-                }
-                previous_residual = residual_bound;
-                previous = std::move(g);
-            }
-            if (breakdown) return false;
-            double* next = lanczos_basis.get() + static_cast<size_t>(m) * h.n;
-            for (int i = 0; i < h.n; ++i) next[i] = w[i] / beta[k];
-        }
-        if (std::getenv("FAM_DEBUG")) std::fprintf(stderr, "Lanczos fallback m=%d\n", maximum);
-        return false;
-    }
-
-    void prepare_pairs() {
-        mate.resize(h.n, -1);
-        const bool fast = h.rtol >= 1e-7;
-        if (fast) pair_functions_fast.resize(h.n);
-        else pair_functions.resize(h.n);
-        auto store = [&](int i, const std::array<long double, 6>& values) {
-            if (fast) {
-                for (int j = 0; j < 6; ++j) pair_functions_fast[i][j] = static_cast<double>(values[j]);
-            } else pair_functions[i] = values;
-        };
-        auto exp_value = [&](long double z) {
-            return fast ? static_cast<long double>(std::exp(static_cast<double>(z))) : std::exp(z);
-        };
-        auto phi_value = [&](long double z) {
-            return fast ? static_cast<long double>(phi1(static_cast<double>(z))) : phi1_long(z);
-        };
-        for (int i = 0; i < h.n; ++i) {
-            if (mate[i] != -1) continue;
-            int other = -1;
-            double off = 0;
-            for (uint64_t k = a.row[i]; k < a.row[i + 1]; ++k) {
-                if (a.col[k] != static_cast<uint32_t>(i) && a.val[k] != 0) {
-                    other = static_cast<int>(a.col[k]);
-                    off = a.val[k];
-                }
-            }
-            if (other < 0) {
-                mate[i] = i;
-                long double z = -static_cast<long double>(h.t) * a.diag[i];
-                store(i, {exp_value(z), 0, 0, h.t * phi_value(z), 0, 0});
+    template <typename Real>
+    void apply_pairs(const std::vector<PairBlock<Real>>& source,
+                     const Vec& b0, const Vec& b1, Vec& y) const {
+        for (const auto& b : source) {
+            int i = b.i, j = b.j;
+            if (j < 0) {
+                y[i] = static_cast<double>(b.e0 * b0[i] + b.p0 * b1[i]);
                 continue;
             }
-            mate[i] = other;
-            mate[other] = i;
-            long double x = a.diag[i], z = a.diag[other], b = off;
-            long double gap = std::hypotl(x - z, 2 * b);
-            long double hi = (x + z + gap) / 2;
-            long double lo = hi == 0 ? 0 : (x * z - b * b) / hi;
-            long double e0 = exp_value(-h.t * lo), e1 = exp_value(-h.t * hi);
-            long double p0 = h.t * phi_value(-h.t * lo), p1 = h.t * phi_value(-h.t * hi);
-            long double p00 = gap == 0 ? 1 : (hi - x) / gap;
-            long double p01 = gap == 0 ? 0 : -b / gap;
-            long double p11 = gap == 0 ? 1 : (hi - z) / gap;
-            store(i, {e1 + (e0 - e1) * p00, (e0 - e1) * p01,
-                e1 + (e0 - e1) * p11, p1 + (p0 - p1) * p00, (p0 - p1) * p01,
-                p1 + (p0 - p1) * p11});
+            Real x0 = b.q0 * b0[i] + b.q1 * b0[j];
+            Real x1 = -b.q1 * b0[i] + b.q0 * b0[j];
+            Real z0 = b.q0 * b1[i] + b.q1 * b1[j];
+            Real z1 = -b.q1 * b1[i] + b.q0 * b1[j];
+            x0 = b.e0 * x0 + b.p0 * z0;
+            x1 = b.e1 * x1 + b.p1 * z1;
+            y[i] = static_cast<double>(b.q0 * x0 - b.q1 * x1);
+            y[j] = static_cast<double>(b.q1 * x0 + b.q0 * x1);
         }
     }
 
-    void prepare_dense() {
-        dense = true;
-        using LongMatrix = Eigen::Matrix<long double, Eigen::Dynamic, Eigen::Dynamic>;
-        LongMatrix matrix = LongMatrix::Zero(h.n, h.n);
-        for (int i = 0; i < h.n; ++i) {
-            matrix(i, i) = a.diag[i];
-            for (uint64_t j = a.row[i]; j < a.row[i + 1]; ++j) {
-                matrix(i, a.col[j]) = a.val[j];
+    bool prepare_blocks(DisjointSet& ds, bool split) {
+        std::vector<int> which(n, -1), local(n);
+        for (int i = 0; i < n; ++i) {
+            int root = split ? ds.find(i) : 0;
+            if (which[root] < 0) {
+                which[root] = static_cast<int>(blocks.size());
+                blocks.emplace_back();
             }
+            auto& b = blocks[which[root]];
+            local[i] = static_cast<int>(b.ids.size());
+            b.ids.push_back(i);
         }
-        Eigen::SelfAdjointEigenSolver<LongMatrix> eigen(matrix);
-        if (eigen.info() != Eigen::Success) throw std::runtime_error("eigensolver failure");
-        dense_vectors.assign(eigen.eigenvectors().data(),
-            eigen.eigenvectors().data() + static_cast<size_t>(h.n) * h.n);
-        dense_exp.resize(h.n);
-        dense_phi.resize(h.n);
-        for (int i = 0; i < h.n; ++i) {
-            long double z = -h.t * eigen.eigenvalues()[i];
-            dense_exp[i] = std::exp(z);
-            dense_phi[i] = h.t * phi1_long(z);
-        }
-    }
-
-public:
-    explicit Solver(const Header& header) : h(header), a(header) {
-        if (h.t == 0 || a.bound == 0) return;
-        if (h.t * a.bound < 1e-10) return;
-        if (a.pairs) prepare_pairs();
-        else if (h.n <= 48) prepare_dense();
-        else if (h.t * a.bound >= 100 && prepare_small_blocks()) {}
-        else {
-            if (h.t * a.bound >= 100) {
-                double estimate = std::sqrt(h.t * a.bound *
-                    (std::log(1 / h.atol) + std::log(h.n) + std::max(0.0, std::log(h.t))));
-                a.refine_bound(h.requests, estimate);
-            }
-            a.refine_lower(h.t);
-            coefficients.emplace_back(h.t * a.bound / 2);
-        }
-    }
-
-    Vec solve_fast(const Vec& b0, const Vec& b1) {
-        Vec y(h.n);
-        if (h.t == 0) return b0;
-        if (a.bound == 0) {
-            for (int i = 0; i < h.n; ++i) y[i] = std::fma(h.t, b1[i], b0[i]);
-            return y;
-        }
-        if (h.t * a.bound < 1e-10) {
-            Vec midpoint(h.n), work(h.n);
-            for (int i = 0; i < h.n; ++i) midpoint[i] = std::fma(h.t * 0.5, b1[i], b0[i]);
-            a.multiply_scaled(midpoint, work, h.t);
-            for (int i = 0; i < h.n; ++i) {
-                y[i] = static_cast<double>(static_cast<long double>(b0[i]) +
-                    static_cast<long double>(h.t) * b1[i] - work[i]);
-            }
-            return y;
-        }
-        if (a.pairs) {
-            if (!pair_functions_fast.empty()) {
-                for (int i = 0; i < h.n; ++i) {
-                    int j = mate[i];
-                    if (j < i) continue;
-                    const auto& f = pair_functions_fast[i];
-                    if (j == i) y[i] = f[0] * b0[i] + f[3] * b1[i];
-                    else {
-                        y[i] = f[0] * b0[i] + f[1] * b0[j] + f[3] * b1[i] + f[4] * b1[j];
-                        y[j] = f[1] * b0[i] + f[2] * b0[j] + f[4] * b1[i] + f[5] * b1[j];
-                    }
+        for (auto& b : blocks) {
+            int m = static_cast<int>(b.ids.size());
+            b.q.assign(m * m, 0);
+            using Dense = Eigen::Matrix<long double, Eigen::Dynamic, Eigen::Dynamic>;
+            Dense matrix = Dense::Zero(m, m);
+            for (int ii = 0; ii < m; ++ii) {
+                int i = b.ids[ii];
+                matrix(ii, ii) = diagonal[i];
+                for (int k = row[i]; k < row[i + 1]; ++k) {
+                    matrix(ii, local[col[k]]) = val[k];
                 }
+            }
+            Eigen::SelfAdjointEigenSolver<Dense> eig(matrix);
+            if (eig.info() != Eigen::Success) return false;
+            for (int k = 0; k < m; ++k)
+                for (int i = 0; i < m; ++i) b.q[i + m * k] = eig.eigenvectors()(i, k);
+            b.ex.resize(m);
+            b.ph.resize(m);
+            for (int k = 0; k < m; ++k) {
+                long double lambda = eig.eigenvalues()[k];
+                if (rtol < 1e-9) {
+                    __float128 rayleigh = 0, norm = 0;
+                    for (int ii = 0; ii < m; ++ii) {
+                        int i = b.ids[ii];
+                        __float128 qi = static_cast<__float128>(b.q[ii + m * k]);
+                        norm += qi * qi;
+                        rayleigh += static_cast<__float128>(diagonal[i]) * qi * qi;
+                        for (int j = row[i]; j < row[i + 1] &&
+                             col[j] < static_cast<uint32_t>(i); ++j)
+                            rayleigh += static_cast<__float128>(2 * val[j]) * qi *
+                                static_cast<__float128>(b.q[local[col[j]] + m * k]);
+                    }
+                    lambda = static_cast<long double>(rayleigh / norm);
+                }
+                long double z = -static_cast<long double>(t) * lambda;
+                b.ex[k] = std::exp(z);
+                b.ph[k] = static_cast<long double>(t) * phi_extended(z);
+            }
+        }
+        return true;
+    }
+
+    // Collatz bounds for |L| remain upper bounds for the spectrum of L.
+    void tighten_upper() {
+        Vec w(n, 1), z(n);
+        for (int it = 0; it < 10; ++it) {
+            double bound = 0, largest = 0;
+            for (int i = 0; i < n; ++i) {
+                double v = std::abs(diagonal[i]) * w[i];
+                for (int k = row[i]; k < row[i + 1]; ++k)
+                    v += std::abs(val[k]) * w[col[k]];
+                z[i] = v;
+                bound = std::max(bound, v / w[i]);
+                largest = std::max(largest, v);
+            }
+            upper = std::min(upper, bound * (1 + 4e-11));
+            for (int i = 0; i < n; ++i) w[i] = z[i] / largest + 1e-12;
+        }
+    }
+
+    void prepare_coefficients() {
+        long double a = static_cast<long double>(t) * upper / 2;
+        int last = static_cast<int>(std::ceil(
+            std::sqrt(2 * a * 72.0L) + 80.0L));
+        last = std::max(last, 80);
+        std::vector<long double> e(last + 2, 0), p(last + 2, 0);
+        e[last] = 1;
+        for (int k = last; k > 0; --k) {
+            e[k - 1] = e[k + 1] + 2 * k / a * e[k];
+            if (e[k - 1] > 1e200L) {
+                for (int j = k - 1; j <= last + 1; ++j) e[j] *= 1e-200L;
+            }
+        }
+        long double norm = e[0];
+        for (int k = 1; k <= last; ++k) norm += 2 * e[k];
+        e[0] /= norm;
+        for (int k = 1; k <= last; ++k) e[k] *= 2 / norm;
+        long double sum = 0, moment = 0;
+        for (int k = last; k >= 1; --k) {
+            p[k] = 2 * moment / a;
+            sum += e[k];
+            moment += sum;
+        }
+        p[0] = moment / a;
+        ce.resize(last + 1);
+        cp.resize(last + 1);
+        tail_e.assign(last + 1, 0);
+        tail_p.assign(last + 1, 0);
+        long double te = 0, tp = 0;
+        for (int k = last; k >= 0; --k) {
+            ce[k] = static_cast<double>(e[k]);
+            cp[k] = static_cast<double>(p[k] * t);
+            tail_e[k] = te;
+            tail_p[k] = tp * t;
+            te += e[k];
+            tp += p[k];
+        }
+    }
+
+    inline double product_row(int i, const double* x) const {
+        double xi = x[i], s0 = 0, s1 = 0, s2 = 0, s3 = 0;
+        int k = row[i], end = row[i + 1];
+        for (; k + 3 < end; k += 4) {
+            s0 += val[k] * (x[col[k]] - xi);
+            s1 += val[k + 1] * (x[col[k + 1]] - xi);
+            s2 += val[k + 2] * (x[col[k + 2]] - xi);
+            s3 += val[k + 3] * (x[col[k + 3]] - xi);
+        }
+        double v = (s0 + s1) + (s2 + s3) + rowsum[i] * xi;
+        for (; k < end; ++k) v += val[k] * (x[col[k]] - xi);
+        return v;
+    }
+
+    inline double raw_product_row(int i, const double* x) const {
+        int k = row[i], end = row[i + 1];
+        if (end - k > 64 && rtol < 1e-9) {
+            long double sum = 0, correction = 0;
+            for (; k < end; ++k) {
+                long double add = static_cast<long double>(val[k]) * x[col[k]] - correction;
+                long double next = sum + add;
+                correction = (next - sum) - add;
+                sum = next;
+            }
+            return static_cast<double>(sum);
+        }
+        double s0 = 0, s1 = 0, s2 = 0, s3 = 0;
+        for (; k + 3 < end; k += 4) {
+            s0 += val[k] * x[col[k]];
+            s1 += val[k + 1] * x[col[k + 1]];
+            s2 += val[k + 2] * x[col[k + 2]];
+            s3 += val[k + 3] * x[col[k + 3]];
+        }
+        double sum = (s0 + s1) + (s2 + s3);
+        for (; k < end; ++k) sum += val[k] * x[col[k]];
+        return sum;
+    }
+
+    Vec taylor(const Vec& b0, const Vec& b1) const {
+        Vec term(n), next(n), y(b0);
+        double eta = t * upper;
+        bool constant = true;
+        for (int i = 1; i < n; ++i) {
+            if (b0[i] != b0[0]) {
+                constant = false;
+                break;
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            double lb0;
+            if (constant && b0[0] == 0) lb0 = 0;
+            else if (raw_taylor) lb0 = raw_product_row(i, b0.data());
+            else lb0 = constant ? rowsum[i] * b0[0] : product_row(i, b0.data());
+            term[i] = t * (b1[i] - lb0);
+        }
+        int k = 1;
+        for (; k < 80; ++k) {
+            double size = 0, normy = 0;
+            for (int i = 0; i < n; ++i) {
+                y[i] += term[i];
+                size = std::max(size, std::abs(term[i]));
+                normy = std::max(normy, std::abs(y[i]));
+            }
+            double bound = size * eta / (k + 1 - eta);
+            if (bound <= 0.1 * (atol + rtol * normy)) break;
+            double factor = -t / (k + 1);
+            for (int i = 0; i < n; ++i) {
+                double product = raw_taylor ? raw_product_row(i, term.data()) :
+                                              product_row(i, term.data());
+                next[i] = factor * product;
+            }
+            term.swap(next);
+        }
+        if (std::getenv("FAMEXP_DEBUG"))
+            std::fprintf(stderr, "taylor degree=%d eta=%.8g\n", k, eta);
+        return y;
+    }
+
+    long double rational_projection(const Vec& alpha, const Vec& beta,
+                                    bool forcing, double scale, Vec& weights) const {
+        int m = static_cast<int>(alpha.size());
+        std::vector<Complex> d(m), h(m);
+        std::vector<long double> total(m, 0);
+        long double bound = 0;
+        for (int pole = 0; pole < 8; ++pole) {
+            Complex shift = cram_theta[pole];
+            Complex weight = cram_alpha[pole];
+            if (forcing) weight /= shift;
+            weight *= scale;
+            d[0] = static_cast<long double>(alpha[0]) + shift;
+            h[0] = 1;
+            for (int i = 1; i < m; ++i) {
+                Complex mult = static_cast<long double>(beta[i - 1]) / d[i - 1];
+                d[i] = static_cast<long double>(alpha[i]) + shift -
+                       static_cast<long double>(beta[i - 1]) * mult;
+                h[i] = -mult * h[i - 1];
+            }
+            h[m - 1] /= d[m - 1];
+            long double distance = shift.real() >= 0 ? std::abs(shift) :
+                                                       std::abs(shift.imag());
+            bound += 2 * std::abs(weight) * std::abs(h[m - 1]) / distance;
+            for (int i = m - 2; i >= 0; --i)
+                h[i] = (h[i] - static_cast<long double>(beta[i]) * h[i + 1]) / d[i];
+            for (int i = 0; i < m; ++i) total[i] -= 2 * (weight * h[i]).real();
+        }
+        weights.resize(m);
+        for (int i = 0; i < m; ++i) weights[i] = static_cast<double>(total[i]);
+        return bound;
+    }
+
+    // After an alternating sign change, -T is Metzler. Positive scaling and
+    // squaring computes its phi corners without cancellation in tiny defects.
+    long double defect_corner(const Vec& alpha, const Vec& beta,
+                              bool forcing) const {
+        int m = static_cast<int>(alpha.size()), d = m + 2;
+        double shift = 0;
+        for (double a : alpha) shift = std::max(shift, a);
+        double norm = shift;
+        for (int i = 0; i < m; ++i) {
+            double r = shift - alpha[i] + (i ? beta[i - 1] : 0) +
+                       (i + 1 < m ? beta[i] : 0) + (i == 0 ? 1 : 0);
+            norm = std::max(norm, r);
+        }
+        norm = std::max(norm, shift + 1);
+        int squares = norm > 1 ? static_cast<int>(std::ceil(std::log2(norm))) : 0;
+        double h = std::ldexp(1.0, -squares), sh = h * shift;
+        Vec term(d * d, 0), next(d * d), p(d * d, 0), scratch(d * d);
+        for (int i = 0; i < d; ++i) term[i + d * i] = p[i + d * i] = 1;
+        for (int k = 1; k <= 32; ++k) {
+            double fac = h / k;
+            for (int j = 0; j < d; ++j) {
+                int base = d * j;
+                for (int i = 0; i < m; ++i) {
+                    double v = (shift - alpha[i]) * term[base + i];
+                    if (i) v += beta[i - 1] * term[base + i - 1];
+                    if (i + 1 < m) v += beta[i] * term[base + i + 1];
+                    if (i == 0) v += term[base + m];
+                    next[base + i] = fac * v;
+                }
+                next[base + m] = fac * (shift * term[base + m] + term[base + m + 1]);
+                next[base + m + 1] = sh / k * term[base + m + 1];
+            }
+            for (size_t i = 0; i < p.size(); ++i) p[i] += next[i];
+            term.swap(next);
+        }
+        double factor = std::exp(-sh);
+        for (double& x : p) x *= factor;
+        p[m + d * m] = p[m + 1 + d * (m + 1)] = 1;
+        p[m + d * (m + 1)] = h;
+        for (int k = 0; k < squares; ++k) {
+            cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, d, d, d,
+                        1, p.data(), d, p.data(), d, 0, scratch.data(), d);
+            p.swap(scratch);
+            p[m + d * m] = p[m + 1 + d * (m + 1)] = 1;
+            p[m + d * (m + 1)] = std::ldexp(h, k + 1);
+        }
+        int column = forcing ? m + 1 : m;
+        return static_cast<long double>(p[m - 1 + d * column]) * 1.00001L +
+               std::ldexp(1e-32L, squares);
+    }
+
+    bool rational_action(const Vec& b, bool forcing, double scale,
+                         long double target, int cap, Vec& y,
+                         long double& residual, long double& approximation) const {
+        long double bn = norm2(b);
+        y.assign(n, 0);
+        residual = 0;
+        approximation = 0;
+        if (bn == 0) return true;
+        std::unique_ptr<double[]> basis(new double[static_cast<size_t>(cap) * n]);
+        Vec z(n), alpha, beta, weights;
+        alpha.reserve(cap);
+        beta.reserve(cap);
+        double inv = 1 / static_cast<double>(bn);
+        for (int i = 0; i < n; ++i) basis[i] = b[i] * inv;
+        bool converged = false;
+        bool resolvent_bound = false;
+        for (int j = 0; j < cap; ++j) {
+            double* q = basis.get() + static_cast<size_t>(j) * n;
+            const double* previous = j ? q - n : nullptr;
+            double old_beta = j ? beta[j - 1] : 0;
+            long double a = 0;
+            for (int i = 0; i < n; ++i) {
+                z[i] = t * product_row(i, q) -
+                       (j ? old_beta * previous[i] : 0);
+                a += static_cast<long double>(q[i]) * z[i];
+            }
+            double aj = static_cast<double>(a);
+            long double norm = 0;
+            for (int i = 0; i < n; ++i) {
+                z[i] -= aj * q[i];
+                norm += static_cast<long double>(z[i]) * z[i];
+            }
+            double bj = static_cast<double>(std::sqrt(norm));
+            alpha.push_back(aj);
+            beta.push_back(bj);
+            if ((j >= 15 && (j + 1) % 8 == 0) || j + 1 == cap ||
+                bj < 1e-14 * t * upper) {
+                long double estimate = rational_projection(alpha, beta, forcing,
+                                                           scale, weights) * bn * bj;
+                resolvent_bound = estimate <= target;
+                if (estimate > target &&
+                    ((j + 1) % 32 == 0 || j + 1 == cap)) {
+                    estimate = std::min(estimate,
+                        defect_corner(alpha, beta, forcing) * bn * bj * scale);
+                }
+                if (estimate <= target) {
+                    residual = estimate;
+                    converged = true;
+                    break;
+                }
+            }
+            if (j + 1 < cap) {
+                double* next = q + n;
+                double reciprocal = 1 / bj;
+                for (int i = 0; i < n; ++i) next[i] = z[i] * reciprocal;
+            }
+        }
+        if (!converged) {
+            if (std::getenv("FAMEXP_DEBUG"))
+                std::fprintf(stderr, "cram fallback after %zu steps\n", alpha.size());
+            return false;
+        }
+        cblas_dgemv(CblasColMajor, CblasNoTrans, n, static_cast<int>(weights.size()),
+                    static_cast<double>(bn), basis.get(), n, weights.data(), 1,
+                    0, y.data(), 1);
+        if (!forcing) {
+            for (int i = 0; i < n; ++i)
+                y[i] += static_cast<double>(cram_constant * scale) * b[i];
+        }
+        if (resolvent_bound) {
+            approximation = forcing ? 1e-13L * norm2(y) : 2.5e-16L * bn;
+        } else {
+            long double basis_bound = std::sqrt(static_cast<long double>(weights.size()));
+            approximation = forcing ? 3.5e-14L * bn * basis_bound * norm2(weights) :
+                                      3e-16L * bn * basis_bound;
+        }
+        if (std::getenv("FAMEXP_DEBUG"))
+            std::fprintf(stderr, "cram %s steps=%zu residual=%.4Lg\n",
+                         forcing ? "phi" : "exp", weights.size(), residual);
+        return true;
+    }
+
+    bool krylov(const Vec& b0, const Vec& b1, long double target,
+                int degree, Vec& y, double offset) const {
+        int cap = std::min(32, degree / 5);
+        const char* forced = std::getenv("FAMEXP_KRYLOV");
+        if (forced && std::atoi(forced) > 0) cap = std::atoi(forced);
+        if (cap < 32) return false;
+        long double residual0 = 0, residual1 = 0, floor0 = 0, floor1 = 0;
+        Vec y1;
+        if (!rational_action(b0, false, 1, target / 2, cap, y, residual0, floor0))
+            return false;
+        if (!rational_action(b1, true, t, target / 2, cap, y1, residual1, floor1))
+            return false;
+        for (int i = 0; i < n; ++i) y[i] += y1[i];
+        double normy = 0;
+        for (double v : y) normy = std::max(normy, std::abs(v + offset));
+        long double tolerance = atol + rtol * normy;
+        long double floor = floor0 + floor1;
+        bool passed = residual0 + residual1 + floor <= 0.4L * tolerance;
+        if (std::getenv("FAMEXP_DEBUG"))
+            std::fprintf(stderr, "cram check=%d floor=%.4Lg norm=%.8g\n",
+                         passed, floor, normy);
+        return passed;
+    }
+
+    void clenshaw(const Vec& b0, const Vec& b1, int degree, Vec& y) const {
+        if (small_operator) {
+            using Q = __float128;
+            std::vector<Q> u(n, 0), d(n, 0), next(n);
+            Q factor = static_cast<Q>(-4) / static_cast<Q>(upper);
+            for (int k = degree; k >= 1; --k) {
+                for (int i = 0; i < n; ++i) {
+                    Q dot = static_cast<Q>(diagonal[i]) * u[i];
+                    for (int j = row[i]; j < row[i + 1]; ++j)
+                        dot += static_cast<Q>(val[j]) * u[col[j]];
+                    d[i] += factor * dot + static_cast<Q>(ce[k]) * b0[i] +
+                            static_cast<Q>(cp[k]) * b1[i];
+                    next[i] = u[i] + d[i];
+                }
+                u.swap(next);
+            }
+            for (int i = 0; i < n; ++i) {
+                Q dot = static_cast<Q>(diagonal[i]) * u[i];
+                for (int j = row[i]; j < row[i + 1]; ++j)
+                    dot += static_cast<Q>(val[j]) * u[col[j]];
+                y[i] = static_cast<double>(d[i] + factor / 2 * dot +
+                    static_cast<Q>(ce[0]) * b0[i] + static_cast<Q>(cp[0]) * b1[i]);
+            }
+            return;
+        }
+        const char* forced = std::getenv("FAMEXP_DIAGONAL");
+        if (!diagonal_checked && (!forced || std::atoi(forced) != 0) && degree > 20) {
+            diagonal_checked = true;
+            diagonal_kernel.reset(new DiagonalKernel(n, row, col, val));
+        }
+        if (diagonal_kernel && diagonal_kernel->usable()) {
+            diagonal_kernel->apply(b0, b1, ce, cp, rowsum, upper, degree, y);
+            return;
+        }
+        const char* sliced_force = std::getenv("FAMEXP_SLICED");
+        if (!sliced_checked && (!sliced_force || std::atoi(sliced_force) != 0) && degree > 48) {
+            sliced_checked = true;
+            sliced_kernel.reset(new SlicedKernel(n, row, col, val, rowsum));
+        }
+        if (sliced_kernel && sliced_kernel->usable()) {
+            sliced_kernel->apply(b0, b1, ce, cp, upper, degree, y);
+            return;
+        }
+        Vec u(n, 0), d(n, 0), next(n);
+        double factor = -4 / upper;
+        // Reinsch's endpoint form avoids subtracting large Clenshaw sums.
+        for (int k = degree; k >= 1; --k) {
+            double ek = ce[k], pk = cp[k];
+            for (int i = 0; i < n; ++i) {
+                double ui = u[i];
+                double dot = product_row(i, u.data());
+                double di = d[i] + factor * dot + ek * b0[i] + pk * b1[i];
+                d[i] = di;
+                next[i] = ui + di;
+            }
+            u.swap(next);
+        }
+        for (int i = 0; i < n; ++i) {
+            double dot = product_row(i, u.data());
+            y[i] = d[i] + 0.5 * factor * dot + ce[0] * b0[i] + cp[0] * b1[i];
+        }
+    }
+
+    bool null_linear_action(const Vec& b0, const Vec& b1, Vec& y, double offset) const {
+        if (rtol > 1e-9) return false;
+        for (int i = 0; i < std::min(n, 16); ++i) {
+            double scale = std::abs(b0[i]) + t * std::abs(b1[i]);
+            if (std::abs(b0[i] + t * b1[i]) > 1e-8 * scale) return false;
+        }
+        long double bn0 = 0, bn1 = 0;
+        double maximum = 0, base_norm = 0, scale = 0;
+        for (int i = 0; i < n; ++i) {
+            y[i] = static_cast<double>(static_cast<long double>(b0[i]) +
+                                       static_cast<long double>(t) * b1[i]);
+            base_norm = std::max(base_norm, std::abs(y[i]));
+            maximum = std::max(maximum, std::abs(y[i] + offset));
+            scale = std::max(scale, std::abs(b0[i]) + t * std::abs(b1[i]));
+            bn0 += static_cast<long double>(b0[i]) * b0[i];
+            bn1 += static_cast<long double>(b1[i]) * b1[i];
+        }
+        if (base_norm > 1e-8 * scale) return false;
+        long double target = 0.2L * (atol + rtol * maximum);
+        using Q = __float128;
+        Q sum0 = 0, sum1 = 0;
+        Q limit0 = static_cast<Q>(target) / t;
+        Q limit1 = static_cast<Q>(2 * target) / (static_cast<Q>(t) * t);
+        limit0 *= limit0;
+        limit1 *= limit1;
+        for (int i = 0; i < n; ++i) {
+            Q r0 = static_cast<Q>(diagonal[i]) * b0[i];
+            Q r1 = static_cast<Q>(diagonal[i]) * b1[i];
+            for (int j = row[i]; j < row[i + 1]; ++j) {
+                Q v = static_cast<Q>(val[j]);
+                r0 += v * b0[col[j]];
+                r1 += v * b1[col[j]];
+            }
+            sum0 += r0 * r0;
+            sum1 += r1 * r1;
+            if (sum0 > limit0 || sum1 > limit1) return false;
+        }
+        bn0 = std::sqrt(bn0);
+        bn1 = std::sqrt(bn1);
+        long double error = t * std::sqrt(static_cast<long double>(sum0)) +
+                            0.5L * t * t * std::sqrt(static_cast<long double>(sum1));
+        long double guard = 1e-26L * t * input_norm * (bn0 + 0.5L * t * bn1) +
+                            2e-18L * (bn0 + t * bn1) +
+                            4 * std::numeric_limits<double>::epsilon() *
+                                (base_norm + std::abs(offset));
+        return error * 1.00001L + guard <= target;
+    }
+
+    Vec solve_core(const Vec& b0, const Vec& b1, double offset) const {
+        Vec y(n);
+        if (t == 0 || upper == 0 || identity_step) {
+            for (int i = 0; i < n; ++i) y[i] = b0[i] + t * b1[i];
+            return y;
+        }
+        if (raw_taylor) return taylor(b0, b1);
+        if (diagonal_only) {
+            for (int i = 0; i < n; ++i)
+                y[i] = diagonal_exp[i] * b0[i] + diagonal_phi[i] * b1[i];
+            return y;
+        }
+        if (null_linear_action(b0, b1, y, offset)) return y;
+        if (direct) {
+            if (!pairs.empty()) {
+                apply_pairs(pairs, b0, b1, y);
                 return y;
             }
-            for (int i = 0; i < h.n; ++i) {
-                int j = mate[i];
-                if (j < i) continue;
-                const auto& f = pair_functions[i];
-                if (j == i) y[i] = f[0] * b0[i] + f[3] * b1[i];
-                else {
-                    y[i] = f[0] * b0[i] + f[1] * b0[j] + f[3] * b1[i] + f[4] * b1[j];
-                    y[j] = f[1] * b0[i] + f[2] * b0[j] + f[4] * b1[i] + f[5] * b1[j];
-                }
+            if (!fast_pairs.empty()) {
+                apply_pairs(fast_pairs, b0, b1, y);
+                return y;
             }
-            return y;
-        }
-        if (dense) {
-            std::vector<long double> result(h.n);
-            for (int k = 0; k < h.n; ++k) {
-                const long double* v = dense_vectors.data() + static_cast<size_t>(k) * h.n;
-                long double c0 = 0, c1 = 0;
-                for (int i = 0; i < h.n; ++i) {
-                    c0 += static_cast<long double>(v[i]) * b0[i];
-                    c1 += static_cast<long double>(v[i]) * b1[i];
-                }
-                long double ck = dense_exp[k] * c0 + dense_phi[k] * c1;
-                for (int i = 0; i < h.n; ++i) result[i] += ck * v[i];
-            }
-            for (int i = 0; i < h.n; ++i) y[i] = static_cast<double>(result[i]);
-            return y;
-        }
-        if (!block_ptr.empty()) {
-            for (size_t g = 0; g + 1 < block_ptr.size(); ++g) {
-                int begin = block_ptr[g], m = block_ptr[g + 1] - begin;
-                size_t start = block_storage[g];
-                for (int i = 0; i < m; ++i) {
-                    long double value = 0;
-                    for (int j = 0; j < m; ++j) {
-                        int index = block_order[begin + j];
-                        size_t at = start + i + static_cast<size_t>(j) * m;
-                        value += block_exp[at] * b0[index] + block_phi[at] * b1[index];
+            for (const auto& b : blocks) {
+                int m = static_cast<int>(b.ids.size());
+                long double result[64] = {};
+                for (int k = 0; k < m; ++k) {
+                    long double x0 = 0, x1 = 0, c0 = 0, c1 = 0;
+                    for (int i = 0; i < m; ++i) {
+                        long double a0 = b.q[i + m * k] * b0[b.ids[i]] - c0;
+                        long double a1 = b.q[i + m * k] * b1[b.ids[i]] - c1;
+                        long double s0 = x0 + a0, s1 = x1 + a1;
+                        c0 = (s0 - x0) - a0;
+                        c1 = (s1 - x1) - a1;
+                        x0 = s0;
+                        x1 = s1;
                     }
-                    y[block_order[begin + i]] = static_cast<double>(value);
+                    long double z = b.ex[k] * x0 + b.ph[k] * x1;
+                    for (int i = 0; i < m; ++i) result[i] += b.q[i + m * k] * z;
                 }
+                for (int i = 0; i < m; ++i) y[b.ids[i]] = static_cast<double>(result[i]);
             }
             return y;
         }
-
-        const auto& c = coefficients[0];
-        if (h.t * a.bound >= 1200 && h.n >= 5000 &&
-                (h.rtol >= 1e-7 || (a.diffusion && !std::getenv("FAM_NO_KRYLOV10")) ||
-                    std::getenv("FAM_KRYLOV10")) &&
-                !std::getenv("FAM_NO_KRYLOV")) {
-            if (norm_inf(b0) == 0 && try_lanczos(b1, true, y, nullptr, 0, 0, true)) return y;
-            if (norm_inf(b1) == 0 && try_lanczos(b0, false, y, nullptr, 0, 0, true)) return y;
-            if (norm_inf(b0) != 0 && norm_inf(b1) != 0 && !std::getenv("FAM_NO_COMBINED")) {
-                Vec ys(h.n);
-                double es = 0, ei = 0;
-                int cap = c.degree(rhs_norm0, rhs_norm1, h.t,
-                    0.04 * (h.atol + h.rtol * output_lower)) / 4;
-                if (try_lanczos(b1, true, ys, &es, 0, cap)) {
-                    double budget = 0.02 * (h.atol + h.rtol * norm_inf(ys));
-                    if (try_lanczos(b0, false, y, &ei, budget, cap)) {
-                        for (int i = 0; i < h.n; ++i) y[i] += ys[i];
-                        double threshold = h.atol + h.rtol * norm_inf(y);
-                        if (es + ei <= 0.15 * threshold) return y;
-                    }
-                }
+        if (t * upper <= 0.25) return taylor(b0, b1);
+        bool constant_vectors = true;
+        for (int i = 1; i < n; ++i) {
+            if (b0[i] != b0[0] || b1[i] != b1[0]) {
+                constant_vectors = false;
+                break;
             }
         }
-        int degree = c.degree(rhs_norm0, rhs_norm1, h.t,
-            0.04 * (h.atol + h.rtol * output_lower));
-        if (std::getenv("FAM_DEBUG")) {
-            std::fprintf(stderr, "n=%d eta=%.7g degree=%d lower-output=%.5g\n",
-                h.n, h.t * a.bound, degree, output_lower);
+        if (constant_vectors && exact_constant_null()) {
+            double value = static_cast<double>(static_cast<long double>(b0[0]) +
+                                               static_cast<long double>(t) * b1[0]);
+            std::fill(y.begin(), y.end(), value);
+            return y;
         }
-        return apply_expansion(b0, b1, c.ex, c.ph, degree, h.t, a.bound);
+        long double n0 = 0, n1 = 0;
+        double proxy = 0;
+        for (int i = 0; i < n; ++i) {
+            n0 += b0[i] * b0[i];
+            n1 += b1[i] * b1[i];
+            double z = t * diagonal[i], estimate;
+            if (t * upper < 1) estimate = b0[i] + t * b1[i];
+            else if (z > 40) estimate = b1[i] / diagonal[i];
+            else estimate = std::exp(-z) * b0[i] + t * phi(-z) * b1[i];
+            proxy = std::max(proxy, std::abs(estimate + offset));
+        }
+        n0 = std::sqrt(n0);
+        n1 = std::sqrt(n1);
+        int degree = 0;
+        long double target = 0.05L * (atol + rtol * proxy);
+        while (degree + 1 < static_cast<int>(ce.size()) &&
+               n0 * tail_e[degree] + n1 * tail_p[degree] > target) ++degree;
+        const char* forced = std::getenv("FAMEXP_KRYLOV");
+        bool use_krylov = t * upper > 300 && upper > 6 * mean_diagonal &&
+                          mean_distance > 0.025 * n;
+        if (forced) use_krylov = std::atoi(forced) > 0;
+        const char* block_force = std::getenv("FAMEXP_BLOCK");
+        bool use_block = degree > 200 && mean_distance > 0.025 * n;
+        int block_cap = degree > 1200 ? 64 : 48;
+        if (block_force) {
+            use_block = std::atoi(block_force) > 0;
+            block_cap = std::atoi(block_force);
+        }
+        if (use_krylov && upper > 1000 * mean_diagonal && !krylov_disabled) {
+            if (krylov(b0, b1, target, degree, y, offset)) return y;
+            krylov_disabled = true;
+        }
+        if (use_block && !block_disabled) {
+            shifted::Matrix view{n, row.data(), col.data(), val.data(),
+                                 diagonal.data(), rowsum.data(), t};
+            if (shifted::solve(view, b0, b1, cram_theta, cram_alpha, cram_phi, cram_constant,
+                               atol, rtol, target, block_cap, y, offset)) return y;
+            block_disabled = true;
+            krylov_disabled = true;
+        }
+        if (use_krylov && !krylov_disabled) {
+            if (krylov(b0, b1, target, degree, y, offset)) return y;
+            krylov_disabled = true;
+        }
+        clenshaw(b0, b1, degree, y);
+        double normy = 0;
+        while (true) {
+            normy = 0;
+            for (double v : y) normy = std::max(normy, std::abs(v + offset));
+            target = 0.15L * (atol + rtol * normy);
+            if (n0 * tail_e[degree] + n1 * tail_p[degree] <= target) break;
+            while (degree + 1 < static_cast<int>(ce.size()) &&
+                   n0 * tail_e[degree] + n1 * tail_p[degree] > target * 0.3L) ++degree;
+            clenshaw(b0, b1, degree, y);
+        }
+        if (std::getenv("FAMEXP_DEBUG")) {
+            std::fprintf(stderr, "cheb degree=%d upper=%.8g eta=%.8g norm=%.8g\n",
+                         degree, upper, t * upper, normy);
+        }
+        return y;
     }
 
-    Vec solve_internal(const Vec& b0, const Vec& b1) {
-        if (!coefficients.empty()) {
-            rhs_norm0 = norm_two(b0);
-            rhs_norm1 = norm_two(b1);
-            if (rhs_norm0 + h.t * rhs_norm1 <= h.atol * 0.01) return Vec(h.n, 0);
-            output_lower = known_output_lower(b0, b1, rhs_norm0, rhs_norm1);
-            Vec y;
-            if (try_steady(b0, b1, y)) return y;
+    static double safe_center(const Vec& b) {
+        int sign = 0;
+        double minimum = std::numeric_limits<double>::infinity(), maximum = 0;
+        for (size_t i = 0; i < std::min<size_t>(b.size(), 16); ++i) {
+            if (b[i] == 0) continue;
+            int s = b[i] > 0 ? 1 : -1;
+            if (sign && sign != s) return 0;
+            sign = s;
+            minimum = std::min(minimum, std::abs(b[i]));
+            maximum = std::max(maximum, std::abs(b[i]));
         }
-        if (h.rtol <= 1e-10 && !coefficients.empty()) {
-            double initial = norm_inf(b0), source = norm_inf(b1);
-            if (std::getenv("FAM_ALL_LONG")) return sensitive_clenshaw(b0, b1);
-            if (initial > 0 && source > 0) {
-                double residual = 0;
-                for (int i = 0; i < h.n; ++i) residual = std::max(residual, std::abs(std::fma(h.t, b1[i], b0[i])));
-                if (residual < 1e-5 * initial) {
-                    Vec y;
-                    if (try_stable_cancellation(b0, b1, y)) return y;
-                    return sensitive_clenshaw(b0, b1);
-                }
-            }
-            Vec y = solve_fast(b0, b1);
-            if (initial > 0 && source > 0 && norm_inf(y) < 1e-6 * initial) {
-                if (try_stable_cancellation(b0, b1, y)) return y;
-                return sensitive_clenshaw(b0, b1);
-            }
-            return y;
+        if (maximum > 2 * minimum) return 0;
+        long double sum = 0, correction = 0;
+        for (double v : b) {
+            long double add = static_cast<long double>(v) - correction;
+            long double next = sum + add;
+            correction = (next - sum) - add;
+            sum = next;
         }
-        return solve_fast(b0, b1);
+        double center = static_cast<double>(sum / b.size());
+        if (center == 0) return 0;
+        // An error-free TwoSum check makes this an exact input decomposition.
+        for (double v : b) {
+            double difference = v - center;
+            double part = difference - v;
+            double error = (v - (difference - part)) + (-center - part);
+            if (error != 0) return 0;
+        }
+        return center;
     }
 
-    Vec solve(const Vec& b0, const Vec& b1) {
-        if (a.gauge.empty()) return solve_internal(b0, b1);
-        Vec c0(h.n), c1(h.n);
-        for (int i = 0; i < h.n; ++i) {
-            c0[i] = a.gauge[i] < 0 ? -b0[i] : b0[i];
-            c1[i] = a.gauge[i] < 0 ? -b1[i] : b1[i];
+    Vec solve(const Vec& b0, const Vec& b1) const {
+        if (raw_taylor || direct || diagonal_only || identity_step || upper == 0 ||
+            t * upper < 20 || constant_null_status < 0)
+            return solve_core(b0, b1, 0);
+        double c0 = safe_center(b0), c1 = safe_center(b1);
+        if ((c0 == 0 && c1 == 0) || !exact_constant_null())
+            return solve_core(b0, b1, 0);
+        Vec r0(n), r1(n);
+        for (int i = 0; i < n; ++i) {
+            r0[i] = b0[i] - c0;
+            r1[i] = b1[i] - c1;
         }
-        Vec y = solve_internal(c0, c1);
-        for (int i = 0; i < h.n; ++i) if (a.gauge[i] < 0) y[i] = -y[i];
+        double offset = static_cast<double>(static_cast<long double>(c0) +
+                                            static_cast<long double>(t) * c1);
+        if (zero_rhs(r0, r1)) return Vec(n, offset);
+        Vec y = solve_core(r0, r1, offset);
+        for (double& value : y) value += offset;
         return y;
     }
 };
 
 int main() {
     try {
-        write_exact("READY\n", 6);
-        char magic[8];
-        read_exact(magic, sizeof(magic));
-        if (std::memcmp(magic, "FAMEXP2\n", 8)) throw std::runtime_error("invalid magic");
-        uint32_t length;
-        read_exact(&length, sizeof(length));
-        if (length > 4096) throw std::runtime_error("header too long");
-        std::string json(length, '\0');
-        read_exact(json.data(), json.size());
-        Header h(json);
-        Solver solver(h);
-        Vec b0(h.n), b1(h.n);
-        for (int request = 0; request < h.requests; ++request) {
-            read_exact(b0.data(), b0.size() * sizeof(double));
-            read_exact(b1.data(), b1.size() * sizeof(double));
-            Vec y = solver.solve(b0, b1);
-            write_exact(y.data(), y.size() * sizeof(double));
+        double warm_matrix = 1, warm_result = 0;
+        cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 1, 1, 1, 1,
+                    &warm_matrix, 1, &warm_matrix, 1, 0, &warm_result, 1);
+        configure_pipe(0);
+        configure_pipe(1);
+        write_all("READY\n", 6);
+        char prefix[12];
+        read_all(prefix, 12);
+        if (std::memcmp(prefix, "FAMEXP2\n", 8) != 0) return 2;
+        uint32_t len;
+        std::memcpy(&len, prefix + 8, 4);
+        if (len > 4096) return 2;
+        std::string text(len, '\0');
+        read_all(text.data(), len);
+        auto h = parse_header(text);
+        Solver s;
+        s.n = std::stoi(h.at("n"));
+        s.requests = std::stoi(h.at("requests"));
+        s.t = std::strtod(h.at("t").c_str(), nullptr);
+        s.rtol = std::strtod(h.at("rtol").c_str(), nullptr);
+        s.atol = std::strtod(h.at("atol").c_str(), nullptr);
+        int nnz = std::stoi(h.at("nnz"));
+        Vec b0(s.n), b1(s.n);
+        {
+            std::vector<uint64_t> ptr(s.n + 1);
+            std::vector<uint32_t> idx(nnz);
+            Vec data(nnz);
+            read_blocks({{ptr.data(), ptr.size() * sizeof(uint64_t)},
+                         {idx.data(), idx.size() * sizeof(uint32_t)},
+                         {data.data(), data.size() * sizeof(double)},
+                         {b0.data(), b0.size() * sizeof(double)},
+                         {b1.data(), b1.size() * sizeof(double)}});
+            if (s.requests == 1 && zero_rhs(b0, b1)) {
+                write_all(b0.data(), b0.size() * sizeof(double));
+                ::_exit(0);
+            }
+            if (s.t != 0) s.prepare(ptr, std::move(idx), std::move(data));
         }
-        return 0;
+        for (int j = 0; j < s.requests; ++j) {
+            if (j) {
+                read_blocks({{b0.data(), b0.size() * sizeof(double)},
+                             {b1.data(), b1.size() * sizeof(double)}});
+            }
+            if (zero_rhs(b0, b1)) {
+                write_all(b0.data(), b0.size() * sizeof(double));
+                continue;
+            }
+            if (!s.signs.empty()) {
+                for (int i = 0; i < s.n; ++i) {
+                    b0[i] *= s.signs[i];
+                    b1[i] *= s.signs[i];
+                }
+            }
+            Vec y = s.solve(b0, b1);
+            if (!s.signs.empty())
+                for (int i = 0; i < s.n; ++i) y[i] *= s.signs[i];
+            write_all(y.data(), y.size() * sizeof(double));
+        }
+        ::_exit(0);
     } catch (const std::exception& e) {
         std::fprintf(stderr, "solver: %s\n", e.what());
         return 1;

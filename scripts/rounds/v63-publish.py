@@ -21,9 +21,9 @@ SUBFOLDER = {'ihvp-sequence-v2': 'v2'}  # later task versions within protocol v6
 SETTING = {'single': '单轮', 'iterative': '迭代'}
 NOTES = {
     ('conic', 'single'): 'HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。',
-    ('conic', 'iterative'): '按结构分派：可分 LP / 对角 QP 解析解、锥结构化简与等式消元、几何规划段的约化牛顿法、HiGHS，其余用齐次原始对偶内点法（Mehrotra 步，Nesterov–Todd 缩放）。',
+    ('conic', 'iterative'): '结构捷径（零最优、可分盒约束 QP、代数不可行证书）后：LP 与小 QP 用 HiGHS，其余多面体 QP 用固定分解的算子分裂加有效集 KKT 精修；一般锥用齐次嵌入预估校正内点法（Ruiz 均衡、Nesterov–Todd 缩放），二阶锥用稀疏秩二展开，指数锥用解析障碍函数。重跑（原尝试受测试排队故障影响）。',
     ('exponential-v3', 'single'): 'C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递推，正向量加权 Gershgorin 收紧谱区间；小连通块扩展精度对角化。',
-    ('exponential-v3', 'iterative'): '对角与 2×2 块解析求解，小连通块扩展精度特征分解；其余用 Chebyshev 展开，两种矩阵函数共用一条 Clenshaw 递推，按输出大小自适应截断，另有自适应 Lanczos 试探。',
+    ('exponential-v3', 'iterative'): '刚度小的会话直接用自适应 Taylor；对角和小连通块扩展精度谱分解；一般情形用合并的 Chebyshev 展开（行和与 Collatz 界给谱区间，Reinsch 形式的 Clenshaw 递推）。重跑（原尝试受测试排队故障影响）。',
     ('galaxy-gravity-v3', 'single'): '笛卡尔与调和多极展开结合的 FMM，远场也保留 Plummer 软化修正；按相互作用选展开阶数，按进程 CPU 时间控制工作量。',
     ('galaxy-gravity-v3', 'iterative'): '核拆分：牛顿部分用调和多极展开，软化差项用笛卡尔修正；按调用规划精度，剩余 CPU 时间对部分粒子做完整直接求和。',
     ('polarization-demosaicking-v2', 'single'): '低通估计通道差、把马赛克细节转移到四个通道，再用约 7.7k 参数的残差卷积网络修正（只用 2 张公开样例加增强训练），最后做以强度为引导的局部仿射回归。',
@@ -31,7 +31,7 @@ NOTES = {
     ('species-tree-v3', 'single'): '支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；最多 60 个基因座自助树，再用动态规划求兼容分裂频率最大的共识树。',
     ('species-tree-v3', 'iterative'): '支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；四元组按悬挂枝长降权（加权方式与 Weighted ASTRAL 相同）。',
     ('trajectory-covariance-v2', 'single'): '白化后自适应窗宽的重叠批均值；README 写明把估计除以了轨迹长度，与题目要求的尺度不符，误差约为强参照的 10 倍。会话只用了 2 分钟。',
-    ('trajectory-covariance-v2', 'iterative'): '白化后用 AICc 权重组合独立观测与 VAR(1) 谱估计，系数不确定度用三明治估计并向共同衰减率收缩；有限状态链用 Markov 泊松方程。',
+    ('trajectory-covariance-v2', 'iterative'): '白化后：有限状态链拟合正则化转移矩阵并解 Markov 泊松方程；其余拟合至多 32 阶的条件向量自回归，按信息准则加权平均零频谱估计；可逆性诊断通过时与共同动力学、分组动力学拟合比较。重跑（原尝试受测试排队故障影响）。',
     ('ihvp-sequence', 'single'): '用少量 HVP 查询识别生成结构（带符号 DCT 对角化、对角项与 rank-12 修正），再精确求解；误差到机器精度，每条序列约 1.7 秒。题目设计缺陷，已触发请出题人修改（`tasks/ihvp-sequence/analysis/INTEGRATION.md`）。',
     ('ihvp-sequence', 'iterative'): '同一思路：从查询恢复 DCT 坐标符号与低秩部分，构造精确预条件后求解；1 次测试即得 public 满分并提交。题目设计缺陷，已触发请出题人修改。',
     ('ihvp-sequence-v2', 'single'): '工作区不含生成代码；Galerkin 回收 CG：在历史解张成的子空间上投影热启动，再用 C 写的 CG 内核修正。没有识别矩阵结构；困难序列被“解序列沿时间平滑”绕开，误差为参照的约 1/180。',
