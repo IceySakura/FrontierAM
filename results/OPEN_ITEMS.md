@@ -65,3 +65,5 @@
 | opus trajectory 迭代因上游余额不足中断（11-12 15:11） | 上游返回 400 “Credit balance is too low”，harness 退出，记为未测，日志改名 `.credit.log`，待重跑。它是第一个带 `cache_task_id` 启动的 opus 尝试（前 14 次请求正常后失败）；同时在跑、没带 `cache_task_id` 的 opus species 正常。疑似账户亲和把请求固定到余额耗尽的账户上，待确认 | `arena/native.py` |
 | 默认全并发 + 异常报警（用户决定 11-12） | 所有评分 `shared`，基线不强制 `quiet`，不为测试预留空闲槽；每次评分前后约 0.7 秒的负载小测（慢于该槽历史最佳 25% 报警），exponential 闸门超标只报警；报警显示在看板“实时占用”页，逐条单独处理。实测 3 路评测 + 3 个真实开发：负载系数 1.041–1.064 | `docs/platform/CONCURRENCY.md` 第 7 节 |
 | opus 余额不足：按 AIHub 建议换 id 重试（11-12） | ATR 网关（本地提交 `d3432ae`，未推送团队仓库）：上游 400 “Credit balance is too low” 时缓冲该响应，轮换 `cache_task_id`（由原 id 派生，仍按尝试隔离），并改答 429 让客户端重试；审计记录保留上游原始状态与内容。之后启动的尝试生效。opus trajectory 迭代（`.credit.log`）待当前 opus 队列跑完后重跑 | ATR `src/atr/ingress/{gateway,mitm}.py` |
+| ihvp-sequence v3：sol 迭代 82.3 超过 80（11-12 15:43） | 私有集 30 条：sol 单轮 E = 0.0381 → 76.3 分，迭代 E = 0.0285 → 82.3 分（映射 50 + 50·(E₅₀ − E)/E₅₀，E₅₀ = 0.0805）。按参照政策（任一格 ≥ 80 通知出题人，由出题人决定是否出新版），连同 `tasks/ihvp-sequence/analysis/V3_RESULTS.md` 一并交给出题人 | 待出题人 |
+| opus 一轮并发偏低（11-12 15:43 发现） | opus 调度脚本按 `V63_CONCURRENCY=2` 启动，且 ihvp v3 回放开着“新开发暂缓”窗口直到 sol v3 评完；15:43 改为一次放出全部剩余 4 个尝试（共 6 个并行） | 已处理 |

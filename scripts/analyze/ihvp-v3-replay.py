@@ -1,10 +1,11 @@
 """ihvp-sequence-v3 replay and reference report for the author (tasks/ihvp-sequence/analysis/V3_RESULTS.md).
 
-run:    holding new development back from the start, grade on dev_idle leases (no development running; grade slots in
-        parallel, grade-to-grade interference negligible) the frozen v2 high-score programs, the two references on all 30
-        public sequences and the v1 programs, with the v3 deployment (arena/operator_drivers/ihvp_sequence.py: single
-        thread, 30 s per sequence, worker peak RSS 256 MiB); development stays held until gpt-6.1-sol's v3 cells are graded.
-        Private references come from the v3 anchor measurement. Outputs: var/stores/store-v63/ihvp-v3-replay/.
+run:    holding new development back from the start, grade on shared grade leases the frozen v2 high-score programs, the
+        two references on all 30 public sequences and the v1 programs, with the v3 deployment
+        (arena/operator_drivers/ihvp_sequence.py: single thread, 30 s per sequence, worker peak RSS 256 MiB); new
+        development stays held until gpt-6.1-sol's v3 cells are graded. Private references come from the v3 anchor
+        measurement. Outputs: var/stores/store-v63/ihvp-v3-replay/.
+run-v3: gpt-6.1-sol's v3 programs on all 30 public sequences (their private split is the formal grading).
 report: per public/private split and per group (retained 15, added 15, all 30): mean loss, mean/max wall time,
         peak RSS and failures for every program; writes aggregates only (no case data) to V3_RESULTS.md.
 
@@ -31,6 +32,12 @@ PROGRAMS = [  # (label, submission, description); v2 first as the author asked
     ('v1-iterative', 'ihvp-sequence-20261111T052259Z-ce34b8', 'gpt-6.1-sol v1 迭代（识别 DCT 结构，v1 100）'),
 ]
 REFERENCES = [('cg', 'weak', '冷启动 CG（0 分锚点）'), ('lbfgs', 'strong', 'L-BFGS-PCG（50 分锚点）')]
+V3_PROGRAMS = [  # (label, submission, formal grading job for the private split, description)
+    ('v3-single', 'ihvp-sequence-v3-20261112T050536Z-76585a', 'job-20261112T071810Z-17764c',
+     'gpt-6.1-sol v3 单轮（历史子空间 Galerkin + CG）'),
+    ('v3-iterative', 'ihvp-sequence-v3-20261112T070724Z-5b8c9b', 'job-20261112T073045Z-299f05',
+     'gpt-6.1-sol v3 迭代（从 HVP 学习蝶形正交基）'),
+]
 
 
 def source_dir(submission: str) -> Path:
@@ -79,6 +86,32 @@ def run() -> None:
     print(json.dumps({'event': 'done', 'development': 'released'}), flush=True)
 
 
+def run_v3() -> None:
+    import arena.tasks  # noqa: F401
+    from arena.cli import context, placement_for
+    from arena.slots import Broker
+    from arena.tasks import TASKS
+
+    layout, _, _ = context()
+    broker = Broker(layout)
+    task = TASKS['ihvp-sequence-v3']
+
+    def one(program):
+        label, submission, _, _ = program
+        out = OUT / f'{label}-public_all'
+        if (out / 'summary.json').exists():
+            return
+        if out.exists():
+            shutil.rmtree(out)
+        with broker.acquire('grade', task.grade_memory, f'ihvp v3 replay {label}-public_all', isolation='shared') as lease:
+            result = task.run_grader(source_dir(submission), out, placement_for(lease, layout), split='public_all')
+        print(json.dumps({'event': 'graded', 'job': f'{label}-public_all', 'slot': lease.id,
+                          **{k: result.get(k) for k in ('status', 'raw_error', 'max_wall_s', 'max_peak_rss_mib')}}), flush=True)
+
+    with ThreadPoolExecutor(max_workers=len(V3_PROGRAMS)) as pool:
+        list(pool.map(one, V3_PROGRAMS))
+
+
 def records(path: Path) -> list[dict]:
     return json.loads(path.read_text()).get('records', []) if path.exists() else []
 
@@ -104,10 +137,14 @@ def report() -> None:
             for label in [p[0] for p in PROGRAMS] + [r[0] for r in REFERENCES] for split in ('private', 'public_all')}
     for name in anchors:
         runs[(name, 'private')] = anchors[name]
-    names = {**{r[0]: r[2] for r in REFERENCES}, **{p[0]: p[2] for p in PROGRAMS}}
+    for label, _, job, _ in V3_PROGRAMS:
+        runs[(label, 'private')] = records(STORE / 'results' / job / 'grade/candidate/summary.json')
+        runs[(label, 'public_all')] = records(OUT / f'{label}-public_all' / 'summary.json')
+    names = {**{r[0]: r[2] for r in REFERENCES}, **{p[0]: p[3] for p in V3_PROGRAMS}, **{p[0]: p[2] for p in PROGRAMS}}
     lines = ['# ihvp-sequence v3：参照重测与旧程序回放（自动生成）', '',
-             '本机评测核，单线程、每条序列 30 秒、worker 峰值 RSS 256 MiB，整机安静（无开发、其他评测槽空闲）；v3 部署：评测器在任务镜像内以 root 运行，'
-             'worker 为 UID 1000，只能读协议文件。private 的两份参照来自 v3 锚点标定（同一部署）；其余为本次回放。'
+             '本机评测核，单线程、每条序列 30 秒、worker 峰值 RSS 256 MiB；与其他开发、评测并发运行（共享模式）。'
+             'v3 部署：评测器在任务镜像内以 root 运行，worker 为 UID 1000，只能读协议文件。private 的两份参照来自 v3 锚点标定，'
+             'gpt-6.1-sol v3 的 private 来自正式评分（同一部署）；其余为本次回放。'
              'loss 为每条序列 50 步平均后再对序列平均（与原始指标 E 相同）；有失败的组不给平均 loss。不复用旧版锚点。', '']
     summary = {}
     for split, title in (('public_all', 'public（反馈池，30 条）'), ('private', 'private（正式集，30 条）')):
@@ -132,4 +169,4 @@ def report() -> None:
 
 
 if __name__ == '__main__':
-    {'run': run, 'report': report}[sys.argv[1]]()
+    {'run': run, 'run-v3': run_v3, 'report': report}[sys.argv[1]]()
