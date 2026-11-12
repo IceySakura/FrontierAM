@@ -35,8 +35,8 @@ NOTES = {
     ('ihvp-sequence', 'single'): '用少量 HVP 查询识别生成结构（带符号 DCT 对角化、对角项与 rank-12 修正），再精确求解；误差到机器精度，每条序列约 1.7 秒。题目设计缺陷，已触发请出题人修改（`tasks/ihvp-sequence/analysis/INTEGRATION.md`）。',
     ('ihvp-sequence', 'iterative'): '同一思路：从查询恢复 DCT 坐标符号与低秩部分，构造精确预条件后求解；1 次测试即得 public 满分并提交。题目设计缺陷，已触发请出题人修改。',
     ('ihvp-sequence-v2', 'single'): '工作区不含生成代码；Galerkin 回收 CG：在历史解张成的子空间上投影热启动，再用 C 写的 CG 内核修正。没有识别矩阵结构；困难序列被“解序列沿时间平滑”绕开，误差为参照的约 1/180。',
-    ('ihvp-sequence-v3', 'single'): '通用回收 CG：最近 4 个解与搜索方向的 Galerkin 投影热启动，加右端项历史预测，C 内核做投影 CG，阶段切换时多分时间，最后做能量最优缩放；没有识别矩阵结构。约 16 分来自原有 15 条的三条难档；新增 15 条各族均为参照的 0.62–0.74 倍（`tasks/ihvp-sequence/analysis/V3_SOL_ANALYSIS.md`）。',
-    ('ihvp-sequence-v3', 'iterative'): '回收 CG 加三层预条件选择：对角加低秩精确拟合、对角探测、从 HVP 逐层学出 14 层蝶形正交基后做对角预条件。学习基只在两个 butterfly 族成立（loss 为参照的 0.07–0.28 倍），DCT 三族退回无预条件；public 分数在加入学习基后从 64.9 升到 73.3。超过 80，已请出题人决定（`tasks/ihvp-sequence/analysis/V3_SOL_ANALYSIS.md`）。',
+    ('ihvp-sequence-v3', 'single'): '通用回收 CG：最近 4 个解与搜索方向的 Galerkin 投影热启动，加右端项历史预测，C 内核做投影 CG，阶段切换时多分时间，最后做能量最优缩放；没有识别矩阵结构。原有 15 条 98.9 分，新增 15 条 65.1 分（五个族 63–69 分）（`tasks/ihvp-sequence/analysis/V3_SOL_ANALYSIS.md`）。',
+    ('ihvp-sequence-v3', 'iterative'): '回收 CG 加三层预条件选择：对角加低秩精确拟合、对角探测、从 HVP 逐层学出 14 层蝶形正交基后做对角预条件。原有 15 条 98.1 分，新增 15 条 74.4 分：学习基只在两个 butterfly 族成立（87–88 分），DCT 三族退回无预条件（66–71 分）。超过 80，已请出题人决定（`tasks/ihvp-sequence/analysis/V3_SOL_ANALYSIS.md`）。',
     ('ihvp-sequence-v2', 'iterative'): '工作区不含生成代码；最近 16 个解做 QR，在子空间上精确投影得到初始解，再跑 CG，按剩余步数分配时间（阶段突变时多给），Gauss–Radau 上界停止。没有识别矩阵结构；public 分数 83.7 → 99.8。',
 }
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'

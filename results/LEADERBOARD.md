@@ -21,7 +21,7 @@
 
 - 单轮各用 52–58 分钟，trajectory 单轮只用 2 分钟（输出尺度错误，按规则有效、记 0）。
 - conic、exponential、trajectory 的迭代为重跑（原尝试受测试排队故障影响，原成绩 0.0 / 59.6 / 62.3 留档于 `var/stores/store-v63/superseded/`）。
-- ihvp-sequence 两格 100 分：模型用少量 HVP 查询识别生成结构（带符号 DCT 对角化 + rank-12 修正）后精确求解，属题目设计缺陷；按规则有效，已触发请出题人修改（`tasks/ihvp-sequence/analysis/INTEGRATION.md`）。v2 不给生成代码后，模型改用通用的历史解子空间投影加 CG，仍得 99.7 / 99.9（解序列近似低秩，见题目结果解读）；v3（新增 15 条困难序列）：单轮 76.3、迭代 82.3。约 16 分来自原有 15 条；迭代从 HVP 学出 butterfly 族的蝶形基（`tasks/ihvp-sequence/analysis/V3_SOL_ANALYSIS.md`），超过 80，已请出题人决定。其余格子都低于 80 分。
+- ihvp-sequence 两格 100 分：模型用少量 HVP 查询识别生成结构（带符号 DCT 对角化 + rank-12 修正）后精确求解，属题目设计缺陷；按规则有效，已触发请出题人修改（`tasks/ihvp-sequence/analysis/INTEGRATION.md`）。v2 不给生成代码后，模型改用通用的历史解子空间投影加 CG，仍得 99.7 / 99.9（解序列近似低秩，见题目结果解读）；v3（新增 15 条困难序列）：单轮 76.3、迭代 82.3；按组计分，原有 15 条 98.9 / 98.1，新增 15 条 65.1 / 74.4；迭代从 HVP 学出 butterfly 族的蝶形基（`tasks/ihvp-sequence/analysis/V3_SOL_ANALYSIS.md`），超过 80，已请出题人决定。其余格子都低于 80 分。
 
 ## 协议 v6
 
