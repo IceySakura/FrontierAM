@@ -140,3 +140,4 @@ hy4 有一片（171 例）为了赶在交付前完成，被拆到 grade-14 和 g
 
 2026-11-12：polarization-demosaicking 与 ihvp-sequence 的私有评分也由 `quiet`（整机安静，连其他评测槽也空着）改为 `dev_idle`。按上表，评测之间几乎没有干扰，需要排除的只是开发负载；`quiet` 是 7+7 布局实测之前的设置。代价是计时敏感的评分要等开发槽全空；开发尝试连续排队时，需要临时阻止新的开发启动来开评分窗口。
 
+2026-11-12 真实开发负载下实测：3 个真实模型尝试同时开发时，grade-06（与一个开发槽同在一个 L3 域）上 1 路 exponential 参照的负载系数为 1.053（23 个用例中位数），安静时为 1.037，即真实开发只多约 1.5%。上表的内存带宽压力程序是人为最坏情况，远高于真实开发。据此 ihvp-sequence 与 polarization-demosaicking 的私有评分改为 `shared`（可与开发、其他评测并行）；conic 与 exponential 保持原机制（exponential 有配对参照与负载闸门）。原始记录：`var/stores/store/results/job-20261112T070629Z-88df0f/`。

@@ -197,9 +197,9 @@ class PolarizationDemosaicking(OperatorTask):
     grade_memory = 10 * GIB
     # Each scene has a 1.000-second wall limit including interpreter start-up, about 0.6 s of which a typical
     # submission uses; with development sessions running on the L3-sharing dev cores, scenes spiked to 0.9-1.0 s
-    # (tasks/polarization-demosaicking/analysis/polarization-first-scene.json), so no development may run while it grades;
-    # other gradings may (grade-to-grade interference is negligible on the paired layout, docs/platform/CONCURRENCY.md 7).
-    grade_isolation = 'dev_idle'
+    # (tasks/polarization-demosaicking/analysis/polarization-first-scene.json); those spikes came from evicted image files
+    # (warm_image below), and real development adds about 1.5% (docs/platform/CONCURRENCY.md 7, 2026-11-12).
+    grade_isolation = 'shared'
 
     # FRONTIERAM_POLAR_DATA=wen grades the public-feedback scenes instead (protocol v6.2; results/OPEN_ITEMS.md).
     feedback = OPS / 'polarization-demosaicking-feedback'

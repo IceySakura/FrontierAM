@@ -50,8 +50,8 @@ def run() -> None:
     from arena.tasks import TASKS
 
     layout, _, _ = context()
-    broker = Broker(layout, dev_drain_after=0)
-    drain = broker._drain_request('ihvp v3 replay and grading')  # new development waits from now on
+    broker = Broker(layout)
+    drain = broker.grading_window('ihvp v3 replay and grading')  # new development waits from now on; gradings do not
     task = TASKS['ihvp-sequence-v3']
     jobs = [(label, source_dir(sub), split) for label, sub, _ in PROGRAMS[:2] for split in ('private', 'public_all')]
     jobs += [(name, task.reference_dir(which), 'public_all') for name, which, _ in REFERENCES]
@@ -64,7 +64,7 @@ def run() -> None:
             return
         if out.exists():
             shutil.rmtree(out)
-        with broker.acquire('grade', task.grade_memory, f'ihvp v3 replay {label}-{split}', isolation='dev_idle') as lease:
+        with broker.acquire('grade', task.grade_memory, f'ihvp v3 replay {label}-{split}', isolation='shared') as lease:
             result = task.run_grader(source, out, placement_for(lease, layout), split=split)
         print(json.dumps({'event': 'graded', 'job': f'{label}-{split}', 'slot': lease.id,
                           **{k: result.get(k) for k in ('status', 'raw_error', 'max_wall_s', 'max_peak_rss_mib')}}), flush=True)

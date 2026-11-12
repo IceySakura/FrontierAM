@@ -32,9 +32,9 @@ if __name__ != '__main__':
         grader_version = 'v1'  # versions/<v>/grader evaluates this task version (v1 and v2 share it)
         grade_memory = 5 * GIB
         grade_timeout = 3600
-        # Wall-clock limits (30 s per sequence): no development may run (dev bandwidth load doubles timing on a shared L3);
-        # other gradings may, since grade-to-grade interference is negligible (docs/platform/CONCURRENCY.md section 7).
-        grade_isolation = 'dev_idle'
+        # Wall-clock limits (30 s per sequence), yet measured interference is small: 7 concurrent gradings 1.04, and with
+        # real development running 1.053 against 1.037 quiet (docs/platform/CONCURRENCY.md section 7, 2026-11-12).
+        grade_isolation = 'shared'
 
         def data_dir(self, split: str | None = None) -> Path | None:
             split = split or os.environ.get('FRONTIERAM_IHVP_DATA', 'private')

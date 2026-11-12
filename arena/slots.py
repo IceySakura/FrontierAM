@@ -228,13 +228,25 @@ class Broker:
                     request[1].unlink(missing_ok=True)
                     os.close(request[0])
 
-    def _drain_request(self, owner: str) -> tuple[int, Path]:
-        """While a quiet grade waits, new gradings wait; new development waits once dev_drain_after has passed."""
+    def _drain_request(self, owner: str, dev_only: bool = False) -> tuple[int, Path]:
+        """While a quiet grade waits, new gradings wait; new development waits once dev_drain_after has passed.
+
+        dev_only: hold back new development only (a grading window for dev_idle gradings, which must still run).
+        """
         path = self.root / f'drain-{os.getpid()}-{time.monotonic_ns()}.request'
         fd = os.open(path, os.O_RDWR | os.O_CREAT, 0o644)
         fcntl.flock(fd, fcntl.LOCK_EX)
-        os.write(fd, json.dumps({'owner': owner, 'dev_after_unix': time.time() + self.dev_drain_after}).encode())
+        os.write(fd, json.dumps({'owner': owner, 'dev_after_unix': time.time() + self.dev_drain_after,
+                                 'dev_only': dev_only}).encode())
         return fd, path
+
+    def grading_window(self, owner: str) -> tuple[int, Path]:
+        """Hold back new development at once (gradings proceed) until the returned request is released."""
+        saved, self.dev_drain_after = self.dev_drain_after, 0.0
+        try:
+            return self._drain_request(owner, dev_only=True)
+        finally:
+            self.dev_drain_after = saved
 
     def _draining(self, kind: str) -> bool:
         for path in self.root.glob('drain-*.request'):
@@ -245,12 +257,15 @@ class Broker:
             try:
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
-                if kind != 'dev':
-                    return True
                 try:
-                    if time.time() >= json.loads(path.read_text())['dev_after_unix']:
-                        return True
-                except (OSError, ValueError, KeyError):
+                    request = json.loads(path.read_text())
+                except (OSError, ValueError):
+                    return True
+                if kind != 'dev':
+                    if request.get('dev_only'):
+                        continue
+                    return True
+                if time.time() >= request.get('dev_after_unix', 0):
                     return True
             else:
                 path.unlink(missing_ok=True)
