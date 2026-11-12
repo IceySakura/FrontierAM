@@ -125,7 +125,21 @@ def process_stats(submission: str, index: tuple[dict, dict]) -> dict | None:
         return None
     r = json.loads((run / 'develop_result.json').read_text())
     tests = r.get('test_submissions', sum(e.get('kind') == 'test' for e in r.get('evaluations', [])))
-    return {'minutes': round(r['development_seconds'] / 60, 1), 'public_tests': tests}
+    # Public-set score of every test in submission order (None: no report), with its minute from the start.
+    curve = [{'minute': round(e['requested_at_seconds'] / 60, 1), 'score': e.get('score') if e.get('status') == 'ok' else None,
+              'status': e.get('status')}
+             for e in r.get('evaluations', []) if e.get('kind') == 'test' and e.get('requested_at_seconds') is not None]
+    return {'minutes': round(r['development_seconds'] / 60, 1), 'public_tests': tests, **({'public_curve': curve} if curve else {})}
+
+
+def curve_text(p: dict | None) -> str:
+    """'public 分数随测试提交：51.0（3 分钟）→ …' for an iterative attempt."""
+    curve = (p or {}).get('public_curve')
+    if not curve:
+        return ''
+    steps = [f'{"—" if c["score"] is None else format(c["score"], ".1f")}（{c["minute"]:.0f} 分钟）' for c in curve]
+    return 'public 分数随测试提交：' + ' → '.join(steps) + '（—：没有拿到报告）' if any(c['score'] is None for c in curve) \
+        else 'public 分数随测试提交：' + ' → '.join(steps)
 
 
 def process_text(p: dict | None, iterative: bool) -> str:
@@ -217,6 +231,8 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
             lines += [f'### {MODEL.get(r["model"], r["model"])}（{r.get("setting", "")}，{protocol}）', '']
             if r.get('notes_md'):
                 lines += [r['notes_md'], '']
+            if r.get('setting') == '迭代' and curve_text(r.get('_process')):
+                lines += [curve_text(r.get('_process')), '']
             if folder:
                 note = f'源码 [`solutions/{protocol}/{folder}/source/`](solutions/{protocol}/{folder}/source/)（提交 `{r["submission"]}`）'
                 lines += [note + ('；未复制的二进制或大文件：' + '、'.join(omitted) if omitted else '') + '。', '']

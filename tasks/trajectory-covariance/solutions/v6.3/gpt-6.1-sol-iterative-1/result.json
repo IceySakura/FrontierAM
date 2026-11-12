@@ -9,6 +9,148 @@
  "review": null,
  "process": {
   "minutes": 116.1,
-  "public_tests": 28
+  "public_tests": 28,
+  "public_curve": [
+   {
+    "minute": 2.4,
+    "score": 51.03446205139069,
+    "status": "ok"
+   },
+   {
+    "minute": 7.3,
+    "score": 50.785819545563506,
+    "status": "ok"
+   },
+   {
+    "minute": 9.4,
+    "score": 52.32982726150869,
+    "status": "ok"
+   },
+   {
+    "minute": 14.8,
+    "score": 52.87230649265237,
+    "status": "ok"
+   },
+   {
+    "minute": 20.1,
+    "score": 52.87230649265237,
+    "status": "ok"
+   },
+   {
+    "minute": 22.3,
+    "score": 52.87230649265237,
+    "status": "ok"
+   },
+   {
+    "minute": 24.4,
+    "score": 52.87230649265237,
+    "status": "ok"
+   },
+   {
+    "minute": 26.0,
+    "score": 52.30762980954294,
+    "status": "ok"
+   },
+   {
+    "minute": 29.4,
+    "score": 52.87230649265237,
+    "status": "ok"
+   },
+   {
+    "minute": 32.3,
+    "score": 52.87230649265237,
+    "status": "ok"
+   },
+   {
+    "minute": 37.2,
+    "score": 52.8793155679408,
+    "status": "ok"
+   },
+   {
+    "minute": 40.4,
+    "score": 52.87931556794079,
+    "status": "ok"
+   },
+   {
+    "minute": 43.3,
+    "score": 52.17717336150564,
+    "status": "ok"
+   },
+   {
+    "minute": 46.1,
+    "score": 52.624076800713716,
+    "status": "ok"
+   },
+   {
+    "minute": 49.9,
+    "score": 52.601517362490696,
+    "status": "ok"
+   },
+   {
+    "minute": 53.9,
+    "score": 52.974870251560716,
+    "status": "ok"
+   },
+   {
+    "minute": 58.5,
+    "score": 57.87348266209484,
+    "status": "ok"
+   },
+   {
+    "minute": 64.7,
+    "score": 60.71882792423161,
+    "status": "ok"
+   },
+   {
+    "minute": 68.8,
+    "score": 60.84533760863381,
+    "status": "ok"
+   },
+   {
+    "minute": 73.4,
+    "score": 61.90285260809464,
+    "status": "ok"
+   },
+   {
+    "minute": 78.9,
+    "score": 61.7217932437517,
+    "status": "ok"
+   },
+   {
+    "minute": 81.3,
+    "score": 62.17296701275785,
+    "status": "ok"
+   },
+   {
+    "minute": 83.5,
+    "score": 62.142839879950884,
+    "status": "ok"
+   },
+   {
+    "minute": 89.8,
+    "score": 62.13064932506039,
+    "status": "ok"
+   },
+   {
+    "minute": 93.3,
+    "score": 62.13247609406259,
+    "status": "ok"
+   },
+   {
+    "minute": 97.8,
+    "score": 62.16803078203164,
+    "status": "ok"
+   },
+   {
+    "minute": 104.6,
+    "score": 62.16803078203183,
+    "status": "ok"
+   },
+   {
+    "minute": 114.7,
+    "score": 62.16803078203183,
+    "status": "ok"
+   }
+  ]
  }
 }

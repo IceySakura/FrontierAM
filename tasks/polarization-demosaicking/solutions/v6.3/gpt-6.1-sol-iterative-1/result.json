@@ -9,6 +9,123 @@
  "review": null,
  "process": {
   "minutes": 210.8,
-  "public_tests": 23
+  "public_tests": 23,
+  "public_curve": [
+   {
+    "minute": 4.3,
+    "score": 35.3156086188636,
+    "status": "ok"
+   },
+   {
+    "minute": 20.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 25.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 33.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 36.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 41.8,
+    "score": 52.00243406902145,
+    "status": "ok"
+   },
+   {
+    "minute": 46.5,
+    "score": 52.00243395059398,
+    "status": "ok"
+   },
+   {
+    "minute": 51.0,
+    "score": 52.23454520471834,
+    "status": "ok"
+   },
+   {
+    "minute": 55.5,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 62.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 88.7,
+    "score": 52.23454520471834,
+    "status": "ok"
+   },
+   {
+    "minute": 97.1,
+    "score": 52.41671759550627,
+    "status": "ok"
+   },
+   {
+    "minute": 109.4,
+    "score": 52.42641184658794,
+    "status": "ok"
+   },
+   {
+    "minute": 118.5,
+    "score": 52.425754196786635,
+    "status": "ok"
+   },
+   {
+    "minute": 133.2,
+    "score": 52.3737302041636,
+    "status": "ok"
+   },
+   {
+    "minute": 166.5,
+    "score": 52.39609947832391,
+    "status": "ok"
+   },
+   {
+    "minute": 171.6,
+    "score": 52.46105004065573,
+    "status": "ok"
+   },
+   {
+    "minute": 175.3,
+    "score": 52.406551144262394,
+    "status": "ok"
+   },
+   {
+    "minute": 182.3,
+    "score": 51.49969420564281,
+    "status": "ok"
+   },
+   {
+    "minute": 187.6,
+    "score": 51.960718415628705,
+    "status": "ok"
+   },
+   {
+    "minute": 193.0,
+    "score": 52.528577657614996,
+    "status": "ok"
+   },
+   {
+    "minute": 200.3,
+    "score": 51.93778201647582,
+    "status": "ok"
+   },
+   {
+    "minute": 207.4,
+    "score": 52.528577657614996,
+    "status": "ok"
+   }
+  ]
  }
 }

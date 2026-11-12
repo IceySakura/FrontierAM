@@ -9,6 +9,33 @@
  "review": null,
  "process": {
   "minutes": 225.7,
-  "public_tests": 5
+  "public_tests": 5,
+  "public_curve": [
+   {
+    "minute": 29.1,
+    "score": 45.16089498844388,
+    "status": "ok"
+   },
+   {
+    "minute": 66.7,
+    "score": 56.79584873050769,
+    "status": "ok"
+   },
+   {
+    "minute": 181.2,
+    "score": 60.07168513463674,
+    "status": "ok"
+   },
+   {
+    "minute": 205.1,
+    "score": 62.09055208071682,
+    "status": "ok"
+   },
+   {
+    "minute": 212.5,
+    "score": 63.45463378753604,
+    "status": "ok"
+   }
+  ]
  }
 }

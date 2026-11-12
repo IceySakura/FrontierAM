@@ -209,6 +209,38 @@ def group_label(group: dict) -> str:
     return f'题目版本 {group.get("version", "?")} · 协议 {group.get("protocol", "?")}'
 
 
+def process_of(task: dict, r: dict) -> dict | None:
+    setting = {'单轮': 'single', '迭代': 'iterative'}.get(r.get('setting'), 'single')
+    folder = r.get('folder') or f'{r["model"]}-{setting}-{r.get("attempt", 1)}'
+    path = ROOT / 'tasks' / task['name'] / 'solutions' / (r.get('protocol') or 'v6.2') / folder / 'result.json'
+    return json.loads(path.read_text()).get('process') if path.exists() else None
+
+
+def curve_svg(process: dict | None) -> str:
+    """Public-set score after each test of an iterative attempt: x = minutes from the start, y = 0-100, reference 50 dashed."""
+    curve = (process or {}).get('public_curve')
+    if not curve:
+        return ''
+    width, height, pad = 520, 150, 28
+    span = max(process.get('minutes') or 0, max(c['minute'] for c in curve), 1)
+    x = lambda m: pad + (width - 2 * pad) * m / span
+    y = lambda s: height - pad - (height - 2 * pad) * max(0.0, min(100.0, s)) / 100
+    ok = [c for c in curve if c['score'] is not None]
+    line = ' '.join(f'{x(c["minute"]):.1f},{y(c["score"]):.1f}' for c in ok)
+    dots = ''.join(f'<circle cx="{x(c["minute"]):.1f}" cy="{y(c["score"]):.1f}" r="3"><title>{c["minute"]:.0f} 分钟：{c["score"]:.1f}</title></circle>'
+                   for c in ok)
+    misses = ''.join(f'<text x="{x(c["minute"]):.1f}" y="{y(0) + 4:.1f}" text-anchor="middle" fill="#999">×<title>{c["minute"]:.0f} 分钟：没有报告</title></text>'
+                     for c in curve if c['score'] is None)
+    axes = (f'<line x1="{pad}" y1="{y(0)}" x2="{width - pad}" y2="{y(0)}" stroke="#bbb"/>'
+            f'<line x1="{pad}" y1="{y(50)}" x2="{width - pad}" y2="{y(50)}" stroke="#bbb" stroke-dasharray="4 3"/>'
+            f'<text x="{pad - 4}" y="{y(50) + 4}" text-anchor="end" font-size="10" fill="#888">50</text>'
+            f'<text x="{pad - 4}" y="{y(100) + 4}" text-anchor="end" font-size="10" fill="#888">100</text>'
+            f'<text x="{width - pad}" y="{height - 6}" text-anchor="end" font-size="10" fill="#888">{span:.0f} 分钟</text>')
+    return (f'<figure class="curve"><svg viewBox="0 0 {width} {height}" width="{width}" height="{height}" role="img">{axes}'
+            f'<polyline points="{line}" fill="none" stroke="#3366cc" stroke-width="1.5"/>{dots}{misses}</svg>'
+            f'<figcaption>public 分数随测试提交（{len(curve)} 次，虚线为参照 50 分）</figcaption></figure>')
+
+
 def process_cell(task: dict, r: dict) -> str:
     """Test submissions (iterative) and development time used, from the attempt's result.json (build_task_pages.py)."""
     setting = {'单轮': 'single', '迭代': 'iterative'}.get(r.get('setting'), 'single')
@@ -286,6 +318,8 @@ def task_page(task: dict) -> str:
                         f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span></h3>')
             if r.get('notes_md'):
                 body.append(f'<div class="note">{md(r["notes_md"])}</div>')
+            if r.get('setting') == '迭代':
+                body.append(curve_svg(process_of(task, r)))
             text = readme(r['store'], r['submission']) if r.get('submission') else None
             if text:
                 body.append(f'<details><summary>模型自己写的说明（提交中的 README.md）</summary><div class="md">{md(text)}</div></details>')

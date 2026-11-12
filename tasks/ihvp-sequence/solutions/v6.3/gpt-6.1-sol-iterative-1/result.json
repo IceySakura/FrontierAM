@@ -9,6 +9,13 @@
  "review": null,
  "process": {
   "minutes": 9.0,
-  "public_tests": 1
+  "public_tests": 1,
+  "public_curve": [
+   {
+    "minute": 5.2,
+    "score": 100.0,
+    "status": "ok"
+   }
+  ]
  }
 }

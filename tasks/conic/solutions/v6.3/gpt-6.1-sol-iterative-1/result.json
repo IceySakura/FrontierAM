@@ -9,6 +9,53 @@
  "review": null,
  "process": {
   "minutes": 239.8,
-  "public_tests": 9
+  "public_tests": 9,
+  "public_curve": [
+   {
+    "minute": 10.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 25.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 36.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 55.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 80.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 111.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 146.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 198.5,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 222.9,
+    "score": 0.0,
+    "status": "ok"
+   }
+  ]
  }
 }

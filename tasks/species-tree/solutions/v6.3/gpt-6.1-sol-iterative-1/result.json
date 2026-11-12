@@ -9,6 +9,73 @@
  "review": null,
  "process": {
   "minutes": 236.9,
-  "public_tests": 13
+  "public_tests": 13,
+  "public_curve": [
+   {
+    "minute": 9.6,
+    "score": 50.99337748344371,
+    "status": "ok"
+   },
+   {
+    "minute": 17.5,
+    "score": 38.09523809523807,
+    "status": "ok"
+   },
+   {
+    "minute": 25.2,
+    "score": 47.61904761904758,
+    "status": "ok"
+   },
+   {
+    "minute": 37.1,
+    "score": 50.0,
+    "status": "ok"
+   },
+   {
+    "minute": 63.2,
+    "score": 53.64238410596026,
+    "status": "ok"
+   },
+   {
+    "minute": 76.6,
+    "score": 55.96026490066225,
+    "status": "ok"
+   },
+   {
+    "minute": 121.1,
+    "score": 52.64900662251655,
+    "status": "ok"
+   },
+   {
+    "minute": 133.8,
+    "score": 55.29801324503311,
+    "status": "ok"
+   },
+   {
+    "minute": 142.7,
+    "score": 52.64900662251655,
+    "status": "ok"
+   },
+   {
+    "minute": 174.3,
+    "score": 56.95364238410596,
+    "status": "ok"
+   },
+   {
+    "minute": 218.5,
+    "score": 56.95364238410596,
+    "status": "ok"
+   },
+   {
+    "minute": 223.3,
+    "score": 56.95364238410596,
+    "status": "ok"
+   },
+   {
+    "minute": 229.0,
+    "score": 56.29139072847681,
+    "status": "ok"
+   }
+  ]
  }
 }

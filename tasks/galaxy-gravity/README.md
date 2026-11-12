@@ -93,6 +93,8 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 
 核拆分：牛顿部分用调和多极展开，软化差项用笛卡尔修正；按调用规划精度，剩余 CPU 时间对部分粒子做完整直接求和。
 
+public 分数随测试提交：45.2（29 分钟） → 56.8（67 分钟） → 60.1（181 分钟） → 62.1（205 分钟） → 63.5（212 分钟）
+
 源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `galaxy-gravity-v3-20261110T145613Z-509fb2`）；未复制的二进制或大文件：solve（545,312 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>

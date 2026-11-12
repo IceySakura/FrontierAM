@@ -96,6 +96,8 @@ C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递�
 
 刚度小的会话直接用自适应 Taylor；对角和小连通块扩展精度谱分解；一般情形用合并的 Chebyshev 展开（行和与 Collatz 界给谱区间，Reinsch 形式的 Clenshaw 递推）。重跑（原尝试受测试排队故障影响）。
 
+public 分数随测试提交：49.2（5 分钟） → 54.6（19 分钟） → 57.2（38 分钟） → 57.1（45 分钟） → 57.0（65 分钟） → 57.9（84 分钟） → 57.7（132 分钟） → 59.4（180 分钟）
+
 源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `exponential-v3-20261111T101604Z-fa725b`）；未复制的二进制或大文件：solver（226,200 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
@@ -125,6 +127,8 @@ C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递�
 
 C++ 单个 Chebyshev 展开同时计算两项（\(e^{-tL}b_0\) 与 \(t\varphi_1(-tL)b_1\)），谱上界用行和与 Collatz 界，抵消严重的输出用扩展精度重算。68 分钟正式提交；4 次全量公开集测试 57.5、59.3、58.7、59.5。私有集 \(S = 1.84\)，95% 区间 [1.48, 2.30]，与 v6.1 的单轮成绩（62.7）相当。
 
+public 分数随测试提交：57.5（6 分钟） → 59.3（18 分钟） → 58.7（41 分钟） → 59.5（65 分钟）
+
 源码 [`solutions/v6.2/gpt-6.1-sol-iterative-1/source/`](solutions/v6.2/gpt-6.1-sol-iterative-1/source/)（提交 `exponential-v2-20261109T153537Z-142f3b`）；未复制的二进制或大文件：solver（57,208 字节）。
 
 ### Claude Opus 5.5（单轮，v6.2）
@@ -136,6 +140,8 @@ C 实现的 Chebyshev 展开，长展开时用短 Lanczos 收紧谱上界，SELL
 ### Claude Opus 5.5（迭代，v6.2）
 
 把 \(\varphi_1\) 项写成增广矩阵的指数，一次 Chebyshev 递推同时得到两项；小连通分量直接对角化，几何图先做 RCM 重排。60 分钟内 10 次公开集测试（全量最高 63.7）后正式提交。私有集 \(S = 2.60\)，95% 区间 [1.88, 3.69]，与单轮尝试相当（区间重叠）。
+
+public 分数随测试提交：60.2（19 分钟） → 60.9（25 分钟） → 62.0（32 分钟） → 48.9（34 分钟） → 54.2（34 分钟） → 62.3（38 分钟） → 63.5（46 分钟） → 47.6（49 分钟） → 63.7（52 分钟） → 62.8（57 分钟）
 
 源码 [`solutions/v6.2/claude-opus-5-5-iterative-1/source/`](solutions/v6.2/claude-opus-5-5-iterative-1/source/)（提交 `exponential-v2-20261109T175508Z-fdfad8`）；未复制的二进制或大文件：expo（42,600 字节）。
 
