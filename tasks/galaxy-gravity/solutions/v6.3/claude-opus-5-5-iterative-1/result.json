@@ -1,0 +1,76 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "galaxy-gravity-v3-20261112T113721Z-0c35f8",
+ "raw": "\\(E = 1.47e-09\\)，单次最多 3.95 CPU 秒（出题方 Treecode2：\\(U = 0.00125\\)，\\(W = 0.000591\\)）",
+ "mapping": "对数刻度：\\(E < W\\) 为 \\(50 + 50\\,\\log(W/E)/\\log(W/10^{-15})\\)；\\(W \\le E < U\\) 为 \\(50\\,\\log(U/E)/\\log(U/W)\\)",
+ "score": 73.798,
+ "review": null,
+ "process": {
+  "minutes": 181.0,
+  "public_tests": 12,
+  "public_curve": [
+   {
+    "minute": 74.0,
+    "score": 45.54765434127413,
+    "status": "ok"
+   },
+   {
+    "minute": 99.8,
+    "score": 53.855786754318295,
+    "status": "ok"
+   },
+   {
+    "minute": 106.4,
+    "score": 56.72574468451049,
+    "status": "ok"
+   },
+   {
+    "minute": 119.6,
+    "score": 59.77044412078908,
+    "status": "ok"
+   },
+   {
+    "minute": 124.5,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 136.8,
+    "score": 58.74960770288387,
+    "status": "ok"
+   },
+   {
+    "minute": 143.9,
+    "score": 58.763012795013495,
+    "status": "ok"
+   },
+   {
+    "minute": 150.1,
+    "score": 59.818868354414505,
+    "status": "ok"
+   },
+   {
+    "minute": 158.2,
+    "score": 60.39985051935275,
+    "status": "ok"
+   },
+   {
+    "minute": 165.4,
+    "score": 61.27907519915303,
+    "status": "ok"
+   },
+   {
+    "minute": 169.3,
+    "score": 61.35866998231143,
+    "status": "ok"
+   },
+   {
+    "minute": 174.4,
+    "score": 61.55917710548143,
+    "status": "ok"
+   }
+  ]
+ }
+}

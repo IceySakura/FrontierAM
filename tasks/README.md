@@ -6,10 +6,10 @@
 | --- | --- |
 | [conic](conic/README.md) | 15 |
 | [exponential](exponential/README.md) | 13 |
-| [galaxy-gravity](galaxy-gravity/README.md) | 6 |
+| [galaxy-gravity](galaxy-gravity/README.md) | 7 |
 | [polarization-demosaicking](polarization-demosaicking/README.md) | 6 |
 | [trajectory-covariance](trajectory-covariance/README.md) | 6 |
 | [species-tree](species-tree/README.md) | 7 |
-| [ihvp-sequence](ihvp-sequence/README.md) | 7 |
+| [ihvp-sequence](ihvp-sequence/README.md) | 8 |
 
 本文件由 `scripts/site/build_task_pages.py` 生成。
