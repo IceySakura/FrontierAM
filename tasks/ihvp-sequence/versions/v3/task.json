@@ -1,8 +1,8 @@
 {
   "name": "ihvp-sequence-v3",
   "title": "在线 SPD 时序求解",
-  "status": "draft",
-  "status_reason": "Author hard-data extension: 15 additional feedback and 15 additional private sequences, combined with the retained v1 sets into 30+30. Target-host sealing/calibration, source isolation, counterbaseline and feedback-envelope review are pending; existing v1/v2 scores and anchors remain unchanged.",
+  "status": "formal",
+  "status_reason": "Activated 2026-11-12: author hard extension (PR #2) imported from the maintainer bundle (SHA-256 verified); private = 15 retained + 15 added sequences, feedback = the 15 added sequences (user decision: one feedback run within the 15-minute cap); anchors re-measured on the grade slots (analysis/INTEGRATION.md).",
   "driver": "ihvp_hard_v3",
   "references": {
     "weak": "repo:tasks/ihvp-sequence/versions/v1/grader/calibration_references/cold_cg",
@@ -46,7 +46,7 @@
     "calibration": "maintainer-local; no historical active numeric anchors"
   },
   "submission_note": "Submit solver.py exposing make_solver(d,seed,options), returning a stateful object with solve(hvp,b,context)->x or (x,diagnostics). An optional ./build.sh is run once, offline, in a clean copy of this environment before the sequences (not timed, at most 600 seconds). No teacher arrays or future systems are solver inputs.",
-  "instruction": "Read /workspace/problem.md and use only the oracle-based samples. This version is draft and is closed to model attempts until maintainer acceptance.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/samples. Implement the online SPD sequence solver described there.",
   "derived_from": "ihvp-sequence-v2",
   "audit_references": [
     "repo:tasks/ihvp-sequence/references/candidates/galerkin_cg"
