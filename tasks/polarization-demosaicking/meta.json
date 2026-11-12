@@ -82,7 +82,7 @@
       "protocol": "v6.1"
     }
   ],
-  "notes_md": "- 题目给 agent 的开发材料里只有两组用公式合成的样例，没有真实场景。我们找到并实测了 Wen 等 2019 的公开数据集（105 景，裁成 1024×1024 后耗时与正式输入一致，LEIC 在 100/105 景上优于双线性），作为公开反馈集，待出题人确认。\n- 测试场景经过按参照表现的筛选（去掉了双线性比 LEIC 更准的场景），这会放大两条参照之间的差距，已请出题人确认。\n- 评分时第一个运行的景总是比其余各景慢 0.14–0.5 秒，在 1 秒上限下可能导致整份提交失败；原因在排查中。",
+  "notes_md": "- 题目原包的开发材料只有两组合成样例；反馈集用 Wen 等 2019 的公开数据集（105 景，裁成 1024×1024，LEIC 在 100/105 景上优于双线性），待出题人确认。\n- 测试场景经过按参照表现的筛选（去掉了双线性比 LEIC 更准的场景），会放大两条参照之间的差距，已请出题人确认。\n- 评分时第一景偶尔慢 0.14–0.5 秒，原因是镜像文件不在页缓存里；评分前先预热镜像文件，已消除。",
   "current_version": "v2",
   "versions": [
     {
@@ -100,7 +100,7 @@
     "statement": "versions/v2/statement.md",
     "public": "versions/v2/data/samples/（给模型的样例）；versions/v2/data/public/（不给模型的反馈集，只在内部仓库）",
     "private": "versions/v2/data/private/（只在内部仓库）",
-    "grader": "维护包 harbor/polarization-demosaicking/grade_submission.py（只改 CPU 检查；评分前预热镜像文件缓存，quiet 隔离）",
+    "grader": "维护包 harbor/polarization-demosaicking/grade_submission.py（只改 CPU 检查；评分前预热镜像文件缓存，与开发、其他评测并发）",
     "references": "references/r1/（逐方向双线性；镜像 LEIC）"
   },
   "name": "polarization-demosaicking",
