@@ -98,7 +98,8 @@ if __name__ != '__main__':
             readable = ' '.join(['/opt/repo', '/opt/repo/tasks', '/opt/repo/tasks/ihvp-sequence', '/opt/repo/tasks/ihvp-sequence/versions',
                                  f'/opt/repo/tasks/ihvp-sequence/versions/{self.grader_version}', grader])
             # An optional ./build.sh runs once, offline, as the worker UID and outside the sequence clock.
-            script = ('mkdir -p /opt/repo/tasks && cp -r /root/task-src /opt/repo/tasks/ihvp-sequence && chmod -R go-rwx /opt/repo && '
+            # /out is root-only: the evaluator writes each finished sequence's result there while later ones still run
+            script = ('chmod 700 /out && mkdir -p /opt/repo/tasks && cp -r /root/task-src /opt/repo/tasks/ihvp-sequence && chmod -R go-rwx /opt/repo && '
                       f'chmod go+x {readable} && chmod go+rx {grader}/runtime && chmod go+r {grader}/runtime/worker.py {grader}/runtime/api.py && '
                       'cp -r /submission /tmp/candidate && chown -R 1000:1000 /tmp/candidate && cd /tmp/candidate && '
                       f'if [ -f build.sh ]; then timeout {BUILD_SECONDS} setpriv --reuid 1000 --regid 1000 --clear-groups '

@@ -1,8 +1,8 @@
 {
   "name": "galaxy-gravity-v4",
   "title": "星系快照中的引力加速度（四档规模、逐例时限）",
-  "status": "draft",
-  "status_reason": "B.4 data sealed; local per-case limits or feedback pool pending.",
+  "status": "formal",
+  "status_reason": "v3 with the author B.4 data: 80 formal snapshots at four scales with per-case CPU limits calibrated on this machine, Treecode2 anchors r4 (scripts/seal/prepare_galaxy_v4.py).",
   "derived_from": "galaxy-gravity-v3",
   "source_package": {
     "name": "galaxy-gravity-b4-public",

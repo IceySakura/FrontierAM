@@ -73,6 +73,7 @@
 | GPT-6.1 Sol | 单轮 | 363 / 650（\(p = 0.558\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 57 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 426 / 650（\(p = 0.655\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 9 次提交，240 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 398 / 650（\(p = 0.612\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 43 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | 490 / 650（\(p = 0.754\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 27.6 | 3 次提交，216 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -91,6 +92,12 @@ public 分数随测试提交：0.0（11 分钟） → 0.0（26 分钟） → 0.0
 ### Claude Opus 5.5（单轮，v6.3）
 
 源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `conic-20261112T091929Z-6120de`）。
+
+### Claude Opus 5.5（迭代，v6.3）
+
+public 分数随测试提交：23.0（181 分钟） → 51.5（194 分钟） → 51.5（205 分钟）
+
+源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `conic-20261112T121236Z-591c80`）；未复制的二进制或大文件：bin/conic_solver（143,024 字节）、bin/conic_solver.prebuilt（143,024 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

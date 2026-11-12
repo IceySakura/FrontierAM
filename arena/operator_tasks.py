@@ -512,8 +512,9 @@ def operator_tasks() -> dict[str, OperatorTask]:
     # package or a calibrated deployment on this host.
     from .operator_drivers.ihvp_sequence import IHVPSequence
     from .operator_drivers.ihvp_hard_v3 import IHVPHardV3
+    from .operator_drivers.ihvp_hard_v4 import IHVPHardV4
     handlers = {**CLASSES, 'ihvp-sequence': IHVPSequence, 'ihvp-sequence-v2': IHVPSequence,
-                'ihvp-sequence-v3': IHVPHardV3}
+                'ihvp-sequence-v3': IHVPHardV3, 'ihvp-sequence-v4': IHVPHardV4}
     tasks = {}
     for path in sorted(SPECS.glob('*/versions/*/task.json')):
         spec = json.loads(path.read_text())

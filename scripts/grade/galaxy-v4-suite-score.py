@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
+import arena.tasks  # noqa: E402,F401  (operator_tasks must be imported through arena.tasks)
 from arena.public_v63 import galaxy_score  # noqa: E402
 
 

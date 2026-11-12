@@ -1,0 +1,65 @@
+{
+  "name": "ihvp-sequence-v4",
+  "title": "在线 SPD 时序求解",
+  "status": "draft",
+  "status_reason": "Fresh 15 public / 30 private routed-mixture proposal; target-host acceptance and calibration pending.",
+  "driver": "ihvp_hard_v4",
+  "references": {
+    "weak": "repo:tasks/ihvp-sequence/versions/v1/grader/calibration_references/cold_cg",
+    "strong": "repo:tasks/ihvp-sequence/references/r1"
+  },
+  "images": {
+    "task": {
+      "tag": "frontieram-ihvp-sequence:amd64-v4",
+      "dockerfile": "Dockerfile",
+      "replaces": []
+    }
+  },
+  "data": {
+    "root": "var/raw/ihvp-sequence-v4/data",
+    "samples": "samples",
+    "public": "public/manifest.json",
+    "private": "private/manifest.json",
+    "private_bodies_in_git": false,
+    "public_sequences": 15,
+    "private_sequences": 30,
+    "retained_scoring_sequences": 0
+  },
+  "limits": {
+    "dimension": 16384,
+    "steps": 50,
+    "sequence_wall_seconds": 30,
+    "mean_sequence_wall_seconds": 30,
+    "worker_memory_mib": 256,
+    "numerical_threads": 1,
+    "max_hvp_block_columns": 64
+  },
+  "scoring": {
+    "raw": "mean relative H-energy error squared",
+    "native_anchors": {
+      "cold_cg": 0,
+      "r1": 5,
+      "zero_error": 10
+    },
+    "final_multiplier": 10,
+    "mapping": "piecewise-linear",
+    "calibration": "maintainer-local; no historical active numeric anchors"
+  },
+  "submission_note": "Submit solver.py exposing make_solver(d,seed,options), returning a stateful object with solve(hvp,b,context)->x or (x,diagnostics). An optional ./build.sh is run once, offline, in a clean copy of this environment before the sequences (not timed, at most 600 seconds). No teacher arrays or future systems are solver inputs.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/samples. Implement the online SPD sequence solver described there.",
+  "derived_from": "ihvp-sequence-v3",
+  "audit_references": [
+    "repo:tasks/ihvp-sequence/references/candidates/galerkin_cg"
+  ],
+  "feedback": {
+    "scope": "aggregate_only",
+    "private_feedback": "none_before_final_freeze",
+    "family_labels": false,
+    "case_results": false,
+    "category": null,
+    "accuracy": "normalized squared H-energy error",
+    "lower_is_better": true,
+    "timed": true,
+    "note": "Only aggregate public feedback; private is used once after final source/options freeze."
+  }
+}
