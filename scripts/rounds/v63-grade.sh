@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Protocol v6.3 validation round: reference anchors for the v6.3 versions, then private grading of every finished
 # gpt-6.1-sol attempt (scripts/rounds/v63-sol.sh). Rerun-safe through var/stores/store/reruns/v63-grade.log.
-# Held-out grading is capped at 1 h per job (bench suite --cap-s / develop enqueue); suites use 6 shards so one grade
-# slot stays free for iterative tests. Scores land in tasks/<family>/solutions/v6.3/gpt-6.1-sol-<setting>-<n>/score.json.
+# Held-out grading is capped at 1 h per job (bench suite --cap-s / develop enqueue); suites use 7 shards (iterative
+# tests take priority leases, no slot is held back). Each frozen submission is graded in the background as soon as it
+# appears (polled every 30 s). Scores land in tasks/<family>/solutions/v6.3/<model>-<setting>-<n>/score.json.
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 R=$PWD
@@ -35,9 +36,9 @@ isolation() { case " $TIMED " in *" $1 "*) echo dev_idle;; *) echo shared;; esac
 
 suite() {  # task, submission|--reference -> suite id; grades it now
     local task=$1 target=$2 id
-    id=$(FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE suite --task "$task" $target --shards 6 \
+    id=$(FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE suite --task "$task" $target --shards 7 \
          --isolation "$(isolation "$task")" --cap-s $CAP | last_id) || return 1
-    FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE grade-worker --task "$task" --workers 6 --drain \
+    FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE grade-worker --task "$task" --workers 7 --drain \
         >> var/stores/store/reruns/v63-worker.log 2>&1
     echo "$id"
 }
@@ -117,15 +118,24 @@ PY
 }
 
 TASKS=${V63_TASKS:-"conic exponential-v3 galaxy-gravity-v3 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v2 ihvp-sequence-v3"}
+INFLIGHT=var/stores/store/reruns/v63-grade-inflight-$TAG   # one marker per grading running in the background
+rm -rf "$INFLIGHT" && mkdir -p "$INFLIGHT"
 while :; do
     anchors
     left=0
     for setting in single iterative; do
         for task in $TASKS; do
-            grade "$setting" "$task" || left=$((left + 1))
+            label="$PFX$setting-$task-$N"
+            done_event graded "$label" && continue
+            left=$((left + 1))
+            [ -e "$INFLIGHT/$label" ] && continue
+            [ -z "$(frozen "var/stores/store/reruns/v63-$TAG-$setting-$task-$N.log")" ] && continue
+            touch "$INFLIGHT/$label"
+            ( grade "$setting" "$task"; rm -f "$INFLIGHT/$label" ) &
         done
     done
     [ "$left" = 0 ] && break
-    sleep 300
+    sleep 30
 done
+wait
 log "\"event\": \"all_graded\""
