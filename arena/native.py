@@ -57,9 +57,11 @@ HARNESS = {
     'gemini-4-argon': 'antigravity',
     'hy4': 'claude',
     'minimax-m3.1-flash': 'codex',
+    'qwen3.8-max': 'claude',
 }
 CREDENTIALS = {
     'hy4': ('HY4_TAIJI_MESSAGE_API_TOKEN', Path('/root/.frontieram/hy4-taiji.token')),
+    'qwen3.8-max': ('QWEN_TOKEN_PLAN_KEY', Path('/root/.frontieram/qwen-maas.key')),  # Qwen token-plan Anthropic endpoint
 }
 DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 CONTAINER_PORT = 18080

@@ -43,6 +43,7 @@ MODELS = [
     'gpt-6-astra',
     'gemini-4-argon',
     'hy4',
+    'qwen3.8-max',
 ]
 DEFAULT_BASE_URL = 'http://api.aihub.woa.com/standard/v1'
 PRINT_LOCK = threading.Lock()
