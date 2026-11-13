@@ -17,8 +17,8 @@ TASKS = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3':
          'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
          'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence',
-         'galaxy-gravity-v4': 'galaxy-gravity'}
-SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity-v4': 'v4'}  # later task versions within protocol v6.3 keep their own solutions subfolder
+         'galaxy-gravity-v4': 'galaxy-gravity', 'ihvp-sequence-v4': 'ihvp-sequence'}
+SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity-v4': 'v4', 'ihvp-sequence-v4': 'v4'}  # later task versions within protocol v6.3 keep their own solutions subfolder
 SETTING = {'single': '单轮', 'iterative': '迭代'}
 NOTES = {
     ('conic', 'single'): 'HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。',
@@ -38,6 +38,10 @@ NOTES = {
     ('ihvp-sequence-v2', 'single'): '工作区不含生成代码；Galerkin 回收 CG：在历史解张成的子空间上投影热启动，再用 C 写的 CG 内核修正。没有识别矩阵结构；困难序列被“解序列沿时间平滑”绕开，误差为参照的约 1/180。',
     ('ihvp-sequence-v3', 'single'): '通用回收 CG：最近 4 个解与搜索方向的 Galerkin 投影热启动，加右端项历史预测，C 内核做投影 CG，阶段切换时多分时间，最后做能量最优缩放；没有识别矩阵结构。原有 15 条 98.9 分，新增 15 条 65.1 分（五个族 63–69 分）（`tasks/ihvp-sequence/analysis/V3_SOL_ANALYSIS.md`）。',
     ('ihvp-sequence-v3', 'iterative'): '回收 CG 加三层预条件选择：对角加低秩精确拟合、对角探测、从 HVP 逐层学出 14 层蝶形正交基后做对角预条件。原有 15 条 98.1 分，新增 15 条 74.4 分：学习基只在两个 butterfly 族成立（87–88 分），DCT 三族退回无预条件（66–71 分）。超过 80，已请出题人决定（`tasks/ihvp-sequence/analysis/V3_SOL_ANALYSIS.md`）。',
+    ('ihvp-sequence-v4', 'single'): '通用回收 CG（历史子空间投影加 C 内核 CG），没有识别矩阵结构。',
+    ('ihvp-sequence-v4', 'iterative'): '按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。',
+    ('ihvp-sequence-v4', 'single', 'claude-opus-5-5'): '热启动 CG 加小规模回收紧缩子空间，没有识别矩阵结构。',
+    ('ihvp-sequence-v4', 'iterative', 'claude-opus-5-5'): '前一步解与修正量的 Galerkin 投影加 CG（6 次测试，public 50.1 → 62.5），没有识别矩阵结构。',
     ('ihvp-sequence-v2', 'iterative'): '工作区不含生成代码；最近 16 个解做 QR，在子空间上精确投影得到初始解，再跑 CG，按剩余步数分配时间（阶段突变时多给），Gauss–Radau 上界停止。没有识别矩阵结构；public 分数 83.7 → 99.8。',
 }
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
@@ -82,7 +86,8 @@ def cell(task: str, score: dict) -> tuple[str, str]:
         return (f'\\(E = {raw:.3g}\\)，单次最多 {candidate.get("max_cpu_s", 0):.2f} CPU 秒（出题方 Treecode2：\\(U = {anchors["weak"]:.3g}\\)，\\(W = {anchors["strong"]:.3g}\\)）',
                 '对数刻度：\\(E < W\\) 为 \\(50 + 50\\,\\log(W/E)/\\log(W/10^{-15})\\)；\\(W \\le E < U\\) 为 \\(50\\,\\log(U/E)/\\log(U/W)\\)')
     if family == 'ihvp-sequence':
-        anchors = baseline_anchors(task)
+        # v4 anchors come with the score (same private measurement for every model: scripts/analyze/ihvp-v4-runs.py)
+        anchors = score.get('anchors') or baseline_anchors(task)
         if raw is None:
             return f'无效提交（{candidate.get("reason") or "有序列失败"}）', '任一序列失败记 0'
         return (f'\\(E = {raw:.4g}\\)，最长序列 {candidate.get("max_wall_s") or 0:.1f} 秒（CG：\\(U = {anchors["weak"]:.4f}\\)，'

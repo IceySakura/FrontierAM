@@ -1,0 +1,17 @@
+{
+ "status": "ok",
+ "score": 58.54481109467859,
+ "candidate": {
+  "status": "ok",
+  "raw_error": 0.12250576414331607,
+  "max_wall_s": 27.921120007988065,
+  "max_peak_rss_mib": 102.078125,
+  "valid": 30,
+  "cases": 30
+ },
+ "anchors": {
+  "weak": 0.24830954570528785,
+  "strong": 0.14775685189024743
+ },
+ "source": "scripts/analyze/ihvp-v4-runs.py final (ihvp-v4/final-opus-single-private)"
+}

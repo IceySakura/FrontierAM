@@ -12,7 +12,7 @@ grade_one() {
     echo "{\"time\": \"$(date +%FT%T)\", \"event\": \"final_started\", \"label\": \"$tag-$setting\", \"submission\": \"$sub\"}"
     nexus/.venv/bin/python scripts/analyze/ihvp-v4-runs.py final "$sub" "$tag-$setting"
 }
-for tag in sol opus; do for setting in single iterative; do grade_one $tag $setting & done; done
+for tag in ${V4_TAGS:-sol opus}; do for setting in single iterative; do grade_one $tag $setting & done; done
 wait
 nexus/.venv/bin/python scripts/analyze/ihvp-v4-runs.py report
 echo "{\"time\": \"$(date +%FT%T)\", \"event\": \"finals_done\"}"

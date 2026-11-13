@@ -17,6 +17,65 @@
   "result_groups": [
     {
       "title": "协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）",
+      "version": "v4",
+      "protocol": "v6.3",
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261112T154321Z-cd03a1",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1104\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 62.629,
+          "notes_md": "通用回收 CG（历史子空间投影加 C 内核 CG），没有识别矩阵结构。",
+          "folder": "v4/gpt-6.1-sol-single-1"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261112T164810Z-0ddd31",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1093\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 63.014,
+          "notes_md": "按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。",
+          "folder": "v4/gpt-6.1-sol-iterative-1"
+        },
+        {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261112T150516Z-1af015",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1225\\)，最长序列 27.9 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 58.545,
+          "notes_md": "热启动 CG 加小规模回收紧缩子空间，没有识别矩阵结构。",
+          "folder": "v4/claude-opus-5-5-single-1"
+        },
+        {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261112T170840Z-820524",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.111\\)，最长序列 28.3 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 62.428,
+          "notes_md": "前一步解与修正量的 Galerkin 投影加 CG（6 次测试，public 50.1 → 62.5），没有识别矩阵结构。",
+          "folder": "v4/claude-opus-5-5-iterative-1"
+        }
+      ]
+    },
+    {
+      "title": "协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）",
       "version": "v3",
       "protocol": "v6.3",
       "results": [
@@ -140,7 +199,7 @@
     }
   ],
   "notes_md": "- v1 的样例包带生成代码，模型识别出矩阵结构后精确求解，得 100 / 100；v2 移除生成代码，模型改用历史解子空间投影加 CG，仍得 99.7 / 99.9。\n- v3 为出题人的困难扩展：私有集 30 条（原 15 条 + 新增 15 条），反馈集为新增的 15 条；两份参照在本机重新标定。sol 单轮 76.3、迭代 82.3；按组计分，原有 15 条 98.9 / 98.1，新增 15 条 65.1 / 74.4；迭代从 HVP 学出 butterfly 族的蝶形基。详见 [V3_SOL_ANALYSIS.md](analysis/V3_SOL_ANALYSIS.md)。\n- 待出题人决定：时间余量门槛（参照按剩余时间用满预算）、50 分以上是否改为对数映射。",
-  "current_version": "v3",
+  "current_version": "v4",
   "versions": [
     {
       "dir": "v1",
@@ -160,7 +219,7 @@
     {
       "dir": "v4",
       "registry": "ihvp-sequence-v4",
-      "note": "草稿：全新 public 15 / private 30，旧数据仅回放；独立随机旋转配对和混合正交配置；public 仅汇总反馈，private 冻结后最终评测；目标机重测和验收待完成。"
+      "note": "出题人 v4（PR #3）：全新 public 15 / private 30，旧数据仅回放；每层独立随机配对和混合正交配置；public 只反馈整池汇总，private 只在提交冻结后评测；本机重测锚点（private CG 0.2483 / L-BFGS-PCG 0.1478）"
     }
   ],
   "locations": {

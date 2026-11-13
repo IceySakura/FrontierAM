@@ -1,8 +1,8 @@
 {
   "name": "ihvp-sequence-v4",
   "title": "在线 SPD 时序求解",
-  "status": "draft",
-  "status_reason": "Fresh 15 public / 30 private routed-mixture proposal; target-host acceptance and calibration pending.",
+  "status": "formal",
+  "status_reason": "Fresh 15 public / 30 private routed-mixture cohort (PR #3); target-host acceptance done 2026-11-13: amd64 images, isolation probe, smoke checks, anchors re-measured on public and private (tasks/ihvp-sequence/analysis/V4_RESULTS.md). Activated at the user's request; anchor repeatability about +-8% in loss (+-3-5 points) is noted in the report.",
   "driver": "ihvp_hard_v4",
   "references": {
     "weak": "repo:tasks/ihvp-sequence/versions/v1/grader/calibration_references/cold_cg",

@@ -6,7 +6,7 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `versions/` | 题目的各个版本；当前版本 `v3/`，题面 `versions/v3/statement.md` |
+| `versions/` | 题目的各个版本；当前版本 `v4/`，题面 `versions/v4/statement.md` |
 | `references/` | 参照实现（`r1/` 为现行参照；`candidates/` 为复核中的候选） |
 | `solutions/<协议>/<模型>-<设置>-<序号>/` | 模型冻结提交的源码（`source/`）与成绩（`result.json`、`score.json`） |
 | `analysis/` | 这道题的专题分析与复核记录 |
@@ -19,7 +19,7 @@
 | `v1` | `ihvp-sequence` | 出题人原版（PR #1）：反馈集与私有集各 15 条；工作区样例包含生成代码（结构可被识别，v2 起移除） |
 | `v2` | `ihvp-sequence-v2` | 工作区不含生成代码与构造数组，完整样例只通过评测方的 HVP 服务运行；数据、参照、评测与 v1 相同（当前版本） |
 | `v3` | `ihvp-sequence-v3` | 出题人困难扩展（PR #2）：私有集 30 条（原 15 条 + 新增 15 条，高维随机创新、全秩变化），反馈集为新增 15 条；锚点在本机重新标定 |
-| `v4` | `ihvp-sequence-v4` | 草稿：全新 public 15 / private 30，旧数据仅回放；独立随机旋转配对和混合正交配置；public 仅汇总反馈，private 冻结后最终评测；目标机重测和验收待完成。 |
+| `v4` | `ihvp-sequence-v4` | 出题人 v4（PR #3）：全新 public 15 / private 30，旧数据仅回放；每层独立随机配对和混合正交配置；public 只反馈整池汇总，private 只在提交冻结后评测；本机重测锚点（private CG 0.2483 / L-BFGS-PCG 0.1478） |
 
 ## 题目背景
 
@@ -78,6 +78,47 @@
 | 评分映射问题 | 误差跨多个数量级，50 分以上为线性映射，通用方法就到 99.7–99.8，高分段分不开；可考虑对数刻度。参照按剩余时间用满预算，25% 余量门槛不适用。（证据：`tasks/ihvp-sequence/analysis/INTEGRATION.md`） | 实测 | **需出题人处理** |
 | 题面或接口问题 | 反馈的类别分数在两份参照都解到机器精度的类别上锚点倒挂（弱参照比强参照还准），比值 1e-5 仍记 0 分；总分和比值不受影响。可改为类别锚点倒挂时只显示比值。（证据：`arena/feedback.py`） | 实测 | 建议人工复核 |
 
+## 模型成绩与解法（题目版本 v4 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | \(E = 0.1104\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.6 | 57 分钟 | [`v4/gpt-6.1-sol-single-1/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | \(E = 0.1093\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 63.0 | 8 次提交，122 分钟 | [`v4/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | \(E = 0.1225\)，最长序列 27.9 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 58.5 | 19 分钟 | [`v4/claude-opus-5-5-single-1/`](solutions/v6.3/v4/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | \(E = 0.111\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.4 | 6 次提交，142 分钟 | [`v4/claude-opus-5-5-iterative-1/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/) |
+
+### GPT-6.1 Sol（单轮，v6.3）
+
+通用回收 CG（历史子空间投影加 C 内核 CG），没有识别矩阵结构。
+
+源码 [`solutions/v6.3/v4/gpt-6.1-sol-single-1/source/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/source/)（提交 `ihvp-sequence-v4-20261112T154321Z-cd03a1`）；未复制的二进制或大文件：spd_core.cpython-312-x86_64-linux-gnu.so（33,392 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。
+
+public 分数随测试提交：50.9（3 分钟） → 53.4（14 分钟） → 60.5（37 分钟） → 60.8（48 分钟） → 60.5（59 分钟） → 61.4（91 分钟） → 62.5（100 分钟） → 63.2（111 分钟）
+
+源码 [`solutions/v6.3/v4/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/source/)（提交 `ihvp-sequence-v4-20261112T164810Z-0ddd31`）。
+
+### Claude Opus 5.5（单轮，v6.3）
+
+热启动 CG 加小规模回收紧缩子空间，没有识别矩阵结构。
+
+源码 [`solutions/v6.3/v4/claude-opus-5-5-single-1/source/`](solutions/v6.3/v4/claude-opus-5-5-single-1/source/)（提交 `ihvp-sequence-v4-20261112T150516Z-1af015`）。
+
+### Claude Opus 5.5（迭代，v6.3）
+
+前一步解与修正量的 Galerkin 投影加 CG（6 次测试，public 50.1 → 62.5），没有识别矩阵结构。
+
+public 分数随测试提交：50.1（32 分钟） → 53.3（66 分钟） → 59.3（96 分钟） → 62.1（107 分钟） → 62.0（115 分钟） → 62.5（124 分钟）
+
+源码 [`solutions/v6.3/v4/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/source/)（提交 `ihvp-sequence-v4-20261112T170840Z-820524`）。
+
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v3 · 协议 v6.3）
 
 协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
@@ -112,8 +153,6 @@ public 分数随测试提交：57.1（12 分钟） → 61.7（30 分钟） → 6
 public 分数随测试提交：56.8（26 分钟） → 56.3（42 分钟） → 64.7（61 分钟） → 63.7（73 分钟） → 63.7（94 分钟） → 66.6（123 分钟） → 67.0（137 分钟） → 66.5（150 分钟）
 
 源码 [`solutions/v6.3/v3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/v3/claude-opus-5-5-iterative-1/source/)（提交 `ihvp-sequence-v3-20261112T111937Z-36293a`）。
-
-<details><summary>旧版本的成绩与解法</summary>
 
 ## 模型成绩与解法（题目版本 v2 · 协议 v6.3）
 

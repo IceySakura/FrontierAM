@@ -65,6 +65,7 @@ CREDENTIALS = {
 }
 DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 CONTAINER_PORT = 18080
+IMAGE_NONSTREAM = '/opt/atr-venv/lib/python3.13/site-packages/atr/harness/nonstream.py'
 MEMORY = 4 * 2**30
 # Not the grader's UID 1000: RLIMIT_NPROC is per real UID host-wide, and the conic verifier caps UID 1000 at 128
 # tasks; native harness threads under UID 1000 made concurrent grading fail with "Cannot fork".
@@ -850,7 +851,8 @@ def develop(spec: dict, runtime: dict) -> dict:
         if not script:
             # `atr serve` sends no cache_task_id unless asked; `auto` derives one per run from the serve run ID (stable
             # within the attempt, distinct across attempts), as ATR's own sessions do by default.
-            environment = {**os.environ, credential_env: credential_file.read_text().strip(), 'ATR_CACHE_TASK_ID': 'auto'}
+            environment = {**os.environ, credential_env: credential_file.read_text().strip(), 'ATR_CACHE_TASK_ID': 'auto',
+                           'ATR_TCP_TIMEOUT': str(int(seconds) + 600)}
             serve = subprocess.Popen(
                 [str(ATR_ROOT / '.venv/bin/atr'), 'serve', '--model', model, '--host', '127.0.0.1', '--port', str(port),
                  '--token', token, '--record-dir', str(output / 'atr'), '--max-output', 'max'],
@@ -880,6 +882,9 @@ def develop(spec: dict, runtime: dict) -> dict:
             '--tmpfs', f'/workspace:rw,exec,nosuid,nodev,size=1g,uid={DEV_UID},gid={DEV_UID},mode=0755',
             '--tmpfs', f'/home/agent:rw,exec,nosuid,nodev,size=1g,uid={DEV_UID},gid={DEV_UID},mode=0700',
             '--mount', f'type=bind,src={socket_dir},dst=/run/atr', *mounts,
+            # ATR's client transport with early event streams for slow Messages answers (local ATR change, 2026-11-13);
+            # the images carry the previous copy of the same file
+            '--mount', f'type=bind,src={ATR_ROOT}/src/atr/harness/nonstream.py,dst={IMAGE_NONSTREAM},readonly',
             '--env', 'HOME=/home/agent', '--log-driver', 'none', '--user', f'{DEV_UID}:{DEV_UID}',
             '--workdir', '/workspace',
             '--entrypoint', '/bin/sleep', HARNESS_IMAGES[task.name], 'infinity',
