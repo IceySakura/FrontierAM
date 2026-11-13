@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Protocol v6.3 validation round (results/PROTOCOL_V63.md): gpt-6.1-sol on the v6.3 task versions (ihvp-sequence added 11-11), iterative (4 h)
-# and single (1 h), at most V63_CONCURRENCY attempts at a time (default 3: the model's API rate limit); iterative first.
+# and single (1 h), at most V63_CONCURRENCY attempts at a time (default 3: the model's API rate limit); singles first.
 # Each attempt leases its own dev slot; no grading here (scripts/rounds/v63-grade.sh grades finished attempts).
 # Rerun-safe: an attempt whose log already exists (started or finished) is skipped; infrastructure failures are
 # rerun by renaming their log.
@@ -26,5 +26,6 @@ attempt() {
 }
 export -f attempt
 export R KEY STORE N MODEL TAG
-{ for t in $TASKS; do echo "iterative $t"; done; for t in $TASKS; do echo "single $t"; done; } |
+# singles first: they free their slots within an hour and keep the grade slots busy while the iteratives run
+{ for t in $TASKS; do echo "single $t"; done; for t in $TASKS; do echo "iterative $t"; done; } |
     xargs -P "$MAX" -L 1 bash -c 'attempt "$0" "$1"'
