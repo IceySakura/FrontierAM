@@ -31,7 +31,7 @@ MATH = re.compile(r'(\$\$.+?\$\$|\\\[.+?\\\]|\\\(.+?\\\)|(?<![\\$])\$[^$\n]+?\$)
 LINK = re.compile(r'\[([^\]]+)\]\((?!https?://)[^)]+\)')
 MODEL_NAMES = {'gpt-6.1-sol': 'GPT-6.1 Sol', 'gpt-6-astra': 'GPT-6 Astra', 'claude-opus-5-5': 'Claude Opus 5.5',
                'hy4': 'Hunyuan 4', 'step-5-preview': 'Step-5 Preview', 'deepseek-v4-pro': 'DeepSeek V4 Pro',
-               'minimax-m3.1-flash': 'MiniMax M3.1 Flash', 'qwen3.8-max': 'Qwen3.8 Max'}
+               'minimax-m3.1-flash': 'MiniMax M3.1 Flash', 'qwen3.8-max-0902': 'Qwen3.8 Max'}
 GROUP_NAMES = {'linear': '线性', 'quadratic': '二次', 'soc': '二阶锥', 'psd': '半正定', 'exponential': '指数锥'}
 
 
@@ -396,7 +396,7 @@ def task_page(task: dict) -> str:
     return page(task['title'], '\n'.join(body), depth=1)
 
 
-BOARD_MODELS = ['gpt-6.1-sol', 'claude-opus-5-5', 'qwen3.8-max']
+BOARD_MODELS = ['gpt-6.1-sol', 'claude-opus-5-5', 'qwen3.8-max-0902', 'hy4']
 
 
 def index_page(site: dict, tasks: list[dict]) -> str:

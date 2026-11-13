@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 TASKS = ROOT / 'tasks'
 TEXT = {'.md', '.py', '.txt', '.json', '.sh', '.c', '.cc', '.cpp', '.h', '.hpp', '.R', '.toml', '.yaml', '.yml', '.jl',
         '.m', '.cfg', ''}
-MODEL = {'gpt-6.1-sol': 'GPT-6.1 Sol', 'claude-opus-5-5': 'Claude Opus 5.5', 'qwen3.8-max': 'Qwen3.8 Max'}
+MODEL = {'gpt-6.1-sol': 'GPT-6.1 Sol', 'claude-opus-5-5': 'Claude Opus 5.5', 'qwen3.8-max-0902': 'Qwen3.8 Max', 'hy4': 'Hunyuan 4'}
 SETTING = {'单轮': 'single', '迭代': 'iterative'}
 REFERENCE_SOURCES = {
     'galaxy-gravity': ['.runtime-ops/galaxy-gravity-v2/packages/operator/operator/baselines'],
@@ -245,14 +245,14 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
 
 
 COLUMNS = [('gpt-6.1-sol', '单轮'), ('gpt-6.1-sol', '迭代'), ('claude-opus-5-5', '单轮'), ('claude-opus-5-5', '迭代'),
-           ('qwen3.8-max', '单轮'), ('qwen3.8-max', '迭代')]
+           ('qwen3.8-max-0902', '单轮'), ('qwen3.8-max-0902', '迭代'), ('hy4', '单轮'), ('hy4', '迭代')]
 PROTOCOLS = ('v6.3', 'v6.2', 'v6.1', 'v6')  # newest first; the board shows the newest one that has results
 
 
 def write_board(metas: list[dict], names: list[str]) -> None:
     """Scoreboard of the newest protocol with results into README.md between the board markers."""
     protocol = next(p for p in PROTOCOLS if any(g.get('protocol') == p and g['results'] for m in metas for g in m['result_groups']))
-    columns = COLUMNS  # GPT-6.1 Sol, Claude Opus 5.5 and Qwen3.8 Max always; cells stay empty without a result
+    columns = COLUMNS  # every model of this round always; cells stay empty without a result
     head = '| task | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in columns) + ' |'
     rule = '| --- |' + ' --- |' * len(columns)
     scores, process = [head, rule], [head, rule]

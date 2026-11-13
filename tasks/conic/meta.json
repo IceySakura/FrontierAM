@@ -246,7 +246,7 @@
       "protocol": "v6"
     }
   ],
-  "notes_md": "- v6.3：sol 单轮 363 / 650、迭代 426 / 650（参照 Clarabel 513），都低于 0.9·p_B 的及格线，记 0 分；失分主要是二阶锥、半正定和指数锥上的超时。按线性映射 50·p/p_B 分别为 35.4 / 41.5，断崖问题见“结果解读”。\n- 650 例中 422 例的时限是 1 秒，计时包括解释器启动和导入；Python 加 SciPy 的求解器光启动就要约 0.7 秒。v6.2 中 opus 两种设置都写了原生 C++ 内点法，接近参照；sol 一直是 Python + SciPy 为主。",
+  "notes_md": "- 650 例中 422 例的时限是 1 秒，计时包括解释器启动和导入；Python 加 SciPy 光启动就要约 0.7 秒。所有拿到分数的提交都是原生 C++（v6.3 opus 迭代 27.6，v6.2 opus 单轮 24.7、迭代 41.2），所有以 Python 为主的提交都低于及格线 0.9·p_B、记 0 分。\n- v6.3：sol 单轮 363 / 650、迭代 426 / 650（参照 Clarabel 513），失分主要是二阶锥、半正定和指数锥上的超时。",
   "current_version": "v3",
   "versions": [
     {
@@ -301,11 +301,11 @@
       "evidence": "`tasks/conic/solutions/v6.3/*/score.json`"
     },
     {
-      "category": "评分映射问题",
-      "claim": "断崖：迭代解出参照的 83% 仍记 0 分；按 50·p/p_B 线性换算为 41.5（单轮 35.4）。重跑的 9 次测试 public 全是 0 分，进步只能从比值看出。是否放缓断崖由出题人决定。",
+      "category": "模型未能解决",
+      "claim": "实现语言决定了能否及格：1 秒时限包含解释器启动，Python 加 SciPy 光导入就要约 0.7 秒。拿到分数的三份提交都是原生 C++（v6.3 opus 迭代 p = 0.754，v6.2 opus 单轮 0.749、迭代 0.775），v6.2 opus 迭代的 README 写明避开 Python 正是因为导入开销；以 Python 为主的提交（sol 两轮四份、v6.3 opus 单轮）p 在 0.56–0.66，全部低于及格线，按设计记 0 分。",
       "confidence": "实测",
-      "attention": "review",
-      "evidence": "`results/INSIGHTS.md`"
+      "attention": null,
+      "evidence": "`tasks/conic/solutions/v6.3/*/source/run.sh`、`tasks/conic/meta.json`（v6.2 结果说明）"
     }
   ]
 }

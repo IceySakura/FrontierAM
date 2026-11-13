@@ -48,7 +48,7 @@ TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
 
-MODELS = [('gpt-6.1-sol', 'sol'), ('claude-opus-5-5', 'opus'), ('qwen3.8-max', 'qwen')]  # (model, attempt-log tag); NOTES keys add the model for opus
+MODELS = [('gpt-6.1-sol', 'sol'), ('claude-opus-5-5', 'opus'), ('qwen3.8-max-0902', 'qwen'), ('hy4', 'hy4')]  # (model, attempt-log tag); NOTES keys add the model for opus
 
 
 def submission_of(task: str, setting: str, n: int, tag: str = 'sol') -> str | None:

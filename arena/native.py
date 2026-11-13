@@ -58,6 +58,7 @@ HARNESS = {
     'hy4': 'claude',
     'minimax-m3.1-flash': 'codex',
     'qwen3.8-max': 'claude',
+    'qwen3.8-max-0902': 'claude',
 }
 CREDENTIALS = {
     'hy4': ('HY4_TAIJI_MESSAGE_API_TOKEN', Path('/root/.frontieram/hy4-taiji.token')),
