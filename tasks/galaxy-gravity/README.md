@@ -6,7 +6,7 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `versions/` | 题目的各个版本；当前版本 `v3/`，题面 `versions/v3/statement.md` |
+| `versions/` | 题目的各个版本；当前版本 `v4/`，题面 `versions/v4/statement.md` |
 | `references/` | 参照实现（`r1/` 为现行参照；`candidates/` 为复核中的候选） |
 | `solutions/<协议>/<模型>-<设置>-<序号>/` | 模型冻结提交的源码（`source/`）与成绩（`result.json`、`score.json`） |
 | `analysis/` | 这道题的专题分析与复核记录 |
@@ -75,6 +75,39 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | 题目设置 | 弱参照在私有集上单次最多 4.05 CPU 秒（上限 5 秒），余量 19%，低于 25%。（证据：`results/BASELINE_REVIEW.md`） | 实测 | **需出题人处理** |
 | 题面或接口问题 | 本轮题面写“50 分锚点为高阶快速多极方法参照”，与现行参照（Treecode2）不符；下一轮前重新封签。不影响本轮最终评分。（证据：`results/OPEN_ITEMS.md`） | 实测 |  |
 
+## 模型成绩与解法（题目版本 v4 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | \(E = 0.0265\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 99%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 0.0 | 60 分钟 | [`v4/gpt-6.1-sol-single-1/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | \(E = 1.03e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 92%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 66.1 | 5 次提交，217 分钟 | [`v4/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | \(E = 0.000139\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 46%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 52.9 | 19 分钟 | [`v4/claude-opus-5-5-single-1/`](solutions/v6.3/v4/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | \(E = 2.58e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 73%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 64.4 | 7 次提交，164 分钟 | [`v4/claude-opus-5-5-iterative-1/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/) |
+
+### GPT-6.1 Sol（单轮，v6.3）
+
+源码 [`solutions/v6.3/v4/gpt-6.1-sol-single-1/source/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/source/)（提交 `galaxy-gravity-v4-20261112T130631Z-857089`）；未复制的二进制或大文件：solve（292,088 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+public 分数随测试提交：61.3（40 分钟） → 0.0（97 分钟） → 0.0（131 分钟） → 63.6（153 分钟） → 65.8（197 分钟）
+
+源码 [`solutions/v6.3/v4/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/source/)（提交 `galaxy-gravity-v4-20261112T154314Z-94db54`）；未复制的二进制或大文件：solve（183,888 字节）。
+
+### Claude Opus 5.5（单轮，v6.3）
+
+源码 [`solutions/v6.3/v4/claude-opus-5-5-single-1/source/`](solutions/v6.3/v4/claude-opus-5-5-single-1/source/)（提交 `galaxy-gravity-v4-20261112T122517Z-4d6532`）；未复制的二进制或大文件：solve（62,728 字节）。
+
+### Claude Opus 5.5（迭代，v6.3）
+
+public 分数随测试提交：53.8（49 分钟） → 60.7（69 分钟） → 63.4（83 分钟） → 63.2（105 分钟） → 63.5（125 分钟） → 63.9（139 分钟） → 63.9（145 分钟）
+
+源码 [`solutions/v6.3/v4/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/source/)（提交 `galaxy-gravity-v4-20261112T145010Z-8ba575`）；未复制的二进制或大文件：solve（323,216 字节）、solve.prebuilt（323,216 字节）。
+
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v3 · 协议 v6.3）
 
 协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
@@ -109,8 +142,6 @@ public 分数随测试提交：45.2（29 分钟） → 56.8（67 分钟） → 6
 public 分数随测试提交：45.5（74 分钟） → 53.9（100 分钟） → 56.7（106 分钟） → 59.8（120 分钟） → 0.0（124 分钟） → 58.7（137 分钟） → 58.8（144 分钟） → 59.8（150 分钟） → 60.4（158 分钟） → 61.3（165 分钟） → 61.4（169 分钟） → 61.6（174 分钟）
 
 源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `galaxy-gravity-v3-20261112T113721Z-0c35f8`）；未复制的二进制或大文件：solve（370,112 字节）。
-
-<details><summary>旧版本的成绩与解法</summary>
 
 ## 模型成绩与解法（题目版本 v2 · 协议 v6.2）
 

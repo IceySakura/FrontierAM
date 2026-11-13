@@ -1,0 +1,51 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "galaxy-gravity-v4-20261112T145010Z-8ba575",
+ "raw": "\\(E = 2.58e-07\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 73%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+ "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)",
+ "score": 64.431,
+ "review": null,
+ "process": {
+  "minutes": 163.7,
+  "public_tests": 7,
+  "public_curve": [
+   {
+    "minute": 48.7,
+    "score": 53.826580577928894,
+    "status": "ok"
+   },
+   {
+    "minute": 69.2,
+    "score": 60.65103420158623,
+    "status": "ok"
+   },
+   {
+    "minute": 83.4,
+    "score": 63.42845936725663,
+    "status": "ok"
+   },
+   {
+    "minute": 104.7,
+    "score": 63.18154351172236,
+    "status": "ok"
+   },
+   {
+    "minute": 125.0,
+    "score": 63.47276086644413,
+    "status": "ok"
+   },
+   {
+    "minute": 138.6,
+    "score": 63.88289834015505,
+    "status": "ok"
+   },
+   {
+    "minute": 144.6,
+    "score": 63.900806325127135,
+    "status": "ok"
+   }
+  ]
+ }
+}

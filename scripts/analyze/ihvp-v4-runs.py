@@ -87,6 +87,55 @@ def score(loss, e0, e50):
     return 50 * (e0 - loss) / (e0 - e50) if loss > e50 else 50 + 50 * (e50 - loss) / e50
 
 
+def attempts() -> list[dict]:
+    out = []
+    for tag, model in (('sol', 'gpt-6.1-sol'), ('opus', 'claude-opus-5-5')):
+        for setting in ('single', 'iterative'):
+            log = ROOT / f'var/stores/store/reruns/v63-{tag}-{setting}-ihvp-sequence-v4-1.log'
+            rows = [json.loads(l) for l in log.read_text().splitlines() if 'develop_finished' in l] if log.exists() else []
+            if rows:
+                out.append({'label': f'{tag}-{setting}', 'model': model, 'setting': setting, **rows[-1]})
+    return out
+
+
+def sha(path: Path) -> str:
+    import hashlib
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def public_diagnostics() -> list[str]:
+    lines = ['## 新模型的 public 诊断（开发期间的测试反馈）', '',
+             '迭代设置开发期间每次测试只返回 public 15 条的整池汇总；分数按反馈基准（同一 public 划分上另一次测量的两份参照）换算。'
+             '单轮设置没有测试。', '', '| 尝试 | 用时 / 分钟 | 结束方式 | 测试次数 | 各次 public 分数 |', '| --- | --- | --- | --- | --- |']
+    for a in attempts():
+        result = json.loads((STORE / 'dev-runs' / a['run'] / 'develop_result.json').read_text())
+        tests = [e for e in result.get('evaluations') or [] if e.get('kind') == 'test']
+        scores = ' → '.join(f'{e["score"]:.1f}' if e.get('score') is not None else '—' for e in tests) or '—'
+        lines.append(f'| {a["label"]} | {result["development_seconds"] / 60:.0f} | {result["agent_stop_reason"]} | {len(tests)} | {scores} |')
+    return lines + ['']
+
+
+def environment() -> list[str]:
+    import platform
+    lock = json.loads((ROOT / '.runtime-ops/ihvp-sequence-v4/lock.json').read_text())
+    cpu = next((l.split(':', 1)[1].strip() for l in Path('/proc/cpuinfo').read_text().splitlines() if l.startswith('model name')), '')
+    raw = ROOT / 'var/raw/ihvp-v4'
+    lines = ['## 环境、数据与提交', '',
+             f'- 评测机：{cpu}，Linux {platform.release()}（x86_64）；每份评测绑定一个物理核，与其他开发、评测并发（共享模式）。',
+             f'- 任务镜像 `{lock["image"]["tag"]}`：`{lock["image"]["id"]}`；开发镜像 `frontieram-ihvp-sequence-v4-harness:v6`。',
+             '- 代码：PR #3，提交 `50c8e12524e42256957239654ff250b8aa26db04`（按差异移植到维护端仓库）。',
+             f'- 总包 `ihvp-hard-v4-with-guide.zip`：SHA-256 `{sha(raw / "ihvp-hard-v4-with-guide.zip")}`；'
+             f'模型小包 `ihvp-v4-model-visible.zip`：`{sha(raw / "ihvp-v4-model-visible.zip")}`。',
+             f'- 数据清单 SHA-256：public `{lock["data_manifest_sha256"]["public"]}`，private `{lock["data_manifest_sha256"]["private"]}`；'
+             f'模型工作区 `public.tar` `{lock["public_tar_sha256"]}`（恰为六文件）。', '',
+             '| 尝试 | 冻结提交 | 源码归档 SHA-256 |', '| --- | --- | --- |']
+    for a in attempts():
+        lines.append(f'| {a["label"]} | `{a["submission"]}` | `{sha(STORE / "submissions" / a["submission"] / "source.tar")}` |')
+    lines.append(f'| v3-iterative（回放） | `{V3_ITERATIVE}` | `{sha(STORE / "submissions" / V3_ITERATIVE / "source.tar")}` |')
+    return lines + ['']
+
+
 def report() -> None:
     fmt = lambda v, f: '—' if v is None else format(v, f)
     lines = ['# ihvp-sequence v4：本机测量（自动生成，草稿版本，不是正式成绩）', '',
@@ -109,6 +158,7 @@ def report() -> None:
             lines.append(f'| {desc} | {fmt(s["loss"], ".5g")} | {fmt(s["mean_wall"], ".1f")} | {fmt(s["max_wall"], ".1f")} | '
                          f'{fmt(s["rss"], ".0f")} | {s["valid"]}/{s["n"]} | {fmt(score(s["loss"], anchors["cg"], anchors["lbfgs"]), ".1f")} |')
         lines.append('')
+    lines += public_diagnostics() + environment()
     REPORT.write_text('\n'.join(lines) + '\n')
     print(REPORT)
 

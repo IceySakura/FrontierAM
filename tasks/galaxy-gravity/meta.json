@@ -17,6 +17,65 @@
   "result_groups": [
     {
       "title": "协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）",
+      "version": "v4",
+      "protocol": "v6.3",
+      "results": [
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261112T130631Z-857089",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.0265\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 99%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+          "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)",
+          "score": 0.0,
+          "notes_md": "",
+          "folder": "v4/gpt-6.1-sol-single-1"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261112T154314Z-94db54",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 1.03e-07\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 92%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+          "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)",
+          "score": 66.117,
+          "notes_md": "",
+          "folder": "v4/gpt-6.1-sol-iterative-1"
+        },
+        {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261112T122517Z-4d6532",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.000139\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 46%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+          "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)",
+          "score": 52.873,
+          "notes_md": "",
+          "folder": "v4/claude-opus-5-5-single-1"
+        },
+        {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261112T145010Z-8ba575",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 2.58e-07\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 73%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+          "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)",
+          "score": 64.431,
+          "notes_md": "",
+          "folder": "v4/claude-opus-5-5-iterative-1"
+        }
+      ]
+    },
+    {
+      "title": "协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）",
       "version": "v3",
       "protocol": "v6.3",
       "results": [
@@ -118,7 +177,7 @@
     }
   ],
   "notes_md": "加倍粒子数（v2）让直接求和超时；模型都改用高阶快速多极方法，把误差降到 \\(10^{-7}\\) 以下。v2 的线性映射因此饱和（误差在 \\(10^{-6}\\) 以下都挤在 99.9 分以上），v3 改为对数刻度，参照仍是出题方的两条 Treecode2。\n\n弱参照在私有集上单次最多 4.05 CPU 秒，离 5 秒上限只有 19% 余量，已列入待出题人处理的事项。",
-  "current_version": "v3",
+  "current_version": "v4",
   "versions": [
     {
       "dir": "v1",

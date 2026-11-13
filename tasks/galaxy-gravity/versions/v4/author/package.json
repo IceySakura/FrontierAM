@@ -1,0 +1,10 @@
+{
+  "contains_hidden_references": true,
+  "contains_public_generator": false,
+  "formal_calls": 240,
+  "formal_cases": 80,
+  "package": "galaxy-gravity-b4-evaluation",
+  "repetitions": 3,
+  "score_weights": null,
+  "version": "0.4.0-precalibration"
+}
