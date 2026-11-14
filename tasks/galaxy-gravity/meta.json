@@ -102,14 +102,14 @@
           "model": "hy4",
           "protocol": "v6.3",
           "setting": "单轮",
-          "attempt": 1,
-          "submission": "galaxy-gravity-v4-20261113T105014Z-0377e1",
+          "attempt": 2,
+          "submission": "galaxy-gravity-v4-20261114T090229Z-f3fb46",
           "store": "var/stores/store-v63",
           "raw": "无效提交（提交失败）",
           "mapping": "任一用例失败或提交检查未通过记 0",
           "score": 0.0,
-          "notes_md": "",
-          "folder": "v4/hy4-single-1"
+          "notes_md": "第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。",
+          "folder": "v4/hy4-single-2"
         },
         {
           "model": "hy4",
