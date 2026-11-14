@@ -86,7 +86,7 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | Claude Opus 5.5 | 单轮 | \(E = 0.000139\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 46%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 52.9 | 19 分钟 | [`v4/claude-opus-5-5-single-1/`](solutions/v6.3/v4/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | \(E = 2.58e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 73%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 64.4 | 7 次提交，164 分钟 | [`v4/claude-opus-5-5-iterative-1/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 58 分钟 | [`v4/qwen3.8-max-0902-single-2/`](solutions/v6.3/v4/qwen3.8-max-0902-single-2/) |
-| Qwen3.8 Max | 迭代 | 无效提交（build invalid_source） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，240 分钟 | [`v4/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-1/) |
+| Qwen3.8 Max | 迭代 | \(E = 0.00706\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 86%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 0.0 | 2 次提交，240 分钟 | [`v4/qwen3.8-max-0902-iterative-2/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v4/hy4-single-2/`](solutions/v6.3/v4/hy4-single-2/) |
 | Hunyuan 4 | 迭代 | \(E = 0.000308\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 88%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 51.4 | 5 次提交，230 分钟 | [`v4/hy4-iterative-1/`](solutions/v6.3/v4/hy4-iterative-1/) |
 
@@ -118,7 +118,11 @@ public 分数随测试提交：53.8（49 分钟） → 60.7（69 分钟） → 6
 
 ### Qwen3.8 Max（迭代，v6.3）
 
-源码 [`solutions/v6.3/v4/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-1/source/)（提交 `galaxy-gravity-v4-20261113T104919Z-1c3c7d`）；未复制的二进制或大文件：grav（87,688 字节）、tdk（15,960 字节）、tev（20,120 字节）、tm（24,600 字节）、tm2（15,960 字节）、tm3（15,960 字节）。
+第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。
+
+public 分数随测试提交：0.0（182 分钟） → 0.0（199 分钟）
+
+源码 [`solutions/v6.3/v4/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-2/source/)（提交 `galaxy-gravity-v4-20261114T120229Z-a22837`）；未复制的二进制或大文件：s9（141,344 字节）、solve（145,400 字节）。
 
 ### Hunyuan 4（单轮，v6.3）
 
