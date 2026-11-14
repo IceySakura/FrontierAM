@@ -9,6 +9,7 @@ Usage: v63-publish.py [TASK ...]   (default: every task version below)
 
 import json
 import math
+import sys
 
 from pathlib import Path
 
@@ -42,6 +43,7 @@ NOTES = {
     ('ihvp-sequence-v4', 'iterative'): '按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。',
     ('ihvp-sequence-v4', 'single', 'claude-opus-5-5'): '热启动 CG 加小规模回收紧缩子空间，没有识别矩阵结构。',
     ('ihvp-sequence-v4', 'iterative', 'claude-opus-5-5'): '前一步解与修正量的 Galerkin 投影加 CG（6 次测试，public 50.1 → 62.5），没有识别矩阵结构。',
+    ('conic', 'single', 'qwen3.8-max-0902'): '原生 C 求解器，但提交缺少题面要求的 README.md，提交检查未通过，650 例均未运行。',
     ('ihvp-sequence-v2', 'iterative'): '工作区不含生成代码；最近 16 个解做 QR，在子空间上精确投影得到初始解，再跑 CG，按剩余步数分配时间（阶段突变时多给），Gauss–Radau 上界停止。没有识别矩阵结构；public 分数 83.7 → 99.8。',
 }
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
@@ -120,10 +122,27 @@ def main():
             for setting in ('single', 'iterative'):
                 name = '/'.join(filter(None, (SUBFOLDER.get(task), f'{model}-{setting}-1')))
                 folder = ROOT / 'tasks' / family / 'solutions/v6.3' / name
-                if not (folder / 'score.json').exists():
+                if (folder / 'score.json').exists():
+                    score = json.loads((folder / 'score.json').read_text())
+                elif (folder / 'develop_result.json').exists():  # the attempt froze no valid submission
+                    score = {'score': 0.0, 'invalid': '开发结束时没有冻结出有效提交'}
+                else:
                     continue
-                score = json.loads((folder / 'score.json').read_text())
-                raw, mapping = cell(task, score)
+                try:
+                    if score.get('invalid'):
+                        raw, mapping = f'无效提交（{score["invalid"]}）', '无效提交记 0'
+                    elif (score.get('candidate') or {}).get('status') == 'submission_failure' and (score.get('candidate') or {}).get('raw_error') is None:
+                        reasons = [r for r in (score['candidate'].get('reasons') or [score['candidate'].get('reason')]) if r]
+                        score['score'] = 0.0
+                        raw, mapping = f'无效提交（{reasons[0] if reasons else "提交失败"}）', '任一用例失败或提交检查未通过记 0'
+                    elif TASKS[task] == 'conic' and score.get('p') is None:
+                        score['score'] = 0.0
+                        raw, mapping = '无效提交（提交检查未通过，650 例均未运行）', '无效提交记 0'
+                    else:
+                        raw, mapping = cell(task, score)
+                except Exception as error:  # one malformed cell must not stop the others from being published
+                    print(json.dumps({'task': task, 'cell': name, 'error': repr(error)}), file=sys.stderr)
+                    continue
                 value = score.get('score')
                 note = NOTES.get((task, setting) if tag == 'sol' else (task, setting, model), '')
                 results.append({'model': model, 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': 1,
