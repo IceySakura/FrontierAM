@@ -84,13 +84,13 @@
           "model": "qwen3.8-max-0902",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 1,
-          "submission": "species-tree-v3-20261113T095009Z-7713e4",
+          "attempt": 2,
+          "submission": "species-tree-v3-20261114T120229Z-661e4e",
           "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.3279\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "raw": "无效提交（开发结束时没有冻结出有效提交）",
+          "mapping": "无效提交记 0",
           "score": 0.0,
-          "notes_md": ""
+          "notes_md": "第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。"
         },
         {
           "model": "hy4",
