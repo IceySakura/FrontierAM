@@ -11,6 +11,7 @@ grade_one() {
     [ "$sub" = - ] && { echo "{\"label\": \"$tag-$setting\", \"submission\": null}"; return; }
     echo "{\"time\": \"$(date +%FT%T)\", \"event\": \"final_started\", \"label\": \"$tag-$setting\", \"submission\": \"$sub\"}"
     nexus/.venv/bin/python scripts/analyze/ihvp-v4-runs.py final "$sub" "$tag-$setting"
+    scripts/rounds/publish-now.sh "ihvp v4 $tag-$setting"
 }
 for tag in ${V4_TAGS:-sol opus}; do for setting in single iterative; do grade_one $tag $setting & done; done
 wait

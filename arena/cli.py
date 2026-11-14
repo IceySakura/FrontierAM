@@ -278,7 +278,7 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
         slow = [p for p in (probe_before, probe_after) if (p.get('ratio') or 0) > SLOW]
         if slow:
             from .alerts import alert
-            alert('slow_slot', job=job['id'], task=task.name, kind=job['kind'], slot=lease.id,
+            alert('slow_slot', job=job['id'], task=task.name, job_kind=job['kind'], slot=lease.id,
                   before=probe_before.get('ratio'), after=probe_after.get('ratio'),
                   concurrent=[r.get('owner') for r in before if r.get('slot') != lease.id])
     metrics_path = results / 'grade/metrics.json'

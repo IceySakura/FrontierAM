@@ -41,9 +41,16 @@ suite() {  # task, submission|--reference -> suite id; grades it now
     FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE grade-worker --task "$task" --workers 7 --drain \
         >> var/stores/store/reruns/v63-worker.log 2>&1
     # another loop's worker for the same task may still be grading some of this suite's shards
-    until python3 -c "import json,os,sys;r=json.load(open('$STORE/suites/$id.json'));sys.exit(any(not os.path.exists('$STORE/jobs/done/'+s['job']+'.json') for s in r['shards']))"; do
+    # a shard that is in no queue and not done has failed: give up this suite (the cell is regraded on a later pass)
+    local state
+    while state=$(python3 -c "
+import json,os
+r=json.load(open('$STORE/suites/$id.json')); q='$STORE/jobs/'
+s=[next((k for k in ('done','pending','running','held') if os.path.exists(q+k+'/'+x['job']+'.json')),'lost') for x in r['shards']]
+print('lost' if 'lost' in s else 'done' if all(k=='done' for k in s) else 'wait')"); [ "$state" = wait ]; do
         sleep 30
     done
+    [ "$state" = done ] || { echo "{\"suite\": \"$id\", \"event\": \"shard_lost\"}" >&2; return 1; }
     echo "$id"
 }
 
@@ -77,6 +84,7 @@ grade() {  # setting, task
               "$attempt_log")
         cp "$STORE/dev-runs/$run/develop_result.json" "$out/develop_result.json" 2>/dev/null
         log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": null"
+        scripts/rounds/publish-now.sh "$label" &
         return 0
     fi
     case $task in
@@ -128,6 +136,7 @@ PY
             id=job ;;
     esac
     log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": \"$sub\", \"suite\": \"$id\""
+    scripts/rounds/publish-now.sh "$label" &
 }
 
 TASKS=${V63_TASKS:-"conic exponential-v3 galaxy-gravity-v3 galaxy-gravity-v4 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v2 ihvp-sequence-v3"}

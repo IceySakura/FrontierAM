@@ -163,8 +163,33 @@ def report() -> None:
     print(REPORT)
 
 
+MODEL_OF = {'sol': 'gpt-6.1-sol', 'opus': 'claude-opus-5-5', 'qwen': 'qwen3.8-max-0902', 'hy4': 'hy4'}
+
+
+def scores() -> None:
+    """score.json for every finished private final, all on the same private anchors (cg / lbfgs, first measurement)."""
+    e0, e50 = (stats(OUT / 'cg-private') or {}).get('loss'), (stats(OUT / 'lbfgs-private') or {}).get('loss')
+    for path in sorted(OUT.glob('final-*-private')):
+        tag, setting = path.name[len('final-'):-len('-private')].split('-')
+        s = stats(path)
+        if s is None or tag not in MODEL_OF:
+            continue
+        rows = json.loads((path / 'summary.json').read_text()).get('records', [])
+        failed = s['valid'] < s['n']
+        candidate = {'status': 'submission_failure' if failed else 'ok', 'raw_error': s['loss'], 'max_wall_s': s['max_wall'],
+                     'max_peak_rss_mib': s['rss'], 'valid': s['valid'], 'cases': s['n'],
+                     'reason': next((r.get('reason') for r in rows if r.get('status') != 'ok'), None)}
+        out = ROOT / f'tasks/ihvp-sequence/solutions/v6.3/v4/{MODEL_OF[tag]}-{setting}-1'
+        out.mkdir(parents=True, exist_ok=True)
+        (out / 'score.json').write_text(json.dumps({
+            'status': candidate['status'], 'score': 0.0 if failed else score(s['loss'], e0, e50), 'candidate': candidate,
+            'anchors': {'weak': e0, 'strong': e50}, 'source': f'scripts/analyze/ihvp-v4-runs.py final ({path.name})'}, indent=1) + '\n')
+
+
 def main() -> None:
     command = sys.argv[1]
+    if command == 'scores':
+        return scores()
     if command == 'anchors':
         refs = references()
         grade([(k, refs[k], split) for k in refs for split in ('public', 'private')])
