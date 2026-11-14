@@ -149,6 +149,8 @@ while :; do
         for task in $TASKS; do
             label="$PFX$setting-$task-$N"
             done_event graded "$label" && continue
+            # an attempt with no log while no attempt runner is running was not requested (V63_SETTINGS)
+            [ -e "var/stores/store/reruns/v63-$TAG-$setting-$task-$N.log" ] || attempts_running || continue
             left=$((left + 1))
             [ -e "$INFLIGHT/$label" ] && continue
             [ -z "$(frozen "var/stores/store/reruns/v63-$TAG-$setting-$task-$N.log")" ] && continue

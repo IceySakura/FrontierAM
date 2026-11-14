@@ -65,6 +65,9 @@ CREDENTIALS = {
     'qwen3.8-max': ('QWEN_TOKEN_PLAN_KEY', Path('/root/.frontieram/qwen-maas.key')),  # Qwen token-plan Anthropic endpoint
 }
 DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
+# The path from this host to the model gateways closes connections idle for 1100 s, and a non-streaming request is idle
+# until its whole answer exists; these models stream their thinking, so their upstream requests stay streaming.
+UPSTREAM_STREAM = {'hy4', 'qwen3.8-max', 'qwen3.8-max-0902'}
 CONTAINER_PORT = 18080
 IMAGE_NONSTREAM = '/opt/atr-venv/lib/python3.13/site-packages/atr/harness/nonstream.py'
 MEMORY = 4 * 2**30
@@ -817,7 +820,8 @@ def develop(spec: dict, runtime: dict) -> dict:
                                           'development_seconds': seconds, 'memory_bytes': MEMORY,
                                           'protocol': protocol,
                                           'setting': setting if protocol in ('v6.2', 'v6.3') else None,
-                                          'test_cap_seconds': TEST_CAP_SECONDS if iterative else None})
+                                          'test_cap_seconds': TEST_CAP_SECONDS if iterative else None,
+                                          'upstream_stream': model in UPSTREAM_STREAM})
     credential_env, credential_file = CREDENTIALS.get(model, DEFAULT_CREDENTIAL)
     token = secrets.token_urlsafe(32)
     port = _free_port()
@@ -883,8 +887,8 @@ def develop(spec: dict, runtime: dict) -> dict:
             '--tmpfs', f'/workspace:rw,exec,nosuid,nodev,size=1g,uid={DEV_UID},gid={DEV_UID},mode=0755',
             '--tmpfs', f'/home/agent:rw,exec,nosuid,nodev,size=1g,uid={DEV_UID},gid={DEV_UID},mode=0700',
             '--mount', f'type=bind,src={socket_dir},dst=/run/atr', *mounts,
-            # ATR's client transport with early event streams for slow Messages answers (local ATR change, 2026-11-13);
-            # the images carry the previous copy of the same file
+            # ATR's client transport with early event streams for slow Messages answers (local ATR change, 2026-11-13)
+            # and streaming upstream requests (2026-11-14); the images carry the previous copy of the same file
             '--mount', f'type=bind,src={ATR_ROOT}/src/atr/harness/nonstream.py,dst={IMAGE_NONSTREAM},readonly',
             '--env', 'HOME=/home/agent', '--log-driver', 'none', '--user', f'{DEV_UID}:{DEV_UID}',
             '--workdir', '/workspace',
@@ -910,7 +914,8 @@ def develop(spec: dict, runtime: dict) -> dict:
         launch = (['/bin/sh', '-c', script] if script else
                   ['/opt/atr-venv/bin/python', '-c', LAUNCHER, json.dumps(launcher_spec)])
         with (output / 'cli.log').open('wb') as log:
-            client = subprocess.Popen([*docker.prefix, 'exec', name, *launch],
+            upstream_stream = ['--env', 'ATR_UPSTREAM_STREAM=1'] if model in UPSTREAM_STREAM else []
+            client = subprocess.Popen([*docker.prefix, 'exec', *upstream_stream, name, *launch],
                                       stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
             while True:
                 try:

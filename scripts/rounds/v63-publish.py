@@ -46,6 +46,12 @@ NOTES = {
     ('conic', 'single', 'qwen3.8-max-0902'): '原生 C 求解器，但提交缺少题面要求的 README.md，提交检查未通过，650 例均未运行。',
     ('ihvp-sequence-v2', 'iterative'): '工作区不含生成代码；最近 16 个解做 QR，在子空间上精确投影得到初始解，再跑 CG，按剩余步数分配时间（阶段突变时多给），Gauss–Radau 上界停止。没有识别矩阵结构；public 分数 83.7 → 99.8。',
 }
+# Attempt 1 of these cells lost long turns to the 1100 s idle cut on the path to the model gateway (an infrastructure
+# failure, so unmeasured); attempt 2 ran with streaming upstream requests and replaces it once it has a result.
+RERUN = {('galaxy-gravity-v4', 'single', 'qwen3.8-max-0902'), ('galaxy-gravity-v4', 'iterative', 'qwen3.8-max-0902'),
+         ('species-tree-v3', 'single', 'qwen3.8-max-0902'), ('species-tree-v3', 'iterative', 'qwen3.8-max-0902'),
+         ('conic', 'single', 'qwen3.8-max-0902'), ('conic', 'single', 'hy4'), ('galaxy-gravity-v4', 'single', 'hy4')}
+RERUN_NOTE = '第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。'
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
@@ -120,8 +126,11 @@ def main():
         results = []
         for model, tag in MODELS:
             for setting in ('single', 'iterative'):
-                name = '/'.join(filter(None, (SUBFOLDER.get(task), f'{model}-{setting}-1')))
-                folder = ROOT / 'tasks' / family / 'solutions/v6.3' / name
+                for n in (2, 1) if (task, setting, model) in RERUN else (1,):
+                    name = '/'.join(filter(None, (SUBFOLDER.get(task), f'{model}-{setting}-{n}')))
+                    folder = ROOT / 'tasks' / family / 'solutions/v6.3' / name
+                    if (folder / 'score.json').exists() or (folder / 'develop_result.json').exists():
+                        break
                 if (folder / 'score.json').exists():
                     score = json.loads((folder / 'score.json').read_text())
                 elif (folder / 'develop_result.json').exists():  # the attempt froze no valid submission
@@ -144,9 +153,9 @@ def main():
                     print(json.dumps({'task': task, 'cell': name, 'error': repr(error)}), file=sys.stderr)
                     continue
                 value = score.get('score')
-                note = NOTES.get((task, setting) if tag == 'sol' else (task, setting, model), '')
-                results.append({'model': model, 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': 1,
-                                'submission': submission_of(task, setting, 1, tag), 'store': 'var/stores/store-v63', 'raw': raw,
+                note = RERUN_NOTE if n == 2 else NOTES.get((task, setting) if tag == 'sol' else (task, setting, model), '')
+                results.append({'model': model, 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': n,
+                                'submission': submission_of(task, setting, n, tag), 'store': 'var/stores/store-v63', 'raw': raw,
                                 'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),
                                 'notes_md': note, **({'folder': name} if task in SUBFOLDER else {}), **reviews.get((model, SETTING[setting]), {})})
         if not results:

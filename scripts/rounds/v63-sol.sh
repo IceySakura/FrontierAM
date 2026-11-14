@@ -5,7 +5,7 @@
 # Rerun-safe: an attempt whose log already exists (started or finished) is skipped; infrastructure failures are
 # rerun by renaming their log.
 # Logs: var/stores/store/reruns/v63-<tag>-<setting>-<task>-<n>.log (tag: sol, opus).
-# V63_MODEL picks the model (default gpt-6.1-sol); V63_TASKS overrides the task list.
+# V63_MODEL picks the model (default gpt-6.1-sol); V63_TASKS overrides the task list, V63_SETTINGS the settings.
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 R=$PWD
@@ -16,6 +16,7 @@ N=${V63_ATTEMPT:-1}
 MODEL=${V63_MODEL:-gpt-6.1-sol}
 case $MODEL in gpt-6.1-sol) TAG=sol;; claude-opus-5-5) TAG=opus;; qwen3.8-max|qwen3.8-max-0902) TAG=qwen;; hy4) TAG=hy4;; *) echo "unknown model $MODEL" >&2; exit 2;; esac
 TASKS=${V63_TASKS:-"conic exponential-v3 galaxy-gravity-v3 galaxy-gravity-v4 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v3"}
+SETTINGS=${V63_SETTINGS:-"single iterative"}
 
 attempt() {
     local setting=$1 task=$2 log=var/stores/store/reruns/v63-$TAG-$1-$2-$N.log runtime=$R/.runtime-recal
@@ -27,5 +28,5 @@ attempt() {
 export -f attempt
 export R KEY STORE N MODEL TAG
 # singles first: they free their slots within an hour and keep the grade slots busy while the iteratives run
-{ for t in $TASKS; do echo "single $t"; done; for t in $TASKS; do echo "iterative $t"; done; } |
+{ for s in $SETTINGS; do for t in $TASKS; do echo "$s $t"; done; done; } |
     xargs -P "$MAX" -L 1 bash -c 'attempt "$0" "$1"'
