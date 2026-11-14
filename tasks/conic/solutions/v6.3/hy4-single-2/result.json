@@ -1,0 +1,14 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "conic-20261114T085910Z-a7a1e9",
+ "raw": "253 / 650（\\(p = 0.389\\)，参照 \\(p_B = 0.789\\)）",
+ "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 56.7,
+  "public_tests": 0
+ }
+}

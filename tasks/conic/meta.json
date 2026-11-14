@@ -96,13 +96,13 @@
           "model": "hy4",
           "protocol": "v6.3",
           "setting": "单轮",
-          "attempt": 1,
-          "submission": "conic-20261113T103850Z-2c2b4b",
+          "attempt": 2,
+          "submission": "conic-20261114T085910Z-a7a1e9",
           "store": "var/stores/store-v63",
-          "raw": "无效提交（开发结束时没有冻结出有效提交）",
-          "mapping": "无效提交记 0",
+          "raw": "253 / 650（\\(p = 0.389\\)，参照 \\(p_B = 0.789\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
           "score": 0.0,
-          "notes_md": ""
+          "notes_md": "第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。"
         },
         {
           "model": "hy4",
