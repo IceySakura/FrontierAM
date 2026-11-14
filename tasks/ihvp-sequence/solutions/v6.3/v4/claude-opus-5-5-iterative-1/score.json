@@ -1,17 +1,18 @@
 {
  "status": "ok",
- "score": 62.42800308496025,
+ "score": 62.42800308496026,
  "candidate": {
   "status": "ok",
   "raw_error": 0.11103039966792723,
   "max_wall_s": 28.31517333490774,
   "max_peak_rss_mib": 101.12890625,
   "valid": 30,
-  "cases": 30
+  "cases": 30,
+  "reason": null
  },
  "anchors": {
-  "weak": 0.24830954570528785,
-  "strong": 0.14775685189024743
+  "weak": 0.24830954570528788,
+  "strong": 0.14775685189024745
  },
- "source": "scripts/analyze/ihvp-v4-runs.py final (ihvp-v4/final-opus-iterative-private)"
+ "source": "scripts/analyze/ihvp-v4-runs.py final (final-opus-iterative-private)"
 }
