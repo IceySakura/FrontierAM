@@ -1,0 +1,36 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261113T151956Z-b398a9",
+ "raw": "nRF \\(E = 0.1382\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 30.135,
+ "review": null,
+ "process": {
+  "minutes": 156.7,
+  "public_tests": 4,
+  "public_curve": [
+   {
+    "minute": 77.2,
+    "score": 50.0,
+    "status": "ok"
+   },
+   {
+    "minute": 105.4,
+    "score": 51.324503311258276,
+    "status": "ok"
+   },
+   {
+    "minute": 132.6,
+    "score": 50.662251655629134,
+    "status": "ok"
+   },
+   {
+    "minute": 149.6,
+    "score": 51.324503311258276,
+    "status": "ok"
+   }
+  ]
+ }
+}

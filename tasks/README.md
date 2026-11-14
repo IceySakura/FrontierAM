@@ -4,12 +4,12 @@
 
 | task | 已评提交 |
 | --- | --- |
-| [conic](conic/README.md) | 16 |
-| [exponential](exponential/README.md) | 13 |
-| [galaxy-gravity](galaxy-gravity/README.md) | 11 |
-| [polarization-demosaicking](polarization-demosaicking/README.md) | 6 |
-| [trajectory-covariance](trajectory-covariance/README.md) | 6 |
-| [species-tree](species-tree/README.md) | 7 |
-| [ihvp-sequence](ihvp-sequence/README.md) | 12 |
+| [conic](conic/README.md) | 20 |
+| [exponential](exponential/README.md) | 17 |
+| [galaxy-gravity](galaxy-gravity/README.md) | 15 |
+| [polarization-demosaicking](polarization-demosaicking/README.md) | 10 |
+| [trajectory-covariance](trajectory-covariance/README.md) | 10 |
+| [species-tree](species-tree/README.md) | 10 |
+| [ihvp-sequence](ihvp-sequence/README.md) | 16 |
 
 本文件由 `scripts/site/build_task_pages.py` 生成。

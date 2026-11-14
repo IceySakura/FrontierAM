@@ -1,0 +1,31 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261113T100650Z-ce5d87",
+ "raw": "无效提交（1 例不合格）",
+ "mapping": "任一用例不合格记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 197.5,
+  "public_tests": 3,
+  "public_curve": [
+   {
+    "minute": 153.4,
+    "score": 47.00770043386087,
+    "status": "ok"
+   },
+   {
+    "minute": 176.1,
+    "score": 54.983060887168094,
+    "status": "ok"
+   },
+   {
+    "minute": 189.9,
+    "score": 50.22713521290567,
+    "status": "ok"
+   }
+  ]
+ }
+}

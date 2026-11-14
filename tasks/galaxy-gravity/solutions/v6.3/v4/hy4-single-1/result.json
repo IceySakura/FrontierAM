@@ -1,0 +1,14 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "galaxy-gravity-v4-20261113T105014Z-0377e1",
+ "raw": "无效提交（有调用失败）",
+ "mapping": "任一调用失败记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 60.0,
+  "public_tests": 0
+ }
+}

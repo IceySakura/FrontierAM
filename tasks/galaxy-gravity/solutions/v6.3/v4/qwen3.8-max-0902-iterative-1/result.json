@@ -1,0 +1,14 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "galaxy-gravity-v4-20261113T104919Z-1c3c7d",
+ "raw": "无效提交（build invalid_source；build invalid_source；build invalid_source；build invalid_source；build invalid_source；build invalid_source；build invalid_source）",
+ "mapping": "任一调用失败记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 240.0,
+  "public_tests": 0
+ }
+}

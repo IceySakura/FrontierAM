@@ -1,0 +1,41 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "ihvp-sequence-v4-20261113T094148Z-f0653e",
+ "raw": "\\(E = 0.1416\\)，最长序列 28.5 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 52.068,
+ "review": null,
+ "process": {
+  "minutes": 184.5,
+  "public_tests": 5,
+  "public_curve": [
+   {
+    "minute": 19.8,
+    "score": 50.37743835666899,
+    "status": "ok"
+   },
+   {
+    "minute": 119.3,
+    "score": 50.373726443432254,
+    "status": "ok"
+   },
+   {
+    "minute": 145.8,
+    "score": 53.028898180828854,
+    "status": "ok"
+   },
+   {
+    "minute": 158.2,
+    "score": 50.949502598232186,
+    "status": "ok"
+   },
+   {
+    "minute": 175.4,
+    "score": 52.25272113242775,
+    "status": "ok"
+   }
+  ]
+ }
+}

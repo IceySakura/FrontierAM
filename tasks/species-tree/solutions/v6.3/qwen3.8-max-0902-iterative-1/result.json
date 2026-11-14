@@ -1,0 +1,21 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261113T095009Z-7713e4",
+ "raw": "nRF \\(E = 0.3279\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 180.8,
+  "public_tests": 1,
+  "public_curve": [
+   {
+    "minute": 141.9,
+    "score": 0.0,
+    "status": "ok"
+   }
+  ]
+ }
+}

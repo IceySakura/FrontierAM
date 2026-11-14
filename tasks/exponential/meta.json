@@ -68,6 +68,54 @@
           "mapping": "\\(100/(1+R)\\)",
           "score": 64.42,
           "notes_md": ""
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "exponential-v3-20261113T124311Z-a58b23",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（74 例不合格）",
+          "mapping": "任一用例不合格记 0",
+          "score": 0.0,
+          "notes_md": ""
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "exponential-v3-20261113T100650Z-ce5d87",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（1 例不合格）",
+          "mapping": "任一用例不合格记 0",
+          "score": 0.0,
+          "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "exponential-v3-20261113T114630Z-965262",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（1 例不合格）",
+          "mapping": "任一用例不合格记 0",
+          "score": 0.0,
+          "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "exponential-v3-20261113T131731Z-c8c28a",
+          "store": "var/stores/store-v63",
+          "raw": "74/74 合格，\\(R = 0.776\\)（对 7 方法参照组逐例最快成员）",
+          "mapping": "\\(100/(1+R)\\)",
+          "score": 56.3,
+          "notes_md": ""
         }
       ]
     },

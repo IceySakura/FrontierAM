@@ -1,0 +1,14 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "ihvp-sequence-v4-20261113T104130Z-fae7db",
+ "raw": "\\(E = 0.1402\\)，最长序列 27.8 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 52.56,
+ "review": null,
+ "process": {
+  "minutes": 59.6,
+  "public_tests": 0
+ }
+}

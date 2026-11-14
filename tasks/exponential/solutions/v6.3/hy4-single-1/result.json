@@ -1,0 +1,14 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "exponential-v3-20261113T114630Z-965262",
+ "raw": "无效提交（1 例不合格）",
+ "mapping": "任一用例不合格记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 57.1,
+  "public_tests": 0
+ }
+}

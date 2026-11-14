@@ -67,6 +67,54 @@
           "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
           "score": 27.583,
           "notes_md": ""
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "conic-20261113T110654Z-45fa05",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（提交检查未通过，650 例均未运行）",
+          "mapping": "无效提交记 0",
+          "score": 0.0,
+          "notes_md": "原生 C 求解器，但提交缺少题面要求的 README.md，提交检查未通过，650 例均未运行。"
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "conic-20261113T095013Z-b8a0f4",
+          "store": "var/stores/store-v63",
+          "raw": "26 / 650（\\(p = 0.040\\)，参照 \\(p_B = 0.789\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+          "score": 0.0,
+          "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "conic-20261113T103850Z-2c2b4b",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（开发结束时没有冻结出有效提交）",
+          "mapping": "无效提交记 0",
+          "score": 0.0,
+          "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "conic-20261113T151918Z-6716a1",
+          "store": "var/stores/store-v63",
+          "raw": "288 / 650（\\(p = 0.443\\)，参照 \\(p_B = 0.789\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+          "score": 0.0,
+          "notes_md": ""
         }
       ]
     },

@@ -1,0 +1,41 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "galaxy-gravity-v4-20261113T153651Z-83f3a8",
+ "raw": "\\(E = 0.000308\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 88%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+ "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)",
+ "score": 51.417,
+ "review": null,
+ "process": {
+  "minutes": 230.3,
+  "public_tests": 5,
+  "public_curve": [
+   {
+    "minute": 142.8,
+    "score": 44.99656977515582,
+    "status": "ok"
+   },
+   {
+    "minute": 169.9,
+    "score": 51.49155966297125,
+    "status": "ok"
+   },
+   {
+    "minute": 188.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 204.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 217.4,
+    "score": 51.12784148356343,
+    "status": "ok"
+   }
+  ]
+ }
+}

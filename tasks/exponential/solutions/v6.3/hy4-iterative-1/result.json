@@ -1,0 +1,66 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261113T131731Z-c8c28a",
+ "raw": "74/74 合格，\\(R = 0.776\\)（对 7 方法参照组逐例最快成员）",
+ "mapping": "\\(100/(1+R)\\)",
+ "score": 56.3,
+ "review": null,
+ "process": {
+  "minutes": 120.9,
+  "public_tests": 10,
+  "public_curve": [
+   {
+    "minute": 46.8,
+    "score": 30.740436115780096,
+    "status": "ok"
+   },
+   {
+    "minute": 63.3,
+    "score": 42.187016807811425,
+    "status": "ok"
+   },
+   {
+    "minute": 73.0,
+    "score": 45.90802949966462,
+    "status": "ok"
+   },
+   {
+    "minute": 89.2,
+    "score": 44.11312758230566,
+    "status": "ok"
+   },
+   {
+    "minute": 92.2,
+    "score": 46.746910170164405,
+    "status": "ok"
+   },
+   {
+    "minute": 97.9,
+    "score": 51.10778547454798,
+    "status": "ok"
+   },
+   {
+    "minute": 102.3,
+    "score": 42.19260847577439,
+    "status": "ok"
+   },
+   {
+    "minute": 104.4,
+    "score": 50.59637168558865,
+    "status": "ok"
+   },
+   {
+    "minute": 109.6,
+    "score": 52.75381244566315,
+    "status": "ok"
+   },
+   {
+    "minute": 116.9,
+    "score": 50.1945931903257,
+    "status": "ok"
+   }
+  ]
+ }
+}

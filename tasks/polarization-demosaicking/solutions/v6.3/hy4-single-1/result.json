@@ -1,0 +1,14 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "polarization-demosaicking-v2-20261113T113200Z-32fbde",
+ "raw": "无效提交（有场景失败）",
+ "mapping": "任一场景失败记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 42.8,
+  "public_tests": 0
+ }
+}

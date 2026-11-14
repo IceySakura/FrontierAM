@@ -87,6 +87,10 @@
 | GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.567\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 63.8 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 28 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | 74/74 合格，\(R = 0.552\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 64.4 | 10 次提交，125 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
+| Qwen3.8 Max | 单轮 | 无效提交（74 例不合格） | 任一用例不合格记 0 | 0.0 | 60 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
+| Qwen3.8 Max | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 3 次提交，198 分钟 | [`qwen3.8-max-0902-iterative-1/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/) |
+| Hunyuan 4 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 57 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
+| Hunyuan 4 | 迭代 | 74/74 合格，\(R = 0.776\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 56.3 | 10 次提交，121 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -111,6 +115,26 @@ public 分数随测试提交：49.2（5 分钟） → 54.6（19 分钟） → 57
 public 分数随测试提交：56.4（41 分钟） → 0.0（58 分钟） → 61.0（74 分钟） → 59.7（88 分钟） → 60.0（97 分钟） → 60.3（102 分钟） → 60.8（106 分钟） → 60.0（112 分钟） → 59.1（117 分钟） → 59.5（120 分钟）
 
 源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `exponential-v3-20261112T055633Z-fc1f9e`）；未复制的二进制或大文件：expo_avx2（123,192 字节）、expo_generic（119,096 字节）。
+
+### Qwen3.8 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/qwen3.8-max-0902-single-1/source/)（提交 `exponential-v3-20261113T124311Z-a58b23`）。
+
+### Qwen3.8 Max（迭代，v6.3）
+
+public 分数随测试提交：47.0（153 分钟） → 55.0（176 分钟） → 50.2（190 分钟）
+
+源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/source/)（提交 `exponential-v3-20261113T100650Z-ce5d87`）；未复制的二进制或大文件：libfastcore.so（28,048 字节）。
+
+### Hunyuan 4（单轮，v6.3）
+
+源码 [`solutions/v6.3/hy4-single-1/source/`](solutions/v6.3/hy4-single-1/source/)（提交 `exponential-v3-20261113T114630Z-965262`）；未复制的二进制或大文件：solve（48,336 字节）。
+
+### Hunyuan 4（迭代，v6.3）
+
+public 分数随测试提交：30.7（47 分钟） → 42.2（63 分钟） → 45.9（73 分钟） → 44.1（89 分钟） → 46.7（92 分钟） → 51.1（98 分钟） → 42.2（102 分钟） → 50.6（104 分钟） → 52.8（110 分钟） → 50.2（117 分钟）
+
+源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `exponential-v3-20261113T131731Z-c8c28a`）；未复制的二进制或大文件：libfamexp.so（28,080 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

@@ -1,0 +1,14 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "exponential-v3-20261113T124311Z-a58b23",
+ "raw": "无效提交（74 例不合格）",
+ "mapping": "任一用例不合格记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 60.0,
+  "public_tests": 0
+ }
+}

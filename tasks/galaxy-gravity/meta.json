@@ -71,6 +71,58 @@
           "score": 64.431,
           "notes_md": "",
           "folder": "v4/claude-opus-5-5-iterative-1"
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261113T114305Z-92afef",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（开发结束时没有冻结出有效提交）",
+          "mapping": "无效提交记 0",
+          "score": 0.0,
+          "notes_md": "",
+          "folder": "v4/qwen3.8-max-0902-single-1"
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261113T104919Z-1c3c7d",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（build invalid_source；build invalid_source；build invalid_source；build invalid_source；build invalid_source；build invalid_source；build invalid_source）",
+          "mapping": "任一调用失败记 0",
+          "score": 0.0,
+          "notes_md": "",
+          "folder": "v4/qwen3.8-max-0902-iterative-1"
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261113T105014Z-0377e1",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（有调用失败）",
+          "mapping": "任一调用失败记 0",
+          "score": 0.0,
+          "notes_md": "",
+          "folder": "v4/hy4-single-1"
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261113T153651Z-83f3a8",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.000308\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 88%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+          "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)",
+          "score": 51.417,
+          "notes_md": "",
+          "folder": "v4/hy4-iterative-1"
         }
       ]
     },

@@ -1,0 +1,14 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "species-tree-v3-20261113T114818Z-2aedb2",
+ "raw": "nRF \\(E = 0.1574\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 58.0,
+  "public_tests": 0
+ }
+}

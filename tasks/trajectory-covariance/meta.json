@@ -67,6 +67,54 @@
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 62.645,
           "notes_md": ""
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "trajectory-covariance-v2-20261113T111630Z-5a37c7",
+          "store": "var/stores/store-v63",
+          "raw": "白化误差 \\(E = 0.5920\\)（\\(U = 0.3493\\)，\\(W = 0.2290\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 0.0,
+          "notes_md": ""
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "trajectory-covariance-v2-20261113T093846Z-0ba0ec",
+          "store": "var/stores/store-v63",
+          "raw": "白化误差 \\(E = 0.2240\\)（\\(U = 0.3493\\)，\\(W = 0.2290\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 51.11,
+          "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "trajectory-covariance-v2-20261113T104301Z-c020cd",
+          "store": "var/stores/store-v63",
+          "raw": "白化误差 \\(E = 0.2342\\)（\\(U = 0.3493\\)，\\(W = 0.2290\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 47.859,
+          "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "trajectory-covariance-v2-20261113T144608Z-18df17",
+          "store": "var/stores/store-v63",
+          "raw": "白化误差 \\(E = 0.1862\\)（\\(U = 0.3493\\)，\\(W = 0.2290\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 59.345,
+          "notes_md": ""
         }
       ]
     },

@@ -1,0 +1,31 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "conic-20261113T095013Z-b8a0f4",
+ "raw": "26 / 650（\\(p = 0.040\\)，参照 \\(p_B = 0.789\\)）",
+ "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 180.9,
+  "public_tests": 3,
+  "public_curve": [
+   {
+    "minute": 150.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 163.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 173.0,
+    "score": 0.0,
+    "status": "ok"
+   }
+  ]
+ }
+}

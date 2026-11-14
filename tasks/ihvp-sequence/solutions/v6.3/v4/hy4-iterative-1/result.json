@@ -1,0 +1,36 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "ihvp-sequence-v4-20261113T150540Z-a22b11",
+ "raw": "\\(E = 0.1296\\)，最长序列 27.3 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 56.137,
+ "review": null,
+ "process": {
+  "minutes": 183.1,
+  "public_tests": 4,
+  "public_curve": [
+   {
+    "minute": 33.1,
+    "score": 46.64980170017276,
+    "status": "ok"
+   },
+   {
+    "minute": 107.1,
+    "score": 54.78263606880861,
+    "status": "ok"
+   },
+   {
+    "minute": 143.4,
+    "score": 56.29593490698401,
+    "status": "ok"
+   },
+   {
+    "minute": 161.4,
+    "score": 55.6509570996128,
+    "status": "ok"
+   }
+  ]
+ }
+}

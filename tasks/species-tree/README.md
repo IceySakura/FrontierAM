@@ -85,6 +85,9 @@
 | GPT-6.1 Sol | 迭代 | nRF \(E = 0.1251\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6 | 13 次提交，237 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | nRF \(E = 0.1389\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 28.1 | 26 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | nRF \(E = 0.1288\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.2 | 4 次提交，110 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
+| Qwen3.8 Max | 迭代 | nRF \(E = 0.3279\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 1 次提交，181 分钟 | [`qwen3.8-max-0902-iterative-1/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/) |
+| Hunyuan 4 | 单轮 | nRF \(E = 0.1574\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 58 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
+| Hunyuan 4 | 迭代 | nRF \(E = 0.1382\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 30.1 | 4 次提交，157 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -109,6 +112,22 @@ public 分数随测试提交：51.0（10 分钟） → 38.1（18 分钟） → 4
 public 分数随测试提交：38.1（11 分钟） → 54.6（22 分钟） → 55.6（56 分钟） → 55.6（92 分钟）
 
 源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `species-tree-v3-20261112T074642Z-0c4419`）；未复制的二进制或大文件：stree（131,296 字节）、stree_generic（131,352 字节）。
+
+### Qwen3.8 Max（迭代，v6.3）
+
+public 分数随测试提交：0.0（142 分钟）
+
+源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/source/)（提交 `species-tree-v3-20261113T095009Z-7713e4`）；未复制的二进制或大文件：stree（75,480 字节）。
+
+### Hunyuan 4（单轮，v6.3）
+
+源码 [`solutions/v6.3/hy4-single-1/source/`](solutions/v6.3/hy4-single-1/source/)（提交 `species-tree-v3-20261113T114818Z-2aedb2`）；未复制的二进制或大文件：species_tree（144,144 字节）。
+
+### Hunyuan 4（迭代，v6.3）
+
+public 分数随测试提交：50.0（77 分钟） → 51.3（105 分钟） → 50.7（133 分钟） → 51.3（150 分钟）
+
+源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `species-tree-v3-20261113T151956Z-b398a9`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

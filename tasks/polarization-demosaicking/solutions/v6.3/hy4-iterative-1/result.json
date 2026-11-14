@@ -1,0 +1,171 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "polarization-demosaicking-v2-20261113T142233Z-a57fcb",
+ "raw": "RMSE \\(E = 1.2144\\)（\\(U = 1.8082\\)，\\(W = 1.1099\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 42.518,
+ "review": null,
+ "process": {
+  "minutes": 195.6,
+  "public_tests": 31,
+  "public_curve": [
+   {
+    "minute": 12.7,
+    "score": 38.027862271424624,
+    "status": "ok"
+   },
+   {
+    "minute": 21.2,
+    "score": 46.770952893845944,
+    "status": "ok"
+   },
+   {
+    "minute": 26.6,
+    "score": 41.19834263809401,
+    "status": "ok"
+   },
+   {
+    "minute": 36.6,
+    "score": 41.42672178243829,
+    "status": "ok"
+   },
+   {
+    "minute": 49.6,
+    "score": 42.230106557427334,
+    "status": "ok"
+   },
+   {
+    "minute": 64.7,
+    "score": 46.77095270125977,
+    "status": "ok"
+   },
+   {
+    "minute": 76.2,
+    "score": 44.03510019617545,
+    "status": "ok"
+   },
+   {
+    "minute": 83.1,
+    "score": 50.51077953021502,
+    "status": "ok"
+   },
+   {
+    "minute": 94.3,
+    "score": 49.15461585336487,
+    "status": "ok"
+   },
+   {
+    "minute": 99.5,
+    "score": 50.574465188867826,
+    "status": "ok"
+   },
+   {
+    "minute": 104.5,
+    "score": 50.62206823999654,
+    "status": "ok"
+   },
+   {
+    "minute": 111.5,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 120.5,
+    "score": 47.96988570850001,
+    "status": "ok"
+   },
+   {
+    "minute": 123.7,
+    "score": 49.37994511522269,
+    "status": "ok"
+   },
+   {
+    "minute": 126.2,
+    "score": 50.223310670482476,
+    "status": "ok"
+   },
+   {
+    "minute": 128.6,
+    "score": 50.70083314281798,
+    "status": "ok"
+   },
+   {
+    "minute": 131.2,
+    "score": 50.73980083166972,
+    "status": "ok"
+   },
+   {
+    "minute": 139.5,
+    "score": 50.752594321496495,
+    "status": "ok"
+   },
+   {
+    "minute": 142.3,
+    "score": 50.752594321496495,
+    "status": "ok"
+   },
+   {
+    "minute": 144.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 147.9,
+    "score": 51.045936252762324,
+    "status": "ok"
+   },
+   {
+    "minute": 151.0,
+    "score": 51.119534173956716,
+    "status": "ok"
+   },
+   {
+    "minute": 163.9,
+    "score": 51.1319768621984,
+    "status": "ok"
+   },
+   {
+    "minute": 166.3,
+    "score": 51.148675593617746,
+    "status": "ok"
+   },
+   {
+    "minute": 174.9,
+    "score": 51.09761261055784,
+    "status": "ok"
+   },
+   {
+    "minute": 177.1,
+    "score": 51.36383437498164,
+    "status": "ok"
+   },
+   {
+    "minute": 179.7,
+    "score": 51.33611280815687,
+    "status": "ok"
+   },
+   {
+    "minute": 182.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 187.3,
+    "score": 51.36383437498164,
+    "status": "ok"
+   },
+   {
+    "minute": 190.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 193.2,
+    "score": 51.36383437498164,
+    "status": "ok"
+   }
+  ]
+ }
+}
