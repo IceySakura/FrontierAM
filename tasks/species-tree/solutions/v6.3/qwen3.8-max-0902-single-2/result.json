@@ -1,0 +1,14 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "species-tree-v3-20261114T090228Z-09a1fe",
+ "raw": "无效提交（开发结束时没有冻结出有效提交）",
+ "mapping": "无效提交记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 60.0,
+  "public_tests": 0
+ }
+}
