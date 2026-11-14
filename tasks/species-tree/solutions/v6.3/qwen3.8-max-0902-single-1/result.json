@@ -1,0 +1,14 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "species-tree-v3-20261113T113854Z-a17f83",
+ "raw": "无效提交（README.md and an executable run.sh required）",
+ "mapping": "任一用例失败或提交检查未通过记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 60.0,
+  "public_tests": 0
+ }
+}

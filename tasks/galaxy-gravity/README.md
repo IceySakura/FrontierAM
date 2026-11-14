@@ -86,8 +86,8 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | Claude Opus 5.5 | 单轮 | \(E = 0.000139\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 46%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 52.9 | 19 分钟 | [`v4/claude-opus-5-5-single-1/`](solutions/v6.3/v4/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | \(E = 2.58e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 73%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 64.4 | 7 次提交，164 分钟 | [`v4/claude-opus-5-5-iterative-1/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v4/qwen3.8-max-0902-single-1/`](solutions/v6.3/v4/qwen3.8-max-0902-single-1/) |
-| Qwen3.8 Max | 迭代 | 无效提交（build invalid_source；build invalid_source；build invalid_source；build invalid_source；build invalid_source；build invalid_source；build invalid_source） | 任一调用失败记 0 | 0.0 | 0 次提交，240 分钟 | [`v4/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-1/) |
-| Hunyuan 4 | 单轮 | 无效提交（有调用失败） | 任一调用失败记 0 | 0.0 | 60 分钟 | [`v4/hy4-single-1/`](solutions/v6.3/v4/hy4-single-1/) |
+| Qwen3.8 Max | 迭代 | 无效提交（build invalid_source） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，240 分钟 | [`v4/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-1/) |
+| Hunyuan 4 | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v4/hy4-single-1/`](solutions/v6.3/v4/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | \(E = 0.000308\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 88%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 51.4 | 5 次提交，230 分钟 | [`v4/hy4-iterative-1/`](solutions/v6.3/v4/hy4-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
