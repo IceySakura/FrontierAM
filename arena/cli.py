@@ -45,6 +45,7 @@ MODELS = [
     'hy4',
     'qwen3.8-max',
     'qwen3.8-max-0902',
+    'intern-s2',
 ]
 DEFAULT_BASE_URL = 'http://api.aihub.woa.com/standard/v1'
 PRINT_LOCK = threading.Lock()

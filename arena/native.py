@@ -59,15 +59,17 @@ HARNESS = {
     'minimax-m3.1-flash': 'codex',
     'qwen3.8-max': 'claude',
     'qwen3.8-max-0902': 'claude',
+    'intern-s2': 'claude',
 }
 CREDENTIALS = {
     'hy4': ('HY4_TAIJI_MESSAGE_API_TOKEN', Path('/root/.frontieram/hy4-taiji.token')),
     'qwen3.8-max': ('QWEN_TOKEN_PLAN_KEY', Path('/root/.frontieram/qwen-maas.key')),  # Qwen token-plan Anthropic endpoint
+    'intern-s2': ('INKSTONE_API_KEY', Path('/root/.frontieram/inkstone.key')),  # Intern token-plan Messages endpoint
 }
 DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 # The path from this host to the model gateways closes connections idle for 1100 s, and a non-streaming request is idle
 # until its whole answer exists; these models stream their thinking, so their upstream requests stay streaming.
-UPSTREAM_STREAM = {'hy4', 'qwen3.8-max', 'qwen3.8-max-0902'}
+UPSTREAM_STREAM = {'hy4', 'intern-s2', 'qwen3.8-max', 'qwen3.8-max-0902'}
 CONTAINER_PORT = 18080
 IMAGE_NONSTREAM = '/opt/atr-venv/lib/python3.13/site-packages/atr/harness/nonstream.py'
 MEMORY = 4 * 2**30
