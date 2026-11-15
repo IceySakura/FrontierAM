@@ -1,0 +1,76 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "conic-20261115T213336Z-999f1a",
+ "raw": "286 / 650（\\(p = 0.440\\)，参照 \\(p_B = 0.789\\)）",
+ "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 171.6,
+  "public_tests": 12,
+  "public_curve": [
+   {
+    "minute": 54.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 63.3,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 90.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 104.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 115.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 125.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 134.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 143.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 147.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 153.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 159.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 165.0,
+    "score": 0.0,
+    "status": "ok"
+   }
+  ]
+ }
+}
