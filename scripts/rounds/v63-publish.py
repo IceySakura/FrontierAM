@@ -46,20 +46,27 @@ NOTES = {
     ('conic', 'single', 'qwen3.8-max-0902'): '原生 C 求解器，但提交缺少题面要求的 README.md，提交检查未通过，650 例均未运行。',
     ('ihvp-sequence-v2', 'iterative'): '工作区不含生成代码；最近 16 个解做 QR，在子空间上精确投影得到初始解，再跑 CG，按剩余步数分配时间（阶段突变时多给），Gauss–Radau 上界停止。没有识别矩阵结构；public 分数 83.7 → 99.8。',
 }
-# Attempt 1 of these cells lost long turns to the 1100 s idle cut on the path to the model gateway (an infrastructure
-# failure, so unmeasured); attempt 2 ran with streaming upstream requests and replaces it once it has a result.
-# Attempt 2 of qwen species and galaxy iterative lost turns the same way: a cut upstream stream made the client retry
-# without streaming; attempt 3 ran with the transport retrying cut streams itself. Cell -> (attempt, note).
+# Infrastructure failures make an attempt unmeasured; its replacement is published once it has a result. Causes:
+# the 1100 s idle cut on the path to the model gateway (fixed by streaming upstream requests), a cut upstream stream
+# that made the client retry without streaming (fixed by the transport retrying cut streams), and Claude Code
+# silently re-sending a request after about 13 minutes of pings (fixed by its stream timeouts set to the window).
+# Cell -> (attempt to publish, note).
 CUT_1 = '第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断'
+RESEND = '客户端约 13 分钟收不到内容时静默重发、原请求作废'
 RERUN = {
     **{cell: (2, CUT_1 + '（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。') for cell in (
-        ('galaxy-gravity-v4', 'single', 'qwen3.8-max-0902'), ('species-tree-v3', 'single', 'qwen3.8-max-0902'),
-        ('conic', 'single', 'qwen3.8-max-0902'), ('conic', 'single', 'hy4'), ('galaxy-gravity-v4', 'single', 'hy4'),
+        ('galaxy-gravity-v4', 'single', 'qwen3.8-max-0902'), ('conic', 'single', 'qwen3.8-max-0902'),
+        ('conic', 'single', 'hy4'), ('galaxy-gravity-v4', 'single', 'hy4'),
         ('ihvp-sequence-v4', 'iterative', 'qwen3.8-max-0902'))},
-    ('species-tree-v3', 'iterative', 'qwen3.8-max-0902'): (3, CUT_1 + '；第 2 次尝试中一次上游流中断后客户端改发非流式请求，'
-        '又被同一超时切断约 1 小时（均为基础设施故障，记未测）；本格为传输层自行重试中断的流后的第 3 次尝试。'),
-    ('galaxy-gravity-v4', 'iterative', 'qwen3.8-max-0902'): (3, CUT_1 + '；第 2 次尝试中两次上游流中断后客户端改发非流式请求，'
-        '其中一次又被同一超时切断（均为基础设施故障，记未测）；本格为传输层自行重试中断的流后的第 3 次尝试。'),
+    **{cell: (2, f'第 1 次尝试中有回合因{RESEND}（基础设施故障，记未测）；本格为修复后的第 2 次尝试。') for cell in (
+        ('conic', 'iterative', 'qwen3.8-max-0902'), ('exponential-v3', 'iterative', 'qwen3.8-max-0902'),
+        ('exponential-v3', 'single', 'qwen3.8-max-0902'), ('conic', 'iterative', 'hy4'),
+        ('galaxy-gravity-v4', 'iterative', 'hy4'))},
+    ('species-tree-v3', 'single', 'qwen3.8-max-0902'): (3, CUT_1 + f'；第 2 次尝试中有回合因{RESEND}'
+        '（均为基础设施故障，记未测）；本格为修复后的第 3 次尝试。'),
+    **{cell: (4, CUT_1 + f'；第 2、3 次尝试中有回合因上游流中断后改发非流式请求被切断，或因{RESEND}'
+              '（均为基础设施故障，记未测）；本格为修复后的第 4 次尝试。') for cell in (
+        ('species-tree-v3', 'iterative', 'qwen3.8-max-0902'), ('galaxy-gravity-v4', 'iterative', 'qwen3.8-max-0902'))},
 }
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'

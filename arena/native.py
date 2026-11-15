@@ -105,6 +105,10 @@ with ExitStack() as stack:
     environment = launch.environment()
     if spec["harness"] == "claude":
         environment["API_TIMEOUT_MS"] = str(WINDOW_MS)
+        # The transport sends only pings until an answer is complete; Claude Code's first-byte and idle watchdogs
+        # ignore pings and silently re-send the request after about 13 minutes while the first one runs on.
+        environment["CLAUDE_STREAM_FIRST_BYTE_TIMEOUT_MS"] = str(WINDOW_MS)
+        environment["CLAUDE_STREAM_IDLE_TIMEOUT_MS"] = str(WINDOW_MS)
     if spec["harness"] == "codex":
         config = home / ".codex" / "config.toml"
         text = config.read_text()
