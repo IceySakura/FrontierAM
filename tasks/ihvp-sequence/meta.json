@@ -89,14 +89,14 @@
           "model": "qwen3.8-max-0902",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 1,
-          "submission": "ihvp-sequence-v4-20261113T094148Z-f0653e",
+          "attempt": 2,
+          "submission": "ihvp-sequence-v4-20261115T195623Z-612899",
           "store": "var/stores/store-v63",
-          "raw": "\\(E = 0.1416\\)，最长序列 28.5 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "raw": "\\(E = 0.1424\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 52.068,
-          "notes_md": "",
-          "folder": "v4/qwen3.8-max-0902-iterative-1"
+          "score": 51.821,
+          "notes_md": "第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。",
+          "folder": "v4/qwen3.8-max-0902-iterative-2"
         },
         {
           "model": "hy4",
