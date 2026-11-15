@@ -28,7 +28,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 60 分钟 | 5 次提交，217 分钟 | 19 分钟 | 7 次提交，164 分钟 | 58 分钟 | 2 次提交，240 分钟 | 60 分钟 | 5 次提交，230 分钟 |
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 52 分钟 | 23 次提交，211 分钟 | 31 分钟 | 22 次提交，169 分钟 | 30 分钟 | 14 次提交，202 分钟 | 43 分钟 | 31 次提交，196 分钟 |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 2 分钟 | 28 次提交，116 分钟 | 14 分钟 | 18 次提交，127 分钟 | 35 分钟 | 5 次提交，169 分钟 | 53 分钟 | 21 次提交，177 分钟 |
-| [species-tree](tasks/species-tree/README.md) | 58 分钟 | 13 次提交，237 分钟 | 26 分钟 | 4 次提交，110 分钟 | 60 分钟 | 0 次提交，240 分钟 | 58 分钟 | 4 次提交，157 分钟 |
+| [species-tree](tasks/species-tree/README.md) | 58 分钟 | 13 次提交，237 分钟 | 26 分钟 | 4 次提交，110 分钟 | 30 分钟 | 0 次提交，240 分钟 | 58 分钟 | 4 次提交，157 分钟 |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 57 分钟 | 8 次提交，122 分钟 | 19 分钟 | 6 次提交，142 分钟 | 38 分钟 | 5 次提交，184 分钟 | 60 分钟 | 4 次提交，183 分钟 |
 <!-- board:end -->
 
