@@ -23,7 +23,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [conic](tasks/conic/README.md) | 57 分钟 | 9 次提交，240 分钟 | 43 分钟 | 3 次提交，216 分钟 | 60 分钟 | 3 次提交，181 分钟 | 57 分钟 | 14 次提交，220 分钟 |
+| [conic](tasks/conic/README.md) | 57 分钟 | 9 次提交，240 分钟 | 43 分钟 | 3 次提交，216 分钟 | 60 分钟 | 0 次提交，96 分钟 | 57 分钟 | 14 次提交，220 分钟 |
 | [exponential](tasks/exponential/README.md) | 54 分钟 | 8 次提交，205 分钟 | 28 分钟 | 10 次提交，125 分钟 | 32 分钟 | 3 次提交，198 分钟 | 57 分钟 | 10 次提交，121 分钟 |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 60 分钟 | 5 次提交，217 分钟 | 19 分钟 | 7 次提交，164 分钟 | 58 分钟 | 2 次提交，240 分钟 | 60 分钟 | 5 次提交，230 分钟 |
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 52 分钟 | 23 次提交，211 分钟 | 31 分钟 | 22 次提交，169 分钟 | 30 分钟 | 14 次提交，202 分钟 | 43 分钟 | 31 次提交，196 分钟 |

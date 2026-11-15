@@ -75,7 +75,7 @@
 | Claude Opus 5.5 | 单轮 | 398 / 650（\(p = 0.612\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 43 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | 490 / 650（\(p = 0.754\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 27.6 | 3 次提交，216 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | 246 / 650（\(p = 0.378\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 60 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
-| Qwen3.8 Max | 迭代 | 26 / 650（\(p = 0.040\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 3 次提交，181 分钟 | [`qwen3.8-max-0902-iterative-1/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/) |
+| Qwen3.8 Max | 迭代 | 196 / 650（\(p = 0.302\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 0 次提交，96 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 253 / 650（\(p = 0.389\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 57 分钟 | [`hy4-single-2/`](solutions/v6.3/hy4-single-2/) |
 | Hunyuan 4 | 迭代 | 288 / 650（\(p = 0.443\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 14 次提交，220 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 
@@ -111,9 +111,9 @@ public 分数随测试提交：23.0（181 分钟） → 51.5（194 分钟） →
 
 ### Qwen3.8 Max（迭代，v6.3）
 
-public 分数随测试提交：0.0（151 分钟） → 0.0（164 分钟） → 0.0（173 分钟）
+第 1 次尝试中有回合因客户端约 13 分钟收不到内容时静默重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。
 
-源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/source/)（提交 `conic-20261113T095013Z-b8a0f4`）；未复制的二进制或大文件：libfast.so（15,224 字节）。
+源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/source/)（提交 `conic-20261115T201807Z-782d36`）；未复制的二进制或大文件：solver（68,808 字节）。
 
 ### Hunyuan 4（单轮，v6.3）
 
