@@ -73,13 +73,13 @@
           "model": "qwen3.8-max-0902",
           "protocol": "v6.3",
           "setting": "单轮",
-          "attempt": 1,
-          "submission": "exponential-v3-20261113T124311Z-a58b23",
+          "attempt": 2,
+          "submission": "exponential-v3-20261115T191348Z-e34f92",
           "store": "var/stores/store-v63",
-          "raw": "无效提交（74 例不合格）",
+          "raw": "无效提交（23 例不合格）",
           "mapping": "任一用例不合格记 0",
           "score": 0.0,
-          "notes_md": ""
+          "notes_md": "第 1 次尝试中有回合因客户端约 13 分钟收不到内容时静默重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。"
         },
         {
           "model": "qwen3.8-max-0902",
