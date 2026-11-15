@@ -163,7 +163,7 @@ def report() -> None:
     print(REPORT)
 
 
-MODEL_OF = {'sol': 'gpt-6.1-sol', 'opus': 'claude-opus-5-5', 'qwen': 'qwen3.8-max-0902', 'hy4': 'hy4'}
+MODEL_OF = {'sol': 'gpt-6.1-sol', 'opus': 'claude-opus-5-5', 'qwen': 'qwen3.8-max-0902', 'hy4': 'hy4', 'intern': 'intern-s2'}
 
 
 def scores() -> None:
