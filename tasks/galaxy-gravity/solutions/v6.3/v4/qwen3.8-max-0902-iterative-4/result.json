@@ -1,0 +1,31 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "galaxy-gravity-v4-20261115T223048Z-5f539f",
+ "raw": "\\(E = 0.000413\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 96%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+ "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)",
+ "score": 50.877,
+ "review": null,
+ "process": {
+  "minutes": 198.5,
+  "public_tests": 3,
+  "public_curve": [
+   {
+    "minute": 82.5,
+    "score": 21.464151370214328,
+    "status": "ok"
+   },
+   {
+    "minute": 108.1,
+    "score": 50.347552655657644,
+    "status": "ok"
+   },
+   {
+    "minute": 166.6,
+    "score": 50.12748074735819,
+    "status": "ok"
+   }
+  ]
+ }
+}
