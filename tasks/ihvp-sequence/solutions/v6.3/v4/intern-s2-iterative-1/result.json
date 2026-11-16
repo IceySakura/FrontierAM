@@ -1,0 +1,14 @@
+{
+ "model": "intern-s2",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "ihvp-sequence-v4-20261116T093358Z-8cc53a",
+ "raw": "\\(E = 0.7302\\)，最长序列 4.9 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 240.0,
+  "public_tests": 0
+ }
+}
