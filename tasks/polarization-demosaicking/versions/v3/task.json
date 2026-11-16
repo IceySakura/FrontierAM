@@ -2,7 +2,7 @@
   "name": "polarization-demosaicking-v3",
   "title": "从一张偏振马赛克重建四幅强度图",
   "status": "draft",
-  "status_reason": "Author's vNext 1.3.0-dev packages (2026-11-16): 132 fixed scenes (Qiu32 + Wen100), Wen5 development scenes, fixed anchors B and H5. Integrated and calibrated on this machine; the v6.3 board keeps v2 until this task is rerun (results/OPEN_ITEMS.md). Wen data rights for redistribution are pending, so no Wen data leaves this host or git.woa.",
+  "status_reason": "Author's vNext 1.3.0-dev packages (2026-11-16): 132 fixed scenes (Qiu32 + Wen100), Wen5 development scenes, fixed anchors B and H5. Integrated and calibrated on this machine; the v6.3 board keeps v2 until this task is rerun (results/OPEN_ITEMS.md). Data copies: data/samples (Wen5), data/private (formal set, git.woa LFS), author/, references r2.",
   "packages": {
     "operator": {
       "file": "polarization-demosaicking-maintenance-vnext-1.3.0-dev.tar.gz",
@@ -16,13 +16,30 @@
     }
   },
   "integrity": [
-    {"type": "manifest_files", "package": "operator", "file": "MANIFEST.json"},
-    {"type": "manifest_files", "package": "public", "file": "MANIFEST.json"}
+    {
+      "type": "manifest_files",
+      "package": "operator",
+      "file": "MANIFEST.json"
+    },
+    {
+      "type": "manifest_files",
+      "package": "public",
+      "file": "MANIFEST.json"
+    }
   ],
   "public_files": [
-    {"from": "public:polarization-demosaicking/environment/problem.md", "to": "problem.md"},
-    {"from": "public:public-dev/check.py", "to": "public-dev/check.py"},
-    {"from": "public:public-dev/wen5", "to": "public-dev/wen5"}
+    {
+      "from": "public:polarization-demosaicking/environment/problem.md",
+      "to": "problem.md"
+    },
+    {
+      "from": "public:public-dev/check.py",
+      "to": "public-dev/check.py"
+    },
+    {
+      "from": "public:public-dev/wen5",
+      "to": "public-dev/wen5"
+    }
   ],
   "public_edits": [
     {
@@ -44,7 +61,10 @@
     "task": {
       "tag": "frontieram-polarization-demosaicking:amd64-vnext-1.3.0-dev",
       "dockerfile": "Dockerfile.amd64",
-      "replaces": ["sha256:80b3867f1168dd170b4e7a8a06bb0fe98cb59b38116016641fee7a61fe823b42", "local/four-angle-wen-dev:vnext"]
+      "replaces": [
+        "sha256:80b3867f1168dd170b4e7a8a06bb0fe98cb59b38116016641fee7a61fe823b42",
+        "local/four-angle-wen-dev:vnext"
+      ]
     }
   },
   "references": {

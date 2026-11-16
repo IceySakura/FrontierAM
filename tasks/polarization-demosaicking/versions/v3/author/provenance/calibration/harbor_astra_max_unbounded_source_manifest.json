@@ -1,0 +1,55 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "size_bytes": 383,
+      "sha256": "9adc349014f8456f68d74141d9e7085c2cf1b16c80262ab6edec258e62fd5675",
+      "mode": 420,
+      "archive_mode": 420
+    },
+    {
+      "path": "__pycache__/solution.cpython-311.pyc",
+      "size_bytes": 1940,
+      "sha256": "d5c07c401db1c50ee38c72934632b31326f201ea35bb7f2ad84763ee4e61a784",
+      "mode": 420,
+      "archive_mode": 420
+    },
+    {
+      "path": "build.sh",
+      "size_bytes": 108,
+      "sha256": "fe78e21baf1a688d360a36a706e04970434d24673be4a978828cce5f4af2ac5f",
+      "mode": 493,
+      "archive_mode": 493
+    },
+    {
+      "path": "reconstruct.c",
+      "size_bytes": 3956,
+      "sha256": "9f1c5cb1c777f09bac7403781fa9f1b535c4a9b69e7ffa3bf19e4ab81ba08822",
+      "mode": 420,
+      "archive_mode": 420
+    },
+    {
+      "path": "reconstruct.so",
+      "size_bytes": 71176,
+      "sha256": "36b09df3b759172a408b6bd808e58428fe62d1ba1265a1ce19c9acb034455200",
+      "mode": 493,
+      "archive_mode": 493
+    },
+    {
+      "path": "solution.py",
+      "size_bytes": 817,
+      "sha256": "dc3fcc2cf5a128ec7f0a69009163a566fff4c6c6de6c6a3c9f494da0d6c520b1",
+      "mode": 420,
+      "archive_mode": 420
+    },
+    {
+      "path": "weights.npy",
+      "size_bytes": 25344,
+      "sha256": "7c8a288d79994c588b2505762545525e4c2e7ec9f264b30985d5d204b39d4a9e",
+      "mode": 420,
+      "archive_mode": 420
+    }
+  ],
+  "source_sha256": "8c4d9c0ebf5f57fecad6d641d1311441fd735d028b9310226d1e0730833b855f",
+  "archive_sha256": "23430ccec5f350cce58ec586d7a42531805bef2d7f2e70302a939a8e501157dd"
+}

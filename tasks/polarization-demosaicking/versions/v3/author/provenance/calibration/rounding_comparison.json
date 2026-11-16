@@ -1,0 +1,21 @@
+{
+  "wen100_means": {
+    "half_up": {
+      "bilinear": 2.2038954630076453,
+      "reflect": 1.6257303900871238
+    },
+    "floor": {
+      "bilinear": 2.20509518734137,
+      "reflect": 1.6270776621210898
+    },
+    "rint": {
+      "bilinear": 2.209298556360599,
+      "reflect": 1.632748339865802
+    }
+  },
+  "attachment_claims": {
+    "bilinear": 2.194,
+    "reflect": 1.631
+  },
+  "note": "No tested integer rule exactly reproduces both attachment claims; main provisional conversion remains half-up floor(x+0.5)."
+}

@@ -1,0 +1,27 @@
+{
+  "version": "wen-gray-polar-v0",
+  "source_scene_shape": [1088, 1456],
+  "crop": {
+    "top": 32,
+    "left": 216,
+    "height": 1024,
+    "width": 1024
+  },
+  "grayscale": {
+    "source_order": ["R", "G", "B"],
+    "weights": [1, 2, 1],
+    "denominator": 4,
+    "rounding": "floor(x + 0.5)",
+    "clip_min": 0,
+    "clip_max": 255,
+    "dtype": "uint8"
+  },
+  "reference_order": [0, 45, 90, 135],
+  "mosaic_phase": {
+    "row_even_col_even": 90,
+    "row_even_col_odd": 45,
+    "row_odd_col_even": 135,
+    "row_odd_col_odd": 0
+  },
+  "source_net_input_policy": "ignore_joint_color_polarization_net_input; synthesize_single_channel_mosaic_from_reference_planes"
+}

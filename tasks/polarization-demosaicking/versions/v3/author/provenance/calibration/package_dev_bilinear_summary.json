@@ -1,0 +1,47 @@
+{
+  "mode": "dev",
+  "build": {
+    "status": "ok",
+    "reason": "",
+    "container": "polar-worker-ce071f903989461b818273acb36a0ec3",
+    "image": "sha256:80b3867f1168dd170b4e7a8a06bb0fe98cb59b38116016641fee7a61fe823b42",
+    "limit_s": 300,
+    "wall_s": 0.00422400000388734,
+    "peak_bytes": 9650176,
+    "cleanup_ok": true,
+    "exit_code": 0,
+    "docker_oom": false,
+    "returncode": 0,
+    "log_tail": "",
+    "cpu": [
+      0
+    ],
+    "cpu_max": "100000 100000",
+    "memory_limit_bytes": 8589934592,
+    "swap_limit_bytes": 0,
+    "memory_events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "source_files": {
+      "README.md": "2c9213444e72c19b408869857118d20708ed01f82529a79e7b50f13720e51b98",
+      "solution.py": "dfe3b1f46f0012e43f908db11380a36a9973425cbe7149434002d2153c4c4446"
+    },
+    "built_files": {
+      "README.md": "2c9213444e72c19b408869857118d20708ed01f82529a79e7b50f13720e51b98",
+      "solution.py": "dfe3b1f46f0012e43f908db11380a36a9973425cbe7149434002d2153c4c4446"
+    }
+  },
+  "scene_count": 5,
+  "score": {
+    "status": "ok",
+    "scene_count": 5,
+    "mean_rmse": 1.876567764783679
+  },
+  "max_wall_s": 0.4115147080156021
+}

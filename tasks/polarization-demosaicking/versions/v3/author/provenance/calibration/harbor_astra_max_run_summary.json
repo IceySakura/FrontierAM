@@ -1,0 +1,36 @@
+{
+  "real_model": true,
+  "harbor_version": "0.25.0",
+  "agent": {
+    "name": "codex",
+    "version": "0.153.4",
+    "model_info": {
+      "name": "gpt-6-astra",
+      "provider": "openai"
+    }
+  },
+  "agent_execution": {
+    "started_at": "2026-11-10T12:25:02.462319Z",
+    "finished_at": "2026-11-10T13:10:02.704820Z"
+  },
+  "usage": {
+    "n_input_tokens": 12076125,
+    "n_cache_tokens": 11878912,
+    "n_output_tokens": 60195,
+    "cost_usd": 16.860792,
+    "model_usage": {
+      "openai/gpt-6-astra": {
+        "n_input_tokens": 12076125,
+        "n_cache_tokens": 11878912,
+        "n_output_tokens": 60195,
+        "cost_usd": 16.860792
+      }
+    }
+  },
+  "formal_score": null,
+  "rewards": {
+    "pilot_success_rate": 0.0
+  },
+  "exception": "AgentTimeoutError",
+  "trial_name": "four-angle-3f34ce0b0b24"
+}

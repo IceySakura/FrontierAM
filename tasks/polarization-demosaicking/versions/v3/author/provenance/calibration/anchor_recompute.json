@@ -1,0 +1,16 @@
+{
+  "B_classic": 2.10798080792808,
+  "H5_advanced": 1.5006853943125558,
+  "perfect": 0.0,
+  "scene_count": 132,
+  "methods": {
+    "bilinear": {
+      "scene_count": 132,
+      "E": 2.10798080792808
+    },
+    "reflect": {
+      "scene_count": 132,
+      "E": 1.5006853943125558
+    }
+  }
+}

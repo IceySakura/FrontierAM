@@ -1,0 +1,43 @@
+{
+  "protocol": "wen-vnext-global-v1",
+  "formal_scene_counts": {
+    "qiu": 32,
+    "wen": 100,
+    "total": 132
+  },
+  "per_scene_error": "arithmetic mean of four channel RMSEs",
+  "global_error": "arithmetic mean of all 132 formal per-scene errors",
+  "anchors": {
+    "B_classic": 2.10798080792808,
+    "H5_advanced": 1.5006853943125558,
+    "perfect": 0.0
+  },
+  "endpoint_checks": {
+    "classic": {
+      "status": "ok",
+      "E": 2.10798080792808,
+      "score": 0.0,
+      "reward": 0.0,
+      "classic": 2.10798080792808,
+      "advanced": 1.5006853943125558,
+      "scene_count": 132,
+      "dataset_counts": {
+        "qiu": 32,
+        "wen": 100
+      }
+    },
+    "advanced": {
+      "status": "ok",
+      "E": 1.5006853943125558,
+      "score": 5.0,
+      "reward": 0.5,
+      "classic": 2.10798080792808,
+      "advanced": 1.5006853943125558,
+      "scene_count": 132,
+      "dataset_counts": {
+        "qiu": 32,
+        "wen": 100
+      }
+    }
+  }
+}

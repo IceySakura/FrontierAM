@@ -1,0 +1,3902 @@
+{
+  "status": "submission_failure",
+  "scene_limit_s": 1,
+  "expected_scenes": 100,
+  "scenes_passed": 99,
+  "max_wall_s": 1.0012166250003247,
+  "mean_rmse": 1.6264022012138726,
+  "rows": [
+    {
+      "scene": "1",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-cb43c7e33555452ab793db0e232ffe24",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.2665675419998479,
+      "peak_bytes": 296378368,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "b741f46b48a6cbebfac10fe96bb9ab3a2bfbb67adcb76a59974c3d17431c9278",
+      "output_sha256": "b547a750a3feb1d6e5b1f4cef2d85dfdab074a1e088aa59da5148767a7746c23",
+      "channel_rmse": [
+        2.083032697567905,
+        1.8032468065320437,
+        1.6858044725523824,
+        1.797615427456799
+      ],
+      "mean_rmse": 1.8424248510272825
+    },
+    {
+      "scene": "2",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-660513d5d653404a946b2722a7aee26e",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.230099834000157,
+      "peak_bytes": 296579072,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "10fab8f7760096c5d5ec79f1b1c3a69592b7efb4a3af717a506c63535ae3a3c6",
+      "output_sha256": "5b720c84e792695944c0f6a124b92f44e3998648e27e1f0780e06a4aec3cd356",
+      "channel_rmse": [
+        2.0442398524510073,
+        1.8578824373951046,
+        1.8629650507192954,
+        1.909999128666082
+      ],
+      "mean_rmse": 1.9187716173078724
+    },
+    {
+      "scene": "3",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-e74e9cce286c4158b113035318f99a56",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.22822979200009286,
+      "peak_bytes": 296693760,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "162a28a377c74cc47b25192e17b760fa04863f8124498d6341c1561b15d42dd2",
+      "output_sha256": "b589cbe5e3668aa24244e818eb87a50108d0e4d3e020ce451ff21c4d2e0c8e9a",
+      "channel_rmse": [
+        1.3830557147381601,
+        1.3628410422156574,
+        1.342380105314873,
+        1.361193535809871
+      ],
+      "mean_rmse": 1.3623675995196405
+    },
+    {
+      "scene": "4",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-ad1da2de596a432c96417517a4785f35",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5703385010001512,
+      "peak_bytes": 298618880,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "2dc0fd512c624850faab69d2650ae4c3889808dece35fcd966e9020496a9f337",
+      "output_sha256": "4ddf83218cb668506c828c7d2f484ac85cdc84c0adb9bfbf774b06d56e5bfffb",
+      "channel_rmse": [
+        2.0736292413509756,
+        1.9234044907189596,
+        1.9885121646030872,
+        2.02904108294025
+      ],
+      "mean_rmse": 2.003646744903318
+    },
+    {
+      "scene": "5",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-8951a2ebb3374a21aa56ef14c8497933",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.23919687599982353,
+      "peak_bytes": 296484864,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "15ea5de046d7a5c241035b3a44750f3f54a24866059775abab54916a224c51ed",
+      "output_sha256": "34ab853b88a31c330128f1bf917116af4dac501efdd4ba6b8c4e155a6190f7e7",
+      "channel_rmse": [
+        1.3524346892060881,
+        1.3317326271361272,
+        1.3101125345223124,
+        1.3276385369683443
+      ],
+      "mean_rmse": 1.330479596958218
+    },
+    {
+      "scene": "6",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-b3c3f8910b2d4ee3a49f5c540d6fbfbe",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.23220462499966743,
+      "peak_bytes": 296419328,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "11934e50ce71fa1a7c1c77f56640385586c099334c3e27b929dfd9ca25715874",
+      "output_sha256": "4faa7ae4959111b080b8bc569973f2e28ae64099e59de14c47cd4473bd99f395",
+      "channel_rmse": [
+        1.718259504477338,
+        1.663952761493192,
+        1.627524016885622,
+        1.6600771957732077
+      ],
+      "mean_rmse": 1.66745336965734
+    },
+    {
+      "scene": "7",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-bb7422e12c9b4d3c993f3b994b439107",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.2280427079999754,
+      "peak_bytes": 296579072,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "309382c55619d2bc509fc02dba69a56156d80afcb0b0d3f2ff67e9ee97771d3b",
+      "output_sha256": "79765346cb5451dfd7a8b223d1ef1f07e6bf8948e3a3c22e31d023456fd52bef",
+      "channel_rmse": [
+        1.7247706506034102,
+        1.7046117217791357,
+        1.681360187029871,
+        1.6934294393737712
+      ],
+      "mean_rmse": 1.701042999696547
+    },
+    {
+      "scene": "8",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-d91605cba466456bb7f98596af58d162",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.2327556669997648,
+      "peak_bytes": 296345600,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "f1cf99041c87c97c5082bcc88055dae3052e04a4ea2aa1ad1e6f2868b9403a79",
+      "output_sha256": "c08bdbbaf41916a076107a6759a643bc591bf0506ad5c0498ceb2038897153f2",
+      "channel_rmse": [
+        1.8783864369743213,
+        1.862071440978768,
+        1.8300739482925281,
+        1.8156404954968364
+      ],
+      "mean_rmse": 1.8465430804356133
+    },
+    {
+      "scene": "9",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-969049c4d0224d58a96cd251e0264839",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.33393112500016287,
+      "peak_bytes": 296144896,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "352668ec692069c1355e2e78bbf7d21290d0df172670577648ff7f86217c9c4d",
+      "output_sha256": "34c7e7545a2e775a4846418e084b3ac94f87cbf76a421a2b54681d7360710b61",
+      "channel_rmse": [
+        1.5531764059870465,
+        1.5239260930693683,
+        1.5224682278987864,
+        1.5223567542829655
+      ],
+      "mean_rmse": 1.5304818703095417
+    },
+    {
+      "scene": "10",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-66bad727d07043458584aff2f7355722",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.2539473340002587,
+      "peak_bytes": 296062976,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "92847c7dfebb6a4a92e8e3bb07457f8435be0d01b2bf00c02b697c0bc46adda2",
+      "output_sha256": "11e67efdb1e3d3b3791c7abae604b8fbe6b34e631a0e822deb194fd3ae5a79ce",
+      "channel_rmse": [
+        2.078296025020675,
+        1.9454471372360551,
+        1.9639935558412693,
+        1.9338555983339571
+      ],
+      "mean_rmse": 1.9803980791079892
+    },
+    {
+      "scene": "11",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-33348538611c46508f3e54001b346a78",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.24003033300004972,
+      "peak_bytes": 296882176,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "60b2110482ded2f12996f7dda982684df4cab5d4787ab6e73497cf2348fa39d4",
+      "output_sha256": "4ffc53f0050a56baf873492802bcc15ff7cbd2024fbd5984fdeb33ae74d94e5e",
+      "channel_rmse": [
+        1.9139366702767326,
+        1.8823288995100849,
+        1.8492784607148058,
+        1.8781121562180791
+      ],
+      "mean_rmse": 1.8809140466799257
+    },
+    {
+      "scene": "12",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-80f60f72794c44b6a55aa4def41e0918",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.2496812500003216,
+      "peak_bytes": 296382464,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "e611f26187a6699118077d4c8add2b86c277cf576c37220999835c0f9c43180c",
+      "output_sha256": "2dac676c7928cf9829f180a4f61f27a8095a983d26ba0616c98afd5b37e531e5",
+      "channel_rmse": [
+        1.59405009656924,
+        1.5595628908476575,
+        1.5260744197641791,
+        1.5557810030419048
+      ],
+      "mean_rmse": 1.5588671025557455
+    },
+    {
+      "scene": "13",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-6a8574783d324976ac0d0779ca60cf9c",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.27448308300017743,
+      "peak_bytes": 296353792,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "779d395c2f37d6feacbc83e1bef9445c6e6a23130617089f7f8f69baac203687",
+      "output_sha256": "11b066e3ae69ec38d1989e3946311379b1a198f09ce3a7882796cd8041d86222",
+      "channel_rmse": [
+        1.944852053489163,
+        1.9071482485006679,
+        1.874730195076936,
+        1.9123074636434694
+      ],
+      "mean_rmse": 1.909759490177559
+    },
+    {
+      "scene": "14",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-eaf81459c3a64614af7fd26db0171c68",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5565935419999732,
+      "peak_bytes": 296124416,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "5e70180b043695ae51d1af1781b0fe6cffe5bcb73f3e846ebb64373de561bf40",
+      "output_sha256": "1a99a13122d77fc8e61ccce1f36f6218e9868464a5be4357df20084b72f10963",
+      "channel_rmse": [
+        2.08221869248335,
+        2.0174629128120234,
+        1.9911355421675574,
+        2.015833098722521
+      ],
+      "mean_rmse": 2.0266625615463627
+    },
+    {
+      "scene": "15",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-aa8d7a85737d42989b2855c0b98a95f9",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5120447920003244,
+      "peak_bytes": 298106880,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "208988082e47bacc3d4dd1d219480e2efca30f76ac1ecc21ccb0276c19b12116",
+      "output_sha256": "e3b0f453cada1f90a9965f621496513ad776aa45fdd8705fbf371cf430a00f5c",
+      "channel_rmse": [
+        2.4666785371132685,
+        1.980906692736989,
+        1.9100542767593462,
+        2.3160487693003877
+      ],
+      "mean_rmse": 2.1684220689774976
+    },
+    {
+      "scene": "16",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-4bcf4b23e0b246ae9c3d28ad38f45818",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.38612212499992893,
+      "peak_bytes": 296120320,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "8dde1d9700b937964fe3f06c879762483ce68534b0a831219de7cf84b89b05e7",
+      "output_sha256": "d60b36fd0c4f0455df3c2acece99c413557ffd6128b7934197a45c265672fd2e",
+      "channel_rmse": [
+        2.697686002333517,
+        2.171030932314616,
+        2.1147653203368955,
+        2.4008204767278967
+      ],
+      "mean_rmse": 2.346075682928231
+    },
+    {
+      "scene": "17",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-381c97bb3c324c1894ba328fe425fdda",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.2937272499998471,
+      "peak_bytes": 296689664,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "bf5da31fb259fb345c563971ccd9359d6943b394094160a6a5a656cf737b39d9",
+      "output_sha256": "19b079ca0694fef33ada95e58369302b4e3ebaa213ef6d4ac2de7c39da6744b6",
+      "channel_rmse": [
+        1.7487046650367117,
+        1.4126197073280595,
+        1.503684738326969,
+        1.573979912181484
+      ],
+      "mean_rmse": 1.559747255718306
+    },
+    {
+      "scene": "18",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-2837ddd05d2949bf9edc7f8fd10d9abc",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.33235141700015447,
+      "peak_bytes": 296640512,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "8c23b769f4f89081b6baf7f84ca497e47e5838f434fb5d879f46e39dc8ccc2ef",
+      "output_sha256": "098cbf6c8b35affb41a3ce126afed9d0811e5cdc130020f0964b4d195c2c8eaf",
+      "channel_rmse": [
+        5.13197060288732,
+        3.36954373977529,
+        3.3650263855828624,
+        4.61033870933145
+      ],
+      "mean_rmse": 4.119219859394231
+    },
+    {
+      "scene": "19",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-658a7724895f4d3585d3a0b4a63be854",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.3536772080001356,
+      "peak_bytes": 296386560,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "907c4db3ab5fe9717e37324cf59706b390527ea7091da9650372295d636bdbe0",
+      "output_sha256": "8e4d3cc3427e3a30240a404301dd4ba62bcd7ff2c23a5676c9d6b31e179632c6",
+      "channel_rmse": [
+        0.9340933916136596,
+        0.913244625287415,
+        0.9049820961347571,
+        0.9110572531633896
+      ],
+      "mean_rmse": 0.9158443415498052
+    },
+    {
+      "scene": "20",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-09a9f23014434da9b738121ff728e5a9",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.33931841699995857,
+      "peak_bytes": 296374272,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "7ff5665b3326ff85382f1331a260d7600bac8e1fdf544af77de11afd30f2a965",
+      "output_sha256": "a67baa963ac21ad649a8e894f390c0bb3b73268293df513adb6c1788f48c336d",
+      "channel_rmse": [
+        2.1722345782813317,
+        2.0537250706692425,
+        1.9906590411815088,
+        2.0939724283161416
+      ],
+      "mean_rmse": 2.0776477796120565
+    },
+    {
+      "scene": "21",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-041a9f0400184eaa9ad4df8327402035",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.3673697499998525,
+      "peak_bytes": 296603648,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "547eb8c7a16eaf927e153e18ba21ff3da7dd9272767c44905146dc1ace95d615",
+      "output_sha256": "c09fa978e54a379589ec56a351bc68e8035b06ad8b7a9f5ebd24c027d31e256f",
+      "channel_rmse": [
+        1.8894091257745322,
+        1.7928924833043056,
+        1.8332871693120003,
+        1.8114417028299925
+      ],
+      "mean_rmse": 1.8317576203052077
+    },
+    {
+      "scene": "22",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-b67616e21cf24230a2acb14655ea36e6",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.35683787499965547,
+      "peak_bytes": 296402944,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "e4efadce93ac6a0ff8fb8b55f1a84b4051b7fcccaf9630b87178bc8c20e9bc16",
+      "output_sha256": "530115d2c3a38831b40600aa774a71444c7b085cdd6e00e8c67b9ee1b2b3aaba",
+      "channel_rmse": [
+        1.4920378932595213,
+        1.4598136610475645,
+        1.4549492567016473,
+        1.4717544615389968
+      ],
+      "mean_rmse": 1.4696388181369326
+    },
+    {
+      "scene": "23",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-811a98e3636245e685defa1ba7a32d19",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.3759608760001356,
+      "peak_bytes": 298188800,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "6680747392a4761b1fa4ef39466a7d66a9ddca7bd42c145401603285cfd061a3",
+      "output_sha256": "a7f12fac173fb7513dbf32a0b71e587c2943283f459744c448c46f1beb680246",
+      "channel_rmse": [
+        1.3135451234174016,
+        1.2674577671567164,
+        1.2535239458304643,
+        1.2647671421498337
+      ],
+      "mean_rmse": 1.274823494638604
+    },
+    {
+      "scene": "24",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-dfadd8fc8ab14c7bb58aa1ffd6546916",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.34055191700008436,
+      "peak_bytes": 296378368,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "90e0b9250951a9600e1b87da865a76d3ac7f6da1fb02c056059650626d879a7c",
+      "output_sha256": "38f3ffaad0a7b27a932f07db411dc4dd103e240a078d178e0f7d0992f563e715",
+      "channel_rmse": [
+        1.1526551726664311,
+        1.0135803134647527,
+        1.0468364912908312,
+        1.07663266604467
+      ],
+      "mean_rmse": 1.0724261608666712
+    },
+    {
+      "scene": "25",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-5d53ddbea76f40d2a10821002ddd347e",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.3782443760001115,
+      "peak_bytes": 296402944,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "b24fa4169acd624a386be5bd93d5efc116d201726c1d413151991f47c101bb2d",
+      "output_sha256": "4078344f5fb0f3a08c478a51300ba4a3eba538b37725956e6220ce86043b58e4",
+      "channel_rmse": [
+        0.823899750199783,
+        0.8098774726457525,
+        0.8119754025674566,
+        0.8150776178019339
+      ],
+      "mean_rmse": 0.8152075608037315
+    },
+    {
+      "scene": "26",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-cc426c44c02b4da29b86ef600d5111f9",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.3838282920000893,
+      "peak_bytes": 296603648,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "73f8c2683ac82a8341b2038d845856a019b8e3e9fe85e4c197c4d5f22cee76f8",
+      "output_sha256": "15887d50cadbaeb11b9c55bd49a899de630e868b8a941f6744ac0d5323c85c17",
+      "channel_rmse": [
+        0.8336912201514387,
+        0.8204917416750444,
+        0.8072412720077281,
+        0.8192358115366561
+      ],
+      "mean_rmse": 0.8201650113427168
+    },
+    {
+      "scene": "27",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-55dac14d80344cd8bc50a62080f43533",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4182482920000439,
+      "peak_bytes": 296062976,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "6f1fbd21aae482c55434c6758214eb071a9bd3913b837b4ddac0e06f4889e862",
+      "output_sha256": "bf981afa27fc72ebac63456172c4f9e2dd778b2e8f5df563946eee106235918d",
+      "channel_rmse": [
+        1.3137360574304813,
+        1.2712925587510717,
+        1.295138616378881,
+        1.2924178199808105
+      ],
+      "mean_rmse": 1.2931462631353112
+    },
+    {
+      "scene": "28",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-f46c2021c5944e5f94b02312c80bd766",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.392691417000151,
+      "peak_bytes": 296140800,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "0788fc265c627eba6b5d1bab85338457e04f8079158ddd902937168c2755c6d8",
+      "output_sha256": "ba05deb8b8a6ef0173a341c2f068cbe6459ed3e3ec3daf89913b82599845c2a0",
+      "channel_rmse": [
+        1.2080654956583659,
+        1.0981764259530635,
+        1.068274419582487,
+        1.1449346678334327
+      ],
+      "mean_rmse": 1.1298627522568374
+    },
+    {
+      "scene": "29",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-63bb5f4e4cc240f0be039bc4e592b43f",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.3828925419998086,
+      "peak_bytes": 296624128,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "2209ef40b85f7c733f5ca8a663e26058ec3f3bd54fae7551098ee649a1810a3c",
+      "output_sha256": "541ecba1517e2c752a09256f7beba88ce4f53d67a599eefe891754d86d78fa45",
+      "channel_rmse": [
+        1.2302460682778658,
+        1.1980952015452888,
+        1.1820881372216783,
+        1.207084616351677
+      ],
+      "mean_rmse": 1.2043785058491274
+    },
+    {
+      "scene": "30",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-97f0f7c6840444c2958c699ef6d89fcd",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.3612879160000375,
+      "peak_bytes": 296538112,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "2b9b4a356f03bfa5ad8fba102a0623e5602843f626d66a80ffcb546c7cd92da9",
+      "output_sha256": "486546b568dc9bbd4d0735c0afcec7c79677fb4f2fe1673d2b87276c6120fb4d",
+      "channel_rmse": [
+        2.3912716910487455,
+        2.1785430019822694,
+        2.3061445797117317,
+        2.269093505752987
+      ],
+      "mean_rmse": 2.2862631946239333
+    },
+    {
+      "scene": "31",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-8c62927243864155914c03f756a56106",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.38430108400007157,
+      "peak_bytes": 296333312,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "6d0e2fab4c58624fb899b9e9db48cad809250460dd619e0ad79bdd6bbaa1bd44",
+      "output_sha256": "17a07528775ccc1fb48b83c8b5b3d1d8f97673c048b1f50900b9b47e5bd6ba9e",
+      "channel_rmse": [
+        1.6526617407437207,
+        1.5368904576488391,
+        1.5714775822980862,
+        1.5912704014330847
+      ],
+      "mean_rmse": 1.5880750455309327
+    },
+    {
+      "scene": "32",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-c542320e12874b788e055a4d05478217",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5013074169996798,
+      "peak_bytes": 296337408,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "a88c78e2c1c29bdb3fe08d7d513e55808163299750adccef16572b5466d4db92",
+      "output_sha256": "342d585aba4968629d3567a26262606105c203294f893debdacff2ea580341e3",
+      "channel_rmse": [
+        1.030893459392238,
+        1.0059374164506165,
+        0.9995671474848167,
+        1.0212328612620984
+      ],
+      "mean_rmse": 1.0144077211474425
+    },
+    {
+      "scene": "33",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-ff4267c4385943e8ade11649cbc87ded",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5460907089995999,
+      "peak_bytes": 296460288,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "bc2e95c834669bd92044cd9e8ec242eb02e1c82173a46793c644b39eb8f33cec",
+      "output_sha256": "f363ca8262459a6fe74333f1d15e64b02c5ac021bb57bd7d9302e04762fda351",
+      "channel_rmse": [
+        1.512433044302241,
+        1.4375445254913273,
+        1.4052158602011784,
+        1.4687786737432074
+      ],
+      "mean_rmse": 1.4559930259344886
+    },
+    {
+      "scene": "34",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-5fed4b10743c4c758baf5fdd5e83a517",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.42936162500018327,
+      "peak_bytes": 296591360,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "2010e68a19de8bed2fef35e5cdbf790890c0bf636eed352a8498a452cd9a8fca",
+      "output_sha256": "0334db58d34a524de336309c790ca710e1303bc7a117c7315689d848273889d3",
+      "channel_rmse": [
+        1.3818898774881285,
+        1.3451286975048602,
+        1.3182012744056852,
+        1.3551240341622266
+      ],
+      "mean_rmse": 1.350085970890225
+    },
+    {
+      "scene": "35",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-f272dcb13a174cd3bfbaf359a7d683a3",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.6017915000002176,
+      "peak_bytes": 296611840,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "a08baf063bfe0dee5be22f8d9c0cbf920d975b9367bc278e48ac4f94b39ab1d4",
+      "output_sha256": "c48ab9daccd0322bacc326981107a3f1df5e27be7aee595e35c38e2f7b8cf492",
+      "channel_rmse": [
+        1.2682742142867658,
+        1.2428903374074969,
+        1.2357334766105599,
+        1.2335000776719516
+      ],
+      "mean_rmse": 1.2450995264941935
+    },
+    {
+      "scene": "36",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-5605ebfed6ee4345a939b0cf1fc7a6ff",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4243549160000839,
+      "peak_bytes": 296046592,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "b2faa847bcaea98fbb42c1c3e26c7d3ab6b3d5839070c2f4d6c1fe1ab90e8d6c",
+      "output_sha256": "a6a3d433f043da03f12d3ea475ea48f1535f736a8912d7d93698c9f6e0237be2",
+      "channel_rmse": [
+        0.8913597648175204,
+        0.8360250302589602,
+        0.8211302166299944,
+        0.8636609487238003
+      ],
+      "mean_rmse": 0.8530439901075688
+    },
+    {
+      "scene": "37",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-6284fbcc949a4f2abcd15b13f19bdec0",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.43842245899986665,
+      "peak_bytes": 296181760,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "fa954b44a8a049f755d4f2f501a483ce631bc82e0f49ec1ac9b5d77918c9f2f6",
+      "output_sha256": "fa1a21308b7356e273671630cc97661544102aa3b06ca454238e3803078b27b0",
+      "channel_rmse": [
+        0.8785675097975998,
+        0.8425778632299438,
+        0.8316163487612273,
+        0.8630938193695497
+      ],
+      "mean_rmse": 0.8539638852895801
+    },
+    {
+      "scene": "38",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-bb6f39a1b16a4e388b71bbe76410917a",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4843838339998001,
+      "peak_bytes": 295895040,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "89ed14a59842f457bacabc94a9ec47006cb91d607d29048c0bb36f7956baf767",
+      "output_sha256": "424e955aca419bf9238444063f83a0f18bd75f9f2d24d0189b66b3ce91118824",
+      "channel_rmse": [
+        1.0984731778003425,
+        1.0419230812706115,
+        1.0243178928737444,
+        1.0735443669101081
+      ],
+      "mean_rmse": 1.0595646297137016
+    },
+    {
+      "scene": "39",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-79b130f9202e4f39b8ae9d3cb139796c",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5881735000002664,
+      "peak_bytes": 295837696,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "f6916e1cc7bc26c6cd944194f7eac5a59e6e8b7098ab4f35a104f347fff061b0",
+      "output_sha256": "2288c09596347a42edb2fa510d4a7075c8f992f10a6477c6cff8021c4ee87f10",
+      "channel_rmse": [
+        1.2663035999898709,
+        1.173627694726083,
+        1.1494888583821579,
+        1.2081081453145015
+      ],
+      "mean_rmse": 1.1993820746031534
+    },
+    {
+      "scene": "40",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-d510bb53ac9f4d2db1670037c183a45d",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.6141624589999992,
+      "peak_bytes": 295886848,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "f02245d515d8491d783575ede2fb79b391e71aa5fd92114d49b46ccb7870706f",
+      "output_sha256": "72459ffd2300bbc57a9f4d03436335ab9f28ad5d7675bb29b2546f6f422dbcfd",
+      "channel_rmse": [
+        2.0579869673765847,
+        1.8818751604221258,
+        1.9036244790421026,
+        1.9791867716031701
+      ],
+      "mean_rmse": 1.9556683446109957
+    },
+    {
+      "scene": "41",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-e7f98afed7974ecabb6843d7478fbe02",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4625470010000754,
+      "peak_bytes": 296337408,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "b99c7eaee52559f4e7121b793caac3a006664dd16d4313fe340e1783e847f99d",
+      "output_sha256": "cdb20b094c05fce11ca4826b7c55fe5bff308cbfcedcbe4005ec63c40ab08558",
+      "channel_rmse": [
+        1.666593839663321,
+        1.5810129518997629,
+        1.569655328334782,
+        1.6169243002850537
+      ],
+      "mean_rmse": 1.6085466050457298
+    },
+    {
+      "scene": "42",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-f046df44cc4c485387873798bf927022",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4228031249999731,
+      "peak_bytes": 296288256,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "7fed8e0c5d9e0678429a0550825d2d0d367f9b308c2138232362766b3507838f",
+      "output_sha256": "7bc5bcc7f23d26ad46fe6b60f403fc71ce7b5cd4db51a690dbbac1ef06ce5d9d",
+      "channel_rmse": [
+        1.56409430380987,
+        1.5009183541237714,
+        1.4997555793029458,
+        1.5324700153328044
+      ],
+      "mean_rmse": 1.5243095631423478
+    },
+    {
+      "scene": "44",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-3b2f09c3ca2e4368b32880f5771bb0bc",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.47813845900009255,
+      "peak_bytes": 296112128,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "452eaef6dce91e451f4460839d25e7d1ba5f8d972aff282d0bb8a1fb9c71707c",
+      "output_sha256": "68de42c9386573a1f9134e4f74fc64c4ab4e7a90dff923e8e00097986db28907",
+      "channel_rmse": [
+        1.6851622562890785,
+        1.630954498825293,
+        1.599687624620239,
+        1.6390968918698268
+      ],
+      "mean_rmse": 1.6387253179011094
+    },
+    {
+      "scene": "45",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-c8982c7e9860475fb5d8545a102cdaf0",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5108874580000702,
+      "peak_bytes": 296071168,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "2032502e8f310ef73bbec0fccf7499c8750a2b3a176ec22d9b548279744fb8b6",
+      "output_sha256": "4f1ae7f2f54886a143770dbe4d4fbc7337ccf7f41256460919e6dc30f952527c",
+      "channel_rmse": [
+        1.1610429302333987,
+        1.1557259849653372,
+        1.147803014922515,
+        1.152912754339046
+      ],
+      "mean_rmse": 1.1543711711150744
+    },
+    {
+      "scene": "46",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-a3469c28dd87476e858b2d3f6e56d8b9",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5128176670000357,
+      "peak_bytes": 296079360,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "069d6f25ff814a49d57824e9c5f64ccb326fc39d8e39b9c5735ed45589b9282f",
+      "output_sha256": "bb538f74b1ffb4849d716d72cb6c0380ae9bc62b879f4c3301c11234dfbc5913",
+      "channel_rmse": [
+        1.1327961196077296,
+        1.1036936443501126,
+        1.1094315839629674,
+        1.1153975460501744
+      ],
+      "mean_rmse": 1.1153297234927462
+    },
+    {
+      "scene": "47",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-4a7fbd5eb4854055a7104ed5aa9c2db1",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4956797079998978,
+      "peak_bytes": 296054784,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "e442899b308e8f2e7a416dbf7b126df5acef14eb62caca45c478e7edc9ab44fd",
+      "output_sha256": "ebd53cd1030263900b6003bfe8b3d0602ce589f4b516abcfd64dc1c8c8ea4aac",
+      "channel_rmse": [
+        1.2269240869307745,
+        1.2049359602032468,
+        1.1926742881267463,
+        1.190076494427202
+      ],
+      "mean_rmse": 1.2036527074219925
+    },
+    {
+      "scene": "48",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-1f1ccb44018949d9b2eb9133ffb9854b",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5311247090003235,
+      "peak_bytes": 296247296,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "0ba059acebab6f30cd4553ec63b033f786d293f66a4c33aae18ac2c122bdb0d7",
+      "output_sha256": "405102048f286eb2e2b332cd79cfe16e569a2630c1395f69c795c522378d88fb",
+      "channel_rmse": [
+        1.6720654580116703,
+        1.653008061988975,
+        1.6388057747804141,
+        1.6378425784519939
+      ],
+      "mean_rmse": 1.6504304683082633
+    },
+    {
+      "scene": "49",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-f57297dfc7834428a8d996f5ca292335",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5901965419998305,
+      "peak_bytes": 296103936,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "61c95dfac1322eec1d64629a4e8e2010f59b06debb351f28398b3dfba957797b",
+      "output_sha256": "118ee0be1a304beea850c03d5fb8f381e83e315ed6b02db6e2c501f16a46834f",
+      "channel_rmse": [
+        1.3637330826416478,
+        1.2470546834856777,
+        1.2844799478756206,
+        1.2886904791630676
+      ],
+      "mean_rmse": 1.2959895482915034
+    },
+    {
+      "scene": "50",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-5ce87b54e8314d5ca8e3612f6c9994c2",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4851197090001733,
+      "peak_bytes": 296300544,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "b74284e40ab27be580ef5829809c1831db94eca2146efef2222cd2efb3557b4a",
+      "output_sha256": "6ff5c2006c1744a50a381f1b4a7e145ac64e909cd1ed05a8360ca80e09dab02e",
+      "channel_rmse": [
+        1.7024444969512682,
+        1.4133777508567766,
+        1.4397955102600541,
+        1.5632906865061973
+      ],
+      "mean_rmse": 1.529727111143574
+    },
+    {
+      "scene": "51",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-8e7db7f976984f9dabdd5b2170d12c08",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5759087510000427,
+      "peak_bytes": 296378368,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "403b1dd152de946ef89c11cd760e9919c0c8fc8520cadf4cce63dba1f150a594",
+      "output_sha256": "94df73723f8acf8eec61b2fa1c157191edcbf2ab1444c685adc67653002b2f46",
+      "channel_rmse": [
+        1.4824413733355148,
+        1.4435074461571218,
+        1.4272126944243309,
+        1.440856748245613
+      ],
+      "mean_rmse": 1.4485045655406452
+    },
+    {
+      "scene": "52",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-9ac9974994034fb48f0347fa15aaf21d",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5057262499999524,
+      "peak_bytes": 296919040,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "6d9bef31b8f1819ef45176f92002349570ba202d92729ba781e595b11404779e",
+      "output_sha256": "0d9ae5868941e1dc10399ea2823caa84b03e409082e09705a817ff7ccf49d8d6",
+      "channel_rmse": [
+        1.5075774883146273,
+        1.4118973884354014,
+        1.2467167141027924,
+        1.2330390286750237
+      ],
+      "mean_rmse": 1.3498076548819613
+    },
+    {
+      "scene": "53",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-7ebccd28af804a19941ebb89752f6c45",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5616090419998727,
+      "peak_bytes": 296792064,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "01048c3f7e50fa4166ec4ff6101c986473084dc1dfd04d434bad99f5aa128f5a",
+      "output_sha256": "026153174942f43e9e92a75d28a6492f7abb34a1ed8694cc40a91529471c7b7f",
+      "channel_rmse": [
+        1.2387553015613004,
+        1.1442482917532106,
+        1.1925140064506166,
+        1.1992052040406314
+      ],
+      "mean_rmse": 1.1936807009514396
+    },
+    {
+      "scene": "54",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-588fd8a67d3944ee884a1c8591219f2c",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.8052912089997335,
+      "peak_bytes": 296583168,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "76081cc5d37ca287041deffe42b3a7cd7d27926cdd6aadffeef46ee3d20f7590",
+      "output_sha256": "882efb1b37c08e575e6cab3694af60d17eba3ee9f8783a2a3a31d5d45a46e978",
+      "channel_rmse": [
+        1.4065308713658615,
+        1.3834999476316845,
+        1.374374400295707,
+        1.3768118185550753
+      ],
+      "mean_rmse": 1.3853042594620821
+    },
+    {
+      "scene": "56",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-91081508d7764f33b3268a40d82ea855",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5293849170002431,
+      "peak_bytes": 296267776,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "35a9bc873773c44d65eb359ca82056460bb2441363b0a23f013f193d60a1a439",
+      "output_sha256": "34c78626a2d9242069396de31152f1331bdafad4d822b303ea1f1ec02ca9d26d",
+      "channel_rmse": [
+        1.9475719314211517,
+        1.8756762115907961,
+        1.8516027096125498,
+        1.8731258879114299
+      ],
+      "mean_rmse": 1.8869941851339818
+    },
+    {
+      "scene": "57",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-33543cd22409463d8803e77dbefab997",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4945864170003915,
+      "peak_bytes": 296665088,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "165a2eda6f17ba6886d2ca9387eac97ffe8847f6d6bc57e44c5a7ffeb6d5c157",
+      "output_sha256": "c07b8d25ba3926b2d337e078e9ac3ac2c8a5712cac1c169dc71395bc033be94e",
+      "channel_rmse": [
+        1.681060866742544,
+        1.6531449439045744,
+        1.6195459076781782,
+        1.6258984948359703
+      ],
+      "mean_rmse": 1.6449125532903168
+    },
+    {
+      "scene": "58",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-694f6339b6144dfeb795c9354d446ef3",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.45461241699968014,
+      "peak_bytes": 298684416,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "eafaa4c2d1b3305a184fcdfd2be45c14bf2e711028ae332d7dcd9e7c0c06539e",
+      "output_sha256": "8b6c5d9a76dc5531d98a7ad677d9e9e2860b0cac74735eb0b493c2b3213a2b3a",
+      "channel_rmse": [
+        1.9991098443436286,
+        1.8615047629578332,
+        1.7985926764218907,
+        1.8890613967472383
+      ],
+      "mean_rmse": 1.8870671701176478
+    },
+    {
+      "scene": "59",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-e32b03e9b6db434ca7f2e41d779c011e",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4943283750003502,
+      "peak_bytes": 296894464,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "862ce54bfa55e0cbf46422bede2af656c25f29196d6bde6286bc984ab8263caf",
+      "output_sha256": "668de879fb981cc6766ebd0c3b51e2d14fadaf5d4f1bdffa9d826c0840b3dbef",
+      "channel_rmse": [
+        1.923048764851229,
+        1.8937688961853987,
+        1.8827745854270919,
+        1.8846726371005786
+      ],
+      "mean_rmse": 1.8960662208910746
+    },
+    {
+      "scene": "60",
+      "status": "submission_failure",
+      "reason": "timeout",
+      "container": "polar-worker-610e3de5968548b1a463b01194cf8903",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 1.0012166250003247,
+      "peak_bytes": 279236608,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": -9,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "e06d45b891ba0368df4b1800b7c62a5902610f0cc1da87a7e24f17fe080f26b8"
+    },
+    {
+      "scene": "61",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-a0c950f7c49640d286615c03d4a6a903",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.6283249170001,
+      "peak_bytes": 296214528,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "8260ac28a832f63a419046e82bbf8f1ee930efc466618b6f1e8629a5c92e3119",
+      "output_sha256": "e790bc5fc38c47cdc03281e74ad638d48610213d8165cab2ee22f5dccb672ace",
+      "channel_rmse": [
+        1.6931199258334613,
+        1.5966538084914286,
+        1.5827717537572046,
+        1.6398080342864505
+      ],
+      "mean_rmse": 1.6280883805921362
+    },
+    {
+      "scene": "62",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-f1994a7a74ca42d8afd89fa9c3651719",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4731407089998356,
+      "peak_bytes": 296300544,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "e51260583ab8d7f439262dbe8fd3a5dc3cf0986b5db133d531afe4bb31d4b73d",
+      "output_sha256": "0c9316671f4a26437dda6c27d6d71d6169f191a0bcccc06bb99bbcf7af473638",
+      "channel_rmse": [
+        1.9713948994950756,
+        1.8876915917747024,
+        1.8937249298633365,
+        1.9556284474387045
+      ],
+      "mean_rmse": 1.9271099671429548
+    },
+    {
+      "scene": "63",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-17f41b3610854bffaf1d54d7ff1c5b8e",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4567764170001283,
+      "peak_bytes": 296124416,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "3525786551416e1f38605f8cf688a9ce01e969c5af5a52b8aa172988ac884331",
+      "output_sha256": "14d40283b556b798ba2e5c2a6412acce481e6bdceafd1ad9af319e8dfff6bbd7",
+      "channel_rmse": [
+        1.3391156297059028,
+        1.2818548601862416,
+        1.2777685804130865,
+        1.3331580442913582
+      ],
+      "mean_rmse": 1.3079742786491473
+    },
+    {
+      "scene": "64",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-29ee1d6f38af403293887f8a53868ec2",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5653517079999801,
+      "peak_bytes": 296251392,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "6cbd3d1aac331699e36b54c5a965206fcba5befb089558a6f4293ac10eeb7b53",
+      "output_sha256": "f2f5654b1dc32f6d065f0504bbc859003a31fa401c012df6511b384e03a249d4",
+      "channel_rmse": [
+        1.338576560094998,
+        1.2816611087416179,
+        1.2701024533873917,
+        1.3281326798957767
+      ],
+      "mean_rmse": 1.304618200529946
+    },
+    {
+      "scene": "65",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-4b9fb9f0edf74ec69fe436bda645ca59",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5804387499997574,
+      "peak_bytes": 296251392,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "0d64930e8ad2102986b57ddf6550d72987935d8ff9592b4abdaddeb446ede2c8",
+      "output_sha256": "3a83c0bb5298f7b53bee14cc8c915147e6b188e76dbef640f60e99612fd68ddd",
+      "channel_rmse": [
+        2.1880886597081317,
+        1.8672445182147681,
+        1.8783330142016812,
+        2.040926316683211
+      ],
+      "mean_rmse": 1.993648127201948
+    },
+    {
+      "scene": "66",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-0de61f6f79a646849210106cf5f324fe",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5324688340001558,
+      "peak_bytes": 296538112,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "83485ab2da320298fc8b16899c84b8b34c0317b0140b1d3493cc5bdc85851656",
+      "output_sha256": "e2ee9552009ae302d1c675259021a58e6e2eb8581d67aa0929f6ada9412743b2",
+      "channel_rmse": [
+        2.540854221145673,
+        1.899267610643357,
+        1.7751777680546819,
+        1.9079989294496866
+      ],
+      "mean_rmse": 2.0308246323233496
+    },
+    {
+      "scene": "67",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-c7c17711bbca47a390b06f5603dae16f",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5350696670002435,
+      "peak_bytes": 296529920,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "83d20d224b11b6174b29b50519a7f80f44c4e9e4ad54a38a4696008e8b2efa99",
+      "output_sha256": "da32d29d06627467a6bbf32ba984d0b709574c1dcb44ec7fcb1338ceaa9e88ad",
+      "channel_rmse": [
+        1.710028143383494,
+        1.5673697376117999,
+        1.5291222823930464,
+        1.6458063217456578
+      ],
+      "mean_rmse": 1.6130816212834995
+    },
+    {
+      "scene": "68",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-09a264d31f254e0391641df38daaa84a",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5391417920000094,
+      "peak_bytes": 296402944,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "f97e91548e50274dcdb761b63d154a6025b41e8bb26305c9cfb00fa58c5bc8ee",
+      "output_sha256": "7a0a78eaac6cefebe7c9a1fb22dc04ea300467cd218a6a330af3728e867c25a0",
+      "channel_rmse": [
+        1.2948486182666492,
+        1.249602236916451,
+        1.2391026344849705,
+        1.2706461286096709
+      ],
+      "mean_rmse": 1.2635499045694354
+    },
+    {
+      "scene": "69",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-27c1f91c861d4dcf8753e4f13651efa4",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.6612740000000485,
+      "peak_bytes": 296337408,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "6b94bf4a465501afd13d9c85852d43089cf6b5ef078e97641c876abb3d466e52",
+      "output_sha256": "0f10803d881a849cf438bbbed2a360c4e29f3bd6219df59e2fec24101c5a38f4",
+      "channel_rmse": [
+        1.5630215239224186,
+        1.5197470355237284,
+        1.5092357648616006,
+        1.5359708454818564
+      ],
+      "mean_rmse": 1.531993792447401
+    },
+    {
+      "scene": "70",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-ff9d6977a91b4f3f9643d6908741b6a4",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5376023759999953,
+      "peak_bytes": 296034304,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "f40137da5877cc8f9932af9f3642cc936390c949b3d0cfa43a3324d04224f58e",
+      "output_sha256": "fc5aa09c3bcdcf31b86c2626d5c95d9137cab9688ad557a48f63380d3a97baad",
+      "channel_rmse": [
+        1.4408211076320172,
+        1.405943285642774,
+        1.3895657594409752,
+        1.411920854138817
+      ],
+      "mean_rmse": 1.4120627517136457
+    },
+    {
+      "scene": "71",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-fee60c3939874f098c5f386a80b6fa10",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5384235000001354,
+      "peak_bytes": 296583168,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "e019de8ff8405da779f4d19886baeda30fc466d46d3df73dddaee0bb3e62233a",
+      "output_sha256": "dfa23dabe585627ad85f47b60f1773a24af67297bfb286be3ae2a86826f0fd95",
+      "channel_rmse": [
+        2.307478796693964,
+        2.2188846164254032,
+        2.1813188961169416,
+        2.256089672996849
+      ],
+      "mean_rmse": 2.2409429955582896
+    },
+    {
+      "scene": "73",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-5f27eea65e2349fcb3a188537db7e717",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5252943759996924,
+      "peak_bytes": 296079360,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "810734f1cbab8815b761cea56ae42230e630d03489d205de6c2f41649dd09e9c",
+      "output_sha256": "abf715c97f96e3894775adf1826d58323d03889845b19a4116ede231f15bbaab",
+      "channel_rmse": [
+        1.7644383765889158,
+        1.7054340005104371,
+        1.7172934391987407,
+        1.7367853423214725
+      ],
+      "mean_rmse": 1.7309877896548918
+    },
+    {
+      "scene": "74",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-43fe847441294698b3a84bee19ef1813",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4986895829997593,
+      "peak_bytes": 296345600,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "ffad7284b77ee5564e46bbf40d40e9ca50f4548a19cb42758d75cc4c149bff01",
+      "output_sha256": "dcbf38c71621bb6ffbf74d9bb7f41b85200dc0189c655a4f7ffe9e1bffeae217",
+      "channel_rmse": [
+        1.4968263647825935,
+        1.4442031984342598,
+        1.426717532625883,
+        1.4650876055791087
+      ],
+      "mean_rmse": 1.4582086753554613
+    },
+    {
+      "scene": "75",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-c65b664ffce446be970ef2b36e4286c7",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5545307920001505,
+      "peak_bytes": 296812544,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "9be7a09ab581c2bb9199da09d8992379f938d6ad0c17d9ea992e39db55197926",
+      "output_sha256": "935188e58a99fc9a8bff9d56bb2a42a3545bd52899f4d35e363fb2b7712eac62",
+      "channel_rmse": [
+        1.6340262409986832,
+        1.5891212045573477,
+        1.5952179840699248,
+        1.6079102820718614
+      ],
+      "mean_rmse": 1.6065689279244544
+    },
+    {
+      "scene": "76",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-5b4749f1b34d4f16b095c058d5fec863",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5643847080000342,
+      "peak_bytes": 298921984,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "99d4bbbadd10b26eaaf4f48c9ba5a7d02be0ce9dd6b4e4fbd7a25b91b844bf3f",
+      "output_sha256": "68fa2f28e0b0d92a9dd6263b2982260d15a6f520c84f1015c548f6ebd875aa8d",
+      "channel_rmse": [
+        0.9519966017673546,
+        0.9290668458433566,
+        0.9207033846502128,
+        0.9514478846576102
+      ],
+      "mean_rmse": 0.9383036792296335
+    },
+    {
+      "scene": "77",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-6009f9ea9ace44afba89687f5fde5fbd",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5084538759997486,
+      "peak_bytes": 296271872,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "896ca4e74ccef146a92293288f7cfb598c7cfabdb5bbc0fb86465263d5a53bc5",
+      "output_sha256": "a92e55c0cd796e3fd0a53aad7a58fa422389d0e5ef29a41be0b70b4f593cb1ff",
+      "channel_rmse": [
+        1.9471590430786914,
+        1.903072644758688,
+        1.89095526074354,
+        1.919354534977684
+      ],
+      "mean_rmse": 1.9151353708896508
+    },
+    {
+      "scene": "78",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-8ad06a08479c4a579c32e51e7c9487d8",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.48578912500033766,
+      "peak_bytes": 296468480,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "7b2233d01ffdbe07fc7e80ad3052a624d6d4741ab2997efd5c6cf80b3bf9e77a",
+      "output_sha256": "ee1a6bd38a4c13c0fca13c6d2d6f713bd7c7312097e139cf8e7fd75dbd756276",
+      "channel_rmse": [
+        2.5110595300087266,
+        2.4016545394127946,
+        2.4893465394275354,
+        2.448050655625907
+      ],
+      "mean_rmse": 2.462527816118741
+    },
+    {
+      "scene": "79",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-75f0972775f84e35ab251df7498a3e9c",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5196898760000295,
+      "peak_bytes": 296886272,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "e78a7adf882cfccebe45c29ff2eba9959d91ae7ef54d9834c27bbdd5bfa1d458",
+      "output_sha256": "7b66db8e3aa0e693e6fef581a2e8ec43fb6f21614b16aeabb922191a2040069f",
+      "channel_rmse": [
+        2.234642086520188,
+        2.135056228271068,
+        2.147468245742923,
+        2.1799274730256752
+      ],
+      "mean_rmse": 2.1742735083899634
+    },
+    {
+      "scene": "80",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-859c2da81e5c4f27aff4cb3604a13bca",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5173565000000053,
+      "peak_bytes": 296169472,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "dd0cfa5733742feca4d50a88717e4b968993c059856249fb9e1534b39a1f5a71",
+      "output_sha256": "07cf7576101f84c23fd12aaa58461b9d6056a22de9a1c155ab2904de0c111192",
+      "channel_rmse": [
+        1.3223476272327845,
+        1.2825844398410526,
+        1.257418729911108,
+        1.2866412863086318
+      ],
+      "mean_rmse": 1.287248020823394
+    },
+    {
+      "scene": "81",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-bf6f7db3c8434e17a595af287213db27",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.49734954099994866,
+      "peak_bytes": 296050688,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "49ffc9ccce03e540142fba19c68857b4b7681fa38d3fe2ce12118a4ead36d9e4",
+      "output_sha256": "59addef9d349186ed75b6b2dfc03c9d5b9d76559e20b5a26e8ee7d69937fedc4",
+      "channel_rmse": [
+        2.6293698871549425,
+        2.5166014643659147,
+        2.4670610186227484,
+        2.5202930776528327
+      ],
+      "mean_rmse": 2.5333313619491094
+    },
+    {
+      "scene": "82",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-d5532927809345a1997de52831665526",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4893986249999216,
+      "peak_bytes": 296935424,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "d05ff0ed9a59a69b350de942304b4d63f3bae58ebb3b87cc11513533c13d3d1d",
+      "output_sha256": "3c9863780a54e9cbbaf2b217cf96e984f9814e5136b8b92ebc94bf9ce0e9a30a",
+      "channel_rmse": [
+        2.3048834682610755,
+        2.2057265870578955,
+        2.1861540999722395,
+        2.2441426867219567
+      ],
+      "mean_rmse": 2.2352267105032917
+    },
+    {
+      "scene": "83",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-757d514872514c30878aeb24fd405bd7",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5453793760002554,
+      "peak_bytes": 296493056,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "ecf8aa25292a857fbe0135f284364977b6be09cb9fa3392f4f17339726e5ea1e",
+      "output_sha256": "d98a385ccf66cb6f8c9b1e8dc60406b769abe264df48638709e8a014059871c6",
+      "channel_rmse": [
+        1.2434838015238956,
+        1.2091300343198366,
+        1.2055756359139822,
+        1.2162311086709396
+      ],
+      "mean_rmse": 1.2186051451071636
+    },
+    {
+      "scene": "84",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-18d59aba830a4d18b3a5fd963395fb20",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5395630829998481,
+      "peak_bytes": 296857600,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "57cfa5f3f20d01ae5ce68906c8fbb587abe991ebc83bf6f9e3c8a125a9c075ba",
+      "output_sha256": "7565be962e6559246c612099a70cdd17250cb1d6d61a08cffa2c90dd9cbc0d84",
+      "channel_rmse": [
+        1.467015680363405,
+        1.4326830487241893,
+        1.4285050021812684,
+        1.4375215052839527
+      ],
+      "mean_rmse": 1.4414313091382038
+    },
+    {
+      "scene": "85",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-8073cbd120814f42ad87c16cc8726101",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4933114589998695,
+      "peak_bytes": 296423424,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "22643bf94938da5d23ed4ed26472deb1afa45f92033f3471f475d4028912ef26",
+      "output_sha256": "faaf396ae4e5cdca6f78bd47e0f2cc8fa654511baba98d1eb7f2aef8940bdb9d",
+      "channel_rmse": [
+        1.9129210024562104,
+        1.8448355464115962,
+        1.8312161070300217,
+        1.8609269357682767
+      ],
+      "mean_rmse": 1.8624748979165262
+    },
+    {
+      "scene": "86",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-a96b4ed3b3d04f1d9e208680174b9391",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4568527080000422,
+      "peak_bytes": 296611840,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "bbefceea6cc9ff9dadc31112b23e59db1d44dc66f1d1964fb7d483a79583912f",
+      "output_sha256": "06191c3cc46e5126bb7469b448d4313d41df8ffd5237caf31bff96e1fd0f594d",
+      "channel_rmse": [
+        1.783541369967077,
+        1.748855299728714,
+        1.7626748738773481,
+        1.7741804023788177
+      ],
+      "mean_rmse": 1.767312986487989
+    },
+    {
+      "scene": "87",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-27127feb79fb498fa63301b445793922",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4947379169998385,
+      "peak_bytes": 296574976,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "a0276d94b817cdd0e74d321a6a42a25e6dab87e852fb4104f26f41a8007264b3",
+      "output_sha256": "b355d604e6b970142b35f8c3e3172b6585c42bcf0490e036590833762108edcc",
+      "channel_rmse": [
+        2.39846108329643,
+        2.2439319994334754,
+        2.265782996834333,
+        2.3189164506920257
+      ],
+      "mean_rmse": 2.306773132564066
+    },
+    {
+      "scene": "88",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-a01be8d3ca85483499829237a4b7371c",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.6473884590000125,
+      "peak_bytes": 296357888,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "ed0c6d4ca504af7b72c3b73ff6954b08a9d457fb498648074d56041da8cbb47f",
+      "output_sha256": "9bbaeb2d63a1c6f186d41d3dd4f65ceabb8e5b755af01a2081f4e930d3fbc681",
+      "channel_rmse": [
+        2.437143904179152,
+        2.375864500896455,
+        2.459992326571803,
+        2.445681811350623
+      ],
+      "mean_rmse": 2.4296706357495084
+    },
+    {
+      "scene": "89",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-939bf8a5ba354f95a423fb297feb52d3",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5323537920003218,
+      "peak_bytes": 296243200,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "ba12e603b3bf22d2a953bcb907ef4e888ca1037eee6af0f4b7bc5fe2e0e82bf6",
+      "output_sha256": "4ee974de68e4fd857d79ebea89e8a72ae9f90c6f44a9c46048aeddf28411f565",
+      "channel_rmse": [
+        1.5851039815178178,
+        1.5364258882450605,
+        1.5600803377491876,
+        1.569741445043475
+      ],
+      "mean_rmse": 1.5628379131388854
+    },
+    {
+      "scene": "90",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-7fba0c1e8ac243ae91d7e0229d043b21",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4674827080002615,
+      "peak_bytes": 295714816,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "564bc1cd6f5234981c6335fda76eef0a1aa5bc294aa397029f7e7b8367a883ce",
+      "output_sha256": "e6d4558218cd957cdfdb6a96b5a37f31dfa2d116ca5861c5852ca8cf94f176b3",
+      "channel_rmse": [
+        1.6929485829318909,
+        1.6478850944070753,
+        1.6368860206453948,
+        1.667963316217978
+      ],
+      "mean_rmse": 1.6614207535505847
+    },
+    {
+      "scene": "92",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-beef3b22842548809de8861722fd77dd",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4750408340000831,
+      "peak_bytes": 296050688,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "b302247f0e628fdd47134f8b1ac7a8a4d9ae5174132ec6b9299c9a8bf5b88c5d",
+      "output_sha256": "97924456fffa6f3ad0a8ed66c2d69d4f18f3d2df7062cb96ca9ca3269cd354ba",
+      "channel_rmse": [
+        1.2638435097414122,
+        1.23138587470031,
+        1.219072960548198,
+        1.2413873963427329
+      ],
+      "mean_rmse": 1.2389224353331634
+    },
+    {
+      "scene": "93",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-2a6fc7506be042cc9db84383306312a2",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.48128541699998095,
+      "peak_bytes": 296587264,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "2f2c247a215224c8da8c51144234bc099b85d79eb5fa41c37e4360ffc15392f5",
+      "output_sha256": "986fe8bac863980fd841a89e050ef5772c0cf5a8f7affd7c685bf3c927e552b9",
+      "channel_rmse": [
+        1.6589614572830558,
+        1.616295194570459,
+        1.6029321676733863,
+        1.6426449957966616
+      ],
+      "mean_rmse": 1.6302084538308907
+    },
+    {
+      "scene": "94",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-85404bd5491e45b8b45c60c1ec845dd1",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5219552500002465,
+      "peak_bytes": 296628224,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "c1f2c05100a3e28af404f0c3d509801139a749e873ceb850b7a4b07d5c7df2f2",
+      "output_sha256": "106f199fdb49bc9c8516873ae63e7d545e24cd2831d146b735acbce42eb1481d",
+      "channel_rmse": [
+        1.839526861339945,
+        1.8050990673320917,
+        1.7980894289362401,
+        1.8267040783394959
+      ],
+      "mean_rmse": 1.8173548589869433
+    },
+    {
+      "scene": "95",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-264a9e4355974e2cb1ce2400dd48b67e",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5481117500003165,
+      "peak_bytes": 296116224,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "c828c0a95f4ed59848f382651c524da517e14c657116ac8da83307fe4d9df9c4",
+      "output_sha256": "c14664ce4ed1afbbb854137291b958721a3fac3cdd305be6fe0dc8634c7c68fc",
+      "channel_rmse": [
+        2.352709459425795,
+        2.2589731981027033,
+        2.255316811101054,
+        2.3387238044992884
+      ],
+      "mean_rmse": 2.3014308182822103
+    },
+    {
+      "scene": "96",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-266e9c2ff9df475292806ae6390a3b0a",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.7855408750001516,
+      "peak_bytes": 296771584,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "4e0aeab7557d5081c87eb743fdc4ad7378776d0f130407fb5952770ffc4419f9",
+      "output_sha256": "bd245a3f6ae0e6bac5c8dcd5ff68c48cf4b3e94f72b735906287a47a627f9c08",
+      "channel_rmse": [
+        1.371546817712483,
+        1.3386171124721349,
+        1.324353395636726,
+        1.3546333087302873
+      ],
+      "mean_rmse": 1.347287658637908
+    },
+    {
+      "scene": "97",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-6a8c1ab017ca4b9b8e48a5c531796513",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.4835652500000833,
+      "peak_bytes": 296378368,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "084833b38d236782601be96d4cb87df1ca58737d206998599bbd3d54c93c49f0",
+      "output_sha256": "3cb8ca6bcdba350ffc5e718f382f542c8e488c7a7239da0459efea4207731b7c",
+      "channel_rmse": [
+        1.7672401871310015,
+        1.666408429348593,
+        1.671694176019995,
+        1.7260807522361947
+      ],
+      "mean_rmse": 1.7078558861839461
+    },
+    {
+      "scene": "98",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-45b162e797ef47fd84084d3e75d25128",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.47523850100014897,
+      "peak_bytes": 296673280,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "fbc9e57c24b224efa051d21bcf344336138c94d89590d6752df987bf699377c9",
+      "output_sha256": "a96d7e42e9b086e33caac01c094e866465d60bf0683d7ceba4a848c5840d142c",
+      "channel_rmse": [
+        1.7912268267068479,
+        1.688269110524303,
+        1.6813541518459751,
+        1.7449398251994188
+      ],
+      "mean_rmse": 1.7264474785691362
+    },
+    {
+      "scene": "100",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-940753f4e9e044c484d334adaa8c3998",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.6778257920000215,
+      "peak_bytes": 296468480,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "939afc241ee9a9afd45dbbbba2ecc6afe2be63ef1eba3791b1d0aa41881e237c",
+      "output_sha256": "7b9911075307eb1140e427a266e609663b827cd69a24e43ffc38b47bfbdad108",
+      "channel_rmse": [
+        1.4955723436647126,
+        1.4759796780389751,
+        1.4742546046680463,
+        1.4915614450064583
+      ],
+      "mean_rmse": 1.4843420178445481
+    },
+    {
+      "scene": "101",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-57f363971559438d8ce7a0c5d589c5b1",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5722544999998718,
+      "peak_bytes": 296513536,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "009864d3c721611fa4837b662ef815430579225fc749bdf1f9e89530385bc2d6",
+      "output_sha256": "61d203ef7c9335034895ac6ff13808cb5c4065083bd8c612cd7329f471a623b9",
+      "channel_rmse": [
+        1.5080226536058987,
+        1.463569589354185,
+        1.4572787509177656,
+        1.483972769889949
+      ],
+      "mean_rmse": 1.4782109409419495
+    },
+    {
+      "scene": "102",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-37f0abec28734f50bc7834d961aafb52",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.44562500000029104,
+      "peak_bytes": 296345600,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "b1ab1852ff8e4266dfd811c1e071f0bcd53409dfc6f4e37f46126de1ce1f9928",
+      "output_sha256": "b387f4c2630373bdd40eca4f971d4b3b1dcb6117c424c35e4da61106b46b6fe5",
+      "channel_rmse": [
+        1.6200873066636914,
+        1.3816830889384637,
+        1.3631534472855862,
+        1.5123599989424392
+      ],
+      "mean_rmse": 1.469320960457545
+    },
+    {
+      "scene": "103",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-17b00829eb504109a64bb76074c31658",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.43419087500024034,
+      "peak_bytes": 296079360,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "2a2862c188972a4903870426e20a981ddfce38585560e6e1232d02d387c18f99",
+      "output_sha256": "dad4f7235dc9d82bfad9f6c08af62537184d90f9b740d43bbfd993aa18b05c4d",
+      "channel_rmse": [
+        1.898810878014396,
+        1.7505146044228557,
+        1.8114375518796124,
+        1.8610019584250637
+      ],
+      "mean_rmse": 1.830441248185482
+    },
+    {
+      "scene": "104",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-49195df83bea4306bb9929d20c03dc8a",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.47846291699988797,
+      "peak_bytes": 296214528,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "680f49f685c8c6dd3825dd518c1947942249d92aa210e608a2cbaa955e6b75a1",
+      "output_sha256": "b0ad4d443c526580841e345876790ba2472adde35cd668bfc4df0a2dbb171e41",
+      "channel_rmse": [
+        1.493585813339182,
+        1.4528814002642425,
+        1.4592846804610788,
+        1.459068144006621
+      ],
+      "mean_rmse": 1.466205009517781
+    },
+    {
+      "scene": "105",
+      "status": "ok",
+      "reason": "",
+      "container": "polar-worker-673b0a147ffb4077870b127eb2606f56",
+      "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+      "limit_s": 1,
+      "wall_s": 0.5259309170000961,
+      "peak_bytes": 296374272,
+      "cleanup_ok": true,
+      "exit_code": 0,
+      "docker_oom": false,
+      "returncode": 0,
+      "log_tail": "",
+      "cpu": [
+        0
+      ],
+      "cpu_max": "100000 100000",
+      "memory_limit_bytes": 8589934592,
+      "swap_limit_bytes": 0,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "input_sha256": "56df43f61e60d0e99630479c6e4dc574953f91cb983b361a18378f568b8759ea",
+      "output_sha256": "3b9595423c7aac9bebde0565415c3a68ae578e55deeb4412454d16376f0deb52",
+      "channel_rmse": [
+        1.7803018992609678,
+        1.711554497882872,
+        1.725735929965707,
+        1.7280626585812042
+      ],
+      "mean_rmse": 1.7364137464226876
+    }
+  ]
+}

@@ -1,0 +1,257 @@
+{
+  "protocol": "wen-vnext-global-v1",
+  "conversion_version": "wen-gray-polar-v0",
+  "grayscale_rounding": "floor(x + 0.5)",
+  "formal_scene_counts": {
+    "qiu": 32,
+    "wen": 100,
+    "total": 132
+  },
+  "dev_scene_count": 5,
+  "per_scene_error": "arithmetic mean of four channel RMSEs",
+  "global_error": "arithmetic mean of all 132 formal per-scene errors",
+  "anchors": {
+    "B_classic": 2.10798080792808,
+    "H5_advanced": 1.5006853943125558,
+    "perfect": 0.0
+  },
+  "diagnostics": {
+    "qiu32": {
+      "bilinear": 1.808247510804443,
+      "reflect": 1.1099197825170284
+    },
+    "wen100": {
+      "bilinear": 2.203895463007645,
+      "reflect": 1.6257303900871238
+    },
+    "wen5_inprocess": {
+      "bilinear": 1.876567764783679,
+      "reflect": 1.5973509122223057
+    }
+  },
+  "checks": {
+    "B_gt_H5_gt_zero": true,
+    "qiu32_rows": true,
+    "wen100_bilinear_all_ok": true,
+    "wen100_reflect_all_ok": true,
+    "wen5_bilinear_all_ok": true,
+    "wen5_reflect_all_ok": true
+  },
+  "receipts": {
+    "wen100_e2e_bilinear.csv": {
+      "sha256": "43c3c18ad3fc2742c08b311832f068d86f3c4e35d6f9bfd97fd1f1d9392b312d",
+      "rows": 100,
+      "max_wall_s": 0.1060650419999547
+    },
+    "wen100_e2e_reflect.csv": {
+      "sha256": "dbcb38485ec7810cd6cda8f2150102ee12bdd0d7e3ab85a59f2884a5b85b9bab",
+      "rows": 100,
+      "max_wall_s": 0.9424511670003994
+    },
+    "wen5_e2e_bilinear.csv": {
+      "sha256": "ef35b2f4a40a884d3c5a86c08d7f092a717b515cff3d294761df9e3fafe69aa7",
+      "rows": 5,
+      "max_wall_s": 0.098632125000222
+    },
+    "wen5_e2e_reflect.csv": {
+      "sha256": "a3558131136966f89006b077d9ce85c652e9a9f355c8c7df87e212ef8997746c",
+      "rows": 5,
+      "max_wall_s": 0.27565899999990506
+    },
+    "qiu32_reference_per_scene.csv": {
+      "sha256": "843704345f8dc1c0bd082582cbf8de69c77053b5b68cb4af00f1812f02feac02",
+      "rows": 128,
+      "max_wall_s": 0.6172643339959905
+    },
+    "wen100_e2e_reflect_first_attempt.csv": {
+      "sha256": "7eb84b7d703c4394342f8756624feb477d5814f65c2cc9bccbfc1282374f4098"
+    },
+    "wen100_e2e_reflect_first_attempt_summary.json": {
+      "sha256": "cc8769bb794a8aebd582cdd8e053456f92b06705547f4e61b15e4936bf24d68a"
+    },
+    "grade_formal_bilinear_summary.json": {
+      "sha256": "a684cff916b5b32c39aa6d7a4114d77a89be5d25d4e53702dcc7989a5960eec5"
+    },
+    "grade_formal_reflect_summary.json": {
+      "sha256": "bce4d2d7b86874dc6d71903d09082c5e1c6b49ae360940ca9729fa518f77297b"
+    },
+    "grade_formal_bilinear_per_scene.csv": {
+      "sha256": "e69a7eb3b77f43aaaf0fd4fd1564376270518450e213852808a42f4edba2135f"
+    },
+    "grade_formal_reflect_per_scene.csv": {
+      "sha256": "b97ab682c99a16df3ee99f41ea504cbcb627fba4a3020aff2fdefb43ee6f1a70"
+    },
+    "scoring_audit.json": {
+      "sha256": "731089306e9ff6e46e4015bdb3107228d01bd362246bfe924d9b19ea66fe360c"
+    },
+    "wen_calibration_recomputed.json": {
+      "sha256": "7a1be1824c70d5607e9891a4b8116ff0c5a5c1688104a0b51f9b790915073a10"
+    },
+    "harbor_astra_max_run_summary.json": {
+      "sha256": "e6046579cf5d4f16845b545969663571929589dca199593de2daac73222ae1c6"
+    },
+    "harbor_astra_max_handoff.json": {
+      "sha256": "b79da62713d32267b133bfff5e9851a40bbe261a1179813f7e3f4999513813f9"
+    },
+    "harbor_astra_max_unbounded_run_summary.json": {
+      "sha256": "f224dc63c02348d01bdad83b2335e253666984f126cf44db2ffb087ed5999c6d",
+      "bytes": 847
+    },
+    "harbor_astra_max_unbounded_handoff.json": {
+      "sha256": "8b2fac0d9805c4d6aa5828676e8b9ded4069346b604b8a8ec1ea8f7c784c7125",
+      "bytes": 58
+    },
+    "harbor_astra_max_unbounded_source_manifest.json": {
+      "sha256": "4cfb6126dc2f239f9dbad0755bdde3a2c903d8ddeb38a6bafd6986677d72c8d7",
+      "bytes": 1598
+    },
+    "harbor_astra_max_unbounded_preflight.json": {
+      "sha256": "62f59c8d8a6dc05171af12b67843b67d0f20122515f3bb20a6ac7736486eea62",
+      "bytes": 2080
+    },
+    "harbor_astra_max_unbounded_wen5_summary.json": {
+      "sha256": "f57a34a0c6820dca828ebc1716349a24c6b5565592eb458a76439438613d580b",
+      "bytes": 2220
+    },
+    "harbor_astra_max_unbounded_wen5_per_scene.csv": {
+      "sha256": "8cabc60fee908963995ec88985928ad7ae25c5b47464d326174a3a839ec46519",
+      "bytes": 756
+    },
+    "harbor_astra_max_unbounded_build.json": {
+      "sha256": "7164a55a6d90f6991cf281471b55bdee2c4b656c443db9629b7b3c74b8614902",
+      "bytes": 1943
+    },
+    "harbor_astra_max_unbounded_task.toml": {
+      "sha256": "cca1d9734eb40fbb6382181efae27f8702110574188e3c9c48c060de48c3d60d",
+      "bytes": 591
+    },
+    "harbor_astra_max_unbounded_formal_build.json": {
+      "sha256": "523ca7427350fa4a0ce102cff9514074edb37f416c47b48e40b07c5b16e948b9",
+      "bytes": 1943
+    },
+    "harbor_astra_max_unbounded_formal_summary.json": {
+      "sha256": "e1689a4d504ab1970aec2286ad65378385f8fccedc2b5405a7ca7c6bbf70fd02",
+      "bytes": 2419
+    },
+    "harbor_astra_max_unbounded_formal_per_scene.csv": {
+      "sha256": "6a0ee54325db11448426227b68a5d7c10987f59e5cb2779e17fb3b3507d47239",
+      "bytes": 17966
+    }
+  },
+  "notes": [
+    "The first 100-scene reflect worker batch had one transient timeout on scene 60 at 1.001216625 s; three isolated retries of scene 60 passed, and a complete rerun passed 100/100 with max 0.942451167 s. The rerun is the frozen calibration receipt."
+  ],
+  "vnext_local_runner": {
+    "bilinear_formal_status": "ok",
+    "bilinear_formal_score": 0.0,
+    "reflect_formal_status": "ok",
+    "reflect_formal_score": 5.0
+  },
+  "canonical_arithmetic": "math.fsum of per-scene arithmetic means; values reproduced by calibrate_global.py",
+  "agent_trial": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "max",
+    "harbor_status": "completed",
+    "harbor_version": "0.25.0",
+    "development_timeout_sec": null,
+    "started_at": "2026-11-10T13:17:00.420978Z",
+    "finished_at": "2026-11-10T14:26:46.286439Z",
+    "elapsed_s": 4165.866439,
+    "submission_handoff": true,
+    "wen5_success_rate": 1.0,
+    "wen5_mean_rmse": 1.4272866470217977,
+    "wen5_max_wall_s": 0.24168629100040562,
+    "wen5_build_wall_s": 0.08536333400024887,
+    "wen5_peak_bytes": 26292224,
+    "input_tokens": 25142897,
+    "cache_tokens": 24926464,
+    "output_tokens": 98806,
+    "cost_usd": 32.031094,
+    "run_summary": "harbor_astra_max_unbounded_run_summary.json",
+    "handoff_receipt": "harbor_astra_max_unbounded_handoff.json",
+    "source_manifest": "harbor_astra_max_unbounded_source_manifest.json",
+    "wen5_summary": "harbor_astra_max_unbounded_wen5_summary.json",
+    "formal": {
+      "status": "ok",
+      "scene_count": 132,
+      "E": 1.5639815231868694,
+      "score": 4.478868706602928,
+      "reward": 0.44788687066029276,
+      "classic": 2.10798080792808,
+      "advanced": 1.5006853943125558,
+      "dataset_counts": {
+        "qiu": 32,
+        "wen": 100
+      },
+      "qiu32_mean_rmse": 1.354082066073909,
+      "wen100_mean_rmse": 1.6311493494630167,
+      "max_wall_s": 0.4502515840000001,
+      "summary": "harbor_astra_max_unbounded_formal_summary.json",
+      "per_scene": "harbor_astra_max_unbounded_formal_per_scene.csv",
+      "build": "harbor_astra_max_unbounded_formal_build.json"
+    }
+  },
+  "agent_trial_previous_timeout": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "max",
+    "harbor_status": "AgentTimeoutError",
+    "elapsed_s": 2700.242501,
+    "submission_handoff": false,
+    "wen5_score": null,
+    "cost_usd": 16.860792
+  },
+  "agent_trials": [
+    {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "max",
+      "harbor_status": "AgentTimeoutError",
+      "elapsed_s": 2700.242501,
+      "submission_handoff": false,
+      "wen5_score": null,
+      "cost_usd": 16.860792
+    },
+    {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "max",
+      "harbor_status": "completed",
+      "harbor_version": "0.25.0",
+      "development_timeout_sec": null,
+      "started_at": "2026-11-10T13:17:00.420978Z",
+      "finished_at": "2026-11-10T14:26:46.286439Z",
+      "elapsed_s": 4165.866439,
+      "submission_handoff": true,
+      "wen5_success_rate": 1.0,
+      "wen5_mean_rmse": 1.4272866470217977,
+      "wen5_max_wall_s": 0.24168629100040562,
+      "wen5_build_wall_s": 0.08536333400024887,
+      "wen5_peak_bytes": 26292224,
+      "input_tokens": 25142897,
+      "cache_tokens": 24926464,
+      "output_tokens": 98806,
+      "cost_usd": 32.031094,
+      "run_summary": "harbor_astra_max_unbounded_run_summary.json",
+      "handoff_receipt": "harbor_astra_max_unbounded_handoff.json",
+      "source_manifest": "harbor_astra_max_unbounded_source_manifest.json",
+      "wen5_summary": "harbor_astra_max_unbounded_wen5_summary.json",
+      "formal": {
+        "status": "ok",
+        "scene_count": 132,
+        "E": 1.5639815231868694,
+        "score": 4.478868706602928,
+        "reward": 0.44788687066029276,
+        "classic": 2.10798080792808,
+        "advanced": 1.5006853943125558,
+        "dataset_counts": {
+          "qiu": 32,
+          "wen": 100
+        },
+        "qiu32_mean_rmse": 1.354082066073909,
+        "wen100_mean_rmse": 1.6311493494630167,
+        "max_wall_s": 0.4502515840000001,
+        "summary": "harbor_astra_max_unbounded_formal_summary.json",
+        "per_scene": "harbor_astra_max_unbounded_formal_per_scene.csv",
+        "build": "harbor_astra_max_unbounded_formal_build.json"
+      }
+    }
+  ]
+}

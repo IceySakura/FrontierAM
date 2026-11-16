@@ -1,0 +1,43 @@
+{
+  "file_count": 31,
+  "files": {
+    "MANIFEST.schema.json": "b2b97e69470c6cb46d106d596bba5c474f143551a54195bb2036b27c25326681",
+    "README.md": "25d43daed43787000ff2f46d626e74eb64799231d51881ac39c32fa21dca6408",
+    "VALIDATION.json": "707e2c2063df554cc86f74fdfd8ac0627eb880caa6e4906c4d0417e292b61c0f",
+    "polarization-demosaicking/environment/Dockerfile": "445b1f5612b4f2ae2465763e2eb3d12dfecc03aa224c18d342da0c6287720895",
+    "polarization-demosaicking/environment/check.py": "c346ee8bfd793a2cf48773e3a67a945c5af3d4545bea4698deefc9525f5b367e",
+    "polarization-demosaicking/environment/docker-compose.yaml": "654edfc38fcce8691b1ff6ec9c3ea2273108e79bfd474060bbe3071ef18eefbd",
+    "polarization-demosaicking/environment/problem.md": "534c55e42ca937145fa429bd47704d239682e13986995fa5fa22f804fec94856",
+    "polarization-demosaicking/instruction.md": "534c55e42ca937145fa429bd47704d239682e13986995fa5fa22f804fec94856",
+    "polarization-demosaicking/task.toml": "a9bfdfffa8175c662daf6af0b1588e636c81f17da0903a80550e0f28d8610468",
+    "polarization-demosaicking/tests/test.sh": "44680f6f283d6733cda230d1e20a1db928a001c8de7af08208da6c5bfd4b80c4",
+    "public-dev/check.py": "c346ee8bfd793a2cf48773e3a67a945c5af3d4545bea4698deefc9525f5b367e",
+    "public-dev/wen5/43/raw.npy": "5739735ccc29af80a8669b3ebef6632d8e209c6f804fc8b0c06a993f4a0f0506",
+    "public-dev/wen5/43/reference.npy": "9611adbb4f2ea1a90e3d6e7b22de1f1dac3598418e71fe051ea0e1128c9042df",
+    "public-dev/wen5/55/raw.npy": "f24a5832a3378cecf72e76618d57acb99625302e4cb568629acfdfec43d8a9d7",
+    "public-dev/wen5/55/reference.npy": "9cd24b3d32cf7f9f168003e1920aea38024f2a0b95e49de058c371f01983912f",
+    "public-dev/wen5/72/raw.npy": "5c50c5631428b750022eac4244ce34ab1f6f63a44ba77ea804a2c2c20b5a671f",
+    "public-dev/wen5/72/reference.npy": "6d7271872e90a4acbed083178e0fc078a653b16471e0ad9a6dde8da880f3253f",
+    "public-dev/wen5/91/raw.npy": "d6ffc8cc3d6216d5dd3ae4838dbb25afc354b398080234758450862616fc5fa8",
+    "public-dev/wen5/91/reference.npy": "14d18ed6e1eb23c7f000bb6a1ca8c5e3d9adce06b6dbce0d0d9db7f1df26e047",
+    "public-dev/wen5/99/raw.npy": "57d140c2aa5023a1a8187d43b88b3fea350ca58399b4d3ecf259ea0207cc8872",
+    "public-dev/wen5/99/reference.npy": "3861bee61350506d5486bd8aa9f96c77a1c020e6d4d7e02fa9f074c055fa2b21",
+    "public-dev/wen5/config.json": "48550526b047318f6e9d9f509d2b333edc47ce56d03103112e84671836a10bcb",
+    "public-dev/wen5/scenes.txt": "8ba4a7993486b76dc2e71b5cac20d86cbf9e3f7d1185f0f7e1154a731a9983af",
+    "task/environment/Dockerfile": "a40fced74c4ae5f30d496113d95dea6e34e66076e034fbb8cc66209cb220f8a2",
+    "task/environment/check.py": "69432d8b3aa9c1e8206aefa7515c4eb0d0c69ecf21699c27e94cae04b86c94f0",
+    "task/environment/docker-compose.yaml": "b5875b6f0690bed18e364b3c4943c5eab322354ca4551499fc035820a7fe24fc",
+    "task/instruction.md": "534c55e42ca937145fa429bd47704d239682e13986995fa5fa22f804fec94856",
+    "task/problem.md": "534c55e42ca937145fa429bd47704d239682e13986995fa5fa22f804fec94856",
+    "task/task.toml": "a9bfdfffa8175c662daf6af0b1588e636c81f17da0903a80550e0f28d8610468",
+    "task/tests/test.sh": "44680f6f283d6733cda230d1e20a1db928a001c8de7af08208da6c5bfd4b80c4",
+    "verify_package.py": "fec3a3b0b0f799165cc291055ef8d372313dc52bd6a2a81804f36389570decd9"
+  },
+  "format": "withexpbench-vnext-package-v1",
+  "manifest_excludes": [
+    "MANIFEST.json",
+    "SHA256SUMS"
+  ],
+  "package": "polarization-demosaicking-vnext-1.3.0-dev",
+  "version": "1.3.0-dev"
+}

@@ -1,0 +1,47 @@
+{
+  "workspace": [
+    "problem.md",
+    "public-dev",
+    "public-dev/check.py",
+    "public-dev/wen5",
+    "public-dev/wen5/43_raw.npy",
+    "public-dev/wen5/43_reference.npy",
+    "public-dev/wen5/55_raw.npy",
+    "public-dev/wen5/55_reference.npy",
+    "public-dev/wen5/72_raw.npy",
+    "public-dev/wen5/72_reference.npy",
+    "public-dev/wen5/91_raw.npy",
+    "public-dev/wen5/91_reference.npy",
+    "public-dev/wen5/99_raw.npy",
+    "public-dev/wen5/99_reference.npy",
+    "submission"
+  ],
+  "files": {
+    "problem.md": "534c55e42ca937145fa429bd47704d239682e13986995fa5fa22f804fec94856",
+    "public-dev/check.py": "6ffe03c58c46405df6cf10fd8007cda37d59d88036b162db4c352a29b39d366d",
+    "public-dev/wen5/72_raw.npy": "5c50c5631428b750022eac4244ce34ab1f6f63a44ba77ea804a2c2c20b5a671f",
+    "public-dev/wen5/91_raw.npy": "d6ffc8cc3d6216d5dd3ae4838dbb25afc354b398080234758450862616fc5fa8",
+    "public-dev/wen5/43_reference.npy": "9611adbb4f2ea1a90e3d6e7b22de1f1dac3598418e71fe051ea0e1128c9042df",
+    "public-dev/wen5/43_raw.npy": "5739735ccc29af80a8669b3ebef6632d8e209c6f804fc8b0c06a993f4a0f0506",
+    "public-dev/wen5/99_reference.npy": "3861bee61350506d5486bd8aa9f96c77a1c020e6d4d7e02fa9f074c055fa2b21",
+    "public-dev/wen5/55_reference.npy": "9cd24b3d32cf7f9f168003e1920aea38024f2a0b95e49de058c371f01983912f",
+    "public-dev/wen5/99_raw.npy": "57d140c2aa5023a1a8187d43b88b3fea350ca58399b4d3ecf259ea0207cc8872",
+    "public-dev/wen5/91_reference.npy": "14d18ed6e1eb23c7f000bb6a1ca8c5e3d9adce06b6dbce0d0d9db7f1df26e047",
+    "public-dev/wen5/55_raw.npy": "f24a5832a3378cecf72e76618d57acb99625302e4cb568629acfdfec43d8a9d7",
+    "public-dev/wen5/72_reference.npy": "6d7271872e90a4acbed083178e0fc078a653b16471e0ad9a6dde8da880f3253f"
+  },
+  "cpu": [
+    0
+  ],
+  "quota": "100000 100000",
+  "memory": "8589934592",
+  "swap": "0",
+  "numpy": "1.26.4",
+  "scipy": "1.12.0",
+  "python": "3.11.15",
+  "uid": 1000,
+  "docker_socket": false,
+  "foreign_opt": false,
+  "image": "sha256:80b3867f1168dd170b4e7a8a06bb0fe98cb59b38116016641fee7a61fe823b42",
+  "bind_destinations": []
+}

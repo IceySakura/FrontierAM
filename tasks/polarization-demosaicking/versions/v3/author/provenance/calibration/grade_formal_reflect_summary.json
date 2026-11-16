@@ -1,0 +1,61 @@
+{
+  "mode": "formal",
+  "build": {
+    "status": "ok",
+    "reason": "",
+    "container": "polar-worker-6cc3e1b1f2d94f1ab70624319312f735",
+    "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+    "limit_s": 300,
+    "wall_s": 0.0011235410001972923,
+    "peak_bytes": 11677696,
+    "cleanup_ok": true,
+    "exit_code": 0,
+    "docker_oom": false,
+    "returncode": 0,
+    "log_tail": "",
+    "cpu": [
+      0
+    ],
+    "cpu_max": "100000 100000",
+    "memory_limit_bytes": 8589934592,
+    "swap_limit_bytes": 0,
+    "memory_events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "source_files": {
+      "README.md": "d8c2bae2dc6db8526bde1a65e2bce069f4fa2750e163e1a26d5d6b30a8173e6d",
+      "impl/full_frame.py": "6ff38cdc32ac9576623c954e43a4b7ebc491298f6cb2c97053f1b6cac5684ac2",
+      "probe/methods/liu.py": "54d84d24d1e69a9ffd731db31b37287ca0d49c0eaa347b7ffaaa3638b29da900",
+      "probe/metrics.py": "c2bfe24ad3b527c252295c74ab59e7688e935d65939ff851f5093f71479b0e69",
+      "solution.py": "088647c9a23bee046a387d08dd7b4b63391debd232d31f1c61eefbcf079abf7a"
+    },
+    "built_files": {
+      "README.md": "d8c2bae2dc6db8526bde1a65e2bce069f4fa2750e163e1a26d5d6b30a8173e6d",
+      "impl/full_frame.py": "6ff38cdc32ac9576623c954e43a4b7ebc491298f6cb2c97053f1b6cac5684ac2",
+      "probe/methods/liu.py": "54d84d24d1e69a9ffd731db31b37287ca0d49c0eaa347b7ffaaa3638b29da900",
+      "probe/metrics.py": "c2bfe24ad3b527c252295c74ab59e7688e935d65939ff851f5093f71479b0e69",
+      "solution.py": "088647c9a23bee046a387d08dd7b4b63391debd232d31f1c61eefbcf079abf7a"
+    }
+  },
+  "scene_count": 132,
+  "score": {
+    "status": "ok",
+    "E": 1.5006853943125558,
+    "score": 5.0,
+    "reward": 0.5,
+    "classic": 2.1079808079280804,
+    "advanced": 1.5006853943125553,
+    "scene_count": 132,
+    "dataset_counts": {
+      "qiu": 32,
+      "wen": 100
+    }
+  },
+  "max_wall_s": 0.6418450419996589
+}

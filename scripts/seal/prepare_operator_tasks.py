@@ -183,7 +183,8 @@ def main():
         context = target / 'image-context'
         shutil.copytree(workspace, context)
         for extra in spec_dir.iterdir():
-            if extra.name not in ('task.json',):
+            # Only the version's own build files (Dockerfile, locks, statement); data/ and author/ stay out of the image.
+            if extra.is_file() and extra.name not in ('task.json',):
                 shutil.copy2(extra, context / extra.name)
         image = spec['images']['task']
         image_id = None

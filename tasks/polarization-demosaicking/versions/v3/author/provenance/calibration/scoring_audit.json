@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "checks": {
+    "independent_global_mean": true,
+    "classic_endpoint_zero": true,
+    "advanced_endpoint_five": true,
+    "perfect_endpoint_ten": true,
+    "failure_is_zero": true
+  },
+  "independent_errors": {
+    "classic": 2.10798080792808,
+    "advanced": 1.5006853943125558
+  },
+  "classic": {
+    "status": "ok",
+    "E": 2.10798080792808,
+    "score": 0.0,
+    "reward": 0.0,
+    "classic": 2.10798080792808,
+    "advanced": 1.5006853943125558,
+    "scene_count": 132,
+    "dataset_counts": {
+      "qiu": 32,
+      "wen": 100
+    }
+  },
+  "advanced": {
+    "status": "ok",
+    "E": 1.5006853943125558,
+    "score": 5.0,
+    "reward": 0.5,
+    "classic": 2.10798080792808,
+    "advanced": 1.5006853943125558,
+    "scene_count": 132,
+    "dataset_counts": {
+      "qiu": 32,
+      "wen": 100
+    }
+  },
+  "failed_fixture": {
+    "status": "submission_failure",
+    "reason": "formal scene failure",
+    "failed_scenes": [
+      {
+        "dataset": "qiu",
+        "scene": "ball",
+        "reason": "synthetic audit"
+      }
+    ],
+    "E": null,
+    "score": 0.0,
+    "reward": 0.0
+  }
+}

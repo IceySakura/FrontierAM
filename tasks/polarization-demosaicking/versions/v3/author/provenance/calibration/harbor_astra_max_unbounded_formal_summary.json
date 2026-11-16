@@ -1,0 +1,65 @@
+{
+  "mode": "formal",
+  "build": {
+    "status": "ok",
+    "reason": "",
+    "container": "polar-worker-d64b199bd7484b56b834c4e92bc1882a",
+    "image": "sha256:f0c4eae19633c71f9a218cca9f70dc4ad30672519e165a14c0979b2ed0b79ffb",
+    "limit_s": 300,
+    "wall_s": 0.15160116699999548,
+    "peak_bytes": 75243520,
+    "cleanup_ok": true,
+    "exit_code": 0,
+    "docker_oom": false,
+    "returncode": 0,
+    "log_tail": "",
+    "cpu": [
+      0
+    ],
+    "cpu_max": "100000 100000",
+    "memory_limit_bytes": 8589934592,
+    "swap_limit_bytes": 0,
+    "memory_events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "source_files": {
+      "README.md": "9adc349014f8456f68d74141d9e7085c2cf1b16c80262ab6edec258e62fd5675",
+      "__pycache__/solution.cpython-311.pyc": "d5c07c401db1c50ee38c72934632b31326f201ea35bb7f2ad84763ee4e61a784",
+      "build.sh": "fe78e21baf1a688d360a36a706e04970434d24673be4a978828cce5f4af2ac5f",
+      "reconstruct.c": "9f1c5cb1c777f09bac7403781fa9f1b535c4a9b69e7ffa3bf19e4ab81ba08822",
+      "reconstruct.so": "36b09df3b759172a408b6bd808e58428fe62d1ba1265a1ce19c9acb034455200",
+      "solution.py": "dc3fcc2cf5a128ec7f0a69009163a566fff4c6c6de6c6a3c9f494da0d6c520b1",
+      "weights.npy": "7c8a288d79994c588b2505762545525e4c2e7ec9f264b30985d5d204b39d4a9e"
+    },
+    "built_files": {
+      "README.md": "9adc349014f8456f68d74141d9e7085c2cf1b16c80262ab6edec258e62fd5675",
+      "__pycache__/solution.cpython-311.pyc": "d5c07c401db1c50ee38c72934632b31326f201ea35bb7f2ad84763ee4e61a784",
+      "build.sh": "fe78e21baf1a688d360a36a706e04970434d24673be4a978828cce5f4af2ac5f",
+      "reconstruct.c": "9f1c5cb1c777f09bac7403781fa9f1b535c4a9b69e7ffa3bf19e4ab81ba08822",
+      "reconstruct.so": "36b09df3b759172a408b6bd808e58428fe62d1ba1265a1ce19c9acb034455200",
+      "solution.py": "dc3fcc2cf5a128ec7f0a69009163a566fff4c6c6de6c6a3c9f494da0d6c520b1",
+      "weights.npy": "7c8a288d79994c588b2505762545525e4c2e7ec9f264b30985d5d204b39d4a9e"
+    }
+  },
+  "scene_count": 132,
+  "score": {
+    "status": "ok",
+    "E": 1.5639815231868694,
+    "score": 4.478868706602928,
+    "reward": 0.44788687066029276,
+    "classic": 2.10798080792808,
+    "advanced": 1.5006853943125558,
+    "scene_count": 132,
+    "dataset_counts": {
+      "qiu": 32,
+      "wen": 100
+    }
+  },
+  "max_wall_s": 0.4502515840000001
+}

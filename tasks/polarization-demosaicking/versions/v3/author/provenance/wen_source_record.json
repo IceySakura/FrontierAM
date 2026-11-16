@@ -1,0 +1,38 @@
+{
+  "dataset": "Wen 2019 CPDNet",
+  "source_page": "https://github.com/wsj890411/CPDNet",
+  "download_url_as_published": "https://www.dropbox.com/s/4t3hw6i9tb0nvh2/OL.zip?dl=0",
+  "download_url_resolved_by_browser": "https://www.dropbox.com/scl/fi/twy7np3b0ygfm3hghtl23/OL.zip?rlkey=2rewoktnpq76vq31q7xlqjgb5&dl=1",
+  "local_source_copy": "/private/tmp/wen-vnext/source/OL",
+  "inventory": "wen_source_inventory.json",
+  "inventory_sha256": "b88a32b926985248903d634edcbb459b8fbebda95c5d21a2e6116fa032b22eaf",
+  "split_rule": "sha256('wen-vnext-dev-v1\\0' + decimal_scene_id), ascending; first 5 are dev",
+  "dev_scene_ids": [
+    "43",
+    "55",
+    "72",
+    "91",
+    "99"
+  ],
+  "eval_scene_count": 100,
+  "dev_conversion_manifest_sha256": "3f1eaff3691433363541da73ac1ddfadc09057ada08e007ec22ea749a44f1768",
+  "eval_conversion_manifest_sha256": "6090217e0fe0151467647caf14d3e2106374d98753c7278c41a04a15ded12f9c",
+  "scene_count": 105,
+  "reference_planes": 420,
+  "input_planes": 105,
+  "total_png_bytes": 1024510295,
+  "verified_structure": {
+    "reference": "1456x1088, 8-bit RGB PNG, gt_0/gt_45/gt_90/gt_135",
+    "input": "1456x1088, 8-bit grayscale PNG, net_input"
+  },
+  "authorization_status": "user-authorized on 2026-11-10 for current-workspace internal download, conversion, and analysis; data-rightsholder redistribution/public deployment remains a release gate",
+  "package_status": "not included in any released package",
+  "calibration_report": "calibration/wen_calibration.json",
+  "calibration_report_sha256": "146dd2f7393c110edc413babffc496903e53cb13eec8cf1ec89b8c1dcdf14628",
+  "provisional_global_anchors": {
+    "classic_B": 2.10798080792808,
+    "advanced_H5": 1.5006853943125558,
+    "perfect": 0.0
+  },
+  "calibration_status": "internal Qiu32+Wen100 reference calibration passed; first reflect batch had one transient scene-60 timeout, complete rerun passed 100/100"
+}
