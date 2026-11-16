@@ -512,6 +512,94 @@ class TrajectoryCovariance(OperatorTask):
                 'scope': f'{len(json.loads(cases.read_text()))} of 30,000 formal inputs (fixed stratified subset)'}
 
 
+class BlackboxCubature(OperatorTask):
+    """Interactive cubature oracle (arena/operator_drivers/blackbox_cubature.py). Private: the author's splits B and C
+    (144 cases); public feedback (FRONTIERAM_CUBATURE_DATA=public): suite H1 of split A (24 cases). Both are balanced
+    over family x dimension; the 30 s case limit keeps public within 15 minutes on one slot (results/OPEN_ITEMS.md)."""
+    grade_memory = 4 * GIB
+    grade_timeout = 3 * 3600
+    SPLITS = {'private': {'B': ('cross_splits/split_B/cases', ('H1', 'H2', 'H3')),
+                          'C': ('cross_splits/split_C_20261114/cases', ('H1', 'H2', 'H3'))},
+              'public': {'A': ('task/private_hidden/cases', ('H1',))}}
+
+    def data_set(self) -> str:
+        return 'public' if os.environ.get('FRONTIERAM_CUBATURE_DATA') == 'public' else 'private'
+
+    def cases(self) -> list[dict]:
+        cases = []
+        for split, (folder, suites) in self.SPLITS[self.data_set()].items():
+            for suite in suites:
+                for case in json.loads((self.root() / folder / f'{suite}.json').read_text())['cases']:
+                    cases.append({**case, 'split': split, 'suite': suite})
+        return cases
+
+    def suite(self, runtime=None) -> list[dict]:
+        limit = self.spec.get('case_limit_s', 30)
+        return [{'id': f'{c["split"]}/{c["case_id"]}', 'group': c['family'], 'time_limit_seconds': limit}
+                for c in self.cases()]
+
+    async def grade(self, runtime, placement, output, case_ids=None):
+        source = output / 'source'
+        if (source / PAIR).exists():
+            parts = {which: self.run_grader(source / which, output / which, placement, case_ids) for which in ('weak', 'strong')}
+            return {'exit_status': 'finished', 'kind': 'reference_pair', 'parts': parts}
+        return {'exit_status': 'finished', 'kind': 'candidate',
+                'parts': {'candidate': self.run_grader(source, output / 'candidate', placement, case_ids)}}
+
+    def run_grader(self, source, out, placement, case_ids=None):
+        out.parent.mkdir(parents=True, exist_ok=True)
+        cases = self.cases()
+        if case_ids:
+            wanted = set(case_ids)
+            cases = [c for c in cases if f'{c["split"]}/{c["case_id"]}' in wanted]
+            if len(cases) != len(wanted):
+                raise ValueError('case_ids name cases outside the data set')
+        listing = out.parent / f'{out.name}-cases.json'
+        listing.write_text(json.dumps(cases) + '\n')
+        driver = ROOT / 'arena/operator_drivers/blackbox_cubature.py'
+        done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.root() / 'task/private_hidden/grade_hidden.py'),
+                               str(listing), str(source), str(out), '--image', self.lock()['image']['id'],
+                               '--cpuset', placement.cpuset, '--cgroup-parent', placement.cgroup_parent,
+                               '--case-limit', str(self.spec.get('case_limit_s', 30))],
+                              env={**os.environ, 'DOCKER_HOST': placement.docker_host},
+                              capture_output=True, text=True, timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
+        reason = summary.get('reason') or (done.stderr.strip().splitlines()[-1] if done.returncode and done.stderr.strip() else None)
+        return {'status': summary.get('status', 'infrastructure_failure'), 'raw_error': None, 'reason': reason,
+                'package_score': None, 'cases': summary.get('cases'), 'failures': summary.get('failures'),
+                'max_wall_s': summary.get('max_wall_s'), 'rows': summary.get('rows', []), 'data': self.data_set()}
+
+    def baseline_ok(self, metrics):
+        from .operator_drivers.blackbox_cubature import gain
+
+        parts = metrics['parts']
+        weak, strong = parts.get('weak', {}), parts.get('strong', {})
+        if not weak.get('status') == strong.get('status') == 'ok':
+            return False, f'reference pair not valid: weak={weak.get("status")} strong={strong.get("status")}'
+        g0 = gain(weak['rows'], strong['rows'])['gain']
+        return g0 < 0, f'Monte Carlo gain over HumanPortfolio-v1 G0 = {g0:.4f} (must be negative)'
+
+    def score(self, runtime, metrics, baseline):
+        from .operator_drivers.blackbox_cubature import gain, score_100 as cubature_score
+
+        part = metrics['parts'].get('candidate') or {}
+        status = part.get('status')
+        if status == 'infrastructure_failure' or status is None:
+            return {'status': 'unmeasured', 'score': None, 'reason': part.get('reason')}
+        if status != 'ok':
+            return {'status': 'submission_failure', 'score': 0.0, 'reason': part.get('reason')}
+        if baseline is None:
+            return {'status': 'ok', 'score': None}
+        anchors = baseline['metrics']['parts']
+        ids = {row['id'] for row in part['rows']}
+        strong = anchors['strong']['rows']
+        candidate = gain(part['rows'], strong)
+        mc = gain([row for row in anchors['weak']['rows'] if row['id'] in ids], strong)
+        return {'status': 'ok', 'raw_error': candidate['gain'], 'score': cubature_score(candidate, mc),
+                'families': candidate['families'], 'anchors': {'weak': mc['gain'], 'strong': 0.0}}
+
+
 class DevelopmentOnlyTask(OperatorTask):
     """Development wiring only: the delivered material cannot be graded on this machine (see task.json status)."""
 
@@ -538,7 +626,8 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'polarization-demosaicking': PolarizationDemosaicking, 'polarization-demosaicking-v2': PolarizationDemosaicking,
            'polarization-demosaicking-v3': PolarizationDemosaickingV3,
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2, 'species-tree-v3': SpeciesTreeV2,
-           'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance}
+           'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance,
+           'blackbox-cubature': BlackboxCubature}
 
 
 def operator_tasks() -> dict[str, OperatorTask]:

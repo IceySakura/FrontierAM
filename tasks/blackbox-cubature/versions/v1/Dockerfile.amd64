@@ -1,0 +1,24 @@
+# amd64 build of the author's environment/Dockerfile (official python:3.11-slim-bookworm, numpy 2.1.3, scipy 1.17.1,
+# qmcpy 2.4, Cuba and cubature built from the vendored sources) without the author's agent tooling (nodejs, codex).
+# The context is the sealed workspace (scripts/seal/prepare_operator_tasks.py).
+FROM python:3.11-slim-bookworm
+RUN sed -i 's|deb.debian.org|mirrors.tencent.com|g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update && apt-get install -y --no-install-recommends build-essential pkg-config libcubature-dev ripgrep \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir --index-url https://mirrors.tencent.com/pypi/simple/ numpy==2.1.3 scipy==1.17.1 qmcpy==2.4
+COPY environment/third_party/cuba /opt/frontis/cuba
+COPY environment/third_party/stevengj-cubature /opt/frontis/cubature
+RUN cd /opt/frontis/cuba && ./configure && ./makesharedlib.sh
+RUN cd /opt/frontis/cubature && cc -O3 -fPIC -shared hcubature.c -o libhcubature.so -lm \
+    && cc -O3 -fPIC -shared pcubature.c -o libpcubature.so -lm
+ENV FRONTIS_CUBA_LIB=/opt/frontis/cuba/libcuba.so FRONTIS_HCUBATURE_LIB=/opt/frontis/cubature/libhcubature.so \
+    FRONTIS_PCUBATURE_LIB=/opt/frontis/cubature/libpcubature.so OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+    MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+RUN groupadd --gid 1000 worker && useradd --create-home --uid 1000 --gid 1000 worker \
+    && mkdir -p /workspace/submission && chown worker:worker /workspace /workspace/submission
+COPY problem.md /workspace/problem.md
+COPY environment /workspace/environment
+COPY tests /workspace/tests
+COPY examples /workspace/examples
+RUN chmod -R a+rX /workspace /opt/frontis
+WORKDIR /workspace
