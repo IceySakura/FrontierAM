@@ -1,0 +1,81 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261116T044238Z-05598c",
+ "raw": "无效提交（1 例不合格）",
+ "mapping": "任一用例不合格记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 123.8,
+  "public_tests": 13,
+  "public_curve": [
+   {
+    "minute": 20.5,
+    "score": 53.74033689162308,
+    "status": "ok"
+   },
+   {
+    "minute": 34.0,
+    "score": 54.811695946767756,
+    "status": "ok"
+   },
+   {
+    "minute": 42.9,
+    "score": 59.14506298937198,
+    "status": "ok"
+   },
+   {
+    "minute": 53.7,
+    "score": 61.25207028866771,
+    "status": "ok"
+   },
+   {
+    "minute": 65.1,
+    "score": 58.79822629237931,
+    "status": "ok"
+   },
+   {
+    "minute": 75.5,
+    "score": 59.874800250001535,
+    "status": "ok"
+   },
+   {
+    "minute": 81.2,
+    "score": 61.1605748284577,
+    "status": "ok"
+   },
+   {
+    "minute": 89.6,
+    "score": 62.878581592706716,
+    "status": "ok"
+   },
+   {
+    "minute": 94.6,
+    "score": 62.32855920141248,
+    "status": "ok"
+   },
+   {
+    "minute": 98.9,
+    "score": 62.37595983525475,
+    "status": "ok"
+   },
+   {
+    "minute": 105.7,
+    "score": 62.20131012914636,
+    "status": "ok"
+   },
+   {
+    "minute": 115.4,
+    "score": 60.833772144407604,
+    "status": "ok"
+   },
+   {
+    "minute": 121.3,
+    "score": 61.582543670206206,
+    "status": "ok"
+   }
+  ]
+ }
+}

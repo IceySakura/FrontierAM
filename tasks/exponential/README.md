@@ -86,7 +86,7 @@
 | GPT-6.1 Sol | 单轮 | 74/74 合格，\(R = 0.813\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 55.2 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.567\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 63.8 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 28 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
-| Claude Opus 5.5 | 迭代 | 74/74 合格，\(R = 0.552\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 64.4 | 10 次提交，125 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
+| Claude Opus 5.5 | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 13 次提交，124 分钟 | [`claude-opus-5-5-iterative-2/`](solutions/v6.3/claude-opus-5-5-iterative-2/) |
 | Qwen3.8 Max | 单轮 | 无效提交（23 例不合格） | 任一用例不合格记 0 | 0.0 | 32 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
 | Qwen3.8 Max | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 5 次提交，186 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 57 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
@@ -113,9 +113,11 @@ public 分数随测试提交：49.2（5 分钟） → 54.6（19 分钟） → 57
 
 ### Claude Opus 5.5（迭代，v6.3）
 
-public 分数随测试提交：56.4（41 分钟） → 0.0（58 分钟） → 61.0（74 分钟） → 59.7（88 分钟） → 60.0（97 分钟） → 60.3（102 分钟） → 60.8（106 分钟） → 60.0（112 分钟） → 59.1（117 分钟） → 59.5（120 分钟）
+第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。
 
-源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `exponential-v3-20261112T055633Z-fc1f9e`）；未复制的二进制或大文件：expo_avx2（123,192 字节）、expo_generic（119,096 字节）。
+public 分数随测试提交：53.7（20 分钟） → 54.8（34 分钟） → 59.1（43 分钟） → 61.3（54 分钟） → 58.8（65 分钟） → 59.9（76 分钟） → 61.2（81 分钟） → 62.9（90 分钟） → 62.3（95 分钟） → 62.4（99 分钟） → 62.2（106 分钟） → 60.8（115 分钟） → 61.6（121 分钟）
+
+源码 [`solutions/v6.3/claude-opus-5-5-iterative-2/source/`](solutions/v6.3/claude-opus-5-5-iterative-2/source/)（提交 `exponential-v3-20261116T044238Z-05598c`）；未复制的二进制或大文件：expsolve_gen（88,664 字节）、expsolve_v3（109,424 字节）、libexpkern_gen.so（57,616 字节）、libexpkern_v3.so（74,208 字节）。
 
 ### Qwen3.8 Max（单轮，v6.3）
 
