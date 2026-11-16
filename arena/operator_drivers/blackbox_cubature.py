@@ -10,11 +10,11 @@ candidate's user is killed, so only files the candidate writes itself carry over
 verifier. Any failed case makes the submission invalid, as in the author's verifier.
 
 Score (results/OPEN_ITEMS.md, pending the author's confirmation): per case e = log10 relative error clipped to
-[-15, 0]; gain g = e_reference - e against the locally rerun HumanPortfolio-v1 on the same case, clipped to [-2, 2],
-and to [-2, 0] for polynomial_ridge (exactly integrable once the ridge direction is found, so it can only lose
-points); mean per (family, dimension) cell, mean over dimensions, mean over families gives G. G >= 0 scores
-50 + 50 G / G_max (G_max = 4/3: every fourier and product-peak cell 100x better); G < 0 scores 50 (G - G0) / -G0,
-where G0 is plain Monte Carlo's gain on the same cases (0 points).
+[-15, 0]; gain g = e_reference - e against the locally rerun HumanPortfolio-v1 on the same case, clipped to [-2, 2];
+in v1 clipped to [-2, 0] for polynomial_ridge (exactly integrable once the ridge direction is found, so it can only
+lose points; v2 replaces that family); mean per (family, dimension) cell, mean over dimensions, mean over families
+gives G. G >= 0 scores 50 + 50 G / G_max (G_max = 2, or 4/3 with the v1 guard: every credited cell 100x better);
+G < 0 scores 50 (G - G0) / -G0, where G0 is plain Monte Carlo's gain on the same cases (0 points).
 
 Usage: blackbox_cubature.py ORACLE CASES SUBMISSION OUT --image ID --cpuset C --cgroup-parent P [--case-limit S]
 """
@@ -46,7 +46,7 @@ UID = 1000
 
 FLOOR = -15.0
 CLIP = 2.0
-GUARD_FAMILIES = {'polynomial_ridge'}
+GUARD_FAMILIES = {'polynomial_ridge'}  # v1 only; v2 replaced the family (kinked_ridge_sum) and has no guard
 
 
 def load_oracle(grade_hidden: Path):
@@ -184,14 +184,14 @@ def clipped_error(row: dict) -> float:
     return min(0.0, max(FLOOR, row['log10_rel_error']))
 
 
-def gain(rows: list[dict], reference: list[dict]) -> dict:
-    """Family-balanced mean of clipped per-case gains over the reference, matched by case id."""
+def gain(rows: list[dict], reference: list[dict], guard=GUARD_FAMILIES) -> dict:
+    """Family-balanced mean of clipped per-case gains over the reference, matched by case id; guard families can only lose."""
     by_id = {row['id']: row for row in reference}
     if {row['id'] for row in rows} - set(by_id):
         raise ValueError('cases without a reference measurement')
     cells: dict[tuple, list[float]] = defaultdict(list)
     for row in rows:
-        high = 0.0 if row['family'] in GUARD_FAMILIES else CLIP
+        high = 0.0 if row['family'] in guard else CLIP
         g = clipped_error(by_id[row['id']]) - clipped_error(row)
         cells[(row['family'], row['dimension'])].append(min(high, max(-CLIP, g)))
     families: dict[str, list[float]] = defaultdict(list)
@@ -199,7 +199,7 @@ def gain(rows: list[dict], reference: list[dict]) -> dict:
         families[family].append(float(np.mean(values)))
     per_family = {family: float(np.mean(values)) for family, values in families.items()}
     return {'gain': float(np.mean(list(per_family.values()))), 'families': per_family,
-            'max_gain': CLIP * sum(f not in GUARD_FAMILIES for f in per_family) / len(per_family)}
+            'max_gain': CLIP * sum(f not in guard for f in per_family) / len(per_family)}
 
 
 def score_100(candidate: dict, mc: dict) -> float:

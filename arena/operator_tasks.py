@@ -522,8 +522,13 @@ class BlackboxCubature(OperatorTask):
                           'C': ('cross_splits/split_C_20261114/cases', ('H1', 'H2', 'H3'))},
               'public': {'A': ('task/private_hidden/cases', ('H1',))}}
 
+    guard = frozenset({'polynomial_ridge'})
+
     def data_set(self) -> str:
         return 'public' if os.environ.get('FRONTIERAM_CUBATURE_DATA') == 'public' else 'private'
+
+    def oracle(self) -> Path:
+        return self.root() / 'task/private_hidden/grade_hidden.py'
 
     def cases(self) -> list[dict]:
         cases = []
@@ -557,7 +562,7 @@ class BlackboxCubature(OperatorTask):
         listing = out.parent / f'{out.name}-cases.json'
         listing.write_text(json.dumps(cases) + '\n')
         driver = ROOT / 'arena/operator_drivers/blackbox_cubature.py'
-        done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.root() / 'task/private_hidden/grade_hidden.py'),
+        done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.oracle()),
                                str(listing), str(source), str(out), '--image', self.lock()['image']['id'],
                                '--cpuset', placement.cpuset, '--cgroup-parent', placement.cgroup_parent,
                                '--case-limit', str(self.spec.get('case_limit_s', 30))],
@@ -577,7 +582,7 @@ class BlackboxCubature(OperatorTask):
         weak, strong = parts.get('weak', {}), parts.get('strong', {})
         if not weak.get('status') == strong.get('status') == 'ok':
             return False, f'reference pair not valid: weak={weak.get("status")} strong={strong.get("status")}'
-        g0 = gain(weak['rows'], strong['rows'])['gain']
+        g0 = gain(weak['rows'], strong['rows'], self.guard)['gain']
         return g0 < 0, f'Monte Carlo gain over HumanPortfolio-v1 G0 = {g0:.4f} (must be negative)'
 
     def score(self, runtime, metrics, baseline):
@@ -594,10 +599,23 @@ class BlackboxCubature(OperatorTask):
         anchors = baseline['metrics']['parts']
         ids = {row['id'] for row in part['rows']}
         strong = anchors['strong']['rows']
-        candidate = gain(part['rows'], strong)
-        mc = gain([row for row in anchors['weak']['rows'] if row['id'] in ids], strong)
+        candidate = gain(part['rows'], strong, self.guard)
+        mc = gain([row for row in anchors['weak']['rows'] if row['id'] in ids], strong, self.guard)
         return {'status': 'ok', 'raw_error': candidate['gain'], 'score': cubature_score(candidate, mc),
                 'families': candidate['families'], 'anchors': {'weak': mc['gain'], 'strong': 0.0}}
+
+
+class BlackboxCubatureV2(BlackboxCubature):
+    """v2: polynomial_ridge replaced by kinked_ridge_sum (no guard family); cases and oracle are kept in this repository
+    (tasks/blackbox-cubature/versions/v2/{data,grader,generation}). Public: 2 cases of split A per (family, dimension)."""
+    guard = frozenset()
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/v2'
+
+    def oracle(self) -> Path:
+        return self.VERSION / 'grader/oracle.py'
+
+    def cases(self) -> list[dict]:
+        return json.loads((self.VERSION / 'data' / self.data_set() / 'cases.json').read_text())['cases']
 
 
 class DevelopmentOnlyTask(OperatorTask):
@@ -627,7 +645,7 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'polarization-demosaicking-v3': PolarizationDemosaickingV3,
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2, 'species-tree-v3': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance,
-           'blackbox-cubature': BlackboxCubature}
+           'blackbox-cubature': BlackboxCubature, 'blackbox-cubature-v2': BlackboxCubatureV2}
 
 
 def operator_tasks() -> dict[str, OperatorTask]:

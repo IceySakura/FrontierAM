@@ -3,7 +3,7 @@
 Each shard's metrics hold per-part rows (weak/strong for the reference pair, candidate otherwise). The anchors come
 from a reference suite (--reference) or, by default, from the store's active baseline for the task.
 
-Usage: cubature-suite-score.py --store STORE [--reference SUITE] [--candidate SUITE] --out OUT.json
+Usage: cubature-suite-score.py --store STORE [--task blackbox-cubature-v2] [--reference SUITE] [--candidate SUITE] --out OUT.json
 """
 
 import argparse
@@ -15,9 +15,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
+import arena.tasks  # noqa: E402,F401  (operator_tasks must be imported through arena.tasks)
 from arena.operator_drivers.blackbox_cubature import gain, score_100  # noqa: E402
-
-TASK = 'blackbox-cubature'
+from arena.operator_tasks import CLASSES  # noqa: E402
 
 
 def merged(store: Path, suite: str) -> dict:
@@ -38,22 +38,24 @@ def merged(store: Path, suite: str) -> dict:
     return parts
 
 
-def active_baseline(store: Path) -> dict:
-    root = store / 'baselines' / TASK
+def active_baseline(store: Path, task: str) -> dict:
+    root = store / 'baselines' / task
     return json.loads((root / (root / 'ACTIVE').read_text().strip() / 'baseline.json').read_text())['metrics']['parts']
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--store', type=Path, required=True)
+    parser.add_argument('--task', default='blackbox-cubature', choices=['blackbox-cubature', 'blackbox-cubature-v2'])
     parser.add_argument('--reference')
     parser.add_argument('--candidate')
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
-    reference = merged(args.store, args.reference) if args.reference else active_baseline(args.store)
+    guard = CLASSES[args.task].guard
+    reference = merged(args.store, args.reference) if args.reference else active_baseline(args.store, args.task)
     weak, strong = reference['weak'], reference['strong']
     anchors_ok = weak['status'] == strong['status'] == 'ok'
-    mc = gain(weak['rows'], strong['rows']) if anchors_ok else None
+    mc = gain(weak['rows'], strong['rows'], guard) if anchors_ok else None
     result = {'reference': args.reference or 'active baseline', 'anchors_ok': anchors_ok and mc['gain'] < 0,
               'mc_gain': mc and mc['gain'], 'mc_families': mc and mc['families']}
     if args.candidate:
@@ -64,8 +66,8 @@ def main():
             result['score'] = 0.0
         elif candidate['status'] == 'ok' and result['anchors_ok']:
             ids = {row['id'] for row in candidate['rows']}
-            g = gain(candidate['rows'], strong['rows'])
-            g0 = gain([row for row in weak['rows'] if row['id'] in ids], strong['rows'])
+            g = gain(candidate['rows'], strong['rows'], guard)
+            g0 = gain([row for row in weak['rows'] if row['id'] in ids], strong['rows'], guard)
             result.update(gain=g['gain'], families=g['families'], score=score_100(g, g0))
         else:
             result['score'] = None

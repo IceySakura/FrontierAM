@@ -1,0 +1,78 @@
+{
+  "name": "blackbox-cubature-v2",
+  "title": "固定查询预算下的黑盒多维积分（v2）",
+  "status": "draft",
+  "status_reason": "FrontierAM v2 of the author's v4 package (results/OPEN_ITEMS.md): polynomial_ridge replaced by kinked_ridge_sum (versions/v2/generation/generate.py, same seeds; oracle versions/v2/grader/oracle.py), paired score against HumanPortfolio-v1 with plain Monte Carlo as 0 and no guard family, 30 s per case, private = splits B + C (144), public = 2 cases of split A per (family, dimension) (24). Pending the author's confirmation; not on the board yet.",
+  "case_limit_s": 30,
+  "packages": {
+    "operator": {
+      "file": "blackbox_cubature.zip",
+      "sha256": "ed4eacd3ac9fe946abb52334f1ae143267fa05be661ca0b9f55baf8bffddcb52",
+      "root": "blackbox_cubature"
+    }
+  },
+  "integrity": [],
+  "public_files": [
+    {
+      "from": "operator:task/instruction.md",
+      "to": "problem.md"
+    },
+    {
+      "from": "operator:task/environment/public-dev",
+      "to": "environment/public-dev"
+    },
+    {
+      "from": "operator:task/environment/third_party",
+      "to": "environment/third_party"
+    },
+    {
+      "from": "operator:task/tests/grade.py",
+      "to": "tests/grade.py"
+    },
+    {
+      "from": "operator:task/examples/reference_submission",
+      "to": "examples/reference_submission"
+    }
+  ],
+  "public_edits": [
+    {
+      "file": "problem.md",
+      "old": "每个实例使用 1 个 CPU、2 GiB 内存、120 秒墙钟。",
+      "new": "每个实例使用 1 个 CPU、2 GiB 内存、30 秒墙钟。",
+      "reason": "Evaluation time caps (results/EVAL_TIME_LIMITS.md): public feedback within 15 minutes on one slot; the slowest known solver needs under 9 s per case."
+    },
+    {
+      "file": "problem.md",
+      "old": "原始主指标是族均衡的 `family_balanced_median_log10_absolute_error`：先在每个 family 内取 case 中位数，再对 family 中位数取中位数，越小（更负）越好。verifier 展示的 `reward` 是该主指标取相反数，越大越好。`paired_log_error_difference = log10(error_agent) - log10(error_baseline)` 小于 0 表示 Agent 误差更小；同时报告 raw/relative error、failure rate、query count、wall time、family/suite W/T/L 和相对冻结 HumanPortfolio-v1 的结果。只有在多个未见结构、重复运行和资源成本约束下都支持改善时才可声称改进；不使用“全胜/满分”指标。",
+      "new": "**计分（满分 100，参照 = 50）。** 每个实例的误差记为 $e=\\log_{10}(|\\hat I-I|/|I|)$，截到 $[-15,0]$。与在评测机上重跑的冻结参照 `HumanPortfolio-v1` 在同一实例上配对比较：增益 $g=e_{\\text{参照}}-e$，截到 $[-2,2]$，即每个实例最多计 100 倍的改进或退步。按函数族 × 维度分格取平均，各维度平均得到函数族的增益，三个函数族等权平均得到 $G$。$G\\ge 0$ 时得分 $50+50\\,G/2$（每一格都比参照好 100 倍时为 100 分）；$G<0$ 时得分 $\\max(0,\\;50\\,(G-G_0)/(-G_0))$，其中 $G_0$ 是普通蒙特卡洛（2048 个独立均匀随机点取平均）在同一组实例上的增益，对应 0 分。任一实例失败、超时或违反协议，整份提交记 0 分。",
+      "reason": "FrontierAM score (results/OPEN_ITEMS.md): the author's median-of-family-medians absolute-error metric depends on the fourier family alone and its anchors swap order between splits; v2 has no exactly integrable family, so every family is credited. Pending the author's confirmation."
+    },
+    {
+      "file": "problem.md",
+      "old": "尖峰与 polynomial-ridge 压力结构",
+      "new": "尖峰、周期 ridge 与多方向折点 ridge 叠加等压力结构",
+      "reason": "v2 replaces polynomial_ridge (exactly integrable by a degree-4 fit) with sums of kinked ridges (results/OPEN_ITEMS.md)."
+    },
+    {
+      "file": "problem.md",
+      "old": "开发材料包括少量公开实例和一个可运行 pilot；",
+      "new": "开发材料包括少量公开实例和一个可运行 pilot（`/workspace/environment/public-dev`，用法见其中的 README.md；示例提交在 `/workspace/examples/reference_submission`）；",
+      "reason": "Workspace layout on this machine (the author's agent run had an empty workspace)."
+    }
+  ],
+  "portability_edits": [],
+  "images": {
+    "task": {
+      "tag": "frontieram-blackbox-cubature:amd64-v5-r1",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": []
+    }
+  },
+  "references": {
+    "weak": "repo:tasks/blackbox-cubature/references/r1/mc",
+    "strong": "repo:tasks/blackbox-cubature/references/r1/portfolio"
+  },
+  "submission_note": "Put an executable run.sh and the complete source in /workspace/submission; each instance runs ./run.sh in a fresh process in a clean copy of this environment, speaking the JSON Lines protocol of problem.md on stdin/stdout.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/environment/public-dev. Implement the cubature program described there.",
+  "derived_data": "versions/v2/data (cases), versions/v2/grader/oracle.py"
+}
