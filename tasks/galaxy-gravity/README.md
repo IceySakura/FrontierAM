@@ -89,6 +89,7 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | Qwen3.8 Max | 迭代 | \(E = 0.000413\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 96%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 50.9 | 3 次提交，198 分钟 | [`v4/qwen3.8-max-0902-iterative-4/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-4/) |
 | Hunyuan 4 | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v4/hy4-single-2/`](solutions/v6.3/v4/hy4-single-2/) |
 | Hunyuan 4 | 迭代 | \(E = 0.000122\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 94%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 53.1 | 8 次提交，186 分钟 | [`v4/hy4-iterative-2/`](solutions/v6.3/v4/hy4-iterative-2/) |
+| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v4/intern-s2-single-1/`](solutions/v6.3/v4/intern-s2-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -139,6 +140,10 @@ public 分数随测试提交：21.5（82 分钟） → 50.3（108 分钟） → 
 public 分数随测试提交：0.0（69 分钟） → 48.8（95 分钟） → 52.2（116 分钟） → 52.9（125 分钟） → 52.6（138 分钟） → 53.5（148 分钟） → 53.3（162 分钟） → 53.3（175 分钟）
 
 源码 [`solutions/v6.3/v4/hy4-iterative-2/source/`](solutions/v6.3/v4/hy4-iterative-2/source/)（提交 `galaxy-gravity-v4-20261115T214833Z-ba9b4d`）；未复制的二进制或大文件：solve（81,768 字节）。
+
+### Intern S2（单轮，v6.3）
+
+源码 [`solutions/v6.3/v4/intern-s2-single-1/source/`](solutions/v6.3/v4/intern-s2-single-1/source/)（提交 `galaxy-gravity-v4-20261116T053043Z-68e401`）；未复制的二进制或大文件：（提交存档不在本服务器）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

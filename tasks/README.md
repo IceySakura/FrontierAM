@@ -6,8 +6,8 @@
 | --- | --- |
 | [conic](conic/README.md) | 21 |
 | [exponential](exponential/README.md) | 18 |
-| [galaxy-gravity](galaxy-gravity/README.md) | 15 |
-| [polarization-demosaicking](polarization-demosaicking/README.md) | 10 |
+| [galaxy-gravity](galaxy-gravity/README.md) | 16 |
+| [polarization-demosaicking](polarization-demosaicking/README.md) | 11 |
 | [trajectory-covariance](trajectory-covariance/README.md) | 11 |
 | [species-tree](species-tree/README.md) | 12 |
 | [ihvp-sequence](ihvp-sequence/README.md) | 17 |
