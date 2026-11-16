@@ -71,6 +71,9 @@ DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 # until its whole answer exists; streamed answers keep sending thinking or keepalive events, so these models' upstream
 # requests stay streaming.
 UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6.1-sol', 'hy4', 'intern-s2', 'qwen3.8-max', 'qwen3.8-max-0902'}
+# AI Hub provider per model where it is not ATR's default: OpenAI refuses Codex requests for this organization
+# (2026-11-14); the azure provider serves the same model with the same controls (ATR models.yaml).
+MODEL_PROVIDER = {'gpt-6.1-sol': 'azure'}
 CONTAINER_PORT = 18080
 IMAGE_NONSTREAM = '/opt/atr-venv/lib/python3.13/site-packages/atr/harness/nonstream.py'
 MEMORY = 4 * 2**30
@@ -134,13 +137,13 @@ def resolve_route(model: str, harness: str) -> dict:
     """Highest verified reasoning tier, largest output cap and the client window, from ATR's manual catalog."""
     script = (
         'import json,sys\nfrom atr.upstream import aihub\nfrom atr.harness import resolve\n'
-        'model, harness = sys.argv[1:]\nroute = aihub.resolve(model)\nclient = resolve(harness)\n'
+        'model, harness, provider = sys.argv[1:]\nroute = aihub.resolve(model, provider=provider)\nclient = resolve(harness)\n'
         'dialect = client.dialect_for(route) if hasattr(client, "dialect_for") else client.dialect\n'
-        'print(json.dumps({"dialect": dialect, "context_window": route.context_length,'
+        'print(json.dumps({"provider": route.provider, "dialect": dialect, "context_window": route.context_length,'
         ' "max_output": aihub.output_limit(model, "max", dialect=dialect, route=route),'
         ' "effort": aihub.effort_level(model, "", dialect=dialect, route=route)}))\n'
     )
-    result = subprocess.run([str(ATR_PYTHON), '-c', script, model, harness], capture_output=True, text=True,
+    result = subprocess.run([str(ATR_PYTHON), '-c', script, model, harness, MODEL_PROVIDER.get(model, '')], capture_output=True, text=True,
                             cwd=ATR_ROOT, check=False, timeout=60)
     if result.returncode:
         raise RuntimeError(f'ATR cannot route {model} through {harness}: {result.stderr.strip()[-400:]}')
@@ -867,7 +870,8 @@ def develop(spec: dict, runtime: dict) -> dict:
                            'ATR_TCP_TIMEOUT': str(int(seconds) + 600)}
             serve = subprocess.Popen(
                 [str(ATR_ROOT / '.venv/bin/atr'), 'serve', '--model', model, '--host', '127.0.0.1', '--port', str(port),
-                 '--token', token, '--record-dir', str(output / 'atr'), '--max-output', 'max'],
+                 '--token', token, '--record-dir', str(output / 'atr'), '--max-output', 'max',
+                 *(['--model-provider', MODEL_PROVIDER[model]] if model in MODEL_PROVIDER else [])],
                 cwd=ATR_ROOT, env=environment, stdout=(output / 'atr-serve.log').open('wb'), stderr=subprocess.STDOUT,
             )
             processes.append(serve)
