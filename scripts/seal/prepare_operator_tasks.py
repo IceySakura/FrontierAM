@@ -126,6 +126,19 @@ def apply_edits(spec: dict, operator: Path) -> list:
     return applied
 
 
+def apply_public_edits(spec: dict, workspace: Path) -> list:
+    """Edits to the development workspace (e.g. the statement's platform line), with the same exactly-once rule."""
+    applied = []
+    for edit in spec.get('public_edits', []):
+        path = workspace / edit['file']
+        text = path.read_text()
+        if text.count(edit['old']) != 1:
+            raise SystemExit(f'{spec["name"]}: public edit for {edit["file"]} must match exactly once')
+        path.write_text(text.replace(edit['old'], edit['new']))
+        applied.append({'file': edit['file'], 'sha256_after': sha(path), 'reason': edit['reason']})
+    return applied
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--task', action='append')
@@ -165,6 +178,7 @@ def main():
         edits = apply_edits(spec, roots['operator']) if 'operator' in roots else []
         workspace = target / 'workspace'
         assemble_public(spec, roots, workspace)
+        public_edits = apply_public_edits(spec, workspace)
         public_tar(workspace, target / 'public.tar')
         context = target / 'image-context'
         shutil.copytree(workspace, context)
@@ -186,7 +200,7 @@ def main():
         lock = {
             'name': name, 'status': spec['status'], 'sealed_utc': datetime.now(timezone.utc).isoformat(timespec='seconds'),
             'spec_sha256': sha(spec_dir / 'task.json'), 'packages': packages, 'integrity': integrity,
-            'portability_edits': edits, 'public_tar_sha256': sha(target / 'public.tar'),
+            'portability_edits': edits, 'public_edits': public_edits, 'public_tar_sha256': sha(target / 'public.tar'),
             'image': {'tag': image['tag'], 'id': image_id, 'replaces': image['replaces']},
             'roots': {k: str(v.relative_to(target)) for k, v in roots.items()},
         }

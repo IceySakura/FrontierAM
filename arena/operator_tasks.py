@@ -85,6 +85,9 @@ class OperatorTask(Task):
         pair = output / 'pair'
         for which in ('weak', 'strong'):
             shutil.copytree(self.reference_dir(which), pair / which)
+            # Graders require a README.md beside solution.py; maintenance references may ship without one.
+            if not (pair / which / 'README.md').exists():
+                (pair / which / 'README.md').write_text(f'{which} reference of {self.name}, graded for the local anchors.\n')
         (pair / PAIR).write_text(json.dumps({'task': self.name, 'references': self.spec['references']}) + '\n')
         return tar_directory(pair, output / 'incoming.tar')
 
@@ -332,6 +335,36 @@ class PolarizationDemosaicking(OperatorTask):
                 'scene_rmse': {r['scene']: r.get('mean_rmse') for r in rows}, 'scene_statuses': {r['scene']: r['status'] for r in rows}}
 
 
+class PolarizationDemosaickingV3(PolarizationDemosaicking):
+    """The author's vNext 1.3.0-dev package: 132 formal scenes (Qiu32 + Wen100), graded by grade_vnext.py; the Wen5
+    development scenes (--mode dev) are the public feedback set (FRONTIERAM_POLAR_DATA=wen). Same per-scene contract
+    as v2 (1 CPU, 8 GiB, 1.000 s wall); the local reference pair gives the 0- and 50-point anchors."""
+
+    def run_grader(self, source, out, placement):
+        import csv
+        out.parent.mkdir(parents=True, exist_ok=True)
+        self.warm_image(placement, out.parent / f'{out.name}-warmup.json')
+        mode = 'dev' if os.environ.get('FRONTIERAM_POLAR_DATA') == 'wen' else 'formal'
+        grader = self.root() / 'harbor/polarization-demosaicking/grade_vnext.py'
+        env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
+        done = subprocess.run([str(GRADER_PYTHON), '-B', str(grader), str(source), str(out), '--mode', mode],
+                              cwd=grader.parent, env=env, capture_output=True, text=True, timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
+        scored = summary.get('score') or {}
+        rows = list(csv.DictReader((out / 'per_scene.csv').open())) if (out / 'per_scene.csv').exists() else []
+        status = scored.get('status', 'infrastructure_failure')
+        if status not in ('ok', 'infrastructure_failure'):
+            status = 'submission_failure'
+        walls = [float(r['wall_s']) for r in rows if r.get('wall_s')]
+        raw = scored.get('E') if mode == 'formal' else scored.get('mean_rmse')
+        return {'status': status, 'raw_error': raw, 'reason': scored.get('reason') or (summary.get('build') or {}).get('reason'),
+                'package_score': scored.get('score'), 'cases_passed': sum(r.get('status') == 'ok' for r in rows),
+                'expected_cases': summary.get('scene_count'), 'max_wall_s': max(walls, default=None), 'mode': mode,
+                'scene_statuses': {f'{r["dataset"]}/{r["scene"]}': r['status'] for r in rows},
+                'scene_rmse': {f'{r["dataset"]}/{r["scene"]}': float(r['mean_rmse']) for r in rows if r.get('mean_rmse')}}
+
+
 class SpeciesTree(OperatorTask):
     grade_memory = 6 * GIB
 
@@ -503,6 +536,7 @@ def _finite(value) -> bool:
 CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2, 'galaxy-gravity-v3': GalaxyGravityV3,
            'galaxy-gravity-v4': GalaxyGravityV4,
            'polarization-demosaicking': PolarizationDemosaicking, 'polarization-demosaicking-v2': PolarizationDemosaicking,
+           'polarization-demosaicking-v3': PolarizationDemosaickingV3,
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2, 'species-tree-v3': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance}
 
