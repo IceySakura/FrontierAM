@@ -62,6 +62,9 @@ RERUN = {
         ('conic', 'iterative', 'qwen3.8-max-0902'), ('exponential-v3', 'iterative', 'qwen3.8-max-0902'),
         ('exponential-v3', 'single', 'qwen3.8-max-0902'), ('conic', 'iterative', 'hy4'),
         ('galaxy-gravity-v4', 'iterative', 'hy4'))},
+    **{cell: (2, '第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。')
+       for cell in (('conic', 'iterative', 'claude-opus-5-5'), ('exponential-v3', 'iterative', 'claude-opus-5-5'),
+                    ('galaxy-gravity-v4', 'single', 'claude-opus-5-5'), ('ihvp-sequence-v4', 'iterative', 'claude-opus-5-5'))},
     ('species-tree-v3', 'single', 'qwen3.8-max-0902'): (3, CUT_1 + f'；第 2 次尝试中有回合因{RESEND}'
         '（均为基础设施故障，记未测）；本格为修复后的第 3 次尝试。'),
     **{cell: (4, CUT_1 + f'；第 2、3 次尝试中有回合因上游流中断后改发非流式请求被切断，或因{RESEND}'

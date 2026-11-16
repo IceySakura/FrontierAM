@@ -68,8 +68,9 @@ CREDENTIALS = {
 }
 DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 # The path from this host to the model gateways closes connections idle for 1100 s, and a non-streaming request is idle
-# until its whole answer exists; these models stream their thinking, so their upstream requests stay streaming.
-UPSTREAM_STREAM = {'hy4', 'intern-s2', 'qwen3.8-max', 'qwen3.8-max-0902'}
+# until its whole answer exists; streamed answers keep sending thinking or keepalive events, so these models' upstream
+# requests stay streaming.
+UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6.1-sol', 'hy4', 'intern-s2', 'qwen3.8-max', 'qwen3.8-max-0902'}
 CONTAINER_PORT = 18080
 IMAGE_NONSTREAM = '/opt/atr-venv/lib/python3.13/site-packages/atr/harness/nonstream.py'
 MEMORY = 4 * 2**30
