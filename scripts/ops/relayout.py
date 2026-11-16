@@ -8,13 +8,14 @@
 4. Record the new grading daemons in every sealed runtime (runtime-lock.json grade_docker_hosts) and check that
    `arena.cli.context()` accepts the layout.
 
-Usage (root): relayout.py [--grade-cores 7] [--placement paired] [--dry-run]
+Usage (root): relayout.py [--housekeeping-cores 2] [--grade-cores 7] [--placement paired] [--dry-run]
 """
 
 import argparse
 import contextlib
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -59,12 +60,14 @@ def copy_images(source: str, target: str) -> int:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--housekeeping-cores', type=int, default=2)
     parser.add_argument('--grade-cores', type=int, default=7)
     parser.add_argument('--placement', default='paired')
     parser.add_argument('--dry-run', action='store_true', help='print the new layout only')
     args = parser.parse_args()
     old = machine.load()
-    new = machine.plan(grade_cores=args.grade_cores, grade_placement=args.placement)
+    new = machine.plan(housekeeping_cores=args.housekeeping_cores, grade_cores=args.grade_cores,
+                       grade_placement=args.placement)
     added = [s for s in new['slots'] if s['kind'] == 'grade' and s['id'] not in {o['id'] for o in old['slots']}]
     say(event='plan', slots=[s['id'] for s in new['slots']], added_grade=[s['id'] for s in added])
     if args.dry_run:
@@ -73,11 +76,16 @@ def main():
     unchanged = frozenset(s['id'] for s in old['slots'] if s['kind'] == 'dev' and
                           any(n['id'] == s['id'] and n['kind'] == 'dev' for n in new['slots']))
     changing = [s for s in old['slots'] if s['id'] not in unchanged]
+    removed = {s['id'] for s in old['slots']} - {s['id'] for s in new['slots']}
     say(event='holding', slots=[s['id'] for s in changing], unchanged=sorted(unchanged))
+    # Processes started before the change keep the old layout in their broker and would lease a removed slot (whose
+    # CPUs are now housekeeping, or whose grading daemon is gone); this process keeps those slots leased until stopped.
+    tombstones = contextlib.ExitStack()
     with contextlib.ExitStack() as held:
         for slot in changing:
-            held.enter_context(broker.acquire(slot['kind'], 2**28, 'relayout (slot changes in the new layout)',
-                                              slot_id=slot['id'], priority=slot['kind'] == 'grade'))
+            lease = broker.acquire(slot['kind'], 2**28, 'relayout (slot changes in the new layout)',
+                                   slot_id=slot['id'], priority=slot['kind'] == 'grade')
+            (tombstones if slot['id'] in removed else held).enter_context(lease)
         say(event='held')
         machine.install(new, own_pid=os.getpid(), keep=unchanged)
         say(event='installed', layout_sha256=new['layout_sha256'])
@@ -93,6 +101,11 @@ def main():
     check = subprocess.run([sys.executable, '-c', 'import arena.tasks\nfrom arena.cli import context\ncontext()'], cwd=ROOT,
                            capture_output=True, text=True)
     say(event='done', context_ok=check.returncode == 0, error=check.stderr.strip()[-300:] or None)
+    if removed:
+        say(event='holding_removed', slots=sorted(removed), pid=os.getpid(),
+            note='stop this process once no process started before the change is still waiting for a slot')
+        with tombstones:
+            signal.pause()
 
 
 if __name__ == '__main__':
