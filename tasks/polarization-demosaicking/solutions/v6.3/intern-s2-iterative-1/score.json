@@ -1,0 +1,24 @@
+{
+ "id": "job-20261116T093418Z-f32795",
+ "task": "polarization-demosaicking-v2",
+ "submission": "polarization-demosaicking-v2-20261116T093358Z-fd94ba",
+ "kind": "candidate",
+ "note": null,
+ "isolation": null,
+ "enqueued_utc": "2026-11-16T09:34:18+00:00",
+ "claimed_utc": "2026-11-16T09:34:19+00:00",
+ "worker_pid": 1056857,
+ "status": "submission_failure",
+ "score": 0.0,
+ "finished_utc": "2026-11-16T09:34:54+00:00",
+ "candidate": {
+  "status": "submission_failure",
+  "raw_error": null,
+  "reason": "solution.py and README.md are required",
+  "package_score": 0.0,
+  "cases_passed": 0,
+  "expected_cases": 32,
+  "max_wall_s": null,
+  "scene_statuses": {}
+ }
+}
