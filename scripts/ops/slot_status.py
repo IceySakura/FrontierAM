@@ -95,10 +95,20 @@ def snapshot() -> dict:
     attempts = sum(1 for p in SLOTS.glob('attempt-*.request') if held(p))
     alerts_path = ROOT / 'var/stores/alerts.jsonl'
     alerts = []
+    notes = {}
+    for line in (ROOT / 'var/stores/alerts-handled.jsonl').read_text().splitlines() if (ROOT / 'var/stores/alerts-handled.jsonl').exists() else []:
+        try:
+            record = json.loads(line)
+            notes[record['job']] = record['note']
+        except (ValueError, KeyError):
+            pass
     if alerts_path.exists():
         for line in alerts_path.read_text().splitlines()[-20:]:
             try:
-                alerts.append(json.loads(line))
+                record = json.loads(line)
+                if record.get('job') in notes:
+                    record['handled'] = notes[record['job']]
+                alerts.append(record)
             except ValueError:
                 pass
     return {'generated_unix': now, 'generated': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(now)),

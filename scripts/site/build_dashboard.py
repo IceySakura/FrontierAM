@@ -324,11 +324,13 @@ async function refresh() {
   document.getElementById('grid').innerHTML = html;
   const KIND = {slow_slot: '评测槽变慢（负载小测）', load_gate: '负载系数超闸门'};
   const alerts = d.alerts || [];
+  const open = alerts.filter(a => !a.handled).length;
   document.getElementById('alerts').innerHTML = alerts.length ?
-    '<h2>异常报警（最近 ' + alerts.length + ' 条，需单独处理）</h2><ul>' + alerts.map(a => '<li class="alert">' + esc(a.time) + ' · ' +
+    '<h2>异常报警（最近 ' + alerts.length + ' 条，' + (open ? open + ' 条待处理' : '均已核查') + '）</h2><ul>' +
+      alerts.map(a => '<li class="' + (a.handled ? 'handled' : 'alert') + '">' + esc(a.time) + ' · ' +
       esc(KIND[a.kind] || a.kind) + ' · ' + esc(a.task || '') + ' · ' + esc(a.slot || '') + ' · ' + esc(a.job || '') +
       (a.before != null ? ' · 前 ' + a.before + ' / 后 ' + a.after : '') + (a.load_factor != null ? ' · 负载 ' + a.load_factor : '') +
-      '</li>').join('') + '</ul>' : '<p>异常报警：无</p>';
+      (a.handled ? ' · 已核查：' + esc(a.handled) : '') + '</li>').join('') + '</ul>' : '<p>异常报警：无</p>';
   document.getElementById('summary').textContent = '开发槽 ' + used.dev + ' / ' + total.dev + ' 占用 · 评测槽 ' + used.grade + ' / ' + total.grade + ' 占用';
 }
 refresh(); setInterval(refresh, 5000);
@@ -345,6 +347,7 @@ MONITOR_CSS = """
 .core.grade{border-left-color:#16a34a}.core.grade.busy{background:#dcfce7}
 .core.held{background:#fef3c7;border-left-color:#d97706}
 .alert{color:#b91c1c}
+.handled{color:#6b7280}
 """
 
 
