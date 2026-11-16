@@ -1,0 +1,14 @@
+{
+ "model": "intern-s2",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "species-tree-v3-20261116T063351Z-2a88b6",
+ "raw": "无效提交（开发结束时没有冻结出有效提交）",
+ "mapping": "无效提交记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 60.0,
+  "public_tests": 0
+ }
+}

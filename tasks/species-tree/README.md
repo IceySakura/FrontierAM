@@ -89,7 +89,7 @@
 | Qwen3.8 Max | 迭代 | nRF \(E = 0.1664\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 2 次提交，230 分钟 | [`qwen3.8-max-0902-iterative-4/`](solutions/v6.3/qwen3.8-max-0902-iterative-4/) |
 | Hunyuan 4 | 单轮 | nRF \(E = 0.1574\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 58 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | nRF \(E = 0.1382\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 30.1 | 4 次提交，157 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
-| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
+| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-2/`](solutions/v6.3/intern-s2-single-2/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -141,7 +141,9 @@ public 分数随测试提交：50.0（77 分钟） → 51.3（105 分钟） → 
 
 ### Intern S2（单轮，v6.3）
 
-源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `species-tree-v3-20261116T041309Z-52ff4e`）；未复制的二进制或大文件：（提交存档不在本服务器）。
+第 1 次尝试中一次上游流中断，传输层自动重试成功，但该回合多耗约 22 分钟（基础设施问题，记未测）；本格为第 2 次尝试。
+
+源码 [`solutions/v6.3/intern-s2-single-2/source/`](solutions/v6.3/intern-s2-single-2/source/)（提交 `species-tree-v3-20261116T063351Z-2a88b6`）；未复制的二进制或大文件：（提交存档不在本服务器）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
