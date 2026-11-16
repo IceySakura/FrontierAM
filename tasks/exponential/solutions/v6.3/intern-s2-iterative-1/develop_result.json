@@ -1,0 +1,21 @@
+{
+  "harness": "claude",
+  "route": {
+    "dialect": "anthropic",
+    "context_window": 262144,
+    "max_output": 65536,
+    "effort": "enabled"
+  },
+  "protocol": "v6.3",
+  "setting": "iterative",
+  "exit_code": null,
+  "agent_stop_reason": "development_deadline",
+  "development_seconds": 14400.75045637996,
+  "source_frozen": false,
+  "freeze_error": "empty submission",
+  "evaluations": [],
+  "test_submissions": 0,
+  "task_status": "invalid_submission",
+  "http_attempts": 45,
+  "agent_eligible": true
+}

@@ -1,0 +1,14 @@
+{
+ "model": "intern-s2",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261116T093358Z-b4e086",
+ "raw": "无效提交（开发结束时没有冻结出有效提交）",
+ "mapping": "无效提交记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 240.0,
+  "public_tests": 0
+ }
+}

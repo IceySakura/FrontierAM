@@ -92,6 +92,7 @@
 | Hunyuan 4 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 57 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 74/74 合格，\(R = 0.776\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 56.3 | 10 次提交，121 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
+| Intern S2 | 迭代 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 0 次提交，240 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -146,6 +147,10 @@ public 分数随测试提交：30.7（47 分钟） → 42.2（63 分钟） → 4
 ### Intern S2（单轮，v6.3）
 
 源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `exponential-v3-20261116T041309Z-44f19a`）；未复制的二进制或大文件：（提交存档不在本服务器）。
+
+### Intern S2（迭代，v6.3）
+
+源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `exponential-v3-20261116T093358Z-b4e086`）；未复制的二进制或大文件：（提交存档不在本服务器）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
