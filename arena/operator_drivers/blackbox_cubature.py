@@ -53,6 +53,8 @@ def load_oracle(grade_hidden: Path):
     spec = importlib.util.spec_from_file_location('cubature_grade_hidden', grade_hidden)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    if not hasattr(module, 'linear_moment'):
+        return module.value_and_exact
     # value_and_exact recomputes the exact moment on every point; at d = 8 that is most of a case's wall time.
     moment, cache = module.linear_moment, {}
 
