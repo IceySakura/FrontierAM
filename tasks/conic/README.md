@@ -78,6 +78,7 @@
 | Qwen3.8 Max | 迭代 | 196 / 650（\(p = 0.302\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 0 次提交，96 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 253 / 650（\(p = 0.389\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 57 分钟 | [`hy4-single-2/`](solutions/v6.3/hy4-single-2/) |
 | Hunyuan 4 | 迭代 | 286 / 650（\(p = 0.440\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 12 次提交，172 分钟 | [`hy4-iterative-2/`](solutions/v6.3/hy4-iterative-2/) |
+| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -128,6 +129,10 @@ public 分数随测试提交：23.0（181 分钟） → 51.5（194 分钟） →
 public 分数随测试提交：0.0（54 分钟） → 0.0（63 分钟） → 0.0（91 分钟） → 0.0（104 分钟） → 0.0（115 分钟） → 0.0（126 分钟） → 0.0（134 分钟） → 0.0（144 分钟） → 0.0（147 分钟） → 0.0（153 分钟） → 0.0（160 分钟） → 0.0（165 分钟）
 
 源码 [`solutions/v6.3/hy4-iterative-2/source/`](solutions/v6.3/hy4-iterative-2/source/)（提交 `conic-20261115T213336Z-999f1a`）。
+
+### Intern S2（单轮，v6.3）
+
+源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `conic-20261116T041518Z-f17991`）；未复制的二进制或大文件：（提交存档不在本服务器）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
