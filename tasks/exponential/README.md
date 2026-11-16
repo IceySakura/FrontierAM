@@ -91,6 +91,7 @@
 | Qwen3.8 Max | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 5 次提交，186 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 57 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 74/74 合格，\(R = 0.776\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 56.3 | 10 次提交，121 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
+| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -139,6 +140,10 @@ public 分数随测试提交：49.5（72 分钟） → 50.3（118 分钟） → 
 public 分数随测试提交：30.7（47 分钟） → 42.2（63 分钟） → 45.9（73 分钟） → 44.1（89 分钟） → 46.7（92 分钟） → 51.1（98 分钟） → 42.2（102 分钟） → 50.6（104 分钟） → 52.8（110 分钟） → 50.2（117 分钟）
 
 源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `exponential-v3-20261113T131731Z-c8c28a`）；未复制的二进制或大文件：libfamexp.so（28,080 字节）。
+
+### Intern S2（单轮，v6.3）
+
+源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `exponential-v3-20261116T041309Z-44f19a`）；未复制的二进制或大文件：（提交存档不在本服务器）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

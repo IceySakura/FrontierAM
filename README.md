@@ -10,11 +10,11 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 | Intern S2 单轮 | Intern S2 迭代 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | [conic](tasks/conic/README.md) | 0.0 | 0.0 | 0.0 | 27.6 | 0.0 | 0.0 | 0.0 | 0.0 |  |  |
-| [exponential](tasks/exponential/README.md) | 55.2 | 63.8 | 0.0 | 64.4 | 0.0 | 0.0 | 0.0 | 56.3 |  |  |
+| [exponential](tasks/exponential/README.md) | 55.2 | 63.8 | 0.0 | 64.4 | 0.0 | 0.0 | 0.0 | 56.3 | 0.0 |  |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 0.0 | 66.1 | 57.8 | 64.4 | 0.0 | 50.9 | 0.0 | 53.1 |  |  |
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 53.5 | 52.9 | 26.9 | 42.3 | 44.0 | 47.0 | 0.0 | 42.5 |  |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 0.0 | 62.3 | 52.6 | 62.6 | 0.0 | 51.1 | 47.9 | 59.3 |  |  |
-| [species-tree](tasks/species-tree/README.md) | 49.3 | 52.6 | 28.1 | 51.2 | 0.0 | 0.0 | 0.0 | 30.1 |  |  |
+| [species-tree](tasks/species-tree/README.md) | 49.3 | 52.6 | 28.1 | 51.2 | 0.0 | 0.0 | 0.0 | 30.1 | 0.0 |  |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 62.6 | 63.0 | 58.5 | 62.4 | 52.2 | 51.8 | 52.6 | 56.1 | 11.3 |  |
 
 满分 100，参照 = 50。
@@ -24,11 +24,11 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 | Intern S2 单轮 | Intern S2 迭代 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | [conic](tasks/conic/README.md) | 57 分钟 | 9 次提交，240 分钟 | 43 分钟 | 3 次提交，216 分钟 | 60 分钟 | 0 次提交，96 分钟 | 57 分钟 | 12 次提交，172 分钟 |  |  |
-| [exponential](tasks/exponential/README.md) | 54 分钟 | 8 次提交，205 分钟 | 28 分钟 | 10 次提交，125 分钟 | 32 分钟 | 5 次提交，186 分钟 | 57 分钟 | 10 次提交，121 分钟 |  |  |
+| [exponential](tasks/exponential/README.md) | 54 分钟 | 8 次提交，205 分钟 | 28 分钟 | 10 次提交，125 分钟 | 32 分钟 | 5 次提交，186 分钟 | 57 分钟 | 10 次提交，121 分钟 | 60 分钟 |  |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 60 分钟 | 5 次提交，217 分钟 | 36 分钟 | 7 次提交，164 分钟 | 58 分钟 | 3 次提交，198 分钟 | 60 分钟 | 8 次提交，186 分钟 |  |  |
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 52 分钟 | 23 次提交，211 分钟 | 31 分钟 | 22 次提交，169 分钟 | 30 分钟 | 14 次提交，202 分钟 | 43 分钟 | 31 次提交，196 分钟 |  |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 2 分钟 | 28 次提交，116 分钟 | 14 分钟 | 18 次提交，127 分钟 | 35 分钟 | 5 次提交，169 分钟 | 53 分钟 | 21 次提交，177 分钟 |  |  |
-| [species-tree](tasks/species-tree/README.md) | 58 分钟 | 13 次提交，237 分钟 | 26 分钟 | 4 次提交，110 分钟 | 30 分钟 | 2 次提交，230 分钟 | 58 分钟 | 4 次提交，157 分钟 |  |  |
+| [species-tree](tasks/species-tree/README.md) | 58 分钟 | 13 次提交，237 分钟 | 26 分钟 | 4 次提交，110 分钟 | 30 分钟 | 2 次提交，230 分钟 | 58 分钟 | 4 次提交，157 分钟 | 60 分钟 |  |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 57 分钟 | 8 次提交，122 分钟 | 19 分钟 | 6 次提交，142 分钟 | 38 分钟 | 4 次提交，179 分钟 | 60 分钟 | 4 次提交，183 分钟 | 60 分钟 |  |
 <!-- board:end -->
 
