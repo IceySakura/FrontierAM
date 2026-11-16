@@ -73,7 +73,7 @@
 | GPT-6.1 Sol | 单轮 | 363 / 650（\(p = 0.558\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 57 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 426 / 650（\(p = 0.655\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 9 次提交，240 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 398 / 650（\(p = 0.612\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 43 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
-| Claude Opus 5.5 | 迭代 | 490 / 650（\(p = 0.754\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 27.6 | 3 次提交，216 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
+| Claude Opus 5.5 | 迭代 | 578 / 650（\(p = 0.889\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 73.7 | 10 次提交，156 分钟 | [`claude-opus-5-5-iterative-2/`](solutions/v6.3/claude-opus-5-5-iterative-2/) |
 | Qwen3.8 Max | 单轮 | 246 / 650（\(p = 0.378\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 60 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
 | Qwen3.8 Max | 迭代 | 196 / 650（\(p = 0.302\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 0 次提交，96 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 253 / 650（\(p = 0.389\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 57 分钟 | [`hy4-single-2/`](solutions/v6.3/hy4-single-2/) |
@@ -100,9 +100,11 @@ public 分数随测试提交：0.0（11 分钟） → 0.0（26 分钟） → 0.0
 
 ### Claude Opus 5.5（迭代，v6.3）
 
-public 分数随测试提交：23.0（181 分钟） → 51.5（194 分钟） → 51.5（205 分钟）
+第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。
 
-源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `conic-20261112T121236Z-591c80`）；未复制的二进制或大文件：bin/conic_solver（143,024 字节）、bin/conic_solver.prebuilt（143,024 字节）。
+public 分数随测试提交：55.9（31 分钟） → 58.8（43 分钟） → 64.7（61 分钟） → 64.7（73 分钟） → 77.9（92 分钟） → 76.5（101 分钟） → 82.4（116 分钟） → 72.1（124 分钟） → 80.9（136 分钟） → 80.9（146 分钟）
+
+源码 [`solutions/v6.3/claude-opus-5-5-iterative-2/source/`](solutions/v6.3/claude-opus-5-5-iterative-2/source/)（提交 `conic-20261116T051421Z-23a616`）；未复制的二进制或大文件：bin/solver（180,800 字节）。
 
 ### Qwen3.8 Max（单轮，v6.3）
 
