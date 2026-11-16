@@ -63,14 +63,14 @@
           "model": "claude-opus-5-5",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 1,
-          "submission": "ihvp-sequence-v4-20261112T170840Z-820524",
+          "attempt": 2,
+          "submission": "ihvp-sequence-v4-20261116T051743Z-ef8440",
           "store": "var/stores/store-v63",
-          "raw": "\\(E = 0.111\\)，最长序列 28.3 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "raw": "\\(E = 0.1176\\)，最长序列 28.2 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 62.428,
-          "notes_md": "前一步解与修正量的 Galerkin 投影加 CG（6 次测试，public 50.1 → 62.5），没有识别矩阵结构。",
-          "folder": "v4/claude-opus-5-5-iterative-1"
+          "score": 60.195,
+          "notes_md": "第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。",
+          "folder": "v4/claude-opus-5-5-iterative-2"
         },
         {
           "model": "qwen3.8-max-0902",

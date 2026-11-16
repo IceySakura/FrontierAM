@@ -87,7 +87,7 @@
 | GPT-6.1 Sol | 单轮 | \(E = 0.1104\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.6 | 57 分钟 | [`v4/gpt-6.1-sol-single-1/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | \(E = 0.1093\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 63.0 | 8 次提交，122 分钟 | [`v4/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | \(E = 0.1225\)，最长序列 27.9 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 58.5 | 19 分钟 | [`v4/claude-opus-5-5-single-1/`](solutions/v6.3/v4/claude-opus-5-5-single-1/) |
-| Claude Opus 5.5 | 迭代 | \(E = 0.111\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.4 | 6 次提交，142 分钟 | [`v4/claude-opus-5-5-iterative-1/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/) |
+| Claude Opus 5.5 | 迭代 | \(E = 0.1176\)，最长序列 28.2 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 60.2 | 8 次提交，159 分钟 | [`v4/claude-opus-5-5-iterative-2/`](solutions/v6.3/v4/claude-opus-5-5-iterative-2/) |
 | Qwen3.8 Max | 单轮 | \(E = 0.1411\)，最长序列 28.0 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.2 | 38 分钟 | [`v4/qwen3.8-max-0902-single-1/`](solutions/v6.3/v4/qwen3.8-max-0902-single-1/) |
 | Qwen3.8 Max | 迭代 | \(E = 0.1424\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.8 | 4 次提交，179 分钟 | [`v4/qwen3.8-max-0902-iterative-2/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | \(E = 0.1402\)，最长序列 27.8 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6 | 60 分钟 | [`v4/hy4-single-1/`](solutions/v6.3/v4/hy4-single-1/) |
@@ -116,11 +116,11 @@ public 分数随测试提交：50.9（3 分钟） → 53.4（14 分钟） → 60
 
 ### Claude Opus 5.5（迭代，v6.3）
 
-前一步解与修正量的 Galerkin 投影加 CG（6 次测试，public 50.1 → 62.5），没有识别矩阵结构。
+第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。
 
-public 分数随测试提交：50.1（32 分钟） → 53.3（66 分钟） → 59.3（96 分钟） → 62.1（107 分钟） → 62.0（115 分钟） → 62.5（124 分钟）
+public 分数随测试提交：49.7（23 分钟） → 56.2（67 分钟） → 59.6（79 分钟） → 60.2（98 分钟） → 60.0（115 分钟） → 57.8（124 分钟） → 58.8（135 分钟） → 59.1（148 分钟）
 
-源码 [`solutions/v6.3/v4/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/source/)（提交 `ihvp-sequence-v4-20261112T170840Z-820524`）。
+源码 [`solutions/v6.3/v4/claude-opus-5-5-iterative-2/source/`](solutions/v6.3/v4/claude-opus-5-5-iterative-2/source/)（提交 `ihvp-sequence-v4-20261116T051743Z-ef8440`）。
 
 ### Qwen3.8 Max（单轮，v6.3）
 
