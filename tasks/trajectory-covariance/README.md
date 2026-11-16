@@ -80,6 +80,7 @@ MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标
 | Hunyuan 4 | 单轮 | 白化误差 \(E = 0.2342\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.9 | 53 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 白化误差 \(E = 0.1862\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 59.3 | 21 次提交，177 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（README.md and executable run.sh required） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
+| Intern S2 | 迭代 | 无效提交（README.md and executable run.sh required） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，240 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -128,6 +129,10 @@ public 分数随测试提交：50.5（40 分钟） → 39.6（72 分钟） → 5
 ### Intern S2（单轮，v6.3）
 
 源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `trajectory-covariance-v2-20261116T041308Z-f21ed6`）。
+
+### Intern S2（迭代，v6.3）
+
+源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `trajectory-covariance-v2-20261116T103359Z-fc533c`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
