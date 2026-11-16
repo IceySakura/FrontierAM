@@ -60,7 +60,7 @@ Public-set score: 47.0 / 100 (reference = 50, same mapping as the final score).
 ## 并行与机器布局
 
 - 迭代尝试与单轮一样并行运行；取消 v6.2 的全机迭代锁和“迭代期间不做其他评分”的规则。
-- 机器为 7 个开发槽 + 7 个评测槽 + 2 个杂务核（`paired` 布局：每个 L3 域最多 2 个评测核；`scripts/ops/relayout.py`）。
+- 机器为 7 个开发槽 + 7 个评测槽 + 2 个杂务核（`paired` 布局：每个 L3 域最多 2 个评测核；`scripts/ops/relayout.py`）；2026-11-16 起改为 6 + 6 + 4 个杂务核（杂务独占第一个 L3 域，见 `docs/platform/CONCURRENCY.md` 第 8 节）。
 - 11-12 起默认全并发（用户决定）：所有评分 `shared`，不独占、不为测试预留空闲槽；实测 7 路评测并行负载系数 1.04，3 个真实开发 + 3 路评测 1.041–1.064。每次评分前后做约 0.7 秒的负载小测，异常报警（`docs/platform/CONCURRENCY.md` 第 7 节）。
 
 ## 迁移
