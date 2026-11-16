@@ -23,7 +23,7 @@ SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity
 SETTING = {'single': '单轮', 'iterative': '迭代'}
 NOTES = {
     ('conic', 'single'): 'HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。',
-    ('conic', 'iterative'): '结构捷径（零最优、可分盒约束 QP、代数不可行证书）后：LP 与小 QP 用 HiGHS，其余多面体 QP 用固定分解的算子分裂加有效集 KKT 精修；一般锥用齐次嵌入预估校正内点法（Ruiz 均衡、Nesterov–Todd 缩放），二阶锥用稀疏秩二展开，指数锥用解析障碍函数。重跑（原尝试受测试排队故障影响）。',
+    ('conic', 'iterative'): '结构捷径（零最优、可分盒约束 QP、代数不可行证书）后：LP 与小 QP 用 HiGHS，其余多面体 QP 用固定分解的算子分裂加有效集 KKT 精修；一般锥用齐次嵌入预估校正内点法（Ruiz 均衡、Nesterov–Todd 缩放），二阶锥用稀疏秩二展开，指数锥用解析障碍函数。重跑（原尝试受测试排队故障影响）。有一个回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断，损失约 10 分钟（基础设施问题，11-13 已修复）；原 OpenAI 通道现拒绝 Codex 请求，待限制解除后重跑。',
     ('exponential-v3', 'single'): 'C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递推，正向量加权 Gershgorin 收紧谱区间；小连通块扩展精度对角化。',
     ('exponential-v3', 'iterative'): '刚度小的会话直接用自适应 Taylor；对角和小连通块扩展精度谱分解；一般情形用合并的 Chebyshev 展开（行和与 Collatz 界给谱区间，Reinsch 形式的 Clenshaw 递推）。重跑（原尝试受测试排队故障影响）。',
     ('galaxy-gravity-v3', 'single'): '笛卡尔与调和多极展开结合的 FMM，远场也保留 Plummer 软化修正；按相互作用选展开阶数，按进程 CPU 时间控制工作量。',
@@ -31,7 +31,7 @@ NOTES = {
     ('polarization-demosaicking-v2', 'single'): '低通估计通道差、把马赛克细节转移到四个通道，再用约 7.7k 参数的残差卷积网络修正（只用 2 张公开样例加增强训练），最后做以强度为引导的局部仿射回归。',
     ('polarization-demosaicking-v2', 'iterative'): '逐格双线性插值加通道差的偏振估计，用全部测量恢复共同细节引导，再用小型残差卷积网络修正，带结构门控与残差校准。',
     ('species-tree-v3', 'single'): '支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；最多 60 个基因座自助树，再用动态规划求兼容分裂频率最大的共识树。',
-    ('species-tree-v3', 'iterative'): '支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；四元组按悬挂枝长降权（加权方式与 Weighted ASTRAL 相同）。',
+    ('species-tree-v3', 'iterative'): '支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；四元组按悬挂枝长降权（加权方式与 Weighted ASTRAL 相同）。有一个回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断，损失约 10 分钟（基础设施问题，11-13 已修复）；原 OpenAI 通道现拒绝 Codex 请求，待限制解除后重跑。',
     ('trajectory-covariance-v2', 'single'): '白化后自适应窗宽的重叠批均值；README 写明把估计除以了轨迹长度，与题目要求的尺度不符，误差约为强参照的 10 倍。会话只用了 2 分钟。',
     ('trajectory-covariance-v2', 'iterative'): '白化后：有限状态链拟合正则化转移矩阵并解 Markov 泊松方程；其余拟合至多 32 阶的条件向量自回归，按信息准则加权平均零频谱估计；可逆性诊断通过时与共同动力学、分组动力学拟合比较。重跑（原尝试受测试排队故障影响）。',
     ('ihvp-sequence', 'single'): '用少量 HVP 查询识别生成结构（带符号 DCT 对角化、对角项与 rank-12 修正），再精确求解；误差到机器精度，每条序列约 1.7 秒。题目设计缺陷，已触发请出题人修改（`tasks/ihvp-sequence/analysis/INTEGRATION.md`）。',
