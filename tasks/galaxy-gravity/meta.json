@@ -136,6 +136,19 @@
           "score": 0.0,
           "notes_md": "",
           "folder": "v4/intern-s2-single-1"
+        },
+        {
+          "model": "intern-s2",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261116T093358Z-6b3879",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（提交失败）",
+          "mapping": "任一用例失败或提交检查未通过记 0",
+          "score": 0.0,
+          "notes_md": "",
+          "folder": "v4/intern-s2-iterative-1"
         }
       ]
     },

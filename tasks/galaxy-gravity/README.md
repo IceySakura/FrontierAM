@@ -90,6 +90,7 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | Hunyuan 4 | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v4/hy4-single-2/`](solutions/v6.3/v4/hy4-single-2/) |
 | Hunyuan 4 | 迭代 | \(E = 0.000122\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 94%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 53.1 | 8 次提交，186 分钟 | [`v4/hy4-iterative-2/`](solutions/v6.3/v4/hy4-iterative-2/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v4/intern-s2-single-1/`](solutions/v6.3/v4/intern-s2-single-1/) |
+| Intern S2 | 迭代 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，240 分钟 | [`v4/intern-s2-iterative-1/`](solutions/v6.3/v4/intern-s2-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -144,6 +145,10 @@ public 分数随测试提交：0.0（69 分钟） → 48.8（95 分钟） → 52
 ### Intern S2（单轮，v6.3）
 
 源码 [`solutions/v6.3/v4/intern-s2-single-1/source/`](solutions/v6.3/v4/intern-s2-single-1/source/)（提交 `galaxy-gravity-v4-20261116T053043Z-68e401`）；未复制的二进制或大文件：（提交存档不在本服务器）。
+
+### Intern S2（迭代，v6.3）
+
+源码 [`solutions/v6.3/v4/intern-s2-iterative-1/source/`](solutions/v6.3/v4/intern-s2-iterative-1/source/)（提交 `galaxy-gravity-v4-20261116T093358Z-6b3879`）；未复制的二进制或大文件：out-disc.bin（1,572,864 字节）、out-einasto.bin（1,572,864 字节）、out-group.bin（1,572,864 字节）、out-hernquist.bin（1,572,864 字节）、out-jaffe.bin（1,572,864 字节）、out.bin（768 字节）、s1（22,712 字节）、s2（22,712 字节）、smoke.out（768 字节）、solve（22,664 字节）、solve_d（22,712 字节）、solve_dbg（40,008 字节）、solve_dbg2（39,240 字节）、solve_dbg3（39,568 字节）、solve_dbg4（39,816 字节）、solve_dbg5（39,648 字节）、solve_g（34,256 字节）、validate（22,712 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
