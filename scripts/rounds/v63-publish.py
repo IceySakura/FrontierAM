@@ -43,6 +43,7 @@ NOTES = {
     ('ihvp-sequence-v4', 'iterative'): '按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。',
     ('ihvp-sequence-v4', 'single', 'claude-opus-5-5'): '热启动 CG 加小规模回收紧缩子空间，没有识别矩阵结构。',
     ('ihvp-sequence-v4', 'iterative', 'claude-opus-5-5'): '前一步解与修正量的 Galerkin 投影加 CG（6 次测试，public 50.1 → 62.5），没有识别矩阵结构。',
+    ('ihvp-sequence-v4', 'single', 'intern-s2'): '带 L-BFGS 预条件器的 PCG 加子空间投影、按剩余时间分配迭代，没有识别矩阵结构；误差只略好于冷启动 CG。',
     ('conic', 'single', 'qwen3.8-max-0902'): '原生 C 求解器，但提交缺少题面要求的 README.md，提交检查未通过，650 例均未运行。',
     ('ihvp-sequence-v2', 'iterative'): '工作区不含生成代码；最近 16 个解做 QR，在子空间上精确投影得到初始解，再跑 CG，按剩余步数分配时间（阶段突变时多给），Gauss–Radau 上界停止。没有识别矩阵结构；public 分数 83.7 → 99.8。',
 }
@@ -75,7 +76,7 @@ TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
 
-MODELS = [('gpt-6.1-sol', 'sol'), ('claude-opus-5-5', 'opus'), ('qwen3.8-max-0902', 'qwen'), ('hy4', 'hy4')]  # (model, attempt-log tag); NOTES keys add the model for opus
+MODELS = [('gpt-6.1-sol', 'sol'), ('claude-opus-5-5', 'opus'), ('qwen3.8-max-0902', 'qwen'), ('hy4', 'hy4'), ('intern-s2', 'intern')]  # (model, attempt-log tag); NOTES keys add the model for opus
 
 
 def submission_of(task: str, setting: str, n: int, tag: str = 'sol') -> str | None:

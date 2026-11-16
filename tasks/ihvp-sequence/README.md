@@ -92,6 +92,7 @@
 | Qwen3.8 Max | 迭代 | \(E = 0.1424\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.8 | 4 次提交，179 分钟 | [`v4/qwen3.8-max-0902-iterative-2/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | \(E = 0.1402\)，最长序列 27.8 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6 | 60 分钟 | [`v4/hy4-single-1/`](solutions/v6.3/v4/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | \(E = 0.1296\)，最长序列 27.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 56.1 | 4 次提交，183 分钟 | [`v4/hy4-iterative-1/`](solutions/v6.3/v4/hy4-iterative-1/) |
+| Intern S2 | 单轮 | \(E = 0.2255\)，最长序列 28.7 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 11.3 | 60 分钟 | [`v4/intern-s2-single-1/`](solutions/v6.3/v4/intern-s2-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -142,6 +143,12 @@ public 分数随测试提交：51.6（75 分钟） → 51.0（123 分钟） → 
 public 分数随测试提交：46.6（33 分钟） → 54.8（107 分钟） → 56.3（143 分钟） → 55.7（161 分钟）
 
 源码 [`solutions/v6.3/v4/hy4-iterative-1/source/`](solutions/v6.3/v4/hy4-iterative-1/source/)（提交 `ihvp-sequence-v4-20261113T150540Z-a22b11`）。
+
+### Intern S2（单轮，v6.3）
+
+带 L-BFGS 预条件器的 PCG 加子空间投影、按剩余时间分配迭代，没有识别矩阵结构；误差只略好于冷启动 CG。
+
+源码 [`solutions/v6.3/v4/intern-s2-single-1/source/`](solutions/v6.3/v4/intern-s2-single-1/source/)（提交 `ihvp-sequence-v4-20261115T175832Z-cab8b2`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

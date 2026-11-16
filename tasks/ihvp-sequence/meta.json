@@ -123,6 +123,19 @@
           "score": 56.137,
           "notes_md": "",
           "folder": "v4/hy4-iterative-1"
+        },
+        {
+          "model": "intern-s2",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261115T175832Z-cab8b2",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.2255\\)，最长序列 28.7 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 11.33,
+          "notes_md": "带 L-BFGS 预条件器的 PCG 加子空间投影、按剩余时间分配迭代，没有识别矩阵结构；误差只略好于冷启动 CG。",
+          "folder": "v4/intern-s2-single-1"
         }
       ]
     },
