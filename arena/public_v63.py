@@ -52,6 +52,8 @@ PUBLIC = {
     'blackbox-cubature-v2': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
     'continuum-estimation': {'family': 'continuum-estimation', 'store': STORE, 'env': {'FRONTIERAM_CONTINUUM_DATA': 'public'}},
     'fluorescence-deconvolution': {'family': 'fluorescence-deconvolution', 'store': STORE, 'env': {'FRONTIERAM_FLUOR_DATA': 'public'}},
+    # pdhcg-qp has one reference (score 100 p / (1 + g / g_ref)); its public baseline keeps the reference rows as strong.
+    'pdhcg-qp-v1': {'family': 'pdhcg-qp', 'store': STORE, 'env': {'FRONTIERAM_QP_DATA': 'public'}},
     'species-tree-v2': {'family': 'species-tree', 'store': STORE, 'env': {'FRONTIERAM_SPECIES_V2_DATA': 'public'}},
     'species-tree-v3': {'family': 'species-tree', 'store': STORE, 'env': {'FRONTIERAM_SPECIES_V2_DATA': 'public'}},
     'trajectory-covariance': {'family': 'trajectory-covariance', 'store': STORE,
@@ -283,6 +285,21 @@ def _fluorescence(out: Path) -> list[dict]:
     return rows
 
 
+def _pdhcg(out: Path) -> list[dict]:
+    return [{'id': r['case_id'], 'category': r.get('group'), 'status': 'passed' if r.get('success') else 'wrong',
+             'accuracy': None, 'seconds': r.get('penalized_seconds')}
+            for r in read_json(out / 'summary.json').get('cases', [])]
+
+
+def pdhcg_score(rows: list[dict], strong: list[dict]) -> float | None:
+    ref = {r['id']: r['seconds'] for r in strong if r.get('seconds')}
+    if not rows or any(r['id'] not in ref or not r.get('seconds') for r in rows):
+        return None
+    g = math.exp(sum(math.log(r['seconds']) for r in rows) / len(rows))
+    g_ref = math.exp(sum(math.log(ref[r['id']]) for r in rows) / len(rows))
+    return 100 * sum(r['status'] == 'passed' for r in rows) / len(rows) / (1 + g / g_ref)
+
+
 def _rows(task, store: Store, record: dict, partial: dict, which: str = 'candidate') -> list[dict]:
     if family(task.name) == 'conic':
         return _conic(store, record, partial)
@@ -291,7 +308,7 @@ def _rows(task, store: Store, record: dict, partial: dict, which: str = 'candida
         return []
     return {'galaxy-gravity': _galaxy, 'polarization-demosaicking': _polarization, 'species-tree': _species,
             'ihvp-sequence': _ihvp, 'blackbox-cubature': _cubature,
-            'continuum-estimation': _continuum, 'fluorescence-deconvolution': _fluorescence,
+            'continuum-estimation': _continuum, 'fluorescence-deconvolution': _fluorescence, 'pdhcg-qp': _pdhcg,
             }.get(family(task.name), lambda o: _trajectory(task, o))(out)
 
 
@@ -346,6 +363,8 @@ def mapped(task: str, rows: list[dict], weak: list[dict], strong: list[dict]) ->
         return None
     if task.startswith('blackbox-cubature'):
         return cubature_score(task, rows, weak, strong)
+    if task.startswith('pdhcg-qp'):
+        return pdhcg_score(rows, strong)
     raw, low, high = raw_error(task, rows), raw_error(task, weak), raw_error(task, strong)
     if raw is None:
         return 0.0
@@ -370,12 +389,16 @@ def cmd_public_baseline_v63(args) -> None:
     else:
         record = queue(task, store, runtime, None, args.slot)
         unfinished = _run(store, runtime, [record['shards'][0]['job']], None)
-        rows = {which: _rows(task, store, record, {}, which) for which in ('weak', 'strong')}
-        if unfinished or not all(rows.values()):
+        if family(task.name) == 'pdhcg-qp':  # one reference, graded as the candidate part
+            rows = {'weak': [], 'strong': _rows(task, store, record, {}, 'candidate')}
+        else:
+            rows = {which: _rows(task, store, record, {}, which) for which in ('weak', 'strong')}
+        if unfinished or not rows['strong'] or (family(task.name) != 'pdhcg-qp' and not rows['weak']):
             raise SystemExit(f'{task.name}: public baseline incomplete (job {record["shards"][0]["job"]})')
         baseline = {'task': task.name, 'job': record['shards'][0]['job'], 'slot': args.slot, 'created_utc': utc(),
                     'provisional': bool(args.provisional), 'weak': rows['weak'], 'strong': rows['strong'],
-                    'weak_raw': raw_error(task.name, rows['weak']), 'strong_raw': raw_error(task.name, rows['strong'])}
+                    'weak_raw': None if family(task.name) == 'pdhcg-qp' else raw_error(task.name, rows['weak']),
+                    'strong_raw': None if family(task.name) == 'pdhcg-qp' else raw_error(task.name, rows['strong'])}
     write_json(baseline_path(task.name), baseline)
     print(json.dumps({k: v for k, v in baseline.items() if k not in ('weak', 'strong')}))
 
@@ -436,6 +459,8 @@ def public_scope(task, store: Store, job: str) -> bool:
             return True
         summary = read_json(grade / 'candidate/summary.json')
         return summary.get('scope') == 'public-feedback' or summary.get('mode') == 'dev'
+    if fam == 'pdhcg-qp':
+        return read_json(grade / 'metrics.json').get('split') == 'public' if (grade / 'metrics.json').exists() else True
     if fam == 'fluorescence-deconvolution':
         summary = grade / 'candidate/summary.json'
         return read_json(summary).get('scope') == 'public' if summary.exists() else True

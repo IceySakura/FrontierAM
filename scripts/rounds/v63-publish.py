@@ -20,7 +20,8 @@ TASKS = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3':
          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence',
          'galaxy-gravity-v4': 'galaxy-gravity', 'ihvp-sequence-v4': 'ihvp-sequence',
          'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature',
-         'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution'}
+         'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution',
+         'pdhcg-qp-v1': 'pdhcg-qp'}
 SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity-v4': 'v4', 'ihvp-sequence-v4': 'v4',
              'polarization-demosaicking-v3': 'v3', 'blackbox-cubature-v2': 'v2'}  # later task versions within protocol v6.3 keep their own solutions subfolder
 SETTING = {'single': '单轮', 'iterative': '迭代'}
@@ -114,6 +115,13 @@ CUBATURE_FAMILY = {'fourier_ridge': 'fourier', 'kinked_ridge_sum': '折点 ridge
 
 def cell(task: str, score: dict) -> tuple[str, str]:
     family = TASKS[task]
+    if family == 'pdhcg-qp':
+        scored = score.get('scored') or {}
+        if scored.get('status') == 'invalid_submission':
+            return f'无效提交（{scored.get("reason") or "构建失败"}）', '构建失败记 0'
+        return (f'正确率 \\(p = {scored["p"]:.3f}\\)，罚时几何均值 \\(g = {scored["g"]:.3g}\\) 秒'
+                f'（参照 PDHCG：\\(g_{{ref}} = {scored["g_ref"]:.3g}\\) 秒）',
+                '\\(100\\,p/(1+g/g_{ref})\\)，参照全部正确时为 50；失败例按时限计时')
     if family == 'blackbox-cubature':
         if score.get('status') == 'submission_failure':
             return f'无效提交（{(score.get("reasons") or ["有用例失败"])[0]}）', '任一用例失败、超时或违反协议记 0'
@@ -180,7 +188,7 @@ def main():
         path = ROOT / 'tasks' / family / 'meta.json'
         meta = json.loads(path.read_text())
         version = {'polarization-demosaicking': 'v2', 'trajectory-covariance': 'v2', 'ihvp-sequence': 'v1',
-                   'continuum-estimation': 'v1', 'fluorescence-deconvolution': 'v1'}.get(family, 'v3')
+                   'continuum-estimation': 'v1', 'fluorescence-deconvolution': 'v1', 'pdhcg-qp': 'v1'}.get(family, 'v3')
         version = SUBFOLDER.get(task, version)
         old = next((g for g in meta['result_groups'] if g.get('protocol') == 'v6.3' and g.get('version') == version), None)
         reviews = {(r['model'], r['setting']): {k: r[k] for k in ('review',) if k in r}

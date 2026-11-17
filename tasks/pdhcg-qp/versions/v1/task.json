@@ -42,5 +42,13 @@
     "best": 100,
     "harbor_reward": "score/100",
     "calibration": "same-machine, same-split reference; no imported historical anchors"
+  },
+  "feedback": {
+    "task": "pdhcg-qp-v1",
+    "category": "group",
+    "accuracy": null,
+    "lower_is_better": true,
+    "timed": true,
+    "note": "An instance passes only if all three runs pass the KKT checks within the limit; a failed instance counts at the time limit. The score is 100 p / (1 + g / g_ref)."
   }
 }

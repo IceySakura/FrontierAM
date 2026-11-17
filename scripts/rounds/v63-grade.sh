@@ -23,7 +23,7 @@ value() { grep "\"event\": \"$1\", \"label\": \"$2\"" "$LOG" | tail -1 | python3
 last_id() { python3 -c "import json,sys;print(json.loads(sys.stdin.readlines()[-1])['id'])"; }
 family() { case $1 in conic) echo conic;; exponential-v3) echo exponential;; galaxy-gravity-v3|galaxy-gravity-v4) echo galaxy-gravity;;
     polarization-demosaicking-v2|polarization-demosaicking-v3) echo polarization-demosaicking;; species-tree-v3) echo species-tree;;
-    blackbox-cubature-v2) echo blackbox-cubature;; continuum-estimation) echo continuum-estimation;; fluorescence-deconvolution) echo fluorescence-deconvolution;;
+    blackbox-cubature-v2) echo blackbox-cubature;; continuum-estimation) echo continuum-estimation;; fluorescence-deconvolution) echo fluorescence-deconvolution;; pdhcg-qp-v1) echo pdhcg-qp;;
     trajectory-covariance-v2) echo trajectory-covariance;; ihvp-sequence|ihvp-sequence-v2|ihvp-sequence-v3|ihvp-sequence-v4) echo ihvp-sequence;; esac; }
 runtime() { [ "$1" = conic ] && echo "$CONIC_RT" || echo "$EXP_RT"; }
 # frozen submission ID; '-' for an invalid submission (scores 0); '' while running or after an infrastructure failure
@@ -65,7 +65,7 @@ anchors() {
         ( flock 8; done_event anchor "$task" || { id=$(suite "$task" --reference) && log "\"event\": \"anchor\", \"label\": \"$task\", \"suite\": \"$id\""; } ) \
             8> "var/stores/store/reruns/anchor-$task.lock"
     done
-    for task in galaxy-gravity-v3 polarization-demosaicking-v2 polarization-demosaicking-v3 blackbox-cubature-v2 ihvp-sequence ihvp-sequence-v3; do
+    for task in galaxy-gravity-v3 polarization-demosaicking-v2 polarization-demosaicking-v3 blackbox-cubature-v2 pdhcg-qp-v1 ihvp-sequence ihvp-sequence-v3; do
         done_event anchor "$task" && continue
         FRONTIERAM_RUNTIME=$EXP_RT ./bench --store $STORE baseline --task "$task" >> var/stores/store/reruns/v63-worker.log 2>&1 \
             && log "\"event\": \"anchor\", \"label\": \"$task\""
@@ -118,6 +118,25 @@ PY
             id=$(suite "$task" "--submission $sub") || return 1
             .venv-ops/bin/python scripts/grade/cubature-suite-score.py --store $STORE --task "$task" --candidate "$id" \
                 --out "$out/score.json" >> var/stores/store/reruns/v63-score.log 2>&1 ;;
+        pdhcg-qp-v1)
+            done_event anchor "$task" || return 1
+            FRONTIERAM_RUNTIME=$EXP_RT ./bench --store $STORE grade --submission "$sub" --task "$task" > /dev/null 2>&1
+            python3 - "$STORE" "$sub" "$out" <<'PY'
+import json, sys
+from pathlib import Path
+store, sub, out = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
+done = [json.loads(p.read_text()) for p in (store / 'jobs/done').glob('*.json')]
+rows = sorted((d for d in done if d.get('submission') == sub and d.get('kind') == 'candidate'), key=lambda d: d.get('finished_utc') or '')
+record = rows[-1] if rows else {'status': 'unmeasured'}
+result = store / 'results' / record.get('id', '-')
+if (result / 'score.json').exists():
+    record['scored'] = json.loads((result / 'score.json').read_text())
+if (result / 'grade/metrics.json').exists():
+    summary = json.loads((result / 'grade/metrics.json').read_text()).get('summary') or {}
+    record['summary'] = {k: summary.get(k) for k in ('valid', 'p', 'g', 'groups', 'build')}
+json.dump(record, open(f'{out}/score.json', 'w'), indent=1)
+PY
+            id=job ;;
         species-tree-v3|trajectory-covariance-v2)
             done_event anchor "$task" || return 1
             id=$(suite "$task" "--submission $sub") || return 1

@@ -50,7 +50,8 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'polarization-demosaicking-v3': 'frontieram-polarization-demosaicking-v3-harness:v6',
                   'blackbox-cubature-v2': 'frontieram-blackbox-cubature-v2-harness:v6',
                   'continuum-estimation': 'frontieram-continuum-estimation-harness:v6',
-                  'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6'}
+                  'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6',
+                  'pdhcg-qp-v1': 'frontieram-pdhcg-qp-v1-harness:v6'}
 # The vendor's own client where ATR has one; Claude Code for Messages models without one, Codex for Responses ones.
 HARNESS = {
     'claude-opus-5-5': 'claude',
@@ -351,6 +352,15 @@ SCORING_DISCLOSURE['fluorescence-deconvolution'] = (
     'measured on the same cases and limits: matching the weaker one scores zero, matching the stronger one is the '
     'midpoint of the scale and zero error is the maximum. Speed within the limit earns nothing extra, so keep a '
     'safety margin under it.'
+)
+SCORING_DISCLOSURE['pdhcg-qp-v1'] = (
+    'Each held-out instance is solved three times, each in a fresh process within its time limit; a run counts only '
+    'if the independent checker finds all four normalized KKT residuals at most 1e-7, and an instance succeeds only '
+    'if all three runs do. With p the fraction of successful instances and g the geometric mean over instances of the '
+    'median time of successful instances (the time limit for failed ones), the score is 100 p / (1 + g / g_ref), where '
+    'g_ref is the reference solver\'s value measured on the same instances and limits: matching the reference on '
+    'every instance is the midpoint of the scale, and being faster while solving everything scores higher. Failures '
+    'cost both accuracy and time.'
 )
 SCORING_DISCLOSURE['trajectory-covariance'] = (
     'The score depends only on the mean whitened error over all held-out inputs, averaged with equal weight over the '
