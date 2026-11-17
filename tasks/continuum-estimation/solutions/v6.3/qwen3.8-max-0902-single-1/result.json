@@ -1,0 +1,14 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "continuum-estimation-20261117T074044Z-58fc7f",
+ "raw": "无效提交（60 of 60 cases failed; first case_000: README.md and run.sh are required）",
+ "mapping": "任一用例无效、缺失、超时或失败记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 60.0,
+  "public_tests": 0
+ }
+}
