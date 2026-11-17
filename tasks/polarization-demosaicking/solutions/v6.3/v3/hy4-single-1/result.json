@@ -1,0 +1,14 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "polarization-demosaicking-v3-20261117T065348Z-ee3277",
+ "raw": "RMSE \\(E = 1.5411\\)（\\(U = 2.1080\\)，\\(W = 1.5007\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 46.674,
+ "review": null,
+ "process": {
+  "minutes": 56.8,
+  "public_tests": 0
+ }
+}
