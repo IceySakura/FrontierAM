@@ -1,0 +1,81 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261117T063610Z-197bc5",
+ "raw": "nRF \\(E = 0.1253\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 52.571,
+ "review": null,
+ "process": {
+  "minutes": 128.5,
+  "public_tests": 13,
+  "public_curve": [
+   {
+    "minute": 7.4,
+    "score": 33.33333333333331,
+    "status": "ok"
+   },
+   {
+    "minute": 11.0,
+    "score": 50.99337748344371,
+    "status": "ok"
+   },
+   {
+    "minute": 15.3,
+    "score": 23.80952380952379,
+    "status": "ok"
+   },
+   {
+    "minute": 21.5,
+    "score": 51.324503311258276,
+    "status": "ok"
+   },
+   {
+    "minute": 24.0,
+    "score": 51.98675496688742,
+    "status": "ok"
+   },
+   {
+    "minute": 29.3,
+    "score": 45.23809523809524,
+    "status": "ok"
+   },
+   {
+    "minute": 35.0,
+    "score": 51.324503311258276,
+    "status": "ok"
+   },
+   {
+    "minute": 44.2,
+    "score": 52.980132450331126,
+    "status": "ok"
+   },
+   {
+    "minute": 54.2,
+    "score": 50.0,
+    "status": "ok"
+   },
+   {
+    "minute": 73.3,
+    "score": 58.94039735099337,
+    "status": "ok"
+   },
+   {
+    "minute": 86.0,
+    "score": 59.93377483443708,
+    "status": "ok"
+   },
+   {
+    "minute": 105.9,
+    "score": 60.59602649006622,
+    "status": "ok"
+   },
+   {
+    "minute": 124.0,
+    "score": 60.59602649006622,
+    "status": "ok"
+   }
+  ]
+ }
+}
