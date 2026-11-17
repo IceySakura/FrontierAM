@@ -80,4 +80,4 @@ python tools/package_handoff.py
 
 模型仅能读取MODEL_ONLY包和自己的代码。禁止给模型本README、生成器、runtime/backend.py、其他方案源码、汇总private结果、评测ZIP或原仓库检出目录。public池也不给模型，只反馈整池汇总；private不用于开发反馈。
 
-没有任何生成种子或完整规模数组随此GitHub交付。`code/generate.py`只供维护者审查，不用它重新抽样本替代封存用例。下一版如调整采样窗口或训练设置，应先在public做控制实验，再用全新private种子检验；本批只保留为诊断记录。
+本GitHub交付不含私有评测生成种子或完整规模用例数组。`code/generate.py`只供维护者审查，不用它重新抽样本替代封存用例。下一版如调整采样窗口或训练设置，应先在public做控制实验，再用全新private种子检验；本批只保留为诊断记录。
