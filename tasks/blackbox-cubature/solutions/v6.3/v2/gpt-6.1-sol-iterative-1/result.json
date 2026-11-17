@@ -1,0 +1,91 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "blackbox-cubature-v2-20261117T155806Z-e78d6e",
+ "raw": "增益 \\(G = 1.496\\)（fourier +0.88，折点 ridge +1.60，乘积峰 +2.00），144 例，单例最长 2.7 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+ "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+ "score": 87.393,
+ "review": null,
+ "process": {
+  "minutes": 221.4,
+  "public_tests": 15,
+  "public_curve": [
+   {
+    "minute": 4.2,
+    "score": 54.48994620330965,
+    "status": "ok"
+   },
+   {
+    "minute": 12.0,
+    "score": 53.45294957751819,
+    "status": "ok"
+   },
+   {
+    "minute": 20.0,
+    "score": 52.126839045979466,
+    "status": "ok"
+   },
+   {
+    "minute": 25.3,
+    "score": 61.3650520068622,
+    "status": "ok"
+   },
+   {
+    "minute": 31.2,
+    "score": 61.3650520068622,
+    "status": "ok"
+   },
+   {
+    "minute": 35.1,
+    "score": 53.991888929808844,
+    "status": "ok"
+   },
+   {
+    "minute": 39.5,
+    "score": 53.991888929808844,
+    "status": "ok"
+   },
+   {
+    "minute": 51.4,
+    "score": 64.74121323857676,
+    "status": "ok"
+   },
+   {
+    "minute": 61.7,
+    "score": 65.98316977090664,
+    "status": "ok"
+   },
+   {
+    "minute": 92.1,
+    "score": 64.96618890019509,
+    "status": "ok"
+   },
+   {
+    "minute": 189.0,
+    "score": 76.93941749576295,
+    "status": "ok"
+   },
+   {
+    "minute": 194.2,
+    "score": 75.07538764471808,
+    "status": "ok"
+   },
+   {
+    "minute": 204.7,
+    "score": 75.86559676023047,
+    "status": "ok"
+   },
+   {
+    "minute": 210.3,
+    "score": 93.0310457499703,
+    "status": "ok"
+   },
+   {
+    "minute": 214.1,
+    "score": 93.0310457499703,
+    "status": "ok"
+   }
+  ]
+ }
+}
