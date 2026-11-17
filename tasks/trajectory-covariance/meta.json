@@ -120,13 +120,13 @@
           "model": "intern-s2",
           "protocol": "v6.3",
           "setting": "单轮",
-          "attempt": 1,
-          "submission": "trajectory-covariance-v2-20261116T041308Z-f21ed6",
+          "attempt": 2,
+          "submission": "trajectory-covariance-v2-20261117T051516Z-7012e9",
           "store": "var/stores/store-v63",
-          "raw": "无效提交（README.md and executable run.sh required）",
-          "mapping": "任一用例失败或提交检查未通过记 0",
+          "raw": "无效提交（开发结束时没有冻结出有效提交）",
+          "mapping": "无效提交记 0",
           "score": 0.0,
-          "notes_md": ""
+          "notes_md": "第 1 次尝试为 7 个书生 S2 会话并发、未传采样参数（生成约每秒 11–17 个 token）；本格为最多 2 个并发、按模型卡采样参数（温度 0.8、top_p 0.95、top_k 50）的第 2 次尝试。"
         },
         {
           "model": "intern-s2",
