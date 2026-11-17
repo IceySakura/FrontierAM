@@ -21,7 +21,9 @@ import threading
 import time
 
 RETRY_BUDGET = 900.0
-TRANSIENT = (b'rate_limit_exceeded', b'Rate limit reached', b'rate limit')
+# "credit balance is too low": the model gateway's bound upstream account ran dry; ATR rotates the affinity id and
+# answers 429, and a later request lands on another account (an opus attempt exited on it, 2026-11-17).
+TRANSIENT = (b'rate_limit_exceeded', b'Rate limit reached', b'rate limit', b'credit balance is too low')
 HOP = {'connection', 'keep-alive', 'transfer-encoding', 'content-length', 'proxy-connection', 'te', 'trailer', 'upgrade'}
 
 
