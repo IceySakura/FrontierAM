@@ -26,6 +26,7 @@ SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity
              'polarization-demosaicking-v3': 'v3', 'blackbox-cubature-v2': 'v2'}  # later task versions within protocol v6.3 keep their own solutions subfolder
 SETTING = {'single': '单轮', 'iterative': '迭代'}
 NOTES = {
+    ('blackbox-cubature-v2', 'iterative', 'claude-opus-5-5'): '先用查询检验结构再精确积分：可分离函数做一维自适应 Gauss–Kronrod，脊函数 g(w·x) 估方向后做一维 Chebyshev 积分，分段线性函数定位折面后用有理数精确积分，否则退回通用求积。fourier_ridge 是单方向脊函数、product_peak 可分离，两族因此接近精确（+1.56、+2.00）；16 次测试，public 39.7 → 83.0。超过 80，题目设计弱点已记录待出题人决定（results/OPEN_ITEMS.md）。',
     ('conic', 'single'): 'HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。',
     ('conic', 'iterative'): '结构捷径（零最优、可分盒约束 QP、代数不可行证书）后：LP 与小 QP 用 HiGHS，其余多面体 QP 用固定分解的算子分裂加有效集 KKT 精修；一般锥用齐次嵌入预估校正内点法（Ruiz 均衡、Nesterov–Todd 缩放），二阶锥用稀疏秩二展开，指数锥用解析障碍函数。重跑（原尝试受测试排队故障影响）。有一个回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断，损失约 10 分钟（基础设施问题，11-13 已修复）；原 OpenAI 通道现拒绝 Codex 请求，待限制解除后重跑。',
     ('exponential-v3', 'single'): 'C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递推，正向量加权 Gershgorin 收紧谱区间；小连通块扩展精度对角化。',
