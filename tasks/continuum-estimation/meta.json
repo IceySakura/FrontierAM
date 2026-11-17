@@ -35,6 +35,18 @@
           "notes_md": ""
         },
         {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "continuum-estimation-20261117T090022Z-90b6d7",
+          "store": "var/stores/store-v63",
+          "raw": "损失 \\(E = 0.0101005\\)，60 例，单例最长 0.4 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 22.761,
+          "notes_md": ""
+        },
+        {
           "model": "qwen3.8-max-0902",
           "protocol": "v6.3",
           "setting": "单轮",
