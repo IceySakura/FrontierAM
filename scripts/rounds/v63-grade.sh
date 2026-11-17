@@ -32,7 +32,7 @@ frozen() { python3 -c "import json,sys;r=[json.loads(l) for l in open(sys.argv[1
 
 # Full concurrency since 2026-11-12 (docs/platform/CONCURRENCY.md section 7): no grading waits for development.
 TIMED=""
-attempts_running() { pgrep -f "scripts/rounds/v63-sol.sh|v63-singles-lane" > /dev/null; }
+attempts_running() { pgrep -f "scripts/rounds/v63-sol.sh|scripts/rounds/v63-lane.sh|v63-singles-lane" > /dev/null; }
 isolation() { case " $TIMED " in *" $1 "*) echo dev_idle;; *) echo shared;; esac; }
 
 suite() {  # task, submission|--reference -> suite id; grades it now
