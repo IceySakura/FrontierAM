@@ -17,7 +17,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [species-tree](tasks/species-tree/README.md) | 49.3 | 52.6 | 28.1 | 51.2 | 0.0 | 0.0 | 0.0 | 30.1 | 0.0 |  |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 62.6 | 63.0 | 58.5 | 60.2 | 52.2 | 51.8 | 52.6 | 56.1 | 11.3 | 0.0 |
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) |  |  |  |  | 11.9 |  |  |  |  |  |
-| [continuum-estimation](tasks/continuum-estimation/README.md) |  |  |  |  |  |  |  |  |  |  |
+| [continuum-estimation](tasks/continuum-estimation/README.md) |  |  | 40.0 |  |  |  |  |  |  |  |
 | [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) |  |  |  |  |  |  |  |  |  |  |
 
 满分 100，参照 = 50。
@@ -34,7 +34,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [species-tree](tasks/species-tree/README.md) | 58 分钟 | 13 次提交，237 分钟 | 26 分钟 | 4 次提交，110 分钟 | 30 分钟 | 2 次提交，230 分钟 | 58 分钟 | 4 次提交，157 分钟 | 60 分钟 |  |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 57 分钟 | 8 次提交，122 分钟 | 19 分钟 | 8 次提交，159 分钟 | 38 分钟 | 4 次提交，179 分钟 | 60 分钟 | 4 次提交，183 分钟 | 60 分钟 | 0 次提交，240 分钟 |
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) |  |  |  |  | 56 分钟 |  |  |  |  |  |
-| [continuum-estimation](tasks/continuum-estimation/README.md) |  |  |  |  |  |  |  |  |  |  |
+| [continuum-estimation](tasks/continuum-estimation/README.md) |  |  | 24 分钟 |  |  |  |  |  |  |  |
 | [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) |  |  |  |  |  |  |  |  |  |  |
 <!-- board:end -->
 

@@ -32,8 +32,6 @@
 | 评测器 | 维护包 runtime/grade.py、runner.py、worker.py（移植改动见 versions/v1/task.json）；arena/operator_drivers/fluorescence.py |
 | 参照实现 | 维护包 runtime/references/rl20（0 分）、shb10（50 分） |
 
-公开包中的数据文件未复制到仓库，清单见 `versions/v1/public/DATA_FILES.md`。
-
 ## 数据划分（协议 v6.3）
 
 | 层 | 内容 |

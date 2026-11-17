@@ -32,8 +32,6 @@
 | 评测器 | 维护包 task/tests/grade.py（移植改动见 versions/v1/task.json）；arena/operator_drivers/continuum.py |
 | 参照实现 | 维护包 operator/references/zero（0 分）、five（50 分） |
 
-公开包中的数据文件未复制到仓库，清单见 `versions/v1/public/DATA_FILES.md`。
-
 ## 数据划分（协议 v6.3）
 
 | 层 | 内容 |
@@ -59,6 +57,18 @@
 | 强参照 | GRE（收敛阶、核与长度尺度的固定网格） | 0.0016482 | 50 |
 
 本机评测核实测（60 例）；出题人记录 0.017163 / 0.0016401。
+
+## 模型成绩与解法（题目版本 v1 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Claude Opus 5.5 | 单轮 | 损失 \(E = 0.00474595\)，60 例，单例最长 1.2 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 40.0 | 24 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
+
+### Claude Opus 5.5（单轮，v6.3）
+
+源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `continuum-estimation-20261117T055656Z-ee456a`）。
 
 ## 观察与说明
 
