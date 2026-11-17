@@ -1,0 +1,76 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "blackbox-cubature-v2-20261117T141441Z-0cefd9",
+ "raw": "增益 \\(G = 0.640\\)（fourier +0.81，折点 ridge -0.90，乘积峰 +2.00），144 例，单例最长 11.4 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+ "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+ "score": 65.997,
+ "review": null,
+ "process": {
+  "minutes": 179.4,
+  "public_tests": 12,
+  "public_curve": [
+   {
+    "minute": 13.3,
+    "score": 29.50234952478555,
+    "status": "ok"
+   },
+   {
+    "minute": 41.9,
+    "score": 56.563343870513464,
+    "status": "ok"
+   },
+   {
+    "minute": 65.1,
+    "score": 57.501863659671805,
+    "status": "ok"
+   },
+   {
+    "minute": 74.0,
+    "score": 63.60236447684913,
+    "status": "ok"
+   },
+   {
+    "minute": 101.5,
+    "score": 61.45511585975492,
+    "status": "ok"
+   },
+   {
+    "minute": 125.4,
+    "score": 30.34731419876148,
+    "status": "ok"
+   },
+   {
+    "minute": 129.3,
+    "score": 61.37392973586354,
+    "status": "ok"
+   },
+   {
+    "minute": 138.0,
+    "score": 63.113270320313816,
+    "status": "ok"
+   },
+   {
+    "minute": 145.6,
+    "score": 63.113270320313816,
+    "status": "ok"
+   },
+   {
+    "minute": 153.9,
+    "score": 62.90929040266905,
+    "status": "ok"
+   },
+   {
+    "minute": 165.6,
+    "score": 62.631874338735024,
+    "status": "ok"
+   },
+   {
+    "minute": 172.9,
+    "score": 63.113270320313816,
+    "status": "ok"
+   }
+  ]
+ }
+}
