@@ -12,7 +12,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [conic](tasks/conic/README.md) | 0.0 | 0.0 | 0.0 | 73.7 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | [exponential](tasks/exponential/README.md) | 55.2 | 63.8 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 56.3 | 0.0 | 0.0 |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 0.0 | 66.1 | 57.8 | 64.4 | 0.0 | 50.9 | 0.0 | 53.1 | 0.0 | 0.0 |
-| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 0.0 |  | 43.3 |  | 37.7 |  | 46.7 |  |  |  |
+| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 53.0 |  | 43.3 |  | 37.7 |  | 46.7 |  |  |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 0.0 | 62.3 | 52.6 | 62.6 | 0.0 | 51.1 | 47.9 | 59.3 | 0.0 | 0.0 |
 | [species-tree](tasks/species-tree/README.md) | 49.3 | 52.6 | 28.1 | 51.2 | 0.0 | 0.0 | 0.0 | 30.1 | 0.0 |  |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 62.6 | 63.0 | 58.5 | 60.2 | 52.2 | 51.8 | 52.6 | 56.1 | 11.3 | 0.0 |

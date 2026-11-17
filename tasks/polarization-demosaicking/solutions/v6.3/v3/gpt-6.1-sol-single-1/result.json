@@ -3,9 +3,9 @@
  "protocol": "v6.3",
  "setting": "单轮",
  "submission": "polarization-demosaicking-v3-20261117T071526Z-fbb4de",
- "raw": "无效提交（formal scene failure）",
- "mapping": "任一用例失败或提交检查未通过记 0",
- "score": 0.0,
+ "raw": "RMSE \\(E = 1.4113\\)（\\(U = 2.1080\\)，\\(W = 1.5007\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 52.978,
  "review": null,
  "process": {
   "minutes": 60.0,
