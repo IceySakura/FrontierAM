@@ -1,0 +1,61 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "polarization-demosaicking-v3-20261117T150533Z-919ebe",
+ "raw": "RMSE \\(E = 1.4339\\)（\\(U = 2.1080\\)，\\(W = 1.5007\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 52.226,
+ "review": null,
+ "process": {
+  "minutes": 235.1,
+  "public_tests": 9,
+  "public_curve": [
+   {
+    "minute": 8.8,
+    "score": 56.20822743015754,
+    "status": "ok"
+   },
+   {
+    "minute": 26.3,
+    "score": 59.58477001571451,
+    "status": "ok"
+   },
+   {
+    "minute": 54.1,
+    "score": 60.74595096732749,
+    "status": "ok"
+   },
+   {
+    "minute": 131.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 139.5,
+    "score": 60.74595096732749,
+    "status": "ok"
+   },
+   {
+    "minute": 143.7,
+    "score": 61.41106072319989,
+    "status": "ok"
+   },
+   {
+    "minute": 205.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 222.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 225.6,
+    "score": 61.73724388142067,
+    "status": "ok"
+   }
+  ]
+ }
+}

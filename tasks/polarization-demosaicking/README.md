@@ -74,6 +74,7 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.1 Sol | 单轮 | RMSE \(E = 1.4113\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | RMSE \(E = 1.4339\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.2 | 9 次提交，235 分钟 | [`v3/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.5821\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.3 | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | RMSE \(E = 1.4282\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.4 | 8 次提交，130 分钟 | [`v3/claude-opus-5-5-iterative-1/`](solutions/v6.3/v3/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | RMSE \(E = 1.6500\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 37.7 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
@@ -84,6 +85,12 @@
 ### GPT-6.1 Sol（单轮，v6.3）
 
 源码 [`solutions/v6.3/v3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T071526Z-fbb4de`）；未复制的二进制或大文件：auxiliary.npz（70,723 字节）、weights.npz（89,495 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+public 分数随测试提交：56.2（9 分钟） → 59.6（26 分钟） → 60.7（54 分钟） → 0.0（132 分钟） → 60.7（140 分钟） → 61.4（144 分钟） → 0.0（205 分钟） → 0.0（223 分钟） → 61.7（226 分钟）
+
+源码 [`solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T150533Z-919ebe`）；未复制的二进制或大文件：weights.npz（102,566 字节）。
 
 ### Claude Opus 5.5（单轮，v6.3）
 
