@@ -4,9 +4,9 @@
 
 **当前划分（balanced-split-20261117）：** 将原45条完整轨迹按数据集×场景分层，使用两份固定CG参考的难度约束进行随机重分，保持15 public＋30 private。Cold CG两池均值比由12.82降至1.48，Warm CG由34.96降至1.42。当前实际归属以完整数据包内的`balanced-evaluator/split_manifest.json`为准，原目录名和meta中的split保留为源身份；运行必须传`--split-manifest`。详见[重划报告](reports/BALANCED_SPLIT_20261117.md)。原数据内容、原始loss及旧划分报告保留；这仍是已有数据的重划回放。
 
-**模型题面修订（neutral-statement-20261117）：** 模型可见材料仅描述通用SPD系统、顺序接口、状态与预算契约及评分规则，不提供相关性、历史复用、低秩结构、数据来源或既有结果的解题提示。数据、算子、参考程序、评分映射及封存结果均未改变。本修订应通过新的模型解题运行评测；重跑旧提交只能复核平台，不能衡量题面变化的影响。维护者仍须阅读本目录的版本、标定与诊断记录。
+**当前模型题面（sequence-statement-20261117）：** 恢复通用应用背景、时序求解目标，以及允许保留历史解、搜索方向、低秩近似和预条件信息的说明；保留原题“不保证历史信息下一步仍有效”的边界。不声称已覆盖旧合成生成器的五类谱结构，也不公开真实数据来源、构造细节或既有成绩。此前neutral-statement-20261117精简版作为历史发布保留。当前修订不改变系统、划分清单、参考身份、资源预算、loss或得分映射，应通过新的模型解题运行比较题面影响。
 
-**当前回放标定（2026-11-17）：Warm CG＝0分，Cold CG＝50分。** 按这批private的平均loss，Cold CG最强（0.0036175158）、Warm CG次强（0.0048643424）；算法身份固定，public/private分别使用本池实测值标定。见[评分修订说明](reports/ANCHOR_CALIBRATION_20261117.md)和[重标分数CSV](reports/scores_cg50-warm0-20261117.csv)。这是用户根据已见结果指定的事后重标定，不回写为旧协议下的正式成绩，也不宣称重新完成了盲测。
+**当前参考身份：Warm CG＝0分，Cold CG＝50分。** balanced-split-20261117回放的public常数为Warm 0.07454791、Cold 0.02278136，private为Warm 0.05260912、Cold 0.01541608；算法身份固定，目标机仍须分池重测。见[当前标定](reports/anchor_calibration_balanced-split-20261117-cg50-warm0.json)和[当前分数CSV](reports/scores_balanced-split-20261117-cg50-warm0.csv)。参考身份最初根据原划分的已见private结果指定，溯源见[原评分修订](reports/ANCHOR_CALIBRATION_20261117.md)；这是事后回放，不回写旧协议正式成绩，也不宣称新的独立盲测。
 
 2250个系统的数学硬约束检查、450次预算评测均通过。原CG＝0、L-BFGS-PCG＝50的锚点仍然无效；新的Warm/Cold映射修复了计分次序，但没有改变相关性偏弱的诊断。当前正式v4、旧成绩和榜单保持原样。
 
@@ -73,7 +73,7 @@ python tools/calibrate_anchors.py --results var/replay-public var/replay-private
 
 ## 完整数据
 
-当前重划完整包名为`EVALUATOR_ONLY_ihvp_balanced_15public_30private_20261117.zip`，位于A服务器同一项目的`var/release/`。精确大小、SHA256及清单哈希见[当前发布](https://github.com/IceySakura/FrontierAM/releases/tag/ihvp-balanced-split-20261117)附件`balanced_data_package.json`。解压后从`START_BALANCED_EVALUATION.md`进入，使用`balanced-evaluator/`内当前工具；旧根目录工具为归档。
+当前完整包名为`EVALUATOR_ONLY_ihvp_balanced_15public_30private_statement_20261117.zip`，位于A服务器同一项目的`var/release/`。精确大小、SHA256及清单哈希见[当前发布](https://github.com/IceySakura/FrontierAM/releases/tag/ihvp-sequence-statement-20261117)附件`balanced_data_package.json`。它包含当前恢复版题面，同一balanced-split-20261117清单与同一45条数据。解压后从`START_BALANCED_EVALUATION.md`进入，使用`balanced-evaluator/`内当前工具；旧根目录工具为归档。已有上一版完整数据的维护者可改用本次增量包覆盖说明和工具，无需重新传输数组。
 
 下面是内容未改动的原始来源包，单独使用它不会应用新划分：
 

@@ -1,4 +1,4 @@
-当前重划包：`EVALUATOR_ONLY_ihvp_balanced_15public_30private_20261117.zip`，位于5090-A同一项目`var/release/`。具体路径、大小、SHA256见[本次发布](https://github.com/IceySakura/FrontierAM/releases/tag/ihvp-balanced-split-20261117)的`balanced_data_package.json`。解压后从START_BALANCED_EVALUATION.md进入，使用balanced-evaluator/split_manifest.json及新版工具。GitHub工具ZIP不含该私有清单。
+当前题面恢复版完整包：`EVALUATOR_ONLY_ihvp_balanced_15public_30private_statement_20261117.zip`，位于5090-A同一项目`var/release/`。具体路径、大小、SHA256见[本次发布](https://github.com/IceySakura/FrontierAM/releases/tag/ihvp-sequence-statement-20261117)的`balanced_data_package.json`。解压后从START_BALANCED_EVALUATION.md进入，使用balanced-evaluator/split_manifest.json及新版工具。GitHub工具ZIP不含该私有清单。已有上一重划完整包可叠加本次增量包；NPZ、COMPLETE及清单指纹完全一致。
 
 当前[重划报告](BALANCED_SPLIT_20261117.md)使用同一45条数据；原NPZ和COMPLETE指纹未改。下文原完整ZIP保持原字节和SHA256不变，是归档来源；单独使用它不会应用新划分。
 
