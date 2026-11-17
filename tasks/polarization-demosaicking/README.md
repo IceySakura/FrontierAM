@@ -74,10 +74,15 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.5821\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.3 | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
+| Qwen3.8 Max | 单轮 | RMSE \(E = 1.6500\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 37.7 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
 
 ### Claude Opus 5.5（单轮，v6.3）
 
 源码 [`solutions/v6.3/v3/claude-opus-5-5-single-1/source/`](solutions/v6.3/v3/claude-opus-5-5-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T045252Z-3abed5`）；未复制的二进制或大文件：weights.npy（38,528 字节）。
+
+### Qwen3.8 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/v3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T053246Z-a82a2c`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
