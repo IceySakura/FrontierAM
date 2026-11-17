@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "fluorescence-deconvolution-20261117T121636Z-2df5ef",
+ "raw": "nMSE \\(E = 0.01821\\)，96 例，单例最长 1.10 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 94.35,
+ "review": null,
+ "process": {
+  "minutes": 59.2,
+  "public_tests": 0
+ }
+}

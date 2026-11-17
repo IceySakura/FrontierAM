@@ -14,6 +14,6 @@
 | [pdhcg-qp](pdhcg-qp/README.md) | 0 |
 | [blackbox-cubature](blackbox-cubature/README.md) | 5 |
 | [continuum-estimation](continuum-estimation/README.md) | 7 |
-| [fluorescence-deconvolution](fluorescence-deconvolution/README.md) | 4 |
+| [fluorescence-deconvolution](fluorescence-deconvolution/README.md) | 5 |
 
 本文件由 `scripts/site/build_task_pages.py` 生成。
