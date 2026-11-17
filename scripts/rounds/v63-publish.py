@@ -86,6 +86,8 @@ RERUN.update({
     **{(task, 'single', 'intern-s2'): (2, INTERN_2) for task in (
         'polarization-demosaicking-v2', 'trajectory-covariance-v2', 'ihvp-sequence-v4', 'galaxy-gravity-v4')},
 })
+INTERN_SPEED = ('书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；'
+                '第 1 次迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh（results/OPEN_ITEMS.md）。')
 INTERN_ITER_2 = ('第 1 次尝试为 7 个书生 S2 会话并发、未传采样参数（生成约每秒 11–17 个 token）；本格为最多 2 个并发、'
                  '按模型卡采样参数的第 2 次尝试。')
 RERUN.update({
@@ -97,6 +99,7 @@ RERUN.update({
     ('species-tree-v3', 'iterative', 'intern-s2'): (2, '第 1 次尝试在 11-16 停止全部书生会话时中止（未测）；本格为最多 2 个并发、'
                                                      '按模型卡采样参数的第 2 次尝试。'),
 })
+RERUN.update({cell: (n, note + INTERN_SPEED) for cell, (n, note) in RERUN.items() if cell[2] == 'intern-s2'})
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
