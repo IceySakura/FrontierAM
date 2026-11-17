@@ -17,6 +17,15 @@ polynomial_ridge（1 + a2 t² + a4 t⁴）是 x 的 4 次多项式：8 维只有
 
 v2 用同种子替换为 2–3 条方向各异、带折点的 ridge 叠加：f = 1 + Σ c_j max(0, v_j·(x − u_j))^{p_j}（p = 2 或 3），精确积分用截断幂公式按有理数计算（已与数值积分核对）。fourier 与乘积峰原样保留。生成脚本 `versions/v2/generation/generate.py`，预言机 `versions/v2/grader/oracle.py`。
 
+## 3. fourier 与乘积峰同样可以识别结构（11-17 实测，待你决定）
+
+opus 迭代提交在 v2 private 上得 83.9 分（G = 1.356：fourier +1.56、折点 ridge +0.51、乘积峰 +2.00）。它先用查询检验结构再精确积分：可分离函数做一维 Gauss–Kronrod，脊函数估方向后做一维 Chebyshev 积分，分段线性函数定位折面后精确积分。
+
+- fourier_ridge：exp(κ cos(2π k·x + φ)) 是单方向脊函数；整数 k 时在单位立方体上的积分恒为 I₀(κ)，与 k、φ 无关。
+- product_peak：各坐标因子之积，可分离，按坐标做一维积分即精确。
+
+只有折点 ridge 叠加（多方向）难以精确识别。建议后续版本把 fourier 改为多方向叠加（类似折点 ridge 叠加）、乘积峰加入坐标耦合使其不可分离，或降低这两族的权重。本轮成绩保留。
+
 ## 其他
 
 - 每例时限 120 秒 → 30 秒（public 反馈单槽 15 分钟上限）；已知最慢的提交每例不到 8 秒。
