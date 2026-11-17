@@ -58,6 +58,18 @@
 
 本机评测核实测（96 例，时限 1.25 秒）；出题人记录 0.219945 / 0.161172。
 
+## 模型成绩与解法（题目版本 v1 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Claude Opus 5.5 | 单轮 | nMSE \(E = 0.07422\)，96 例，单例最长 0.23 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.0 | 25 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
+
+### Claude Opus 5.5（单轮，v6.3）
+
+源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `fluorescence-deconvolution-20261117T070120Z-a62bc0`）。
+
 ## 观察与说明
 
 - 原包只提供 ARM64 数值镜像（Dockerfile 只有 `FROM <摘要>`）；本机按 ARM64 镜像内的包清单在 x86-64 上重建同版本环境。

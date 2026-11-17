@@ -13,6 +13,6 @@
 | [ihvp-sequence](ihvp-sequence/README.md) | 18 |
 | [blackbox-cubature](blackbox-cubature/README.md) | 3 |
 | [continuum-estimation](continuum-estimation/README.md) | 1 |
-| [fluorescence-deconvolution](fluorescence-deconvolution/README.md) | 0 |
+| [fluorescence-deconvolution](fluorescence-deconvolution/README.md) | 1 |
 
 本文件由 `scripts/site/build_task_pages.py` 生成。
