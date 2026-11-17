@@ -1,0 +1,12 @@
+*
+!Dockerfile
+!statement.md
+!data/
+!data/samples/
+!data/samples/**
+!grader/
+!grader/qpbench/
+!grader/qpbench/__init__.py
+!grader/qpbench/model.py
+!grader/qpbench/check.py
+**/__pycache__

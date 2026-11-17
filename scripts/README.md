@@ -6,6 +6,7 @@
 | --- | --- |
 | `setup/` 环境与镜像 | `build-images.sh`、`build-operator-images.sh`、`load-grade-images.sh`、`switch-layout.sh`、`isolation-experiment.sh`、`uid-sampler.py`、`shim-audit.py` |
 | `seal/` 题目封存 | `prepare.py`（conic 运行副本，含公开反馈与评分提速版）、`prepare_exponential_v2.py`、`exp2-freeze.py`、`prepare_operator_tasks.py`（出题方新题）、`prepare_galaxy_v2.py`、`prepare_species_v2.py`、`relock.py`、`migrate_task_layout.py`（11-10 的目录迁移记录） |
+| `seal/prepare_pdhcg_qp.py` | 稀疏 QP 的镜像构建、分集合校准与 Harbor 题包封存（[运行说明](../tasks/pdhcg-qp/versions/v1/README.md)） |
 | `references/` 参照与基线 | `new-task-baselines.sh`、`exp2-panel-suite.sh`、`exp2-public.sh`、`exp2-private.sh`、`exp2-freeze-and-private.sh`、`species-v2-public-baseline.sh`、`traj-ref-screen.py`（trajectory 人类候选参照筛选） |
 | `rounds/` 尝试（模型开发） | `campaign.sh`、`serial-attempts.sh`、`concurrent-round.py`、`v62-smoke.py`、`v62-chain.sh`、`v62-final.sh`、`v62-followup.sh`、`v62-after.sh`、`round5-singles.sh`、`round5-sol-retry.sh`、`round5-pipeline.sh` |
 | `grade/` 评分与计分 | `exp2-suite-score.py`、`exp2-sol-suite.sh`、`species-v2-suite-score.py`、`conic-recal.py`、`conic-recalibrate.py`、`conic-grade-remaining.py`、`conic2-sol-suite.sh`、`conic-skip-check.sh`、`grade-sol-operator.sh`、`paired-validation.sh`、`exp2-container-check.py` |

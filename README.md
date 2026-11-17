@@ -16,6 +16,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 0.0 | 62.3 | 52.6 | 62.6 | 0.0 | 51.1 | 47.9 | 59.3 | 0.0 |  |
 | [species-tree](tasks/species-tree/README.md) | 49.3 | 52.6 | 28.1 | 51.2 | 0.0 | 0.0 | 0.0 | 30.1 | 0.0 |  |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 62.6 | 63.0 | 58.5 | 60.2 | 52.2 | 51.8 | 52.6 | 56.1 | 11.3 |  |
+| [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |
 
 满分 100，参照 = 50。
 
@@ -30,6 +31,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 2 分钟 | 28 次提交，116 分钟 | 14 分钟 | 18 次提交，127 分钟 | 35 分钟 | 5 次提交，169 分钟 | 53 分钟 | 21 次提交，177 分钟 | 60 分钟 |  |
 | [species-tree](tasks/species-tree/README.md) | 58 分钟 | 13 次提交，237 分钟 | 26 分钟 | 4 次提交，110 分钟 | 30 分钟 | 2 次提交，230 分钟 | 58 分钟 | 4 次提交，157 分钟 | 60 分钟 |  |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 57 分钟 | 8 次提交，122 分钟 | 19 分钟 | 8 次提交，159 分钟 | 38 分钟 | 4 次提交，179 分钟 | 60 分钟 | 4 次提交，183 分钟 | 60 分钟 |  |
+| [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |
 <!-- board:end -->
 
 评测从接入到计分的完整流程：[评测流程](docs/BENCH_PROCESS.md)。成绩能说明什么以及需要人类关注的事项：[结果解读](results/INSIGHTS.md)。

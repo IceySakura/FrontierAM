@@ -1,0 +1,41 @@
+# Run from nexus/: uv run nexus run single ../scripts/rounds/pdhcg-qp-harbor.yaml
+# The task image must already be available to the selected runtime backend.
+imports:
+  - nexus.extensions.harbor_trial.task
+  - nexus.extensions.agents.codex
+  - nexus.extensions.openai_clients.openai
+  - nexus.runtime.providers.gongfeng
+
+task_name: harbor_trial_task
+task_config:
+  task_dir: ${oc.env:FRONTIERAM_QP_HARBOR_TASK}
+  instance_id: pdhcg-qp-v1-single
+
+runtime_provider_name: gongfeng
+runtime_provider_config:
+  api_base_url: ${oc.env:SWE_RUNTIME_BASE_URL,http://hyrl-sandbox.prod.woa.com:8052}
+  token__env: GONGFENG_RUNTIME_TOKEN
+  runtime_image: current
+  request_timeout: 30000
+
+agent_name: codex
+agent_config:
+  version: 0.114.0
+  model: ${oc.env:FRONTIERAM_QP_MODEL,gpt-6.1-sol}
+  mode: exec_json
+
+openai_clients:
+  main:
+    name: openai
+    config:
+      client_args:
+        api_key__env: AIHUB_API_KEY
+        base_url: ${oc.env:AIHUB_BASE_URL,http://api.aihub.woa.com/standard/v1}
+        timeout: 900
+        max_retries: 3
+      request_args:
+        model: ${oc.env:FRONTIERAM_QP_MODEL,gpt-6.1-sol}
+        max_tokens: 64000
+
+runner:
+  timeout: 32400
