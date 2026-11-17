@@ -89,7 +89,7 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | Qwen3.8 Max | 迭代 | \(E = 0.000413\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 96%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 50.9 | 3 次提交，198 分钟 | [`v4/qwen3.8-max-0902-iterative-4/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-4/) |
 | Hunyuan 4 | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v4/hy4-single-2/`](solutions/v6.3/v4/hy4-single-2/) |
 | Hunyuan 4 | 迭代 | \(E = 0.000122\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 94%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 53.1 | 8 次提交，186 分钟 | [`v4/hy4-iterative-2/`](solutions/v6.3/v4/hy4-iterative-2/) |
-| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v4/intern-s2-single-1/`](solutions/v6.3/v4/intern-s2-single-1/) |
+| Intern S2 | 单轮 | 无效提交（build invalid_source） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v4/intern-s2-single-2/`](solutions/v6.3/v4/intern-s2-single-2/) |
 | Intern S2 | 迭代 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，240 分钟 | [`v4/intern-s2-iterative-1/`](solutions/v6.3/v4/intern-s2-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
@@ -144,7 +144,9 @@ public 分数随测试提交：0.0（69 分钟） → 48.8（95 分钟） → 52
 
 ### Intern S2（单轮，v6.3）
 
-源码 [`solutions/v6.3/v4/intern-s2-single-1/source/`](solutions/v6.3/v4/intern-s2-single-1/source/)（提交 `galaxy-gravity-v4-20261116T053043Z-68e401`）；未复制的二进制或大文件：（提交存档不在本服务器）。
+第 1 次尝试为 7 个书生 S2 会话并发、未传采样参数（生成约每秒 11–17 个 token）；本格为最多 2 个并发、按模型卡采样参数（温度 0.8、top_p 0.95、top_k 50）的第 2 次尝试。
+
+源码 [`solutions/v6.3/v4/intern-s2-single-2/source/`](solutions/v6.3/v4/intern-s2-single-2/source/)（提交 `galaxy-gravity-v4-20261117T061540Z-d1b3c9`）。
 
 ### Intern S2（迭代，v6.3）
 
