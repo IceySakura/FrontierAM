@@ -1,0 +1,9 @@
+{
+  "time": 1794795101.58548,
+  "old_sha256": "779966f5655d69ed04bf41a36b1652c4d45e42600021882958f23a90ad0c2150",
+  "new_sha256": "6f343f2f537e3de71ad012997af7c6ee5917162b4ab55f17d2b9194dade2e418",
+  "change": "reference=True only: true-residual replacement/restart interval16 to128; target remains1e-18",
+  "unchanged": "Hessian, RHS, SPD shift, data streams, teacher reference=False and all submitted methods",
+  "trigger": "public_14 reference stagnation; no private data generated before change",
+  "failure_preserved": true
+}

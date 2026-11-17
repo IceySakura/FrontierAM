@@ -1,0 +1,74 @@
+{
+  "time": 1794793611.274043,
+  "code_sha256": "b80a89002741296c51c8050ca20e605b7cb55cf37f1ab734aa69944d0f161ed9",
+  "runtime_sha256": "c353c2358effdc6c0ab954a6cc52f9c2865588ef5bba1250cab12f357389aa64",
+  "submissions_sha256": "fd7eda06710c653178d4a69efb3fef2fc298dfee7ca39f2479c4deb64805c679",
+  "methods": [
+    [
+      "cold_cg",
+      "cold_cg",
+      {}
+    ],
+    [
+      "warm_cg",
+      "warm_cg",
+      {}
+    ],
+    [
+      "lbfgs_pcg",
+      "lbfgs_pcg",
+      {}
+    ],
+    [
+      "ritz_cg",
+      "literature",
+      {
+        "method": "ritz",
+        "rank": 8,
+        "window": 64
+      }
+    ],
+    [
+      "pod_cg",
+      "literature",
+      {
+        "method": "pod",
+        "rank": 8,
+        "window": 32
+      }
+    ],
+    [
+      "scaled_pcg",
+      "literature",
+      {
+        "method": "scaled",
+        "rank": 4,
+        "window": 32,
+        "which": "small"
+      }
+    ],
+    [
+      "agent_sol_single",
+      "agent_sol_single",
+      {}
+    ],
+    [
+      "agent_sol_iter",
+      "agent_sol_iter",
+      {}
+    ],
+    [
+      "agent_opus_single",
+      "agent_opus_single",
+      {}
+    ],
+    [
+      "agent_opus_iter",
+      "agent_opus_iter",
+      {}
+    ]
+  ],
+  "selection_policy": "all methods and generator fixed before private trajectories; no private tuning",
+  "agent_snapshot_commit": "60269c3fdcc471e916e62163229a9fdd56242eaf",
+  "note": "Original evaluation receipt with the private plan fingerprint omitted. Package source/binary hashes are recorded separately for every replay."
+}

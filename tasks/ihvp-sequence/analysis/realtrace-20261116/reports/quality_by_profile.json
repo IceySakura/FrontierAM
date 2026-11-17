@@ -1,0 +1,37 @@
+{
+  "continuous_fixed": {
+    "cases": 9,
+    "rhs_cosine_median": 0.9948813340460272,
+    "operator_probe_drift_median": 0.03725450066192209,
+    "history16_relative_projection_residual_median": 0.1838822066615062,
+    "solution_rank99_median": 20.0
+  },
+  "continuous_resampled": {
+    "cases": 9,
+    "rhs_cosine_median": 0.0034070174279498193,
+    "operator_probe_drift_median": 0.23918532304569765,
+    "history16_relative_projection_residual_median": 0.9971661767185289,
+    "solution_rank99_median": 49.0
+  },
+  "medium_resets": {
+    "cases": 9,
+    "rhs_cosine_median": -0.008924837805737327,
+    "operator_probe_drift_median": 0.408541718698057,
+    "history16_relative_projection_residual_median": 0.9991516352691097,
+    "solution_rank99_median": 48.0
+  },
+  "rapid_resampled": {
+    "cases": 9,
+    "rhs_cosine_median": -0.009980995228501032,
+    "operator_probe_drift_median": 0.2387704573877038,
+    "history16_relative_projection_residual_median": 0.9973630350730173,
+    "solution_rank99_median": 49.0
+  },
+  "short_resets": {
+    "cases": 9,
+    "rhs_cosine_median": 0.0005780568046299047,
+    "operator_probe_drift_median": 0.8311412992290172,
+    "history16_relative_projection_residual_median": 0.9996231552142045,
+    "solution_rank99_median": 47.0
+  }
+}

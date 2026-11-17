@@ -1,0 +1,30 @@
+{
+  "old_anchor_order_valid": false,
+  "cold_cg_private_loss": 0.003617515800103131,
+  "lbfgs_private_loss": 0.04496858946590968,
+  "public_selected_reference": "scaled_pcg",
+  "public_selected_reference_private_loss": 0.027047544343070898,
+  "agents": {
+    "agent_sol_single": {
+      "private_loss_ratio_to_public_selected_human": 0.39039114379855266,
+      "hypothetical_score_with_public_selected_human": null,
+      "hypothetical_score_with_old_lbfgs_anchor": null
+    },
+    "agent_sol_iter": {
+      "private_loss_ratio_to_public_selected_human": 0.18107381897062777,
+      "hypothetical_score_with_public_selected_human": null,
+      "hypothetical_score_with_old_lbfgs_anchor": null
+    },
+    "agent_opus_single": {
+      "private_loss_ratio_to_public_selected_human": 2.4867722983867337,
+      "hypothetical_score_with_public_selected_human": null,
+      "hypothetical_score_with_old_lbfgs_anchor": null
+    },
+    "agent_opus_iter": {
+      "private_loss_ratio_to_public_selected_human": 0.7504242181552641,
+      "hypothetical_score_with_public_selected_human": null,
+      "hypothetical_score_with_old_lbfgs_anchor": null
+    }
+  },
+  "status": "diagnostic only; official task and scores unchanged"
+}

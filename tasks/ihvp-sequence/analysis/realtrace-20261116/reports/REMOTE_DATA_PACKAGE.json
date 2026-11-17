@@ -1,0 +1,12 @@
+{
+  "name": "EVALUATOR_ONLY_ihvp_realtrace_15public_30private_20261116.zip",
+  "bytes": 15701110605,
+  "sha256": "acfebb847feacbf0294a7df948473e07dc6c407c00eddabf7d193c66cd352a3f",
+  "files": 2543,
+  "seconds": 663.9364359378815,
+  "reports_included": true,
+  "report_files_added": 23,
+  "finalized_time": 1794799900.3475575,
+  "server": "5090-A",
+  "remote_path": "/mnt/sdb/henryzhang/ihvp_realtrace_20261116/var/release/EVALUATOR_ONLY_ihvp_realtrace_15public_30private_20261116.zip"
+}
