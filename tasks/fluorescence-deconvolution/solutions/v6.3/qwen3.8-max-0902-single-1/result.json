@@ -1,0 +1,14 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "fluorescence-deconvolution-20261117T074310Z-68427e",
+ "raw": "nMSE \\(E = 0.10694\\)，96 例，单例最长 0.20 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 66.819,
+ "review": null,
+ "process": {
+  "minutes": 49.3,
+  "public_tests": 0
+ }
+}
