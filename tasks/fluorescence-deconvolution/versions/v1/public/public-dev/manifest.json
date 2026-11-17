@@ -1,0 +1,223 @@
+{
+  "version": "dev-v1-fixed",
+  "cases": [
+    {
+      "case": "case_01",
+      "category": "tubular",
+      "observed": "case_01.npz",
+      "truth": "case_01_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "d648876fad9841e42d3ea692c091a5ab223cec124224127b916fbc26dba0b85a",
+      "truth_sha256": "7f336118c64bfac4c4eed57b6b6b14e9ad5f5226646052bfa9d61e7fee0381b5"
+    },
+    {
+      "case": "case_02",
+      "category": "tubular",
+      "observed": "case_02.npz",
+      "truth": "case_02_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "9724be6d882f323200a84c416ba203844cf6f29e779b282d6245a63b41e0e201",
+      "truth_sha256": "e512dfdf20e7fa6caa23a5865bc6e4db0e3a4f1e9a9623e5e137e9860e543e11"
+    },
+    {
+      "case": "case_03",
+      "category": "tubular",
+      "observed": "case_03.npz",
+      "truth": "case_03_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "44912c063f4f77db516a071c2f68f0f51a5f93b453de3b64314bbc98b8a2af87",
+      "truth_sha256": "7968f31db6dc10c79af9e1c66dc75cec10ebc3ef8d71d09472aa7b5dab455c8a"
+    },
+    {
+      "case": "case_04",
+      "category": "point",
+      "observed": "case_04.npz",
+      "truth": "case_04_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "ce3222ac8e7fd9c396aa97587a331e0ff6b58853f9a3ef3b77cb7b452855fc63",
+      "truth_sha256": "46e300448995f035731872d03ee585b996273f26f8a4a6fbabfc65dc319c33ca"
+    },
+    {
+      "case": "case_05",
+      "category": "point",
+      "observed": "case_05.npz",
+      "truth": "case_05_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "133f81a63ac5d907b09678613588c2f78213d647932a20f8aa4b4b5fa3d3b331",
+      "truth_sha256": "c3db50094accf7eccbf8c2a7a381e8b8bc038645beffbc6690d91b3242cf0958"
+    },
+    {
+      "case": "case_06",
+      "category": "point",
+      "observed": "case_06.npz",
+      "truth": "case_06_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "41c1ca1d433b3a98a668e07aaec9ba8b587e5e9603cbdda6b32a38d99be08cd1",
+      "truth_sha256": "4f88606baa3930468a1fc13ad1b893c6dcb8476b696dfaa9f244168ca0effad5"
+    },
+    {
+      "case": "case_07",
+      "category": "mixed",
+      "observed": "case_07.npz",
+      "truth": "case_07_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "5b64c74776b68daf330801cd8c206db5d36d9cffd5dbc56d38730bf45e685d3f",
+      "truth_sha256": "a11f29a457a5e796f17d45a534673e9b18e6d5ca85245bc28636217d5e58d727"
+    },
+    {
+      "case": "case_08",
+      "category": "mixed",
+      "observed": "case_08.npz",
+      "truth": "case_08_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "e2940835bba4de8e30053036eb74421f138d7d3d6d5f455f2008e3cea7c32af4",
+      "truth_sha256": "573c25b866ab64106b5be652fd8b73cd14b5b48ec586dafcfb50c031a354e0ad"
+    },
+    {
+      "case": "case_09",
+      "category": "mixed",
+      "observed": "case_09.npz",
+      "truth": "case_09_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "22322b5ca89fa98a6c2e7d09115a6ca4ba0c31e581cc029c656545a69025bbe6",
+      "truth_sha256": "5789fc2135737ee08aa00f863bdb0e553314917a635009477f760f998a2adc11"
+    },
+    {
+      "case": "case_10",
+      "category": "boundary_anisotropy",
+      "observed": "case_10.npz",
+      "truth": "case_10_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "aa671a9a05d457f941e058e7ffe3831d8be94ca898e32f80584afcc08b04d500",
+      "truth_sha256": "6920309f2bd1dbad10decd265ea3b9c349c27401d3971fda66114847a95273fc"
+    },
+    {
+      "case": "case_11",
+      "category": "boundary_anisotropy",
+      "observed": "case_11.npz",
+      "truth": "case_11_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "5858c03e74d5b41b059c376afa232c3c3e7240ff66c54bbda61ba05305ffa26f",
+      "truth_sha256": "e44c17a7688c7f905601d10ae8f0de0968b3a368cc1c4d85c09d200f1457426a"
+    },
+    {
+      "case": "case_12",
+      "category": "boundary_anisotropy",
+      "observed": "case_12.npz",
+      "truth": "case_12_truth.npy",
+      "shape": [
+        32,
+        32,
+        32
+      ],
+      "psf_shape": [
+        9,
+        9,
+        9
+      ],
+      "observed_sha256": "fd060cdaf8eb5feaa049e9b933a47b9c2ba13d5aae835349bad929b4f2ad68ce",
+      "truth_sha256": "e603a8eb94a841014fc82636d699f1f27794b5ff739ad30da77aac4b77be6886"
+    }
+  ],
+  "generator_included": false,
+  "seeds_included": false
+}

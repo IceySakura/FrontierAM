@@ -1,0 +1,26 @@
+# 公开包中的数据文件（未复制到仓库）
+
+- public-dev/case_01.npz（81,840 字节）
+- public-dev/case_01_truth.npy（131,200 字节）
+- public-dev/case_02.npz（79,115 字节）
+- public-dev/case_02_truth.npy（131,200 字节）
+- public-dev/case_03.npz（81,104 字节）
+- public-dev/case_03_truth.npy（131,200 字节）
+- public-dev/case_04.npz（73,213 字节）
+- public-dev/case_04_truth.npy（131,200 字节）
+- public-dev/case_05.npz（76,657 字节）
+- public-dev/case_05_truth.npy（131,200 字节）
+- public-dev/case_06.npz（73,326 字节）
+- public-dev/case_06_truth.npy（131,200 字节）
+- public-dev/case_07.npz（78,603 字节）
+- public-dev/case_07_truth.npy（131,200 字节）
+- public-dev/case_08.npz（78,555 字节）
+- public-dev/case_08_truth.npy（131,200 字节）
+- public-dev/case_09.npz（79,385 字节）
+- public-dev/case_09_truth.npy（131,200 字节）
+- public-dev/case_10.npz（87,549 字节）
+- public-dev/case_10_truth.npy（131,200 字节）
+- public-dev/case_11.npz（92,750 字节）
+- public-dev/case_11_truth.npy（131,200 字节）
+- public-dev/case_12.npz（86,840 字节）
+- public-dev/case_12_truth.npy（131,200 字节）
