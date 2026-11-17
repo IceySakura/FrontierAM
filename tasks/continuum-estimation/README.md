@@ -75,6 +75,8 @@
 
 ### Claude Opus 5.5（迭代，v6.3）
 
+出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
+
 public 分数随测试提交：89.4（8 分钟） → 89.9（30 分钟） → 90.0（36 分钟） → 90.0（47 分钟） → 90.5（71 分钟）
 
 源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `continuum-estimation-20261117T090022Z-90b6d7`）。
