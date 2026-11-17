@@ -1,0 +1,51 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "continuum-estimation-20261117T111508Z-f546c9",
+ "raw": "损失 \\(E = 0.00232668\\)，60 例，单例最长 0.3 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 47.813,
+ "review": null,
+ "process": {
+  "minutes": 134.7,
+  "public_tests": 7,
+  "public_curve": [
+   {
+    "minute": 29.0,
+    "score": 27.9617243182981,
+    "status": "ok"
+   },
+   {
+    "minute": 33.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 43.4,
+    "score": 49.83065409649429,
+    "status": "ok"
+   },
+   {
+    "minute": 53.9,
+    "score": 79.51027049588022,
+    "status": "ok"
+   },
+   {
+    "minute": 69.0,
+    "score": 95.79948214821877,
+    "status": "ok"
+   },
+   {
+    "minute": 93.4,
+    "score": 95.79948212804578,
+    "status": "ok"
+   },
+   {
+    "minute": 126.9,
+    "score": 95.79948212804578,
+    "status": "ok"
+   }
+  ]
+ }
+}
