@@ -86,6 +86,17 @@ RERUN.update({
     **{(task, 'single', 'intern-s2'): (2, INTERN_2) for task in (
         'polarization-demosaicking-v2', 'trajectory-covariance-v2', 'ihvp-sequence-v4', 'galaxy-gravity-v4')},
 })
+INTERN_ITER_2 = ('第 1 次尝试为 7 个书生 S2 会话并发、未传采样参数（生成约每秒 11–17 个 token）；本格为最多 2 个并发、'
+                 '按模型卡采样参数的第 2 次尝试。')
+RERUN.update({
+    **{(task, 'single', 'intern-s2'): (2, INTERN_2) for task in ('conic', 'exponential-v3')},
+    ('species-tree-v3', 'single', 'intern-s2'): (3, '第 1 次尝试未传采样参数且 7 个会话并发，第 2 次尝试中一次上游流中断多耗约 22 分钟'
+                                                  '（基础设施问题，记未测）；本格为最多 2 个并发、按模型卡采样参数的第 3 次尝试。'),
+    **{(task, 'iterative', 'intern-s2'): (2, INTERN_ITER_2) for task in (
+        'conic', 'exponential-v3', 'galaxy-gravity-v4', 'trajectory-covariance-v2', 'ihvp-sequence-v4')},
+    ('species-tree-v3', 'iterative', 'intern-s2'): (2, '第 1 次尝试在 11-16 停止全部书生会话时中止（未测）；本格为最多 2 个并发、'
+                                                     '按模型卡采样参数的第 2 次尝试。'),
+})
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
