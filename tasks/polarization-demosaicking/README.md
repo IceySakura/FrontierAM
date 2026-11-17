@@ -73,9 +73,14 @@
 
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
+| GPT-6.1 Sol | 单轮 | 无效提交（formal scene failure） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.5821\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.3 | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
 | Qwen3.8 Max | 单轮 | RMSE \(E = 1.6500\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 37.7 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
 | Hunyuan 4 | 单轮 | RMSE \(E = 1.5411\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 46.7 | 57 分钟 | [`v3/hy4-single-1/`](solutions/v6.3/v3/hy4-single-1/) |
+
+### GPT-6.1 Sol（单轮，v6.3）
+
+源码 [`solutions/v6.3/v3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T071526Z-fbb4de`）；未复制的二进制或大文件：auxiliary.npz（70,723 字节）、weights.npz（89,495 字节）。
 
 ### Claude Opus 5.5（单轮，v6.3）
 
