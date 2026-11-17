@@ -70,6 +70,8 @@ def verify_rule(spec: dict, rule: dict, roots: dict) -> dict:
                 entries[name.lstrip('*').strip()] = digest
     elif rule['type'] == 'manifest_files':
         entries = json.loads(listing.read_text())['files']
+    elif rule['type'] == 'manifest_sha256':
+        entries = json.loads(listing.read_text())['sha256']
     else:
         raise SystemExit(f'unknown integrity rule {rule["type"]}')
     bad = [name for name, digest in entries.items() if sha(base / name) != digest]
@@ -89,6 +91,9 @@ def source_path(ref: str, roots: dict) -> tuple[Path, bool]:
 def assemble_public(spec: dict, roots: dict, target: Path) -> None:
     target.mkdir(parents=True)
     for item in spec['public_files']:
+        if 'symlink' in item:  # a path the image provides, e.g. a runtime outside the tmpfs workspace
+            (target / item['symlink']).symlink_to(item['target'])
+            continue
         source, unzip = source_path(item['from'], roots)
         dest = target / item['to']
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -118,11 +123,13 @@ def apply_edits(spec: dict, operator: Path) -> list:
     for edit in spec['portability_edits']:
         path = operator / edit['file']
         text = path.read_text()
-        if text.count(edit['old']) != 1:
-            raise SystemExit(f'{spec["name"]}: edit for {edit["file"]} must match exactly once')
+        # `count` declares how many occurrences the edit replaces (default exactly one); a different count fails.
+        if text.count(edit['old']) != edit.get('count', 1):
+            raise SystemExit(f'{spec["name"]}: edit for {edit["file"]} must match exactly {edit.get("count", 1)} time(s)')
         before = sha(path)
         path.write_text(text.replace(edit['old'], edit['new']))
-        applied.append({'file': edit['file'], 'sha256_before': before, 'sha256_after': sha(path), 'reason': edit['reason']})
+        applied.append({'file': edit['file'], 'sha256_before': before, 'sha256_after': sha(path), 'reason': edit['reason'],
+                        **({'count': edit['count']} if 'count' in edit else {})})
     return applied
 
 
@@ -181,7 +188,7 @@ def main():
         public_edits = apply_public_edits(spec, workspace)
         public_tar(workspace, target / 'public.tar')
         context = target / 'image-context'
-        shutil.copytree(workspace, context)
+        shutil.copytree(workspace, context, symlinks=True)
         for extra in spec_dir.iterdir():
             # Only the version's own build files (Dockerfile, locks, statement); data/ and author/ stay out of the image.
             if extra.is_file() and extra.name not in ('task.json',):

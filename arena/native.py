@@ -48,7 +48,9 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'ihvp-sequence-v3': 'frontieram-ihvp-sequence-v3-harness:v6',
                   'ihvp-sequence-v4': 'frontieram-ihvp-sequence-v4-harness:v6',
                   'polarization-demosaicking-v3': 'frontieram-polarization-demosaicking-v3-harness:v6',
-                  'blackbox-cubature-v2': 'frontieram-blackbox-cubature-v2-harness:v6'}
+                  'blackbox-cubature-v2': 'frontieram-blackbox-cubature-v2-harness:v6',
+                  'continuum-estimation': 'frontieram-continuum-estimation-harness:v6',
+                  'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6'}
 # The vendor's own client where ATR has one; Claude Code for Messages models without one, Codex for Responses ones.
 HARNESS = {
     'claude-opus-5-5': 'claude',
@@ -333,6 +335,22 @@ SCORING_DISCLOSURE['blackbox-cubature-v2'] = (
     'dimension, then over dimensions and over the families with equal weight. Matching the reference is the midpoint '
     'of the scale, being 100 times more accurate than it on every instance is the maximum, and plain Monte Carlo '
     'sampling scores zero. Time within the limit earns nothing extra.'
+)
+SCORING_DISCLOSURE['continuum-estimation'] = (
+    'Every held-out case runs once in a fresh restricted process within 60 wall-clock seconds (startup included); an '
+    'invalid, missing, late or unsuccessful output on any case makes the whole submission score zero. Given that, the '
+    'score depends only on the mean loss |estimate - limit| / max(1, |limit|) over all held-out cases, compared with '
+    'two reference methods measured on the same cases and limits: matching the classical one scores zero, matching the '
+    'advanced one is the midpoint of the scale and exact limits are the maximum. Running time does not count beyond '
+    'the limit.'
+)
+SCORING_DISCLOSURE['fluorescence-deconvolution'] = (
+    'Every held-out case must finish within its wall-clock limit (startup and imports included), memory limit and '
+    'output contract; a single failed or late case makes the whole submission score zero. Given that, the score '
+    'depends only on the mean normalized squared error over all held-out cases, compared with two reference methods '
+    'measured on the same cases and limits: matching the weaker one scores zero, matching the stronger one is the '
+    'midpoint of the scale and zero error is the maximum. Speed within the limit earns nothing extra, so keep a '
+    'safety margin under it.'
 )
 SCORING_DISCLOSURE['trajectory-covariance'] = (
     'The score depends only on the mean whitened error over all held-out inputs, averaged with equal weight over the '

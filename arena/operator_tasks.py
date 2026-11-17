@@ -365,6 +365,35 @@ class PolarizationDemosaickingV3(PolarizationDemosaicking):
                 'scene_rmse': {f'{r["dataset"]}/{r["scene"]}': float(r['mean_rmse']) for r in rows if r.get('mean_rmse')}}
 
 
+class FluorescenceDeconvolution(PolarizationDemosaicking):
+    """The author's ci_3d_fluorescence_deconvolution 1.1.0 (same author and runner design as polarization vNext),
+    graded by arena/operator_drivers/fluorescence.py: 96 private cases, 0.500 s per case including start-up; public
+    feedback (FRONTIERAM_FLUOR_DATA=public): the 12 public examples. The image is reconstructed for amd64 and warmed
+    before the timed cases; the references rerun here are the 0- and 50-point anchors (package 0/5/10, x10)."""
+
+    def run_grader(self, source, out, placement):
+        out.parent.mkdir(parents=True, exist_ok=True)
+        self.warm_image(placement, out.parent / f'{out.name}-warmup.json')
+        public = os.environ.get('FRONTIERAM_FLUOR_DATA') == 'public'
+        command = [str(GRADER_PYTHON), '-B', str(ROOT / 'arena/operator_drivers/fluorescence.py'), str(self.root() / 'runtime'),
+                   str(self.root() / 'private-data'), str(source), str(out)]
+        if public:
+            command += ['--public', str(self.root('public') / 'public-dev')]
+        env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
+        done = subprocess.run(command, env=env, capture_output=True, text=True, timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
+        rows = json.loads((out / 'records.json').read_text()) if (out / 'records.json').exists() else []
+        failed = [r for r in rows if r.get('status') != 'ok']
+        reason = summary.get('reason') or (f'{len(failed)} cases failed; first {failed[0]["case_id"]}: {failed[0].get("reason")}'
+                                           if failed else (summary.get('build') or {}).get('reason'))
+        return {'status': summary.get('status', 'infrastructure_failure'), 'raw_error': summary.get('mean_nmse'),
+                'reason': reason, 'package_score': None, 'cases': summary.get('case_count'),
+                'failures': summary.get('failure_cases'), 'scope': summary.get('scope'),
+                'max_wall_s': max((r.get('wall_s') or 0 for r in rows), default=None),
+                'stratum_means': summary.get('stratum_means')}
+
+
 class SpeciesTree(OperatorTask):
     grade_memory = 6 * GIB
 
@@ -618,6 +647,32 @@ class BlackboxCubatureV2(BlackboxCubature):
         return json.loads((self.VERSION / 'data' / self.data_set() / 'cases.json').read_text())['cases']
 
 
+class ContinuumEstimation(OperatorTask):
+    """The author's continuum-estimation 1.0.1 verifier, ported to x86-64 (arena/operator_drivers/continuum.py).
+    Private: the 60 primary cases; public feedback (FRONTIERAM_CONTINUUM_DATA=public): the 8 public examples. The
+    weak and strong references rerun here are the 0- and 50-point anchors (the package's 0/5/10 mapping, x10)."""
+    grade_memory = 4 * GIB
+    grade_timeout = 3 * 3600
+
+    def data_set(self) -> str:
+        return 'public' if os.environ.get('FRONTIERAM_CONTINUUM_DATA') == 'public' else 'primary'
+
+    def run_grader(self, source, out, placement):
+        out.parent.mkdir(parents=True, exist_ok=True)
+        driver = ROOT / 'arena/operator_drivers/continuum.py'
+        done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.root()), str(self.sealed / 'workspace'),
+                               str(source), str(out), '--image', self.lock()['image']['id'], '--cpuset', placement.cpuset,
+                               '--cgroup-parent', placement.cgroup_parent, '--partition', self.data_set()],
+                              env={**os.environ, 'DOCKER_HOST': placement.docker_host},
+                              capture_output=True, text=True, timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        verdict = json.loads((out / 'verdict.json').read_text()) if (out / 'verdict.json').exists() else {}
+        return {'status': verdict.get('status', 'infrastructure_failure'), 'raw_error': verdict.get('raw_loss'),
+                'reason': verdict.get('reason') or (done.stderr.strip().splitlines()[-1] if done.returncode and done.stderr.strip() else None),
+                'package_score': None, 'cases': verdict.get('cases'), 'failures': verdict.get('failures'),
+                'max_wall_s': verdict.get('max_wall_s'), 'data': verdict.get('partition')}
+
+
 class DevelopmentOnlyTask(OperatorTask):
     """Development wiring only: the delivered material cannot be graded on this machine (see task.json status)."""
 
@@ -645,7 +700,8 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'polarization-demosaicking-v3': PolarizationDemosaickingV3,
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2, 'species-tree-v3': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance,
-           'blackbox-cubature': BlackboxCubature, 'blackbox-cubature-v2': BlackboxCubatureV2}
+           'blackbox-cubature': BlackboxCubature, 'blackbox-cubature-v2': BlackboxCubatureV2,
+           'continuum-estimation': ContinuumEstimation, 'fluorescence-deconvolution': FluorescenceDeconvolution}
 
 
 def operator_tasks() -> dict[str, OperatorTask]:

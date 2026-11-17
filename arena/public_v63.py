@@ -50,6 +50,8 @@ PUBLIC = {
     'polarization-demosaicking-v3': {'family': 'polarization-demosaicking', 'store': STORE,
                                      'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
     'blackbox-cubature-v2': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
+    'continuum-estimation': {'family': 'continuum-estimation', 'store': STORE, 'env': {'FRONTIERAM_CONTINUUM_DATA': 'public'}},
+    'fluorescence-deconvolution': {'family': 'fluorescence-deconvolution', 'store': STORE, 'env': {'FRONTIERAM_FLUOR_DATA': 'public'}},
     'species-tree-v2': {'family': 'species-tree', 'store': STORE, 'env': {'FRONTIERAM_SPECIES_V2_DATA': 'public'}},
     'species-tree-v3': {'family': 'species-tree', 'store': STORE, 'env': {'FRONTIERAM_SPECIES_V2_DATA': 'public'}},
     'trajectory-covariance': {'family': 'trajectory-covariance', 'store': STORE,
@@ -257,6 +259,30 @@ def _cubature(out: Path) -> list[dict]:
     return rows
 
 
+def _continuum(out: Path) -> list[dict]:
+    rows = []
+    for r in read_json(out / 'summary.json').get('per_case', []):
+        reason = str(r.get('reason') or '')
+        status = 'passed' if r['status'] == 'ok' else 'timeout' if 'timeout' in reason else \
+            'crash' if 'nonzero exit' in reason or 'killed' in reason else 'wrong'
+        rows.append({'id': r['case_id'], 'category': 'all', 'status': status,
+                     'accuracy': r['loss'] if status == 'passed' else None, 'seconds': r.get('elapsed_seconds')})
+    return rows
+
+
+def _fluorescence(out: Path) -> list[dict]:
+    if not (out / 'records.json').exists():
+        return []
+    rows = []
+    for r in read_json(out / 'records.json'):
+        reason = str(r.get('reason') or '')
+        status = 'passed' if r['status'] == 'ok' else 'timeout' if 'timeout' in reason else \
+            'crash' if r['status'] == 'infrastructure_failure' or 'exit' in reason or 'oom' in reason else 'wrong'
+        rows.append({'id': r['case_id'], 'category': r.get('stratum'), 'status': status,
+                     'accuracy': r.get('nmse') if status == 'passed' else None, 'seconds': r.get('wall_s')})
+    return rows
+
+
 def _rows(task, store: Store, record: dict, partial: dict, which: str = 'candidate') -> list[dict]:
     if family(task.name) == 'conic':
         return _conic(store, record, partial)
@@ -264,13 +290,16 @@ def _rows(task, store: Store, record: dict, partial: dict, which: str = 'candida
     if not (out / 'summary.json').exists():
         return []
     return {'galaxy-gravity': _galaxy, 'polarization-demosaicking': _polarization, 'species-tree': _species,
-            'ihvp-sequence': _ihvp, 'blackbox-cubature': _cubature}.get(family(task.name), lambda o: _trajectory(task, o))(out)
+            'ihvp-sequence': _ihvp, 'blackbox-cubature': _cubature,
+            'continuum-estimation': _continuum, 'fluorescence-deconvolution': _fluorescence,
+            }.get(family(task.name), lambda o: _trajectory(task, o))(out)
 
 
 # Raw metrics and the final mapping -----------------------------------------------------------------------------
 def raw_error(task: str, rows: list[dict]) -> float | None:
     """The task's own aggregate over the given rows; None if a failure makes the formal submission invalid."""
-    if task.startswith(('galaxy-gravity', 'polarization-demosaicking', 'ihvp-sequence')) and any(r['status'] != 'passed' for r in rows):
+    if task.startswith(('galaxy-gravity', 'polarization-demosaicking', 'ihvp-sequence', 'continuum-estimation',
+                        'fluorescence-deconvolution')) and any(r['status'] != 'passed' for r in rows):
         return None
     if task.startswith('galaxy-gravity'):
         families: dict[str, list[float]] = {}
@@ -407,6 +436,12 @@ def public_scope(task, store: Store, job: str) -> bool:
             return True
         summary = read_json(grade / 'candidate/summary.json')
         return summary.get('scope') == 'public-feedback' or summary.get('mode') == 'dev'
+    if fam == 'fluorescence-deconvolution':
+        summary = grade / 'candidate/summary.json'
+        return read_json(summary).get('scope') == 'public' if summary.exists() else True
+    if fam == 'continuum-estimation':
+        summary = grade / 'candidate/summary.json'
+        return read_json(summary).get('partition') == 'public' if summary.exists() else True
     if fam == 'blackbox-cubature':
         part = read_json(grade / 'metrics.json')['parts'].get('candidate', {}) if (grade / 'metrics.json').exists() else {}
         return part.get('data', 'public') == 'public'

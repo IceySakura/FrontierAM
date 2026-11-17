@@ -19,7 +19,8 @@ TASKS = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3':
          'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence',
          'galaxy-gravity-v4': 'galaxy-gravity', 'ihvp-sequence-v4': 'ihvp-sequence',
-         'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature'}
+         'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature',
+         'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution'}
 SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity-v4': 'v4', 'ihvp-sequence-v4': 'v4',
              'polarization-demosaicking-v3': 'v3', 'blackbox-cubature-v2': 'v2'}  # later task versions within protocol v6.3 keep their own solutions subfolder
 SETTING = {'single': '单轮', 'iterative': '迭代'}
@@ -144,6 +145,18 @@ def cell(task: str, score: dict) -> tuple[str, str]:
             return f'无效提交（{candidate.get("reason") or "有序列失败"}）', '任一序列失败记 0'
         return (f'\\(E = {raw:.4g}\\)，最长序列 {candidate.get("max_wall_s") or 0:.1f} 秒（CG：\\(U = {anchors["weak"]:.4f}\\)，'
                 f'L-BFGS-PCG：\\(W = {anchors["strong"]:.4f}\\)）', LINEAR)
+    if family == 'continuum-estimation':
+        anchors = baseline_anchors(task)
+        if candidate.get('status') == 'submission_failure':
+            return f'无效提交（{candidate.get("reason") or "有用例失败"}）', '任一用例无效、缺失、超时或失败记 0'
+        return (f'损失 \\(E = {raw:.6g}\\)，{candidate.get("cases")} 例，单例最长 {candidate.get("max_wall_s") or 0:.1f} 秒'
+                f'（一阶 Richardson：\\(U = {anchors["weak"]:.6g}\\)，GRE：\\(W = {anchors["strong"]:.6g}\\)）', LINEAR)
+    if family == 'fluorescence-deconvolution':
+        anchors = baseline_anchors(task)
+        if raw is None:
+            return f'无效提交（{candidate.get("reason") or "有用例失败"}）', '任一用例失败或超时记 0'
+        return (f'nMSE \\(E = {raw:.5f}\\)，{candidate.get("cases")} 例，单例最长 {candidate.get("max_wall_s") or 0:.2f} 秒'
+                f'（RL20：\\(U = {anchors["weak"]:.5f}\\)，SHB10：\\(W = {anchors["strong"]:.5f}\\)）', LINEAR)
     if family == 'polarization-demosaicking':
         anchors = baseline_anchors(task)
         if raw is None:
@@ -162,7 +175,8 @@ def main():
             continue
         path = ROOT / 'tasks' / family / 'meta.json'
         meta = json.loads(path.read_text())
-        version = {'polarization-demosaicking': 'v2', 'trajectory-covariance': 'v2', 'ihvp-sequence': 'v1'}.get(family, 'v3')
+        version = {'polarization-demosaicking': 'v2', 'trajectory-covariance': 'v2', 'ihvp-sequence': 'v1',
+                   'continuum-estimation': 'v1', 'fluorescence-deconvolution': 'v1'}.get(family, 'v3')
         version = SUBFOLDER.get(task, version)
         old = next((g for g in meta['result_groups'] if g.get('protocol') == 'v6.3' and g.get('version') == version), None)
         reviews = {(r['model'], r['setting']): {k: r[k] for k in ('review',) if k in r}

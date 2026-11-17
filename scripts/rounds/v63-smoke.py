@@ -47,16 +47,26 @@ SUBMISSIONS = {
                       "    def solve(self, hvp, b, context):\n        return np.zeros(self.d)\n\n\n"
                       "def make_solver(d, seed, options):\n    return Zero(d)\nEOF"),
     'blackbox-cubature': 'cp /workspace/examples/reference_submission/* . && chmod +x run.sh',
+    'fluorescence-deconvolution': ("cat > solution.py <<'EOF'\nimport sys\nimport numpy as np\n"
+                                   "d = np.load(sys.argv[1])\nnp.save(sys.argv[2], np.maximum(d['observed'], 0).astype(np.float32))\nEOF"),
+    'continuum-estimation': ("cat > run.sh <<'EOF'\n#!/bin/sh\nexec python3 -c \"import json,os,sys; a=sys.argv[1:]; "
+                             "i=a[0] if a else '/workspace/inputs/input.json'; o=a[1] if len(a)>1 else '/workspace/result/output.json'; "
+                             "d=json.load(open(i)); k=min(range(len(d['x'])), key=lambda j: d['x'][j]); "
+                             "os.makedirs(os.path.dirname(o), exist_ok=True); json.dump({'estimate': float(d['y'][k])}, open(o, 'w'))\" \"$@\"\n"
+                             "EOF\nchmod +x run.sh"),
 }
 FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3': 'galaxy-gravity',
           'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
           'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
           'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence',
-          'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature'}
+          'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature',
+          'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution'}
 # Versions that keep the author's workspace layout: their public-dev material is the samples; these files must be there.
 AUTHOR_LAYOUT = {'polarization-demosaicking-v3': ['/workspace/public-dev/check.py', '/workspace/public-dev/wen5'],
                  'blackbox-cubature-v2': ['/workspace/environment/public-dev/pilot.py', '/workspace/tests/grade.py',
-                                          '/workspace/examples/reference_submission/run.sh']}
+                                          '/workspace/examples/reference_submission/run.sh'],
+                 'continuum-estimation': ['/workspace/problem.md', '/workspace/public/check.py', '/workspace/runtime'],
+                 'fluorescence-deconvolution': ['/workspace/problem.md', '/workspace/public-dev/check.py']}
 
 
 def script(task: str, setting: str) -> str:

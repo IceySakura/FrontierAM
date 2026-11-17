@@ -1,0 +1,22 @@
+# amd64 reconstruction of the author's numeric image (ci_3d_fluorescence_deconvolution 1.1.0, arm64 config 0ce7c603...):
+# the package ships only `FROM <digest>`, so the same base and versions were read from the arm64 image's files
+# (Python 3.11.15 on Debian bookworm; pip and Debian package lists) and are installed here for x86-64.
+FROM python:3.11.15-slim-bookworm
+RUN sed -i 's|deb.debian.org|mirrors.tencent.com|g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update && apt-get install -y --no-install-recommends build-essential pkg-config libfftw3-dev libblas-dev \
+       liblapack-dev zip unzip ripgrep r-base-core littler r-cran-rcpp r-cran-rcpparmadillo r-cran-rcppeigen \
+       r-cran-matrix r-cran-mvtnorm r-cran-mvnfast r-cran-rspectra r-cran-foreach r-cran-doparallel r-cran-jsonlite \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.2.2 \
+    && pip install --no-cache-dir --index-url https://mirrors.tencent.com/pypi/simple/ numpy==1.26.4 scipy==1.12.0 \
+       scikit-learn==1.4.2 sympy==1.14.0 botorch==0.10.0 gpytorch==1.11 linear_operator==0.5.1 pyro-ppl==1.9.2 \
+       psutil==6.1.1 joblib==1.6.0 threadpoolctl==3.7.0 networkx==3.6.1 opt_einsum==3.4.0 jaxtyping==0.3.11 \
+       typeguard==2.13.3 multipledispatch==1.0.0 cloudpickle==3.1.2 tqdm==4.70.1
+ENV HOME=/home/worker LANG=C.UTF-8 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 BLIS_NUM_THREADS=1 \
+    NUMEXPR_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1
+RUN groupadd --gid 1000 worker && useradd --create-home --uid 1000 --gid 1000 worker \
+    && mkdir -p /workspace/submission && chown worker:worker /workspace /workspace/submission
+COPY problem.md /workspace/problem.md
+COPY public-dev /workspace/public-dev
+RUN chmod -R a+rX /workspace
+WORKDIR /workspace

@@ -23,7 +23,7 @@ value() { grep "\"event\": \"$1\", \"label\": \"$2\"" "$LOG" | tail -1 | python3
 last_id() { python3 -c "import json,sys;print(json.loads(sys.stdin.readlines()[-1])['id'])"; }
 family() { case $1 in conic) echo conic;; exponential-v3) echo exponential;; galaxy-gravity-v3|galaxy-gravity-v4) echo galaxy-gravity;;
     polarization-demosaicking-v2|polarization-demosaicking-v3) echo polarization-demosaicking;; species-tree-v3) echo species-tree;;
-    blackbox-cubature-v2) echo blackbox-cubature;;
+    blackbox-cubature-v2) echo blackbox-cubature;; continuum-estimation) echo continuum-estimation;; fluorescence-deconvolution) echo fluorescence-deconvolution;;
     trajectory-covariance-v2) echo trajectory-covariance;; ihvp-sequence|ihvp-sequence-v2|ihvp-sequence-v3|ihvp-sequence-v4) echo ihvp-sequence;; esac; }
 runtime() { [ "$1" = conic ] && echo "$CONIC_RT" || echo "$EXP_RT"; }
 # frozen submission ID; '-' for an invalid submission (scores 0); '' while running or after an infrastructure failure

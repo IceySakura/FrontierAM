@@ -1,0 +1,103 @@
+{
+  "name": "fluorescence-deconvolution",
+  "title": "给定 PSF 的三维荧光反卷积",
+  "status": "draft",
+  "status_reason": "Author's ci_3d_fluorescence_deconvolution 1.1.0 (operator + public packages, 2026-11-17). The package ships its numeric image for arm64 only (`FROM <digest>`); the amd64 image is rebuilt from the arm64 image's own package lists (Dockerfile.amd64). Graded by arena/operator_drivers/fluorescence.py with the docker shim; anchors rerun on this machine (results/OPEN_ITEMS.md).",
+  "case_limit_s": 1.25,
+  "packages": {
+    "operator": {
+      "file": "ci_3d_fluorescence_deconvolution_operator.tar.gz",
+      "sha256": "ee9b32f364ddd75ff2dfb482f119d1de7cd0ed77b2f041422851f32aef9df288",
+      "root": "ci_3d_fluorescence_deconvolution_operator"
+    },
+    "public": {
+      "file": "ci_3d_fluorescence_deconvolution_public.tar.gz",
+      "sha256": "e4009f2eca24422f8fba8e56485ed8eadd6a7c3d0910788e2aa47283a09298ce",
+      "root": "ci_3d_fluorescence_deconvolution_public"
+    }
+  },
+  "integrity": [
+    {
+      "type": "manifest_files",
+      "package": "operator",
+      "file": "manifest.json"
+    },
+    {
+      "type": "manifest_files",
+      "package": "public",
+      "file": "manifest.json"
+    }
+  ],
+  "public_files": [
+    {
+      "from": "public:instruction.md",
+      "to": "problem.md"
+    },
+    {
+      "from": "public:public-dev",
+      "to": "public-dev"
+    },
+    {
+      "from": "public:requirements.txt",
+      "to": "requirements.txt"
+    }
+  ],
+  "public_edits": [
+    {
+      "file": "problem.md",
+      "old": "Linux ARM64, one logical CPU",
+      "new": "Linux x86-64, one logical CPU",
+      "reason": "This machine runs the same Python 3.11.15 / NumPy 1.26.4 / SciPy 1.12.0 environment on x86-64 (Dockerfile.amd64); the 0.500 s limit is kept and the references are rerun here."
+    },
+    {
+      "file": "problem.md",
+      "old": "hard wall-clock limit of 0.500 seconds",
+      "new": "hard wall-clock limit of 1.250 seconds",
+      "reason": "The author calibrated 0.500 s on Apple M (references at most 0.231 / 0.202 s); on this machine's grading cores (AMD EPYC 7K62) the references take at most 0.579 / 0.565 s, so the limit scales with the rl20 ratio: 0.5 x 0.579 / 0.231 = 1.25 s, the same headroom over the references as the author's."
+    }
+  ],
+  "portability_edits": [
+    {
+      "file": "runtime/worker.py",
+      "old": "if cpu != [0] or cpu_max",
+      "new": "if len(cpu) != 1 or cpu_max",
+      "reason": "Each grading slot pins the container to its own single CPU instead of CPU 0; the single-CPU, quota, memory and swap checks are unchanged."
+    },
+    {
+      "file": "runtime/protocol.json",
+      "old": "\"case_wall_seconds\": 0.5,",
+      "new": "\"case_wall_seconds\": 1.25,",
+      "reason": "The author calibrated 0.500 s on Apple M (references at most 0.231 / 0.202 s); on this machine's grading cores (AMD EPYC 7K62) the references take at most 0.579 / 0.565 s, so the limit scales with the rl20 ratio: 0.5 x 0.579 / 0.231 = 1.25 s, the same headroom over the references as the author's."
+    },
+    {
+      "file": "runtime/schedule.json",
+      "old": ": 0.5",
+      "new": ": 1.25",
+      "count": 96,
+      "reason": "Per-case budgets follow protocol.json."
+    }
+  ],
+  "images": {
+    "task": {
+      "tag": "frontieram-fluorescence-deconvolution:amd64-1.1.0-r1",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": [
+        "sha256:a6b284cc36eae921c992756ccba69dd42e804fb3ca1c95e16db22f8a62bad784"
+      ]
+    }
+  },
+  "references": {
+    "weak": "runtime/references/rl20",
+    "strong": "runtime/references/shb10"
+  },
+  "feedback": {
+    "task": "fluorescence-deconvolution",
+    "category": "structure",
+    "accuracy": "nMSE",
+    "lower_is_better": true,
+    "timed": false,
+    "note": "Any failed or late case makes the final score 0 (0.500 s per case including start-up). Time counts only against the limit."
+  },
+  "submission_note": "Put solution.py, README.md and any offline assets in /workspace/submission, plus an optional executable no-argument build.sh; the evaluator builds once offline and runs `python3 -I -B solution.py INPUT OUTPUT` per case in a fresh process in a clean copy of this environment without the agent tools.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/public-dev. Implement the deconvolution program described there."
+}

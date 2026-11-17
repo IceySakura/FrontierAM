@@ -1,0 +1,146 @@
+{
+  "name": "continuum-estimation",
+  "title": "由正离散步长的观测估计连续极限",
+  "status": "draft",
+  "status_reason": "Author's continuum-estimation 1.0.1 (public + private packages, 2026-11-17), ported to x86-64: runtime rebuilt with the same versions, verifier architecture check and an added public partition (the 8 public examples) for v6.3 feedback; anchors rerun on this machine (results/OPEN_ITEMS.md).",
+  "case_limit_s": 60,
+  "packages": {
+    "operator": {
+      "file": "continuum-estimation-1.0.1-private.tar.gz",
+      "sha256": "6bb27764d034f3ff9e68cde1def0e5c7b57dedb28d04de0aa869ba8714a1e229",
+      "root": "continuum-estimation-1.0.1-private"
+    },
+    "public": {
+      "file": "continuum-estimation-1.0.1-public.tar.gz",
+      "sha256": "8433add103e85ac12da05e758590ba963db5ceb94ef9725a466064c09b9ffd74",
+      "root": "continuum-estimation-1.0.1-public"
+    }
+  },
+  "integrity": [
+    {
+      "type": "manifest_sha256",
+      "package": "operator",
+      "file": "release_manifest.json"
+    },
+    {
+      "type": "manifest_sha256",
+      "package": "public",
+      "file": "manifest.json"
+    }
+  ],
+  "public_files": [
+    {
+      "from": "public:task/instruction.md",
+      "to": "problem.md"
+    },
+    {
+      "from": "public:task/environment/public",
+      "to": "public"
+    },
+    {
+      "from": "public:task/environment/resources.yaml",
+      "to": "resources.yaml"
+    },
+    {
+      "symlink": "runtime",
+      "target": "/opt/continuum-runtime"
+    }
+  ],
+  "public_edits": [
+    {
+      "file": "problem.md",
+      "old": "runs offline in Linux ARM64,",
+      "new": "runs offline in Linux x86-64,",
+      "reason": "This machine runs the same Python 3.11.15 / NumPy 1.26.4 / SciPy 1.12.0 runtime rebuilt for x86-64 (Dockerfile.amd64); limits unchanged."
+    },
+    {
+      "file": "problem.md",
+      "old": "E0 and E5 remain frozen from the previous formal environment;\nthe original numerical runtime is bundled and the references are not rerun.",
+      "new": "E0 and E5 are the two references' aggregate losses measured on the evaluation\nmachine with the bundled numerical runtime.",
+      "reason": "FrontierAM reruns both references on this machine for the anchors (README.md score convention)."
+    },
+    {
+      "file": "problem.md",
+      "old": "Independent agent development is limited to 300 seconds including reading,\nimplementation and public self-checking. ",
+      "new": "",
+      "reason": "The development limit is stated by the protocol (1 hour single, 4 hours iterative), not by the statement."
+    },
+    {
+      "file": "public/instruction.md",
+      "old": "runs offline in Linux ARM64,",
+      "new": "runs offline in Linux x86-64,",
+      "reason": "This machine runs the same Python 3.11.15 / NumPy 1.26.4 / SciPy 1.12.0 runtime rebuilt for x86-64 (Dockerfile.amd64); limits unchanged."
+    },
+    {
+      "file": "public/instruction.md",
+      "old": "E0 and E5 remain frozen from the previous formal environment;\nthe original numerical runtime is bundled and the references are not rerun.",
+      "new": "E0 and E5 are the two references' aggregate losses measured on the evaluation\nmachine with the bundled numerical runtime.",
+      "reason": "FrontierAM reruns both references on this machine for the anchors (README.md score convention)."
+    },
+    {
+      "file": "public/instruction.md",
+      "old": "Independent agent development is limited to 300 seconds including reading,\nimplementation and public self-checking. ",
+      "new": "",
+      "reason": "The development limit is stated by the protocol (1 hour single, 4 hours iterative), not by the statement."
+    },
+    {
+      "file": "resources.yaml",
+      "old": "\"format\": \"Linux ARM64 CPython, launcher scripts and extension modules\",",
+      "new": "\"format\": \"Linux x86-64 CPython, launcher scripts and extension modules\",",
+      "reason": "Runtime rebuilt for x86-64 with the same versions (Dockerfile.amd64)."
+    },
+    {
+      "file": "resources.yaml",
+      "old": "\"version\": \"3.12.14\",",
+      "new": "\"version\": \"3.11.15\",",
+      "reason": "The x86-64 image is the official Python 3.11.15 image; its system interpreter is 3.11.15."
+    },
+    {
+      "file": "resources.yaml",
+      "old": "\"network\": \"Development may access public network; candidate evaluation is offline.\"",
+      "new": "\"network\": \"Development and candidate evaluation are offline.\"",
+      "reason": "Development on this machine is offline (protocol v6.3)."
+    }
+  ],
+  "portability_edits": [
+    {
+      "file": "task/tests/grade.py",
+      "old": "if os.getuid() != 0 or platform.machine() != 'aarch64':\n        raise RuntimeError('verifier requires root in native Linux ARM64 container')",
+      "new": "if os.getuid() != 0 or platform.machine() != 'x86_64':\n        raise RuntimeError('verifier requires root in native Linux x86-64 container')",
+      "reason": "This machine grades on native x86-64 with the runtime rebuilt for it; every other runtime check is unchanged."
+    },
+    {
+      "file": "task/tests/grade.py",
+      "old": "parser.add_argument('--partition', choices=['primary', 'audit'], default='primary')",
+      "new": "parser.add_argument('--partition', choices=['primary', 'audit', 'public'], default='primary')",
+      "reason": "v6.3 public feedback grades the 8 public examples as a diagnostic partition (staged by arena/operator_drivers/continuum.py)."
+    },
+    {
+      "file": "task/tests/grade.py",
+      "old": "if len(cases) != (60 if partition == 'primary' else 15):",
+      "new": "if len(cases) != {'primary': 60, 'audit': 15, 'public': 8}[partition]:",
+      "reason": "Case count of the added public partition."
+    }
+  ],
+  "images": {
+    "task": {
+      "tag": "frontieram-continuum-estimation:amd64-1.0.1-r1",
+      "dockerfile": "Dockerfile.amd64",
+      "replaces": []
+    }
+  },
+  "references": {
+    "weak": "operator/references/zero",
+    "strong": "operator/references/five"
+  },
+  "feedback": {
+    "task": "continuum-estimation",
+    "category": null,
+    "accuracy": "loss",
+    "lower_is_better": true,
+    "timed": false,
+    "note": "Any invalid, missing, late or unsuccessful output makes the final score 0. Time counts only against the limit."
+  },
+  "submission_note": "Put the complete source, README.md and run.sh in /workspace/submission; each case runs `/bin/sh /workspace/submission/run.sh` in a fresh restricted process in a clean copy of this environment, with /workspace/runtime/bin first on PATH.",
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/public. Implement the continuum-estimation program described there."
+}

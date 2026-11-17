@@ -1,0 +1,24 @@
+# amd64 counterpart of the author's verifier/development environment (continuum-estimation 1.0.1): the official
+# Python 3.11.15 image (trusted verifier interpreter /usr/local/bin/python3) plus libseccomp, and the public numerical
+# runtime rebuilt for x86-64 in the author's relocatable layout (bin/python3 wrapper, bin/python3.11, lib/libpython,
+# lib/python3.11 with NumPy 1.26.4 and SciPy 1.12.0) at /opt/continuum-runtime; /workspace/runtime links to it.
+FROM python:3.11.15-slim-bookworm
+RUN sed -i 's|deb.debian.org|mirrors.tencent.com|g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update && apt-get install -y --no-install-recommends libseccomp2 build-essential ripgrep \
+    && rm -rf /var/lib/apt/lists/*
+RUN set -eux; R=/opt/continuum-runtime; mkdir -p $R/bin $R/lib; \
+    cp /usr/local/bin/python3.11 $R/bin/python3.11; cp /usr/local/lib/libpython3.11.so.1.0 $R/lib/; \
+    cp -a /usr/local/lib/python3.11 $R/lib/python3.11; rm -rf $R/lib/python3.11/site-packages/*; \
+    printf '%s\n' '#!/bin/sh' 'set -eu' 'HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)' \
+        'export LD_LIBRARY_PATH="$HERE/../lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"' 'exec "$HERE/python3.11" "$@"' > $R/bin/python3; \
+    cp $R/bin/python3 $R/bin/python; chmod 755 $R/bin/python $R/bin/python3; \
+    pip install --no-cache-dir --no-compile --index-url https://mirrors.tencent.com/pypi/simple/ \
+        --target $R/lib/python3.11/site-packages numpy==1.26.4 scipy==1.12.0; \
+    find $R -name '__pycache__' -prune -exec rm -rf {} +; \
+    printf '{\n  "python": "3.11.15",\n  "numpy": "1.26.4",\n  "scipy": "1.12.0",\n  "architecture": "x86_64"\n}\n' > $R/VERSION.json; \
+    python3 -c "import hashlib, json, os; r = '$R'; files = sorted(os.path.relpath(os.path.join(b, f), r) for b, _, fs in os.walk(r) for f in fs if f != 'SHA256.json'); json.dump({'schema': 'continuum-runtime-1.0.0', 'files': len(files), 'bytes': sum(os.path.getsize(os.path.join(r, f)) for f in files), 'sha256': {f: hashlib.sha256(open(os.path.join(r, f), 'rb').read()).hexdigest() for f in files}}, open(os.path.join(r, 'SHA256.json'), 'w'), indent=2)"; \
+    chmod -R a+rX $R
+RUN groupadd --gid 1000 worker && useradd --create-home --uid 1000 --gid 1000 worker \
+    && mkdir -p /workspace/submission && ln -s /opt/continuum-runtime /workspace/runtime && chown worker:worker /workspace/submission
+ENV PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+WORKDIR /workspace

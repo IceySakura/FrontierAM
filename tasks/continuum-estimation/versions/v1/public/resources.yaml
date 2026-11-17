@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.0",
+  "workdir": "/workspace",
+  "path_base": "/workspace",
+  "resources": [
+    {
+      "availability": "bundled",
+      "path": "public/check.py",
+      "format": "UTF-8 text",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "568290a4bf878ee0eb40637d3020df5a0419774a27cf49048baa7760d4b2c75e",
+      "usage": "Instructions, offline runtime declaration or public validation utility"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_000.input.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "f48d0670524d81ffe0df11bf7b439ee32f8cb771d4fef47951fff12aa723866d",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_000.truth.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "7ad39cc80dadb2216c5420076e152c0bccb3362291ba101807db9fa0908ef30a",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_001.input.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "c756632423d2704e28501078f50338c1439631e89d242a58b85e66768c849472",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_001.truth.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "d49188c38cd87add811b325d3c8816cdf2b0df4552d2fa383a788fd97d4dd55e",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_002.input.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "2a007497c9016aa119c62691167a1aa32a9abaf64d624fef928af3b7a82bbe23",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_002.truth.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "4bb6d84bedc11825672e7bd22b459f46f93d1b929a850e2490a59358b4c2ca93",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_003.input.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "b0a9b435a552967e771b5b9765310d6350018a728763880b8d7573a4812b2be1",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_003.truth.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "20f66dae99e54492887735bae40e75673b9b753300f1136f4455ca0e6e332e6c",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_004.input.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "cf139f99630415c064bf18afac94fc6720bf25e145c69de35b6c8c1345443534",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_004.truth.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "e437cbea180688dfbca1bb3ec74d72f98248aba4e272f7b79d7659fcdff65e64",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_005.input.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "fcb8a781e0b7097147c30e4090d997908766407b9cfa285bcb09a9f5d5508ae4",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_005.truth.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "1f665b74f540e343ba1a16ada7179739ea9bafc57b988342ea9f720b97c2d86a",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_006.input.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "e5d9f2a580336f084cf029dda29ac22c56c3fad040f72994600ebf2666fcf32a",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_006.truth.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "7823b4920cfadb506cf844a42c9156f9035b1e99f6f6439ca1bd7b7127e86dac",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_007.input.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "661d45bb3939ad971d0762238ef9af1754afe37ea300820858c2f04654ef8071",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/dev/case_007.truth.json",
+      "format": "JSON",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "fefb2495f8f59e9b5cbb191a146049fcbe6883235757f1786c22424c5cd01a18",
+      "usage": "Public development example"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/instruction.md",
+      "format": "UTF-8 text",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "327b291aaaff73dc596f123a16ec18c13f2f551b86b3932e46688da5bcdd5274",
+      "usage": "Instructions, offline runtime declaration or public validation utility"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/requirements.lock",
+      "format": "UTF-8 text",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "b600648f18587e09f2a3ec5e049051969e0c4a5cb5ec4bdd4549f301df482081",
+      "usage": "Instructions, offline runtime declaration or public validation utility"
+    },
+    {
+      "availability": "bundled",
+      "path": "public/self_check.sh",
+      "format": "UTF-8 text",
+      "version": "continuum-paper2task-1.0.1",
+      "sha256": "f5530699c973bf702dc95847cd20221325d9b7d2c558c97c5dc703b21d191d53",
+      "usage": "Instructions, offline runtime declaration or public validation utility"
+    },
+    {
+      "availability": "bundled",
+      "path": "runtime/",
+      "format": "Linux x86-64 CPython, launcher scripts and extension modules",
+      "version": "Python3.11.15 / NumPy1.26.4 / SciPy1.12.0",
+      "manifest": "runtime/SHA256.json",
+      "usage": "/workspace/runtime/bin/python3 PROGRAM.py (launcher selects libraries); the verifier puts runtime/bin first on PATH; no setup script is automatic or required"
+    },
+    {
+      "availability": "bundled",
+      "path": "runtime/SHA256.json",
+      "format": "JSON file hashes, count and size",
+      "version": "1.0.1",
+      "sha256": "58705abc6d834500e17119f27d18a5dae17f2b94c69773a5c085fd898081f02b",
+      "usage": "Exact inventory of every bundled runtime file; includes Python and dependency license files"
+    },
+    {
+      "availability": "preinstalled",
+      "command": "/usr/local/bin/python3",
+      "version": "3.11.15",
+      "usage": "Base image system interpreter; the candidate numerical interpreter is /workspace/runtime/bin/python3"
+    },
+    {
+      "availability": "preinstalled",
+      "command": "/bin/sh",
+      "version": "dash0.5.12-2",
+      "usage": "/bin/sh /workspace/submission/run.sh"
+    },
+    {
+      "availability": "preinstalled",
+      "command": "gcc / g++",
+      "version": "12.2.0",
+      "usage": "gcc SOURCE.c -o PROGRAM; g++ SOURCE.cpp -o PROGRAM; any initialization in run.sh counts toward its 60 seconds"
+    },
+    {
+      "availability": "external",
+      "uri": "docker.io/isxinyuuu/optwithexp@sha256:a0d0870fae06d94f210cee1493b4a0c6cb5825c644ca9f81f28830be33008724",
+      "version": "OCI sha256 digest",
+      "format": "linux/arm64 OCI image",
+      "retrieval": "docker pull --platform linux/arm64 docker.io/isxinyuuu/optwithexp@sha256:a0d0870fae06d94f210cee1493b4a0c6cb5825c644ca9f81f28830be33008724",
+      "usage": "Fixed public development and verifier runtime; no credentials required"
+    }
+  ],
+  "credentials": [],
+  "network": "Development and candidate evaluation are offline."
+}
