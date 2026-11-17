@@ -76,6 +76,15 @@ RERUN = {
               '（均为基础设施故障，记未测）；本格为修复后的第 4 次尝试。') for cell in (
         ('species-tree-v3', 'iterative', 'qwen3.8-max-0902'), ('galaxy-gravity-v4', 'iterative', 'qwen3.8-max-0902'))},
 }
+AZURE_2 = ('第 1 次尝试中有回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断（基础设施问题，记未测）；'
+           '本格为 sol 改走 AI Hub azure 通道后的第 2 次尝试。')
+INTERN_2 = ('第 1 次尝试为 7 个书生 S2 会话并发、未传采样参数（生成约每秒 11–17 个 token）；本格为最多 2 个并发、'
+            '按模型卡采样参数（温度 0.8、top_p 0.95、top_k 50）的第 2 次尝试。')
+RERUN.update({
+    ('conic', 'iterative', 'gpt-6.1-sol'): (2, AZURE_2), ('species-tree-v3', 'iterative', 'gpt-6.1-sol'): (2, AZURE_2),
+    **{(task, 'single', 'intern-s2'): (2, INTERN_2) for task in (
+        'polarization-demosaicking-v2', 'trajectory-covariance-v2', 'ihvp-sequence-v4', 'galaxy-gravity-v4')},
+})
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
