@@ -74,6 +74,9 @@ UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6.1-sol', 'hy4', 'intern-s2', 'qwen3.
 # AI Hub provider per model where it is not ATR's default: OpenAI refuses Codex requests for this organization
 # (2026-11-14); the azure provider serves the same model with the same controls (ATR models.yaml).
 MODEL_PROVIDER = {'gpt-6.1-sol': 'azure'}
+# Extra request fields per model: Intern S2's documented sampling (model card: temperature 0.8, top_p 0.95, top_k 50);
+# Claude Code sends none, and the endpoint's defaults are not published.
+MODEL_OPTIONS = {'intern-s2': {'anthropic': {'temperature': 0.8, 'top_p': 0.95, 'top_k': 50}}}
 CONTAINER_PORT = 18080
 IMAGE_NONSTREAM = '/opt/atr-venv/lib/python3.13/site-packages/atr/harness/nonstream.py'
 MEMORY = 4 * 2**30
@@ -827,6 +830,7 @@ def develop(spec: dict, runtime: dict) -> dict:
     docker = assets.controller.Docker(runtime['docker_path'], placement.docker_host, placement.cpuset,
                                       placement.cgroup_parent)
     write(output / 'v6_conditions.json', {'harness': harness, 'route': route, 'image': HARNESS_IMAGES[task.name],
+                                          'model_options': MODEL_OPTIONS.get(model),
                                           'development_seconds': seconds, 'memory_bytes': MEMORY,
                                           'protocol': protocol,
                                           'setting': setting if protocol in ('v6.2', 'v6.3') else None,
@@ -871,7 +875,8 @@ def develop(spec: dict, runtime: dict) -> dict:
             serve = subprocess.Popen(
                 [str(ATR_ROOT / '.venv/bin/atr'), 'serve', '--model', model, '--host', '127.0.0.1', '--port', str(port),
                  '--token', token, '--record-dir', str(output / 'atr'), '--max-output', 'max',
-                 *(['--model-provider', MODEL_PROVIDER[model]] if model in MODEL_PROVIDER else [])],
+                 *(['--model-provider', MODEL_PROVIDER[model]] if model in MODEL_PROVIDER else []),
+                 *(['--model-options', json.dumps(MODEL_OPTIONS[model])] if model in MODEL_OPTIONS else [])],
                 cwd=ATR_ROOT, env=environment, stdout=(output / 'atr-serve.log').open('wb'), stderr=subprocess.STDOUT,
             )
             processes.append(serve)
