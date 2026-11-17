@@ -24,6 +24,6 @@ if __name__=='__main__':
     for name in ['README.md','TESTER_PROMPT.md','PROTOCOL.md','USAGE_CURATOR.md','requirements-eval.txt']:
         files.append((ROOT/name,name))
     curator=make_archive(dist/'EVALUATOR_ONLY_ihvp_realtrace_tools_20261116.zip',files)
-    receipt={'calibration_revision':'cg50-warm0-20261117','model_only':model,'evaluator_only':curator,'full_data_archive':json.loads((ROOT/'reports/REMOTE_DATA_PACKAGE.json').read_text())}
+    receipt={'statement_revision':'neutral-statement-20261117','calibration_revision':'cg50-warm0-20261117','model_only':model,'evaluator_only':curator,'full_data_archive':json.loads((ROOT/'reports/REMOTE_DATA_PACKAGE.json').read_text())}
     (dist/'artifacts.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(receipt,indent=2))
