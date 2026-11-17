@@ -1,0 +1,41 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "polarization-demosaicking-v3-20261117T130859Z-fc85cd",
+ "raw": "RMSE \\(E = 1.4536\\)（\\(U = 2.1080\\)，\\(W = 1.5007\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 51.57,
+ "review": null,
+ "process": {
+  "minutes": 151.5,
+  "public_tests": 5,
+  "public_curve": [
+   {
+    "minute": 42.7,
+    "score": 52.05947291750002,
+    "status": "ok"
+   },
+   {
+    "minute": 98.7,
+    "score": 56.129279946241596,
+    "status": "ok"
+   },
+   {
+    "minute": 122.2,
+    "score": 56.31210730142015,
+    "status": "ok"
+   },
+   {
+    "minute": 136.5,
+    "score": 56.31740170150193,
+    "status": "ok"
+   },
+   {
+    "minute": 143.3,
+    "score": 56.31740170150193,
+    "status": "ok"
+   }
+  ]
+ }
+}

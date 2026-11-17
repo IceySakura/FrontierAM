@@ -79,6 +79,7 @@
 | Qwen3.8 Max | 单轮 | RMSE \(E = 1.6500\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 37.7 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
 | Qwen3.8 Max | 迭代 | RMSE \(E = 1.4841\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.6 | 8 次提交，114 分钟 | [`v3/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/) |
 | Hunyuan 4 | 单轮 | RMSE \(E = 1.5411\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 46.7 | 57 分钟 | [`v3/hy4-single-1/`](solutions/v6.3/v3/hy4-single-1/) |
+| Hunyuan 4 | 迭代 | RMSE \(E = 1.4536\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.6 | 5 次提交，152 分钟 | [`v3/hy4-iterative-1/`](solutions/v6.3/v3/hy4-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -107,6 +108,12 @@ public 分数随测试提交：0.0（30 分钟） → 50.6（53 分钟） → 51
 ### Hunyuan 4（单轮，v6.3）
 
 源码 [`solutions/v6.3/v3/hy4-single-1/source/`](solutions/v6.3/v3/hy4-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T065348Z-ee3277`）。
+
+### Hunyuan 4（迭代，v6.3）
+
+public 分数随测试提交：52.1（43 分钟） → 56.1（99 分钟） → 56.3（122 分钟） → 56.3（136 分钟） → 56.3（143 分钟）
+
+源码 [`solutions/v6.3/v3/hy4-iterative-1/source/`](solutions/v6.3/v3/hy4-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T130859Z-fc85cd`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
