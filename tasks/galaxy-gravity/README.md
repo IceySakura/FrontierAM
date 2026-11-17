@@ -144,7 +144,7 @@ public 分数随测试提交：0.0（69 分钟） → 48.8（95 分钟） → 52
 
 ### Intern S2（单轮，v6.3）
 
-第 1 次尝试为 7 个书生 S2 会话并发、未传采样参数（生成约每秒 11–17 个 token）；本格为最多 2 个并发、按模型卡采样参数（温度 0.8、top_p 0.95、top_k 50）的第 2 次尝试。
+第 1 次尝试为 7 个书生 S2 会话并发、未传采样参数（生成约每秒 11–17 个 token）；本格为最多 2 个并发、按模型卡采样参数（温度 0.8、top_p 0.95、top_k 50）的第 2 次尝试。书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；第 1 次迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh（results/OPEN_ITEMS.md）。
 
 源码 [`solutions/v6.3/v4/intern-s2-single-2/source/`](solutions/v6.3/v4/intern-s2-single-2/source/)（提交 `galaxy-gravity-v4-20261117T061540Z-d1b3c9`）。
 
