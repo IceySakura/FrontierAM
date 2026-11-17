@@ -1,0 +1,40 @@
+{
+  "id": "pdhcg-qp-v1",
+  "order": 8,
+  "title": "稀疏凸二次规划",
+  "category": "数值优化",
+  "summary": "在固定 CPU 资源下求解稀疏凸二次规划，输出原始解和不等式乘子，由独立 KKT 检查器验证；在同机重测参照后比较正确率与耗时。",
+  "statement": {
+    "kind": "file",
+    "path": "tasks/pdhcg-qp/versions/v1/statement.md"
+  },
+  "background_md": "稀疏凸二次规划是投资组合、网络优化与约束估计的基础问题。输入为 Q、A 的 CSR 数组以及 c、b，求解 0.5*xᵀQx+cᵀx+c₀，约束 Ax≤b。方法与编程语言不限；PDHCG 只是评测侧的参照。",
+  "judge_md": "- 每个集合 64 例，涵盖四类结构与 n=256–1024 的相同规模范围。\n- 四项归一化 KKT 残差均须 ≤ 1e-7。每例三个新进程，全部通过才成功；失败例时间按时限计，成功例取中位数，再对所有例取几何平均 g，成功比例记 p。\n- 单 CPU、数值库单线程、4 GiB、断网；构建 900 秒，每例时限从本机参照冻结为最长参考时间的 1.5 倍，限于 1–60 秒。\n- 最终分数 = 100*p/(1+g/g_ref)，参照全部正确时为 50；Harbor reward 为最终分数除以 100。基础设施失败记未测。",
+  "baseline_md": "`references/r1/` 保留出题人的重启 PDHCG、内层 CG、活动集精化参照。参照必须在当前评测环境、当前集合全部通过，public 与 private 分别标定，不使用原包历史计时。当前环境没有 Docker，尚未完成目标机容器验收和正式 baseline，不发布成绩。",
+  "current_version": "v1",
+  "versions": [
+    {
+      "dir": "v1",
+      "registry": "pdhcg-qp-v1",
+      "note": "从独立题包 scale-aligned v3 接入；统一 AMD64、samples/public/private、独立 Harbor verifier 和参照 50 分映射；等待目标机验收"
+    }
+  ],
+  "locations": {
+    "statement": "[versions/v1/statement.md](versions/v1/statement.md)",
+    "public": "[versions/v1/data/](versions/v1/data/)；模型仅看到 samples，public 留在评测侧",
+    "private": "维护端 `var/raw/pdhcg-qp-v1/private/`；不进 Git",
+    "grader": "[versions/v1/grader/](versions/v1/grader/)；封存脚本生成 Harbor tests/test.sh",
+    "references": "[references/r1/](references/r1/)"
+  },
+  "v63_data": {
+    "samples": [
+      "对角病态、稀疏低秩、网络、箱约束各一例"
+    ],
+    "public": "64 个反馈输入，不复制到开发镜像",
+    "groups": "diag_condition、low_rank、network、portfolio_box"
+  },
+  "result_groups": [],
+  "notes_md": "构建镜像、封存题包和启动 Harbor 实验的完整命令见 [versions/v1/README.md](versions/v1/README.md)。新增实现不包含 local-run、旧实验提交、旧成绩、重复 solver bundle 或构造答案。原题包 reward 将参考与最快结果同时截断到 1，接入时为满足仓库参照 = 50 的约定，单独定义了上述映射；原有结果不作跨协议换算。",
+  "insights": [],
+  "name": "pdhcg-qp"
+}

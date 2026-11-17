@@ -1,0 +1,46 @@
+{
+  "name": "pdhcg-qp-v1",
+  "title": "稀疏凸二次规划",
+  "status": "ready",
+  "status_reason": "Repository and Harbor integration ready; target-host Docker acceptance and calibration required before publishing formal results.",
+  "driver": "pdhcg_qp",
+  "instruction": "Read /workspace/problem.md and inspect /workspace/public-dev. Implement the sparse convex QP solver.",
+  "submission_note": "Submit executable run.sh --input INPUT.npz --output OUTPUT.npz, README.md and optional build.sh.",
+  "references": {
+    "strong": "repo:tasks/pdhcg-qp/references/r1"
+  },
+  "images": {
+    "task": {
+      "tag": "frontieram-pdhcg-qp:amd64-v1",
+      "dockerfile": "Dockerfile",
+      "replaces": []
+    }
+  },
+  "data": {
+    "samples": "data/samples",
+    "public": "data/public",
+    "private": "var/raw/pdhcg-qp-v1/private",
+    "public_cases": 64,
+    "private_cases": 64,
+    "private_bodies_in_git": false
+  },
+  "limits": {
+    "cpus": 1,
+    "memory_mib": 4096,
+    "numerical_threads": 1,
+    "build_seconds": 900,
+    "case_seconds": [
+      1,
+      60
+    ],
+    "repeats": 3
+  },
+  "scoring": {
+    "raw": "success fraction p and geometric mean penalized runtime g",
+    "mapping": "100*p/(1+g/g_ref)",
+    "reference": 50,
+    "best": 100,
+    "harbor_reward": "score/100",
+    "calibration": "same-machine, same-split reference; no imported historical anchors"
+  }
+}

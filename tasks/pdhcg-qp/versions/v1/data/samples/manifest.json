@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "split": "samples",
+  "cases": [
+    {
+      "id": "dev-00-00-00",
+      "path": "inputs/dev-00-00-00.npz",
+      "sha256": "8a1d005db6efb19e06892230276039389c5520bb27be4d2a0da57d4855c56af8",
+      "reference_sha256": null,
+      "family": "diag_condition",
+      "n": 256,
+      "m": 320
+    },
+    {
+      "id": "dev-01-00-00",
+      "path": "inputs/dev-01-00-00.npz",
+      "sha256": "bad203bfed32bcf15f4aab2370d0c9e1a70edcaf9fcfe198dddad32f5228cb6a",
+      "reference_sha256": null,
+      "family": "low_rank",
+      "n": 256,
+      "m": 320
+    },
+    {
+      "id": "dev-02-00-00",
+      "path": "inputs/dev-02-00-00.npz",
+      "sha256": "5ca2f4833bd703af54964901fabe6c083055f8a8fad959d70a9f8233a748f153",
+      "reference_sha256": null,
+      "family": "network",
+      "n": 256,
+      "m": 320
+    },
+    {
+      "id": "dev-03-00-00",
+      "path": "inputs/dev-03-00-00.npz",
+      "sha256": "daf9b79f651f6e694faf1ab0a6137450a4ae753fd5bc94d5a73bfebfe89354fc",
+      "reference_sha256": null,
+      "family": "portfolio_box",
+      "n": 256,
+      "m": 384
+    }
+  ],
+  "time_limit_seconds": 30.0
+}
