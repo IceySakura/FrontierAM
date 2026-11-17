@@ -73,7 +73,14 @@ python tools/calibrate_anchors.py --results var/replay-public var/replay-private
 
 ## 完整数据
 
-当前完整包名为`EVALUATOR_ONLY_ihvp_balanced_15public_30private_statement_20261117.zip`，位于A服务器同一项目的`var/release/`。精确大小、SHA256及清单哈希见[当前发布](https://github.com/IceySakura/FrontierAM/releases/tag/ihvp-sequence-statement-20261117)附件`balanced_data_package.json`。它包含当前恢复版题面，同一balanced-split-20261117清单与同一45条数据。解压后从`START_BALANCED_EVALUATION.md`进入，使用`balanced-evaluator/`内当前工具；旧根目录工具为归档。已有上一版完整数据的维护者可改用本次增量包覆盖说明和工具，无需重新传输数组。
+按用户2026-11-17明确授权，完整评测包以8个分卷附件放在本私有仓库的[当前Release](https://github.com/IceySakura/FrontierAM/releases/tag/ihvp-sequence-statement-20261117)，不再只有远程路径说明。维护者须登录有本仓库读取权限的GitHub账号。下载`download_data.py`并运行，它会取得`IHVP_DATA_PARTS.json`和8个分卷，逐个校验、合并为完整ZIP并校验完整SHA256：
+
+```bash
+gh release download ihvp-sequence-statement-20261117 --repo IceySakura/FrontierAM --pattern download_data.py
+python3 download_data.py --out ./ihvp-data
+```
+
+预留约32GiB空间（分卷和合并后的ZIP各占一份），分卷不能分别解压。完整包名为`EVALUATOR_ONLY_ihvp_balanced_15public_30private_statement_20261117.zip`，SHA256为`dd375126fe4d6a0dec6ac569034cc9b477d376c12be67e62724e28f72d3876a3`。它与A服务器原文件完全相同，包含当前恢复版题面、同一balanced-split-20261117清单和同一45条数据。解压后从`START_BALANCED_EVALUATION.md`进入，使用`balanced-evaluator/`内工具。已有上一版完整数据的维护者可只下载本次增量ZIP。
 
 下面是内容未改动的原始来源包，单独使用它不会应用新划分：
 
@@ -85,7 +92,7 @@ python tools/calibrate_anchors.py --results var/replay-public var/replay-private
 
 SHA256：`acfebb847feacbf0294a7df948473e07dc6c407c00eddabf7d193c66cd352a3f`。
 
-按仓库[提交规则](../../../../docs/TASK_CHANGES.md)，GitHub不存private用例、参考答案或生成种子。应由维护者通过既有授权渠道接收这个ZIP；不要用新种子重建后声称复现同一批数据。先建立权限700的评测端目录再解压，不向模型挂载。
+本次私有Release交付是用户对本IHVP数据包明确授权的例外，不改变其他任务的[提交规则](../../../../docs/TASK_CHANGES.md)。完整数据、分卷和增量包仅供评测维护者，不提供给求解模型；模型不能读取Release附件或GitHub访问凭据。不要用新种子重建后声称复现同一批数据。先建立权限700的评测端目录再解压，不向模型挂载。
 
 ## 复核命令
 
@@ -122,4 +129,4 @@ python tools/package_handoff.py
 
 模型仅能读取MODEL_ONLY包和自己的代码。禁止给模型本README、生成器、runtime/backend.py、其他方案源码、汇总private结果、评测ZIP或原仓库检出目录。public池也不给模型，只反馈整池汇总；private不用于开发反馈。
 
-本GitHub交付不含私有评测生成种子或完整规模用例数组。`code/generate.py`只供维护者审查，不用它重新抽样本替代封存用例。下一版如调整采样窗口或训练设置，应先在public做控制实验，再用全新private种子检验；本批只保留为诊断记录。
+Git源码和MODEL_ONLY材料不含私有用例数组、参考解或生成种子；完整评测资料仅在经用户授权的私有Release数据附件中交给维护者。`code/generate.py`只供维护者审查，不用它重新抽样本替代封存用例。下一版如调整采样窗口或训练设置，应先在public做控制实验，再用全新private种子检验；本批为已有数据回放。
