@@ -46,11 +46,17 @@ SUBMISSIONS = {
     'ihvp-sequence': ("cat > solver.py <<'EOF'\nimport numpy as np\n\nclass Zero:\n    def __init__(self, d):\n        self.d = d\n\n"
                       "    def solve(self, hvp, b, context):\n        return np.zeros(self.d)\n\n\n"
                       "def make_solver(d, seed, options):\n    return Zero(d)\nEOF"),
+    'blackbox-cubature': 'cp /workspace/examples/reference_submission/* . && chmod +x run.sh',
 }
 FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3': 'galaxy-gravity',
           'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
           'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
-          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence'}
+          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence',
+          'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature'}
+# Versions that keep the author's workspace layout: their public-dev material is the samples; these files must be there.
+AUTHOR_LAYOUT = {'polarization-demosaicking-v3': ['/workspace/public-dev/check.py', '/workspace/public-dev/wen5'],
+                 'blackbox-cubature-v2': ['/workspace/environment/public-dev/pilot.py', '/workspace/tests/grade.py',
+                                          '/workspace/examples/reference_submission/run.sh']}
 
 
 def script(task: str, setting: str) -> str:
@@ -89,9 +95,11 @@ def main():
     log = (out / 'cli.log').read_text(errors='replace')
     workspace = log.rsplit('WORKSPACE-BEGIN\n', 1)[-1].split('WORKSPACE-END', 1)[0]  # after the xtrace lines
     prompt = (out / 'prompt.txt').read_text()
+    layout = AUTHOR_LAYOUT.get(task_name)
     checks = {'frozen': result.get('source_frozen') is True,
-              'no_public_dev': 'public-dev' not in workspace and 'dev_full' not in workspace,
-              'samples_present': '/samples' in workspace,
+              **({'author_layout': all(path in workspace for path in layout)} if layout else
+                 {'no_public_dev': 'public-dev' not in workspace and 'dev_full' not in workspace,
+                  'samples_present': '/samples' in workspace}),
               'limit_in_prompt': f'{int(seconds // 60) if seconds >= 60 else 0} minutes' in prompt or 'minutes' in prompt}
     if setting == 'iterative':
         report = log.rsplit('REPORT-BEGIN\n', 1)[-1].split('REPORT-END', 1)[0]

@@ -11,5 +11,6 @@
 | [trajectory-covariance](trajectory-covariance/README.md) | 12 |
 | [species-tree](species-tree/README.md) | 12 |
 | [ihvp-sequence](ihvp-sequence/README.md) | 18 |
+| [blackbox-cubature](blackbox-cubature/README.md) | 0 |
 
 本文件由 `scripts/site/build_task_pages.py` 生成。

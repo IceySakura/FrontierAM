@@ -46,7 +46,9 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'ihvp-sequence': 'frontieram-ihvp-sequence-harness:v6',
                   'ihvp-sequence-v2': 'frontieram-ihvp-sequence-harness:v6',
                   'ihvp-sequence-v3': 'frontieram-ihvp-sequence-v3-harness:v6',
-                  'ihvp-sequence-v4': 'frontieram-ihvp-sequence-v4-harness:v6'}
+                  'ihvp-sequence-v4': 'frontieram-ihvp-sequence-v4-harness:v6',
+                  'polarization-demosaicking-v3': 'frontieram-polarization-demosaicking-v3-harness:v6',
+                  'blackbox-cubature-v2': 'frontieram-blackbox-cubature-v2-harness:v6'}
 # The vendor's own client where ATR has one; Claude Code for Messages models without one, Codex for Responses ones.
 HARNESS = {
     'claude-opus-5-5': 'claude',
@@ -323,6 +325,15 @@ SCORING_DISCLOSURE['polarization-demosaicking'] = (
     'the same scenes and limits: matching the weaker one scores zero, matching the stronger one is the midpoint of the '
     'scale and zero error is the maximum. Speed within the limit earns nothing extra, so keep a safety margin under it.'
 )
+SCORING_DISCLOSURE['blackbox-cubature-v2'] = (
+    'Every held-out instance runs once in a fresh process within 30 wall-clock seconds and the 2048-point query budget; '
+    'a single failed, timed-out or protocol-violating instance makes the whole submission score zero. Given that, each '
+    'instance\'s log10 relative error (clipped to [-15, 0]) is compared with a frozen reference portfolio measured on the '
+    'same instance: the gain is clipped to two orders of magnitude either way, averaged per function family and '
+    'dimension, then over dimensions and over the families with equal weight. Matching the reference is the midpoint '
+    'of the scale, being 100 times more accurate than it on every instance is the maximum, and plain Monte Carlo '
+    'sampling scores zero. Time within the limit earns nothing extra.'
+)
 SCORING_DISCLOSURE['trajectory-covariance'] = (
     'The score depends only on the mean whitened error over all held-out inputs, averaged with equal weight over the '
     'settings and trajectory lengths; a failed or invalid output counts as the zero matrix for that input. It is '
@@ -334,7 +345,7 @@ SCORING_DISCLOSURE['trajectory-covariance'] = (
 
 # Protocol v6.3 task versions inherit the harness image and the scoring disclosure of the version they derive from,
 # unless they define their own (galaxy-gravity-v3).
-V63_VERSIONS = {'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence', 'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree-v2',
+V63_VERSIONS = {'polarization-demosaicking-v3': 'polarization-demosaicking', 'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence', 'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree-v2',
                 'trajectory-covariance-v2': 'trajectory-covariance', 'exponential-v3': 'exponential-v2', 'conic-v3': 'conic'}
 for _new, _old in V63_VERSIONS.items():
     HARNESS_IMAGES.setdefault(_new, HARNESS_IMAGES[_old])

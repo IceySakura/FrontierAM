@@ -1,0 +1,57 @@
+{
+  "id": "blackbox-cubature",
+  "order": 8,
+  "name": "blackbox-cubature",
+  "title": "固定查询预算下的黑盒多维积分",
+  "category": "数值积分",
+  "summary": "在 [0,1]^d（d = 2、3、5、8）上估计未知函数的积分；程序只能按点向评测器查询函数值，每例最多 2048 个点、30 秒，按与参照同例配对的误差增益计分。",
+  "statement": {
+    "kind": "tar",
+    "path": ".runtime-ops/blackbox-cubature-v2/public.tar",
+    "members": [
+      "problem.md"
+    ]
+  },
+  "background_md": "多维数值积分（cubature）。函数只能通过查询得到，考察在固定查询预算下怎样选点和估计：准蒙特卡洛（Sobol、数字网）、自适应求积（Genz–Malik、pcubature）、周期函数的格点与梯形规则，以及先识别函数结构再换专门方法。隐藏函数有三族：周期 ridge（fourier）、Genz 乘积峰，以及 2–3 条方向各异、带折点的 ridge 叠加。",
+  "judge_md": "- **协议**：程序经标准输入输出按 JSON Lines 查询函数值，每次最多 512 个点，每例最多 2048 个点。\n- **正式集**：144 例（出题人 B、C 两组切分），三族 × 四个维度。\n- **资源**：每例全新进程，1 CPU、2 GiB、30 秒墙钟；任一例失败、超时或违反协议，整份提交记 0 分。\n- **原始指标**：每例 log10 相对误差截到 \\([-15, 0]\\)，与本机重跑的 HumanPortfolio-v1 同例配对，增益截到 \\([-2, 2]\\)，按族×维度平均、维度平均、三族平均得 \\(G\\)。\n- **换算**：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)，\\(G_0\\) 为普通蒙特卡洛的增益。",
+  "baseline_md": "| 参照 | 方法 | 增益 \\(G\\) | 记分 | 单例最长 |\n| --- | --- | --- | --- | --- |\n| 弱参照 | 普通蒙特卡洛（2048 个独立均匀点取平均） | −0.713 | 0 | 0.20 秒 |\n| 强参照 | HumanPortfolio-v1（2、5 维 pcubature，3、8 维 QMCPy 数字网） | 0 | 50 | 0.92 秒 |\n\n本机评测核实测（private 144 例）。",
+  "notes_md": "- v2 用同种子的折点 ridge 叠加替换出题人的 4 次多项式 ridge（认出方向即可精确积分）；fourier 与乘积峰原样保留。\n- 出题人原指标（三族中位数的中位数）只由 fourier 一族决定、参照顺序在切分间反转，改用配对增益；两处改动待出题人确认。\n- 给模型的样例是出题人的 12 例试跑包（Genz 风格族），public 反馈为 A 组每个（族，维度）2 例共 24 例。",
+  "result_groups": [],
+  "current_version": "v2",
+  "versions": [
+    {
+      "dir": "v1",
+      "registry": "blackbox-cubature",
+      "note": "出题人 v4 包原样三族，多项式为守门族（只扣分）"
+    },
+    {
+      "dir": "v2",
+      "registry": "blackbox-cubature-v2",
+      "note": "多项式族换成折点 ridge 叠加，三族都计分（当前版本）"
+    }
+  ],
+  "locations": {
+    "statement": ".runtime-ops/blackbox-cubature-v2/workspace/problem.md（出题人题面加 FrontierAM 改动，见 versions/v2/task.json）",
+    "public": "versions/v2/data/public/（不给模型的反馈集，只在内部仓库）",
+    "private": "versions/v2/data/private/（只在内部仓库）",
+    "grader": "arena/operator_drivers/blackbox_cubature.py（沙箱交互评测）；预言机 versions/v2/grader/oracle.py",
+    "references": "references/r1/mc（0 分）、references/r1/portfolio（50 分）"
+  },
+  "v63_data": {
+    "samples": [
+      "出题人试跑包 12 例（environment/public-dev）",
+      "示例提交（Sobol）"
+    ],
+    "public": "A 组 24 例（三族 × 四个维度 × 2）",
+    "groups": "折点 ridge 叠加、fourier ridge、乘积峰",
+    "feedback": {
+      "task": "blackbox-cubature-v2",
+      "category": "family",
+      "accuracy": "relative error",
+      "lower_is_better": true,
+      "timed": false,
+      "note": "Any failed, timed-out or protocol-violating instance makes the final score 0. A category score compares the instances of one function family with the reference in the same way as the final score."
+    }
+  },
+  "insights": []
+}

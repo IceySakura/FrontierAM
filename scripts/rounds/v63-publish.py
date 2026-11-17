@@ -18,8 +18,10 @@ TASKS = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3':
          'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
          'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence',
-         'galaxy-gravity-v4': 'galaxy-gravity', 'ihvp-sequence-v4': 'ihvp-sequence'}
-SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity-v4': 'v4', 'ihvp-sequence-v4': 'v4'}  # later task versions within protocol v6.3 keep their own solutions subfolder
+         'galaxy-gravity-v4': 'galaxy-gravity', 'ihvp-sequence-v4': 'ihvp-sequence',
+         'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature'}
+SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity-v4': 'v4', 'ihvp-sequence-v4': 'v4',
+             'polarization-demosaicking-v3': 'v3', 'blackbox-cubature-v2': 'v2'}  # later task versions within protocol v6.3 keep their own solutions subfolder
 SETTING = {'single': '单轮', 'iterative': '迭代'}
 NOTES = {
     ('conic', 'single'): 'HiGHS 处理线性与二次规划并做 KKT 精修；一般锥用 Ruiz 均衡加齐次原始对偶内点法（Nesterov–Todd 缩放，指数锥用解析障碍函数）。',
@@ -93,8 +95,19 @@ def baseline_anchors(task: str) -> dict:
     return {w: active['metrics']['parts'][w]['raw_error'] for w in ('weak', 'strong')}
 
 
+CUBATURE_FAMILY = {'fourier_ridge': 'fourier', 'kinked_ridge_sum': '折点 ridge', 'product_peak': '乘积峰', 'polynomial_ridge': '多项式'}
+
+
 def cell(task: str, score: dict) -> tuple[str, str]:
     family = TASKS[task]
+    if family == 'blackbox-cubature':
+        if score.get('status') == 'submission_failure':
+            return f'无效提交（{(score.get("reasons") or ["有用例失败"])[0]}）', '任一用例失败、超时或违反协议记 0'
+        parts = '，'.join(f'{CUBATURE_FAMILY.get(f, f)} {v:+.2f}' for f, v in sorted(score['families'].items()))
+        return (f'增益 \\(G = {score["gain"]:.3f}\\)（{parts}），{score["cases"]} 例，单例最长 {score["max_wall_s"]:.1f} 秒'
+                f'（普通蒙特卡洛 \\(G_0 = {score["mc_gain"]:.3f}\\)，HumanPortfolio-v1 为 0）',
+                '与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；'
+                '\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)')
     if family == 'conic':
         return (f'{score["successes"]} / {score["cases"]}（\\(p = {score["p"]:.3f}\\)，参照 \\(p_B = {score["p_B"]:.3f}\\)）',
                 '\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)')

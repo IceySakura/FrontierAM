@@ -74,5 +74,13 @@
   },
   "submission_note": "Put an executable run.sh and the complete source in /workspace/submission; each instance runs ./run.sh in a fresh process in a clean copy of this environment, speaking the JSON Lines protocol of problem.md on stdin/stdout.",
   "instruction": "Read /workspace/problem.md in full and inspect /workspace/environment/public-dev. Implement the cubature program described there.",
-  "derived_data": "versions/v2/data (cases), versions/v2/grader/oracle.py"
+  "derived_data": "versions/v2/data (cases), versions/v2/grader/oracle.py",
+  "feedback": {
+    "task": "blackbox-cubature-v2",
+    "category": "family",
+    "accuracy": "relative error",
+    "lower_is_better": true,
+    "timed": false,
+    "note": "Any failed, timed-out or protocol-violating instance makes the final score 0. A category score compares the instances of one function family with the reference in the same way as the final score."
+  }
 }

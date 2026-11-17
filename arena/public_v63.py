@@ -46,6 +46,10 @@ PUBLIC = {
                                   'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
     'polarization-demosaicking-v2': {'family': 'polarization-demosaicking', 'store': STORE,
                                      'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
+    # v3: the author's Wen5 development scenes (grade_vnext.py --mode dev); Wen100 is in the formal set.
+    'polarization-demosaicking-v3': {'family': 'polarization-demosaicking', 'store': STORE,
+                                     'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
+    'blackbox-cubature-v2': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
     'species-tree-v2': {'family': 'species-tree', 'store': STORE, 'env': {'FRONTIERAM_SPECIES_V2_DATA': 'public'}},
     'species-tree-v3': {'family': 'species-tree', 'store': STORE, 'env': {'FRONTIERAM_SPECIES_V2_DATA': 'public'}},
     'trajectory-covariance': {'family': 'trajectory-covariance', 'store': STORE,
@@ -65,7 +69,10 @@ def family(task: str) -> str:
 
 
 def config(task: str) -> dict:
-    """The task's feedback declaration in tasks/<family>/meta.json (v63_data.feedback)."""
+    """The task's feedback declaration: its task.json `feedback`, else tasks/<family>/meta.json (v63_data.feedback)."""
+    spec = getattr(TASKS.get(task), 'spec', None) or {}
+    if 'feedback' in spec:
+        return spec['feedback']
     if task == 'ihvp-sequence-v4':
         return read_json(ROOT / 'tasks/ihvp-sequence/versions/v4/task.json')['feedback']
     meta = read_json(ROOT / 'tasks' / PUBLIC[task]['family'] / 'meta.json')
@@ -184,6 +191,15 @@ def _galaxy(out: Path) -> list[dict]:
 
 
 def _polarization(out: Path) -> list[dict]:
+    if (out / 'per_scene.csv').exists():  # v3 (grade_vnext.py)
+        import csv
+        rows = []
+        for r in csv.DictReader((out / 'per_scene.csv').open()):
+            status = 'passed' if r['status'] == 'ok' else 'timeout' if 'timeout' in r['status'] else feedback.status_of(r['status'])
+            rows.append({'id': f'{r["dataset"]}/{r["scene"]}', 'category': 'all', 'status': status,
+                         'accuracy': float(r['mean_rmse']) if status == 'passed' and r.get('mean_rmse') else None,
+                         'seconds': float(r['wall_s']) if r.get('wall_s') else None})
+        return rows
     summary = read_json(out / 'summary.json')
     rows = []
     for r in summary.get('scene_rows', []):
@@ -227,6 +243,20 @@ def _ihvp(out: Path) -> list[dict]:
     return rows
 
 
+def _cubature(out: Path) -> list[dict]:
+    """Per-instance rows of blackbox_cubature.py; the score keeps family, dimension and the log10 relative error."""
+    rows = []
+    for r in read_json(out / 'summary.json').get('rows', []):
+        error = str(r.get('error') or '')
+        status = 'passed' if r['ok'] else 'timeout' if 'wall limit' in error else \
+            'crash' if 'exited' in error or 'closed stdout' in error else 'wrong'
+        clipped = min(0.0, max(-15.0, r['log10_rel_error'])) if r['ok'] else None
+        rows.append({'id': r['id'], 'category': r['family'], 'dimension': r['dimension'], 'status': status,
+                     'log10_rel_error': r.get('log10_rel_error'), 'accuracy': 10 ** clipped if clipped is not None else None,
+                     'seconds': r.get('elapsed_sec')})
+    return rows
+
+
 def _rows(task, store: Store, record: dict, partial: dict, which: str = 'candidate') -> list[dict]:
     if family(task.name) == 'conic':
         return _conic(store, record, partial)
@@ -234,7 +264,7 @@ def _rows(task, store: Store, record: dict, partial: dict, which: str = 'candida
     if not (out / 'summary.json').exists():
         return []
     return {'galaxy-gravity': _galaxy, 'polarization-demosaicking': _polarization, 'species-tree': _species,
-            'ihvp-sequence': _ihvp}.get(family(task.name), lambda o: _trajectory(task, o))(out)
+            'ihvp-sequence': _ihvp, 'blackbox-cubature': _cubature}.get(family(task.name), lambda o: _trajectory(task, o))(out)
 
 
 # Raw metrics and the final mapping -----------------------------------------------------------------------------
@@ -264,9 +294,29 @@ def galaxy_score(raw: float, weak: float, strong: float) -> float:
     return min(100.0, 50 + 50 * math.log(strong / raw) / math.log(strong / 1e-15))
 
 
+def cubature_score(task: str, rows: list[dict], weak: list[dict], strong: list[dict]) -> float | None:
+    """The final paired-gain mapping (arena/operator_drivers/blackbox_cubature.py) on feedback rows."""
+    from .operator_drivers.blackbox_cubature import gain, score_100 as paired_score
+
+    if any(r['status'] != 'passed' for r in rows):
+        return 0.0
+    if not weak or not strong:
+        return None
+    as_driver = lambda rs: [{'id': r['id'], 'family': r['category'], 'dimension': r['dimension'],
+                             'log10_rel_error': r['log10_rel_error']} for r in rs]
+    guard = TASKS[task].guard
+    candidate = gain(as_driver(rows), as_driver(strong), guard)
+    mc = gain(as_driver(weak), as_driver(strong), guard)
+    if candidate['gain'] < 0 <= mc['gain']:  # Monte Carlo is not below the reference here: no 0-point anchor
+        return None
+    return paired_score(candidate, mc)
+
+
 def mapped(task: str, rows: list[dict], weak: list[dict], strong: list[dict]) -> float | None:
     if not rows:
         return None
+    if task.startswith('blackbox-cubature'):
+        return cubature_score(task, rows, weak, strong)
     raw, low, high = raw_error(task, rows), raw_error(task, weak), raw_error(task, strong)
     if raw is None:
         return 0.0
@@ -353,7 +403,13 @@ def public_scope(task, store: Store, job: str) -> bool:
     if fam == 'species-tree':
         return read_json(grade / 'candidate/summary.json').get('scope') == 'public-dev' if (grade / 'candidate/summary.json').exists() else True
     if fam == 'polarization-demosaicking':
-        return read_json(grade / 'candidate/summary.json').get('scope') == 'public-feedback' if (grade / 'candidate/summary.json').exists() else True
+        if not (grade / 'candidate/summary.json').exists():
+            return True
+        summary = read_json(grade / 'candidate/summary.json')
+        return summary.get('scope') == 'public-feedback' or summary.get('mode') == 'dev'
+    if fam == 'blackbox-cubature':
+        part = read_json(grade / 'metrics.json')['parts'].get('candidate', {}) if (grade / 'metrics.json').exists() else {}
+        return part.get('data', 'public') == 'public'
     if fam == 'galaxy-gravity':
         config = grade / 'candidate-config.json'
         return all('/public-dev/' in c['input'] for c in read_json(config)['cases']) if config.exists() else True

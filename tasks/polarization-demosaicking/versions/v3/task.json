@@ -72,5 +72,13 @@
     "strong": "references/reflect"
   },
   "submission_note": "Put solution.py (defining reconstruct(raw)) and README.md in /workspace/submission, plus any sources it needs and an optional executable no-argument build.sh; the evaluator builds once offline and calls reconstruct per scene in a fresh process in a clean copy of this environment without the agent tools.",
-  "instruction": "Read /workspace/problem.md in full and inspect /workspace/public-dev. Implement the demosaicking program described there."
+  "instruction": "Read /workspace/problem.md in full and inspect /workspace/public-dev. Implement the demosaicking program described there.",
+  "feedback": {
+    "task": "polarization-demosaicking-v3",
+    "category": null,
+    "accuracy": "RMSE",
+    "lower_is_better": true,
+    "timed": false,
+    "note": "Any failed scene makes the final score 0. Time counts only against the limit."
+  }
 }
