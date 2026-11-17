@@ -1,0 +1,186 @@
+{
+  "revision": "balanced-split-20261117",
+  "source_archive_sha256": "acfebb847feacbf0294a7df948473e07dc6c407c00eddabf7d193c66cd352a3f",
+  "baseline_results_sha256": "2e3b4330071112b26f262c5a078194e821fc1ee22d1c7fd00bb879d7c73b8a9d",
+  "selection": {
+    "agent_losses_used_for_selection": false,
+    "algorithm": "independent uniform one-of-three per stratum; uniform reservoir over passing candidate draws",
+    "candidate_count": 100000,
+    "candidate_duplicates": "allowed; selection is uniform over passing sampled draws",
+    "feasible_candidate_count": 8623,
+    "loss_aggregation": "unchanged arithmetic mean of per-sequence mean energy losses",
+    "measurement_noise_note": "one archived wall-clock-limited measurement per case/method; runtime noise remains",
+    "measurement_repeats": 1,
+    "search_failure_is_infeasibility_proof": false,
+    "seed": 20261117,
+    "selection_methods": [
+      "cold_cg",
+      "warm_cg"
+    ],
+    "target_max_public_private_mean_ratio": 1.5,
+    "training_stage_balance_enforced": false
+  },
+  "before": {
+    "cold_cg": {
+      "larger_to_smaller_mean_ratio": 12.820536950116658,
+      "private": {
+        "count": 30,
+        "mean_loss": 0.0036175158001031313,
+        "median_loss": 0.0022401935974867143,
+        "top1_loss_share": 0.13105185748088075,
+        "top2_loss_share": 0.2422740036309236
+      },
+      "public": {
+        "count": 15,
+        "mean_loss": 0.04637849498285302,
+        "median_loss": 0.005071151412538223,
+        "top1_loss_share": 0.48205145541989836,
+        "top2_loss_share": 0.8867853754650639
+      },
+      "public_private_mean_ratio": 12.820536950116658
+    },
+    "warm_cg": {
+      "larger_to_smaller_mean_ratio": 34.95590074159279,
+      "private": {
+        "count": 30,
+        "mean_loss": 0.004864342424220298,
+        "median_loss": 0.003015814255390059,
+        "top1_loss_share": 0.15094142752354328,
+        "top2_loss_share": 0.2803490739018061
+      },
+      "public": {
+        "count": 15,
+        "mean_loss": 0.17003747095416358,
+        "median_loss": 0.005423528552110274,
+        "top1_loss_share": 0.3646323454893903,
+        "top2_loss_share": 0.6578864319163503
+      },
+      "public_private_mean_ratio": 34.95590074159279
+    }
+  },
+  "after": {
+    "cold_cg": {
+      "larger_to_smaller_mean_ratio": 1.4777660195025704,
+      "private": {
+        "count": 30,
+        "mean_loss": 0.015416082129276682,
+        "median_loss": 0.002584359038458332,
+        "top1_loss_share": 0.7251135800649021,
+        "top2_loss_share": 0.7649682389068221
+      },
+      "public": {
+        "count": 15,
+        "mean_loss": 0.02278136232450591,
+        "median_loss": 0.004328817828219161,
+        "top1_loss_share": 0.8239608243275792,
+        "top2_loss_share": 0.8633899403235069
+      },
+      "public_private_mean_ratio": 1.4777660195025704
+    },
+    "warm_cg": {
+      "larger_to_smaller_mean_ratio": 1.4170149661693219,
+      "private": {
+        "count": 30,
+        "mean_loss": 0.052609121581967434,
+        "median_loss": 0.0031882817475783,
+        "top1_loss_share": 0.4739119538930458,
+        "top2_loss_share": 0.9118917467599712
+      },
+      "public": {
+        "count": 15,
+        "mean_loss": 0.07454791263866932,
+        "median_loss": 0.0030589590749211678,
+        "top1_loss_share": 0.8316954782572897,
+        "top2_loss_share": 0.9261874114189597
+      },
+      "public_private_mean_ratio": 1.4170149661693219
+    }
+  },
+  "post_hoc": true,
+  "unseen_holdout_claim": false,
+  "split_manifest_sha256": "e185374ff57f5c269ac6ff7249d47f042dec01b5dc719e68a377e60c5eddcbb3",
+  "exact_feasibility": {
+    "agent_losses_used": false,
+    "algorithm": "exhaustive one-of-three stratified enumeration, split halves and blocked Cartesian product",
+    "allocation_selected": false,
+    "arithmetic": "numpy float64; direct <= threshold comparison; not certified exact-real arithmetic",
+    "baseline_results_sha256": "2e3b4330071112b26f262c5a078194e821fc1ee22d1c7fd00bb879d7c73b8a9d",
+    "best_pool_means": {
+      "cold_cg": {
+        "larger_to_smaller_mean_ratio": 1.3213059296290564,
+        "private_mean_loss": 0.016142302973290737,
+        "public_mean_loss": 0.0213289206364778
+      },
+      "warm_cg": {
+        "larger_to_smaller_mean_ratio": 1.1432245470751279,
+        "private_mean_loss": 0.05719163652176311,
+        "public_mean_loss": 0.06538288275907797
+      }
+    },
+    "block_size": 64,
+    "case_count": 45,
+    "complete_combinatorial_enumeration": true,
+    "enumerated_splits": 14348907,
+    "group_count": 15,
+    "half_assignment_counts": [
+      2187,
+      6561
+    ],
+    "half_group_counts": [
+      7,
+      8
+    ],
+    "minimum_worst_mean_ratio": 1.3213059296290564,
+    "objective": "max over Cold/Warm CG of max(public mean / private mean, inverse)",
+    "post_hoc": true,
+    "private_count": 30,
+    "public_count": 15,
+    "revision": "balanced-split-feasibility-20261117",
+    "scope_note": "aggregate feasibility of redistributing the existing 45 trajectories; no case identities or assignment emitted",
+    "selection_methods": [
+      "cold_cg",
+      "warm_cg"
+    ],
+    "source_archive_sha256": "acfebb847feacbf0294a7df948473e07dc6c407c00eddabf7d193c66cd352a3f",
+    "thresholds": [
+      {
+        "feasible_count": 0,
+        "feasible_fraction": 0.0,
+        "max_ratio": 1.25
+      },
+      {
+        "feasible_count": 1228080,
+        "feasible_fraction": 0.08558700673159286,
+        "max_ratio": 1.5
+      },
+      {
+        "feasible_count": 2126058,
+        "feasible_fraction": 0.14816863751364476,
+        "max_ratio": 1.75
+      },
+      {
+        "feasible_count": 3659228,
+        "feasible_fraction": 0.2550178909097397,
+        "max_ratio": 2.0
+      }
+    ],
+    "total_splits": 14348907,
+    "unseen_holdout_claim": false
+  },
+  "counts": {
+    "total": 45,
+    "public": 15,
+    "private": 30,
+    "systems_per_sequence": 50,
+    "dimension": 16384,
+    "strata": 15,
+    "per_stratum_public": 1,
+    "per_stratum_private": 2
+  },
+  "moved_counts": {
+    "public": 9,
+    "private": 9
+  },
+  "raw_runs_reused": 450,
+  "raw_losses_changed": false
+}

@@ -25,5 +25,12 @@ if __name__=='__main__':
         files.append((ROOT/name,name))
     curator=make_archive(dist/'EVALUATOR_ONLY_ihvp_realtrace_tools_20261116.zip',files)
     receipt={'statement_revision':'neutral-statement-20261117','calibration_revision':'cg50-warm0-20261117','model_only':model,'evaluator_only':curator,'full_data_archive':json.loads((ROOT/'reports/REMOTE_DATA_PACKAGE.json').read_text())}
+    balanced=ROOT/'reports/balanced_split_summary.json'
+    if balanced.exists():
+        summary=json.loads(balanced.read_text())
+        receipt.update(split_revision=summary['revision'],split_manifest_sha256=summary['split_manifest_sha256'],calibration_revision='balanced-split-20261117-cg50-warm0')
+        receipt['source_data_archive']=receipt['full_data_archive']
+        if (dist/'balanced_data_package.json').exists():receipt['full_data_archive']=json.loads((dist/'balanced_data_package.json').read_text())
+        else:receipt['balanced_data_package_receipt']='balanced_data_package.json (separate release asset)'
     (dist/'artifacts.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(receipt,indent=2))

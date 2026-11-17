@@ -1,4 +1,4 @@
-> Current replay calibration / 当前回放标定（2026-11-17）：Warm CG＝0，Cold CG＝50；public/private分别重测，旧CG/L-BFGS标定说明作为归档保留。详见[评分修订](reports/ANCHOR_CALIBRATION_20261117.md)。本轮属于对已见结果的事后标定，未修改正式v4。
+> 当前使用balanced-split-20261117完整包：先读START_BALANCED_EVALUATION.md，再进入balanced-evaluator/，所有replay/calibrate命令传--split-manifest split_manifest.json。参见[README](README.md)与[重划报告](reports/BALANCED_SPLIT_20261117.md)。下文旧pool说明与旧命令仅作归档，不可替代新清单。
 
 # 评测维护者使用指南
 

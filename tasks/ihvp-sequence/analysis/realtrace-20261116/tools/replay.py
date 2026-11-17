@@ -10,6 +10,7 @@ if __name__=='__main__':
     p.add_argument('--data',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     p.add_argument('--split',choices=['public','private'])
+    p.add_argument('--split-manifest',type=Path)
     p.add_argument('--case')
     p.add_argument('--methods',nargs='+',choices=[m[0] for m in METHODS])
     a=p.parse_args();a.data=a.data.resolve();a.out=a.out.resolve();a.wall=30.

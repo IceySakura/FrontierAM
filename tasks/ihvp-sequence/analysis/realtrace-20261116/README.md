@@ -2,6 +2,8 @@
 
 本目录仅供评测维护者。这里收录15条public＋30条private候选轨迹的诊断报告、固定方案源码、HVP运行时与复核入口；完整用例、参考向量和生成种子单独保管。数学任务仍为16384维、50步SPD系统，单核30秒/序列、求解进程峰值256MiB。
 
+**当前划分（balanced-split-20261117）：** 将原45条完整轨迹按数据集×场景分层，使用两份固定CG参考的难度约束进行随机重分，保持15 public＋30 private。Cold CG两池均值比由12.82降至1.48，Warm CG由34.96降至1.42。当前实际归属以完整数据包内的`balanced-evaluator/split_manifest.json`为准，原目录名和meta中的split保留为源身份；运行必须传`--split-manifest`。详见[重划报告](reports/BALANCED_SPLIT_20261117.md)。原数据内容、原始loss及旧划分报告保留；这仍是已有数据的重划回放。
+
 **模型题面修订（neutral-statement-20261117）：** 模型可见材料仅描述通用SPD系统、顺序接口、状态与预算契约及评分规则，不提供相关性、历史复用、低秩结构、数据来源或既有结果的解题提示。数据、算子、参考程序、评分映射及封存结果均未改变。本修订应通过新的模型解题运行评测；重跑旧提交只能复核平台，不能衡量题面变化的影响。维护者仍须阅读本目录的版本、标定与诊断记录。
 
 **当前回放标定（2026-11-17）：Warm CG＝0分，Cold CG＝50分。** 按这批private的平均loss，Cold CG最强（0.0036175158）、Warm CG次强（0.0048643424）；算法身份固定，public/private分别使用本池实测值标定。见[评分修订说明](reports/ANCHOR_CALIBRATION_20261117.md)和[重标分数CSV](reports/scores_cg50-warm0-20261117.csv)。这是用户根据已见结果指定的事后重标定，不回写为旧协议下的正式成绩，也不宣称重新完成了盲测。
@@ -12,6 +14,8 @@
 
 | 文件 | 用途 | 能否给模型 |
 |---|---|---|
+| [reports/BALANCED_SPLIT_20261117.md](reports/BALANCED_SPLIT_20261117.md) | 当前重划方法、难度对照和冻结方案重计分 | 否 |
+| [reports/balanced_split_summary.json](reports/balanced_split_summary.json) | 当前清单哈希、选取规则与聚合难度 | 否 |
 | [reports/ANCHOR_CALIBRATION_20261117.md](reports/ANCHOR_CALIBRATION_20261117.md) | 当前Warm＝0、Cold＝50的回放标定 | 否 |
 | [reports/REPORT.md](reports/REPORT.md) | 原始诊断、假设检验和方法对照 | 否 |
 | [reports/baseline_summary.csv](reports/baseline_summary.csv) | 分public/private/combined的loss、时间、内存、HVP数与合规数量 | 否 |
@@ -21,7 +25,7 @@
 | [PROTOCOL.md](PROTOCOL.md)、[USAGE_CURATOR.md](USAGE_CURATOR.md) | 构造和预算说明 | 否 |
 | [model_materials/](model_materials/) | 通用题面、接口、零输出模板、4维3步smoke | **仅此目录可以** |
 
-## 已有实测
+## 原划分已有实测（归档）
 
 下表为30条private的序列等权平均能量loss，不是HERO分类训练loss。
 
@@ -42,6 +46,16 @@
 
 ## 重标分数
 
+当前重划后应使用同一清单汇总，新标定不会覆盖原划分输出：
+
+```bash
+python tools/calibrate_anchors.py --results var/balanced-public var/balanced-private \
+  --split-manifest <完整数据包解压目录>/balanced-evaluator/split_manifest.json \
+  --out var/balanced-calibration
+```
+
+当前封存重计分见[CSV](reports/scores_balanced-split-20261117-cg50-warm0.csv)。下文未传清单的命令仅用于原划分溯源。
+
 现有450次运行的原始loss和资源记录保持不变，先按池平均loss，再应用一次评分映射：
 
 ```bash
@@ -59,6 +73,10 @@ python tools/calibrate_anchors.py --results var/replay-public var/replay-private
 
 ## 完整数据
 
+当前重划完整包名为`EVALUATOR_ONLY_ihvp_balanced_15public_30private_20261117.zip`，位于A服务器同一项目的`var/release/`。精确大小、SHA256及清单哈希见[当前发布](https://github.com/IceySakura/FrontierAM/releases/tag/ihvp-balanced-split-20261117)附件`balanced_data_package.json`。解压后从`START_BALANCED_EVALUATION.md`进入，使用`balanced-evaluator/`内当前工具；旧根目录工具为归档。
+
+下面是内容未改动的原始来源包，单独使用它不会应用新划分：
+
 完整评测人ZIP为14.62GiB，在5090-A：
 
 ```text
@@ -73,7 +91,7 @@ SHA256：`acfebb847feacbf0294a7df948473e07dc6c407c00eddabf7d193c66cd352a3f`。
 
 目标是Linux amd64、单CPU线程。评测依赖见[requirements-eval.txt](requirements-eval.txt)；生成器另需原记录的PyTorch环境，重放已有数据不需要GPU或PyTorch。镜像应预装C++编译器及当前Python开发头文件。所有安装与构建在计时前完成，正式运行断网。
 
-进入本目录，准备已解压的数据根目录（包含public_00…public_14和private_00…private_29子目录）：
+进入本目录或新完整包的`balanced-evaluator/`，准备已解压的数据根目录（保留源public_00…public_14和private_00…private_29子目录）及新分组清单：
 
 ```bash
 python -m pip install -r requirements-eval.txt
@@ -82,10 +100,12 @@ OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   taskset -c <评测核> python code/validate.py --data <完整数据ZIP解压目录>/data --out var/qc
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   taskset -c <评测核> python tools/replay.py --data <完整数据ZIP解压目录>/data \
-  --out var/replay-public --split public
+  --split-manifest <完整数据ZIP解压目录>/balanced-evaluator/split_manifest.json \
+  --out var/balanced-public --split public
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   taskset -c <评测核> python tools/replay.py --data <完整数据ZIP解压目录>/data \
-  --out var/replay-private --split private
+  --split-manifest <完整数据ZIP解压目录>/balanced-evaluator/split_manifest.json \
+  --out var/balanced-private --split private
 ```
 
 先冻结源码、构建产物与参数再运行private。`--methods`可指定固定方案，完整列表用`--help`查看。replay会记录当前源码/运行时哈希，拒绝静默降级到未编译的Sol单轮实现；原始封存回执仅供追溯，不保证与本源码交付子集的目录哈希相同。换机器后重测raw loss，不把B机数字移作新平台锚点。

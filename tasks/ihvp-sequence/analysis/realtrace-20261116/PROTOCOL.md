@@ -1,4 +1,4 @@
-> Current replay calibration / 当前回放标定（2026-11-17）：Warm CG＝0，Cold CG＝50；public/private分别重测，旧CG/L-BFGS标定说明作为归档保留。详见[评分修订](reports/ANCHOR_CALIBRATION_20261117.md)。本轮属于对已见结果的事后标定，未修改正式v4。
+> Current split / 当前划分：balanced-split-20261117。使用完整数据包内split_manifest.json及--split-manifest覆盖原split标签，仍为15 public＋30 private。详见[重划报告](reports/BALANCED_SPLIT_20261117.md)。Warm CG＝0、Cold CG＝50；同机同池重测。本文件下文的原始采样与旧pool归属作为溯源保留，未修改正式v4。
 
 # Real HERO trajectory candidate dataset, version 2026-11-16
 
