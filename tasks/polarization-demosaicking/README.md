@@ -67,6 +67,20 @@
 | 工程或组合小幅超过参照 | v6.3 单轮 53.5（95% 区间 51.8–54.9）、迭代 52.9（51.4–54.4），都确实高于参照 LEIC；v6.2 opus 55.9。sol 用约 7.7k 参数的小卷积网络，只用 2 张公开场景训练；opus 用频域解调加学习滤波。提升来自组合还是参照偏弱，需要组件消融。（证据：`scripts/analyze/v63-bootstrap.py`） | 实测（区间）/ 待查（归因） |  |
 | 数据 | 私有集 32 景，分数区间约 ±1.5 分，能区分 2 分以上的差距。（证据：`results/INSIGHTS.md`） | 实测 |  |
 
+## 模型成绩与解法（题目版本 v3 · 协议 v6.3）
+
+协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
+
+| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Claude Opus 5.5 | 单轮 | 无效提交（formal scene failure） | 任一用例失败或提交检查未通过记 0 | 0.0 | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
+
+### Claude Opus 5.5（单轮，v6.3）
+
+源码 [`solutions/v6.3/v3/claude-opus-5-5-single-1/source/`](solutions/v6.3/v3/claude-opus-5-5-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T045252Z-3abed5`）；未复制的二进制或大文件：weights.npy（38,528 字节）。
+
+<details><summary>旧版本的成绩与解法</summary>
+
 ## 模型成绩与解法（题目版本 v2 · 协议 v6.3）
 
 协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）
@@ -135,8 +149,6 @@ public 分数随测试提交：38.0（13 分钟） → 46.8（21 分钟） → 4
 ### Intern S2（迭代，v6.3）
 
 源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `polarization-demosaicking-v2-20261116T093358Z-fd94ba`）。
-
-<details><summary>旧版本的成绩与解法</summary>
 
 ## 模型成绩与解法（题目版本 v1.2 · 协议 v6.2）
 

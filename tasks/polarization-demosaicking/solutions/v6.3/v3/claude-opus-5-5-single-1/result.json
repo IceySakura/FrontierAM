@@ -1,0 +1,14 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "polarization-demosaicking-v3-20261117T045252Z-3abed5",
+ "raw": "无效提交（formal scene failure）",
+ "mapping": "任一用例失败或提交检查未通过记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 12.6,
+  "public_tests": 0
+ }
+}
