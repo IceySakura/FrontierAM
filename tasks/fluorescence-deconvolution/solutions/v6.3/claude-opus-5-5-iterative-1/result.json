@@ -1,0 +1,36 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "fluorescence-deconvolution-20261117T132401Z-a0ecca",
+ "raw": "nMSE \\(E = 0.02284\\)，96 例，单例最长 0.91 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 92.912,
+ "review": null,
+ "process": {
+  "minutes": 198.6,
+  "public_tests": 4,
+  "public_curve": [
+   {
+    "minute": 21.4,
+    "score": 78.83541482795978,
+    "status": "ok"
+   },
+   {
+    "minute": 46.4,
+    "score": 89.01558074237167,
+    "status": "ok"
+   },
+   {
+    "minute": 51.7,
+    "score": 89.11564765598926,
+    "status": "ok"
+   },
+   {
+    "minute": 196.9,
+    "score": 93.46571651494851,
+    "status": "ok"
+   }
+  ]
+ }
+}
