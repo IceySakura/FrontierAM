@@ -1,0 +1,51 @@
+{
+ "model": "gpt-6.1-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "conic-20261117T082827Z-1e452f",
+ "raw": "364 / 650（\\(p = 0.560\\)，参照 \\(p_B = 0.789\\)）",
+ "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 239.1,
+  "public_tests": 7,
+  "public_curve": [
+   {
+    "minute": 17.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 40.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 71.3,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 155.3,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 187.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 211.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 233.3,
+    "score": 0.0,
+    "status": "ok"
+   }
+  ]
+ }
+}
