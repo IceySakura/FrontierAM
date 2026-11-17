@@ -1,0 +1,8 @@
+{
+  "selected_method": "scaled_pcg",
+  "public_mean_loss": 0.11228342225872096,
+  "criterion": "minimum public mean energy loss among five predeclared human baselines, all 15 public sequences resource compliant",
+  "time": 1794795691.2236338,
+  "public_results_sha256": "19ebc99f15a3194cfb1ca858ce1a8801550f0dc51105cb3ea4218b7b5a427998",
+  "used_private_results": false
+}

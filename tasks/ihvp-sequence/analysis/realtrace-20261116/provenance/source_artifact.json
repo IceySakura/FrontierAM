@@ -1,0 +1,6 @@
+{
+  "source_artifact": "EVALUATOR_ONLY_results_tools_20261116.zip",
+  "sha256": "7dcc0d784ad230c620fca2ea8ee8b286cf9a2415f04215d62425a56dcf0e3cd0",
+  "frozen_agents_commit": "60269c3fdcc471e916e62163229a9fdd56242eaf",
+  "publication": "source, aggregate reports and external package receipt only; no evaluation arrays, reference vectors or private seeds"
+}

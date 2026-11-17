@@ -1,0 +1,10 @@
+{
+  "candidate_selected_among_five": "scaled_pcg",
+  "public_cold_cg_loss": 0.046378494982853,
+  "public_selected_candidate_loss": 0.11228342225872096,
+  "candidate_beats_cold_on_public": false,
+  "candidate_beats_cold_on_private": false,
+  "best_tested_method_public": "cold_cg",
+  "best_tested_method_private": "cold_cg",
+  "valid_improved_50_anchor_found": false
+}

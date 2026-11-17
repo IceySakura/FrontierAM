@@ -1,0 +1,15 @@
+{
+  "cases": 45,
+  "systems": 2250,
+  "all_passed": true,
+  "unique_initial_rhs": 45,
+  "max_reference_certificate_cpu": 9.975951893927332e-19,
+  "max_symmetry_error": 4.0209894648385206e-17,
+  "max_linearity_error": 1.639169503494723e-16,
+  "solution_rank99_median": 48.0,
+  "solution_rank99_min": 8,
+  "solution_rank99_max": 49,
+  "rhs_cosine_median": 0.032715528397554865,
+  "probe_drift_median": 0.25242309244479005,
+  "history16_projection_error_median": 0.9976529570203848
+}
