@@ -126,7 +126,7 @@
           "raw": "无效提交（开发结束时没有冻结出有效提交）",
           "mapping": "无效提交记 0",
           "score": 0.0,
-          "notes_md": ""
+          "notes_md": "书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。"
         },
         {
           "model": "intern-s2",
@@ -138,7 +138,7 @@
           "raw": "无效提交（提交检查未通过，650 例均未运行）",
           "mapping": "无效提交记 0",
           "score": 0.0,
-          "notes_md": ""
+          "notes_md": "书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。"
         }
       ]
     },

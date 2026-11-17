@@ -128,14 +128,14 @@
           "model": "intern-s2",
           "protocol": "v6.3",
           "setting": "单轮",
-          "attempt": 2,
-          "submission": "ihvp-sequence-v4-20261117T061522Z-c17a00",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261115T175832Z-cab8b2",
           "store": "var/stores/store-v63",
-          "raw": "\\(E = 3723\\)，最长序列 0.3 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "raw": "\\(E = 0.2255\\)，最长序列 28.7 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 0.0,
-          "notes_md": "第 1 次尝试为 7 个书生 S2 会话并发、未传采样参数（生成约每秒 11–17 个 token）；本格为最多 2 个并发、按模型卡采样参数（温度 0.8、top_p 0.95、top_k 50）的第 2 次尝试。书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；第 1 次迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh（results/OPEN_ITEMS.md）。",
-          "folder": "v4/intern-s2-single-2"
+          "score": 11.33,
+          "notes_md": "带 L-BFGS 预条件器的 PCG 加子空间投影、按剩余时间分配迭代，没有识别矩阵结构；误差只略好于冷启动 CG。 书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。",
+          "folder": "v4/intern-s2-single-1"
         },
         {
           "model": "intern-s2",
@@ -147,7 +147,7 @@
           "raw": "\\(E = 0.7302\\)，最长序列 4.9 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 0.0,
-          "notes_md": "",
+          "notes_md": "书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。",
           "folder": "v4/intern-s2-iterative-1"
         }
       ]

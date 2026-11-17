@@ -15,7 +15,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) |  |  | 43.3 |  | 37.7 |  | 46.7 |  |  |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 0.0 | 62.3 | 52.6 | 62.6 | 0.0 | 51.1 | 47.9 | 59.3 | 0.0 | 0.0 |
 | [species-tree](tasks/species-tree/README.md) | 49.3 | 52.6 | 28.1 | 51.2 | 0.0 | 0.0 | 0.0 | 30.1 | 0.0 |  |
-| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 62.6 | 63.0 | 58.5 | 60.2 | 52.2 | 51.8 | 52.6 | 56.1 | 0.0 | 0.0 |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 62.6 | 63.0 | 58.5 | 60.2 | 52.2 | 51.8 | 52.6 | 56.1 | 11.3 | 0.0 |
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) |  |  | 45.7 |  | 11.9 |  | 56.6 |  |  |  |
 | [continuum-estimation](tasks/continuum-estimation/README.md) |  |  | 40.0 |  |  |  |  |  |  |  |
 | [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) |  |  | 77.0 |  |  |  |  |  |  |  |
