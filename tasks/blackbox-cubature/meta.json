@@ -23,6 +23,19 @@
       "protocol": "v6.3",
       "results": [
         {
+          "model": "claude-opus-5-5",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261117T062703Z-dbf6f1",
+          "store": "var/stores/store-v63",
+          "raw": "增益 \\(G = -0.061\\)（fourier -0.42，折点 ridge -0.04，乘积峰 +0.28），144 例，单例最长 1.2 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+          "score": 45.698,
+          "notes_md": "",
+          "folder": "v2/claude-opus-5-5-single-1"
+        },
+        {
           "model": "qwen3.8-max-0902",
           "protocol": "v6.3",
           "setting": "单轮",

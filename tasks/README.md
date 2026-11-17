@@ -11,7 +11,7 @@
 | [trajectory-covariance](trajectory-covariance/README.md) | 12 |
 | [species-tree](species-tree/README.md) | 12 |
 | [ihvp-sequence](ihvp-sequence/README.md) | 18 |
-| [blackbox-cubature](blackbox-cubature/README.md) | 1 |
+| [blackbox-cubature](blackbox-cubature/README.md) | 2 |
 | [continuum-estimation](continuum-estimation/README.md) | 1 |
 | [fluorescence-deconvolution](fluorescence-deconvolution/README.md) | 0 |
 

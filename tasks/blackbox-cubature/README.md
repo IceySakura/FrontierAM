@@ -64,7 +64,12 @@
 
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
+| Claude Opus 5.5 | 单轮 | 增益 \(G = -0.061\)（fourier -0.42，折点 ridge -0.04，乘积峰 +0.28），144 例，单例最长 1.2 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 45.7 | 11 分钟 | [`v2/claude-opus-5-5-single-1/`](solutions/v6.3/v2/claude-opus-5-5-single-1/) |
 | Qwen3.8 Max | 单轮 | 增益 \(G = -0.544\)（fourier -0.77，折点 ridge -0.86，乘积峰 -0.00），144 例，单例最长 5.8 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 11.9 | 56 分钟 | [`v2/qwen3.8-max-0902-single-1/`](solutions/v6.3/v2/qwen3.8-max-0902-single-1/) |
+
+### Claude Opus 5.5（单轮，v6.3）
+
+源码 [`solutions/v6.3/v2/claude-opus-5-5-single-1/source/`](solutions/v6.3/v2/claude-opus-5-5-single-1/source/)（提交 `blackbox-cubature-v2-20261117T062703Z-dbf6f1`）。
 
 ### Qwen3.8 Max（单轮，v6.3）
 
