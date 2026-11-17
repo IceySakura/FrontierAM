@@ -66,6 +66,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | Claude Opus 5.5 | 单轮 | nMSE \(E = 0.07422\)，96 例，单例最长 0.23 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.0 | 25 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Qwen3.8 Max | 单轮 | nMSE \(E = 0.10694\)，96 例，单例最长 0.20 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 66.8 | 49 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
+| Hunyuan 4 | 单轮 | nMSE \(E = 0.06654\)，96 例，单例最长 0.41 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 79.4 | 53 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 
 ### Claude Opus 5.5（单轮，v6.3）
 
@@ -74,6 +75,10 @@
 ### Qwen3.8 Max（单轮，v6.3）
 
 源码 [`solutions/v6.3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/qwen3.8-max-0902-single-1/source/)（提交 `fluorescence-deconvolution-20261117T074310Z-68427e`）。
+
+### Hunyuan 4（单轮，v6.3）
+
+源码 [`solutions/v6.3/hy4-single-1/source/`](solutions/v6.3/hy4-single-1/source/)（提交 `fluorescence-deconvolution-20261117T080810Z-ec50e3`）；未复制的二进制或大文件：model.npz（1,512 字节）。
 
 ## 观察与说明
 
