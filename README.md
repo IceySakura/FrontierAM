@@ -19,7 +19,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) | 59.3 | 87.4 | 45.7 | 83.9 | 11.9 | 55.2 | 56.6 | 66.0 |  |  |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 71.4 | 69.0 | 40.0 | 22.8 | 0.0 | 6.9 | 74.5 | 47.8 |  |  |
-| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 94.3 |  | 77.0 | 92.9 | 66.8 | 72.5 | 79.4 |  |  |  |
+| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 94.3 |  | 77.0 | 92.9 | 66.8 | 72.5 | 79.4 | 85.0 |  |  |
 
 满分 100，参照 = 50。
 
@@ -37,7 +37,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) | 60 分钟 | 15 次提交，221 分钟 | 11 分钟 | 16 次提交，97 分钟 | 56 分钟 | 1 次提交，240 分钟 | 51 分钟 | 12 次提交，179 分钟 |  |  |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 49 分钟 | 3 次提交，38 分钟 | 24 分钟 | 5 次提交，80 分钟 | 60 分钟 | 5 次提交，191 分钟 | 51 分钟 | 7 次提交，135 分钟 |  |  |
-| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 59 分钟 |  | 25 分钟 | 4 次提交，199 分钟 | 49 分钟 | 4 次提交，189 分钟 | 53 分钟 |  |  |  |
+| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 59 分钟 |  | 25 分钟 | 4 次提交，199 分钟 | 49 分钟 | 4 次提交，189 分钟 | 53 分钟 | 8 次提交，178 分钟 |  |  |
 <!-- board:end -->
 
 评测从接入到计分的完整流程：[评测流程](docs/BENCH_PROCESS.md)。成绩能说明什么以及需要人类关注的事项：[结果解读](results/INSIGHTS.md)。

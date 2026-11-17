@@ -93,6 +93,18 @@
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 79.355,
           "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "fluorescence-deconvolution-20261117T160645Z-009254",
+          "store": "var/stores/store-v63",
+          "raw": "nMSE \\(E = 0.04844\\)，96 例，单例最长 0.48 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 84.97,
+          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
         }
       ]
     }

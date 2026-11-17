@@ -1,0 +1,56 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "fluorescence-deconvolution-20261117T160645Z-009254",
+ "raw": "nMSE \\(E = 0.04844\\)，96 例，单例最长 0.48 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 84.97,
+ "review": null,
+ "process": {
+  "minutes": 177.7,
+  "public_tests": 8,
+  "public_curve": [
+   {
+    "minute": 17.5,
+    "score": 69.07119813475137,
+    "status": "ok"
+   },
+   {
+    "minute": 43.8,
+    "score": 85.28702702612091,
+    "status": "ok"
+   },
+   {
+    "minute": 51.2,
+    "score": 86.31682024018048,
+    "status": "ok"
+   },
+   {
+    "minute": 114.6,
+    "score": 86.88629830070644,
+    "status": "ok"
+   },
+   {
+    "minute": 146.1,
+    "score": 87.0167214019539,
+    "status": "ok"
+   },
+   {
+    "minute": 149.2,
+    "score": 87.02462333966939,
+    "status": "ok"
+   },
+   {
+    "minute": 170.4,
+    "score": 87.05575912215768,
+    "status": "ok"
+   },
+   {
+    "minute": 174.3,
+    "score": 87.02061944723744,
+    "status": "ok"
+   }
+  ]
+ }
+}
