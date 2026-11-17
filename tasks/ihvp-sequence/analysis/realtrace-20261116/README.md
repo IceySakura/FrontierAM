@@ -2,13 +2,16 @@
 
 本目录仅供评测维护者。这里收录15条public＋30条private候选轨迹的诊断报告、固定方案源码、HVP运行时与复核入口；完整用例、参考向量和生成种子单独保管。数学任务仍为16384维、50步SPD系统，单核30秒/序列、求解进程峰值256MiB。
 
-**结论：暂不直接替换正式题。** 2250个系统的数学硬约束检查通过，10种程序的450次评测全部合规；但Cold CG在public和private均优于全部已测改进方案，尚无有效的0/50分锚点。谱预条件PCG只是在另外五个改进候选中最好，public上也弱于Cold CG。当前只报告raw loss，不给正式分数，不接入榜单。
+**当前回放标定（2026-11-17）：Warm CG＝0分，Cold CG＝50分。** 按这批private的平均loss，Cold CG最强（0.0036175158）、Warm CG次强（0.0048643424）；算法身份固定，public/private分别使用本池实测值标定。见[评分修订说明](reports/ANCHOR_CALIBRATION_20261117.md)和[重标分数CSV](reports/scores_cg50-warm0-20261117.csv)。这是用户根据已见结果指定的事后重标定，不回写为旧协议下的正式成绩，也不宣称重新完成了盲测。
+
+2250个系统的数学硬约束检查、450次预算评测均通过。原CG＝0、L-BFGS-PCG＝50的锚点仍然无效；新的Warm/Cold映射修复了计分次序，但没有改变相关性偏弱的诊断。当前正式v4、旧成绩和榜单保持原样。
 
 ## 阅读入口
 
 | 文件 | 用途 | 能否给模型 |
 |---|---|---|
-| [reports/REPORT.md](reports/REPORT.md) | 完整结论、假设检验和方法对照 | 否 |
+| [reports/ANCHOR_CALIBRATION_20261117.md](reports/ANCHOR_CALIBRATION_20261117.md) | 当前Warm＝0、Cold＝50的回放标定 | 否 |
+| [reports/REPORT.md](reports/REPORT.md) | 原始诊断、假设检验和方法对照 | 否 |
 | [reports/baseline_summary.csv](reports/baseline_summary.csv) | 分public/private/combined的loss、时间、内存、HVP数与合规数量 | 否 |
 | [reports/quality_by_profile.json](reports/quality_by_profile.json) | 固定批次与重采批次的相关性诊断 | 否 |
 | [reports/DATA_PACKAGE.md](reports/DATA_PACKAGE.md) | A服务器完整数据ZIP位置、大小与SHA256 | 否 |
@@ -34,6 +37,23 @@
 | Opus 5.5 迭代 | 0.02029713 |
 
 450次运行最长28.670秒，最大求解进程峰值RSS109.262MiB。参考解独立CPU证书最大9.98e-19。阶段内b相邻余弦中位数0.0327；固定批次场景为0.9949，其余四类重采批次场景接近0。该数据是实际小网络HERO变体训练轨迹，并非原大网络或原ZO配置的逐步重放；不能据此推广成“真实HERO都没有相关性”。
+
+## 重标分数
+
+现有450次运行的原始loss和资源记录保持不变，先按池平均loss，再应用一次评分映射：
+
+```bash
+python tools/calibrate_anchors.py
+python tools/check_calibration.py
+```
+
+新平台复跑后，应从同平台、同一批数据的逐例结果重新标定；不跨平台沿用这里的数值：
+
+```bash
+python tools/calibrate_anchors.py --results var/replay-public var/replay-private --out var/new-calibration
+```
+
+参考必须在整个相应池上全部合法；数据缺失或未标定记未测，提交失败按0分处理。public的数值不用于private，不能逐例打分后平均。
 
 ## 完整数据
 

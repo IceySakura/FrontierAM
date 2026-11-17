@@ -1,3 +1,5 @@
+评分修订：完整数据ZIP保持原字节和SHA256不变，内含旧诊断报告。当前计分请使用本交接目录的[Warm＝0、Cold＝50标定](ANCHOR_CALIBRATION_20261117.md)。
+
 完整数据包位于5090-A（评测维护者专用）
 
 文件：/mnt/sdb/henryzhang/ihvp_realtrace_20261116/var/release/EVALUATOR_ONLY_ihvp_realtrace_15public_30private_20261116.zip

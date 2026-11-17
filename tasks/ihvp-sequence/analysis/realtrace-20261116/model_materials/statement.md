@@ -12,4 +12,8 @@ $$H_t x_t^\star=b_t,\quad b_t\ne0,\quad 0<\mu I\preceq H_t\preceq LI.$$
 
 $$\ell_t=\frac{(\widehat x_t-x_t^\star)^\mathsf T H_t(\widehat x_t-x_t^\star)}{(x_t^\star)^\mathsf T H_t x_t^\star},\quad E=\frac1N\sum_{i=1}^N\frac1{50}\sum_{t=1}^{50}\ell_{i,t}.$$
 
-零输出loss为1。无需达到指定残差阈值；精度不决定输出合法性。本诊断阶段只比较原始loss与资源合规性，尚无有效0/50分锚点。任一序列超限、缺失输出、异常退出或输出非法，整份提交不进入有效loss排名。
+零输出loss为1。无需达到指定残差阈值；精度不决定输出合法性。本候选回放协议固定Warm CG为0分参考、Cold CG为50分参考。评测端在同一机器、同一池重跑两者，得到E_0（Warm CG）、E_{50}（Cold CG），必须满足E_0>E_{50}>0。先对整池等权平均loss后换算一次分数，不逐例换算后平均。
+
+$$S(E)=\begin{cases}0,&E\ge E_0,\\50\,(E_0-E)/(E_0-E_{50}),&E_{50}\le E<E_0,\\100-50E/E_{50},&0\le E<E_{50}.\end{cases}$$
+
+public和private的数值分别标定；缺少完整标定时记未测。当前映射用于已有结果的回放，不改变旧协议正式成绩。任一序列超限、缺失输出、异常退出或输出非法，整份提交不进入有效loss排名。

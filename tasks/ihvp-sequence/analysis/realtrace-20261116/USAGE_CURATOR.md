@@ -1,3 +1,5 @@
+> Current replay calibration / 当前回放标定（2026-11-17）：Warm CG＝0，Cold CG＝50；public/private分别重测，旧CG/L-BFGS标定说明作为归档保留。详见[评分修订](reports/ANCHOR_CALIBRATION_20261117.md)。本轮属于对已见结果的事后标定，未修改正式v4。
+
 # 评测维护者使用指南
 
 **本文件与评测数据包只给评测维护者，不给被测模型。**

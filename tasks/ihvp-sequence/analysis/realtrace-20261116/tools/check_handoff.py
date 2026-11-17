@@ -18,7 +18,10 @@ with zipfile.ZipFile(ROOT/'dist/EVALUATOR_ONLY_ihvp_realtrace_tools_20261116.zip
 summary=json.loads((ROOT/'reports/results_summary.json').read_text())
 assert all(a['n']==45 and a['valid']==45 for a in summary['combined'].values())
 assert summary['quality']['systems']==2250 and summary['quality']['all_passed']
-assert json.loads((ROOT/'reports/reference_eligibility.json').read_text())['valid_improved_50_anchor_found'] is False
+assert json.loads((ROOT/'reports/reference_eligibility.json').read_text())['valid_improved_50_anchor_found'] is False # Historical Cold=0 candidate-selection receipt.
+calibration=json.loads((ROOT/'reports/anchor_calibration_cg50-warm0-20261117.json').read_text())
+assert calibration['post_hoc'] and calibration['zero_method']=='warm_cg' and calibration['fifty_method']=='cold_cg'
+for pool,anchors in calibration['pool_anchors'].items():assert anchors['E0']>anchors['E50']>0
 spec=json.loads((ROOT/'model_materials/smoke.json').read_text())
 class Case:
     dimension=spec['dimension'];steps=spec['steps'];mu=spec['mu'];L=spec['L']
