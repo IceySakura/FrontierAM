@@ -1,0 +1,26 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "blackbox-cubature-v2-20261118T065338Z-af9bb3",
+ "raw": "增益 \\(G = 0.749\\)（fourier +1.55，折点 ridge -1.31，乘积峰 +2.00），144 例，单例最长 2.5 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+ "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+ "score": 68.726,
+ "review": null,
+ "process": {
+  "minutes": 228.8,
+  "public_tests": 2,
+  "public_curve": [
+   {
+    "minute": 35.6,
+    "score": 45.885267918662734,
+    "status": "ok"
+   },
+   {
+    "minute": 226.4,
+    "score": 62.4043590148181,
+    "status": "ok"
+   }
+  ]
+ }
+}

@@ -17,7 +17,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [species-tree](tasks/species-tree/README.md) | 49.3 | 52.6 | 28.1 | 51.2 | 0.0 | 0.0 | 0.0 | 30.1 | 0.0 |  |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 62.6 | 63.0 | 58.5 | 60.2 | 52.2 | 51.8 | 52.6 | 56.1 | 11.3 | 0.0 |
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |
-| [blackbox-cubature](tasks/blackbox-cubature/README.md) | 59.3 | 87.4 | 45.7 | 83.9 | 11.9 | 55.2 | 56.6 | 66.0 |  |  |
+| [blackbox-cubature](tasks/blackbox-cubature/README.md) | 59.3 | 87.4 | 45.7 | 83.9 | 11.9 | 68.7 | 56.6 | 66.0 |  |  |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 71.4 | 69.0 | 40.0 | 22.8 | 0.0 | 49.9 | 74.5 | 47.8 |  |  |
 | [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 94.3 | 93.5 | 77.0 | 92.9 | 66.8 | 77.3 | 79.4 | 85.0 |  |  |
 
@@ -35,7 +35,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [species-tree](tasks/species-tree/README.md) | 58 分钟 | 13 次提交，128 分钟 | 26 分钟 | 4 次提交，110 分钟 | 30 分钟 | 2 次提交，230 分钟 | 58 分钟 | 4 次提交，157 分钟 | 60 分钟 |  |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 57 分钟 | 8 次提交，122 分钟 | 19 分钟 | 8 次提交，159 分钟 | 38 分钟 | 4 次提交，179 分钟 | 60 分钟 | 4 次提交，183 分钟 | 60 分钟 | 0 次提交，240 分钟 |
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |
-| [blackbox-cubature](tasks/blackbox-cubature/README.md) | 60 分钟 | 15 次提交，221 分钟 | 11 分钟 | 16 次提交，97 分钟 | 56 分钟 | 1 次提交，240 分钟 | 51 分钟 | 12 次提交，179 分钟 |  |  |
+| [blackbox-cubature](tasks/blackbox-cubature/README.md) | 60 分钟 | 15 次提交，221 分钟 | 11 分钟 | 16 次提交，97 分钟 | 56 分钟 | 2 次提交，229 分钟 | 51 分钟 | 12 次提交，179 分钟 |  |  |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 49 分钟 | 3 次提交，38 分钟 | 24 分钟 | 5 次提交，80 分钟 | 60 分钟 | 4 次提交，216 分钟 | 51 分钟 | 7 次提交，135 分钟 |  |  |
 | [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 59 分钟 | 3 次提交，182 分钟 | 25 分钟 | 4 次提交，199 分钟 | 49 分钟 | 3 次提交，220 分钟 | 53 分钟 | 8 次提交，178 分钟 |  |  |
 <!-- board:end -->

@@ -69,7 +69,7 @@
 | Claude Opus 5.5 | 单轮 | 增益 \(G = -0.061\)（fourier -0.42，折点 ridge -0.04，乘积峰 +0.28），144 例，单例最长 1.2 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 45.7 | 11 分钟 | [`v2/claude-opus-5-5-single-1/`](solutions/v6.3/v2/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | 增益 \(G = 1.356\)（fourier +1.56，折点 ridge +0.51，乘积峰 +2.00），144 例，单例最长 1.4 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 83.9 | 16 次提交，97 分钟 | [`v2/claude-opus-5-5-iterative-1/`](solutions/v6.3/v2/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | 增益 \(G = -0.544\)（fourier -0.77，折点 ridge -0.86，乘积峰 -0.00），144 例，单例最长 5.8 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 11.9 | 56 分钟 | [`v2/qwen3.8-max-0902-single-1/`](solutions/v6.3/v2/qwen3.8-max-0902-single-1/) |
-| Qwen3.8 Max | 迭代 | 增益 \(G = 0.207\)（fourier -0.28，折点 ridge -1.06，乘积峰 +1.96），144 例，单例最长 1.1 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 55.2 | 1 次提交，240 分钟 | [`v2/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v2/qwen3.8-max-0902-iterative-1/) |
+| Qwen3.8 Max | 迭代 | 增益 \(G = 0.749\)（fourier +1.55，折点 ridge -1.31，乘积峰 +2.00），144 例，单例最长 2.5 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 68.7 | 2 次提交，229 分钟 | [`v2/qwen3.8-max-0902-iterative-2/`](solutions/v6.3/v2/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 增益 \(G = 0.265\)（fourier -0.44，折点 ridge -0.49，乘积峰 +1.73），144 例，单例最长 3.8 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 56.6 | 51 分钟 | [`v2/hy4-single-1/`](solutions/v6.3/v2/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 增益 \(G = 0.640\)（fourier +0.81，折点 ridge -0.90，乘积峰 +2.00），144 例，单例最长 11.4 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 66.0 | 12 次提交，179 分钟 | [`v2/hy4-iterative-1/`](solutions/v6.3/v2/hy4-iterative-1/) |
 
@@ -101,9 +101,11 @@ public 分数随测试提交：39.7（4 分钟） → 63.8（15 分钟） → 64
 
 ### Qwen3.8 Max（迭代，v6.3）
 
-public 分数随测试提交：44.1（114 分钟）
+第 1 次尝试中有 2 个回合上游流约 600 秒没有任何输出后断开（上游空闲超时，基础设施问题，记未测），共损失约 23 分钟；本格为第 2 次尝试。
 
-源码 [`solutions/v6.3/v2/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/v2/qwen3.8-max-0902-iterative-1/source/)（提交 `blackbox-cubature-v2-20261117T140100Z-184b43`）。
+public 分数随测试提交：45.9（36 分钟） → 62.4（226 分钟）
+
+源码 [`solutions/v6.3/v2/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/v2/qwen3.8-max-0902-iterative-2/source/)（提交 `blackbox-cubature-v2-20261118T065338Z-af9bb3`）。
 
 ### Hunyuan 4（单轮，v6.3）
 
