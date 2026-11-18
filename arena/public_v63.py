@@ -64,6 +64,7 @@ PUBLIC = {
     'ihvp-sequence-v2': {'family': 'ihvp-sequence', 'store': STORE, 'env': {'FRONTIERAM_IHVP_DATA': 'public'}},
     'ihvp-sequence-v3': {'family': 'ihvp-sequence', 'store': STORE, 'env': {'FRONTIERAM_IHVP_DATA': 'public'}},
     'ihvp-sequence-v4': {'family': 'ihvp-sequence', 'store': STORE, 'env': {'FRONTIERAM_IHVP_DATA': 'public'}},
+    'ihvp-sequence-v5': {'family': 'ihvp-sequence', 'store': STORE, 'env': {'FRONTIERAM_IHVP_DATA': 'public'}},
 }
 SUITE_FAMILIES = ('conic', 'exponential')
 

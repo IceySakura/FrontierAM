@@ -58,15 +58,17 @@ SUBMISSIONS = {
 FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3': 'galaxy-gravity',
           'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree',
           'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
-          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence',
+          'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence', 'ihvp-sequence-v5': 'ihvp-sequence',
           'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature',
           'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution'}
+V5_FILES = ('README.md', 'statement.md', 'interface.md', 'solver.py', 'smoke.json')  # the MODEL_ONLY package, nothing else
 # Versions that keep the author's workspace layout: their public-dev material is the samples; these files must be there.
 AUTHOR_LAYOUT = {'polarization-demosaicking-v3': ['/workspace/public-dev/check.py', '/workspace/public-dev/wen5'],
                  'blackbox-cubature-v2': ['/workspace/environment/public-dev/pilot.py', '/workspace/tests/grade.py',
                                           '/workspace/examples/reference_submission/run.sh'],
                  'continuum-estimation': ['/workspace/problem.md', '/workspace/public/check.py', '/workspace/runtime'],
-                 'fluorescence-deconvolution': ['/workspace/problem.md', '/workspace/public-dev/check.py']}
+                 'fluorescence-deconvolution': ['/workspace/problem.md', '/workspace/public-dev/check.py'],
+                 'ihvp-sequence-v5': [f'/workspace/{name}' for name in V5_FILES]}
 
 
 def script(task: str, setting: str) -> str:
@@ -123,15 +125,15 @@ def main():
                       no_case_ids_in_report='"id"' not in json.dumps(ids) and 'case_id' not in report,
                       final_frozen='(final)' in (out / 'task/source/README.md').read_text(),
                       tests_counted=result.get('test_submissions', 0) >= 1)
-        if task_name == 'ihvp-sequence-v4':  # aggregate-only feedback: the total row and nothing per group or case
+        if task_name in ('ihvp-sequence-v4', 'ihvp-sequence-v5'):  # aggregate-only feedback: the total row and nothing per group or case
             rows = [l for l in report.splitlines() if l.startswith('| ') and not l.startswith(('| category', '| ---'))]
             checks.update(aggregate_only=not ids.get('categories') and bool(rows) and all('**total**' in l for l in rows))
-    if task_name == 'ihvp-sequence-v4':
+    if task_name in ('ihvp-sequence-v4', 'ihvp-sequence-v5'):
         files = sorted(l for l in workspace.splitlines() if l.startswith('/workspace/') and '.' in l.rsplit('/', 1)[-1]
                        and not l.startswith(('/workspace/submission', '/workspace/feedback')))
-        checks.update(six_files=files == ['/workspace/problem.md', '/workspace/samples/README.md', '/workspace/samples/run_sample.py',
+        checks.update(workspace_files=files == ([f'/workspace/{name}' for name in sorted(V5_FILES)] if task_name == 'ihvp-sequence-v5' else ['/workspace/problem.md', '/workspace/samples/README.md', '/workspace/samples/run_sample.py',
                                           '/workspace/samples/smoke.json', '/workspace/samples/support/api.py',
-                                          '/workspace/samples/support/worker.py'])
+                                          '/workspace/samples/support/worker.py']))
     else:
         expected = 'development_deadline' if setting == 'single-deadline' else 'turn_completed'
         checks.update(no_submit_client='No such file or directory' in log, stop_reason=result.get('agent_stop_reason') == expected,

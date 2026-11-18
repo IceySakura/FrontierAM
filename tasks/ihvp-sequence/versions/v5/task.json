@@ -1,0 +1,62 @@
+{
+  "name": "ihvp-sequence-v5",
+  "title": "时序正定线性系统求解（真实轨迹候选回放）",
+  "status": "candidate",
+  "status_reason": "Real-training-trajectory replay from PR #5 (iHengRui): 45 sequences re-split into 15 public / 30 private (balanced-split-20261117), statement sequence-statement-20261117, Warm CG = 0 / Cold CG = 50 re-measured on this machine per pool. The anchors were chosen after the private results had been seen and the split was conditioned on the two CG references' losses, so this is a candidate replay listed separately; the formal v4 row and its results stay.",
+  "driver": "ihvp_realtrace_v5",
+  "references": {
+    "weak": "repo:tasks/ihvp-sequence/references/realtrace/warm_cg",
+    "strong": "repo:tasks/ihvp-sequence/references/realtrace/cold_cg"
+  },
+  "images": {
+    "task": {
+      "tag": "frontieram-ihvp-sequence:amd64-v5",
+      "dockerfile": "Dockerfile",
+      "replaces": []
+    }
+  },
+  "data": {
+    "root": "var/raw/ihvp-sequence-v5/data",
+    "public": "public/manifest.json",
+    "private": "private/manifest.json",
+    "private_bodies_in_git": false,
+    "public_sequences": 15,
+    "private_sequences": 30,
+    "split_manifest_sha256": "e185374ff57f5c269ac6ff7249d47f042dec01b5dc719e68a377e60c5eddcbb3",
+    "archive_sha256": "dd375126fe4d6a0dec6ac569034cc9b477d376c12be67e62724e28f72d3876a3",
+    "model_package_sha256": "3c0f7132dd7a42a9"
+  },
+  "limits": {
+    "dimension": 16384,
+    "steps": 50,
+    "sequence_wall_seconds": 30,
+    "worker_memory_mib": 256,
+    "numerical_threads": 1,
+    "max_hvp_block_columns": 64
+  },
+  "scoring": {
+    "raw": "mean normalized squared H-energy error (per sequence over 50 steps, then equal weight over the pool)",
+    "native_anchors": {
+      "warm_cg": 0,
+      "cold_cg": 5,
+      "zero_error": 10
+    },
+    "final_multiplier": 10,
+    "mapping": "piecewise-linear",
+    "calibration": "both references re-measured on this machine, separately for the public and the private pool"
+  },
+  "submission_note": "Submit solver.py exposing make_solver(dimension, seed, options), returning an object with solve(hvp, b, context) -> x or (x, diagnostics) (interface.md). An optional ./build.sh runs once, offline, in a clean copy of this environment before the sequences (not timed, at most 600 seconds).",
+  "instruction": "阅读 /workspace/README.md、/workspace/statement.md 和 /workspace/interface.md，按 /workspace/solver.py 模板在 /workspace/submission 中实现时序正定线性系统求解器；/workspace/smoke.json 是 4 维 3 步的接口样例。",
+  "derived_from": "ihvp-sequence-v4",
+  "feedback": {
+    "scope": "aggregate_only",
+    "private_feedback": "none_before_final_freeze",
+    "family_labels": false,
+    "case_results": false,
+    "category": null,
+    "accuracy": "normalized squared H-energy error",
+    "lower_is_better": true,
+    "timed": true,
+    "note": "Only the aggregate public result (loss, score, time, memory, HVP count, compliance); private runs once after the submission is frozen."
+  }
+}

@@ -710,10 +710,11 @@ def operator_tasks() -> dict[str, OperatorTask]:
     from .operator_drivers.ihvp_sequence import IHVPSequence
     from .operator_drivers.ihvp_hard_v3 import IHVPHardV3
     from .operator_drivers.ihvp_hard_v4 import IHVPHardV4
+    from .operator_drivers.ihvp_realtrace_v5 import IHVPRealtraceV5
     from .operator_drivers.pdhcg_qp import PDHCGQP
     handlers = {**CLASSES, 'ihvp-sequence': IHVPSequence, 'ihvp-sequence-v2': IHVPSequence,
                 'ihvp-sequence-v3': IHVPHardV3, 'ihvp-sequence-v4': IHVPHardV4,
-                'pdhcg-qp-v1': PDHCGQP}
+                'ihvp-sequence-v5': IHVPRealtraceV5, 'pdhcg-qp-v1': PDHCGQP}
     tasks = {}
     for path in sorted(SPECS.glob('*/versions/*/task.json')):
         spec = json.loads(path.read_text())

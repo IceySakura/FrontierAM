@@ -21,9 +21,11 @@ TASKS = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3':
          'galaxy-gravity-v4': 'galaxy-gravity', 'ihvp-sequence-v4': 'ihvp-sequence',
          'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature',
          'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution',
-         'pdhcg-qp-v1': 'pdhcg-qp'}
+         'pdhcg-qp-v1': 'pdhcg-qp', 'ihvp-sequence-v5': 'ihvp-sequence'}
 SUBFOLDER = {'ihvp-sequence-v2': 'v2', 'ihvp-sequence-v3': 'v3', 'galaxy-gravity-v4': 'v4', 'ihvp-sequence-v4': 'v4',
-             'polarization-demosaicking-v3': 'v3', 'blackbox-cubature-v2': 'v2'}  # later task versions within protocol v6.3 keep their own solutions subfolder
+             'polarization-demosaicking-v3': 'v3', 'blackbox-cubature-v2': 'v2', 'ihvp-sequence-v5': 'v5'}
+# Candidate versions are listed after the task's current group (the board row) instead of replacing it.
+CANDIDATE = {'ihvp-sequence-v5': '真实训练轨迹候选回放（锚点在看过结果后确定，单列，不替代 v4）'}  # later task versions within protocol v6.3 keep their own solutions subfolder
 SETTING = {'single': '单轮', 'iterative': '迭代'}
 NOTES = {
     ('blackbox-cubature-v2', 'iterative', 'claude-opus-5-5'): '先用查询检验结构再精确积分：可分离函数做一维自适应 Gauss–Kronrod，脊函数 g(w·x) 估方向后做一维 Chebyshev 积分，分段线性函数定位折面后用有理数精确积分，否则退回通用求积。fourier_ridge 是单方向脊函数、product_peak 可分离，两族因此接近精确（+1.56、+2.00）；16 次测试，public 39.7 → 83.0。超过 80，题目设计弱点已记录待出题人决定（results/OPEN_ITEMS.md）。',
@@ -161,8 +163,9 @@ def cell(task: str, score: dict) -> tuple[str, str]:
         anchors = score.get('anchors') or baseline_anchors(task)
         if raw is None:
             return f'无效提交（{candidate.get("reason") or "有序列失败"}）', '任一序列失败记 0'
-        return (f'\\(E = {raw:.4g}\\)，最长序列 {candidate.get("max_wall_s") or 0:.1f} 秒（CG：\\(U = {anchors["weak"]:.4f}\\)，'
-                f'L-BFGS-PCG：\\(W = {anchors["strong"]:.4f}\\)）', LINEAR)
+        weak, strong = ('Warm CG', 'Cold CG') if task == 'ihvp-sequence-v5' else ('CG', 'L-BFGS-PCG')
+        return (f'\\(E = {raw:.4g}\\)，最长序列 {candidate.get("max_wall_s") or 0:.1f} 秒（{weak}：\\(U = {anchors["weak"]:.4f}\\)，'
+                f'{strong}：\\(W = {anchors["strong"]:.4f}\\)）', LINEAR)
     if family == 'continuum-estimation':
         anchors = baseline_anchors(task)
         if candidate.get('status') == 'submission_failure':
@@ -239,8 +242,10 @@ def main():
                                 'notes_md': note, **({'folder': name} if task in SUBFOLDER else {}), **reviews.get((model, SETTING[setting]), {})})
         if not results:
             continue
-        group = {'title': TITLE, 'version': version, 'protocol': 'v6.3', 'results': results}
-        meta['result_groups'] = [group] + [g for g in meta['result_groups'] if not (g.get('protocol') == 'v6.3' and g.get('version') == version)]
+        group = {'title': f'{TITLE} · {CANDIDATE[task]}' if task in CANDIDATE else TITLE, 'version': version, 'protocol': 'v6.3',
+                 'results': results, **({'candidate': True} if task in CANDIDATE else {})}
+        others = [g for g in meta['result_groups'] if not (g.get('protocol') == 'v6.3' and g.get('version') == version)]
+        meta['result_groups'] = others[:1] + [group] + others[1:] if task in CANDIDATE else [group] + others
         path.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + '\n')
         print(json.dumps({'task': family, 'cells': [(r['setting'], r['score']) for r in results]}, ensure_ascii=False))
 

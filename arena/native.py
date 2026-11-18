@@ -362,6 +362,14 @@ SCORING_DISCLOSURE['pdhcg-qp-v1'] = (
     'every instance is the midpoint of the scale, and being faster while solving everything scores higher. Failures '
     'cost both accuracy and time.'
 )
+SCORING_DISCLOSURE['ihvp-sequence-v5'] = (
+    'Every held-out sequence must finish within 30 wall-clock seconds (start-up, imports, communication and all HVP '
+    'work included) with a solver-process peak RSS of at most 256 MiB, and return 50 finite vectors; a single failure '
+    'makes the whole submission score zero. Given that, the score depends only on the mean normalized squared '
+    'H-energy error over the pool, compared with two reference solvers measured on the same sequences and limits: '
+    'matching warm-started CG scores zero, matching cold-start CG is the midpoint of the scale and zero error is the '
+    'maximum. Finishing faster or using less memory earns nothing extra.'
+)
 SCORING_DISCLOSURE['trajectory-covariance'] = (
     'The score depends only on the mean whitened error over all held-out inputs, averaged with equal weight over the '
     'settings and trajectory lengths; a failed or invalid output counts as the zero matrix for that input. It is '
@@ -373,7 +381,7 @@ SCORING_DISCLOSURE['trajectory-covariance'] = (
 
 # Protocol v6.3 task versions inherit the harness image and the scoring disclosure of the version they derive from,
 # unless they define their own (galaxy-gravity-v3).
-V63_VERSIONS = {'polarization-demosaicking-v3': 'polarization-demosaicking', 'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence', 'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree-v2',
+V63_VERSIONS = {'polarization-demosaicking-v3': 'polarization-demosaicking', 'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence', 'ihvp-sequence-v5': 'ihvp-sequence-v4', 'polarization-demosaicking-v2': 'polarization-demosaicking', 'species-tree-v3': 'species-tree-v2',
                 'trajectory-covariance-v2': 'trajectory-covariance', 'exponential-v3': 'exponential-v2', 'conic-v3': 'conic'}
 for _new, _old in V63_VERSIONS.items():
     HARNESS_IMAGES.setdefault(_new, HARNESS_IMAGES[_old])
