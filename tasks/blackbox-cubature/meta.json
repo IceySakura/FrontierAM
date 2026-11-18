@@ -125,6 +125,19 @@
           "score": 65.997,
           "notes_md": "",
           "folder": "v2/hy4-iterative-1"
+        },
+        {
+          "model": "intern-s2",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261118T091157Z-dccff7",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（开发结束时没有冻结出有效提交）",
+          "mapping": "无效提交记 0",
+          "score": 0.0,
+          "notes_md": "",
+          "folder": "v2/intern-s2-single-1"
         }
       ]
     }

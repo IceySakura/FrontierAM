@@ -123,6 +123,19 @@
           "score": 51.57,
           "notes_md": "",
           "folder": "v3/hy4-iterative-1"
+        },
+        {
+          "model": "intern-s2",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "polarization-demosaicking-v3-20261118T091157Z-beb736",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（开发结束时没有冻结出有效提交）",
+          "mapping": "无效提交记 0",
+          "score": 0.0,
+          "notes_md": "",
+          "folder": "v3/intern-s2-single-1"
         }
       ]
     },
