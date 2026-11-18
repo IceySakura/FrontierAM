@@ -91,14 +91,14 @@
           "model": "qwen3.8-max-0902",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 2,
-          "submission": "blackbox-cubature-v2-20261118T065338Z-af9bb3",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261117T140100Z-184b43",
           "store": "var/stores/store-v63",
-          "raw": "增益 \\(G = 0.749\\)（fourier +1.55，折点 ridge -1.31，乘积峰 +2.00），144 例，单例最长 2.5 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+          "raw": "增益 \\(G = 0.207\\)（fourier -0.28，折点 ridge -1.06，乘积峰 +1.96），144 例，单例最长 1.1 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
           "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
-          "score": 68.726,
-          "notes_md": "第 1 次尝试中有 2 个回合上游流约 600 秒没有任何输出后断开（上游空闲超时，基础设施问题，记未测），共损失约 23 分钟；本格为第 2 次尝试。",
-          "folder": "v2/qwen3.8-max-0902-iterative-2"
+          "score": 55.186,
+          "notes_md": "两次尝试都有回合遇到上游（阿里百炼）流约 600 秒没有任何输出后断开（AIHub 记为成功、0 token，无其他供应商可换），第 1 次损失约 23 分钟、第 2 次约 49 分钟；按用户决定（11-18）取损失较少的第 1 次为正式格。",
+          "folder": "v2/qwen3.8-max-0902-iterative-1"
         },
         {
           "model": "hy4",
