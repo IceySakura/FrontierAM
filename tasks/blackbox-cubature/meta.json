@@ -136,7 +136,7 @@
           "raw": "无效提交（开发结束时没有冻结出有效提交）",
           "mapping": "无效提交记 0",
           "score": 0.0,
-          "notes_md": "",
+          "notes_md": "11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。",
           "folder": "v2/intern-s2-single-1"
         }
       ]

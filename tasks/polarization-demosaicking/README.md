@@ -125,6 +125,8 @@ public 分数随测试提交：52.1（43 分钟） → 56.1（99 分钟） → 5
 
 ### Intern S2（单轮，v6.3）
 
+11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。
+
 源码 [`solutions/v6.3/v3/intern-s2-single-1/source/`](solutions/v6.3/v3/intern-s2-single-1/source/)（提交 `polarization-demosaicking-v3-20261118T091157Z-beb736`）；未复制的二进制或大文件：（提交存档不在本服务器）。
 
 <details><summary>旧版本的成绩与解法</summary>
