@@ -91,8 +91,8 @@ def normalize(value):
             'reason':value.get('termination_reason') or (str(value.get('solver_errors')) if value.get('solver_errors') else None),**value}
 
 
-def aggregate(rows,expected):
-    if len(rows)!=expected or any(row['status']=='infrastructure_failure' for row in rows):status='infrastructure_failure'
+def aggregate(rows,expected,repeats=1):
+    if len(rows)!=expected*repeats or any(row['status']=='infrastructure_failure' for row in rows):status='infrastructure_failure'
     elif any(row['status']!='ok' for row in rows):status='submission_failure'
     else:status='ok'
     losses=[row.get('raw_error') for row in rows]
@@ -100,10 +100,13 @@ def aggregate(rows,expected):
         values=[row[key] for row in rows if row.get(key) is not None]
         return float(how(values)) if values else None
     return {'status':status,'raw_error':float(np.mean(losses)) if rows and all(v is not None for v in losses) else None,
-            'sequences':len(rows),'expected_sequences':expected,'compliant_sequences':sum(row['status']=='ok' for row in rows),
+            'sequences':len(rows),'expected_sequences':expected*repeats,'compliant_sequences':sum(row['status']=='ok' for row in rows),
             'mean_wall_seconds':stat('wall_seconds',np.mean),'max_wall_seconds':stat('wall_seconds',max),
             'mean_peak_rss_mib':stat('peak_rss_mib',np.mean),'max_peak_rss_mib':stat('peak_rss_mib',max),
             'mean_hvp_calls':stat('hvp_calls',np.mean),'max_hvp_calls':stat('hvp_calls',max),
+            'repeats':repeats,'repeat_raw_errors':[float(np.mean([r['raw_error'] for r in rows if r['repeat']==k]))
+                                                   if all(r.get('raw_error') is not None for r in rows if r['repeat']==k) else None
+                                                   for k in range(repeats)],
             'reason':next((r.get('reason') for r in rows if r.get('reason')),None)}
 
 
@@ -113,10 +116,11 @@ def run(args):
     submission=args.submission.resolve()
     if args.smoke:
         sample=VERSION/'workspace'/'smoke.json'
-        entries=[{'id':'smoke','path':str(sample)}];root=sample.parent;data_fingerprint=file_sha(sample)
+        entries=[{'id':'smoke','path':str(sample)}];root=sample.parent;data_fingerprint=file_sha(sample);repeats=1
     else:
         manifest=json.loads(args.manifest.read_text());root=args.manifest.resolve().parent
         entries=manifest['cases'];data_fingerprint=file_sha(args.manifest)
+        repeats=int(manifest.get('repeats',1))  # every sequence runs this many times; the pool loss is the mean over all runs
         if len(entries)!=manifest['expected_cases']:raise ValueError('manifest case count differs from its declaration')
     expected=len(entries)
     if args.case_limit:entries=entries[:args.case_limit]
@@ -126,7 +130,7 @@ def run(args):
     if out.is_relative_to(submission):raise ValueError('output must be outside submission source')
     write_json(out/'run_manifest.json',{'runtime_identity':runtime,'runtime_fingerprint':fingerprint,'data_fingerprint':data_fingerprint,
                                         'submission_sha256':source_sha(submission),'wall_seconds':args.wall_seconds,'memory_mib':256,
-                                        'cases':len(entries),'full_cases':expected,'scope':'smoke' if args.smoke else 'pool'})
+                                        'cases':len(entries),'full_cases':expected,'repeats':repeats,'scope':'smoke' if args.smoke else 'pool'})
     rows=[]
     for entry in entries:
         case_id=str(entry['id'])
@@ -138,14 +142,15 @@ def run(args):
             if file_sha(folder/'COMPLETE.json')!=entry['sha256']:raise ValueError(f'{case_id}: data differs from the manifest')
             case=RealCase(folder)
             if case.dimension!=16384 or case.steps!=50:raise ValueError('pool cases require d=16384, T=50')
-        measured=run_case(submission,case,wall_seconds=args.wall_seconds,memory_mib=256.,seed=1,options={},
-                          log_path=out/f'{case_id}__candidate__r0.stderr.log')
-        measured.pop('prediction_array')
-        row=normalize(measured);row.update(case=case_id,dataset=entry.get('dataset'),profile=entry.get('profile'))
-        write_json(out/f'{case_id}__candidate__r0.json',row);rows.append(row)
-        print(json.dumps({k:row.get(k) for k in ('case','status','raw_error','wall_seconds','peak_rss_mib','hvp_calls')}),flush=True)
+        for repeat in range(repeats):
+            measured=run_case(submission,case,wall_seconds=args.wall_seconds,memory_mib=256.,seed=1,options={},
+                              log_path=out/f'{case_id}__candidate__r{repeat}.stderr.log')
+            measured.pop('prediction_array')
+            row=normalize(measured);row.update(case=case_id,repeat=repeat,dataset=entry.get('dataset'),profile=entry.get('profile'))
+            write_json(out/f'{case_id}__candidate__r{repeat}.json',row);rows.append(row)
+            print(json.dumps({k:row.get(k) for k in ('case','repeat','status','raw_error','wall_seconds','peak_rss_mib','hvp_calls')}),flush=True)
         del case
-    result=aggregate(rows,expected)
+    result=aggregate(rows,expected,repeats)
     if args.smoke or len(entries)!=expected:result['scope']='diagnostic (smoke or partial pool): not a pool result'
     write_json(out/'result.json',{'result':result,'runtime_fingerprint':fingerprint,'data_fingerprint':data_fingerprint})
     return result
