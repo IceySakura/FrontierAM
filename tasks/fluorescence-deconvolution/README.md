@@ -72,6 +72,7 @@
 | Qwen3.8 Max | 迭代 | nMSE \(E = 0.07322\)，96 例，单例最长 0.19 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.3 | 3 次提交，220 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | nMSE \(E = 0.06654\)，96 例，单例最长 0.41 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 79.4 | 53 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | nMSE \(E = 0.04844\)，96 例，单例最长 0.48 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 85.0 | 8 次提交，178 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
+| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -120,6 +121,12 @@ public 分数随测试提交：75.1（100 分钟） → 78.3（119 分钟） →
 public 分数随测试提交：69.1（18 分钟） → 85.3（44 分钟） → 86.3（51 分钟） → 86.9（115 分钟） → 87.0（146 分钟） → 87.0（149 分钟） → 87.1（170 分钟） → 87.0（174 分钟）
 
 源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `fluorescence-deconvolution-20261117T160645Z-009254`）；未复制的二进制或大文件：ensemble_weights.npz（960,466 字节）。
+
+### Intern S2（单轮，v6.3）
+
+11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。
+
+源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `fluorescence-deconvolution-20261118T101203Z-243425`）；未复制的二进制或大文件：（提交存档不在本服务器）。
 
 ## 观察与说明
 

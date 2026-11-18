@@ -72,6 +72,7 @@
 | Qwen3.8 Max | 迭代 | 损失 \(E = 0.00168707\)，60 例，单例最长 0.5 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.9 | 4 次提交，216 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 损失 \(E = 0.000840049\)，60 例，单例最长 1.6 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 74.5 | 51 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 损失 \(E = 0.00232668\)，60 例，单例最长 0.3 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.8 | 7 次提交，135 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
+| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -120,6 +121,12 @@ public 分数随测试提交：30.7（30 分钟） → 0.0（56 分钟） → 85
 public 分数随测试提交：28.0（29 分钟） → 0.0（34 分钟） → 49.8（43 分钟） → 79.5（54 分钟） → 95.8（69 分钟） → 95.8（93 分钟） → 95.8（127 分钟）
 
 源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `continuum-estimation-20261117T111508Z-f546c9`）。
+
+### Intern S2（单轮，v6.3）
+
+11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。
+
+源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `continuum-estimation-20261118T101203Z-8c0524`）；未复制的二进制或大文件：（提交存档不在本服务器）。
 
 ## 观察与说明
 

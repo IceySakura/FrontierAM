@@ -117,6 +117,18 @@
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 84.97,
           "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+        },
+        {
+          "model": "intern-s2",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "fluorescence-deconvolution-20261118T101203Z-243425",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（开发结束时没有冻结出有效提交）",
+          "mapping": "无效提交记 0",
+          "score": 0.0,
+          "notes_md": "11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。"
         }
       ]
     }
