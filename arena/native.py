@@ -87,6 +87,13 @@ MODEL_OPTIONS = {'intern-s2': {'anthropic': {'temperature': 0.8, 'top_p': 0.95, 
 # context limit", HTTP 400) before Claude Code's own estimate reaches its compaction point, which ended two 11-18
 # iterative sessions; at 200000 the client compacts with room to spare.
 CLIENT_WINDOW = {'intern-s2': 200_000}
+# The declared window alone does not make Claude Code compact (two more Intern sessions grew to the endpoint's
+# limit with it at 200000); CLAUDE_CODE_AUTO_COMPACT_WINDOW does. Intern's endpoint reports about 121k input tokens
+# for the ~910 KB request it then rejects as over 262144 estimated tokens, so compaction must start near 100k reported.
+CLIENT_COMPACT = {'intern-s2': 100_000}
+# Transport safety net (ATR nonstream.fit_request): above this many request bytes the oldest tool results, then the
+# oldest thinking text, are cleared; Intern's endpoint rejects at about 910 KB.
+CLIENT_REQUEST_BYTES = {'intern-s2': 800_000}
 CONTAINER_PORT = 18080
 IMAGE_NONSTREAM = '/opt/atr-venv/lib/python3.13/site-packages/atr/harness/nonstream.py'
 MEMORY = 4 * 2**30
@@ -95,7 +102,7 @@ MEMORY = 4 * 2**30
 DEV_UID = 2000
 
 LAUNCHER = r'''
-import json, subprocess, sys
+import json, os, subprocess, sys
 from contextlib import ExitStack
 from pathlib import Path
 from atr.harness import Endpoint, Task, resolve
@@ -115,6 +122,8 @@ refused = harness.refuses(task)
 if refused:
     print("ATR_REFUSED " + refused, flush=True)
     sys.exit(97)
+if spec.get("request_bytes_limit"):
+    os.environ["ATR_REQUEST_BYTES_LIMIT"] = str(spec["request_bytes_limit"])
 with ExitStack() as stack:
     endpoint = stack.enter_context(client_transport(endpoint, timeout=None))
     home = Path("/home/agent/atr-home")
@@ -126,6 +135,8 @@ with ExitStack() as stack:
         # ignore pings and silently re-send the request after about 13 minutes while the first one runs on.
         environment["CLAUDE_STREAM_FIRST_BYTE_TIMEOUT_MS"] = str(WINDOW_MS)
         environment["CLAUDE_STREAM_IDLE_TIMEOUT_MS"] = str(WINDOW_MS)
+        if spec.get("autocompact_window"):
+            environment["CLAUDE_CODE_AUTO_COMPACT_WINDOW"] = str(spec["autocompact_window"])
     if spec["harness"] == "codex":
         config = home / ".codex" / "config.toml"
         text = config.read_text()
@@ -870,6 +881,10 @@ def develop(spec: dict, runtime: dict) -> dict:
     route = {'script': True} if script else resolve_route(model, harness)
     if model in CLIENT_WINDOW and not script:
         route['context_window'] = min(route['context_window'] or CLIENT_WINDOW[model], CLIENT_WINDOW[model])
+    if not script and (spec.get('autocompact_window') or model in CLIENT_COMPACT):
+        route['autocompact_window'] = int(spec.get('autocompact_window') or CLIENT_COMPACT[model])
+    if not script and (spec.get('request_bytes_limit') or model in CLIENT_REQUEST_BYTES):
+        route['request_bytes_limit'] = int(spec.get('request_bytes_limit') or CLIENT_REQUEST_BYTES[model])
     protocol = spec['protocol']
     setting = spec.get('setting') or 'single'
     seconds = spec.get('development_seconds') or (V63_SECONDS[setting] if protocol == 'v6.3' else 7200)
