@@ -139,10 +139,10 @@ def run(args):
             case=RealCase(folder)
             if case.dimension!=16384 or case.steps!=50:raise ValueError('pool cases require d=16384, T=50')
         measured=run_case(submission,case,wall_seconds=args.wall_seconds,memory_mib=256.,seed=1,options={},
-                          log_path=out/f'{case_id}__candidate.stderr.log')
+                          log_path=out/f'{case_id}__candidate__r0.stderr.log')
         measured.pop('prediction_array')
         row=normalize(measured);row.update(case=case_id,dataset=entry.get('dataset'),profile=entry.get('profile'))
-        write_json(out/f'{case_id}__candidate.json',row);rows.append(row)
+        write_json(out/f'{case_id}__candidate__r0.json',row);rows.append(row)
         print(json.dumps({k:row.get(k) for k in ('case','status','raw_error','wall_seconds','peak_rss_mib','hvp_calls')}),flush=True)
         del case
     result=aggregate(rows,expected)
