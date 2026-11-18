@@ -84,6 +84,13 @@ RERUN = {
 AZURE_2 = ('第 1 次尝试中有回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断（基础设施问题，记未测）；'
            '本格为 sol 改走 AI Hub azure 通道后的第 2 次尝试。')
 RERUN.update({('conic', 'iterative', 'gpt-6.1-sol'): (2, AZURE_2), ('species-tree-v3', 'iterative', 'gpt-6.1-sol'): (2, AZURE_2)})
+RERUN.update({('continuum-estimation', 'iterative', 'qwen3.8-max-0902'): (2, 7, 70), ('fluorescence-deconvolution', 'iterative', 'qwen3.8-max-0902'): (2, 5, 50),
+              ('blackbox-cubature-v2', 'iterative', 'qwen3.8-max-0902'): (2, 2, 23)})
+for _cell in (('continuum-estimation', 'iterative', 'qwen3.8-max-0902'), ('fluorescence-deconvolution', 'iterative', 'qwen3.8-max-0902'),
+              ('blackbox-cubature-v2', 'iterative', 'qwen3.8-max-0902')):
+    _n, _cuts, _minutes = RERUN[_cell]
+    RERUN[_cell] = (_n, f'第 1 次尝试中有 {_cuts} 个回合上游流约 600 秒没有任何输出后断开（上游空闲超时，基础设施问题，记未测），'
+                        f'共损失约 {_minutes} 分钟；本格为第 2 次尝试。')
 # Intern S2: its first round stands as the formal result (user decision 2026-11-17); the 11-17 second singles are noted only.
 INTERN_NOTE = ('书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用'
                '测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，'
