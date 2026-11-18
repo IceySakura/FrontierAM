@@ -69,7 +69,7 @@
 | Claude Opus 5.5 | 单轮 | nMSE \(E = 0.07422\)，96 例，单例最长 0.23 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.0 | 25 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | nMSE \(E = 0.02284\)，96 例，单例最长 0.91 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 92.9 | 4 次提交，199 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | nMSE \(E = 0.10694\)，96 例，单例最长 0.20 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 66.8 | 49 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
-| Qwen3.8 Max | 迭代 | nMSE \(E = 0.08871\)，96 例，单例最长 0.18 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 72.5 | 4 次提交，189 分钟 | [`qwen3.8-max-0902-iterative-1/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/) |
+| Qwen3.8 Max | 迭代 | nMSE \(E = 0.07322\)，96 例，单例最长 0.19 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.3 | 3 次提交，220 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | nMSE \(E = 0.06654\)，96 例，单例最长 0.41 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 79.4 | 53 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | nMSE \(E = 0.04844\)，96 例，单例最长 0.48 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 85.0 | 8 次提交，178 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 
@@ -103,11 +103,11 @@ public 分数随测试提交：78.8（21 分钟） → 89.0（46 分钟） → 8
 
 ### Qwen3.8 Max（迭代，v6.3）
 
-出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
+第 1 次尝试中有 5 个回合上游流约 600 秒没有任何输出后断开（上游空闲超时，基础设施问题，记未测），共损失约 50 分钟；本格为第 2 次尝试。
 
-public 分数随测试提交：66.6（161 分钟） → 71.7（167 分钟） → 74.0（172 分钟） → 76.0（184 分钟）
+public 分数随测试提交：75.1（100 分钟） → 78.3（119 分钟） → 78.8（218 分钟）
 
-源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/source/)（提交 `fluorescence-deconvolution-20261117T111718Z-7d62d6`）。
+源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/source/)（提交 `fluorescence-deconvolution-20261118T064428Z-b197e6`）。
 
 ### Hunyuan 4（单轮，v6.3）
 
