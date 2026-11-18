@@ -90,6 +90,7 @@
 | Hunyuan 4 | 单轮 | nRF \(E = 0.1574\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 58 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | nRF \(E = 0.1382\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 30.1 | 4 次提交，157 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-2/`](solutions/v6.3/intern-s2-single-2/) |
+| Intern S2 | 迭代 | 无效提交（non-regular source or artifact: .venv/bin/python） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，186 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -144,6 +145,12 @@ public 分数随测试提交：50.0（77 分钟） → 51.3（105 分钟） → 
 第 1 次尝试中一次上游流中断，传输层自动重试成功，但该回合多耗约 22 分钟（基础设施问题，记未测）；本格为第 2 次尝试。书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
 
 源码 [`solutions/v6.3/intern-s2-single-2/source/`](solutions/v6.3/intern-s2-single-2/source/)（提交 `species-tree-v3-20261116T063351Z-2a88b6`）；未复制的二进制或大文件：（提交存档不在本服务器）。
+
+### Intern S2（迭代，v6.3）
+
+11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-16 的第 1 次在 11-17 停书生时中止，未测； 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。
+
+源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `species-tree-v3-20261118T213333Z-d6c213`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
