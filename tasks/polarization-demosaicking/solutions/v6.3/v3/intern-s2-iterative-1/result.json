@@ -1,0 +1,21 @@
+{
+ "model": "intern-s2",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "polarization-demosaicking-v3-20261118T202105Z-c28eac",
+ "raw": "RMSE \\(E = 2.0613\\)（\\(U = 2.1080\\)，\\(W = 1.5007\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 3.844,
+ "review": null,
+ "process": {
+  "minutes": 113.4,
+  "public_tests": 1,
+  "public_curve": [
+   {
+    "minute": 110.6,
+    "score": 0.0,
+    "status": "ok"
+   }
+  ]
+ }
+}
