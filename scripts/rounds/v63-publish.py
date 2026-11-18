@@ -9,6 +9,7 @@ Usage: v63-publish.py [TASK ...]   (default: every task version below)
 
 import json
 import math
+import re
 import sys
 
 from pathlib import Path
@@ -238,7 +239,10 @@ def main():
                     if score.get('invalid'):
                         raw, mapping = f'无效提交（{score["invalid"]}）', '无效提交记 0'
                     elif (score.get('candidate') or {}).get('status') == 'submission_failure' and (score.get('candidate') or {}).get('raw_error') is None:
-                        reasons = [r for r in (score['candidate'].get('reasons') or [score['candidate'].get('reason')]) if r]
+                        reasons = score['candidate'].get('reasons') or [score['candidate'].get('reason')]
+                        if isinstance(reasons, str):  # some scorers store the list as its (truncated) text
+                            reasons = re.findall(r"'([^']+)'", reasons) or [reasons]
+                        reasons = [r for r in reasons if r]
                         score['score'] = 0.0
                         raw, mapping = f'无效提交（{reasons[0] if reasons else "提交失败"}）', '任一用例失败或提交检查未通过记 0'
                     elif TASKS[task] == 'conic' and score.get('p') is None:
