@@ -82,6 +82,11 @@ MODEL_PROVIDER = {'gpt-6.1-sol': 'azure'}
 # Extra request fields per model: Intern S2's documented sampling (model card: temperature 0.8, top_p 0.95, top_k 50);
 # Claude Code sends none, and the endpoint's defaults are not published.
 MODEL_OPTIONS = {'intern-s2': {'anthropic': {'temperature': 0.8, 'top_p': 0.95, 'top_k': 50}}}
+# Client window declared to the harness where the endpoint counts tokens above the client's estimate: Intern's
+# endpoint rejects a request it estimates above its 262144-token limit ("estimated input tokens exceed the model's
+# context limit", HTTP 400) before Claude Code's own estimate reaches its compaction point, which ended two 11-18
+# iterative sessions; at 200000 the client compacts with room to spare.
+CLIENT_WINDOW = {'intern-s2': 200_000}
 CONTAINER_PORT = 18080
 IMAGE_NONSTREAM = '/opt/atr-venv/lib/python3.13/site-packages/atr/harness/nonstream.py'
 MEMORY = 4 * 2**30
@@ -863,6 +868,8 @@ def develop(spec: dict, runtime: dict) -> dict:
     frozen_dir.mkdir(parents=True, exist_ok=True)
     script = spec.get('agent_script')  # validation only: a shell script stands in for the model and its harness
     route = {'script': True} if script else resolve_route(model, harness)
+    if model in CLIENT_WINDOW and not script:
+        route['context_window'] = min(route['context_window'] or CLIENT_WINDOW[model], CLIENT_WINDOW[model])
     protocol = spec['protocol']
     setting = spec.get('setting') or 'single'
     seconds = spec.get('development_seconds') or (V63_SECONDS[setting] if protocol == 'v6.3' else 7200)
