@@ -101,6 +101,12 @@ for _task in ('conic', 'exponential-v3', 'galaxy-gravity-v4', 'polarization-demo
         NOTES[(_task, _setting, 'intern-s2')] = ' '.join(filter(None, (NOTES.get((_task, _setting, 'intern-s2')), INTERN_NOTE)))
 _cell = ('species-tree-v3', 'single', 'intern-s2')
 RERUN[_cell] = (RERUN[_cell][0], RERUN[_cell][1] + INTERN_NOTE)
+INTERN_FILL = ('11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，'
+               '无上游错误、断流或重试（results/OPEN_ITEMS.md）。')
+for _task in ('polarization-demosaicking-v3', 'blackbox-cubature-v2', 'continuum-estimation', 'fluorescence-deconvolution'):
+    for _setting in ('single', 'iterative'):
+        NOTES[(_task, _setting, 'intern-s2')] = INTERN_FILL
+NOTES[('species-tree-v3', 'iterative', 'intern-s2')] = ' '.join((INTERN_FILL, '11-16 的第 1 次在 11-17 停书生时中止，未测，本格为补跑。'))
 SAMPLE_FEEDBACK = ('出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，'
                    '模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。')
 for _task in ('continuum-estimation', 'fluorescence-deconvolution'):
