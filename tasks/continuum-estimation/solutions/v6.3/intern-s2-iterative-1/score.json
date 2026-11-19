@@ -1,0 +1,24 @@
+{
+ "id": "job-20261119T010622Z-d67188",
+ "task": "continuum-estimation",
+ "submission": "continuum-estimation-20261119T010622Z-44268a",
+ "kind": "candidate",
+ "note": null,
+ "isolation": null,
+ "enqueued_utc": "2026-11-19T01:06:22+00:00",
+ "claimed_utc": "2026-11-19T01:06:23+00:00",
+ "worker_pid": 2876207,
+ "status": "ok",
+ "score": 24.207569266067402,
+ "finished_utc": "2026-11-19T01:06:37+00:00",
+ "candidate": {
+  "status": "ok",
+  "raw_error": 0.009651482846492017,
+  "reason": null,
+  "package_score": null,
+  "cases": 60,
+  "failures": 0,
+  "max_wall_s": 0.13298946409486234,
+  "data": "primary"
+ }
+}
