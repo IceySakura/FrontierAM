@@ -116,7 +116,7 @@ NOTES[('species-tree-v3', 'iterative', 'intern-s2')] = ' '.join((INTERN_FILL, '1
 SAMPLE_FEEDBACK = ('出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，'
                    '模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。')
 for _task in ('continuum-estimation', 'fluorescence-deconvolution'):
-    for _key in ((_task, 'iterative'), *((_task, 'iterative', _model) for _model in ('claude-opus-5-5', 'qwen3.8-max-0902', 'hy4'))):
+    for _key in ((_task, 'iterative'), *((_task, 'iterative', _model) for _model in ('claude-opus-5-5', 'qwen3.8-max-0902', 'hy4', 'intern-s2'))):
         NOTES[_key] = ' '.join(filter(None, (NOTES.get(_key), SAMPLE_FEEDBACK)))
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
