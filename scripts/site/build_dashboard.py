@@ -25,7 +25,7 @@ from pathlib import Path
 
 import markdown
 
-from board_stats import CHART_FILES, SETTINGS, averages, chart_svgs
+from board_stats import CHART_FILES, SETTINGS, averages, chart_svgs, rank_models
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / 'dashboard'
@@ -415,8 +415,9 @@ def index_page(site: dict, tasks: list[dict]) -> str:
 
     newest_groups = [t['result_groups'][0] for t in tasks if t['result_groups']]
     older_groups = [g for t in tasks for g in t['result_groups'][1:]]
-    # The main board always lists these models (empty cells where they have no result), then any other with results.
-    models = [*BOARD_MODELS, *(m for m in models_of(newest_groups) if m not in BOARD_MODELS)]
+    # The main board always lists these models (empty cells where they have no result), then any other with results,
+    # ordered by their iterative average.
+    models = rank_models(newest_groups, [*BOARD_MODELS, *(m for m in models_of(newest_groups) if m not in BOARD_MODELS)])
     head = ''.join(f'<th>{html.escape(model_name(m))}</th>' for m in models)
 
     def cells_for(task: dict, group: dict, models: list[str]) -> str:
@@ -461,7 +462,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
             f'<div class="charts">{charts}</div>'
             '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。'
-            '最后一行为各题分数的简单平均（没有成绩的题不计）。旧版本的成绩在表格下方折叠。</p>'
+            '列按迭代平均分排序；最后一行为各题分数的简单平均（没有成绩的题不计）。旧版本的成绩在表格下方折叠。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>'
             + (f'<details><summary>旧版本的成绩（{len(history)} 组）</summary>'
                f'<table class="matrix"><tr><th>题目 / 版本</th>{old_head}</tr>{"".join(history)}</table></details>' if history else ''))

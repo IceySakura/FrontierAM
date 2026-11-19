@@ -24,6 +24,15 @@ def averages(groups: list[dict], models: list[str]) -> dict:
     return out
 
 
+def rank_models(groups: list[dict], models: list[str]) -> list[str]:
+    """Models ordered by their iterative average, then their single average (best first; no score last)."""
+    means = averages(groups, models)
+
+    def key(model: str):
+        return tuple(-(means[(model, s)][0] if means[(model, s)][0] is not None else -1.0) for s in ('迭代', '单轮'))
+    return sorted(models, key=key)
+
+
 def bar_svg(title: str, rows: list[tuple[str, float | None]], width: int = 560) -> str:
     """Horizontal bars (0–100) sorted by score, with the reference line at 50."""
     rows = sorted((r for r in rows if r[1] is not None), key=lambda r: -r[1])

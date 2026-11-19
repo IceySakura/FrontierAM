@@ -19,7 +19,7 @@ import tarfile
 
 from pathlib import Path
 
-from board_stats import CHART_FILES, SETTINGS, averages, chart_svgs
+from board_stats import CHART_FILES, SETTINGS, averages, chart_svgs, rank_models
 
 ROOT = Path(__file__).resolve().parents[2]
 TASKS = ROOT / 'tasks'
@@ -255,16 +255,16 @@ PROTOCOLS = ('v6.3', 'v6.2', 'v6.1', 'v6')  # newest first; the board shows the 
 def write_board(metas: list[dict], names: list[str]) -> None:
     """Scoreboard of the newest protocol with results into README.md between the board markers."""
     protocol = next(p for p in PROTOCOLS if any(g.get('protocol') == p and g['results'] for m in metas for g in m['result_groups']))
-    columns = COLUMNS  # every model of this round always; cells stay empty without a result
+    newest = [next((g for g in meta['result_groups'] if g.get('protocol') == protocol), None) for meta in metas]  # newest task version
+    groups = [g for g in newest if g]
+    # every model of this round always (cells stay empty without a result), ordered by the iterative average
+    models = rank_models(groups, list(dict.fromkeys(m for m, _ in COLUMNS)))
+    columns = [(m, s) for m in models for s in SETTINGS]
     head = '| task | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in columns) + ' |'
     rule = '| --- |' + ' --- |' * len(columns)
     scores, process = [head, rule], [head, rule]
-    groups = []
-    for meta, name in zip(metas, names):
-        newest = next((g for g in meta['result_groups'] if g.get('protocol') == protocol), None)  # newest task version
-        results = newest['results'] if newest else []
-        if newest:
-            groups.append(newest)
+    for group, name in zip(newest, names):
+        results = group['results'] if group else []
         row_s, row_p = [], []
         for model, setting in columns:
             hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting),
@@ -275,15 +275,14 @@ def write_board(metas: list[dict], names: list[str]) -> None:
         link = f'[{name}](tasks/{name}/README.md)'
         scores.append(f'| {link} | ' + ' | '.join(row_s) + ' |')
         process.append(f'| {link} | ' + ' | '.join(row_p) + ' |')
-    models = list(dict.fromkeys(m for m, _ in columns))
     means = averages(groups, models)
-    scores.append('| **平均** | ' + ' | '.join('—' if means[(m, s)][0] is None else f'**{means[(m, s)][0]:.1f}**'
-                                             for m, s in columns) + ' |')
+    scores.append('| ***平均*** | ' + ' | '.join('—' if means[(m, s)][0] is None else f'***{means[(m, s)][0]:.1f}***'
+                                               for m, s in columns) + ' |')
     for file, svg in chart_svgs(groups, models, MODEL).items():
         (ROOT / 'dashboard/assets' / file).write_text(svg)
     charts = ' '.join(f'![{s}平均分](dashboard/assets/{CHART_FILES[s]})' for s in SETTINGS)
     board = (f'协议 {protocol}；更早协议与题目版本的成绩见各题 README。' + '\n\n' + charts + '\n\n'
-             + '\n'.join(scores) + '\n\n满分 100，参照 = 50；平均为各题分数的简单平均，没有成绩的题不计。\n\n**提交次数与用时**\n\n'
+             + '\n'.join(scores) + '\n\n满分 100，参照 = 50；列按迭代平均分排序；平均为各题分数的简单平均，没有成绩的题不计。\n\n**提交次数与用时**\n\n'
              + '\n'.join(process))
     readme = ROOT / 'README.md'
     text = readme.read_text()
