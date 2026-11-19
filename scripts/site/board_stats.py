@@ -4,6 +4,11 @@ import html
 
 SETTINGS = ('单轮', '迭代')
 CHART_FILES = {'单轮': 'board-single.svg', '迭代': 'board-iterative.svg'}
+# One colour per model, the same in both charts.
+COLORS = {'gpt-6.1-sol': '#10a37f', 'claude-opus-5-5': '#d97757', 'hy4': '#3b6ff5', 'qwen3.8-max-0902': '#7c5cff',
+          'intern-s2': '#0ea5b7'}
+FONT = ("Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, "
+        "'PingFang SC', 'Microsoft YaHei', sans-serif")
 
 
 def cell_score(results: list[dict], model: str, setting: str):
@@ -33,34 +38,57 @@ def rank_models(groups: list[dict], models: list[str]) -> list[str]:
     return sorted(models, key=key)
 
 
-def bar_svg(title: str, rows: list[tuple[str, float | None]], width: int = 560) -> str:
-    """Horizontal bars (0–100) sorted by score, with the reference line at 50."""
-    rows = sorted((r for r in rows if r[1] is not None), key=lambda r: -r[1])
-    left, right, top, bar, gap = 130, 50, 36, 22, 8
-    plot = width - left - right
-    base = top + len(rows) * (bar + gap)
-    height = base + 26
+def column_svg(title: str, subtitle: str, rows: list[tuple[str, str, float | None]], width: int = 520, height: int = 330) -> str:
+    """Vertical bars sorted by score on a 0-100 scale, value labels on top, faint grid and a reference line at 50.
 
-    def x(value: float) -> float:
-        return left + plot * value / 100
+    rows: [(model, label, score)]; a label's first space breaks it onto two lines under its bar."""
+    rows = sorted((r for r in rows if r[2] is not None), key=lambda r: -r[2])
+    left, right, top, bottom = 34, 16, 78, 52
+    plot_w, plot_h = width - left - right, height - top - bottom
+
+    def y(value: float) -> float:
+        return top + plot_h * (1 - value / 100)
 
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
-             'font-family="Helvetica, Arial, sans-serif" font-size="13">',
+             f'font-family="{FONT}">',
              f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
-             f'<text x="{left}" y="22" font-size="15" font-weight="bold">{html.escape(title)}</text>']
-    for i, (label, score) in enumerate(rows):
-        y = top + i * (bar + gap)
-        parts += [f'<text x="{left - 8}" y="{y + bar * 0.72:.1f}" text-anchor="end">{html.escape(label)}</text>',
-                  f'<rect x="{left}" y="{y}" width="{max(x(score) - left, 1):.1f}" height="{bar}" '
-                  f'fill="{"#2f7ed8" if score >= 50 else "#8fb8e8"}"/>',
-                  f'<text x="{x(score) + 6:.1f}" y="{y + bar * 0.72:.1f}">{score:.1f}</text>']
-    parts += [f'<line x1="{x(50):.1f}" y1="{top - 6}" x2="{x(50):.1f}" y2="{base}" stroke="#d9534f" stroke-dasharray="4 3"/>',
-              f'<text x="{x(50):.1f}" y="{base + 16}" text-anchor="middle" fill="#d9534f" font-size="11">参照 = 50</text>']
-    parts += [f'<text x="{x(v):.1f}" y="{base + 16}" text-anchor="middle" fill="#666" font-size="11">{v}</text>' for v in (0, 100)]
+             f'<text x="{left - 14}" y="30" font-size="18" font-weight="700" fill="#111827">{html.escape(title)}</text>',
+             f'<text x="{left - 14}" y="52" font-size="12" fill="#6b7280">{html.escape(subtitle)}</text>']
+    for value in (0, 25, 50, 75, 100):
+        parts += [f'<line x1="{left}" y1="{y(value):.1f}" x2="{width - right}" y2="{y(value):.1f}" '
+                  f'stroke="{"#d1d5db" if value == 0 else "#f0f1f3"}" stroke-width="1"/>',
+                  f'<text x="{left - 8}" y="{y(value) + 4:.1f}" font-size="11" fill="#9ca3af" text-anchor="end">{value}</text>']
+    slot = plot_w / max(len(rows), 1)
+    bar = min(56.0, slot * 0.58)
+
+    def haloed(text: str, attrs: str, fill: str) -> list[str]:
+        """The text over a thick white copy of itself, so a line passing behind it stays clear in any renderer."""
+        return [f'<text {attrs} fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">{text}</text>',
+                f'<text {attrs} fill="{fill}">{text}</text>']
+    labels = []
+    for i, (model, label, score) in enumerate(rows):
+        cx = left + slot * (i + 0.5)
+        top_y = y(score)
+        parts.append(f'<rect x="{cx - bar / 2:.1f}" y="{top_y:.1f}" width="{bar:.1f}" height="{max(y(0) - top_y, 1.5):.1f}" rx="5" '
+                     f'fill="{COLORS.get(model, "#6b7280")}"/>')
+        labels += haloed(f'{score:.1f}', f'x="{cx:.1f}" y="{top_y - 8:.1f}" font-size="14" font-weight="700" '
+                                         'text-anchor="middle"', '#111827')
+        first, _, rest = label.partition(' ')
+        for line, text in enumerate(filter(None, (first, rest))):
+            labels.append(f'<text x="{cx:.1f}" y="{y(0) + 18 + 14 * line:.1f}" font-size="12" fill="#374151" '
+                          f'text-anchor="middle">{html.escape(text)}</text>')
+    # the reference line passes over the bars but under the value labels
+    parts += [f'<line x1="{left}" y1="{y(50):.1f}" x2="{width - right}" y2="{y(50):.1f}" stroke="#6b7280" '
+              'stroke-width="1" stroke-dasharray="5 4"/>',
+              *haloed('参照 50', f'x="{width - right}" y="{y(50) - 6:.1f}" font-size="11" text-anchor="end"', '#6b7280'),
+              *labels]
     return '\n'.join(parts + ['</svg>']) + '\n'
 
 
 def chart_svgs(groups: list[dict], models: list[str], names: dict[str, str]) -> dict[str, str]:
     """{file name: svg} for the single and iterative rankings of the per-model averages."""
     means = averages(groups, models)
-    return {CHART_FILES[s]: bar_svg(f'{s}平均分', [(names.get(m, m), means[(m, s)][0]) for m in models]) for s in SETTINGS}
+    tasks = len(groups)
+    titles = {'单轮': '单轮（1 小时）', '迭代': '迭代（4 小时，带 public 反馈）'}
+    return {CHART_FILES[s]: column_svg(titles[s], f'{tasks} 道题的平均分 · 满分 100',
+                                       [(m, names.get(m, m), means[(m, s)][0]) for m in models]) for s in SETTINGS}

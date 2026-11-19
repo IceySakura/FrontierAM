@@ -46,4 +46,5 @@ footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line)
 .matrix tr.avg td b { color: #1f4e8c; font-size: 1.05em; font-variant-numeric: tabular-nums; }
 .matrix tr.avg td small { color: #6b7a90; }
 .charts { display: flex; flex-wrap: wrap; gap: 16px; margin: 8px 0 16px; }
-.charts img { max-width: 100%; height: auto; border: 1px solid #e5e5e5; }
+.charts img { width: 520px; max-width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04); }
