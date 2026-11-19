@@ -276,8 +276,8 @@ def write_board(metas: list[dict], names: list[str]) -> None:
         scores.append(f'| {link} | ' + ' | '.join(row_s) + ' |')
         process.append(f'| {link} | ' + ' | '.join(row_p) + ' |')
     means = averages(groups, models)
-    scores.append('| ***平均*** | ' + ' | '.join('—' if means[(m, s)][0] is None else f'***{means[(m, s)][0]:.1f}***'
-                                               for m, s in columns) + ' |')
+    scores.append('| <kbd><b>平均</b></kbd> | ' + ' | '.join('—' if means[(m, s)][0] is None else f'<kbd><b>{means[(m, s)][0]:.1f}</b></kbd>'
+                                                          for m, s in columns) + ' |')
     for file, svg in chart_svgs(groups, models, MODEL).items():
         (ROOT / 'dashboard/assets' / file).write_text(svg)
     charts = ' '.join(f'![{s}平均分](dashboard/assets/{CHART_FILES[s]})' for s in SETTINGS)

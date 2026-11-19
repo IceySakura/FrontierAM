@@ -10,6 +10,7 @@ Usage: build_dashboard.py [--out var/dist/dashboard]
 
 import argparse
 import csv
+import hashlib
 import html
 import io
 import json
@@ -175,11 +176,15 @@ def breakdown_html(spec: dict | None, results: list[dict]) -> str:
 
 # Pages ----------------------------------------------------------------------------------------------------------------
 
+# The stylesheet URL carries its content hash, so a browser fetches it again whenever it changes.
+CSS_VERSION = hashlib.sha256((SRC / 'assets/style.css').read_bytes()).hexdigest()[:10]
+
+
 def page(title: str, body: str, depth: int = 0) -> str:
     up = '../' * depth
     return f'''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>{html.escape(title)}</title>
-<link rel="stylesheet" href="{up}assets/style.css"><link rel="stylesheet" href="{up}assets/katex/katex.min.css">
+<link rel="stylesheet" href="{up}assets/style.css?v={CSS_VERSION}"><link rel="stylesheet" href="{up}assets/katex/katex.min.css">
 <script defer src="{up}assets/katex/katex.min.js"></script><script defer src="{up}assets/katex/auto-render.min.js"></script>
 <script>document.addEventListener("DOMContentLoaded",function(){{renderMathInElement(document.body,{{delimiters:[
 {{left:"$$",right:"$$",display:true}},{{left:"\\\\[",right:"\\\\]",display:true}},{{left:"\\\\(",right:"\\\\)",display:false}},
@@ -452,7 +457,9 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     rows.append('<tr class="avg"><td><b>平均</b></td>' + ''.join(
         '<td>' + '<br>'.join(f'<small>{s}</small> <b>{"—" if means[(m, s)][0] is None else f"{means[(m, s)][0]:.1f}"}</b>'
                              for s in SETTINGS) + '</td>' for m in models) + '</tr>')
-    charts = ''.join(f'<img src="assets/{CHART_FILES[s]}" alt="{s}平均分">' for s in SETTINGS)
+    svgs = chart_svgs(newest_groups, models, {m: model_name(m) for m in models})
+    charts = ''.join(f'<img src="assets/{CHART_FILES[s]}?v={hashlib.sha256(svgs[CHART_FILES[s]].encode()).hexdigest()[:10]}" '
+                     f'alt="{s}平均分">' for s in SETTINGS)
     cards = ''.join(
         f'<div class="card"><h3><a href="tasks/{t["id"]}.html">{html.escape(t.get("name", t["title"]))}</a></h3>'
         f'<p>{html.escape(t["category"])}</p><p>{md(t["summary"])[3:-4]}</p>'
