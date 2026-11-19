@@ -26,7 +26,7 @@ from pathlib import Path
 
 import markdown
 
-from board_stats import CHART_FILES, SETTINGS, averages, chart_svgs, rank_models
+from board_stats import SETTINGS, averages, chart_svgs, rank_models, ranking_html
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / 'dashboard'
@@ -457,9 +457,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     rows.append('<tr class="avg"><td><b>平均</b></td>' + ''.join(
         '<td>' + '<br>'.join(f'<small>{s}</small> <b>{"—" if means[(m, s)][0] is None else f"{means[(m, s)][0]:.1f}"}</b>'
                              for s in SETTINGS) + '</td>' for m in models) + '</tr>')
-    svgs = chart_svgs(newest_groups, models, {m: model_name(m) for m in models})
-    charts = ''.join(f'<img src="assets/{CHART_FILES[s]}?v={hashlib.sha256(svgs[CHART_FILES[s]].encode()).hexdigest()[:10]}" '
-                     f'alt="{s}平均分">' for s in SETTINGS)
+    charts = ranking_html(newest_groups, models, {m: model_name(m) for m in models})
     cards = ''.join(
         f'<div class="card"><h3><a href="tasks/{t["id"]}.html">{html.escape(t.get("name", t["title"]))}</a></h3>'
         f'<p>{html.escape(t["category"])}</p><p>{md(t["summary"])[3:-4]}</p>'
@@ -467,7 +465,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     body = (f'<h1>{html.escape(site["title"])}</h1><p class="lead">{html.escape(site["subtitle"])}</p>{md(site["intro_md"])}'
             f'<h2>题目</h2><div class="cards">{cards}</div>'
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
-            f'<div class="charts">{charts}</div>'
+            f'{charts}'
             '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。'
             '列按迭代平均分排序；最后一行为各题分数的简单平均（没有成绩的题不计）。旧版本的成绩在表格下方折叠。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>'

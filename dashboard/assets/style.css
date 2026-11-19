@@ -45,6 +45,23 @@ footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line)
 .matrix tr.avg td { border-top: 2px solid #c9d6e8; background: #f4f7fb; }
 .matrix tr.avg td b { color: #1f4e8c; font-size: 1.05em; font-variant-numeric: tabular-nums; }
 .matrix tr.avg td small { color: #6b7a90; }
-.charts { display: flex; flex-wrap: wrap; gap: 16px; margin: 8px 0 16px; }
-.charts img { width: 520px; max-width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04); }
+.rank { max-width: 760px; margin: 8px 0 20px; padding: 16px 20px 12px; border: 1px solid #e5e7eb; border-radius: 12px; background: #fff; }
+.rank-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.rank-title { font-weight: 700; font-size: 16px; color: #111827; }
+.rank-title small { font-weight: 400; font-size: 12px; color: #6b7280; margin-left: 10px; }
+.seg { font-size: 12px; color: #6b7280; white-space: nowrap; }
+.seg span { margin-right: 6px; vertical-align: middle; }
+.seg button { display: inline-block; width: auto; margin-left: 4px; border: 1px solid #d1d5db; background: #fff; color: #374151;
+  padding: 3px 14px; border-radius: 999px; cursor: pointer; font: inherit; line-height: 1.5; vertical-align: middle; }
+.seg button.on { background: #111827; border-color: #111827; color: #fff; }
+.rank-row, .rank-axis { display: grid; grid-template-columns: 128px 1fr 44px; align-items: center; column-gap: 12px; }
+.rank-row { height: 32px; }
+.rank-name { font-size: 13px; color: #374151; text-align: right; white-space: nowrap; }
+.rank-track { position: relative; height: 16px; background: #f3f4f6; border-radius: 4px; }
+.rank-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+.rank-ref { position: absolute; left: 50%; top: -8px; bottom: -8px; border-left: 1px dashed #9ca3af; }
+.rank-val { font-size: 13px; font-weight: 700; color: #111827; font-variant-numeric: tabular-nums; }
+.rank-axis { height: 18px; font-size: 11px; color: #9ca3af; }
+.rank-ticks { position: relative; height: 100%; }
+.rank-ticks i { position: absolute; top: 2px; transform: translateX(-50%); font-style: normal; white-space: nowrap; }
+.rank-ticks i.ref { color: #6b7280; }

@@ -38,57 +38,65 @@ def rank_models(groups: list[dict], models: list[str]) -> list[str]:
     return sorted(models, key=key)
 
 
-def column_svg(title: str, subtitle: str, rows: list[tuple[str, str, float | None]], width: int = 520, height: int = 330) -> str:
-    """Vertical bars sorted by score on a 0-100 scale, value labels on top, faint grid and a reference line at 50.
+def ranking(groups: list[dict], models: list[str], names: dict[str, str], setting: str) -> list[tuple[str, str, float]]:
+    """[(model, label, average)] for one setting, best first; models without a score are left out."""
+    means = averages(groups, models)
+    rows = [(m, names.get(m, m), means[(m, setting)][0]) for m in models if means[(m, setting)][0] is not None]
+    return sorted(rows, key=lambda r: -r[2])
 
-    rows: [(model, label, score)]; a label's first space breaks it onto two lines under its bar."""
-    rows = sorted((r for r in rows if r[2] is not None), key=lambda r: -r[2])
-    left, right, top, bottom = 34, 16, 78, 52
-    plot_w, plot_h = width - left - right, height - top - bottom
 
-    def y(value: float) -> float:
-        return top + plot_h * (1 - value / 100)
+def hbar_svg(title: str, subtitle: str, rows: list[tuple[str, str, float]], width: int = 640) -> str:
+    """Horizontal bars on a 0-100 track, one colour per model, the value after each bar and a reference line at 50."""
+    left, right, top, row, bar = 132, 56, 64, 32, 16
+    track = width - left - right
+    base = top + len(rows) * row
+    height = base + 30
+
+    def x(value: float) -> float:
+        return left + track * value / 100
 
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
              f'font-family="{FONT}">',
              f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
-             f'<text x="{left - 14}" y="30" font-size="18" font-weight="700" fill="#111827">{html.escape(title)}</text>',
-             f'<text x="{left - 14}" y="52" font-size="12" fill="#6b7280">{html.escape(subtitle)}</text>']
-    for value in (0, 25, 50, 75, 100):
-        parts += [f'<line x1="{left}" y1="{y(value):.1f}" x2="{width - right}" y2="{y(value):.1f}" '
-                  f'stroke="{"#d1d5db" if value == 0 else "#f0f1f3"}" stroke-width="1"/>',
-                  f'<text x="{left - 8}" y="{y(value) + 4:.1f}" font-size="11" fill="#9ca3af" text-anchor="end">{value}</text>']
-    slot = plot_w / max(len(rows), 1)
-    bar = min(56.0, slot * 0.58)
-
-    def haloed(text: str, attrs: str, fill: str) -> list[str]:
-        """The text over a thick white copy of itself, so a line passing behind it stays clear in any renderer."""
-        return [f'<text {attrs} fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">{text}</text>',
-                f'<text {attrs} fill="{fill}">{text}</text>']
-    labels = []
+             f'<text x="16" y="28" font-size="16" font-weight="700" fill="#111827">{html.escape(title)}</text>',
+             f'<text x="16" y="48" font-size="12" fill="#6b7280">{html.escape(subtitle)}</text>']
     for i, (model, label, score) in enumerate(rows):
-        cx = left + slot * (i + 0.5)
-        top_y = y(score)
-        parts.append(f'<rect x="{cx - bar / 2:.1f}" y="{top_y:.1f}" width="{bar:.1f}" height="{max(y(0) - top_y, 1.5):.1f}" rx="5" '
-                     f'fill="{COLORS.get(model, "#6b7280")}"/>')
-        labels += haloed(f'{score:.1f}', f'x="{cx:.1f}" y="{top_y - 8:.1f}" font-size="14" font-weight="700" '
-                                         'text-anchor="middle"', '#111827')
-        first, _, rest = label.partition(' ')
-        for line, text in enumerate(filter(None, (first, rest))):
-            labels.append(f'<text x="{cx:.1f}" y="{y(0) + 18 + 14 * line:.1f}" font-size="12" fill="#374151" '
-                          f'text-anchor="middle">{html.escape(text)}</text>')
-    # the reference line passes over the bars but under the value labels
-    parts += [f'<line x1="{left}" y1="{y(50):.1f}" x2="{width - right}" y2="{y(50):.1f}" stroke="#6b7280" '
-              'stroke-width="1" stroke-dasharray="5 4"/>',
-              *haloed('参照 50', f'x="{width - right}" y="{y(50) - 6:.1f}" font-size="11" text-anchor="end"', '#6b7280'),
-              *labels]
+        y = top + i * row + (row - bar) / 2
+        parts += [f'<text x="{left - 12}" y="{y + bar - 3:.1f}" font-size="13" fill="#374151" text-anchor="end">{html.escape(label)}</text>',
+                  f'<rect x="{left}" y="{y:.1f}" width="{track}" height="{bar}" rx="4" fill="#f3f4f6"/>',
+                  f'<rect x="{left}" y="{y:.1f}" width="{max(x(score) - left, 3):.1f}" height="{bar}" rx="4" '
+                  f'fill="{COLORS.get(model, "#6b7280")}"/>',
+                  f'<text x="{left + track + 12}" y="{y + bar - 3:.1f}" font-size="13" font-weight="700" fill="#111827">{score:.1f}</text>']
+    parts += [f'<line x1="{x(50):.1f}" y1="{top - 4}" x2="{x(50):.1f}" y2="{base + 4}" stroke="#9ca3af" stroke-dasharray="4 3"/>']
+    parts += [f'<text x="{x(v):.1f}" y="{base + 20}" font-size="11" fill="{"#6b7280" if v == 50 else "#9ca3af"}" '
+              f'text-anchor="middle">{"参照 50" if v == 50 else v}</text>' for v in (0, 50, 100)]
     return '\n'.join(parts + ['</svg>']) + '\n'
 
 
 def chart_svgs(groups: list[dict], models: list[str], names: dict[str, str]) -> dict[str, str]:
     """{file name: svg} for the single and iterative rankings of the per-model averages."""
-    means = averages(groups, models)
-    tasks = len(groups)
-    titles = {'单轮': '单轮（1 小时）', '迭代': '迭代（4 小时，带 public 反馈）'}
-    return {CHART_FILES[s]: column_svg(titles[s], f'{tasks} 道题的平均分 · 满分 100',
-                                       [(m, names.get(m, m), means[(m, s)][0]) for m in models]) for s in SETTINGS}
+    return {CHART_FILES[s]: hbar_svg(f'平均分 · compared by {s}', f'{len(groups)} 道题的平均分 · 满分 100',
+                                     ranking(groups, models, names, s)) for s in SETTINGS}
+
+
+def ranking_html(groups: list[dict], models: list[str], names: dict[str, str], default: str = '迭代') -> str:
+    """The dashboard's ranking card: horizontal bars with a "Compared by" switch between the two settings."""
+    def body(setting: str) -> str:
+        rows = ''.join(
+            f'<div class="rank-row"><span class="rank-name">{html.escape(label)}</span>'
+            f'<span class="rank-track"><span class="rank-fill" style="width:{score:.1f}%;background:{COLORS.get(model, "#6b7280")}"></span>'
+            f'<span class="rank-ref"></span></span><span class="rank-val">{score:.1f}</span></div>'
+            for model, label, score in ranking(groups, models, names, setting))
+        hidden = '' if setting == default else ' hidden'
+        return f'<div class="rank-body" data-k="{setting}"{hidden}>{rows}</div>'
+    buttons = ''.join(f'<button type="button" data-k="{s}" class="{"on" if s == default else ""}">{s}</button>'
+                      for s in (default, *(s for s in SETTINGS if s != default)))
+    return (f'<div class="rank"><div class="rank-head"><div class="rank-title">平均分排行<small>{len(groups)} 道题 · 满分 100 · 参照 = 50</small></div>'
+            f'<div class="seg"><span>Compared by</span>{buttons}</div></div>'
+            + ''.join(body(s) for s in SETTINGS)
+            + '<div class="rank-axis"><span></span><span class="rank-ticks"><i style="left:0">0</i><i class="ref" style="left:50%">参照 50</i>'
+              '<i style="left:100%">100</i></span><span></span></div></div>'
+            '<script>document.querySelectorAll(".rank").forEach(function(card){card.querySelectorAll(".seg button").forEach('
+            'function(b){b.addEventListener("click",function(){card.querySelectorAll(".seg button").forEach(function(x){'
+            'x.classList.toggle("on",x===b)});card.querySelectorAll(".rank-body").forEach(function(p){p.hidden=p.dataset.k!==b.dataset.k})})})})'
+            '</script>')

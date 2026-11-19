@@ -280,7 +280,8 @@ def write_board(metas: list[dict], names: list[str]) -> None:
                                              for m, s in columns) + ' |')
     for file, svg in chart_svgs(groups, models, MODEL).items():
         (ROOT / 'dashboard/assets' / file).write_text(svg)
-    charts = ' '.join(f'![{s}平均分](dashboard/assets/{CHART_FILES[s]})' for s in SETTINGS)
+    charts = (f'![平均分 · compared by 迭代](dashboard/assets/{CHART_FILES["迭代"]})\n\n'
+              f'<details><summary>Compared by 单轮</summary>\n\n![平均分 · compared by 单轮](dashboard/assets/{CHART_FILES["单轮"]})\n\n</details>')
     board = (f'协议 {protocol}；更早协议与题目版本的成绩见各题 README。' + '\n\n' + charts + '\n\n'
              + '\n'.join(scores) + '\n\n满分 100，参照 = 50；列按迭代平均分排序；平均为各题分数的简单平均，没有成绩的题不计。\n\n**提交次数与用时**\n\n'
              + '\n'.join(process))
