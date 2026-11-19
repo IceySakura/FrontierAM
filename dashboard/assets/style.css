@@ -42,9 +42,8 @@ pre code { padding: 0; background: none; }
 footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 40px; padding: 16px 24px; text-align: center; }
 .matrix td { text-align: center; }
 .matrix td:first-child { text-align: left; }
-.matrix tr.avg td { border-top: 3px solid #f0ad4e; background: #1f3a5f; color: #ffffff; font-weight: 700;
-  font-family: 'Trebuchet MS', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 1.1em; }
-.matrix tr.avg td small { color: #9cc4ff; font-weight: 400; }
-.matrix tr.avg td b { color: #ffd479; }
+.matrix tr.avg td { border-top: 2px solid #c9d6e8; background: #f4f7fb; }
+.matrix tr.avg td b { color: #1f4e8c; font-size: 1.05em; font-variant-numeric: tabular-nums; }
+.matrix tr.avg td small { color: #6b7a90; }
 .charts { display: flex; flex-wrap: wrap; gap: 16px; margin: 8px 0 16px; }
 .charts img { max-width: 100%; height: auto; border: 1px solid #e5e5e5; }
