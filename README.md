@@ -7,6 +7,8 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 <!-- board:start -->
 协议 v6.3；更早协议与题目版本的成绩见各题 README。
 
+![单轮平均分](dashboard/assets/board-single.svg) ![迭代平均分](dashboard/assets/board-iterative.svg)
+
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 | Intern S2 单轮 | Intern S2 迭代 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | [conic](tasks/conic/README.md) | 0.0 | 0.0 | 0.0 | 73.7 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
@@ -20,8 +22,9 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) | 59.3 | 87.4 | 45.7 | 83.9 | 11.9 | 55.2 | 56.6 | 66.0 | 0.0 | 33.0 |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 71.4 | 69.0 | 40.0 | 22.8 | 0.0 | 49.9 | 74.5 | 47.8 | 0.0 | 24.2 |
 | [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 94.3 | 93.5 | 77.0 | 92.9 | 66.8 | 77.3 | 79.4 | 85.0 | 0.0 | 32.3 |
+| **平均** | **44.5** | **61.0** | **40.3** | **56.4** | **16.9** | **38.7** | **35.8** | **50.5** | **1.1** | **9.3** |
 
-满分 100，参照 = 50。
+满分 100，参照 = 50；平均为各题分数的简单平均，没有成绩的题不计。
 
 **提交次数与用时**
 
