@@ -73,6 +73,7 @@
 | Hunyuan 4 | 单轮 | 增益 \(G = 0.265\)（fourier -0.44，折点 ridge -0.49，乘积峰 +1.73），144 例，单例最长 3.8 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 56.6 | 51 分钟 | [`v2/hy4-single-1/`](solutions/v6.3/v2/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 增益 \(G = 0.640\)（fourier +0.81，折点 ridge -0.90，乘积峰 +2.00），144 例，单例最长 11.4 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 66.0 | 12 次提交，179 分钟 | [`v2/hy4-iterative-1/`](solutions/v6.3/v2/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v2/intern-s2-single-1/`](solutions/v6.3/v2/intern-s2-single-1/) |
+| Intern S2 | 迭代 | 增益 \(G = -0.243\)（fourier -1.29，折点 ridge +0.03，乘积峰 +0.54），144 例，单例最长 2.1 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 33.0 | 0 次提交，240 分钟 | [`v2/intern-s2-iterative-1/`](solutions/v6.3/v2/intern-s2-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -123,6 +124,12 @@ public 分数随测试提交：29.5（13 分钟） → 56.6（42 分钟） → 5
 11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。
 
 源码 [`solutions/v6.3/v2/intern-s2-single-1/source/`](solutions/v6.3/v2/intern-s2-single-1/source/)（提交 `blackbox-cubature-v2-20261118T091157Z-dccff7`）；未复制的二进制或大文件：（提交存档不在本服务器）。
+
+### Intern S2（迭代，v6.3）
+
+11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。
+
+源码 [`solutions/v6.3/v2/intern-s2-iterative-1/source/`](solutions/v6.3/v2/intern-s2-iterative-1/source/)（提交 `blackbox-cubature-v2-20261119T002111Z-5d7611`）；未复制的二进制或大文件：libhcubature.so（12,616,192 字节）、libpcubature.so（12,616,192 字节）。
 
 ## 观察与说明
 
