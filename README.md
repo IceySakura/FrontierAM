@@ -22,7 +22,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) | 59.3 | 87.4 | 45.7 | 83.9 | 56.6 | 66.0 | 11.9 | 55.2 | 0.0 | 33.0 |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 71.4 | 69.0 | 40.0 | 22.8 | 74.5 | 47.8 | 0.0 | 49.9 | 0.0 | 24.2 |
 | [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 94.3 | 93.5 | 77.0 | 92.9 | 79.4 | 85.0 | 66.8 | 77.3 | 0.0 | 32.3 |
-| ***平均*** | ***44.5*** | ***61.0*** | ***40.3*** | ***56.4*** | ***35.8*** | ***50.5*** | ***16.9*** | ***38.7*** | ***1.1*** | ***9.3*** |
+| <kbd><b>平均</b></kbd> | <kbd><b>44.5</b></kbd> | <kbd><b>61.0</b></kbd> | <kbd><b>40.3</b></kbd> | <kbd><b>56.4</b></kbd> | <kbd><b>35.8</b></kbd> | <kbd><b>50.5</b></kbd> | <kbd><b>16.9</b></kbd> | <kbd><b>38.7</b></kbd> | <kbd><b>1.1</b></kbd> | <kbd><b>9.3</b></kbd> |
 
 满分 100，参照 = 50；列按迭代平均分排序；平均为各题分数的简单平均，没有成绩的题不计。
 
