@@ -7,7 +7,13 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 <!-- board:start -->
 协议 v6.3；更早协议与题目版本的成绩见各题 README。
 
-![单轮平均分](dashboard/assets/board-single.svg) ![迭代平均分](dashboard/assets/board-iterative.svg)
+![平均分 · compared by 迭代](dashboard/assets/board-iterative.svg)
+
+<details><summary>Compared by 单轮</summary>
+
+![平均分 · compared by 单轮](dashboard/assets/board-single.svg)
+
+</details>
 
 | task | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Intern S2 单轮 | Intern S2 迭代 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

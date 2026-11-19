@@ -1,43 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="520" height="330" viewBox="0 0 520 330" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif">
-<rect width="520" height="330" fill="#ffffff"/>
-<text x="20" y="30" font-size="18" font-weight="700" fill="#111827">单轮（1 小时）</text>
-<text x="20" y="52" font-size="12" fill="#6b7280">10 道题的平均分 · 满分 100</text>
-<line x1="34" y1="278.0" x2="504" y2="278.0" stroke="#d1d5db" stroke-width="1"/>
-<text x="26" y="282.0" font-size="11" fill="#9ca3af" text-anchor="end">0</text>
-<line x1="34" y1="228.0" x2="504" y2="228.0" stroke="#f0f1f3" stroke-width="1"/>
-<text x="26" y="232.0" font-size="11" fill="#9ca3af" text-anchor="end">25</text>
-<line x1="34" y1="178.0" x2="504" y2="178.0" stroke="#f0f1f3" stroke-width="1"/>
-<text x="26" y="182.0" font-size="11" fill="#9ca3af" text-anchor="end">50</text>
-<line x1="34" y1="128.0" x2="504" y2="128.0" stroke="#f0f1f3" stroke-width="1"/>
-<text x="26" y="132.0" font-size="11" fill="#9ca3af" text-anchor="end">75</text>
-<line x1="34" y1="78.0" x2="504" y2="78.0" stroke="#f0f1f3" stroke-width="1"/>
-<text x="26" y="82.0" font-size="11" fill="#9ca3af" text-anchor="end">100</text>
-<rect x="53.7" y="189.0" width="54.5" height="89.0" rx="5" fill="#10a37f"/>
-<rect x="147.7" y="197.4" width="54.5" height="80.6" rx="5" fill="#d97757"/>
-<rect x="241.7" y="206.5" width="54.5" height="71.5" rx="5" fill="#3b6ff5"/>
-<rect x="335.7" y="244.3" width="54.5" height="33.7" rx="5" fill="#7c5cff"/>
-<rect x="429.7" y="275.7" width="54.5" height="2.3" rx="5" fill="#0ea5b7"/>
-<line x1="34" y1="178.0" x2="504" y2="178.0" stroke="#6b7280" stroke-width="1" stroke-dasharray="5 4"/>
-<text x="504" y="172.0" font-size="11" text-anchor="end" fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">参照 50</text>
-<text x="504" y="172.0" font-size="11" text-anchor="end" fill="#6b7280">参照 50</text>
-<text x="81.0" y="181.0" font-size="14" font-weight="700" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">44.5</text>
-<text x="81.0" y="181.0" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">44.5</text>
-<text x="81.0" y="296.0" font-size="12" fill="#374151" text-anchor="middle">GPT-6.1</text>
-<text x="81.0" y="310.0" font-size="12" fill="#374151" text-anchor="middle">Sol</text>
-<text x="175.0" y="189.4" font-size="14" font-weight="700" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">40.3</text>
-<text x="175.0" y="189.4" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">40.3</text>
-<text x="175.0" y="296.0" font-size="12" fill="#374151" text-anchor="middle">Claude</text>
-<text x="175.0" y="310.0" font-size="12" fill="#374151" text-anchor="middle">Opus 5.5</text>
-<text x="269.0" y="198.5" font-size="14" font-weight="700" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">35.8</text>
-<text x="269.0" y="198.5" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">35.8</text>
-<text x="269.0" y="296.0" font-size="12" fill="#374151" text-anchor="middle">Hunyuan</text>
-<text x="269.0" y="310.0" font-size="12" fill="#374151" text-anchor="middle">4</text>
-<text x="363.0" y="236.3" font-size="14" font-weight="700" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">16.9</text>
-<text x="363.0" y="236.3" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">16.9</text>
-<text x="363.0" y="296.0" font-size="12" fill="#374151" text-anchor="middle">Qwen3.8</text>
-<text x="363.0" y="310.0" font-size="12" fill="#374151" text-anchor="middle">Max</text>
-<text x="457.0" y="267.7" font-size="14" font-weight="700" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">1.1</text>
-<text x="457.0" y="267.7" font-size="14" font-weight="700" text-anchor="middle" fill="#111827">1.1</text>
-<text x="457.0" y="296.0" font-size="12" fill="#374151" text-anchor="middle">Intern</text>
-<text x="457.0" y="310.0" font-size="12" fill="#374151" text-anchor="middle">S2</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="254" viewBox="0 0 640 254" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+<rect width="640" height="254" fill="#ffffff"/>
+<text x="16" y="28" font-size="16" font-weight="700" fill="#111827">平均分 · compared by 单轮</text>
+<text x="16" y="48" font-size="12" fill="#6b7280">10 道题的平均分 · 满分 100</text>
+<text x="120" y="85.0" font-size="13" fill="#374151" text-anchor="end">GPT-6.1 Sol</text>
+<rect x="132" y="72.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
+<rect x="132" y="72.0" width="201.2" height="16" rx="4" fill="#10a37f"/>
+<text x="596" y="85.0" font-size="13" font-weight="700" fill="#111827">44.5</text>
+<text x="120" y="117.0" font-size="13" fill="#374151" text-anchor="end">Claude Opus 5.5</text>
+<rect x="132" y="104.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
+<rect x="132" y="104.0" width="182.2" height="16" rx="4" fill="#d97757"/>
+<text x="596" y="117.0" font-size="13" font-weight="700" fill="#111827">40.3</text>
+<text x="120" y="149.0" font-size="13" fill="#374151" text-anchor="end">Hunyuan 4</text>
+<rect x="132" y="136.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
+<rect x="132" y="136.0" width="161.6" height="16" rx="4" fill="#3b6ff5"/>
+<text x="596" y="149.0" font-size="13" font-weight="700" fill="#111827">35.8</text>
+<text x="120" y="181.0" font-size="13" fill="#374151" text-anchor="end">Qwen3.8 Max</text>
+<rect x="132" y="168.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
+<rect x="132" y="168.0" width="76.2" height="16" rx="4" fill="#7c5cff"/>
+<text x="596" y="181.0" font-size="13" font-weight="700" fill="#111827">16.9</text>
+<text x="120" y="213.0" font-size="13" fill="#374151" text-anchor="end">Intern S2</text>
+<rect x="132" y="200.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
+<rect x="132" y="200.0" width="5.1" height="16" rx="4" fill="#0ea5b7"/>
+<text x="596" y="213.0" font-size="13" font-weight="700" fill="#111827">1.1</text>
+<line x1="358.0" y1="60" x2="358.0" y2="228" stroke="#9ca3af" stroke-dasharray="4 3"/>
+<text x="132.0" y="244" font-size="11" fill="#9ca3af" text-anchor="middle">0</text>
+<text x="358.0" y="244" font-size="11" fill="#6b7280" text-anchor="middle">参照 50</text>
+<text x="584.0" y="244" font-size="11" fill="#9ca3af" text-anchor="middle">100</text>
 </svg>
