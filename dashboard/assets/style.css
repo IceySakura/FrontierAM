@@ -42,3 +42,6 @@ pre code { padding: 0; background: none; }
 footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 40px; padding: 16px 24px; text-align: center; }
 .matrix td { text-align: center; }
 .matrix td:first-child { text-align: left; }
+.matrix tr.avg td { border-top: 2px solid #999; background: #f5f7fa; }
+.charts { display: flex; flex-wrap: wrap; gap: 16px; margin: 8px 0 16px; }
+.charts img { max-width: 100%; height: auto; border: 1px solid #e5e5e5; }

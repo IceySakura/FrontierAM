@@ -25,6 +25,8 @@ from pathlib import Path
 
 import markdown
 
+from board_stats import CHART_FILES, SETTINGS, averages, chart_svgs
+
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / 'dashboard'
 MATH = re.compile(r'(\$\$.+?\$\$|\\\[.+?\\\]|\\\(.+?\\\)|(?<![\\$])\$[^$\n]+?\$)', re.S)
@@ -445,6 +447,11 @@ def index_page(site: dict, tasks: list[dict]) -> str:
                     f'{cells_for(task, newest, models)}</tr>')
         history += [f'<tr><td>{name}<br><small>{html.escape(group_label(g))}</small></td>{cells_for(task, g, old_models)}</tr>'
                     for g in older]
+    means = averages(newest_groups, models)
+    rows.append('<tr class="avg"><td><b>平均</b></td>' + ''.join(
+        '<td>' + '<br>'.join(f'<small>{s}</small> <b>{"—" if means[(m, s)][0] is None else f"{means[(m, s)][0]:.1f}"}</b>'
+                             for s in SETTINGS) + '</td>' for m in models) + '</tr>')
+    charts = ''.join(f'<img src="assets/{CHART_FILES[s]}" alt="{s}平均分">' for s in SETTINGS)
     cards = ''.join(
         f'<div class="card"><h3><a href="tasks/{t["id"]}.html">{html.escape(t.get("name", t["title"]))}</a></h3>'
         f'<p>{html.escape(t["category"])}</p><p>{md(t["summary"])[3:-4]}</p>'
@@ -452,7 +459,9 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     body = (f'<h1>{html.escape(site["title"])}</h1><p class="lead">{html.escape(site["subtitle"])}</p>{md(site["intro_md"])}'
             f'<h2>题目</h2><div class="cards">{cards}</div>'
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
-            '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。旧版本的成绩在表格下方折叠。</p>'
+            f'<div class="charts">{charts}</div>'
+            '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。'
+            '最后一行为各题分数的简单平均（没有成绩的题不计）。旧版本的成绩在表格下方折叠。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>'
             + (f'<details><summary>旧版本的成绩（{len(history)} 组）</summary>'
                f'<table class="matrix"><tr><th>题目 / 版本</th>{old_head}</tr>{"".join(history)}</table></details>' if history else ''))
@@ -477,6 +486,9 @@ def main():
         shutil.rmtree(staging)
     (staging / 'tasks').mkdir(parents=True)
     shutil.copytree(SRC / 'assets', staging / 'assets')
+    newest = [t['result_groups'][0] for t in tasks if t['result_groups']]
+    for file, svg in chart_svgs(newest, BOARD_MODELS, {m: model_name(m) for m in BOARD_MODELS}).items():
+        (staging / 'assets' / file).write_text(svg)
     (staging / 'index.html').write_text(index_page(site, tasks))
     (staging / 'protocol.html').write_text(page('评测协议', md(site['protocol_md'])))
     (staging / 'insights.html').write_text(insights_page(tasks))

@@ -19,6 +19,8 @@ import tarfile
 
 from pathlib import Path
 
+from board_stats import CHART_FILES, SETTINGS, averages, chart_svgs
+
 ROOT = Path(__file__).resolve().parents[2]
 TASKS = ROOT / 'tasks'
 TEXT = {'.md', '.py', '.txt', '.json', '.sh', '.c', '.cc', '.cpp', '.h', '.hpp', '.R', '.toml', '.yaml', '.yml', '.jl',
@@ -257,9 +259,12 @@ def write_board(metas: list[dict], names: list[str]) -> None:
     head = '| task | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in columns) + ' |'
     rule = '| --- |' + ' --- |' * len(columns)
     scores, process = [head, rule], [head, rule]
+    groups = []
     for meta, name in zip(metas, names):
         newest = next((g for g in meta['result_groups'] if g.get('protocol') == protocol), None)  # newest task version
         results = newest['results'] if newest else []
+        if newest:
+            groups.append(newest)
         row_s, row_p = [], []
         for model, setting in columns:
             hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting),
@@ -270,8 +275,15 @@ def write_board(metas: list[dict], names: list[str]) -> None:
         link = f'[{name}](tasks/{name}/README.md)'
         scores.append(f'| {link} | ' + ' | '.join(row_s) + ' |')
         process.append(f'| {link} | ' + ' | '.join(row_p) + ' |')
-    board = (f'协议 {protocol}；更早协议与题目版本的成绩见各题 README。' + '\n\n'
-             + '\n'.join(scores) + '\n\n满分 100，参照 = 50。\n\n**提交次数与用时**\n\n'
+    models = list(dict.fromkeys(m for m, _ in columns))
+    means = averages(groups, models)
+    scores.append('| **平均** | ' + ' | '.join('—' if means[(m, s)][0] is None else f'**{means[(m, s)][0]:.1f}**'
+                                             for m, s in columns) + ' |')
+    for file, svg in chart_svgs(groups, models, MODEL).items():
+        (ROOT / 'dashboard/assets' / file).write_text(svg)
+    charts = ' '.join(f'![{s}平均分](dashboard/assets/{CHART_FILES[s]})' for s in SETTINGS)
+    board = (f'协议 {protocol}；更早协议与题目版本的成绩见各题 README。' + '\n\n' + charts + '\n\n'
+             + '\n'.join(scores) + '\n\n满分 100，参照 = 50；平均为各题分数的简单平均，没有成绩的题不计。\n\n**提交次数与用时**\n\n'
              + '\n'.join(process))
     readme = ROOT / 'README.md'
     text = readme.read_text()
