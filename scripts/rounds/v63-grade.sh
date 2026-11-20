@@ -55,9 +55,10 @@ print('lost' if 'lost' in s else 'done' if all(k=='done' for k in s) else 'wait'
     echo "$id"
 }
 
-anchors() {
+anchors() {  # only for this loop's tasks: a task outside V63_TASKS may have no sealed runtime (pdhcg-qp-v1)
     local task id
     for task in species-tree-v3 trajectory-covariance-v2 galaxy-gravity-v4; do
+        case " $TASKS " in *" $task "*) ;; *) continue;; esac
         done_event anchor "$task" && continue
         # galaxy-gravity-v4 is anchored only under the per-case limits calibrated on this machine (prepare_galaxy_v4.py)
         [ "$task" = galaxy-gravity-v4 ] && ! grep -q '"calibrated": true' .runtime-ops/galaxy-gravity-v4/lock.json && continue
@@ -66,6 +67,7 @@ anchors() {
             8> "var/stores/store/reruns/anchor-$task.lock"
     done
     for task in galaxy-gravity-v3 polarization-demosaicking-v2 polarization-demosaicking-v3 blackbox-cubature-v2 pdhcg-qp-v1 ihvp-sequence ihvp-sequence-v3 ihvp-sequence-v5; do
+        case " $TASKS " in *" $task "*) ;; *) continue;; esac
         done_event anchor "$task" && continue
         FRONTIERAM_RUNTIME=$EXP_RT ./bench --store $STORE baseline --task "$task" >> var/stores/store/reruns/v63-worker.log 2>&1 \
             && log "\"event\": \"anchor\", \"label\": \"$task\""
