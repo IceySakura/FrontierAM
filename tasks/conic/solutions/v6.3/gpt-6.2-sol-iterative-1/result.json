@@ -1,0 +1,56 @@
+{
+ "model": "gpt-6.2-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "conic-20261120T085307Z-0b3fde",
+ "raw": "无效提交（提交检查未通过，650 例均未运行）",
+ "mapping": "无效提交记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 67.1,
+  "public_tests": 8,
+  "public_curve": [
+   {
+    "minute": 6.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 21.1,
+    "score": null,
+    "status": "unmeasured"
+   },
+   {
+    "minute": 30.8,
+    "score": null,
+    "status": "unmeasured"
+   },
+   {
+    "minute": 34.3,
+    "score": null,
+    "status": "unmeasured"
+   },
+   {
+    "minute": 45.5,
+    "score": null,
+    "status": "unmeasured"
+   },
+   {
+    "minute": 50.8,
+    "score": null,
+    "status": "unmeasured"
+   },
+   {
+    "minute": 54.4,
+    "score": null,
+    "status": "unmeasured"
+   },
+   {
+    "minute": 57.4,
+    "score": null,
+    "status": "unmeasured"
+   }
+  ]
+ }
+}

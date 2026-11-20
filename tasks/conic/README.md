@@ -71,6 +71,7 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | 438 / 650（\(p = 0.674\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 46 分钟 | [`gpt-6.2-sol-single-1/`](solutions/v6.3/gpt-6.2-sol-single-1/) |
+| GPT-6.2 Sol | 迭代 | 无效提交（提交检查未通过，650 例均未运行） | 无效提交记 0 | 0.0 | 8 次提交，67 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | 363 / 650（\(p = 0.558\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 57 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 364 / 650（\(p = 0.560\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 7 次提交，239 分钟 | [`gpt-6.1-sol-iterative-2/`](solutions/v6.3/gpt-6.1-sol-iterative-2/) |
 | Claude Opus 5.5 | 单轮 | 398 / 650（\(p = 0.612\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 43 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
@@ -85,6 +86,12 @@
 ### GPT-6.2 Sol（单轮，v6.3）
 
 源码 [`solutions/v6.3/gpt-6.2-sol-single-1/source/`](solutions/v6.3/gpt-6.2-sol-single-1/source/)（提交 `conic-20261120T073435Z-39c736`）；未复制的二进制或大文件：conic（511,248 字节）。
+
+### GPT-6.2 Sol（迭代，v6.3）
+
+public 分数随测试提交：0.0（7 分钟） → —（21 分钟） → —（31 分钟） → —（34 分钟） → —（46 分钟） → —（51 分钟） → —（54 分钟） → —（57 分钟）（—：没有拿到报告）
+
+源码 [`solutions/v6.3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/gpt-6.2-sol-iterative-1/source/)（提交 `conic-20261120T085307Z-0b3fde`）；未复制的二进制或大文件：conic（92,728 字节）、libconic.so（618,112 字节）。
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
