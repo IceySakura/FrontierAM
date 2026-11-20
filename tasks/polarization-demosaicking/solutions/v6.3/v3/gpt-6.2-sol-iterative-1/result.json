@@ -1,0 +1,31 @@
+{
+ "model": "gpt-6.2-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "polarization-demosaicking-v3-20261120T083610Z-eeda57",
+ "raw": "无效提交（formal scene failure）",
+ "mapping": "任一用例失败或提交检查未通过记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 45.0,
+  "public_tests": 3,
+  "public_curve": [
+   {
+    "minute": 2.3,
+    "score": 28.62403489462679,
+    "status": "ok"
+   },
+   {
+    "minute": 28.1,
+    "score": 59.40563547981682,
+    "status": "ok"
+   },
+   {
+    "minute": 40.7,
+    "score": 59.81000122719097,
+    "status": "ok"
+   }
+  ]
+ }
+}

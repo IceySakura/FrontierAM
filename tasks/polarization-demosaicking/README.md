@@ -74,6 +74,7 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | 无效提交（formal scene failure） | 任一用例失败或提交检查未通过记 0 | 0.0 | 41 分钟 | [`v3/gpt-6.2-sol-single-1/`](solutions/v6.3/v3/gpt-6.2-sol-single-1/) |
+| GPT-6.2 Sol | 迭代 | 无效提交（formal scene failure） | 任一用例失败或提交检查未通过记 0 | 0.0 | 3 次提交，45 分钟 | [`v3/gpt-6.2-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.2-sol-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | RMSE \(E = 1.4113\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | RMSE \(E = 1.4339\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.2 | 9 次提交，235 分钟 | [`v3/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.5821\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.3 | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
@@ -88,6 +89,12 @@
 ### GPT-6.2 Sol（单轮，v6.3）
 
 源码 [`solutions/v6.3/v3/gpt-6.2-sol-single-1/source/`](solutions/v6.3/v3/gpt-6.2-sol-single-1/source/)（提交 `polarization-demosaicking-v3-20261120T073504Z-053290`）。
+
+### GPT-6.2 Sol（迭代，v6.3）
+
+public 分数随测试提交：28.6（2 分钟） → 59.4（28 分钟） → 59.8（41 分钟）
+
+源码 [`solutions/v6.3/v3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/v3/gpt-6.2-sol-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261120T083610Z-eeda57`）。
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
