@@ -65,6 +65,7 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | 增益 \(G = 0.941\)（fourier +1.17，折点 ridge -0.34，乘积峰 +2.00），144 例，单例最长 4.6 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 73.5 | 50 分钟 | [`v2/gpt-6.2-sol-single-1/`](solutions/v6.3/v2/gpt-6.2-sol-single-1/) |
+| GPT-6.2 Sol | 迭代 | 增益 \(G = 1.734\)（fourier +1.34，折点 ridge +1.86，乘积峰 +2.00），144 例，单例最长 11.5 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 93.4 | 9 次提交，24 分钟 | [`v2/gpt-6.2-sol-iterative-1/`](solutions/v6.3/v2/gpt-6.2-sol-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | 增益 \(G = 0.371\)（fourier -0.12，折点 ridge -0.76，乘积峰 +2.00），144 例，单例最长 17.3 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 59.3 | 60 分钟 | [`v2/gpt-6.1-sol-single-1/`](solutions/v6.3/v2/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 增益 \(G = 1.496\)（fourier +0.88，折点 ridge +1.60，乘积峰 +2.00），144 例，单例最长 2.7 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 87.4 | 15 次提交，221 分钟 | [`v2/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v2/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 增益 \(G = -0.061\)（fourier -0.42，折点 ridge -0.04，乘积峰 +0.28），144 例，单例最长 1.2 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 45.7 | 11 分钟 | [`v2/claude-opus-5-5-single-1/`](solutions/v6.3/v2/claude-opus-5-5-single-1/) |
@@ -79,6 +80,12 @@
 ### GPT-6.2 Sol（单轮，v6.3）
 
 源码 [`solutions/v6.3/v2/gpt-6.2-sol-single-1/source/`](solutions/v6.3/v2/gpt-6.2-sol-single-1/source/)（提交 `blackbox-cubature-v2-20261120T082441Z-019de5`）。
+
+### GPT-6.2 Sol（迭代，v6.3）
+
+public 分数随测试提交：74.2（6 分钟） → 85.9（9 分钟） → 85.9（12 分钟） → 85.9（13 分钟） → 89.9（16 分钟） → 89.9（17 分钟） → 90.1（19 分钟） → 90.1（21 分钟） → 90.1（23 分钟）
+
+源码 [`solutions/v6.3/v2/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/v2/gpt-6.2-sol-iterative-1/source/)（提交 `blackbox-cubature-v2-20261120T091101Z-c8aa3c`）。
 
 ### GPT-6.1 Sol（单轮，v6.3）
 

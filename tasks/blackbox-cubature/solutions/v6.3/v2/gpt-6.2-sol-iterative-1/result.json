@@ -1,0 +1,61 @@
+{
+ "model": "gpt-6.2-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "blackbox-cubature-v2-20261120T091101Z-c8aa3c",
+ "raw": "增益 \\(G = 1.734\\)（fourier +1.34，折点 ridge +1.86，乘积峰 +2.00），144 例，单例最长 11.5 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+ "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+ "score": 93.36,
+ "review": null,
+ "process": {
+  "minutes": 24.1,
+  "public_tests": 9,
+  "public_curve": [
+   {
+    "minute": 5.8,
+    "score": 74.1946545851394,
+    "status": "ok"
+   },
+   {
+    "minute": 8.9,
+    "score": 85.86468546960798,
+    "status": "ok"
+   },
+   {
+    "minute": 12.0,
+    "score": 85.93702739282416,
+    "status": "ok"
+   },
+   {
+    "minute": 13.3,
+    "score": 85.93702739282416,
+    "status": "ok"
+   },
+   {
+    "minute": 15.7,
+    "score": 89.93709260583076,
+    "status": "ok"
+   },
+   {
+    "minute": 17.0,
+    "score": 89.93709260583076,
+    "status": "ok"
+   },
+   {
+    "minute": 19.0,
+    "score": 90.09342280367483,
+    "status": "ok"
+   },
+   {
+    "minute": 21.2,
+    "score": 90.09342281074575,
+    "status": "ok"
+   },
+   {
+    "minute": 22.9,
+    "score": 90.09342281074575,
+    "status": "ok"
+   }
+  ]
+ }
+}
