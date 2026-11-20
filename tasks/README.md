@@ -8,7 +8,7 @@
 | [exponential](exponential/README.md) | 20 |
 | [galaxy-gravity](galaxy-gravity/README.md) | 17 |
 | [polarization-demosaicking](polarization-demosaicking/README.md) | 22 |
-| [trajectory-covariance](trajectory-covariance/README.md) | 12 |
+| [trajectory-covariance](trajectory-covariance/README.md) | 13 |
 | [species-tree](species-tree/README.md) | 13 |
 | [ihvp-sequence](ihvp-sequence/README.md) | 18 |
 | [pdhcg-qp](pdhcg-qp/README.md) | 0 |
