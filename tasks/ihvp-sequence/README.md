@@ -85,6 +85,7 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | \(E = 0.123\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 58.4 | 30 分钟 | [`v4/gpt-6.2-sol-single-1/`](solutions/v6.3/v4/gpt-6.2-sol-single-1/) |
+| GPT-6.2 Sol | 迭代 | \(E = 0.1143\)，最长序列 28.2 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 61.3 | 5 次提交，45 分钟 | [`v4/gpt-6.2-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.2-sol-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | \(E = 0.1104\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.6 | 57 分钟 | [`v4/gpt-6.1-sol-single-1/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | \(E = 0.1093\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 63.0 | 8 次提交，122 分钟 | [`v4/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | \(E = 0.1225\)，最长序列 27.9 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 58.5 | 19 分钟 | [`v4/claude-opus-5-5-single-1/`](solutions/v6.3/v4/claude-opus-5-5-single-1/) |
@@ -99,6 +100,12 @@
 ### GPT-6.2 Sol（单轮，v6.3）
 
 源码 [`solutions/v6.3/v4/gpt-6.2-sol-single-1/source/`](solutions/v6.3/v4/gpt-6.2-sol-single-1/source/)（提交 `ihvp-sequence-v4-20261120T075106Z-563315`）。
+
+### GPT-6.2 Sol（迭代，v6.3）
+
+public 分数随测试提交：49.8（1 分钟） → 43.4（10 分钟） → 59.9（18 分钟） → 61.2（29 分钟） → 61.7（38 分钟）
+
+源码 [`solutions/v6.3/v4/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/v4/gpt-6.2-sol-iterative-1/source/)（提交 `ihvp-sequence-v4-20261120T092153Z-b9bafa`）。
 
 ### GPT-6.1 Sol（单轮，v6.3）
 

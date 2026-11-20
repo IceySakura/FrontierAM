@@ -10,7 +10,7 @@
 | [polarization-demosaicking](polarization-demosaicking/README.md) | 24 |
 | [trajectory-covariance](trajectory-covariance/README.md) | 14 |
 | [species-tree](species-tree/README.md) | 15 |
-| [ihvp-sequence](ihvp-sequence/README.md) | 19 |
+| [ihvp-sequence](ihvp-sequence/README.md) | 20 |
 | [pdhcg-qp](pdhcg-qp/README.md) | 0 |
 | [blackbox-cubature](blackbox-cubature/README.md) | 12 |
 | [continuum-estimation](continuum-estimation/README.md) | 12 |
