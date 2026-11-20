@@ -246,9 +246,9 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
     return '\n'.join(lines)
 
 
-COLUMNS = [('gpt-6.1-sol', '单轮'), ('gpt-6.1-sol', '迭代'), ('claude-opus-5-5', '单轮'), ('claude-opus-5-5', '迭代'),
-           ('qwen3.8-max-0902', '单轮'), ('qwen3.8-max-0902', '迭代'), ('hy4', '单轮'), ('hy4', '迭代'),
-           ('intern-s2', '单轮'), ('intern-s2', '迭代'), ('gpt-6.2-sol', '单轮'), ('gpt-6.2-sol', '迭代')]
+COLUMNS = [('gpt-6.2-sol', '单轮'), ('gpt-6.2-sol', '迭代'), ('gpt-6.1-sol', '单轮'), ('gpt-6.1-sol', '迭代'),
+           ('claude-opus-5-5', '单轮'), ('claude-opus-5-5', '迭代'), ('qwen3.8-max-0902', '单轮'), ('qwen3.8-max-0902', '迭代'),
+           ('hy4', '单轮'), ('hy4', '迭代'), ('intern-s2', '单轮'), ('intern-s2', '迭代')]
 PROTOCOLS = ('v6.3', 'v6.2', 'v6.1', 'v6')  # newest first; the board shows the newest one that has results
 
 

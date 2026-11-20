@@ -7,6 +7,8 @@ CHART_FILES = {'单轮': 'board-single.svg', '迭代': 'board-iterative.svg'}
 # One colour per model, the same in both charts.
 COLORS = {'gpt-6.1-sol': '#10a37f', 'claude-opus-5-5': '#d97757', 'hy4': '#3b6ff5', 'qwen3.8-max-0902': '#7c5cff',
           'intern-s2': '#0ea5b7', 'gpt-6.2-sol': '#065f46'}
+# Board column order: the newer version directly before its predecessor (user instruction, 2026-11-19).
+BEFORE = {'gpt-6.2-sol': 'gpt-6.1-sol'}
 FONT = ("Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, "
         "'PingFang SC', 'Microsoft YaHei', sans-serif")
 
@@ -31,13 +33,19 @@ def averages(groups: list[dict], models: list[str]) -> dict:
 
 def rank_models(groups: list[dict], models: list[str]) -> list[str]:
     """Models ordered by their iterative average, then their single average (best first; no score last); a model
-    whose iterative row is still missing tasks follows the complete ones."""
+    whose iterative row is still missing tasks follows the complete ones. A model in BEFORE then moves directly before
+    the model it names, whatever the averages."""
     means = averages(groups, models)
 
     def key(model: str):
         return (means[(model, '迭代')][1] < len(groups),
                 *(-(means[(model, s)][0] if means[(model, s)][0] is not None else -1.0) for s in ('迭代', '单轮')))
-    return sorted(models, key=key)
+    order = sorted(models, key=key)
+    for model, anchor in BEFORE.items():
+        if model in order and anchor in order:
+            order.remove(model)
+            order.insert(order.index(anchor), model)
+    return order
 
 
 def ranking(groups: list[dict], models: list[str], names: dict[str, str], setting: str) -> list[tuple[str, str, float]]:

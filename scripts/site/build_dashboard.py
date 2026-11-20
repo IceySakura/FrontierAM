@@ -406,7 +406,7 @@ def task_page(task: dict) -> str:
     return page(task['title'], '\n'.join(body), depth=1)
 
 
-BOARD_MODELS = ['gpt-6.1-sol', 'claude-opus-5-5', 'qwen3.8-max-0902', 'hy4', 'intern-s2', 'gpt-6.2-sol']
+BOARD_MODELS = ['gpt-6.2-sol', 'gpt-6.1-sol', 'claude-opus-5-5', 'qwen3.8-max-0902', 'hy4', 'intern-s2']
 
 
 def index_page(site: dict, tasks: list[dict]) -> str:
