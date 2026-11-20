@@ -73,7 +73,7 @@
 
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.2 Sol | 单轮 | 未测 | 评测方问题，记未测（不记 0） | — | 41 分钟 | [`v3/gpt-6.2-sol-single-1/`](solutions/v6.3/v3/gpt-6.2-sol-single-1/) |
+| GPT-6.2 Sol | 单轮 | RMSE \(E = 1.2894\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 57.0 | 41 分钟 | [`v3/gpt-6.2-sol-single-1/`](solutions/v6.3/v3/gpt-6.2-sol-single-1/) |
 | GPT-6.2 Sol | 迭代 | 未测 | 评测方问题，记未测（不记 0） | — | 3 次提交，45 分钟 | [`v3/gpt-6.2-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.2-sol-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | RMSE \(E = 1.4113\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | RMSE \(E = 1.4339\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.2 | 9 次提交，235 分钟 | [`v3/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/) |
@@ -88,7 +88,7 @@
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
-第一次评分时机器上同时有 6 个开发会话和 conic、galaxy、species 等评分，3 景在 1.0 秒单景时限超时（通过的景中位约 0.7 秒）；polarization 的计时受开发负载影响（11-12 实测最坏 2.0–2.8 倍），按 11-14、11-17 的做法记未测，开发槽全空时对同一冻结提交重评，重评待开发槽全空后进行。
+第一次评分时机器上同时有 6 个开发会话和 conic、galaxy、species 等评分，3 景在 1.0 秒单景时限超时（通过的景中位约 0.7 秒）；polarization 的计时受开发负载影响（11-12 实测最坏 2.0–2.8 倍），按 11-14、11-17 的做法记未测，开发槽全空时对同一冻结提交重评，以重评为准。
 
 源码 [`solutions/v6.3/v3/gpt-6.2-sol-single-1/source/`](solutions/v6.3/v3/gpt-6.2-sol-single-1/source/)（提交 `polarization-demosaicking-v3-20261120T073504Z-053290`）。
 
