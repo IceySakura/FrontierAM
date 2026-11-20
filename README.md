@@ -27,8 +27,8 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |  |  |
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) | 73.5 | 93.4 | 59.3 | 87.4 | 45.7 | 83.9 | 56.6 | 66.0 | 11.9 | 55.2 | 0.0 | 33.0 |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 71.1 | 73.4 | 71.4 | 69.0 | 40.0 | 22.8 | 74.5 | 47.8 | 0.0 | 49.9 | 0.0 | 24.2 |
-| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 96.1 |  | 94.3 | 93.5 | 77.0 | 92.9 | 79.4 | 85.0 | 66.8 | 77.3 | 0.0 | 32.3 |
-| **平均** | **61.1** (9/10) | **70.1** (5/10) | **44.5** | **61.0** | **40.3** | **56.4** | **35.8** | **50.5** | **16.9** | **38.7** | **1.1** | **9.3** |
+| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 96.1 | 95.2 | 94.3 | 93.5 | 77.0 | 92.9 | 79.4 | 85.0 | 66.8 | 77.3 | 0.0 | 32.3 |
+| **平均** | **61.1** (9/10) | **74.3** (6/10) | **44.5** | **61.0** | **40.3** | **56.4** | **35.8** | **50.5** | **16.9** | **38.7** | **1.1** | **9.3** |
 
 满分 100，参照 = 50；列按迭代平均分排序；平均为各题分数的简单平均，没有成绩的题不计。
 
@@ -46,7 +46,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |  |  |
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) | 50 分钟 | 9 次提交，24 分钟 | 60 分钟 | 15 次提交，221 分钟 | 11 分钟 | 16 次提交，97 分钟 | 51 分钟 | 12 次提交，179 分钟 | 56 分钟 | 1 次提交，240 分钟 | 60 分钟 | 0 次提交，240 分钟 |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 12 分钟 | 5 次提交，20 分钟 | 49 分钟 | 3 次提交，38 分钟 | 24 分钟 | 5 次提交，80 分钟 | 51 分钟 | 7 次提交，135 分钟 | 60 分钟 | 4 次提交，216 分钟 | 60 分钟 | 4 次提交，213 分钟 |
-| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 20 分钟 |  | 59 分钟 | 3 次提交，182 分钟 | 25 分钟 | 4 次提交，199 分钟 | 53 分钟 | 8 次提交，178 分钟 | 49 分钟 | 3 次提交，220 分钟 | 60 分钟 | 1 次提交，164 分钟 |
+| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 20 分钟 | 5 次提交，24 分钟 | 59 分钟 | 3 次提交，182 分钟 | 25 分钟 | 4 次提交，199 分钟 | 53 分钟 | 8 次提交，178 分钟 | 49 分钟 | 3 次提交，220 分钟 | 60 分钟 | 1 次提交，164 分钟 |
 <!-- board:end -->
 
 评测从接入到计分的完整流程：[评测流程](docs/BENCH_PROCESS.md)。成绩能说明什么以及需要人类关注的事项：[结果解读](results/INSIGHTS.md)。
