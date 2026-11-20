@@ -56,6 +56,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
 HARNESS = {
     'claude-opus-5-5': 'claude',
     'gpt-6.1-sol': 'codex',
+    'gpt-6.2-sol': 'codex',
     'gpt-6-astra': 'codex',
     'deepseek-v4-pro': 'dsh',
     'step-5-preview': 'step',
@@ -75,10 +76,11 @@ DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 # The path from this host to the model gateways closes connections idle for 1100 s, and a non-streaming request is idle
 # until its whole answer exists; streamed answers keep sending thinking or keepalive events, so these models' upstream
 # requests stay streaming.
-UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6.1-sol', 'hy4', 'intern-s2', 'qwen3.8-max', 'qwen3.8-max-0902'}
+UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6.1-sol', 'gpt-6.2-sol', 'hy4', 'intern-s2', 'qwen3.8-max', 'qwen3.8-max-0902'}
 # AI Hub provider per model where it is not ATR's default: OpenAI refuses Codex requests for this organization
-# (2026-11-14); the azure provider serves the same model with the same controls (ATR models.yaml).
-MODEL_PROVIDER = {'gpt-6.1-sol': 'azure'}
+# (2026-11-14); the azure provider serves the same model with the same controls (ATR models.yaml). gpt-6.2-sol has
+# no other provider.
+MODEL_PROVIDER = {'gpt-6.1-sol': 'azure', 'gpt-6.2-sol': 'azure'}
 # Extra request fields per model: Intern S2's documented sampling (model card: temperature 0.8, top_p 0.95, top_k 50);
 # Claude Code sends none, and the endpoint's defaults are not published.
 MODEL_OPTIONS = {'intern-s2': {'anthropic': {'temperature': 0.8, 'top_p': 0.95, 'top_k': 50}}}

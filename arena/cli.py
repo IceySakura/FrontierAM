@@ -40,6 +40,7 @@ MODELS = [
     'minimax-m3.1-flash',
     'step-5-preview',
     'gpt-6.1-sol',
+    'gpt-6.2-sol',
     'gpt-6-astra',
     'gemini-4-argon',
     'hy4',
