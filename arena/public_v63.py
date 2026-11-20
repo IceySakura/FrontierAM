@@ -501,6 +501,11 @@ def report_from(task, store: Store, record: dict, partial: dict, unfinished: lis
         reason = read_json(result).get('reason') if result.exists() else None
         if result.exists() and read_json(result).get('status') == 'submission_failure':
             return feedback.invalid(task.name, str(reason or 'the submission failed before any case ran'))
+        # conic records its verdict in metrics.json instead (a failed build.sh: outcome submission_error)
+        metrics = store.result_dir(job) / 'grade' / 'metrics.json'
+        summary = read_json(metrics).get('summary') if metrics.exists() else None
+        if isinstance(summary, dict) and summary.get('outcome') == 'submission_error':
+            return feedback.invalid(task.name, str(summary.get('reason') or 'the submission failed before any case ran'))
         return feedback.unmeasured(task.name, 'no case finished within the cap' if unfinished else str(reason or 'grading failed'))
     universe = public_cases(task)
     if not public_scope(task, store, job) or (family(task.name) not in SUITE_FAMILIES and any(r['id'] not in universe for r in rows)):

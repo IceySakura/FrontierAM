@@ -415,7 +415,7 @@ def run_workers(args, job_ids=None) -> list[dict]:
 
 def cmd_grade(args) -> None:
     store = Store(args.store)
-    job = store.enqueue(args.submission)
+    job = store.enqueue(args.submission, isolation=args.isolation)
     args.drain = True
     run_workers(args, job_ids=[job])
 
@@ -883,6 +883,8 @@ def main() -> None:
         p.add_argument('--task', action='append', choices=sorted(TASKS))
         if name == 'grade':
             p.add_argument('--submission', required=True)
+            p.add_argument('--isolation', default=None, choices=['shared', 'grade_pool', 'quiet', 'dev_idle'],
+                           help="default: the task's grade isolation")
         else:
             p.add_argument('--drain', action='store_true', help='exit when the queue is empty')
     baseline = sub.add_parser('baseline')

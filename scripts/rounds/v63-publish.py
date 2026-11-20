@@ -118,6 +118,21 @@ SAMPLE_FEEDBACK = ('出题人只提供带真值的公开样例和 private 集，
 for _task in ('continuum-estimation', 'fluorescence-deconvolution'):
     for _key in ((_task, 'iterative'), *((_task, 'iterative', _model) for _model in ('claude-opus-5-5', 'qwen3.8-max-0902', 'hy4', 'intern-s2'))):
         NOTES[_key] = ' '.join(filter(None, (NOTES.get(_key), SAMPLE_FEEDBACK)))
+# gpt-6.2-sol conic iterative: tests 2-8 of attempt 1 failed to build on the evaluator (build.sh used the zlib headers
+# that Node.js puts in the dev container, absent from the verifier image), and the feedback reported that as an
+# evaluator-side failure, not a verdict (fixed 2026-11-19 in arena/public_v63.py). Attempt 1 is unmeasured; it shows as
+# such until the rerun has a result.
+SOL62_FEEDBACK = ('第 1 次尝试的第 2–8 次测试在评测方构建失败（`build.sh` 用了开发容器里 Node.js 自带的 zlib 头文件，评测镜像没有），'
+                  '反馈流程却把它报成“未测（评测方原因，不是对提交的判定）”，模型因此没有收到构建失败的信息；评测方问题，记未测')
+RERUN[('conic', 'iterative', 'gpt-6.2-sol')] = (2, SOL62_FEEDBACK + '；本格为修复反馈分类后的第 2 次尝试。')
+UNMEASURED = {('conic', 'iterative', 'gpt-6.2-sol'): SOL62_FEEDBACK + '；修复反馈分类后的第 2 次尝试进行中。'}
+# gpt-6.2-sol polarization v3: the first gradings ran beside 6 development attempts and other gradings, and scenes
+# timed out at the 1 s limit. As in the 11-14 and 11-17 cases: unmeasured, regraded once no development slot is leased
+# (scripts/rounds/regrade-dev-idle.sh keeps the first result as score.first.json); the regrade stands once it exists.
+POL_LOAD = ('第一次评分时机器上同时有 6 个开发会话和 conic、galaxy、species 等评分，{0} 景在 1.0 秒单景时限超时（通过的景中位约 0.7 秒）；'
+            'polarization 的计时受开发负载影响（11-12 实测最坏 2.0–2.8 倍），按 11-14、11-17 的做法记未测，开发槽全空时对同一冻结提交重评，')
+REGRADE = {('polarization-demosaicking-v3', 'single', 'gpt-6.2-sol'): POL_LOAD.format(3),
+           ('polarization-demosaicking-v3', 'iterative', 'gpt-6.2-sol'): POL_LOAD.format(20)}
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
@@ -259,6 +274,13 @@ def main():
                 if n > 1 and n < RERUN[(task, setting, model)][0]:   # the replacing attempt has no result yet
                     rerun_note = CUT_1 + '（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试，替代它的下一次尝试仍在进行。'
                 note = rerun_note or NOTES.get((task, setting) if tag == 'sol' else (task, setting, model), '')
+                if (task, setting, model) in UNMEASURED and n < RERUN[(task, setting, model)][0]:
+                    raw, mapping, value, note = '未测', '评测方问题，记未测（不记 0）', None, UNMEASURED[(task, setting, model)]
+                if (task, setting, model) in REGRADE:
+                    regraded = (folder / 'score.first.json').exists()
+                    if not regraded:
+                        raw, mapping, value = '未测', '评测方问题，记未测（不记 0）', None
+                    note = REGRADE[(task, setting, model)] + ('以重评为准。' if regraded else '重评待开发槽全空后进行。')
                 results.append({'model': model, 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': n,
                                 'submission': submission_of(task, setting, n, tag), 'store': 'var/stores/store-v63', 'raw': raw,
                                 'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),
