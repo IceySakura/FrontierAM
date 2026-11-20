@@ -34,6 +34,18 @@
           "notes_md": ""
         },
         {
+          "model": "gpt-6.2-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "exponential-v3-20261120T084833Z-8489cb",
+          "store": "var/stores/store-v63",
+          "raw": "74/74 合格，\\(R = 0.487\\)（对 7 方法参照组逐例最快成员）",
+          "mapping": "\\(100/(1+R)\\)",
+          "score": 67.227,
+          "notes_md": ""
+        },
+        {
           "model": "gpt-6.1-sol",
           "protocol": "v6.3",
           "setting": "单轮",

@@ -84,6 +84,7 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | 74/74 合格，\(R = 0.615\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 61.9 | 32 分钟 | [`gpt-6.2-sol-single-1/`](solutions/v6.3/gpt-6.2-sol-single-1/) |
+| GPT-6.2 Sol | 迭代 | 74/74 合格，\(R = 0.487\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 67.2 | 10 次提交，58 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | 74/74 合格，\(R = 0.813\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 55.2 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.567\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 63.8 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 28 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
@@ -98,6 +99,12 @@
 ### GPT-6.2 Sol（单轮，v6.3）
 
 源码 [`solutions/v6.3/gpt-6.2-sol-single-1/source/`](solutions/v6.3/gpt-6.2-sol-single-1/source/)（提交 `exponential-v3-20261120T072115Z-123d86`）；未复制的二进制或大文件：famexp（237,064 字节）。
+
+### GPT-6.2 Sol（迭代，v6.3）
+
+public 分数随测试提交：55.9（4 分钟） → 59.0（12 分钟） → 61.9（17 分钟） → 61.5（26 分钟） → 60.7（35 分钟） → 58.8（39 分钟） → 59.9（46 分钟） → 58.7（49 分钟） → 61.0（53 分钟） → 61.1（56 分钟）
+
+源码 [`solutions/v6.3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/gpt-6.2-sol-iterative-1/source/)（提交 `exponential-v3-20261120T084833Z-8489cb`）；未复制的二进制或大文件：propagate（290,312 字节）。
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
