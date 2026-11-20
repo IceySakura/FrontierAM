@@ -17,10 +17,10 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 
 | task | GPT-6.2 Sol 单轮 | GPT-6.2 Sol 迭代 | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Intern S2 单轮 | Intern S2 迭代 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [conic](tasks/conic/README.md) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 73.7 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| [conic](tasks/conic/README.md) | 0.0 | — | 0.0 | 0.0 | 0.0 | 73.7 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | [exponential](tasks/exponential/README.md) | 61.9 | 67.2 | 55.2 | 63.8 | 0.0 | 0.0 | 0.0 | 56.3 | 0.0 | 0.0 | 0.0 | 0.0 |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 72.8 |  | 0.0 | 66.1 | 57.8 | 64.4 | 0.0 | 53.1 | 0.0 | 50.9 | 0.0 | 0.0 |
-| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 0.0 | 0.0 | 53.0 | 52.2 | 43.3 | 52.4 | 46.7 | 51.6 | 37.7 | 50.6 | 0.0 | 3.8 |
+| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | — | — | 53.0 | 52.2 | 43.3 | 52.4 | 46.7 | 51.6 | 37.7 | 50.6 | 0.0 | 3.8 |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 63.9 | 64.0 | 0.0 | 62.3 | 52.6 | 62.6 | 47.9 | 59.3 | 0.0 | 51.1 | 0.0 | 0.0 |
 | [species-tree](tasks/species-tree/README.md) | 52.3 | 52.5 | 49.3 | 52.6 | 28.1 | 51.2 | 0.0 | 30.1 | 0.0 | 0.0 | 0.0 | 0.0 |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 58.4 |  | 62.6 | 63.0 | 58.5 | 60.2 | 52.6 | 56.1 | 52.2 | 51.8 | 11.3 | 0.0 |
@@ -28,7 +28,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) | 73.5 | 93.4 | 59.3 | 87.4 | 45.7 | 83.9 | 56.6 | 66.0 | 11.9 | 55.2 | 0.0 | 33.0 |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 71.1 | 73.4 | 71.4 | 69.0 | 40.0 | 22.8 | 74.5 | 47.8 | 0.0 | 49.9 | 0.0 | 24.2 |
 | [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 96.1 |  | 94.3 | 93.5 | 77.0 | 92.9 | 79.4 | 85.0 | 66.8 | 77.3 | 0.0 | 32.3 |
-| **平均** | **55.0** | **50.1** (7/10) | **44.5** | **61.0** | **40.3** | **56.4** | **35.8** | **50.5** | **16.9** | **38.7** | **1.1** | **9.3** |
+| **平均** | **61.1** (9/10) | **70.1** (5/10) | **44.5** | **61.0** | **40.3** | **56.4** | **35.8** | **50.5** | **16.9** | **38.7** | **1.1** | **9.3** |
 
 满分 100，参照 = 50；列按迭代平均分排序；平均为各题分数的简单平均，没有成绩的题不计。
 
