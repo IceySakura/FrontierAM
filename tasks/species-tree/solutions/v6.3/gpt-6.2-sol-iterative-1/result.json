@@ -1,0 +1,46 @@
+{
+ "model": "gpt-6.2-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261120T084646Z-28c6ee",
+ "raw": "nRF \\(E = 0.1253\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 52.539,
+ "review": null,
+ "process": {
+  "minutes": 50.2,
+  "public_tests": 6,
+  "public_curve": [
+   {
+    "minute": 2.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 6.4,
+    "score": 38.09523809523807,
+    "status": "ok"
+   },
+   {
+    "minute": 19.9,
+    "score": 52.64900662251655,
+    "status": "ok"
+   },
+   {
+    "minute": 35.8,
+    "score": 55.29801324503311,
+    "status": "ok"
+   },
+   {
+    "minute": 44.2,
+    "score": 54.966887417218544,
+    "status": "ok"
+   },
+   {
+    "minute": 47.6,
+    "score": 55.29801324503311,
+    "status": "ok"
+   }
+  ]
+ }
+}
