@@ -1,0 +1,56 @@
+{
+ "model": "gpt-6.2-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "galaxy-gravity-v4-20261120T101428Z-a1e515",
+ "raw": "\\(E = 1e-07\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 94%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+ "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)",
+ "score": 66.16,
+ "review": null,
+ "process": {
+  "minutes": 146.0,
+  "public_tests": 8,
+  "public_curve": [
+   {
+    "minute": 15.3,
+    "score": 58.958540956716966,
+    "status": "ok"
+   },
+   {
+    "minute": 32.4,
+    "score": 63.40024688679257,
+    "status": "ok"
+   },
+   {
+    "minute": 55.6,
+    "score": 64.59664905807442,
+    "status": "ok"
+   },
+   {
+    "minute": 69.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 88.1,
+    "score": 63.79009907164031,
+    "status": "ok"
+   },
+   {
+    "minute": 105.2,
+    "score": 65.52514306330545,
+    "status": "ok"
+   },
+   {
+    "minute": 120.5,
+    "score": 65.32220033549498,
+    "status": "ok"
+   },
+   {
+    "minute": 133.5,
+    "score": 65.41376665765067,
+    "status": "ok"
+   }
+  ]
+ }
+}
