@@ -23,6 +23,19 @@
       "protocol": "v6.3",
       "results": [
         {
+          "model": "gpt-6.2-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261120T082441Z-019de5",
+          "store": "var/stores/store-v63",
+          "raw": "增益 \\(G = 0.941\\)（fourier +1.17，折点 ridge -0.34，乘积峰 +2.00），144 例，单例最长 4.6 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+          "score": 73.513,
+          "notes_md": "",
+          "folder": "v2/gpt-6.2-sol-single-1"
+        },
+        {
           "model": "gpt-6.1-sol",
           "protocol": "v6.3",
           "setting": "单轮",
