@@ -87,6 +87,7 @@
 | GPT-6.2 Sol | 迭代 | 74/74 合格，\(R = 0.487\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 67.2 | 10 次提交，58 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | 74/74 合格，\(R = 0.813\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 55.2 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.567\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 63.8 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+| GPT-6 Astra | 单轮 | 74/74 合格，\(R = 0.706\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 58.6 | 57 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
 | Claude Opus 5.5 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 28 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 13 次提交，124 分钟 | [`claude-opus-5-5-iterative-2/`](solutions/v6.3/claude-opus-5-5-iterative-2/) |
 | Qwen3.8 Max | 单轮 | 无效提交（23 例不合格） | 任一用例不合格记 0 | 0.0 | 32 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
@@ -119,6 +120,12 @@ C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递�
 public 分数随测试提交：49.2（5 分钟） → 54.6（19 分钟） → 57.2（38 分钟） → 57.1（45 分钟） → 57.0（65 分钟） → 57.9（84 分钟） → 57.7（132 分钟） → 59.4（180 分钟）
 
 源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `exponential-v3-20261111T101604Z-fa725b`）；未复制的二进制或大文件：solver（226,200 字节）。
+
+### GPT-6 Astra（单轮，v6.3）
+
+经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
+
+源码 [`solutions/v6.3/gpt-6-astra-single-1/source/`](solutions/v6.3/gpt-6-astra-single-1/source/)（提交 `exponential-v3-20261121T170044Z-494d38`）；未复制的二进制或大文件：solver（67,304 字节）。
 
 ### Claude Opus 5.5（单轮，v6.3）
 

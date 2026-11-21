@@ -70,6 +70,18 @@
           "notes_md": "刚度小的会话直接用自适应 Taylor；对角和小连通块扩展精度谱分解；一般情形用合并的 Chebyshev 展开（行和与 Collatz 界给谱区间，Reinsch 形式的 Clenshaw 递推）。重跑（原尝试受测试排队故障影响）。"
         },
         {
+          "model": "gpt-6-astra",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "exponential-v3-20261121T170044Z-494d38",
+          "store": "var/stores/store-v63",
+          "raw": "74/74 合格，\\(R = 0.706\\)（对 7 方法参照组逐例最快成员）",
+          "mapping": "\\(100/(1+R)\\)",
+          "score": 58.62,
+          "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。"
+        },
+        {
           "model": "claude-opus-5-5",
           "protocol": "v6.3",
           "setting": "单轮",
