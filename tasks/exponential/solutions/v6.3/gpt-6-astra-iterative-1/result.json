@@ -1,0 +1,41 @@
+{
+ "model": "gpt-6-astra",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261121T205534Z-525cf5",
+ "raw": "74/74 合格，\\(R = 0.725\\)（对 7 方法参照组逐例最快成员）",
+ "mapping": "\\(100/(1+R)\\)",
+ "score": 57.956,
+ "review": null,
+ "process": {
+  "minutes": 232.1,
+  "public_tests": 5,
+  "public_curve": [
+   {
+    "minute": 7.1,
+    "score": 55.37535612657575,
+    "status": "ok"
+   },
+   {
+    "minute": 37.1,
+    "score": 56.63526359231135,
+    "status": "ok"
+   },
+   {
+    "minute": 66.1,
+    "score": 56.73281559544154,
+    "status": "ok"
+   },
+   {
+    "minute": 181.0,
+    "score": 58.663159621818124,
+    "status": "ok"
+   },
+   {
+    "minute": 205.5,
+    "score": 57.62905395322566,
+    "status": "ok"
+   }
+  ]
+ }
+}
