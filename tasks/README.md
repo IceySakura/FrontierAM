@@ -12,7 +12,7 @@
 | [species-tree](species-tree/README.md) | 16 |
 | [ihvp-sequence](ihvp-sequence/README.md) | 21 |
 | [pdhcg-qp](pdhcg-qp/README.md) | 0 |
-| [blackbox-cubature](blackbox-cubature/README.md) | 12 |
+| [blackbox-cubature](blackbox-cubature/README.md) | 13 |
 | [continuum-estimation](continuum-estimation/README.md) | 13 |
 | [fluorescence-deconvolution](fluorescence-deconvolution/README.md) | 13 |
 
