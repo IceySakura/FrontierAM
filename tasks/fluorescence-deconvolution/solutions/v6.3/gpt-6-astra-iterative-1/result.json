@@ -1,0 +1,36 @@
+{
+ "model": "gpt-6-astra",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "fluorescence-deconvolution-20261121T231648Z-81e42a",
+ "raw": "nMSE \\(E = 0.01536\\)，96 例，单例最长 0.81 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 95.235,
+ "review": null,
+ "process": {
+  "minutes": 132.3,
+  "public_tests": 4,
+  "public_curve": [
+   {
+    "minute": 7.0,
+    "score": 75.02094124949039,
+    "status": "ok"
+   },
+   {
+    "minute": 39.6,
+    "score": 94.17416914150064,
+    "status": "ok"
+   },
+   {
+    "minute": 60.6,
+    "score": 94.50163801834924,
+    "status": "ok"
+   },
+   {
+    "minute": 107.3,
+    "score": 94.60799964559942,
+    "status": "ok"
+   }
+  ]
+ }
+}
