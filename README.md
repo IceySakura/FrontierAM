@@ -23,12 +23,12 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 57.0 | 54.2 | 53.0 | 52.2 | 43.3 | 52.4 | 46.7 | 51.6 | 37.7 | 50.6 | 0.0 | 3.8 |  |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 63.9 | 64.0 | 0.0 | 62.3 | 52.6 | 62.6 | 47.9 | 59.3 | 0.0 | 51.1 | 0.0 | 0.0 | 55.2 |  |
 | [species-tree](tasks/species-tree/README.md) | 52.3 | 52.5 | 49.3 | 52.6 | 28.1 | 51.2 | 0.0 | 30.1 | 0.0 | 0.0 | 0.0 | 0.0 | 54.7 |  |
-| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 58.4 | 61.3 | 62.6 | 63.0 | 58.5 | 60.2 | 52.6 | 56.1 | 52.2 | 51.8 | 11.3 | 0.0 |  |  |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 58.4 | 61.3 | 62.6 | 63.0 | 58.5 | 60.2 | 52.6 | 56.1 | 52.2 | 51.8 | 11.3 | 0.0 | 60.2 |  |
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) | 73.5 | 93.4 | 59.3 | 87.4 | 45.7 | 83.9 | 56.6 | 66.0 | 11.9 | 55.2 | 0.0 | 33.0 |  |  |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 71.1 | 73.4 | 71.4 | 69.0 | 40.0 | 22.8 | 74.5 | 47.8 | 0.0 | 49.9 | 0.0 | 24.2 | 72.8 |  |
 | [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 96.1 | 95.2 | 94.3 | 93.5 | 77.0 | 92.9 | 79.4 | 85.0 | 66.8 | 77.3 | 0.0 | 32.3 |  |  |
-| **平均** | **60.7** | **62.7** | **44.5** | **61.0** | **40.3** | **56.4** | **35.8** | **50.5** | **16.9** | **38.7** | **1.1** | **9.3** | **58.6** (5/10) | — |
+| **平均** | **60.7** | **62.7** | **44.5** | **61.0** | **40.3** | **56.4** | **35.8** | **50.5** | **16.9** | **38.7** | **1.1** | **9.3** | **58.9** (6/10) | — |
 
 满分 100，参照 = 50；列按迭代平均分排序；平均为各题分数的简单平均，没有成绩的题不计。
 
@@ -42,7 +42,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 41 分钟 | 3 次提交，45 分钟 | 60 分钟 | 9 次提交，235 分钟 | 13 分钟 | 8 次提交，130 分钟 | 57 分钟 | 5 次提交，152 分钟 | 41 分钟 | 8 次提交，114 分钟 | 60 分钟 | 1 次提交，113 分钟 |  |  |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 42 分钟 | 11 次提交，28 分钟 | 2 分钟 | 28 次提交，116 分钟 | 14 分钟 | 18 次提交，127 分钟 | 53 分钟 | 21 次提交，177 分钟 | 35 分钟 | 5 次提交，169 分钟 | 60 分钟 | 0 次提交，240 分钟 | 52 分钟 |  |
 | [species-tree](tasks/species-tree/README.md) | 46 分钟 | 6 次提交，50 分钟 | 58 分钟 | 13 次提交，128 分钟 | 26 分钟 | 4 次提交，110 分钟 | 58 分钟 | 4 次提交，157 分钟 | 30 分钟 | 2 次提交，230 分钟 | 60 分钟 | 0 次提交，186 分钟 | 58 分钟 |  |
-| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 30 分钟 | 5 次提交，45 分钟 | 57 分钟 | 8 次提交，122 分钟 | 19 分钟 | 8 次提交，159 分钟 | 60 分钟 | 4 次提交，183 分钟 | 38 分钟 | 4 次提交，179 分钟 | 60 分钟 | 0 次提交，240 分钟 |  |  |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 30 分钟 | 5 次提交，45 分钟 | 57 分钟 | 8 次提交，122 分钟 | 19 分钟 | 8 次提交，159 分钟 | 60 分钟 | 4 次提交，183 分钟 | 38 分钟 | 4 次提交，179 分钟 | 60 分钟 | 0 次提交，240 分钟 | 55 分钟 |  |
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 | [blackbox-cubature](tasks/blackbox-cubature/README.md) | 50 分钟 | 9 次提交，24 分钟 | 60 分钟 | 15 次提交，221 分钟 | 11 分钟 | 16 次提交，97 分钟 | 51 分钟 | 12 次提交，179 分钟 | 56 分钟 | 1 次提交，240 分钟 | 60 分钟 | 0 次提交，240 分钟 |  |  |
 | [continuum-estimation](tasks/continuum-estimation/README.md) | 12 分钟 | 5 次提交，20 分钟 | 49 分钟 | 3 次提交，38 分钟 | 24 分钟 | 5 次提交，80 分钟 | 51 分钟 | 7 次提交，135 分钟 | 60 分钟 | 4 次提交，216 分钟 | 60 分钟 | 4 次提交，213 分钟 | 44 分钟 |  |

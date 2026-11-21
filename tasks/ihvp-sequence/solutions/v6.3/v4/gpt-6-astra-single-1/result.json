@@ -1,0 +1,14 @@
+{
+ "model": "gpt-6-astra",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "ihvp-sequence-v4-20261121T175120Z-f58fe4",
+ "raw": "\\(E = 0.1177\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 60.164,
+ "review": null,
+ "process": {
+  "minutes": 55.3,
+  "public_tests": 0
+ }
+}
