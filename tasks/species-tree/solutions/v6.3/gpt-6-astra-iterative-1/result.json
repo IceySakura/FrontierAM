@@ -1,0 +1,126 @@
+{
+ "model": "gpt-6-astra",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261121T214329Z-62bb56",
+ "raw": "nRF \\(E = 0.1227\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 53.545,
+ "review": null,
+ "process": {
+  "minutes": 227.2,
+  "public_tests": 22,
+  "public_curve": [
+   {
+    "minute": 12.9,
+    "score": 21.42857142857137,
+    "status": "ok"
+   },
+   {
+    "minute": 16.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 17.9,
+    "score": 42.85714285714282,
+    "status": "ok"
+   },
+   {
+    "minute": 26.1,
+    "score": 40.4761904761904,
+    "status": "ok"
+   },
+   {
+    "minute": 28.9,
+    "score": 47.61904761904758,
+    "status": "ok"
+   },
+   {
+    "minute": 31.7,
+    "score": 33.33333333333331,
+    "status": "ok"
+   },
+   {
+    "minute": 37.2,
+    "score": 45.23809523809524,
+    "status": "ok"
+   },
+   {
+    "minute": 39.2,
+    "score": 38.09523809523807,
+    "status": "ok"
+   },
+   {
+    "minute": 43.7,
+    "score": 52.64900662251655,
+    "status": "ok"
+   },
+   {
+    "minute": 60.4,
+    "score": 50.99337748344371,
+    "status": "ok"
+   },
+   {
+    "minute": 73.4,
+    "score": 50.99337748344371,
+    "status": "ok"
+   },
+   {
+    "minute": 78.9,
+    "score": 52.980132450331126,
+    "status": "ok"
+   },
+   {
+    "minute": 82.1,
+    "score": 51.65562913907284,
+    "status": "ok"
+   },
+   {
+    "minute": 88.9,
+    "score": 51.324503311258276,
+    "status": "ok"
+   },
+   {
+    "minute": 93.6,
+    "score": 53.3112582781457,
+    "status": "ok"
+   },
+   {
+    "minute": 103.4,
+    "score": 53.3112582781457,
+    "status": "ok"
+   },
+   {
+    "minute": 119.3,
+    "score": 52.31788079470199,
+    "status": "ok"
+   },
+   {
+    "minute": 129.2,
+    "score": 54.63576158940397,
+    "status": "ok"
+   },
+   {
+    "minute": 142.8,
+    "score": 54.966887417218544,
+    "status": "ok"
+   },
+   {
+    "minute": 162.2,
+    "score": 55.62913907284768,
+    "status": "ok"
+   },
+   {
+    "minute": 181.5,
+    "score": 55.96026490066225,
+    "status": "ok"
+   },
+   {
+    "minute": 209.3,
+    "score": 55.96026490066225,
+    "status": "ok"
+   }
+  ]
+ }
+}
