@@ -68,6 +68,7 @@
 | GPT-6.2 Sol | 迭代 | nMSE \(E = 0.01558\)，96 例，单例最长 0.85 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 95.2 | 5 次提交，24 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | nMSE \(E = 0.01821\)，96 例，单例最长 1.10 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 94.3 | 59 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | nMSE \(E = 0.02092\)，96 例，单例最长 0.74 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 93.5 | 3 次提交，182 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+| GPT-6 Astra | 单轮 | nMSE \(E = 0.01808\)，96 例，单例最长 0.61 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 94.4 | 57 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
 | Claude Opus 5.5 | 单轮 | nMSE \(E = 0.07422\)，96 例，单例最长 0.23 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.0 | 25 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | nMSE \(E = 0.02284\)，96 例，单例最长 0.91 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 92.9 | 4 次提交，199 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | nMSE \(E = 0.10694\)，96 例，单例最长 0.20 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 66.8 | 49 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
@@ -100,6 +101,12 @@ public 分数随测试提交：40.4（2 分钟） → 95.0（9 分钟） → 96.
 public 分数随测试提交：66.1（9 分钟） → 94.5（37 分钟） → 95.5（171 分钟）
 
 源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `fluorescence-deconvolution-20261117T184503Z-5b3f6f`）；未复制的二进制或大文件：solver.so（176,144 字节）、solver_fast.so（184,336 字节）。
+
+### GPT-6 Astra（单轮，v6.3）
+
+经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
+
+源码 [`solutions/v6.3/gpt-6-astra-single-1/source/`](solutions/v6.3/gpt-6-astra-single-1/source/)（提交 `fluorescence-deconvolution-20261121T175833Z-faeb04`）；未复制的二进制或大文件：native.so（31,128 字节）。
 
 ### Claude Opus 5.5（单轮，v6.3）
 

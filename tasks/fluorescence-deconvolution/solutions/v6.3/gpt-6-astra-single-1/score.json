@@ -1,0 +1,42 @@
+{
+ "id": "job-20261121T175856Z-6ff8cd",
+ "task": "fluorescence-deconvolution",
+ "submission": "fluorescence-deconvolution-20261121T175833Z-faeb04",
+ "kind": "candidate",
+ "note": null,
+ "isolation": "shared",
+ "enqueued_utc": "2026-11-21T17:58:56+00:00",
+ "claimed_utc": "2026-11-21T17:58:57+00:00",
+ "worker_pid": 746498,
+ "status": "ok",
+ "score": 94.38991278090892,
+ "finished_utc": "2026-11-21T18:07:11+00:00",
+ "candidate": {
+  "status": "ok",
+  "raw_error": 0.018080332595532655,
+  "reason": "",
+  "package_score": null,
+  "cases": 96,
+  "failures": 0,
+  "scope": "formal",
+  "max_wall_s": 0.6112695520278066,
+  "stratum_means": {
+   "family0_psf0_noise0": 0.011532836317343755,
+   "family0_psf0_noise1": 0.011812474632297778,
+   "family0_psf1_noise0": 0.0008940647074578391,
+   "family0_psf1_noise1": 0.021260210413518648,
+   "family1_psf0_noise0": 0.049447165487668816,
+   "family1_psf0_noise1": 0.04716873236413822,
+   "family1_psf1_noise0": 0.044498957052069334,
+   "family1_psf1_noise1": 0.05565221262940595,
+   "family2_psf0_noise0": 0.0016703082821283744,
+   "family2_psf0_noise1": 0.01890651338727648,
+   "family2_psf1_noise0": 0.009523429605910528,
+   "family2_psf1_noise1": 0.007784681875613418,
+   "family3_psf0_noise0": 0.0006136378202886225,
+   "family3_psf0_noise1": 0.002477582752164836,
+   "family3_psf1_noise0": 0.0018460270129262598,
+   "family3_psf1_noise1": 0.004196487188313572
+  }
+ }
+}
