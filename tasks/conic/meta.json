@@ -69,6 +69,18 @@
           "notes_md": "第 1 次尝试中有回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断（基础设施问题，记未测）；本格为 sol 改走 AI Hub azure 通道后的第 2 次尝试。"
         },
         {
+          "model": "gpt-6-astra",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "conic-20261121T170101Z-a8e9b8",
+          "store": "var/stores/store-v63",
+          "raw": "422 / 650（\\(p = 0.649\\)，参照 \\(p_B = 0.789\\)）",
+          "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+          "score": 0.0,
+          "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。"
+        },
+        {
           "model": "claude-opus-5-5",
           "protocol": "v6.3",
           "setting": "单轮",
