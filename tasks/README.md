@@ -4,7 +4,7 @@
 
 | task | 已评提交 |
 | --- | --- |
-| [conic](conic/README.md) | 25 |
+| [conic](conic/README.md) | 26 |
 | [exponential](exponential/README.md) | 23 |
 | [galaxy-gravity](galaxy-gravity/README.md) | 20 |
 | [polarization-demosaicking](polarization-demosaicking/README.md) | 24 |
