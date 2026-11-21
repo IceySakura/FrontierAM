@@ -1,0 +1,36 @@
+{
+ "model": "gpt-6-astra",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "continuum-estimation-20261121T215822Z-89843b",
+ "raw": "损失 \\(E = 0.000896108\\)，60 例，单例最长 4.7 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 72.815,
+ "review": null,
+ "process": {
+  "minutes": 55.7,
+  "public_tests": 4,
+  "public_curve": [
+   {
+    "minute": 7.6,
+    "score": 92.59907729330283,
+    "status": "ok"
+   },
+   {
+    "minute": 18.1,
+    "score": 95.93571992551294,
+    "status": "ok"
+   },
+   {
+    "minute": 37.2,
+    "score": 96.2360949311156,
+    "status": "ok"
+   },
+   {
+    "minute": 49.8,
+    "score": 96.23232923396017,
+    "status": "ok"
+   }
+  ]
+ }
+}
