@@ -147,7 +147,9 @@ PY
                 >> var/stores/store/reruns/v63-score.log 2>&1 ;;
         *)
             done_event anchor "$task" || return 1
-            job=$(FRONTIERAM_RUNTIME=$EXP_RT ./bench --store $STORE grade --submission "$sub" --task "$task" 2>&1 | tail -1)
+            # polarization's 1 s per-scene limit is timed: graded only while no development slot is leased
+            iso=shared; [ "$(family "$task")" = polarization-demosaicking ] && iso=dev_idle
+            job=$(FRONTIERAM_RUNTIME=$EXP_RT ./bench --store $STORE grade --submission "$sub" --task "$task" --isolation $iso 2>&1 | tail -1)
             python3 - "$STORE" "$sub" "$out" <<'PY'
 import json, sys
 from pathlib import Path
