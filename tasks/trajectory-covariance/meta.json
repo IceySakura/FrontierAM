@@ -69,6 +69,18 @@
           "notes_md": "白化后：有限状态链拟合正则化转移矩阵并解 Markov 泊松方程；其余拟合至多 32 阶的条件向量自回归，按信息准则加权平均零频谱估计；可逆性诊断通过时与共同动力学、分组动力学拟合比较。重跑（原尝试受测试排队故障影响）。"
         },
         {
+          "model": "gpt-6-astra",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "trajectory-covariance-v2-20261121T165555Z-877e32",
+          "store": "var/stores/store-v63",
+          "raw": "白化误差 \\(E = 0.2051\\)（\\(U = 0.3493\\)，\\(W = 0.2290\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 55.233,
+          "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。"
+        },
+        {
           "model": "claude-opus-5-5",
           "protocol": "v6.3",
           "setting": "单轮",

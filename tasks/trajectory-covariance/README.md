@@ -75,6 +75,7 @@ MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标
 | GPT-6.2 Sol | 迭代 | 白化误差 \(E = 0.1647\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 64.0 | 11 次提交，28 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | 白化误差 \(E = 2.2638\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 2 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | 白化误差 \(E = 0.1728\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.3 | 28 次提交，116 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+| GPT-6 Astra | 单轮 | 白化误差 \(E = 0.2051\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 55.2 | 52 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
 | Claude Opus 5.5 | 单轮 | 白化误差 \(E = 0.2172\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6 | 14 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | 白化误差 \(E = 0.1711\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.6 | 18 次提交，127 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | 白化误差 \(E = 0.5920\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 35 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
@@ -107,6 +108,12 @@ public 分数随测试提交：47.1（1 分钟） → 58.8（6 分钟） → 60.
 public 分数随测试提交：51.0（2 分钟） → 50.8（7 分钟） → 52.3（9 分钟） → 52.9（15 分钟） → 52.9（20 分钟） → 52.9（22 分钟） → 52.9（24 分钟） → 52.3（26 分钟） → 52.9（29 分钟） → 52.9（32 分钟） → 52.9（37 分钟） → 52.9（40 分钟） → 52.2（43 分钟） → 52.6（46 分钟） → 52.6（50 分钟） → 53.0（54 分钟） → 57.9（58 分钟） → 60.7（65 分钟） → 60.8（69 分钟） → 61.9（73 分钟） → 61.7（79 分钟） → 62.2（81 分钟） → 62.1（84 分钟） → 62.1（90 分钟） → 62.1（93 分钟） → 62.2（98 分钟） → 62.2（105 分钟） → 62.2（115 分钟）
 
 源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `trajectory-covariance-v2-20261111T124958Z-f04810`）。
+
+### GPT-6 Astra（单轮，v6.3）
+
+经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
+
+源码 [`solutions/v6.3/gpt-6-astra-single-1/source/`](solutions/v6.3/gpt-6-astra-single-1/source/)（提交 `trajectory-covariance-v2-20261121T165555Z-877e32`）。
 
 ### Claude Opus 5.5（单轮，v6.3）
 

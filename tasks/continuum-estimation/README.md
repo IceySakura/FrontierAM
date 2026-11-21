@@ -83,6 +83,8 @@
 
 ### GPT-6.2 Sol（迭代，v6.3）
 
+出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
+
 public 分数随测试提交：35.8（3 分钟） → 80.0（4 分钟） → 82.0（8 分钟） → 82.0（11 分钟） → 82.4（15 分钟）
 
 源码 [`solutions/v6.3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/gpt-6.2-sol-iterative-1/source/)（提交 `continuum-estimation-20261120T090954Z-ca982a`）。
