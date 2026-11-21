@@ -1,0 +1,18 @@
+{
+ "status": "ok",
+ "score": 63.15485701451803,
+ "candidate": {
+  "status": "ok",
+  "raw_error": 0.10888244669961698,
+  "max_wall_s": 28.472139365039766,
+  "max_peak_rss_mib": 102.4453125,
+  "valid": 30,
+  "cases": 30,
+  "reason": null
+ },
+ "anchors": {
+  "weak": 0.24830954570528788,
+  "strong": 0.14775685189024745
+ },
+ "source": "scripts/analyze/ihvp-v4-runs.py final (final-astra-iterative-private)"
+}

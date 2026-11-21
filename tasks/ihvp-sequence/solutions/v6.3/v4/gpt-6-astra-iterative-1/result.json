@@ -1,0 +1,61 @@
+{
+ "model": "gpt-6-astra",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "ihvp-sequence-v4-20261121T215642Z-d60bad",
+ "raw": "\\(E = 0.1089\\)，最长序列 28.5 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 63.155,
+ "review": null,
+ "process": {
+  "minutes": 101.6,
+  "public_tests": 9,
+  "public_curve": [
+   {
+    "minute": 1.4,
+    "score": 51.557117197607596,
+    "status": "ok"
+   },
+   {
+    "minute": 11.4,
+    "score": 59.249699287573584,
+    "status": "ok"
+   },
+   {
+    "minute": 20.1,
+    "score": 60.040435294406315,
+    "status": "ok"
+   },
+   {
+    "minute": 32.6,
+    "score": 62.61666953011121,
+    "status": "ok"
+   },
+   {
+    "minute": 42.4,
+    "score": 61.45581742698451,
+    "status": "ok"
+   },
+   {
+    "minute": 55.0,
+    "score": 60.257640269755754,
+    "status": "ok"
+   },
+   {
+    "minute": 64.9,
+    "score": 62.831084805979636,
+    "status": "ok"
+   },
+   {
+    "minute": 78.3,
+    "score": 63.101475747342,
+    "status": "ok"
+   },
+   {
+    "minute": 89.9,
+    "score": 63.44047967097578,
+    "status": "ok"
+   }
+  ]
+ }
+}
