@@ -116,8 +116,16 @@ NOTES[('species-tree-v3', 'iterative', 'intern-s2')] = ' '.join((INTERN_FILL, '1
 SAMPLE_FEEDBACK = ('出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，'
                    '模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。')
 for _task in ('continuum-estimation', 'fluorescence-deconvolution'):
-    for _key in ((_task, 'iterative'), *((_task, 'iterative', _model) for _model in ('claude-opus-5-5', 'qwen3.8-max-0902', 'hy4', 'intern-s2'))):
+    for _key in ((_task, 'iterative'), *((_task, 'iterative', _model) for _model in ('claude-opus-5-5', 'qwen3.8-max-0902', 'hy4', 'intern-s2',
+                                                                                   'gpt-6.2-sol', 'gpt-6-astra'))):
         NOTES[_key] = ' '.join(filter(None, (NOTES.get(_key), SAMPLE_FEEDBACK)))
+# gpt-6-astra runs on the user's ChatGPT Pro account through the Codex backend instead of AI Hub (user decision 2026-11-21).
+ASTRA_ROUTE = ('经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token'
+               '（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的'
+               '成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。')
+for _task in TASKS:
+    for _setting in ('single', 'iterative'):
+        NOTES[(_task, _setting, 'gpt-6-astra')] = ' '.join(filter(None, (NOTES.get((_task, _setting, 'gpt-6-astra')), ASTRA_ROUTE)))
 # gpt-6.2-sol conic iterative: tests 2-8 of attempt 1 failed to build on the evaluator (build.sh used the zlib headers
 # that Node.js puts in the dev container, absent from the verifier image), and the feedback reported that as an
 # evaluator-side failure, not a verdict (fixed 2026-11-19 in arena/public_v63.py). Attempt 1 is unmeasured; it shows as
@@ -137,7 +145,7 @@ TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
 
-MODELS = [('gpt-6.2-sol', 'sol62'), ('gpt-6.1-sol', 'sol'), ('claude-opus-5-5', 'opus'), ('qwen3.8-max-0902', 'qwen'), ('hy4', 'hy4'),
+MODELS = [('gpt-6.2-sol', 'sol62'), ('gpt-6.1-sol', 'sol'), ('gpt-6-astra', 'astra'), ('claude-opus-5-5', 'opus'), ('qwen3.8-max-0902', 'qwen'), ('hy4', 'hy4'),
           ('intern-s2', 'intern')]  # (model, attempt-log tag); NOTES keys add the model for opus
 
 

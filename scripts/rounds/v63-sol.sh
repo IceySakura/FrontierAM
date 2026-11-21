@@ -14,7 +14,7 @@ STORE=var/stores/store-v63
 MAX=${V63_CONCURRENCY:-3}
 N=${V63_ATTEMPT:-1}
 MODEL=${V63_MODEL:-gpt-6.1-sol}
-case $MODEL in gpt-6.1-sol) TAG=sol;; gpt-6.2-sol) TAG=sol62;; claude-opus-5-5) TAG=opus;; qwen3.8-max|qwen3.8-max-0902) TAG=qwen;; hy4) TAG=hy4;; intern-s2) TAG=intern;; *) echo "unknown model $MODEL" >&2; exit 2;; esac
+case $MODEL in gpt-6.1-sol) TAG=sol;; gpt-6.2-sol) TAG=sol62;; gpt-6-astra) TAG=astra;; claude-opus-5-5) TAG=opus;; qwen3.8-max|qwen3.8-max-0902) TAG=qwen;; hy4) TAG=hy4;; intern-s2) TAG=intern;; *) echo "unknown model $MODEL" >&2; exit 2;; esac
 TASKS=${V63_TASKS:-"conic exponential-v3 galaxy-gravity-v3 galaxy-gravity-v4 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v3"}
 SETTINGS=${V63_SETTINGS:-"single iterative"}
 

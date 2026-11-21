@@ -76,7 +76,12 @@ DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 # The path from this host to the model gateways closes connections idle for 1100 s, and a non-streaming request is idle
 # until its whole answer exists; streamed answers keep sending thinking or keepalive events, so these models' upstream
 # requests stay streaming.
-UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6.1-sol', 'gpt-6.2-sol', 'hy4', 'intern-s2', 'qwen3.8-max', 'qwen3.8-max-0902'}
+UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6-astra', 'gpt-6.1-sol', 'gpt-6.2-sol', 'hy4', 'intern-s2', 'qwen3.8-max', 'qwen3.8-max-0902'}
+# ATR configuration where it is not the model name, and the environment it needs: gpt-6-astra runs on the user's
+# ChatGPT Pro account through the Codex backend instead of AI Hub billing (user decision 2026-11-21; ATR models.yaml
+# gpt-6-astra-account: same upstream model, reasoning up to max, 872k-token window, no output cap field).
+ATR_MODEL = {'gpt-6-astra': 'gpt-6-astra-account'}
+ATR_ENV = {'gpt-6-astra': {'ATR_OPENAI_CREDENTIAL_FILE': '/root/.config/atr/openai.json'}}
 # AI Hub provider per model where it is not ATR's default: OpenAI refuses Codex requests for this organization
 # (2026-11-14); the azure provider serves the same model with the same controls (ATR models.yaml). gpt-6.2-sol has
 # no other provider.
@@ -165,12 +170,14 @@ def resolve_route(model: str, harness: str) -> dict:
         'import json,sys\nfrom atr.upstream import aihub\nfrom atr.harness import resolve\n'
         'model, harness, provider = sys.argv[1:]\nroute = aihub.resolve(model, provider=provider)\nclient = resolve(harness)\n'
         'dialect = client.dialect_for(route) if hasattr(client, "dialect_for") else client.dialect\n'
+        'limits = route.for_dialect(dialect).endpoint_specs[dialect]["limits"]\n'
+        'cap = None if limits.get("output_field") == "unsupported" else aihub.output_limit(model, "max", dialect=dialect, route=route)\n'
         'print(json.dumps({"provider": route.provider, "dialect": dialect, "context_window": route.context_length,'
-        ' "max_output": aihub.output_limit(model, "max", dialect=dialect, route=route),'
-        ' "effort": aihub.effort_level(model, "", dialect=dialect, route=route)}))\n'
+        ' "max_output": cap, "effort": aihub.effort_level(model, "", dialect=dialect, route=route)}))\n'
     )
-    result = subprocess.run([str(ATR_PYTHON), '-c', script, model, harness, MODEL_PROVIDER.get(model, '')], capture_output=True, text=True,
-                            cwd=ATR_ROOT, check=False, timeout=60)
+    result = subprocess.run([str(ATR_PYTHON), '-c', script, ATR_MODEL.get(model, model), harness, MODEL_PROVIDER.get(model, '')],
+                            capture_output=True, text=True, cwd=ATR_ROOT, check=False, timeout=60,
+                            env={**os.environ, **ATR_ENV.get(model, {})})
     if result.returncode:
         raise RuntimeError(f'ATR cannot route {model} through {harness}: {result.stderr.strip()[-400:]}')
     return json.loads(result.stdout)
@@ -942,10 +949,11 @@ def develop(spec: dict, runtime: dict) -> dict:
             # `atr serve` sends no cache_task_id unless asked; `auto` derives one per run from the serve run ID (stable
             # within the attempt, distinct across attempts), as ATR's own sessions do by default.
             environment = {**os.environ, credential_env: credential_file.read_text().strip(), 'ATR_CACHE_TASK_ID': 'auto',
-                           'ATR_TCP_TIMEOUT': str(int(seconds) + 600)}
+                           'ATR_TCP_TIMEOUT': str(int(seconds) + 600), **ATR_ENV.get(model, {})}
             serve = subprocess.Popen(
-                [str(ATR_ROOT / '.venv/bin/atr'), 'serve', '--model', model, '--host', '127.0.0.1', '--port', str(port),
-                 '--token', token, '--record-dir', str(output / 'atr'), '--max-output', 'max',
+                [str(ATR_ROOT / '.venv/bin/atr'), 'serve', '--model', ATR_MODEL.get(model, model), '--host', '127.0.0.1', '--port', str(port),
+                 '--token', token, '--record-dir', str(output / 'atr'),
+                 *(['--max-output', 'max'] if route.get('max_output') is not None else []),
                  *(['--model-provider', MODEL_PROVIDER[model]] if model in MODEL_PROVIDER else []),
                  *(['--model-options', json.dumps(MODEL_OPTIONS[model])] if model in MODEL_OPTIONS else [])],
                 cwd=ATR_ROOT, env=environment, stdout=(output / 'atr-serve.log').open('wb'), stderr=subprocess.STDOUT,

@@ -11,7 +11,7 @@ STORE=var/stores/store-v63
 LOG=var/stores/store/reruns/v63-grade.log
 N=${V63_ATTEMPT:-1}
 MODEL=${V63_MODEL:-gpt-6.1-sol}   # grade-log labels: <setting>-<task>-<n> for sol, opus-<setting>-<task>-<n> for opus
-case $MODEL in gpt-6.1-sol) TAG=sol PFX=;; gpt-6.2-sol) TAG=sol62 PFX=sol62-;; claude-opus-5-5) TAG=opus PFX=opus-;; qwen3.8-max|qwen3.8-max-0902) TAG=qwen PFX=qwen-;; hy4) TAG=hy4 PFX=hy4-;; intern-s2) TAG=intern PFX=intern-;; esac
+case $MODEL in gpt-6.1-sol) TAG=sol PFX=;; gpt-6.2-sol) TAG=sol62 PFX=sol62-;; gpt-6-astra) TAG=astra PFX=astra-;; claude-opus-5-5) TAG=opus PFX=opus-;; qwen3.8-max|qwen3.8-max-0902) TAG=qwen PFX=qwen-;; hy4) TAG=hy4 PFX=hy4-;; intern-s2) TAG=intern PFX=intern-;; esac
 EXP_RT=$R/.runtime-recal
 CONIC_RT=$R/.runtime-conic-v3
 P_B=0.7892307692307692          # conic v3 keeps every calibrated limit; the reference solves the same 513 of 650
