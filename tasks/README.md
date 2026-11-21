@@ -6,7 +6,7 @@
 | --- | --- |
 | [conic](conic/README.md) | 26 |
 | [exponential](exponential/README.md) | 23 |
-| [galaxy-gravity](galaxy-gravity/README.md) | 20 |
+| [galaxy-gravity](galaxy-gravity/README.md) | 21 |
 | [polarization-demosaicking](polarization-demosaicking/README.md) | 24 |
 | [trajectory-covariance](trajectory-covariance/README.md) | 16 |
 | [species-tree](species-tree/README.md) | 17 |

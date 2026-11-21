@@ -86,6 +86,7 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | GPT-6.1 Sol | 单轮 | \(E = 0.0265\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 99%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 0.0 | 60 分钟 | [`v4/gpt-6.1-sol-single-1/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | \(E = 1.03e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 92%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 66.1 | 5 次提交，217 分钟 | [`v4/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/) |
 | GPT-6 Astra | 单轮 | \(E = 0.000242\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 98%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 51.9 | 60 分钟 | [`v4/gpt-6-astra-single-1/`](solutions/v6.3/v4/gpt-6-astra-single-1/) |
+| GPT-6 Astra | 迭代 | \(E = 1.5e-08\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 100%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 69.6 | 4 次提交，236 分钟 | [`v4/gpt-6-astra-iterative-1/`](solutions/v6.3/v4/gpt-6-astra-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | \(E = 9.3e-06\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 63%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 57.8 | 36 分钟 | [`v4/claude-opus-5-5-single-2/`](solutions/v6.3/v4/claude-opus-5-5-single-2/) |
 | Claude Opus 5.5 | 迭代 | \(E = 2.58e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 73%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 64.4 | 7 次提交，164 分钟 | [`v4/claude-opus-5-5-iterative-1/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 58 分钟 | [`v4/qwen3.8-max-0902-single-2/`](solutions/v6.3/v4/qwen3.8-max-0902-single-2/) |
@@ -120,6 +121,14 @@ public 分数随测试提交：61.3（40 分钟） → 0.0（97 分钟） → 0.
 经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
 
 源码 [`solutions/v6.3/v4/gpt-6-astra-single-1/source/`](solutions/v6.3/v4/gpt-6-astra-single-1/source/)（提交 `galaxy-gravity-v4-20261121T170323Z-bc936e`）；未复制的二进制或大文件：solve（195,272 字节）。
+
+### GPT-6 Astra（迭代，v6.3）
+
+经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
+
+public 分数随测试提交：0.0（48 分钟） → 64.7（78 分钟） → 69.3（161 分钟） → 69.7（216 分钟）
+
+源码 [`solutions/v6.3/v4/gpt-6-astra-iterative-1/source/`](solutions/v6.3/v4/gpt-6-astra-iterative-1/source/)（提交 `galaxy-gravity-v4-20261121T214846Z-42d260`）；未复制的二进制或大文件：harmonic.hpp（2,335,167 字节）、solve（3,023,312 字节）。
 
 ### Claude Opus 5.5（单轮，v6.3）
 
