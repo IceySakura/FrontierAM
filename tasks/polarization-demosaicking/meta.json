@@ -73,6 +73,19 @@
           "folder": "v3/gpt-6.1-sol-iterative-1"
         },
         {
+          "model": "gpt-6-astra",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "polarization-demosaicking-v3-20261121T170206Z-8f7931",
+          "store": "var/stores/store-v63",
+          "raw": "RMSE \\(E = 1.3848\\)（\\(U = 2.1080\\)，\\(W = 1.5007\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 53.86,
+          "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。",
+          "folder": "v3/gpt-6-astra-single-1"
+        },
+        {
           "model": "claude-opus-5-5",
           "protocol": "v6.3",
           "setting": "单轮",
