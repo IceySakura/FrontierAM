@@ -78,6 +78,7 @@
 | GPT-6.1 Sol | 单轮 | RMSE \(E = 1.4113\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | RMSE \(E = 1.4339\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.2 | 9 次提交，235 分钟 | [`v3/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/) |
 | GPT-6 Astra | 单轮 | RMSE \(E = 1.3848\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.9 | 58 分钟 | [`v3/gpt-6-astra-single-1/`](solutions/v6.3/v3/gpt-6-astra-single-1/) |
+| GPT-6 Astra | 迭代 | 无效提交（formal scene failure） | 任一用例失败或提交检查未通过记 0 | 0.0 | 5 次提交，144 分钟 | [`v3/gpt-6-astra-iterative-1/`](solutions/v6.3/v3/gpt-6-astra-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.5821\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.3 | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | RMSE \(E = 1.4282\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.4 | 8 次提交，130 分钟 | [`v3/claude-opus-5-5-iterative-1/`](solutions/v6.3/v3/claude-opus-5-5-iterative-1/) |
 | Qwen3.8 Max | 单轮 | RMSE \(E = 1.6500\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 37.7 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
@@ -116,6 +117,14 @@ public 分数随测试提交：56.2（9 分钟） → 59.6（26 分钟） → 60
 经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
 
 源码 [`solutions/v6.3/v3/gpt-6-astra-single-1/source/`](solutions/v6.3/v3/gpt-6-astra-single-1/source/)（提交 `polarization-demosaicking-v3-20261121T170206Z-8f7931`）；未复制的二进制或大文件：weights.npz（103,224 字节）。
+
+### GPT-6 Astra（迭代，v6.3）
+
+经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
+
+public 分数随测试提交：56.4（15 分钟） → 58.4（39 分钟） → 58.9（65 分钟） → 59.2（99 分钟） → 59.7（142 分钟）
+
+源码 [`solutions/v6.3/v3/gpt-6-astra-iterative-1/source/`](solutions/v6.3/v3/gpt-6-astra-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261121T201503Z-472bb3`）；未复制的二进制或大文件：model.npz（107,004 字节）。
 
 ### Claude Opus 5.5（单轮，v6.3）
 
