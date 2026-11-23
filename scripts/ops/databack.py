@@ -3,11 +3,11 @@
 (user decision 2026-11-23): the hidden public-feedback and held-out sets tracked here (Git LFS on git.woa, removed from
 the GitHub mirror by scripts/ops/sync_github.sh) and the raw task data kept only under var/raw.
 
-Files up to 95 MiB are plain Git objects, so they use no LFS storage or bandwidth; larger files go to Git LFS (GitHub
-refuses objects over 100 MB). Archives whose every member is present extracted are not stored; EXCLUDED.md lists them
-with size and SHA-256. The staging repository holds hard links (no extra disk for the working tree); commits are cut at
-about 1.5 GiB of new content and pushed one at a time (GitHub refuses pushes over 2 GB). Rerunning adds or updates
-changed files only. Text files are scanned for credentials before anything is committed.
+Files under 100 MiB are plain Git objects, so they use no LFS storage or bandwidth; only files at or above GitHub's
+100 MiB hard limit go to Git LFS. Archives whose every member is present extracted are not stored; EXCLUDED.md lists
+them with size and SHA-256. The staging repository holds hard links (no extra disk for the working tree); commits are
+cut at about 1.0 GiB of new content and pushed one at a time (GitHub refuses pushes over 2 GB). Rerunning adds or
+updates changed files only. Text files are scanned for credentials before anything is committed.
 
 Usage: databack.py [--dry-run] [--no-push]
 """
@@ -25,9 +25,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 STAGE = Path('/data/workspace/FrontierAM_databack')
-REMOTE = 'git@github-frontieram:IceySakura/FrontierAM_databack.git'
-LFS_ABOVE = 95 * 2**20
-BATCH = int(1.5 * 2**30)
+# HTTPS: pushes over SSH from this host stall after ~80 MiB (2026-11-23), HTTPS uploads run at full speed; the
+# credential helper reads the token file at push time, so no token is written to the config or a command line
+REMOTE = 'https://github.com/IceySakura/FrontierAM_databack.git'
+TOKEN_FILE = '/root/.frontieram/github.token'
+LFS_ABOVE = 100 * 2**20 - 1  # GitHub hard-rejects >=100 MiB; keep everything smaller off LFS
+BATCH = int(1.0 * 2**30)  # stay well under GitHub's ~2 GB push cap; 1.5 GiB still tripped postBuffer
 # the paths sync_github.sh removes from the GitHub mirror
 TRACKED = re.compile(r'/tests/private/|/data/private/|/data/public/|/cases/private/|/docker_eval/private_pilot/'
                      r'|private_seeds\.json$|synthetic_private_manifest\.json$|suitesparse_private_provenance\.json$')
@@ -125,22 +128,84 @@ def ensure_repo():
         STAGE.mkdir(parents=True, exist_ok=True)
         git('init', '-q', '-b', 'main')
         git('remote', 'add', 'origin', REMOTE)
+    git('remote', 'set-url', 'origin', REMOTE)
+    helper = f'credential.{REMOTE.split("/IceySakura")[0]}.helper'
+    git('config', '--unset-all', helper, check=False)
+    git('config', '--add', helper, '')
+    git('config', '--add', helper,
+        f'!f() {{ test "$1" = get && echo username=x-access-token && echo "password=$(cat {TOKEN_FILE})"; }}; f')
     git('lfs', 'install', '--local', quiet=True)
     for key, value in (('user.name', git('config', 'user.name', cwd=ROOT, quiet=True).strip()),
                        ('user.email', git('config', 'user.email', cwd=ROOT, quiet=True).strip()),
-                       ('core.compression', '1'), ('pack.window', '0'), ('core.bigFileThreshold', '50m')):
+                       ('core.compression', '1'), ('pack.window', '0'), ('core.bigFileThreshold', '50m'),
+                       ('http.postBuffer', str(2 * 2**30)), ('http.version', 'HTTP/1.1')):
         git('config', key, value)
 
 
-def commit_and_push(paths: list[str], message: str, push: bool):
+def push_pending(push: bool):
+    """Push local commits the remote lacks one at a time, so no push carries more than one batch."""
+    if not push:
+        return
+    known = git('ls-remote', 'origin', 'refs/heads/main', quiet=True).split()
+    base = known[0] if known and subprocess.run(['git', 'cat-file', '-e', known[0]], cwd=STAGE).returncode == 0 else None
+    commits = git('rev-list', '--reverse', 'HEAD' if base is None else f'{base}..HEAD', quiet=True).split()
+    for sha in commits:
+        git('push', '-q', 'origin', f'{sha}:refs/heads/main', quiet=True)
+        print(json.dumps({'pushed': sha[:8]}), flush=True)
+
+
+def commit_and_push(paths: list[str], message: str, push: bool, renormalize: bool = False):
     for i in range(0, len(paths), 500):
-        git('add', '--', *paths[i:i + 500], quiet=True)
+        git('add', *(['--renormalize'] if renormalize else []), '--', *paths[i:i + 500], quiet=True)
     if not git('diff', '--cached', '--name-only', quiet=True).strip():
         return
     git('commit', '-q', '-m', message, quiet=True)
     if push:
         git('push', '-q', 'origin', 'HEAD:main', quiet=True)
     print(json.dumps({'commit': message, 'files': len(paths), 'pushed': push}), flush=True)
+
+
+LFS_ATTR = 'filter=lfs diff=lfs merge=lfs -text'
+
+
+def attributes_text(paths) -> str:
+    return ("# Git LFS only for files at or above GitHub's 100 MiB limit; everything smaller is plain Git "
+            '(scripts/ops/databack.py).\n' + ''.join(f'/{p} {LFS_ATTR}\n' for p in sorted(paths)))
+
+
+def write_attributes(paths):
+    (STAGE / '.gitattributes').write_text(attributes_text(paths))
+
+
+def set_lfs(big: list[str], sizes: dict, push: bool):
+    """Make the LFS set exactly `big`. New LFS paths are declared before their files are committed. Paths that were LFS
+    under an earlier, lower threshold go back to plain Git: the attribute line is dropped and the file re-added
+    (--renormalize, since the stat cache does not notice an attribute change) in the same commit, about BATCH of new
+    content per commit, so every commit checks out consistently."""
+    attributes = STAGE / '.gitattributes'
+    lines = attributes.read_text().splitlines() if attributes.exists() else []
+    current = {l.split()[0].lstrip('/') for l in lines if l.endswith(LFS_ATTR)}
+    if set(big) - current:
+        current |= set(big)
+        write_attributes(current)
+        commit_and_push(['.gitattributes'], 'LFS for files >=100 MiB', push)
+    dropped = sorted(p for p in current - set(big) if (STAGE / p).is_file())
+    with ThreadPoolExecutor(8) as pool:
+        digests = dict(zip(dropped, pool.map(lambda d: sha256(STAGE / d), dropped)))
+    seen, batch, size = set(), [], 0
+    for i, p in enumerate(dropped):
+        batch.append(p)
+        if digests[p] not in seen:
+            seen.add(digests[p]); size += sizes.get(p, (STAGE / p).stat().st_size)
+        if size >= BATCH or i == len(dropped) - 1:
+            current -= set(batch)
+            write_attributes(current)
+            commit_and_push(['.gitattributes', *batch], f'data: {len(batch)} files under 100 MiB from Git LFS to plain Git',
+                            push, renormalize=True)
+            batch, size = [], 0
+    if not attributes.exists() or attributes.read_text() != attributes_text(current):
+        write_attributes(current)
+        commit_and_push(['.gitattributes'], 'LFS for files >=100 MiB', push)
 
 
 def main():
@@ -160,22 +225,21 @@ def main():
     if args.dry_run:
         return
     ensure_repo()
-    attributes = STAGE / '.gitattributes'
-    lines = attributes.read_text().splitlines() if attributes.exists() else []
-    wanted = [f'/{d} filter=lfs diff=lfs merge=lfs -text' for d in big]
-    if wanted != [l for l in lines if l.endswith('filter=lfs diff=lfs merge=lfs -text')]:
-        attributes.write_text('\n'.join(wanted) + '\n')
-        commit_and_push(['.gitattributes'], 'LFS for files over 95 MiB', not args.no_push)
-    changed = [d for s, d in pairs if place(s, STAGE / d)]
-    print(json.dumps({'changed_or_new': len(changed)}), flush=True)
-    # LFS files first (their upload does not count against the 2 GB pack limit), then plain files in ~1.5 GiB batches;
+    push_pending(not args.no_push)
+    for s, d in pairs:
+        place(s, STAGE / d)
+    set_lfs(big, sizes, not args.no_push)
+    pending = set(git('ls-files', '-z', '--others', '--modified', '--exclude-standard', quiet=True).split('\0'))
+    changed = [d for s, d in pairs if d in pending]
+    print(json.dumps({'to_commit': len(changed)}), flush=True)
+    # LFS files first (their upload does not count against the 2 GB pack limit), then plain files in ~1.0 GiB batches;
     # content seen before (by SHA-256) adds no new pack data
     with ThreadPoolExecutor(8) as pool:
         digests = dict(zip(changed, pool.map(lambda d: sha256(STAGE / d), changed)))
     bigset = set(big)
     lfs_changed = [d for d in changed if d in bigset]
     if lfs_changed:
-        commit_and_push(lfs_changed, f'data: {len(lfs_changed)} files over 95 MiB (Git LFS)', not args.no_push)
+        commit_and_push(lfs_changed, f'data: {len(lfs_changed)} files >=100 MiB (Git LFS)', not args.no_push)
     seen, batch, size, n = set(), [], 0, 0
     for d in sorted(d for d in changed if d not in bigset):
         batch.append(d)
@@ -210,7 +274,7 @@ def main():
         '- `tasks/...`: the files under `tasks/*/versions/*/data/{public,private}` (and the other private paths that '
         '`scripts/ops/sync_github.sh` removes), at their paths in the main repository.\n'
         '- `raw/...`: raw task data from `var/raw` (author packages and the IHVP real-trace data), which is not in Git.\n'
-        f'- Files over 95 MiB use Git LFS (`.gitattributes`, {len(big)} files); everything else is plain Git.\n'
+        f'- Files >=100 MiB use Git LFS (`.gitattributes`, {len(big)} files); everything else is plain Git.\n'
         '- `MANIFEST.sha256`: SHA-256 of every file (`sha256sum -c MANIFEST.sha256`). `EXCLUDED.md`: archives left out '
         'because their contents are stored extracted.\n\n'
         'Restore: copy `tasks/` over a checkout of the main repository and `raw/` to `var/raw/`, after `git lfs pull` '
