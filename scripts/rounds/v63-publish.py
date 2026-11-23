@@ -140,7 +140,14 @@ UNMEASURED = {('conic', 'iterative', 'gpt-6.2-sol'): SOL62_FEEDBACK + '；修复
 POL_LOAD = ('第一次评分时机器上同时有 6 个开发会话和 conic、galaxy、species 等评分，{0} 景在 1.0 秒单景时限超时（通过的景中位约 0.7 秒）；'
             'polarization 的计时受开发负载影响（11-12 实测最坏 2.0–2.8 倍），按 11-14、11-17 的做法记未测，开发槽全空时对同一冻结提交重评，')
 REGRADE = {('polarization-demosaicking-v3', 'single', 'gpt-6.2-sol'): POL_LOAD.format(3),
-           ('polarization-demosaicking-v3', 'iterative', 'gpt-6.2-sol'): POL_LOAD.format(20)}
+           ('polarization-demosaicking-v3', 'iterative', 'gpt-6.2-sol'): POL_LOAD.format(20),
+           # first scene only, with the development slots idle: the cold start of 11-06 and 11-10, not load
+           # every scene within the limit in at least two gradings, per-scene RMSE identical across them (user, 11-23)
+           ('polarization-demosaicking-v3', 'iterative', 'gpt-6-astra'):
+               '第一次评分只有第一景 qiu/ball 超时（1.0007 秒，首景冷启动）；第一次重评时同机有其他项目的进程启动，31 景成段超时；'
+               '第二次重评（机器安静）只有 qiu/lock 一景因偶发停顿超时（1.0009 秒，其余最长 0.755 秒）。各次评分逐景 RMSE 完全相同'
+               '（输出是确定的），每景都至少两次在时限内跑完；按用户确认（11-23），取第二次重评，qiu/lock 用第一次评分中的结果'
+               '（0.737 秒）补齐，合成完整评分。评测环境约 2.5% 的场景有 0.2–0.3 秒的停顿，已记入 results/OPEN_ITEMS.md 待反馈出题人；'}
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
