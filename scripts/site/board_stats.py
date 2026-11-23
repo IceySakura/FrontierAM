@@ -42,7 +42,7 @@ def rank_models(groups: list[dict], models: list[str]) -> list[str]:
                 *(-(means[(model, s)][0] if means[(model, s)][0] is not None else -1.0) for s in ('迭代', '单轮')))
     order = sorted(models, key=key)
     for model, anchor in BEFORE.items():
-        if model in order and anchor in order:
+        if model in order and anchor in order and order.index(model) > order.index(anchor):
             order.remove(model)
             order.insert(order.index(anchor), model)
     return order
