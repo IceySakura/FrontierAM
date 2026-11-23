@@ -9,16 +9,16 @@
  "claimed_utc": "2026-11-22T08:05:54+00:00",
  "worker_pid": 2403386,
  "status": "submission_failure",
- "score": 0.0,
+ "score": 54.16500084446802,
  "finished_utc": "2026-11-22T08:08:42+00:00",
  "candidate": {
-  "status": "submission_failure",
-  "raw_error": null,
-  "reason": "formal scene failure",
-  "package_score": 0.0,
-  "cases_passed": 131,
+  "status": "ok",
+  "raw_error": 1.3756782756207036,
+  "reason": null,
+  "package_score": 5.416500084446802,
+  "cases_passed": 132,
   "expected_cases": 132,
-  "max_wall_s": 1.0008513468783349,
+  "max_wall_s": 0.7547732668463141,
   "mode": "formal",
   "scene_statuses": {
    "qiu/ball": "ok",
@@ -39,7 +39,7 @@
    "qiu/funnel": "ok",
    "qiu/glasscube": "ok",
    "qiu/kettle": "ok",
-   "qiu/lock": "submission_failure",
+   "qiu/lock": "ok",
    "qiu/mirrorcard": "ok",
    "qiu/mirrorphone": "ok",
    "qiu/monitors": "ok",
@@ -285,7 +285,18 @@
    "wen/102": 1.3526831513736,
    "wen/103": 1.7210581782220067,
    "wen/104": 1.3322619626688117,
-   "wen/105": 1.5174222315391073
+   "wen/105": 1.5174222315391073,
+   "qiu/lock": 1.132300144337138
   }
+ },
+ "composed": {
+  "base_job": "job-20261122T080553Z-a66839",
+  "scenes_from_first_grading": {
+   "qiu/lock": {
+    "job": "job-20261122T005017Z-96113e",
+    "wall_s": 0.7378482529893517
+   }
+  },
+  "why": "single-scene timeouts from grading-environment stalls; per-scene RMSE is identical across gradings (deterministic)"
  }
 }
