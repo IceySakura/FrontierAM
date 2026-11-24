@@ -10,5 +10,6 @@
 | [`BASELINE_REVIEW.md`](BASELINE_REVIEW.md) | 超过参照的格子的复核记录（总览与各题细节） |
 | [`NEW_TASKS.md`](NEW_TASKS.md) | 出题方新题（galaxy、polarization、species-tree、trajectory）的接入、问题与结果 |
 | [`OPEN_ITEMS.md`](OPEN_ITEMS.md) | 待讨论事项与默认决定 |
+| [`THEORY_TRACK.md`](THEORY_TRACK.md) | 理论赛道：逐题理论调研汇总（已知上下界、不可能性、开放问题）与交付、评测方案草案；逐题细节在各题 `analysis/THEORY.md` |
 
 平台与基础设施文档（并发干扰、看板、存储规划、迁移验证）在 `docs/platform/`。

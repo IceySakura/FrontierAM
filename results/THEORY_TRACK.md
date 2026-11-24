@@ -1,0 +1,89 @@
+# 理论赛道：逐题理论调研与改造方案（草案，2026-11-24）
+
+## 目标
+
+用户 11-24 提出：对理论背景好的题目，做题模型在给出算法设计和代码实现的同时，还要给出自然语言的理论分析与证明，以及对应的形式化结果。考核分三层：
+
+1. **算法设计能力**：模型设计的算法能否达到、甚至超过现有 SOTA 的理论结果。
+2. **贡献是否切实**：由人类专家按每题的 rubric 判断（rubric 之后由专家补充）。
+3. **实现的实测表现**：即现在的性能分（0–100，参照 50）。
+
+本文汇总 11 道题的理论调研，给出交付与评测方案草案，并列出待决定的事项。逐题细节（问题的数学本质、已知上界、下界与不可能性、开放问题、与参照和已有成绩的关系、可要求的定理、形式化可行性、文献）见各题 `tasks/<task>/analysis/THEORY.md`。约 30 条关键文献已联网核对作者、出处和所引结论，在各文中以 ✓ 标出。
+
+## 1. 逐题结论
+
+| 题目 | 理论模型 | 已知最好（上界） | 下界 / 不可能性 | 是否紧 | 适配度 |
+| --- | --- | --- | --- | --- | --- |
+| [blackbox-cubature](../tasks/blackbox-cubature/analysis/THEORY.md) | IBC：函数值查询，函数类上的最坏 / 随机误差 | 光滑类 \(n^{-r/d}\)（随机化 \(n^{-r/d-1/2}\)）；混合光滑 \(n^{-r}(\log n)^{(d-1)/2}\)；未知奇异点下自适应 \(n^{-r}\) | Bakhvalov 下界；\(C^r_d\) 维数灾难（超指数）；非自适应 \(n^{-1}\) | 经典类紧，本题混合类开放 | 高 |
+| [continuum-estimation](../tasks/continuum-estimation/analysis/THEORY.md) | 有限信息下的最优恢复 | Richardson / E-算法（已知阶）；GRE 的多项式加速 | 不存在通用加速器（Delahaye–Germain-Bonne）；不可辨识，无约束类最坏误差无界 | 固定类后等于信息半径，尚无算法达到 | 高（需补类） |
+| [exponential](../tasks/exponential/analysis/THEORY.md) | matvec 与线性求解计数 | Chebyshev / Lanczos \(\Theta(\sqrt{\beta\log(1/\delta)})\) 次 matvec；有理逼近按 Halphen 常数几何收敛；图拉普拉斯 \(\tilde O(m\log(1/\delta))\) | 多项式次数下界（Aggarwal–Alman 给出精确渐近） | matvec 模型下紧 | 高 |
+| [ihvp-sequence](../tasks/ihvp-sequence/analysis/THEORY.md) | HVP 计数加记忆约束 | CG \(O(\sqrt\kappa\log(1/\epsilon))\)；子空间回收、LMP、Nyström 预条件；跨序列调参的遗憾界 | Krylov 下界（单系统）；序列没有一般下界 | 单系统紧，序列开放 | 高 |
+| [pdhcg-qp](../tasks/pdhcg-qp/analysis/THEORY.md) | 一阶（matvec）或分解 | 重启 PDHG \(O(\kappa\log(1/\epsilon))\)；rAPDHG、PDHCG 线性收敛 | span-respecting 方法下界（Applegate 等；Ouyang–Xu） | 一阶模型下紧 | 高 |
+| [galaxy-gravity](../tasks/galaxy-gravity/analysis/THEORY.md) | 运算计数对精度 | FMM 固定精度 \(O(N)\)、\(p=O(\log(1/\epsilon))\)；WSPD 适用任意分布 | \(\Omega(N)\)；自适应 FMM 对某些分布不是 \(O(N)\)；浮点下限 | 阶紧，常数与软化核开放 | 高 |
+| [trajectory-covariance](../tasks/trajectory-covariance/analysis/THEORY.md) | 统计风险（每档 1000 条轨迹平均） | 批均值 / 谱方差的一致性与速率；VAR 预白化；可逆链的形状约束 | Sobolev 类 \(n^{-2s/(2s+1)}\)；无约束时极小极大风险无穷（Pötscher 2002） | Sobolev 类紧，MCMC 类开放 | 高 |
+| [species-tree](../tasks/species-tree/analysis/THEORY.md) | MSC 样本复杂度与计算复杂性 | ASTRAL\(^*\) \(O(f^{-2}\log n)\)；距离类 \(\Theta(1/(f^2\sqrt k))\) | 方法特定与信息论下界；加权四元组共识 NP-hard；有估计误差时部分方法不一致 | 无误差基因树紧，带估计误差开放 | 中高 |
+| [conic](../tasks/conic/analysis/THEORY.md) | 迭代复杂度与证书 | 自和谐障碍内点法 \(O(\sqrt\nu\log(1/\epsilon))\)；LP \(\tilde O(n^\omega)\) | Todd–Ye \(\Omega(n^{1/3})\)；任何自和谐障碍内点法都不是强多项式（2022） | 障碍框架内紧，强多项式 LP 开放 | 中（考正确性） |
+| [fluorescence-deconvolution](../tasks/fluorescence-deconvolution/analysis/THEORY.md) | 逆问题风险与超分辨 | RL = EM 收敛；WVD 极小极大；测度 TV 超分辨 | 高斯模糊下只有对数速率（Fan 1991）；超分辨极限 | 各自模型下已知，复合设定开放 | 中 |
+| [polarization-demosaicking](../tasks/polarization-demosaicking/analysis/THEORY.md) | 采样与重建 | 带限时理想重建（Tyo 等 2009）；LMMSE | 混叠导致的不可能性 | 只在带限或高斯模型下 | 低 |
+
+## 2. 跨题观察
+
+**1. 性能分与理论量普遍错位。** 现有指标是“有限隐藏集上的墙钟时间或误差”，理论结果针对的是“实例类上的最坏或期望误差”加抽象代价（matvec、HVP、查询数）。各题的误差准则都已有精确定义，缺的是实例类（或先验）和代价模型：conic、pdhcg-qp、exponential 的实例类本来就是“满足题面范围的所有问题”，最坏情形理论可以直接套用；其余各题只有隐藏的实例分布，没有声明的类，定理无法良定义。
+
+**2. 多数题在经典模型下已有紧的结果，“超过 SOTA”只能发生在更细的地方。** exponential（matvec 模型下紧到首项常数）、pdhcg-qp（一阶模型下紧）、blackbox（经典函数类紧）、species（无误差基因树紧）、ihvp（单系统紧）都是如此。真正的空白在：混合与结构类（blackbox）、漂移序列（ihvp）、软化核（galaxy）、带估计误差的基因树（species）、可逆链上的多元风险（trajectory）、信息半径（continuum）、会话内摊销（exponential）。rubric 需要区分三类结果：重新证明已知结果、推广到新类或新代价模型、真正改进已知界。
+
+**3. 强不可能性结果可作为 rubric 的红线。** 声称突破下面这些结果的“定理”必然有错，或者偷换了假设：
+
+- continuum：不存在通用的收敛加速器；不限制参数时最坏误差无界。
+- trajectory：不约束谱的衰减时，零频谱密度的极小极大风险无穷。
+- blackbox：\(C^r_d\) 积分的维数灾难；凸对称函数类上自适应不改善误差阶。
+- exponential、ihvp：只用 matvec 的方法受多项式次数下界和 Krylov 下界约束。
+- conic：自和谐障碍内点法不是强多项式的。
+- species：加权四元组共识 NP-hard，声称精确多项式算法即错（除非 P = NP）。
+- fluorescence：高斯模糊下非参数类只有对数速率。
+
+**4. 理论与实现的一致性有很大一部分可以自动检验。** 这类检查证明不了定理正确，但能低成本地抓出错误的定理或与代码不符的定理，减轻人类评审的负担：
+
+- 可计算的误差界：galaxy（逐粒子参考加速度）、exponential 与 ihvp（参考解）、fluorescence（干净体积）、continuum（真值）都可以直接检测违反。
+- 复杂度声明：要求在诊断输出中报告 matvec、HVP、查询或相互作用计数（exponential、ihvp、pdhcg-qp、galaxy、conic）。
+- 风险声明：trajectory 每档 1000 条轨迹的平均误差本身就是风险的蒙特卡洛估计。
+
+**5. Lean 机器检查的可行范围窄。** 现成可用的有 Mathlib 的矩阵指数、Chebyshev 多项式、谱定理、测度论概率，以及 LP 的 Farkas 引理和强对偶的 Lean 4 形式化（Dvorak, Kolmogorov 2026）。各题中几小时内能机器检查的，基本限于：continuum 的二点下界与 Richardson 消项、conic 和 pdhcg-qp 的弱对偶与证书有效性、exponential 的“标量多项式逼近误差推出矩阵函数误差”、galaxy 的标量截断界与计数论证、species 的分裂与四元组组合事实。数值分析的主体结果（Krylov 收敛、FMM 截断界、MCMC 一致性、超分辨）在 Mathlib 中没有基础设施。
+
+## 3. 交付与评测方案（草案）
+
+### 3.1 交付物
+
+提交目录新增 `THEORY.md`（自然语言），以及可选的 `formal/`（Lean 4 项目，Lean 与 Mathlib 版本由镜像固定）。`THEORY.md` 包含：
+
+1. **问题建模**：采用的实例类或先验、代价模型、误差准则。应与题面理论附录一致或更窄；更窄时须说明。
+2. **算法**：伪代码，逐条对应到代码文件和函数。
+3. **主要结果**：定理的假设、结论与常数。类型包括误差界、复杂度、一致性与速率、最优性（下界）。
+4. **证明**。
+5. **与已知结果的比较**：对照该题已知的上下界，声明属于复现、推广到新类或新代价模型，还是改进已知界。
+6. **理论与实现的偏差**：哪些实现选择（启发式、数值容差、提前停止）不在定理覆盖范围内。
+7. **可检验声明**：可计算的误差界或计数界，按规定格式写入诊断输出，供评测端自动核对。
+8. **形式化清单**：`formal/` 中机器检查通过的陈述与 `THEORY.md` 中定理的对应关系，以及未完成（`sorry`）的部分。
+
+### 3.2 评测流水线
+
+- **性能分**：不变。
+- **自动检查**（新增，不计入性能分）：交付结构是否齐全；Lean 是否编译通过，`sorry` 有多少；可检验声明在隐藏实例上的违反率；伪代码与代码的一致性抽查。
+- **人类 rubric**（之后补）：建议维度为正确性（证明是否成立）、新颖性（相对已知结果）、意义（假设是否合理、是否覆盖本题实例）、与实现的一致性、表述严谨度。rubric 就绪前，理论交付只做自动检查和存档，不并入总分。
+
+### 3.3 题面改造
+
+每道进入理论赛道的题新增公开的“理论附录”：实例类或先验的数学定义（隐藏实例是其中的样本）、代价模型与计数口径，以及诊断输出中可检验声明的格式。是否同时向做题模型公开该题已知结果的摘要，见第 4 节。
+
+### 3.4 分批
+
+- **第一批**（理论强、题面改动小）：exponential、pdhcg-qp、ihvp-sequence、galaxy-gravity、blackbox-cubature、continuum-estimation。
+- **第二批**（需要补统计或生成模型）：trajectory-covariance、species-tree、fluorescence-deconvolution。
+- **维持性能题，或只考正确性理论**：conic（证书与收敛的正确性）、polarization-demosaicking。
+
+## 4. 待决定事项
+
+1. **“形式化结果”指什么**：Lean 4 机器检查（可自动判定，但覆盖面窄）；严格的形式化陈述（精确的假设、量词和常数，不要求机器检查）；或者分层：所有定理都给形式化陈述，关键引理尽量机器检查。
+2. **时间预算**：理论写作耗时。现有运行中，1 小时单轮经常连代码都写不完（见 Hunyuan 4 与书生的单轮分析）。可以把理论写作包含在现有单轮 / 迭代时间内，也可以在代码冻结后另给一段只写理论、不能改代码的时间。
+3. **是否向做题模型公开已知结果摘要**：公开则考察能否在已知基础上推进，不公开则同时考察能否自己找到或复现已知结果。现有题面的风格是离线、不附论文。
+4. **理论附录由谁写**：出题人写，或我们起草、出题人确认。
