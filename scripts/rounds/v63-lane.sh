@@ -18,7 +18,7 @@ STORE=var/stores/store-v63
 attempt() {
     local model=$1 setting=$2 task=$3 n=$4 tag key=/root/.frontieram/aihub.key runtime=$R/.runtime-recal
     case $model in gpt-6.1-sol) tag=sol;; gpt-6.2-sol) tag=sol62;; gpt-6-astra) tag=astra;; claude-opus-5-5) tag=opus;; qwen3.8-max|qwen3.8-max-0902) tag=qwen;; hy4) tag=hy4;;
-        intern-s2) tag=intern;; *) echo "unknown model $model" >&2; return 2;; esac
+        intern-s2) tag=intern;; qwen4-max) tag=qwen4;; minimax-m3.1-flash) tag=minimax;; *) echo "unknown model $model" >&2; return 2;; esac
     local log=var/stores/store/reruns/v63-$tag-$setting-$task-$n.log
     mkdir "$log.$CLAIM" 2>/dev/null || return 0        # another lane took it, or an earlier pass ran it
     grep -q develop_ "$log" 2>/dev/null && return 0

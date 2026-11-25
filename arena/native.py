@@ -62,9 +62,10 @@ HARNESS = {
     'step-5-preview': 'step',
     'gemini-4-argon': 'antigravity',
     'hy4': 'claude',
-    'minimax-m3.1-flash': 'codex',
+    'minimax-m3.1-flash': 'claude',  # AI Hub offers it as a Messages passthrough (2026-11-25)
     'qwen3.8-max': 'claude',
     'qwen3.8-max-0902': 'claude',
+    'qwen4-max': 'codex',  # AI Hub offers only the Responses passthrough (2026-11-25)
     'intern-s2': 'claude',
 }
 CREDENTIALS = {
@@ -76,7 +77,8 @@ DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 # The path from this host to the model gateways closes connections idle for 1100 s, and a non-streaming request is idle
 # until its whole answer exists; streamed answers keep sending thinking or keepalive events, so these models' upstream
 # requests stay streaming.
-UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6-astra', 'gpt-6.1-sol', 'gpt-6.2-sol', 'hy4', 'intern-s2', 'qwen3.8-max', 'qwen3.8-max-0902'}
+UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6-astra', 'gpt-6.1-sol', 'gpt-6.2-sol', 'hy4', 'intern-s2', 'minimax-m3.1-flash',
+                   'qwen3.8-max', 'qwen3.8-max-0902', 'qwen4-max'}
 # ATR configuration where it is not the model name, and the environment it needs: gpt-6-astra runs on the user's
 # ChatGPT Pro account through the Codex backend instead of AI Hub billing (user decision 2026-11-21; ATR models.yaml
 # gpt-6-astra-account: same upstream model, reasoning up to max, 872k-token window, no output cap field).

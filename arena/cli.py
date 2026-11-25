@@ -46,6 +46,7 @@ MODELS = [
     'hy4',
     'qwen3.8-max',
     'qwen3.8-max-0902',
+    'qwen4-max',
     'intern-s2',
 ]
 DEFAULT_BASE_URL = 'http://api.aihub.woa.com/standard/v1'
