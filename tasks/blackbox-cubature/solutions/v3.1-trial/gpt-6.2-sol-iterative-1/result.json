@@ -1,0 +1,86 @@
+{
+ "task": "blackbox-cubature-v3.1",
+ "model": "gpt-6.2-sol",
+ "setting": "iterative (v6.3 harness, 6 h limit, validation run)",
+ "dev_run": "dev-blackbox-cubature-v3.1-20261125T120614Z-992d8c",
+ "submission": "blackbox-cubature-v3.1-20261125T131238Z-b75a37",
+ "started_local": "2026-11-25 20:06",
+ "agent_stop_reason": "formal_submission",
+ "development_seconds": 3978.0,
+ "model_requests": 108,
+ "test_submissions": 14,
+ "tests": [
+  {
+   "test": 1,
+   "status": "ok",
+   "public_score": 65.89167539485392
+  },
+  {
+   "test": 2,
+   "status": "ok",
+   "public_score": 68.43513547726948
+  },
+  {
+   "test": 3,
+   "status": "ok",
+   "public_score": 70.73338612077985
+  },
+  {
+   "test": 4,
+   "status": "ok",
+   "public_score": 69.40850421227023
+  },
+  {
+   "test": 5,
+   "status": "ok",
+   "public_score": 68.5379529856153
+  },
+  {
+   "test": 6,
+   "status": "ok",
+   "public_score": 69.66586684984074
+  },
+  {
+   "test": 7,
+   "status": "ok",
+   "public_score": 70.2939211483834
+  },
+  {
+   "test": 8,
+   "status": "ok",
+   "public_score": 68.33479688957092
+  },
+  {
+   "test": 9,
+   "status": "ok",
+   "public_score": 70.06161351478755
+  },
+  {
+   "test": 10,
+   "status": "ok",
+   "public_score": 72.85000060956045
+  },
+  {
+   "test": 11,
+   "status": "ok",
+   "public_score": 72.85000060956045
+  },
+  {
+   "test": 12,
+   "status": "ok",
+   "public_score": 74.85737533482461
+  },
+  {
+   "test": 13,
+   "status": "ok",
+   "public_score": 75.59265172667259
+  },
+  {
+   "test": 14,
+   "status": "ok",
+   "public_score": 75.59265172667259
+  }
+ ],
+ "private_suite": "suite-blackbox-cubature-v3.1-20261125T141141Z-c47dd5",
+ "reference_suite": "suite-blackbox-cubature-v3.1-20261125T120404Z-5b7631"
+}
