@@ -1,0 +1,96 @@
+{
+ "task": "blackbox-cubature-v3",
+ "model": "gpt-6.2-sol",
+ "setting": "iterative (v6.3 harness, 6 h limit, validation run)",
+ "dev_run": "dev-blackbox-cubature-v3-20261125T092359Z-5a745f",
+ "submission": "blackbox-cubature-v3-20261125T101539Z-871f0c",
+ "started_local": "2026-11-25 17:24",
+ "agent_stop_reason": "formal_submission",
+ "development_seconds": 3093.1,
+ "model_requests": 132,
+ "test_submissions": 10,
+ "tests": [
+  {
+   "test": 1,
+   "status": "ok",
+   "public_score": 68.63811697536667,
+   "requested_at_s": 411.6,
+   "finished_at_s": 460.3,
+   "note": null
+  },
+  {
+   "test": 2,
+   "status": "ok",
+   "public_score": 80.46746400815701,
+   "requested_at_s": 705.3,
+   "finished_at_s": 756.6,
+   "note": null
+  },
+  {
+   "test": 3,
+   "status": "ok",
+   "public_score": 80.57908394896697,
+   "requested_at_s": 1212.3,
+   "finished_at_s": 1259.8,
+   "note": null
+  },
+  {
+   "test": 4,
+   "status": "ok",
+   "public_score": 79.1407303406756,
+   "requested_at_s": 1384.0,
+   "finished_at_s": 1467.7,
+   "note": null
+  },
+  {
+   "test": 5,
+   "status": "ok",
+   "public_score": 87.30670780256933,
+   "requested_at_s": 1591.4,
+   "finished_at_s": 1642.9,
+   "note": null
+  },
+  {
+   "test": 6,
+   "status": "unmeasured",
+   "public_score": null,
+   "requested_at_s": 1973.6,
+   "finished_at_s": 1998.4,
+   "note": "infrastructure: v3 task image missing on grade-14 (loaded at 18:16)"
+  },
+  {
+   "test": 7,
+   "status": "ok",
+   "public_score": 89.51991112207992,
+   "requested_at_s": 2129.6,
+   "finished_at_s": 2250.3,
+   "note": null
+  },
+  {
+   "test": 8,
+   "status": "unmeasured",
+   "public_score": null,
+   "requested_at_s": 2336.2,
+   "finished_at_s": 2638.8,
+   "note": "infrastructure: v3 task image missing on grade-14 (loaded at 18:16)"
+  },
+  {
+   "test": 9,
+   "status": "ok",
+   "public_score": 90.6771417109853,
+   "requested_at_s": 2723.3,
+   "finished_at_s": 2949.0,
+   "note": null
+  },
+  {
+   "test": 10,
+   "status": "ok",
+   "public_score": 92.4285611281961,
+   "requested_at_s": 2964.4,
+   "finished_at_s": 3065.2,
+   "note": null
+  }
+ ],
+ "private_suite": "suite-blackbox-cubature-v3-20261125T105724Z-e20178",
+ "reference_suite": "suite-blackbox-cubature-v3-20261125T101321Z-39af3f"
+}
