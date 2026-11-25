@@ -127,3 +127,18 @@ def rqmc_estimate(f, d: int, m: int, replicates: int, seed: int, chunk: int = 1 
         estimates.append(total / count)
     est = np.asarray(estimates)
     return float(est.mean()), float(est.std(ddof=1) / math.sqrt(len(est)))
+
+
+def rqmc_cv_estimate(pair, d: int, m: int, replicates: int, seed: int, control_mean: float, pilot_m: int = 12,
+                     chunk: int = 1 << 16) -> tuple[float, float]:
+    """rqmc_estimate of E[f - beta (g - E g)] for pair(z) -> (f(z), g(z)) with E g = control_mean known exactly. beta is
+    the regression coefficient on a separate scrambled pilot (its own seed), so the estimate stays unbiased."""
+    fv, gv = pair(rqmc_normal(d, pilot_m, int(seed) + 7919))
+    gc = gv - gv.mean()
+    beta = float(np.dot(fv - fv.mean(), gc) / max(float(np.dot(gc, gc)), 1e-300))
+
+    def f(z):
+        fz, gz = pair(z)
+        return fz - beta * (gz - control_mean)
+
+    return rqmc_estimate(f, d, m, replicates, seed, chunk)

@@ -49,6 +49,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'ihvp-sequence-v4': 'frontieram-ihvp-sequence-v4-harness:v6',
                   'polarization-demosaicking-v3': 'frontieram-polarization-demosaicking-v3-harness:v6',
                   'blackbox-cubature-v2': 'frontieram-blackbox-cubature-v2-harness:v6',
+                  'blackbox-cubature-v3': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'continuum-estimation': 'frontieram-continuum-estimation-harness:v6',
                   'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6',
                   'pdhcg-qp-v1': 'frontieram-pdhcg-qp-v1-harness:v6'}
@@ -363,6 +364,20 @@ SCORING_DISCLOSURE['blackbox-cubature-v2'] = (
     'dimension, then over dimensions and over the families with equal weight. Matching the reference is the midpoint '
     'of the scale, being 100 times more accurate than it on every instance is the maximum, and plain Monte Carlo '
     'sampling scores zero. Time within the limit earns nothing extra.'
+)
+SCORING_DISCLOSURE['blackbox-cubature-v3'] = (
+    'This task has two parts, and both are evaluated. The program: every held-out instance runs once in a fresh '
+    'process within 30 wall-clock seconds and the 16384-point query budget; a single failed, timed-out or '
+    'protocol-violating instance makes the program score zero. Given that, each instance\'s log10 relative error '
+    '(clipped below at the resolution of its reference value and above at 0) is compared with a frozen GPCA-RQMC '
+    'reference measured on the same instance: the gain is clipped to two orders of magnitude either way, averaged per '
+    'cell, over the cells of a family, over the families of a track, and over the two tracks with equal weight. '
+    'Matching the reference is the midpoint of the scale, being 100 times more accurate than it on every instance is '
+    'the maximum, and plain Monte Carlo sampling scores zero; time within the limit earns nothing extra and error '
+    'bounds are diagnostics only. The theory document (/workspace/submission/theory/THEORY.md) is reviewed separately '
+    'by experts against a rubric (correctness and rigor first, then novelty relative to the known results and '
+    'relevance to the experiment) and reported on its own; it is not part of the program score and gets no feedback '
+    'during the attempt.'
 )
 SCORING_DISCLOSURE['continuum-estimation'] = (
     'Every held-out case runs once in a fresh restricted process within 60 wall-clock seconds (startup included); an '

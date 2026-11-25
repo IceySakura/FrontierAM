@@ -50,6 +50,7 @@ PUBLIC = {
     'polarization-demosaicking-v3': {'family': 'polarization-demosaicking', 'store': STORE,
                                      'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
     'blackbox-cubature-v2': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
+    'blackbox-cubature-v3': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
     'continuum-estimation': {'family': 'continuum-estimation', 'store': STORE, 'env': {'FRONTIERAM_CONTINUUM_DATA': 'public'}},
     'fluorescence-deconvolution': {'family': 'fluorescence-deconvolution', 'store': STORE, 'env': {'FRONTIERAM_FLUOR_DATA': 'public'}},
     # pdhcg-qp has one reference (score 100 p / (1 + g / g_ref)); its public baseline keeps the reference rows as strong.
@@ -255,10 +256,12 @@ def _cubature(out: Path) -> list[dict]:
         error = str(r.get('error') or '')
         status = 'passed' if r['ok'] else 'timeout' if 'wall limit' in error else \
             'crash' if 'exited' in error or 'closed stdout' in error else 'wrong'
-        clipped = min(0.0, max(-15.0, r['log10_rel_error'])) if r['ok'] else None
+        floor = r.get('e_floor', -15.0)  # v3 rows carry each instance's reference resolution
+        clipped = min(0.0, max(floor, r['log10_rel_error'])) if r['ok'] else None
         rows.append({'id': r['id'], 'category': r['family'], 'dimension': r['dimension'], 'status': status,
                      'log10_rel_error': r.get('log10_rel_error'), 'accuracy': 10 ** clipped if clipped is not None else None,
-                     'seconds': r.get('elapsed_sec')})
+                     'seconds': r.get('elapsed_sec'),
+                     **{k: r[k] for k in ('track', 'cell', 'e_floor') if k in r}})
     return rows
 
 
@@ -349,6 +352,15 @@ def cubature_score(task: str, rows: list[dict], weak: list[dict], strong: list[d
         return 0.0
     if not weak or not strong:
         return None
+    if task == 'blackbox-cubature-v3':  # two tracks, cells and per-instance floors
+        from .operator_drivers.blackbox_cubature_v3 import gain as gain_v3, score_100 as score_v3
+
+        as_v3 = lambda rs: [{'id': r['id'], 'track': r['track'], 'family': r['category'], 'cell': r['cell'],
+                             'e_floor': r['e_floor'], 'log10_rel_error': r['log10_rel_error']} for r in rs]
+        candidate, mc = gain_v3(as_v3(rows), as_v3(strong)), gain_v3(as_v3(weak), as_v3(strong))
+        if candidate['gain'] < 0 <= mc['gain']:
+            return None
+        return score_v3(candidate, mc)
     as_driver = lambda rs: [{'id': r['id'], 'family': r['category'], 'dimension': r['dimension'],
                              'log10_rel_error': r['log10_rel_error']} for r in rs]
     guard = TASKS[task].guard

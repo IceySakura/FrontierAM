@@ -22,7 +22,7 @@ import math
 import numpy as np
 from scipy import integrate, optimize, special
 
-from gauss import bvn_cdf, cdf, pdf, rqmc_estimate
+from gauss import bvn_cdf, cdf, pdf, rqmc_cv_estimate, rqmc_estimate
 
 FAMILIES = ('geo_basket_call', 'basket_call', 'exchange', 'spread', 'rainbow_max_call', 'rainbow_min_call',
             'digital_max', 'asian_call', 'basket_asian_call', 'asian_spread')
@@ -553,8 +553,9 @@ def check_preint(spec: dict, theta: np.ndarray, n: int = 12, seed: int = 0) -> f
     return worst
 
 
-def geometric_control(spec: dict):
-    """Geometric-average counterpart (closed form mean) of a sum-of-lognormals payoff without negative terms."""
+def _geometric_terms(spec: dict):
+    """(mu, b, mean): the geometric-average counterpart exp(mu + b . y) of a sum-of-lognormals payoff without negative
+    terms, and the closed-form mean of its discounted call; None if the payoff has negative terms."""
     pos, neg = lognormal_terms(spec)
     if neg:
         return None
@@ -562,10 +563,34 @@ def geometric_control(spec: dict):
     wts = wts / wts.sum()
     mu = float(sum(wk * mu for wk, (_, mu, _) in zip(wts, pos)))
     bvec = sum(wk * b for wk, (_, _, b) in zip(wts, pos))
-    a = float(np.linalg.norm(bvec))
     disc = math.exp(-spec['r'] * spec['T'])
-    mean = disc * float(ln_call(mu, a, spec['K']))
+    return mu, bvec, disc * float(ln_call(mu, float(np.linalg.norm(bvec)), spec['K']))
+
+
+def geometric_control(spec: dict):
+    """Geometric-average counterpart (closed form mean) of a sum-of-lognormals payoff without negative terms."""
+    geo = _geometric_terms(spec)
+    if geo is None:
+        return None
+    mu, bvec, mean = geo
+    disc = math.exp(-spec['r'] * spec['T'])
     return (lambda y: disc * np.maximum(np.exp(mu + y @ bvec) - spec['K'], 0.0)), mean
+
+
+def preint_cv_rqmc(spec: dict, theta: np.ndarray, m: int = 20, replicates: int = 16, seed: int = 1) -> tuple[float, float]:
+    """preint_rqmc with the geometric-average control preintegrated along the same direction: on y = theta u + basis v
+    the control exp(mu + b . basis v + (b . theta) u) is lognormal in u, so its conditional call value is ln_call."""
+    pos, neg = lognormal_terms(spec)
+    basis = _ordered_complement(spec, theta, pos, neg)
+    f = preintegrated(spec, theta, basis, pos, neg)
+    geo = _geometric_terms(spec)
+    if geo is None:
+        return rqmc_estimate(f, spec['d'] - 1, m, replicates, seed)
+    mu, bvec, mean = geo
+    a, load = abs(float(bvec @ theta)), basis.T @ bvec
+    disc = math.exp(-spec['r'] * spec['T'])
+    return rqmc_cv_estimate(lambda v: (f(v), disc * ln_call(mu + v @ load, a, spec['K'])), spec['d'] - 1, m,
+                            replicates, seed, mean)
 
 
 def plain_rqmc_cv(spec: dict, m: int = 20, replicates: int = 16, seed: int = 2) -> tuple[float, float]:
@@ -619,9 +644,10 @@ def references(spec: dict, rqmc_m: int = 20, check_m: int = 18, replicates: int 
                                   fine, max(abs(fine - coarse), 1e-13 * max(1.0, abs(fine)))))
         else:
             routes = []
+            cv = ' + geometric control variate' if geometric_control(spec) is not None else ''
             for k, (name, theta) in enumerate(dirs):
-                val, se = preint_rqmc(spec, theta, m=rqmc_m, replicates=replicates, seed=11 + k)
-                routes.append(_route(f'preintegration along {name} direction + RQMC 2^{rqmc_m} x {replicates}',
+                val, se = preint_cv_rqmc(spec, theta, m=rqmc_m, replicates=replicates, seed=11 + k)
+                routes.append(_route(f'preintegration along {name} direction{cv} + RQMC 2^{rqmc_m} x {replicates}',
                                      val, se=max(se, 1e-300)))
             w = np.array([r['se'] ** -2 for r in routes])
             comb = float(sum(wi * r['value'] for wi, r in zip(w, routes)) / w.sum())

@@ -218,6 +218,11 @@
       "dir": "v2",
       "registry": "blackbox-cubature-v2",
       "note": "多项式族换成折点 ridge 叠加，三族都计分（当前版本）"
+    },
+    {
+      "dir": "v3",
+      "registry": "blackbox-cubature-v3",
+      "note": "理论 + 实验双考候选版：高斯测度，困难合成赛道（4 族）与文献期权赛道（6 族）等权，GPCA-RQMC = 50、普通蒙特卡洛 = 0，按真值精度截断；只做试跑，不上榜（analysis/DUAL_PLAN.md）"
     }
   ],
   "locations": {

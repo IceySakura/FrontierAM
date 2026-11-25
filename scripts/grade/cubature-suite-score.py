@@ -3,6 +3,9 @@
 Each shard's metrics hold per-part rows (weak/strong for the reference pair, candidate otherwise). The anchors come
 from a reference suite (--reference) or, by default, from the store's active baseline for the task.
 
+v3 (two tracks, per-instance floors, arena/operator_drivers/blackbox_cubature_v3.py) also reports the tracks and
+the error-bound diagnostics of the candidate.
+
 Usage: cubature-suite-score.py --store STORE [--task blackbox-cubature-v2] [--reference SUITE] [--candidate SUITE] --out OUT.json
 """
 
@@ -16,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 import arena.tasks  # noqa: E402,F401  (operator_tasks must be imported through arena.tasks)
-from arena.operator_drivers.blackbox_cubature import gain, score_100  # noqa: E402
+from arena.operator_drivers import blackbox_cubature, blackbox_cubature_v3  # noqa: E402
 from arena.operator_tasks import CLASSES  # noqa: E402
 
 
@@ -46,12 +49,17 @@ def active_baseline(store: Path, task: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--store', type=Path, required=True)
-    parser.add_argument('--task', default='blackbox-cubature', choices=['blackbox-cubature', 'blackbox-cubature-v2'])
+    parser.add_argument('--task', default='blackbox-cubature',
+                        choices=['blackbox-cubature', 'blackbox-cubature-v2', 'blackbox-cubature-v3'])
     parser.add_argument('--reference')
     parser.add_argument('--candidate')
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
-    guard = CLASSES[args.task].guard
+    if args.task == 'blackbox-cubature-v3':
+        gain, score_100 = (lambda rows, ref, _guard: blackbox_cubature_v3.gain(rows, ref)), blackbox_cubature_v3.score_100
+    else:
+        gain, score_100 = blackbox_cubature.gain, blackbox_cubature.score_100
+    guard = getattr(CLASSES[args.task], 'guard', frozenset())
     reference = merged(args.store, args.reference) if args.reference else active_baseline(args.store, args.task)
     weak, strong = reference['weak'], reference['strong']
     anchors_ok = weak['status'] == strong['status'] == 'ok'
@@ -69,6 +77,9 @@ def main():
             g = gain(candidate['rows'], strong['rows'], guard)
             g0 = gain([row for row in weak['rows'] if row['id'] in ids], strong['rows'], guard)
             result.update(gain=g['gain'], families=g['families'], score=score_100(g, g0))
+            if args.task == 'blackbox-cubature-v3':
+                result.update(tracks=g['tracks'], mc_tracks=g0['tracks'], cells=g['cells'],
+                              bounds=blackbox_cubature_v3.bound_diagnostics(candidate['rows']))
         else:
             result['score'] = None
     args.out.parent.mkdir(parents=True, exist_ok=True)

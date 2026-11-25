@@ -47,6 +47,8 @@ SUBMISSIONS = {
                       "    def solve(self, hvp, b, context):\n        return np.zeros(self.d)\n\n\n"
                       "def make_solver(d, seed, options):\n    return Zero(d)\nEOF"),
     'blackbox-cubature': 'cp /workspace/examples/reference_submission/* . && chmod +x run.sh',
+    'blackbox-cubature-v3': ('cp /workspace/examples/mc_submission/* . && chmod +x run.sh && mkdir -p theory && '
+                             "echo '# smoke theory document' > theory/THEORY.md"),
     'fluorescence-deconvolution': ("cat > solution.py <<'EOF'\nimport sys\nimport numpy as np\n"
                                    "d = np.load(sys.argv[1])\nnp.save(sys.argv[2], np.maximum(d['observed'], 0).astype(np.float32))\nEOF"),
     'continuum-estimation': ("cat > run.sh <<'EOF'\n#!/bin/sh\nexec python3 -c \"import json,os,sys; a=sys.argv[1:]; "
@@ -60,6 +62,7 @@ FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3'
           'trajectory-covariance-v2': 'trajectory-covariance', 'ihvp-sequence': 'ihvp-sequence',
           'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence', 'ihvp-sequence-v5': 'ihvp-sequence',
           'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature',
+          'blackbox-cubature-v3': 'blackbox-cubature-v3',
           'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution'}
 V5_FILES = ('README.md', 'statement.md', 'interface.md', 'solver.py', 'smoke.json')  # the MODEL_ONLY package, nothing else
 # Versions that keep the author's workspace layout: their public-dev material is the samples; these files must be there.
@@ -68,13 +71,18 @@ AUTHOR_LAYOUT = {'polarization-demosaicking-v3': ['/workspace/public-dev/check.p
                                           '/workspace/examples/reference_submission/run.sh'],
                  'continuum-estimation': ['/workspace/problem.md', '/workspace/public/check.py', '/workspace/runtime'],
                  'fluorescence-deconvolution': ['/workspace/problem.md', '/workspace/public-dev/check.py'],
-                 'ihvp-sequence-v5': [f'/workspace/{name}' for name in V5_FILES]}
+                 'ihvp-sequence-v5': [f'/workspace/{name}' for name in V5_FILES],
+                 'blackbox-cubature-v3': ['/workspace/problem.md', '/workspace/THEORY_APPENDIX.md',
+                                          '/workspace/samples/samples.json', '/workspace/tools/local_eval.py',
+                                          '/workspace/examples/mc_submission/run.sh']}
 
 
 def script(task: str, setting: str) -> str:
     family = FAMILY[task]
     lines = ['set -x', 'echo WORKSPACE-BEGIN; find /workspace -maxdepth 3 -not -path "*/submission*" | sort; echo WORKSPACE-END',
              'cd /workspace/submission', SUBMISSIONS[family], "echo 'v6.3 smoke submission' > README.md", 'cd /workspace']
+    if task == 'blackbox-cubature-v3':  # samples answered by the host-side service through the mounted socket
+        lines += ['python3 /workspace/tools/local_eval.py --only H1-d8 asian 2>&1 | tail -4']
     if task in ('ihvp-sequence-v2', 'ihvp-sequence-v3', 'ihvp-sequence-v4'):  # samples run through the host-side service
         lines += ['python3 /workspace/samples/run_sample.py smoke', 'python3 /workspace/samples/run_sample.py sample_02']
     if setting == 'iterative':
@@ -113,6 +121,8 @@ def main():
                  {'no_public_dev': 'public-dev' not in workspace and 'dev_full' not in workspace,
                   'samples_present': '/samples' in workspace}),
               'limit_in_prompt': f'{int(seconds // 60) if seconds >= 60 else 0} minutes' in prompt or 'minutes' in prompt}
+    if task_name == 'blackbox-cubature-v3':  # the local evaluator reached the sample service and scored
+        checks.update(sample_service=' e=' in log and 'FAILED' not in log.split('WORKSPACE-END', 1)[-1])
     if setting == 'iterative':
         report = log.rsplit('REPORT-BEGIN\n', 1)[-1].split('REPORT-END', 1)[0]
         ids = json.loads((out / 'evaluations/test-01/report/report.json').read_text()) if \

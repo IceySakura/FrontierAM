@@ -647,6 +647,99 @@ class BlackboxCubatureV2(BlackboxCubature):
         return json.loads((self.VERSION / 'data' / self.data_set() / 'cases.json').read_text())['cases']
 
 
+class BlackboxCubatureV3(BlackboxCubature):
+    """v3: Gaussian measure, hard synthetic and option tracks, theory + experiment (analysis/DUAL_PLAN.md). Driver
+    arena/operator_drivers/blackbox_cubature_v3.py; instances in versions/v3/data/{public,private}/instances.json
+    (internal repository only; FRONTIERAM_CUBATURE_DATA=public selects the feedback set). During development the
+    samples are answered by a host-side service (arena/operator_drivers/cubature_samples.py), so their functions never
+    enter the workspace."""
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3'
+
+    def cases(self) -> list[dict]:
+        return json.loads((self.VERSION / 'data' / self.data_set() / 'instances.json').read_text())['instances']
+
+    def suite(self, runtime=None) -> list[dict]:
+        limit = self.spec.get('case_limit_s', 30)
+        return [{'id': c['id'], 'group': c['family'], 'time_limit_seconds': limit} for c in self.cases()]
+
+    def run_grader(self, source, out, placement, case_ids=None):
+        out.parent.mkdir(parents=True, exist_ok=True)
+        instances = self.cases()
+        if case_ids:
+            wanted = set(case_ids)
+            instances = [c for c in instances if c['id'] in wanted]
+            if len(instances) != len(wanted):
+                raise ValueError('case_ids name instances outside the data set')
+        listing = out.parent / f'{out.name}-cases.json'
+        listing.write_text(json.dumps(instances) + '\n')
+        listing.chmod(0o600)
+        driver = ROOT / 'arena/operator_drivers/blackbox_cubature_v3.py'
+        done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(listing), str(source), str(out),
+                               '--image', self.lock()['image']['id'], '--cpuset', placement.cpuset,
+                               '--cgroup-parent', placement.cgroup_parent,
+                               '--case-limit', str(self.spec.get('case_limit_s', 30))],
+                              env={**os.environ, 'DOCKER_HOST': placement.docker_host},
+                              capture_output=True, text=True, timeout=self.grade_timeout)
+        (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
+        summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
+        reason = summary.get('reason') or (done.stderr.strip().splitlines()[-1] if done.returncode and done.stderr.strip() else None)
+        return {'status': summary.get('status', 'infrastructure_failure'), 'raw_error': None, 'reason': reason,
+                'package_score': None, 'cases': summary.get('cases'), 'failures': summary.get('failures'),
+                'max_wall_s': summary.get('max_wall_s'), 'bounds': summary.get('bounds'),
+                'rows': summary.get('rows', []), 'data': self.data_set()}
+
+    def baseline_ok(self, metrics):
+        from .operator_drivers.blackbox_cubature_v3 import gain
+
+        parts = metrics['parts']
+        weak, strong = parts.get('weak', {}), parts.get('strong', {})
+        if not weak.get('status') == strong.get('status') == 'ok':
+            return False, f'reference pair not valid: weak={weak.get("status")} strong={strong.get("status")}'
+        g0 = gain(weak['rows'], strong['rows'])['gain']
+        return g0 < 0, f'Monte Carlo gain over GPCA-RQMC G0 = {g0:.4f} (must be negative)'
+
+    def score(self, runtime, metrics, baseline):
+        from .operator_drivers.blackbox_cubature_v3 import gain, score_100
+
+        part = metrics['parts'].get('candidate') or {}
+        status = part.get('status')
+        if status == 'infrastructure_failure' or status is None:
+            return {'status': 'unmeasured', 'score': None, 'reason': part.get('reason')}
+        if status != 'ok':
+            return {'status': 'submission_failure', 'score': 0.0, 'reason': part.get('reason')}
+        if baseline is None:
+            return {'status': 'ok', 'score': None}
+        anchors = baseline['metrics']['parts']
+        ids = {row['id'] for row in part['rows']}
+        strong = anchors['strong']['rows']
+        candidate = gain(part['rows'], strong)
+        mc = gain([row for row in anchors['weak']['rows'] if row['id'] in ids], strong)
+        return {'status': 'ok', 'raw_error': candidate['gain'], 'score': score_100(candidate, mc),
+                'tracks': candidate['tracks'], 'families': candidate['families'], 'bounds': part.get('bounds'),
+                'anchors': {'weak': mc['gain'], 'strong': 0.0}}
+
+    def dev_service(self, output: Path):
+        """The samples' oracle on a Unix socket mounted at /run/cubature-samples (workspace tools/oracle_client.py)."""
+        directory = Path('/run/frontieram/cubature-samples') / output.name
+        directory.mkdir(parents=True)
+        directory.chmod(0o755)
+        process = subprocess.Popen([str(GRADER_PYTHON), '-B', str(ROOT / 'arena/operator_drivers/cubature_samples.py'),
+                                    str(directory), str(self.VERSION / 'data/samples/instances.json')],
+                                   cwd=ROOT, stdout=subprocess.PIPE, stderr=(output / 'sample-service.log').open('wb'),
+                                   text=True)
+        if process.stdout.readline().strip() != 'ready':
+            process.kill()
+            raise RuntimeError(f'cubature sample service did not start ({output / "sample-service.log"})')
+
+        def stop():
+            process.terminate()
+            try:
+                process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                process.kill()
+        return ['--mount', f'type=bind,src={directory},dst=/run/cubature-samples'], stop
+
+
 class ContinuumEstimation(OperatorTask):
     """The author's continuum-estimation 1.0.1 verifier, ported to x86-64 (arena/operator_drivers/continuum.py).
     Private: the 60 primary cases; public feedback (FRONTIERAM_CONTINUUM_DATA=public): the 8 public examples. The
@@ -701,6 +794,7 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2, 'species-tree-v3': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance,
            'blackbox-cubature': BlackboxCubature, 'blackbox-cubature-v2': BlackboxCubatureV2,
+           'blackbox-cubature-v3': BlackboxCubatureV3,
            'continuum-estimation': ContinuumEstimation, 'fluorescence-deconvolution': FluorescenceDeconvolution}
 
 

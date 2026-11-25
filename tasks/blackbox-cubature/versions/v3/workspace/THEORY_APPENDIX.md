@@ -1,4 +1,4 @@
-# 理论附录（v3 草稿，2026-11-24）
+# 理论附录（v3，2026-11-25）
 
 本附录随题面公开，规定理论结果所针对的对象：问题类、信息与代价模型、误差准则，并列出已知结果和开放问题。你的理论交付应当针对这里声明的类（或你明确写出的子类），并说明隐藏实例中哪些满足你的假设。
 
@@ -25,22 +25,22 @@
 - 非光滑面的方向未知；它们不必沿任何坐标或任何固定方向单调；输入坐标可能经过未知的正交变换。
 - \(k=0\) 时 \(\mathcal F_d\) 退化为带指数增长界的光滑函数类，所以光滑函数的下界对 \(\mathcal F_d\) 也成立。
 
-**本版隐藏实例**：\(d\in\{8,\dots,64\}\)，所有 \(\varphi_i\)、\(h_\sigma\) 都是解析函数（\(r=\infty\)），Heston 族的方差截断 \(\max(V,0)\) 带来额外的折点面。
+**本版隐藏实例**：\(d\in\{8,16,32,64\}\)，所有 \(\varphi_i\)、\(h_\sigma\) 都是解析函数（\(r=\infty\)），输入先经过隐藏的随机正交变换。两条赛道计分时等权：
 
-- 约一半是合成实例，取预积分理论最难的情形：沿任何方向都不单调的闭合跳跃面（含尾部稀有事件）、只在零锥方向单调的双曲面折点、带函数值不为零处内部折点的相交折点面；非光滑集合落在维数为 2 到 \(d\) 的未知子空间里，并叠加真正全维的光滑项。这些实例 \(K\le3\)。
-- 另一半是取自 QMC 文献测试问题的路径依赖期权：算术亚式、数字亚式、两资产篮子亚式与彩虹亚式、离散监测障碍期权（向下敲出、双敲出、带障碍的亚式）、Heston 亚式。障碍期权每个监测日贡献一个跳跃面，双敲出为 \(2m\) 个，所以这些实例 \(K\le2m+1\le129\)。
+- **困难赛道**（4 个合成族）：取预积分理论最难的情形——沿任何方向都不单调的闭合跳跃面（含尾部稀有事件）、只在零锥方向单调的双曲面折点、带函数值不为零处内部折点的相交折点面；非光滑集合落在维数为 2 到 \(d\) 的未知子空间里，并叠加真正全维的光滑项。这些实例 \(K\le3\)。
+- **期权赛道**（6 个族）：取自 QMC 文献测试问题的离散监测路径依赖期权，几何布朗运动驱动：算术亚式看涨、数字亚式、两资产篮子亚式看涨、两资产彩虹亚式（最小值）看涨、向下敲出看涨、双障碍敲出看涨，\(d=L\times m\in\{16,32,64\}\)。彩虹族有 3 个面（其中 \(A_1=A_2\) 处的折点在函数值不为零处），向下敲出每个监测日贡献一个跳跃面，双敲出为 \(2m\) 个，所以这些实例 \(K\le2m+1\le129\)。
 
 具体形式、参数和正交变换不公开。
 
 ## 3. 信息与代价模型
 
 - **信息**：只能逐点查询函数值 \(f(z)\)，\(z\in\mathbb R^d\) 任意有限。查询点可以依赖此前得到的值（自适应），可以随机化（用题面给定的种子）。
-- **代价**：每例最多 \(N=2^{14}\) 次查询，重复查询同一点也计次；试探、梯度的有限差分、交叉验证都计入。计算本身不计次，但每例有 60 秒墙钟上限。
+- **代价**：每例最多 \(N=2^{14}\) 次查询，重复查询同一点也计次；试探、梯度的有限差分、交叉验证都计入。计算本身不计次，但每例有 30 秒墙钟上限。查询点的每个坐标须满足 \(|z_i|\le40\)（之外高斯密度在双精度下为 0，对积分没有贡献）。
 - **输出**：估计值 \(\hat I\)；可选输出声称的误差界 \(B\) 及其类型（确定性，或置信水平 \(1-\alpha\)）。
 
 ## 4. 误差准则
 
-- 每例相对误差 \(|\hat I-I|/|I|\)（隐藏实例都满足 \(|I|\) 远离 0）。
+- 每例相对误差 \(|\hat I-I|/|I|\)（隐藏实例都满足 \(|I|\) 远离 0）；实验计分用它的 \(\log_{10}\)，按真值精度截断（题面“计分”一节）。
 - 理论结论可以采用任一标准设定，但必须写明：类上的最坏情形误差；随机化算法的均方根误差或高概率误差；在明确子类上的渐近误差。
 - 若输出误差界，评测端统计覆盖率（\(|\hat I-I|\le B\) 的比例）和松紧（\(B/|\hat I-I|\) 的中位数）。
 
@@ -65,7 +65,7 @@
 | 跳跃与平均维数 | 跳跃型岭函数的平均维数可随 \(\sqrt d\) 增长，折点有界；沿合适方向预积分可降到 \(O(1)\) | Hoyt, Owen 2020 |
 | 预积分加重要性抽样 | 临界指数增长下 RQMC 加最优漂移重要性抽样仍有接近 \(n^{-1}\) 的速率，预积分后的函数满足所需增长条件 | Chen, Xu, Du, Wang 2025 |
 
-完整文献与链接见 `tasks/blackbox-cubature/analysis/DUAL_PLAN.md`。
+完整书目见文末“参考文献”。
 
 ## 6. 开放问题
 
@@ -85,3 +85,28 @@
 - 误差估计的有效性：所输出误差界的覆盖率保证及其条件。
 
 把结论与第 5 节的已知结果逐条对比，写明属于复现、推广到新类，还是改进已知界。初等的引理（例如抽屉原理型的非自适应下界、一维单调情形预积分的光滑性、二分定位的查询数）鼓励在 Lean 中形式化。
+
+## 参考文献
+
+- R. Alexander, Geometric methods in the study of irregularities of distribution, Combinatorica 10 (1990) 115–136.
+- N. S. Bakhvalov, On approximate computation of integrals, Vestnik MGU 4 (1959) 3–18.
+- C. Bayer, C. Ben Hammouda, R. Tempone, Numerical smoothing with hierarchical adaptive sparse grids and quasi-Monte Carlo methods for efficient option pricing, Quant. Finance 23 (2023) 209–227.
+- J. Chen, Y. Xu, J. Du, X. Wang, Randomized quasi-Monte Carlo and importance sampling for super-fast growing functions with applications to finance, arXiv:2510.06705 (2025).
+- N. Clancy, Y. Ding, C. Hamilton, F. J. Hickernell, Y. Zhang, The cost of deterministic, adaptive, automatic algorithms: cones, not balls, J. Complexity 30 (2014) 21–45.
+- A. D. Gilbert, F. Y. Kuo, I. H. Sloan, Preintegration is not smoothing when monotonicity fails, in Advances in Modeling and Simulation, Springer (2022); arXiv:2112.11621.
+- M. Griebel, F. Y. Kuo, I. H. Sloan, The smoothing effect of integration in \(\mathbb R^d\) and the ANOVA decomposition, Math. Comp. 82 (2013) 383–400.
+- A. Griewank, F. Y. Kuo, H. Leövey, I. H. Sloan, High dimensional integration of kinks and jumps — smoothing by preintegration, J. Comput. Appl. Math. 344 (2018) 259–274.
+- Z. He, X. Wang, On the convergence rate of randomized quasi-Monte Carlo for discontinuous functions, SIAM J. Numer. Anal. 53 (2015).
+- Z. He, Quasi-Monte Carlo for discontinuous integrands with singularities along the boundary of the unit cube, arXiv:1702.03361 (2017).
+- Z. He, On the error rate of conditional quasi-Monte Carlo for discontinuous functions, SIAM J. Numer. Anal. 57 (2019) 854–874.
+- S. Heinrich, Randomized complexity of mean computation and the adaption problem, J. Complexity (2024) 101872.
+- F. J. Hickernell, Ll. A. Jiménez Rugama, Reliable adaptive cubature using digital sequences, in MCQMC 2014, Springer (2016).
+- A. Hinrichs, E. Novak, M. Ullrich, H. Woźniakowski, The curse of dimensionality for numerical integration of smooth functions, Math. Comp. 83 (2014) 2853–2863.
+- C. R. Hoyt, A. B. Owen, Mean dimension of ridge functions, SIAM J. Numer. Anal. 58 (2020).
+- F. Y. Kuo, I. H. Sloan, H. Woźniakowski, Multivariate integration for analytic functions with Gaussian kernels, Math. Comp. 86 (2017) 829–853.
+- S. Liu, A. B. Owen, Preintegration via active subspace, SIAM J. Numer. Anal. 61 (2023) 495–514.
+- J. Matoušek, Tight upper bounds for the discrepancy of half-spaces, Discrete Comput. Geom. 13 (1995) 593–601.
+- E. Novak, On the power of adaption, J. Complexity 12 (1996) 199–237.
+- A. B. Owen, Scrambled net variance for integrals of smooth functions, Ann. Statist. 25 (1997) 1541–1562.
+- L. Plaskota, G. W. Wasilkowski, Adaption allows efficient integration of functions with unknown singularities, Numer. Math. 102 (2005) 123–144.
+- Y. Xiao, X. Wang, Enhancing quasi-Monte Carlo simulation by minimizing effective dimension for derivative pricing, Comput. Econ. 54 (2019) 343–366.

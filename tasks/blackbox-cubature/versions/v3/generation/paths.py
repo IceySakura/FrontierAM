@@ -31,7 +31,7 @@ import numpy as np
 from scipy import special
 
 import options
-from gauss import cdf, rqmc_estimate
+from gauss import cdf, rqmc_cv_estimate, rqmc_estimate
 
 FAMILIES = ('digital_asian', 'rainbow_asian_max', 'rainbow_asian_min', 'barrier_do_call', 'barrier_dko_call',
             'barrier_asian_do', 'heston_asian')
@@ -203,9 +203,27 @@ def scaled_value(spec: dict, theta: np.ndarray, a: float, basis: np.ndarray):
 
 
 def scaled_rqmc(spec: dict, m: int = 20, replicates: int = 16, seed: int = 31) -> tuple[float, float]:
+    """Control variates where the uniform scaling gives one in closed form: the geometric-average rainbow for the
+    rainbow families (the geometric averages scale by the same e^{a u}), the average itself for heston_asian."""
     theta, a = scaling_direction(spec)
-    f = scaled_value(spec, theta, a, pca_complement(spec, theta))
-    return rqmc_estimate(f, spec['d'] - 1, m, replicates, seed)
+    basis = pca_complement(spec, theta)
+    f = scaled_value(spec, theta, a, basis)
+    fam, K, disc = spec['family'], spec['K'], math.exp(-spec['r'] * spec['T'])
+    ea = math.exp(0.5 * a * a)
+    if fam in ('rainbow_asian_max', 'rainbow_asian_min'):
+        def control(v):
+            geo = np.exp(np.log(prices(spec, v @ basis.T)).mean(axis=1))
+            base = geo.max(axis=1) if fam.endswith('max') else geo.min(axis=1)
+            ustar = np.log(K / base) / a
+            return disc * (base * ea * cdf(a - ustar) - K * cdf(-ustar))
+        mean = geometric_rainbow_mean(spec)
+    elif fam == 'heston_asian':
+        def control(v):
+            return prices(spec, v @ basis.T)[:, :, 0].mean(axis=1) * ea
+        mean = martingale_mean(spec)
+    else:
+        return rqmc_estimate(f, spec['d'] - 1, m, replicates, seed)
+    return rqmc_cv_estimate(lambda v: (f(v), control(v)), spec['d'] - 1, m, replicates, seed, mean)
 
 
 # ---------------------------------------------------------------- route 1b: a monotone direction carrying more variance
@@ -304,36 +322,64 @@ def bvn_cdf_vec(h: np.ndarray, k: np.ndarray, rho: float) -> np.ndarray:
             - special.owens_t(k, (h - rho * k) / (k * s)) - beta)
 
 
+def _stulz(s1, s2, tau1: float, tau2: float, rho: float, K: float, kind: str):
+    """Stulz 1982 with zero rate: E[(max or min(X_1, X_2) - K)^+] for jointly lognormal X_l with means s_l, log-standard
+    deviations tau_l and log-correlation rho (vectorized in s_1, s_2)."""
+    sv = math.sqrt(tau1 ** 2 + tau2 ** 2 - 2 * rho * tau1 * tau2)
+    rho1, rho2 = (rho * tau2 - tau1) / sv, (rho * tau1 - tau2) / sv
+    g1 = (np.log(s1 / K) - 0.5 * tau1 ** 2) / tau1
+    g2 = (np.log(s2 / K) - 0.5 * tau2 ** 2) / tau2
+    t1 = bvn_cdf_vec(g1 + tau1, (np.log(s2 / s1) - 0.5 * sv * sv) / sv, rho1)
+    t2 = bvn_cdf_vec(g2 + tau2, (np.log(s1 / s2) - 0.5 * sv * sv) / sv, rho2)
+    cmin = s1 * t1 + s2 * t2 - K * bvn_cdf_vec(g1, g2, rho)
+    if kind == 'min':
+        return cmin
+    return s1 * cdf(g1 + tau1) - K * cdf(g1) + s2 * cdf(g2 + tau2) - K * cdf(g2) - cmin
+
+
+def geometric_rainbow_mean(spec: dict) -> float:
+    """Closed-form value of the rainbow payoff on the geometric averages G_l = exp(mean_j log S_l(t_j)): log G_l is normal
+    with variance sigma_l^2 V, V = dt (m + 1)(2m + 1) / (6m), and log-correlation rho_12, so Stulz's formula applies."""
+    mm = spec['m']
+    dt = spec['T'] / mm
+    sig = np.asarray(spec['sigma'])
+    tbar, var = dt * (mm + 1) / 2, dt * (mm + 1) * (2 * mm + 1) / (6 * mm)
+    fwd = np.asarray(spec['s0']) * np.exp((spec['r'] - 0.5 * sig ** 2) * tbar + 0.5 * sig ** 2 * var)
+    tau = sig * math.sqrt(var)
+    kind = 'min' if spec['family'].endswith('min') else 'max'
+    value = _stulz(np.array([fwd[0]]), np.array([fwd[1]]), tau[0], tau[1], float(spec['corr'][0][1]), spec['K'], kind)
+    return math.exp(-spec['r'] * spec['T']) * float(value[0])
+
+
+def martingale_mean(spec: dict) -> float:
+    """E[A] for heston_asian: the log-Euler step keeps e^{-rt} S_t an exact martingale (the truncated variance is known at
+    the start of each step), so E[A] = mean_j S_0 e^{r t_j}."""
+    t = spec['T'] / spec['m'] * np.arange(1, spec['m'] + 1)
+    return float(np.mean(spec['s0'] * np.exp(spec['r'] * t)))
+
+
 def stulz_rqmc(spec: dict, m: int = 20, replicates: int = 16, seed: int = 37) -> tuple[float, float]:
     """Rainbow options: condition on the first increments of both assets. Given the rest, A_l = Atilde_l e^{g_l} with
     (g_1, g_2) bivariate normal (variances sigma_l^2 dt, correlation rho_12): Stulz's formula with zero rate, maturity
-    dt and spots Atilde_l e^{sigma_l^2 dt / 2}. The other coordinates are PCA-ordered by their effect on the paths."""
+    dt and spots Atilde_l e^{sigma_l^2 dt / 2}. The other coordinates are PCA-ordered by their effect on the paths.
+    Control variate: the geometric averages scale by the same e^{g_l}, so the geometric-average rainbow has the same
+    conditional formula, and its mean is geometric_rainbow_mean."""
     L, mm, d = spec['L'], spec['m'], spec['d']
     dt, K = spec['T'] / mm, spec['K']
-    sig = np.asarray(spec['sigma'])
+    tau = np.asarray(spec['sigma']) * math.sqrt(dt)
     rho = float(spec['corr'][0][1])
-    tau_s = sig * math.sqrt(dt)
     disc = math.exp(-spec['r'] * spec['T'])
-    sv = math.sqrt(tau_s[0] ** 2 + tau_s[1] ** 2 - 2 * rho * tau_s[0] * tau_s[1])
-    rho1, rho2 = (rho * tau_s[1] - tau_s[0]) / sv, (rho * tau_s[0] - tau_s[1]) / sv
+    kind = 'min' if spec['family'].endswith('min') else 'max'
+    lift = np.exp(0.5 * tau ** 2)
     rest = np.linalg.svd(_linear_map(spec)[:, L:], full_matrices=False)[2].T
 
-    def value(v):
-        y = np.hstack([np.zeros((len(v), L)), v @ rest.T])
-        avg = prices(spec, y).mean(axis=1)
-        s1, s2 = avg[:, 0] * math.exp(0.5 * tau_s[0] ** 2), avg[:, 1] * math.exp(0.5 * tau_s[1] ** 2)
-        g1 = (np.log(s1 / K) - 0.5 * tau_s[0] ** 2) / tau_s[0]
-        g2 = (np.log(s2 / K) - 0.5 * tau_s[1] ** 2) / tau_s[1]
-        t1 = bvn_cdf_vec(g1 + tau_s[0], (np.log(s2 / s1) - 0.5 * sv * sv) / sv, rho1)
-        t2 = bvn_cdf_vec(g2 + tau_s[1], (np.log(s1 / s2) - 0.5 * sv * sv) / sv, rho2)
-        cmin = s1 * t1 + s2 * t2 - K * bvn_cdf_vec(g1, g2, rho)
-        if spec['family'].endswith('min'):
-            return disc * cmin
-        c1 = s1 * cdf(g1 + tau_s[0]) - K * cdf(g1)
-        c2 = s2 * cdf(g2 + tau_s[1]) - K * cdf(g2)
-        return disc * (c1 + c2 - cmin)
+    def pair(v):
+        p = prices(spec, np.hstack([np.zeros((len(v), L)), v @ rest.T]))
+        arith, geo = p.mean(axis=1) * lift, np.exp(np.log(p).mean(axis=1)) * lift
+        return (disc * _stulz(arith[:, 0], arith[:, 1], tau[0], tau[1], rho, K, kind),
+                disc * _stulz(geo[:, 0], geo[:, 1], tau[0], tau[1], rho, K, kind))
 
-    return rqmc_estimate(value, d - L, m, replicates, seed)
+    return rqmc_cv_estimate(pair, d - L, m, replicates, seed, geometric_rainbow_mean(spec))
 
 
 def last_step_rqmc(spec: dict, m: int = 20, replicates: int = 16, seed: int = 41) -> tuple[float, float]:
@@ -359,7 +405,8 @@ def last_step_rqmc(spec: dict, m: int = 20, replicates: int = 16, seed: int = 41
 
 def second_shock_rqmc(spec: dict, m: int = 20, replicates: int = 16, seed: int = 43) -> tuple[float, float]:
     """heston_asian: condition on z_s[1]. Prices from date 2 on scale by e^{b u}, b = rhohat sqrt(V_1^+ dt), so
-    A(u) = c0 + c1 e^{b u} with c0 = S_1 / m."""
+    A(u) = c0 + c1 e^{b u} with c0 = S_1 / m. Control variate: A itself (conditional mean c0 + c1 e^{b^2/2}, mean
+    martingale_mean)."""
     mm, K = spec['m'], spec['K']
     dt = spec['T'] / mm
     rhohat = math.sqrt(1.0 - spec['rho'] ** 2)
@@ -367,7 +414,7 @@ def second_shock_rqmc(spec: dict, m: int = 20, replicates: int = 16, seed: int =
     d = spec['d']
     keep = [i for i in range(d) if i != mm + 1]
 
-    def value(v):
+    def pair(v):
         y = np.zeros((len(v), d))
         y[:, keep] = v
         s = prices(spec, y)[:, :, 0]
@@ -380,9 +427,9 @@ def second_shock_rqmc(spec: dict, m: int = 20, replicates: int = 16, seed: int =
         ustar = np.where(gap > 0, np.log(np.maximum(gap, 1e-300) / c1) / bb, -np.inf)
         val = (c0 - K) * cdf(-ustar) + c1 * np.exp(0.5 * b * b) * cdf(b - ustar)
         flat = np.maximum(c0 + c1 - K, 0.0)
-        return disc * np.where(b > 1e-12, val, flat)
+        return disc * np.where(b > 1e-12, val, flat), c0 + c1 * np.exp(0.5 * b * b)
 
-    return rqmc_estimate(value, d - 1, m, replicates, seed)
+    return rqmc_cv_estimate(pair, d - 1, m, replicates, seed, martingale_mean(spec))
 
 
 def digital_gradient_rqmc(spec: dict, m: int = 20, replicates: int = 16, seed: int = 47) -> tuple[float, float]:
