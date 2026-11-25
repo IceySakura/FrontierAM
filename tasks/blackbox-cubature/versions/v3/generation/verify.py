@@ -1,13 +1,15 @@
-"""Independent checks of the v3 prototype references (milestone M1).
+"""Independent checks of the v3 prototype references.
 
 For every instance in DATA_DIR/instances.json:
 1. route agreement: every pair of independent routes agrees within tol_i + tol_j + 4 sqrt(se_i^2 + se_j^2);
 2. black-box check: replicated scrambled-Sobol' RQMC through the rotated oracle (the function contestants query)
    agrees with the reference within 4 combined standard errors plus the reference tolerance;
-3. pointwise identities behind the references. Synthetic: the exact inner y1-integral against adaptive quadrature at
-   random y2, with the kinks from numpy.roots (independent of the piece logic). Options: the sum-of-lognormals form
-   against the payoff, and the closed-form preintegrated value against quadrature along the line, for both directions.
-Once per run: the bivariate normal CDF (Owen T), used by the two-asset closed forms, against one-dimensional quadrature.
+3. pointwise identities behind the references. Synthetic: SciPy's non-central chi-square cdf, survival function and
+   density against the Poisson-mixture implementation, over bulk and tails of every form. Path families: the
+   closed-form line expectation of the first route against adaptive quadrature of the payoff along the line.
+   Lognormal options: the sum-of-lognormals form against the payoff, and the closed-form preintegrated value against
+   quadrature along the line, for both directions.
+Once per run: the bivariate normal CDF (Owen T), used by the Stulz routes, against one-dimensional quadrature.
 
 Writes DATA_DIR/verification.json and a markdown report.
 Usage: verify.py DATA_DIR REPORT_MD [--workers 7] [--oracle-m 18]
@@ -27,15 +29,15 @@ from concurrent.futures import ProcessPoolExecutor  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 import numpy as np  # noqa: E402
-from scipy import integrate  # noqa: E402
 
 import options  # noqa: E402
 import oracle  # noqa: E402
+import paths  # noqa: E402
 import synthetic  # noqa: E402
-from gauss import bvn_cdf, bvn_cdf_quad, pdf, rqmc_estimate  # noqa: E402
+from gauss import bvn_cdf, bvn_cdf_quad, rqmc_estimate  # noqa: E402
 
 LOGNORMAL = ('basket_call', 'asian_call', 'basket_asian_call', 'asian_spread')
-POINTWISE_TOL = {'inner': 1e-12, 'representation': 1e-12, 'preint': 1e-11}
+POINTWISE_TOL = {'distributions': 1e-11, 'line': 1e-11, 'representation': 1e-12, 'preint': 1e-11}
 
 
 def agreement(routes: list[dict]) -> dict:
@@ -61,33 +63,16 @@ def oracle_check(inst: dict, m: int, replicates: int = 16) -> dict:
             'ratio': abs(diff) / (4.0 * math.hypot(se, se_ref) + tol_ref)}
 
 
-def check_inner(spec: dict, n: int = 10, seed: int = 0) -> float:
-    polys = [spec['phi']] + ([spec['phi2']] if 'phi2' in spec else [])
-    worst = 0.0
-    for y2 in np.random.default_rng(seed).uniform(-3.0, 3.0, n):
-        coefs = []
-        for q in polys:
-            b, c = synthetic._bc(q, y2)
-            coefs.append(np.array([q['a'], float(b), float(c)]))
-        if len(coefs) == 2:
-            coefs.append(coefs[0] - coefs[1])
-        pts = sorted(r.real for cf in coefs for r in np.roots(cf) if abs(r.imag) < 1e-12 and abs(r.real) < 12.0)
-        edges = [-12.0] + pts + [12.0]
-        val = sum(integrate.quad(lambda y1: float(synthetic.nonsmooth(spec, y1, y2) * pdf(y1)), lo, hi,
-                                 epsabs=1e-15, epsrel=1e-13, limit=200)[0]
-                  for lo, hi in zip(edges[:-1], edges[1:]) if hi > lo)
-        worst = max(worst, abs(val - synthetic.inner_exact(spec, y2)))
-    return worst
-
-
 def pointwise(inst: dict) -> dict:
     spec = inst['spec']
+    scale = max(1.0, abs(inst['reference']['value']))
     if inst['track'] == 'hard':
-        return {'inner': check_inner(spec)}
+        return {'distributions': synthetic.check_distributions(spec)}
+    if spec['family'] in paths.FAMILIES:
+        return {'line': paths.check_line(spec) / scale}
     if spec['family'] not in LOGNORMAL:
         return {}
     pos, neg = options.lognormal_terms(spec)
-    scale = max(1.0, abs(inst['reference']['value']))
     return {'representation': options.check_representation(spec),
             'preint': max(options.check_preint(spec, th) for _, th in options.directions(spec, pos, neg)) / scale}
 
@@ -121,13 +106,15 @@ def _fmt(x: float) -> str:
 
 def _route_class(method: str) -> str:
     if method.startswith('A:'):
-        return 'exact inner integral + adaptive outer quadrature'
+        return 'non-central chi-square formulas'
+    if method.startswith('recursive Gauss-Legendre'):
+        return 'recursive quadrature (QUAD)'
     if 'closed form' in method:
         return 'closed form'
     if method.startswith('conditioning'):
         return 'conditioning + nested quadrature'
     if method.startswith('inverse-variance'):
-        return 'preintegration + RQMC, two directions'
+        return 'preintegration + RQMC, several routes'
     if 'Gauss-Hermite' in method:
         return 'preintegration + tensor Gauss-Hermite'
     return method
@@ -153,9 +140,11 @@ def report(meta: dict, rows: list[dict], gen: dict, bvn: float, oracle_m: int) -
         '(allowed = tol_i + tol_j + 4 combined SE; pass <= 1). **Oracle** is RQMC through the rotated oracle, '
         f'2^{oracle_m} x 16 scrambles, compared with the reference (z score; pass when |difference| <= 4 combined SE '
         '+ reference tolerance). **Pointwise** is the largest error of the identities the reference rests on '
-        f'(synthetic inner integral, absolute, pass <= {POINTWISE_TOL["inner"]:.0e}; option sum-of-lognormals form, '
-        f'relative, <= {POINTWISE_TOL["representation"]:.0e}; closed-form preintegration against quadrature, relative '
-        f'to max(1, |I|), <= {POINTWISE_TOL["preint"]:.0e}). **Reference uncertainty** is relative: 3 SE for RQMC '
+        f'(synthetic: the two non-central chi-square implementations, relative, pass <= '
+        f'{POINTWISE_TOL["distributions"]:.0e}; path families: closed-form line expectation against quadrature, '
+        f'relative to max(1, |I|), <= {POINTWISE_TOL["line"]:.0e}; lognormal options: sum-of-lognormals form, '
+        f'relative, <= {POINTWISE_TOL["representation"]:.0e}, and closed-form preintegration against quadrature, '
+        f'relative to max(1, |I|), <= {POINTWISE_TOL["preint"]:.0e}). **Reference uncertainty** is relative: 3 SE for RQMC '
         'references, otherwise the larger of the claimed tolerance and the distance to the most precise other '
         'deterministic route; '
         '`e_floor` = max(-12, log10(10 x relative uncertainty)).',

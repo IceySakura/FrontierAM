@@ -65,6 +65,18 @@ def sample(family: str, rng: np.random.Generator, L: int = 2, m: int = 1) -> dic
     return spec
 
 
+def sample_hard(family: str, rng: np.random.Generator, L: int = 1, m: int = 32) -> dict:
+    """asian_call / basket_asian_call around the literature settings (He 2019; Liu and Owen 2023; Chen, Xu, Du, Wang
+    2025: S0 = 100, sigma 0.1 to 0.4, r 0.05 to 0.1, K/S0 0.8 to 1.2), pushed towards higher volatility and deeper
+    out-of-the-money strikes."""
+    spec = sample(family, rng, L=L, m=m)
+    spec['s0'] = [100.0] if L == 1 else (100.0 * rng.uniform(0.9, 1.1, L)).tolist()
+    spec['sigma'] = rng.uniform(0.3, 0.6, L).tolist() if L == 1 else rng.uniform(0.1, 0.5, L).tolist()
+    spec['r'], spec['T'] = float(rng.uniform(0.0, 0.1)), float(rng.uniform(0.5, 1.5))
+    spec['K'] = float(np.mean(spec['s0']) * rng.uniform(0.8, 1.4))
+    return spec
+
+
 def _chol(spec: dict, order=None) -> np.ndarray:
     corr = np.asarray(spec['corr'])
     if order is not None:

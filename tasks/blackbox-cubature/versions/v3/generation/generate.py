@@ -1,5 +1,6 @@
-"""Build the blackbox-cubature v3 prototype instance set (milestone M1): the hard synthetic track (H1-H3) and the option
-track, each instance with every available reference route.
+"""Build the blackbox-cubature v3 prototype instance set: the hard synthetic track (H1, H2, H3, H3t of synthetic.py) and
+the option track (literature path-dependent families of options.py and paths.py, DUAL_PLAN section 9.3), each instance
+with every available reference route.
 
 Seeds live in a namespace (`--namespace`, default 3 = prototype); the public, feedback and private sets of M3 use other
 namespaces, and the private ones are kept off GitHub. Rotation seeds are drawn from the same stream.
@@ -26,18 +27,19 @@ from pathlib import Path  # noqa: E402
 import numpy as np  # noqa: E402
 
 import options  # noqa: E402
+import paths  # noqa: E402
 import synthetic  # noqa: E402
 
-HARD_DIMS = (4, 8, 16, 32, 64)
-OPTION_CONFIGS = (('exchange', 2, 1), ('spread', 2, 1),
-                  ('rainbow_max_call', 2, 1), ('rainbow_max_call', 3, 1),
-                  ('rainbow_min_call', 2, 1), ('rainbow_min_call', 3, 1),
-                  ('digital_max', 2, 1), ('digital_max', 3, 1),
-                  ('geo_basket_call', 4, 1), ('geo_basket_call', 8, 1),
-                  ('basket_call', 2, 1), ('basket_call', 3, 1), ('basket_call', 4, 1), ('basket_call', 8, 1),
-                  ('asian_call', 1, 16), ('asian_call', 1, 64),
-                  ('basket_asian_call', 2, 8), ('basket_asian_call', 4, 8), ('basket_asian_call', 4, 16),
-                  ('asian_spread', 2, 8), ('asian_spread', 2, 32))
+HARD_DIMS = (8, 16, 32, 64)
+OPTION_CONFIGS = (('asian_call', 1, 32), ('asian_call', 1, 64),
+                  ('basket_asian_call', 2, 16), ('basket_asian_call', 2, 32),
+                  ('digital_asian', 1, 32), ('digital_asian', 1, 64),
+                  ('rainbow_asian_max', 2, 16), ('rainbow_asian_max', 2, 32),
+                  ('rainbow_asian_min', 2, 16), ('rainbow_asian_min', 2, 32),
+                  ('barrier_do_call', 1, 16), ('barrier_do_call', 1, 64),
+                  ('barrier_dko_call', 1, 16), ('barrier_dko_call', 1, 64),
+                  ('heston_asian', 1, 16), ('heston_asian', 1, 32))
+OPTION_FAMILIES = ('asian_call', 'basket_asian_call') + paths.FAMILIES
 SEEDS = (0, 1)
 
 
@@ -45,14 +47,15 @@ def plan(only: set | None) -> list[dict]:
     tasks = []
     for fi, fam in enumerate(synthetic.FAMILIES):
         for d in HARD_DIMS:
-            for s in SEEDS:
-                tasks.append({'id': f'{fam}-d{d}-s{s}', 'track': 'hard', 'family': fam, 'L': None, 'm': None, 'd': d,
-                              'stream': [1, fi, d, s]})
+            for k in synthetic.k_levels(fam, d):
+                tasks.append({'id': f'{fam}-d{d}-k{k}', 'track': 'hard', 'family': fam, 'L': None, 'm': None, 'd': d,
+                              'k': k, 'stream': [1, fi, d, k]})
     for fam, L, m in OPTION_CONFIGS:
-        fi = options.FAMILIES.index(fam)
+        fi = OPTION_FAMILIES.index(fam)
+        d = 2 * m if fam == 'heston_asian' else L * m
         for s in SEEDS:
             tasks.append({'id': f'{fam}-L{L}-m{m}-s{s}', 'track': 'options', 'family': fam, 'L': L, 'm': m,
-                          'd': L * m, 'stream': [2, fi, L, m, s]})
+                          'd': d, 'k': None, 'stream': [2, fi, L, m, s]})
     if only:
         tasks = [t for t in tasks if t['family'] in only]
     return tasks
@@ -81,23 +84,28 @@ def build(task: dict, namespace: int, rqmc_m: int) -> dict:
     warnings.filterwarnings('ignore')
     t0 = time.time()
     rng = np.random.default_rng([namespace, *task['stream']])
+    fam = task['family']
     if task['track'] == 'hard':
-        spec = synthetic.sample(task['family'], task['d'], rng)
+        spec = synthetic.sample(fam, task['d'], task['k'], rng)
         spec['rotation_seed'] = int(rng.integers(2 ** 31))
         a, b = synthetic.reference(spec), synthetic.reference_swapped(spec)
         routes = [_det_route(a['method'], a), _det_route(b['method'], b)]
+    elif fam in paths.FAMILIES:
+        spec = paths.sample(fam, rng, L=task['L'], m=task['m'])
+        spec['rotation_seed'] = int(rng.integers(2 ** 31))
+        routes = paths.references(spec, rqmc_m=rqmc_m)
     else:
-        spec = options.sample(task['family'], rng, L=task['L'], m=task['m'])
+        spec = options.sample_hard(fam, rng, L=task['L'], m=task['m'])
         spec['rotation_seed'] = int(rng.integers(2 ** 31))
         routes = options.references(spec, rqmc_m=rqmc_m)
-    out = {k: task[k] for k in ('id', 'track', 'family', 'L', 'm', 'd')}
+    out = {k: task[k] for k in ('id', 'track', 'family', 'L', 'm', 'd', 'k')}
     out.update({'spec': spec, 'reference': summarize(routes), 'routes': routes,
                 'seconds': round(time.time() - t0, 1)})
     return out
 
 
 def cost(task: dict) -> float:
-    return task['d'] * (task['m'] or 1) if task['track'] == 'options' else task['d'] / 8
+    return task['d'] * (task['m'] or 1) if task['track'] == 'options' else task['d'] / 64
 
 
 def main():

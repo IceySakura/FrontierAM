@@ -103,8 +103,8 @@ BENCHOP（von Sydow 等 2015）是期权定价领域公认的基准项目，可�
 
 | 角色 | 方法 | 说明 |
 | --- | --- | --- |
-| 0 分 | 普通 RQMC（Owen 扰乱 Sobol'，\(N\) 点） | 旋转后无法用 PCA 或布朗桥构造 |
-| 50 分 | 冻结的强参照（M2 实测后确定）：\(d\le3\) 用普通 RQMC；\(d\ge4\) 用主动子空间 RQMC，即先以有限差分梯度估计主动子空间（查询计入预算），再在该基上做扰乱 Sobol'（主阶段 \(N/2\) 点） | 按事先声明的规则选择，不逐例事后取最优。原计划的“主动子空间预积分加数值光滑化”黑盒实现每条线约 28 次查询，在 \(N=2^{14}\) 下多数族输给主动子空间 RQMC，保留为对照（见第 6 节 M2） |
+| 50 分 | 冻结的强参照：GPCA-RQMC（Xiao–Wang 2019；有限差分梯度估计 \(C=E[\nabla f\nabla f^\top]\)，查询计入预算，再在其特征基上做一个扰乱 Sobol' 网） | 按事先声明的规则选择，不逐例事后取最优。11-24 晚按用户要求实现了文献 SOTA 管线（预积分、GPCA、ODIS、数值光滑化），按查询计价时它在原型集上输给 GPCA-RQMC，保留为对照，见第 9.1 节 |
+| 0 分 | 普通蒙特卡洛（\(N\) 个独立点），同 v2 | 原定的普通 RQMC 与强参照差得太近，映射会退化 |
 | 诊断 | 知道结构的“oracle 求解器” | 估计可达精度，用来衡量实验余量，不参与计分 |
 
 现成代码：QMCPy（扰乱 Sobol'、`CubQMCSobolG`）、SciPy（多元正态 CDF）。主动子空间预积分与数值光滑化没有公开代码，已在 `versions/v3/baselines/` 复现。
@@ -147,7 +147,7 @@ BENCHOP（von Sydow 等 2015）是期权定价领域公认的基准项目，可�
 
 M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1 调整族的设计（更多折点面、更强的不单调性、跳跃），再测。
 
-**进度（11-24）**
+**进度（11-24）**（本节记录的 72 例原型集、旧合成族和 M2 暂定强参照，已被第 9 节的修订取代，保留作历史记录）
 
 - **M0 完成**：[`versions/v3/THEORY_APPENDIX.md`](../versions/v3/THEORY_APPENDIX.md)。内容：函数类 \(\mathcal F_d(K,r,M,c)\)（按 \(k\le K\) 个光滑函数的符号模式分片，导数与增长界，非退化，折点、跳跃两型）、信息与代价（点查询，\(N=2^{14}\)，60 秒）、误差准则、已知结果表、5 个开放问题、期望结论。隐藏实例取 \(K\le6\)，因为三资产彩虹期权需要 6 个面。
 - **M1 完成**：生成器在 [`versions/v3/generation/`](../versions/v3/generation/)，包括 `synthetic.py`（H1–H3）、`options.py`（10 个期权族）、`oracle.py`（随机正交旋转后的黑盒）、`generate.py`、`verify.py`。原型集在 `versions/v3/data/prototype/`，共 72 例（命名空间 3，开发用，不是评测集）：
@@ -199,6 +199,92 @@ M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1
 4. **是否要求输出误差界**：可选，只作诊断。
 5. **v2 榜单**：保留为纯实验题，v3 另起双考榜。
 
+## 9. M2 之后的修订（11-24 17:11 用户要求）
+
+用户意见：强参照直接取人类论文的 SOTA 解法，同时看理论与实验强度；合成族按讨论过的思路，取理论分析里最困难的极端情形；期权参考相关工作的数据来源，尽量做难；真值精度看强工作怎么处理。
+
+### 9.1 强参照：文献 SOTA 管线
+
+文献现状（✓ 为已核对原文）：
+
+- 预积分（条件 QMC）在“非光滑面沿所选变量严格单调”时把折点或跳跃变成光滑的 \(d-1\) 维被积函数（Griewank 等 2018 ✓），扰乱网的 RMSE 为 \(O(n^{-1+\epsilon})\)（He 2019 ✓）；对扰乱网，预积分不会增大方差（Liu–Owen 2023 ✓）。
+- 方向与降维：沿主动子空间首方向预积分（Liu–Owen 2023 ✓，用 128 个梯度样本估计 \(C=E[\nabla f\nabla f^\top]\)，Newton 求根）；梯度主成分（GPCA）给剩余变量排序以降低有效维数（Xiao–Wang 2019 ✓）；“条件 QMC 加 GPCA”两步法（Xiao–Wang 2018 ✓）。
+- 条件期望没有解析式时，用数值光滑化：一维求根（Newton）加一维 Gauss–Laguerre 求积，再接自适应稀疏网格或 QMC（Bayer–Ben Hammouda–Tempone 2023 ✓）。
+- 尾部与增长：最优漂移重要性抽样（ODIS，Glasserman–Heidelberger–Shahabuddin 1999 ✓）与预积分合用，在临界指数增长下仍有接近 \(n^{-1}\) 的速率，实验在亚式、两资产篮子亚式、Heston 亚式上最好（Chen–Xu–Du–Wang 2025 ✓）。
+
+实现与实测（11-24 晚至 11-25，原型集 78 例）：这条管线的黑盒版本已实现（`versions/v3/baselines/methods.py`）。它用有限差分梯度定 ODIS 漂移与主动子空间，主动子空间中再加入 Stein 均值梯度 \(E[f(Z)Z]\)；沿首方向逐线求出零值与非零值的分界（Newton 型割线法，跳跃时退回二分），分段做 Gauss 求积；剩余维度按主动子空间排序做扰乱 Sobol'。ODIS 设有稀有事件触发条件和方差验证，只在预积分模式下使用。
+
+按查询计价时，它在 \(N=2^{14}\) 下输给其中最简单的组件 GPCA-RQMC（Xiao–Wang 2019）：预积分模式 30.2 分，管线的 RQMC 模式 45.2 分，二者都以 GPCA-RQMC 为 50 分。原因是文献把一次线积分记为一个样本，而黑盒下定位一条线上的分界要十几到二十几次查询；跳跃型收益的方向估计噪声大；未经光滑化的跳跃上做重要性抽样会放大误差。
+
+**冻结的强参照因此取 GPCA-RQMC**，即按查询计价时实测最强的文献方法。管线的两个模式保留为对照。M2 曾暂定的“\(d\le3\) 普通 RQMC、\(d\ge4\) 主动子空间 RQMC”作废（新原型集最低 \(d=8\)）。
+
+### 9.2 合成族：理论最难的极端情形
+
+理论依据：单调性失效时预积分后一般出现平方根奇性，且至今没有 QMC 收敛结果（Gilbert–Kuo–Sloan 2022 ✓，例子为抛物线与双曲线）；不平行于坐标轴的不连续面使 RQMC 只有 \(O(n^{-1/2-1/(4d-2)+\epsilon})\)（He 2017 ✓）；跳跃型岭函数的平均维数随 \(\sqrt d\) 增长，折点有界（Hoyt–Owen 2020 ✓）。
+
+新设计（\(d\in\{8,16,32,64\}\)，随机正交旋转；非光滑部分落在 \(k\) 维子空间，\(k\in\{2,8,d\}\) 构成原 H4 的维数轴；叠加真正全维的乘积型光滑背景，均值有闭式）：
+
+| 族 | 非光滑部分 | 最难之处 |
+| --- | --- | --- |
+| H1 双曲面折点 | \(\alpha\,(Q_+(z)-Q_-(z)-c)^+\)，\(Q_\pm\) 为正交子空间上的二次型 | 除零锥方向外任何方向都不单调（GKS 例 2 的高维推广） |
+| H2 相交折点 | \(\alpha\max(c_1-Q_1,\;c_2-Q_2,\;0)\)，两个椭球“帐篷” | 不单调，且有函数值不为零处的内部折点，零值检测无效 |
+| H3 闭合跳跃 | \(\alpha e^{w\cdot z-\|w\|^2/2}\,\mathbf 1\{Q(z)<c\}\)，椭球或球 | 任何方向都不单调；跳跃；可放到尾部做成稀有事件 |
+
+每个二次型在其子空间内是带中心偏移的各向同性形式，即缩放的非中心卡方变量，各项相互独立，所以真值都化成闭式或一维积分（非中心卡方的分布函数与恒等式），精度可到 \(10^{-12}\)。
+
+### 9.3 期权族：取自文献测试问题并做难
+
+去掉低维欧式族（交换、价差、2–3 资产篮子、几何篮子、2–3 资产彩虹与数字）。新族与出处：
+
+| 族 | 出处与参数 | 维数 |
+| --- | --- | --- |
+| 算术亚式看涨 | He 2019、Liu–Owen 2023、Chen 等 2025：\(S_0=100\)，\(\sigma=0.4\)，\(r=0.1\)，\(T=1\)，\(K\in\{80,100,120\}\) | 50–80 |
+| 数字亚式 | Xiao–Wang 2018：\(\mathbf 1\{S_A>K\}\) | 同上 |
+| 两资产篮子亚式 | Liu–Owen（\(\sigma=(0.1,0.2)\)，\(w=(0.8,0.2)\)，\(\rho=0.5\)，\(K\in\{80,100,120\}\)）、Chen 等（\(\sigma=(0.3,0.1)\)，\(w=(0.7,0.3)\)，\(K\in\{90,100,110\}\)） | 60–100 |
+| 彩虹亚式（max / min） | Liu–Owen：同上两资产 | 100 |
+| 离散障碍（向下敲出看涨、双障碍、带障碍的亚式） | Xiao–Wang 2018：\(d\in\{16,64\}\)，\(K\in\{100,110\}\)，\(L\in\{85,\dots,105\}\)；Achtsis–Cools–Nuyens 2013 | 16–64 |
+| Heston 亚式 | Chen 等 2025：\(S_0=50\)，\(V_0=\theta=\sigma_v=0.2\)，\(\kappa=1\)，\(\rho=0.5\)，\(r=0.05\)，\(K\in\{40,50,60\}\)，Euler 截断格式 | 30–60 |
+
+做难的方向：虚值（稀有事件）、更高波动、双障碍（沿水平方向不单调）、数字型跳跃、Heston 截断带来的大量折点。函数类中非光滑面个数 \(K\) 需相应放宽（障碍期权每个监测日一个面），理论附录随之更新。
+
+### 9.4 真值精度
+
+真值精度的限制来自真值的计算方法，不来自数据：实例参数都是精确给定的，没有闭式的实例只能用有限样本的 RQMC 逼近。强工作的做法有三种：
+
+1. 有半解析方法时用它：单资产离散监测的障碍、回望期权用 Hilbert 变换（Feng–Linetsky 2008 ✓，指数收敛）或 z 变换（Fusai–Germano–Marazzina 2016 ✓，约 \(10^{-12}\)）；Heston 欧式用傅里叶方法（BBT 2023 用 Premia）。
+2. 没有时，用大样本 RQMC（或 MC）的结果当真值并注明统计误差：BBT 2023 的 4 资产篮子为 \(11.04\pm10^{-3}\)；Chen 等 2025 用自家方法 \(n=2^{19}\)。
+3. 对无偏随机化方法只报独立重复的标准误或 RMSE，不需要真值（Liu–Owen 50 次、Chen 等 100 次）。
+
+本题的做题方法可能有偏，必须有真值。做法：单资产 GBM 离散障碍期权用递推求积（转移核为高斯，障碍处截断）算到约 \(10^{-12}\)；其余用预积分加大样本 RQMC，按例记 `e_floor`，正式集只收 `e_floor` 不高于“强参照误差减 2”的实例。
+
+### 9.5 实施顺序
+
+强参照管线 → 新合成族与真值验证 → 新期权族与真值验证 → 重跑 M1 检查与 M2 余量报告。
+
+### 9.6 进度（11-25）
+
+- **实现**：
+  - 合成族在 `versions/v3/generation/synthetic.py`：H1、H2、H3、H3t，\(k\in\{k_{\min},d/2,d\}\)，背景为全维乘积型。真值有两条路线，SciPy 非中心卡方与自写的泊松混合（并换积分变量），相互吻合到 \(10^{-15}\)。
+  - 路径期权在 `versions/v3/generation/paths.py`：数字亚式、彩虹亚式 max/min、向下敲出、双敲出、Heston 亚式；带障碍的亚式代码保留，原型集暂不收。亚式与两资产篮子亚式沿用 `options.py`，参数改为文献难区间（`sample_hard`）。
+  - 路径期权的真值路线有：均匀缩放方向预积分、单调方向预积分、Stulz 条件化（剩余维度按主成分排序）、梯度方向预积分、第二步资产冲击条件化，以及离散障碍的递推求积 QUAD。QUAD 与文献 Wiener–Hopf 基准吻合到给出的全部位数。
+  - 原型集在 `versions/v3/data/prototype/`，共 78 例（合成 46、期权 32）。独立检查 78/78 通过，包括路线两两吻合、经旋转 oracle 的 RQMC、逐点恒等式，见 `VERIFICATION.md`。
+  - 基线在 `versions/v3/baselines/`，有普通 MC、普通 RQMC、GPCA-RQMC、黑盒预积分、文献管线的两个模式、两种 oracle。报告见 `data/prototype/m2/REPORT.md`。
+- **真值精度**：合成族与离散障碍 \(\le10^{-13}\)；亚式与数字亚式 \(\le1.3\times10^{-7}\)；两资产篮子亚式 \(\le7\times10^{-6}\)；彩虹亚式 \(\le3.7\times10^{-6}\)；Heston 亚式 \(\le2.3\times10^{-5}\)。带障碍的亚式只有 \(1.6\times10^{-4}\)，误差下限 −2.8 而强参照在 −2.25，所以撤出原型集，等二维递推求积（状态为对数价格与累计和）。
+- **M2 结果**（\(N=2^{14}\)；普通 MC 为 0 分、GPCA-RQMC 为 50 分；每例增益截到 ±2，按格、赛道平均得 \(G\)，\(G\ge0\) 时 \(50+25G\)，\(G<0\) 时 \(50(G-G_0)/(-G_0)\)，\(G_0=-0.68\)）：
+
+  | 方法 | \(G\) | 分数 |
+  | --- | --- | --- |
+  | 普通 MC | −0.68 | 0 |
+  | 普通 RQMC | −0.29 | 28.7 |
+  | 文献管线，预积分模式 | −0.27 | 30.2 |
+  | 文献管线，RQMC 模式 | −0.06 | 45.2 |
+  | GPCA-RQMC（强参照） | 0 | 50 |
+  | oracle（结构方向精确线积分，每线算 1 次查询） | +0.70 | 67.5 |
+
+- **余量**：合成族上，拆分 oracle（非光滑部分取精确值，只对光滑背景做 GPCA-RQMC）比强参照准 1.2（H1、H2）、1.8（H3）、3.5（H3t）个数量级。期权族上 oracle 比强参照准 0.4 到 2.5 个数量级；彩虹族上这个 oracle 不比强参照好，说明它低估了那里的可达精度。
+- **测量能力**：Heston 亚式和彩虹 max 的误差下限离强参照不到一个数量级，两资产篮子亚式和彩虹 min 约 1.5 个数量级。按 9.4 的规则，正式集之前要么继续提高这几族的真值精度，要么只收误差下限够低的实例。
+- **待办（M3 前）**：见 `results/OPEN_ITEMS.md` 的对应行。
+
 ## 参考文献
 
 1. ✓ A. Hinrichs, E. Novak, M. Ullrich, H. Woźniakowski, The curse of dimensionality for numerical integration of smooth functions, Math. Comp. 83 (2014) 2853–2863。
@@ -221,3 +307,13 @@ M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1
 18. A. Genz, Numerical computation of multivariate normal probabilities, J. Comput. Graph. Statist. 1 (1992) 141–149。
 19. L. von Sydow 等, BENCHOP — the BENCHmarking project in option pricing, Int. J. Comput. Math. 92 (2015) 2361–2379。
 20. A. Genz, Testing multidimensional integration routines, 1984。
+21. ✓ Y. Xiao, X. Wang, Conditional quasi-Monte Carlo methods and dimension reduction for option pricing and hedging with discontinuous functions, J. Comput. Appl. Math. 343 (2018) 289–308。
+22. ✓ Y. Xiao, X. Wang, Enhancing quasi-Monte Carlo simulation by minimizing effective dimension for derivative pricing, Comput. Econ. 54 (2019) 343–366。
+23. ✓ J. Chen, Y. Xu, J. Du, X. Wang, Randomized quasi-Monte Carlo and importance sampling for super-fast growing functions with applications to finance, 2025. <https://arxiv.org/abs/2510.06705>。
+24. ✓ P. Glasserman, P. Heidelberger, P. Shahabuddin, Asymptotically optimal importance sampling and stratification for pricing path-dependent options, Math. Finance 9 (1999) 117–152。
+25. ✓ Z. He, Quasi-Monte Carlo for discontinuous integrands with singularities along the boundary of the unit cube, 2017. <https://arxiv.org/abs/1702.03361>。
+26. ✓ C. R. Hoyt, A. B. Owen, Mean dimension of ridge functions, SIAM J. Numer. Anal. 58 (2020). <https://doi.org/10.1137/19M127149X>。
+27. ✓ N. Achtsis, R. Cools, D. Nuyens, Conditional sampling for barrier option pricing under the LT method, SIAM J. Financial Math. 4 (2013). <https://doi.org/10.1137/110855909>。
+28. ✓ L. Feng, V. Linetsky, Pricing discretely monitored barrier options and defaultable bonds in Lévy process models: a fast Hilbert transform approach, Math. Finance 18 (2008). <https://doi.org/10.1111/j.1467-9965.2008.00338.x>。
+29. ✓ G. Fusai, G. Germano, D. Marazzina, Spitzer identity, Wiener–Hopf factorization and pricing of discretely monitored exotic options, Eur. J. Oper. Res. (2016). <https://doi.org/10.1016/j.ejor.2015.11.027>。
+30. ✓ A. D. Gilbert, F. Y. Kuo, I. H. Sloan, Analysis of preintegration followed by quasi-Monte Carlo integration for distribution functions and densities, 2021. <https://arxiv.org/abs/2112.10308>。

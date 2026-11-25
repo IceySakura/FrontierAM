@@ -3,933 +3,33 @@
  "oracle_m": 18,
  "instances": [
   {
-   "id": "H1-d4-s0",
+   "id": "H1-d8-k4",
    "track": "hard",
    "family": "H1",
-   "d": 4,
+   "d": 8,
    "reference": {
-    "value": 3.1064831294660604,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 3.219074298246323e-14,
+    "value": 2.4730020966173027,
+    "uncertainty": 2.473002096617303e-13,
+    "rel_uncertainty": 1.0000000000000002e-13,
     "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes"
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
    },
    "agreement": {
-    "ratio": 0.002220446049250313,
+    "ratio": 0.0008978747136072192,
     "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 10 structure changes"
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
     ],
     "diff": 4.440892098500626e-16
    },
    "oracle": {
-    "value": 3.106449688393822,
-    "se": 1.0406712315642036e-05,
-    "z": -3.21341372992468,
-    "ratio": 0.8033534305512775
+    "value": 2.47305255216092,
+    "se": 5.5465851592421016e-05,
+    "z": 0.9096686009283684,
+    "ratio": 0.2274171499786014
    },
    "pointwise": {
-    "inner": 8.881784197001252e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.3
-  },
-  {
-   "id": "H1-d4-s1",
-   "track": "hard",
-   "family": "H1",
-   "d": 4,
-   "reference": {
-    "value": 0.9179012885830604,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.0894417650765838e-13,
-    "e_floor": -11.96,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 11 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 0.9178980336363727,
-    "se": 6.360732790146538e-06,
-    "z": -0.5117251101600364,
-    "ratio": 0.1279312770371925
-   },
-   "pointwise": {
-    "inner": 3.3306690738754696e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.3
-  },
-  {
-   "id": "H1-d8-s0",
-   "track": "hard",
-   "family": "H1",
-   "d": 8,
-   "reference": {
-    "value": 0.8453471587387799,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.1829459526331824e-13,
-    "e_floor": -11.93,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0005551115123125783,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 11 structure changes"
-    ],
-    "diff": 1.1102230246251565e-16
-   },
-   "oracle": {
-    "value": 0.8453540031011759,
-    "se": 6.190812021705924e-05,
-    "z": 0.11055677949945955,
-    "ratio": 0.027639194863703514
-   },
-   "pointwise": {
-    "inner": 3.3306690738754696e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.9
-  },
-  {
-   "id": "H1-d8-s1",
-   "track": "hard",
-   "family": "H1",
-   "d": 8,
-   "reference": {
-    "value": 2.439325026799519,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 4.099494692234743e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.002220446049250313,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 6 structure changes"
-    ],
-    "diff": 4.440892098500626e-16
-   },
-   "oracle": {
-    "value": 2.439410058208857,
-    "se": 4.668119185162131e-05,
-    "z": 1.821534668789286,
-    "ratio": 0.45538366695344185
-   },
-   "pointwise": {
-    "inner": 8.881784197001252e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 2.2
-  },
-  {
-   "id": "H1-d16-s0",
-   "track": "hard",
-   "family": "H1",
-   "d": 16,
-   "reference": {
-    "value": 0.9644981650096593,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.0368086081221162e-13,
-    "e_floor": -11.98,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 7 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 7 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 8 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 0.9644949286842659,
-    "se": 8.43184438399557e-05,
-    "z": -0.03838217649740816,
-    "ratio": 0.009595544121507009
-   },
-   "pointwise": {
-    "inner": 2.220446049250313e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 3.2
-  },
-  {
-   "id": "H1-d16-s1",
-   "track": "hard",
-   "family": "H1",
-   "d": 16,
-   "reference": {
-    "value": 1.3636061789282423,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 7.33349566357915e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 7 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 7 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 14 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 1.36359667748888,
-    "se": 0.0001207041879393016,
-    "z": -0.07871673323530948,
-    "ratio": 0.01967918330475146
-   },
-   "pointwise": {
-    "inner": 1.1102230246251565e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 3.5
-  },
-  {
-   "id": "H1-d32-s0",
-   "track": "hard",
-   "family": "H1",
-   "d": 32,
-   "reference": {
-    "value": 0.9116657446198282,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.0968932483220677e-13,
-    "e_floor": -11.96,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 7 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0005551115123125783,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 7 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 10 structure changes"
-    ],
-    "diff": 1.1102230246251565e-16
-   },
-   "oracle": {
-    "value": 0.9116633760620789,
-    "se": 9.885952374834698e-05,
-    "z": -0.02395882216968131,
-    "ratio": 0.005989705540905626
-   },
-   "pointwise": {
-    "inner": 1.1102230246251565e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 6.2
-  },
-  {
-   "id": "H1-d32-s1",
-   "track": "hard",
-   "family": "H1",
-   "d": 32,
-   "reference": {
-    "value": 1.4837979099175413,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 6.739462249650781e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0011102230246251565,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 10 structure changes"
-    ],
-    "diff": 2.220446049250313e-16
-   },
-   "oracle": {
-    "value": 1.483891374468143,
-    "se": 0.0002778475236559381,
-    "z": 0.3363879201507701,
-    "ratio": 0.0840969800301257
-   },
-   "pointwise": {
-    "inner": 4.440892098500626e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 6.3
-  },
-  {
-   "id": "H1-d64-s0",
-   "track": "hard",
-   "family": "H1",
-   "d": 64,
-   "reference": {
-    "value": 1.0995783991379455,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 9.09439473150788e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0011102230246251565,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 12 structure changes"
-    ],
-    "diff": 2.220446049250313e-16
-   },
-   "oracle": {
-    "value": 1.099229152837335,
-    "se": 0.0001719912425165533,
-    "z": -2.030605137217338,
-    "ratio": 0.5076512842305443
-   },
-   "pointwise": {
-    "inner": 6.661338147750939e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 13.2
-  },
-  {
-   "id": "H1-d64-s1",
-   "track": "hard",
-   "family": "H1",
-   "d": 64,
-   "reference": {
-    "value": 1.3695054379129268,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 7.301906018890742e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 8 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0011102230246251565,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 8 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 10 structure changes"
-    ],
-    "diff": 2.220446049250313e-16
-   },
-   "oracle": {
-    "value": 1.3695585492637983,
-    "se": 0.00016716969744932063,
-    "z": 0.31770920018321147,
-    "ratio": 0.07942730003392462
-   },
-   "pointwise": {
-    "inner": 2.220446049250313e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 13.4
-  },
-  {
-   "id": "H2-d4-s0",
-   "track": "hard",
-   "family": "H2",
-   "d": 4,
-   "reference": {
-    "value": 1.8710540691931559,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 5.344580984937674e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 21 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0011102230246251565,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 21 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 33 structure changes"
-    ],
-    "diff": 2.220446049250313e-16
-   },
-   "oracle": {
-    "value": 1.8710615856453994,
-    "se": 9.472628342690164e-06,
-    "z": 0.7934917291784076,
-    "ratio": 0.19837293177105944
-   },
-   "pointwise": {
-    "inner": 4.440892098500626e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.8
-  },
-  {
-   "id": "H2-d4-s1",
-   "track": "hard",
-   "family": "H2",
-   "d": 4,
-   "reference": {
-    "value": 1.8221308106120502,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 5.488080187086579e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 17 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.002220446049250313,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 17 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 37 structure changes"
-    ],
-    "diff": 4.440892098500626e-16
-   },
-   "oracle": {
-    "value": 1.8221349373628035,
-    "se": 8.55646062757746e-06,
-    "z": 0.482296469645528,
-    "ratio": 0.12057411705909231
-   },
-   "pointwise": {
-    "inner": 2.220446049250313e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.4
-  },
-  {
-   "id": "H2-d8-s0",
-   "track": "hard",
-   "family": "H2",
-   "d": 8,
-   "reference": {
-    "value": 1.9690058270893476,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 5.078705132519768e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 25 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 25 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 38 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 1.9690198524416167,
-    "se": 3.8508965388016304e-05,
-    "z": 0.3642100515506438,
-    "ratio": 0.0910525128285497
-   },
-   "pointwise": {
-    "inner": 8.881784197001252e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 2.2
-  },
-  {
-   "id": "H2-d8-s1",
-   "track": "hard",
-   "family": "H2",
-   "d": 8,
-   "reference": {
-    "value": 1.5492905109063924,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 6.454567383976056e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 22 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 22 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 32 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 1.5493015901826195,
-    "se": 4.760290653087135e-05,
-    "z": 0.23274369223519092,
-    "ratio": 0.058185923028239765
-   },
-   "pointwise": {
-    "inner": 4.440892098500626e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 2.5
-  },
-  {
-   "id": "H2-d16-s0",
-   "track": "hard",
-   "family": "H2",
-   "d": 16,
-   "reference": {
-    "value": 3.99189379781471,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 2.505076664482988e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 12 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 12 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 28 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 3.9920250108904,
-    "se": 0.00011598566918412053,
-    "z": 1.1312869651317963,
-    "ratio": 0.2828217412219886
-   },
-   "pointwise": {
-    "inner": 1.3322676295501878e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 3.8
-  },
-  {
-   "id": "H2-d16-s1",
-   "track": "hard",
-   "family": "H2",
-   "d": 16,
-   "reference": {
-    "value": 1.275398416525876,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 7.840687169143207e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 31 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0011102230246251565,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 31 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 50 structure changes"
-    ],
-    "diff": 2.220446049250313e-16
-   },
-   "oracle": {
-    "value": 1.2754080829088723,
-    "se": 4.636937090908657e-05,
-    "z": 0.2084648294068374,
-    "ratio": 0.05211620732361094
-   },
-   "pointwise": {
-    "inner": 6.661338147750939e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 3.9
-  },
-  {
-   "id": "H2-d32-s0",
-   "track": "hard",
-   "family": "H2",
-   "d": 32,
-   "reference": {
-    "value": 1.9350707431686363,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 5.167769723821682e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 19 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0011102230246251565,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 19 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 36 structure changes"
-    ],
-    "diff": 2.220446049250313e-16
-   },
-   "oracle": {
-    "value": 1.9349675756249216,
-    "se": 0.00013342980998103825,
-    "z": -0.7731971118695676,
-    "ratio": 0.1932992779311745
-   },
-   "pointwise": {
-    "inner": 4.440892098500626e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 6.6
-  },
-  {
-   "id": "H2-d32-s1",
-   "track": "hard",
-   "family": "H2",
-   "d": 32,
-   "reference": {
-    "value": 2.404363731056083,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 4.1591044943967946e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 16 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 16 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 23 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 2.404441892800871,
-    "se": 0.00010588079853926192,
-    "z": 0.7382050935236073,
-    "ratio": 0.18455127333732657
-   },
-   "pointwise": {
-    "inner": 8.881784197001252e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 6.8
-  },
-  {
-   "id": "H2-d64-s0",
-   "track": "hard",
-   "family": "H2",
-   "d": 64,
-   "reference": {
-    "value": 2.525937855552813,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 3.9589255840229117e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 8 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 8 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 13 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 2.5260494142150005,
-    "se": 0.00011031117170974989,
-    "z": 1.0113088317212933,
-    "ratio": 0.2528272078730247
-   },
-   "pointwise": {
-    "inner": 4.440892098500626e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 13.9
-  },
-  {
-   "id": "H2-d64-s1",
-   "track": "hard",
-   "family": "H2",
-   "d": 64,
-   "reference": {
-    "value": 1.899231735005242,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 5.265286913485784e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 15 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.004440892098500626,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 15 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 34 structure changes"
-    ],
-    "diff": 8.881784197001252e-16
-   },
-   "oracle": {
-    "value": 1.8991586909533522,
-    "se": 0.00011682670267244898,
-    "z": -0.6252342163116376,
-    "ratio": 0.1563085540444606
-   },
-   "pointwise": {
-    "inner": 4.440892098500626e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 13.5
-  },
-  {
-   "id": "H3-d4-s0",
-   "track": "hard",
-   "family": "H3",
-   "d": 4,
-   "reference": {
-    "value": 1.9265804454313433,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 5.1905437033339626e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 11 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 11 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 12 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 1.9265904272653698,
-    "se": 5.428322936118993e-05,
-    "z": 0.18388430725139976,
-    "ratio": 0.04597107679167808
-   },
-   "pointwise": {
-    "inner": 6.661338147750939e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.2
-  },
-  {
-   "id": "H3-d4-s1",
-   "track": "hard",
-   "family": "H3",
-   "d": 4,
-   "reference": {
-    "value": 0.9535333269365422,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.0487310424825353e-13,
-    "e_floor": -11.98,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 10 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 0.9536040358427296,
-    "se": 4.176962464802707e-05,
-    "z": 1.6928307779433713,
-    "ratio": 0.4232076942325441
-   },
-   "pointwise": {
-    "inner": 1.1102230246251565e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.2
-  },
-  {
-   "id": "H3-d8-s0",
-   "track": "hard",
-   "family": "H3",
-   "d": 8,
-   "reference": {
-    "value": 0.8867979853292264,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.1276525392970385e-13,
-    "e_floor": -11.95,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 6 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0005551115123125783,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 6 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 8 structure changes"
-    ],
-    "diff": 1.1102230246251565e-16
-   },
-   "oracle": {
-    "value": 0.8867886408843539,
-    "se": 5.560848366583434e-05,
-    "z": -0.16803991507109015,
-    "ratio": 0.04200997874888604
-   },
-   "pointwise": {
-    "inner": 6.661338147750939e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.8
-  },
-  {
-   "id": "H3-d8-s1",
-   "track": "hard",
-   "family": "H3",
-   "d": 8,
-   "reference": {
-    "value": 1.5519672850097859,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 6.44343479182098e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 9 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 1.5519995711944659,
-    "se": 7.383051307258046e-05,
-    "z": 0.437301372242212,
-    "ratio": 0.10932534302353399
-   },
-   "pointwise": {
-    "inner": 1.1102230246251565e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.9
-  },
-  {
-   "id": "H3-d16-s0",
-   "track": "hard",
-   "family": "H3",
-   "d": 16,
-   "reference": {
-    "value": 0.9692969160017997,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.0316756233217432e-13,
-    "e_floor": -11.99,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 7 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0005551115123125783,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 7 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 7 structure changes"
-    ],
-    "diff": 1.1102230246251565e-16
-   },
-   "oracle": {
-    "value": 0.9692447359770976,
-    "se": 6.052282810800196e-05,
-    "z": -0.8621544354961755,
-    "ratio": 0.2155386087850119
-   },
-   "pointwise": {
-    "inner": 1.6653345369377348e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 3.3
-  },
-  {
-   "id": "H3-d16-s1",
-   "track": "hard",
-   "family": "H3",
-   "d": 16,
-   "reference": {
-    "value": 1.6945437761753364,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 5.901293398610487e-14,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.002220446049250313,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 8 structure changes"
-    ],
-    "diff": 4.440892098500626e-16
-   },
-   "oracle": {
-    "value": 1.6946281435076032,
-    "se": 0.00015815678440990073,
-    "z": 0.5334411203514442,
-    "ratio": 0.13336028006678066
-   },
-   "pointwise": {
-    "inner": 4.440892098500626e-16
+    "distributions": 1.1901151217136956e-15
    },
    "passed": {
     "agreement": true,
@@ -939,1413 +39,573 @@
    "seconds": 3.7
   },
   {
-   "id": "H3-d32-s0",
+   "id": "H1-d8-k8",
    "track": "hard",
-   "family": "H3",
-   "d": 32,
+   "family": "H1",
+   "d": 8,
    "reference": {
-    "value": 1.2911118585269996,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 7.745262297729008e-14,
+    "value": 1.2814184568793723,
+    "uncertainty": 1.2814184568793723e-13,
+    "rel_uncertainty": 1e-13,
     "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes"
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
    },
    "agreement": {
     "ratio": 0.0,
     "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 14 structure changes"
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
     ],
     "diff": 0.0
    },
    "oracle": {
-    "value": 1.2911942683612763,
-    "se": 8.538055439193795e-05,
-    "z": 0.965206127596131,
-    "ratio": 0.24130153182837807
+    "value": 1.28139654582459,
+    "se": 1.1016801366209494e-05,
+    "z": -1.9888762676193874,
+    "ratio": 0.49721906545899686
    },
    "pointwise": {
-    "inner": 2.220446049250313e-16
+    "distributions": 1.3971927101260371e-15
    },
    "passed": {
     "agreement": true,
     "oracle": true,
     "pointwise": true
    },
-   "seconds": 6.3
+   "seconds": 3.7
   },
   {
-   "id": "H3-d32-s1",
+   "id": "H1-d16-k4",
    "track": "hard",
-   "family": "H3",
-   "d": 32,
+   "family": "H1",
+   "d": 16,
    "reference": {
-    "value": 1.0436946564738074,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 9.581346362149321e-14,
+    "value": 2.517961350376379,
+    "uncertainty": 2.517961350376379e-13,
+    "rel_uncertainty": 9.999999999999999e-14,
     "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes"
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
    },
    "agreement": {
-    "ratio": 0.0,
+    "ratio": 0.0017636855696124215,
     "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 7 structure changes"
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
     ],
-    "diff": 0.0
+    "diff": 8.881784197001252e-16
    },
    "oracle": {
-    "value": 1.0435628705363382,
-    "se": 8.296528375552459e-05,
-    "z": -1.5884467756121334,
-    "ratio": 0.3971116937833714
+    "value": 2.517868126246774,
+    "se": 0.00012163237229816805,
+    "z": -0.7664417608882105,
+    "ratio": 0.19161044012288747
    },
    "pointwise": {
-    "inner": 2.220446049250313e-16
+    "distributions": 1.0739933968530576e-15
    },
    "passed": {
     "agreement": true,
     "oracle": true,
     "pointwise": true
    },
-   "seconds": 6.3
+   "seconds": 6.1
   },
   {
-   "id": "H3-d64-s0",
+   "id": "H1-d16-k8",
    "track": "hard",
-   "family": "H3",
-   "d": 64,
+   "family": "H1",
+   "d": 16,
    "reference": {
-    "value": 1.0728628401057654,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 9.320855962365307e-14,
+    "value": 1.6197574556919767,
+    "uncertainty": 1.6197574556919769e-13,
+    "rel_uncertainty": 1.0000000000000002e-13,
     "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes"
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
    },
    "agreement": {
-    "ratio": 0.0011102230246251565,
+    "ratio": 0.0,
     "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 5 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 7 structure changes"
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.619692800936415,
+    "se": 6.416942386883474e-05,
+    "z": -1.0075632858067713,
+    "ratio": 0.2518908212927379
+   },
+   "pointwise": {
+    "distributions": 2.520308153079974e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 5.9
+  },
+  {
+   "id": "H1-d16-k16",
+   "track": "hard",
+   "family": "H1",
+   "d": 16,
+   "reference": {
+    "value": 1.2750480269954685,
+    "uncertainty": 1.2750480269954685e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0008707303576958535,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
     ],
     "diff": 2.220446049250313e-16
    },
    "oracle": {
-    "value": 1.073072023234471,
-    "se": 7.42367732175265e-05,
-    "z": 2.817783150309031,
-    "ratio": 0.7044457873400284
+    "value": 1.275091460890188,
+    "se": 3.521111887547394e-05,
+    "z": 1.2335278203770996,
+    "ratio": 0.30838195481510045
    },
    "pointwise": {
-    "inner": 1.942890293094024e-16
+    "distributions": 4.077040587314431e-15
    },
    "passed": {
     "agreement": true,
     "oracle": true,
     "pointwise": true
    },
-   "seconds": 13.2
+   "seconds": 6.1
   },
   {
-   "id": "H3-d64-s1",
+   "id": "H1-d32-k4",
    "track": "hard",
-   "family": "H3",
-   "d": 64,
+   "family": "H1",
+   "d": 32,
    "reference": {
-    "value": 0.9942228690235623,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.0058107001522823e-13,
-    "e_floor": -12.0,
-    "method": "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "A: exact y1 pieces, adaptive y2 in s = sqrt(|t - t*|) from 3 structure changes",
-     "B: numeric y2 crossings, adaptive y1 in s = sqrt(|t - t*|) from 9 structure changes"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 0.9941804066046565,
-    "se": 0.00015172026262244814,
-    "z": -0.27987309125272486,
-    "ratio": 0.06996827280165206
-   },
-   "pointwise": {
-    "inner": 4.440892098500626e-16
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 13.5
-  },
-  {
-   "id": "exchange-L2-m1-s0",
-   "track": "options",
-   "family": "exchange",
-   "d": 2,
-   "reference": {
-    "value": 15.456322046393225,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 6.469844488219322e-15,
-    "e_floor": -12.0,
-    "method": "Margrabe closed form"
-   },
-   "agreement": {
-    "ratio": 0.0033416613810499764,
-    "pair": [
-     "Margrabe closed form",
-     "conditioning on asset 2, 1D quadrature"
-    ],
-    "diff": 3.375077994860476e-14
-   },
-   "oracle": {
-    "value": 15.456316255489861,
-    "se": 5.921679399258511e-06,
-    "z": -0.9779157184142451,
-    "ratio": 0.24447892857142614
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.5
-  },
-  {
-   "id": "exchange-L2-m1-s1",
-   "track": "options",
-   "family": "exchange",
-   "d": 2,
-   "reference": {
-    "value": 31.942466606512824,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 3.13062861524948e-15,
-    "e_floor": -12.0,
-    "method": "Margrabe closed form"
-   },
-   "agreement": {
-    "ratio": 0.0042210459550104966,
-    "pair": [
-     "Margrabe closed form",
-     "conditioning on asset 2, 1D quadrature"
-    ],
-    "diff": 4.263256414560601e-14
-   },
-   "oracle": {
-    "value": 31.942503055647204,
-    "se": 0.00012483630438798145,
-    "z": 0.29197543582885727,
-    "ratio": 0.0729938589425964
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.5
-  },
-  {
-   "id": "spread-L2-m1-s0",
-   "track": "options",
-   "family": "spread",
-   "d": 2,
-   "reference": {
-    "value": 18.11890444700214,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 5.519097486964532e-13,
-    "e_floor": -11.26,
-    "method": "conditioning on asset 1, 1D quadrature"
-   },
-   "agreement": {
-    "ratio": 0.0007105427357601002,
-    "pair": [
-     "conditioning on asset 1, 1D quadrature",
-     "conditioning on asset 2, 1D quadrature"
-    ],
-    "diff": 1.4210854715202004e-14
-   },
-   "oracle": {
-    "value": 18.118947639436378,
-    "se": 9.194895593268953e-05,
-    "z": 0.469743607190555,
-    "ratio": 0.11743589860467431
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.5
-  },
-  {
-   "id": "spread-L2-m1-s1",
-   "track": "options",
-   "family": "spread",
-   "d": 2,
-   "reference": {
-    "value": 29.77589416513755,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 3.3584213943466653e-13,
-    "e_floor": -11.47,
-    "method": "conditioning on asset 1, 1D quadrature"
-   },
-   "agreement": {
-    "ratio": 0.00017763568394002505,
-    "pair": [
-     "conditioning on asset 1, 1D quadrature",
-     "conditioning on asset 2, 1D quadrature"
-    ],
-    "diff": 3.552713678800501e-15
-   },
-   "oracle": {
-    "value": 29.775838694340113,
-    "se": 4.908883661324497e-05,
-    "z": -1.1300083942729864,
-    "ratio": 0.282502084180959
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.5
-  },
-  {
-   "id": "rainbow_max_call-L2-m1-s0",
-   "track": "options",
-   "family": "rainbow_max_call",
-   "d": 2,
-   "reference": {
-    "value": 38.46617757808738,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 2.599686433542748e-15,
-    "e_floor": -12.0,
-    "method": "closed form (bivariate normal CDF)"
-   },
-   "agreement": {
-    "ratio": 0.0028140306366736642,
-    "pair": [
-     "closed form (bivariate normal CDF)",
-     "conditioning, order [0, 1], nested quadrature"
-    ],
-    "diff": 2.842170943040401e-14
-   },
-   "oracle": {
-    "value": 38.46611116480521,
-    "se": 0.00012522248768709953,
-    "z": -0.5303622647688491,
-    "ratio": 0.13259056616574127
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.7
-  },
-  {
-   "id": "rainbow_max_call-L2-m1-s1",
-   "track": "options",
-   "family": "rainbow_max_call",
-   "d": 2,
-   "reference": {
-    "value": 12.505924750814792,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 7.996209955883891e-15,
-    "e_floor": -12.0,
-    "method": "closed form (bivariate normal CDF)"
-   },
-   "agreement": {
-    "ratio": 0.0036934152106341844,
-    "pair": [
-     "closed form (bivariate normal CDF)",
-     "conditioning, order [1, 0], nested quadrature"
-    ],
-    "diff": 3.730349362740526e-14
-   },
-   "oracle": {
-    "value": 12.505940781370661,
-    "se": 2.2847559544830097e-05,
-    "z": 0.7016309920519995,
-    "ratio": 0.17540774782106716
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.7
-  },
-  {
-   "id": "rainbow_max_call-L3-m1-s0",
-   "track": "options",
-   "family": "rainbow_max_call",
-   "d": 3,
-   "reference": {
-    "value": 17.353991824384668,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 5.762362977461283e-13,
-    "e_floor": -11.24,
-    "method": "conditioning, order [0, 1, 2], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 0.00017763568394002505,
-    "pair": [
-     "conditioning, order [0, 1, 2], nested quadrature",
-     "conditioning, order [2, 1, 0], nested quadrature"
-    ],
-    "diff": 3.552713678800501e-15
-   },
-   "oracle": {
-    "value": 17.353973028856508,
-    "se": 8.709732202191096e-05,
-    "z": -0.21579915114858134,
-    "ratio": 0.05394978623859639
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.9
-  },
-  {
-   "id": "rainbow_max_call-L3-m1-s1",
-   "track": "options",
-   "family": "rainbow_max_call",
-   "d": 3,
-   "reference": {
-    "value": 46.75087615513365,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 2.1389973455934713e-13,
-    "e_floor": -11.67,
-    "method": "conditioning, order [0, 1, 2], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 0.0007105427357601002,
-    "pair": [
-     "conditioning, order [0, 1, 2], nested quadrature",
-     "conditioning, order [2, 1, 0], nested quadrature"
-    ],
-    "diff": 1.4210854715202004e-14
-   },
-   "oracle": {
-    "value": 46.75106399445066,
-    "se": 0.00023755098408430417,
-    "z": 0.7907326409589854,
-    "ratio": 0.19768315815931764
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.0
-  },
-  {
-   "id": "rainbow_min_call-L2-m1-s0",
-   "track": "options",
-   "family": "rainbow_min_call",
-   "d": 2,
-   "reference": {
-    "value": 2.647799283915276,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 3.776721317490914e-14,
-    "e_floor": -12.0,
-    "method": "closed form (bivariate normal CDF)"
-   },
-   "agreement": {
-    "ratio": 0.0026381537218815605,
-    "pair": [
-     "closed form (bivariate normal CDF)",
-     "conditioning, order [1, 0], nested quadrature"
-    ],
-    "diff": 2.6645352591003757e-14
-   },
-   "oracle": {
-    "value": 2.6477918137152,
-    "se": 1.3727963129841565e-05,
-    "z": -0.5441593924491038,
-    "ratio": 0.13603984786453371
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.7
-  },
-  {
-   "id": "rainbow_min_call-L2-m1-s1",
-   "track": "options",
-   "family": "rainbow_min_call",
-   "d": 2,
-   "reference": {
-    "value": 13.388669384184617,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 7.469002118920431e-15,
-    "e_floor": -12.0,
-    "method": "closed form (bivariate normal CDF)"
-   },
-   "agreement": {
-    "ratio": 0.0005329070518200751,
-    "pair": [
-     "conditioning, order [0, 1], nested quadrature",
-     "conditioning, order [1, 0], nested quadrature"
-    ],
-    "diff": 1.0658141036401503e-14
-   },
-   "oracle": {
-    "value": 13.388628431892705,
-    "se": 4.871100773022801e-05,
-    "z": -0.8407194558192989,
-    "ratio": 0.2101798638469539
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.7
-  },
-  {
-   "id": "rainbow_min_call-L3-m1-s0",
-   "track": "options",
-   "family": "rainbow_min_call",
-   "d": 3,
-   "reference": {
-    "value": 9.712196050425186,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 1.0296332516436604e-12,
-    "e_floor": -10.99,
-    "method": "conditioning, order [0, 1, 2], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 0.00017763568394002505,
-    "pair": [
-     "conditioning, order [0, 1, 2], nested quadrature",
-     "conditioning, order [2, 1, 0], nested quadrature"
-    ],
-    "diff": 3.552713678800501e-15
-   },
-   "oracle": {
-    "value": 9.712192159070062,
-    "se": 4.4339418861008564e-05,
-    "z": -0.0877628806221107,
-    "ratio": 0.021940718918438903
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.0
-  },
-  {
-   "id": "rainbow_min_call-L3-m1-s1",
-   "track": "options",
-   "family": "rainbow_min_call",
-   "d": 3,
-   "reference": {
-    "value": 1.07072750112218,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 9.33944443335906e-12,
-    "e_floor": -10.03,
-    "method": "conditioning, order [0, 1, 2], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 8.881784197001252e-05,
-    "pair": [
-     "conditioning, order [0, 1, 2], nested quadrature",
-     "conditioning, order [2, 1, 0], nested quadrature"
-    ],
-    "diff": 1.7763568394002505e-15
-   },
-   "oracle": {
-    "value": 1.0707036191283272,
-    "se": 3.77422117249932e-05,
-    "z": -0.6327661459466315,
-    "ratio": 0.15819152600823605
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.9
-  },
-  {
-   "id": "digital_max-L2-m1-s0",
-   "track": "options",
-   "family": "digital_max",
-   "d": 2,
-   "reference": {
-    "value": 5.794214772941174,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.725859394563648e-14,
-    "e_floor": -12.0,
-    "method": "closed form (bivariate normal CDF)"
-   },
-   "agreement": {
-    "ratio": 0.0006155692017723641,
-    "pair": [
-     "closed form (bivariate normal CDF)",
-     "conditioning, order [1, 0], nested quadrature"
-    ],
-    "diff": 6.217248937900877e-15
-   },
-   "oracle": {
-    "value": 5.79411236958463,
-    "se": 9.435473122126801e-05,
-    "z": -1.0853017672692349,
-    "ratio": 0.271325441745419
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.7
-  },
-  {
-   "id": "digital_max-L2-m1-s1",
-   "track": "options",
-   "family": "digital_max",
-   "d": 2,
-   "reference": {
-    "value": 3.8691253223752096,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 2.5845634779958795e-14,
-    "e_floor": -12.0,
-    "method": "closed form (bivariate normal CDF)"
-   },
-   "agreement": {
-    "ratio": 0.00013190768609407802,
-    "pair": [
-     "closed form (bivariate normal CDF)",
-     "conditioning, order [1, 0], nested quadrature"
-    ],
-    "diff": 1.3322676295501878e-15
-   },
-   "oracle": {
-    "value": 3.869241215902468,
-    "se": 8.213707182990097e-05,
-    "z": 1.4109770981183565,
-    "ratio": 0.3527442744222246
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.7
-  },
-  {
-   "id": "digital_max-L3-m1-s0",
-   "track": "options",
-   "family": "digital_max",
-   "d": 3,
-   "reference": {
-    "value": 5.130754805812613,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 1.9490309668805526e-12,
-    "e_floor": -10.71,
-    "method": "conditioning, order [0, 1, 2], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "conditioning, order [0, 1, 2], nested quadrature",
-     "conditioning, order [2, 1, 0], nested quadrature"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 5.130298559870603,
-    "se": 0.00018965838023168535,
-    "z": -2.4056197329762696,
-    "ratio": 0.6014049253165912
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.9
-  },
-  {
-   "id": "digital_max-L3-m1-s1",
-   "track": "options",
-   "family": "digital_max",
-   "d": 3,
-   "reference": {
-    "value": 5.464009958027136,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 1.8301577187481284e-12,
-    "e_floor": -10.74,
-    "method": "conditioning, order [0, 1, 2], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 8.881784197001252e-05,
-    "pair": [
-     "conditioning, order [0, 1, 2], nested quadrature",
-     "conditioning, order [2, 1, 0], nested quadrature"
-    ],
-    "diff": 1.7763568394002505e-15
-   },
-   "oracle": {
-    "value": 5.463851179238112,
-    "se": 0.0004300978063879068,
-    "z": -0.3691690277540489,
-    "ratio": 0.09229225640205137
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.9
-  },
-  {
-   "id": "geo_basket_call-L4-m1-s0",
-   "track": "options",
-   "family": "geo_basket_call",
-   "d": 4,
-   "reference": {
-    "value": 5.38997865567361,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.855294916515816e-14,
-    "e_floor": -12.0,
-    "method": "closed form (lognormal)"
-   },
-   "agreement": {
-    "ratio": 0.0234156128830033,
-    "pair": [
-     "closed form (lognormal)",
-     "1D quadrature of the lognormal payoff"
-    ],
-    "diff": 2.5757174171303632e-14
-   },
-   "oracle": {
-    "value": 5.389988605464644,
-    "se": 1.1300297608363931e-05,
-    "z": 0.8804892914741845,
-    "ratio": 0.22012232238156268
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.9
-  },
-  {
-   "id": "geo_basket_call-L4-m1-s1",
-   "track": "options",
-   "family": "geo_basket_call",
-   "d": 4,
-   "reference": {
-    "value": 9.447466818492302,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.0584847972608044e-14,
-    "e_floor": -12.0,
-    "method": "closed form (lognormal)"
-   },
-   "agreement": {
-    "ratio": 0.0,
-    "pair": [
-     "closed form (lognormal)",
-     "1D quadrature of the lognormal payoff"
-    ],
-    "diff": 0.0
-   },
-   "oracle": {
-    "value": 9.447477967454263,
-    "se": 5.022710802261202e-05,
-    "z": 0.22197101128375984,
-    "ratio": 0.05549275279331904
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.8
-  },
-  {
-   "id": "geo_basket_call-L8-m1-s0",
-   "track": "options",
-   "family": "geo_basket_call",
-   "d": 8,
-   "reference": {
-    "value": 3.7336135530185546,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 2.6783703931852275e-14,
-    "e_floor": -12.0,
-    "method": "closed form (lognormal)"
-   },
-   "agreement": {
-    "ratio": 0.006459479416000911,
-    "pair": [
-     "closed form (lognormal)",
-     "1D quadrature of the lognormal payoff"
-    ],
-    "diff": 7.105427357601002e-15
-   },
-   "oracle": {
-    "value": 3.7337559339836464,
-    "se": 0.00010366540031079256,
-    "z": 1.3734666018258606,
-    "ratio": 0.3433666503736587
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.6
-  },
-  {
-   "id": "geo_basket_call-L8-m1-s1",
-   "track": "options",
-   "family": "geo_basket_call",
-   "d": 8,
-   "reference": {
-    "value": 0.9901601898398201,
-    "uncertainty": 1e-13,
-    "rel_uncertainty": 1.0099375942005623e-13,
-    "e_floor": -12.0,
-    "method": "closed form (lognormal)"
-   },
-   "agreement": {
-    "ratio": 0.00262416351275037,
-    "pair": [
-     "closed form (lognormal)",
-     "1D quadrature of the lognormal payoff"
-    ],
-    "diff": 2.886579864025407e-15
-   },
-   "oracle": {
-    "value": 0.9899932967315449,
-    "se": 0.00023397631266021157,
-    "z": -0.7132906163778694,
-    "ratio": 0.17832265407541387
-   },
-   "pointwise": {},
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.4
-  },
-  {
-   "id": "basket_call-L2-m1-s0",
-   "track": "options",
-   "family": "basket_call",
-   "d": 2,
-   "reference": {
-    "value": 14.42079744309011,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 6.934429277897953e-13,
-    "e_floor": -11.16,
-    "method": "conditioning, order [0, 1], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 0.07463514700597255,
-    "pair": [
-     "preintegration along gradient direction + tensor Gauss-Hermite 64^1",
-     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
-    ],
-    "diff": 1.754609304072119e-06
-   },
-   "oracle": {
-    "value": 14.42080735230004,
-    "se": 1.4536011546937607e-05,
-    "z": 0.6817007469381374,
-    "ratio": 0.17042515742368164
-   },
-   "pointwise": {
-    "representation": 8.902442552397191e-16,
-    "preint": 6.651731272570939e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.7
-  },
-  {
-   "id": "basket_call-L2-m1-s1",
-   "track": "options",
-   "family": "basket_call",
-   "d": 2,
-   "reference": {
-    "value": 12.719247337862535,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 7.862100432807918e-13,
-    "e_floor": -11.1,
-    "method": "conditioning, order [0, 1], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 0.13162527531812854,
-    "pair": [
-     "preintegration along tilted gradient direction + tensor Gauss-Hermite 64^1",
-     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
-    ],
-    "diff": 7.269102365370372e-06
-   },
-   "oracle": {
-    "value": 12.719187514444968,
-    "se": 2.3355032910735337e-05,
-    "z": -2.5614786241544794,
-    "ratio": 0.6403695874913403
-   },
-   "pointwise": {
-    "representation": 5.163431350080724e-16,
-    "preint": 2.6535202164153026e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 0.7
-  },
-  {
-   "id": "basket_call-L3-m1-s0",
-   "track": "options",
-   "family": "basket_call",
-   "d": 3,
-   "reference": {
-    "value": 18.749881168535836,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 5.333367134497361e-13,
-    "e_floor": -11.27,
-    "method": "conditioning, order [0, 1, 2], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 0.46344127622675957,
-    "pair": [
-     "preintegration along closest monotone to tilted gradient direction + tensor Gauss-Hermite 64^2",
-     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
-    ],
-    "diff": 3.4329859950332775e-05
-   },
-   "oracle": {
-    "value": 18.749856850333966,
-    "se": 2.0995860426175063e-05,
-    "z": -1.1582379276855637,
-    "ratio": 0.2895594474432317
-   },
-   "pointwise": {
-    "representation": 6.60909595512978e-16,
-    "preint": 3.031668219647009e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.0
-  },
-  {
-   "id": "basket_call-L3-m1-s1",
-   "track": "options",
-   "family": "basket_call",
-   "d": 3,
-   "reference": {
-    "value": 15.550810350452197,
-    "uncertainty": 1e-11,
-    "rel_uncertainty": 6.430533055603249e-13,
-    "e_floor": -11.19,
-    "method": "conditioning, order [0, 1, 2], nested quadrature"
-   },
-   "agreement": {
-    "ratio": 0.1177924433607103,
-    "pair": [
-     "conditioning, order [0, 1, 2], nested quadrature",
-     "preintegration along closest monotone to tilted gradient direction + tensor Gauss-Hermite 64^2"
-    ],
-    "diff": 6.185292278360066e-10
-   },
-   "oracle": {
-    "value": 15.550831009919339,
-    "se": 4.279215904700269e-05,
-    "z": 0.48278627677510605,
-    "ratio": 0.12069656214245188
-   },
-   "pointwise": {
-    "representation": 7.075279858214213e-16,
-    "preint": 2.513042702348249e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.0
-  },
-  {
-   "id": "basket_call-L4-m1-s0",
-   "track": "options",
-   "family": "basket_call",
-   "d": 4,
-   "reference": {
-    "value": 3.8800767410231387,
-    "uncertainty": 2.162270362759955e-12,
-    "rel_uncertainty": 5.572751538387834e-13,
-    "e_floor": -11.25,
-    "method": "preintegration along closest monotone to gradient direction + tensor Gauss-Hermite 64^3"
-   },
-   "agreement": {
-    "ratio": 0.07928088591024353,
-    "pair": [
-     "preintegration along closest monotone to tilted gradient direction + tensor Gauss-Hermite 64^3",
-     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
-    ],
-    "diff": 1.2705515254118893e-05
-   },
-   "oracle": {
-    "value": 3.8800662588062105,
-    "se": 1.7994010929593257e-05,
-    "z": -0.5825392109211319,
-    "ratio": 0.14563479835519105
-   },
-   "pointwise": {
-    "representation": 5.942926721936799e-16,
-    "preint": 8.927390018366216e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 1.2
-  },
-  {
-   "id": "basket_call-L4-m1-s1",
-   "track": "options",
-   "family": "basket_call",
-   "d": 4,
-   "reference": {
-    "value": 6.174527283155896,
-    "uncertainty": 6.174527283155896e-13,
+    "value": 2.1938245938238765,
+    "uncertainty": 2.1938245938238765e-13,
     "rel_uncertainty": 1e-13,
     "e_floor": -12.0,
-    "method": "preintegration along gradient direction + tensor Gauss-Hermite 64^3"
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
    },
    "agreement": {
-    "ratio": 0.10990760527094268,
+    "ratio": 0.0,
     "pair": [
-     "preintegration along tilted gradient direction + tensor Gauss-Hermite 64^3",
-     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
     ],
-    "diff": 3.312094299356971e-05
+    "diff": 0.0
    },
    "oracle": {
-    "value": 6.174507853797358,
-    "se": 6.237837978395238e-05,
-    "z": -0.31147584476130113,
-    "ratio": 0.0778689609976287
+    "value": 2.1936880690556304,
+    "se": 0.00014002501042112073,
+    "z": -0.9750027358363391,
+    "ratio": 0.24375068386361143
    },
    "pointwise": {
-    "representation": 8.695454325254414e-16,
-    "preint": 2.5892203275569532e-15
+    "distributions": 1.103518947688707e-15
    },
    "passed": {
     "agreement": true,
     "oracle": true,
     "pointwise": true
    },
-   "seconds": 1.3
+   "seconds": 11.4
   },
   {
-   "id": "basket_call-L8-m1-s0",
-   "track": "options",
-   "family": "basket_call",
-   "d": 8,
-   "reference": {
-    "value": 6.615465605295748,
-    "uncertainty": 4.355324217688058e-06,
-    "rel_uncertainty": 6.583549031230056e-07,
-    "e_floor": -5.18,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.14260784255351933,
-    "pair": [
-     "preintegration along closest monotone to gradient direction + RQMC 2^20 x 16",
-     "preintegration along closest monotone to tilted gradient direction + RQMC 2^20 x 16"
-    ],
-    "diff": 1.939553868623989e-06
-   },
-   "oracle": {
-    "value": 6.615424818470952,
-    "se": 2.536992822086914e-05,
-    "z": -1.6050580620519734,
-    "ratio": 0.40126451551299336
-   },
-   "pointwise": {
-    "representation": 5.51003202668325e-16,
-    "preint": 4.02773654656656e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 2.1
-  },
-  {
-   "id": "basket_call-L8-m1-s1",
-   "track": "options",
-   "family": "basket_call",
-   "d": 8,
-   "reference": {
-    "value": 4.273072689084585,
-    "uncertainty": 5.941600960560716e-06,
-    "rel_uncertainty": 1.3904750498952027e-06,
-    "e_floor": -4.86,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.1441745815743435,
-    "pair": [
-     "preintegration along closest monotone to gradient direction + RQMC 2^20 x 16",
-     "preintegration along closest monotone to tilted gradient direction + RQMC 2^20 x 16"
-    ],
-    "diff": 2.904997083774674e-06
-   },
-   "oracle": {
-    "value": 4.2727836684563725,
-    "se": 0.00020242699713077366,
-    "z": -1.4277087541763631,
-    "ratio": 0.3569271885440908
-   },
-   "pointwise": {
-    "representation": 4.687427754480414e-16,
-    "preint": 8.314189664678028e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 2.1
-  },
-  {
-   "id": "asian_call-L1-m16-s0",
-   "track": "options",
-   "family": "asian_call",
-   "d": 16,
-   "reference": {
-    "value": 13.89798398985306,
-    "uncertainty": 3.929984492211425e-07,
-    "rel_uncertainty": 2.8277370984746513e-08,
-    "e_floor": -6.55,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.31603331501214915,
-    "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "preintegration along tilted gradient direction + RQMC 2^20 x 16"
-    ],
-    "diff": 1.1196898093146501e-06
-   },
-   "oracle": {
-    "value": 13.897982557514245,
-    "se": 0.0003247028821363177,
-    "z": -0.004411228778364288,
-    "ratio": 0.001102807194591072
-   },
-   "pointwise": {
-    "representation": 4.648908681909335e-16,
-    "preint": 2.045023900671834e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 4.8
-  },
-  {
-   "id": "asian_call-L1-m16-s1",
-   "track": "options",
-   "family": "asian_call",
-   "d": 16,
-   "reference": {
-    "value": 7.695086709629865,
-    "uncertainty": 2.607364626953142e-07,
-    "rel_uncertainty": 3.388349898241181e-08,
-    "e_floor": -6.47,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.3131170455134058,
-    "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "preintegration along tilted gradient direction + RQMC 2^20 x 16"
-    ],
-    "diff": 1.0635713785234202e-06
-   },
-   "oracle": {
-    "value": 7.695320724323999,
-    "se": 0.0004114052427544003,
-    "z": 0.5688179551262672,
-    "ratio": 0.1422044887815668
-   },
-   "pointwise": {
-    "representation": 5.378806810899719e-16,
-    "preint": 2.7701159034539747e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 5.0
-  },
-  {
-   "id": "asian_call-L1-m64-s0",
-   "track": "options",
-   "family": "asian_call",
-   "d": 64,
-   "reference": {
-    "value": 4.665950298162371,
-    "uncertainty": 1.6590401915456378e-07,
-    "rel_uncertainty": 3.555631941041102e-08,
-    "e_floor": -6.45,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.24518048193909558,
-    "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
-    ],
-    "diff": 8.668030059233445e-05
-   },
-   "oracle": {
-    "value": 4.665182977538206,
-    "se": 0.0007949570777584542,
-    "z": -0.9652352860007808,
-    "ratio": 0.2413088215001952
-   },
-   "pointwise": {
-    "representation": 7.18839841901875e-16,
-    "preint": 6.4720077026318534e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 20.9
-  },
-  {
-   "id": "asian_call-L1-m64-s1",
-   "track": "options",
-   "family": "asian_call",
-   "d": 64,
-   "reference": {
-    "value": 2.8501670016518434,
-    "uncertainty": 8.621650544160279e-08,
-    "rel_uncertainty": 3.0249632878226125e-08,
-    "e_floor": -6.52,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.2835760281785982,
-    "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
-    ],
-    "diff": 8.15328451424513e-05
-   },
-   "oracle": {
-    "value": 2.8500874948409862,
-    "se": 0.0007175972971237784,
-    "z": -0.11079586156767132,
-    "ratio": 0.02769896539191783
-   },
-   "pointwise": {
-    "representation": 7.936962854877668e-16,
-    "preint": 7.790582263998674e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 21.1
-  },
-  {
-   "id": "basket_asian_call-L2-m8-s0",
-   "track": "options",
-   "family": "basket_asian_call",
-   "d": 16,
-   "reference": {
-    "value": 6.108570302972121,
-    "uncertainty": 4.889612951870515e-07,
-    "rel_uncertainty": 8.00451285547369e-08,
-    "e_floor": -6.1,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.3406505235202355,
-    "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
-    ],
-    "diff": 6.972224802481719e-05
-   },
-   "oracle": {
-    "value": 6.1085192061019224,
-    "se": 0.0001638483188838347,
-    "z": -0.3118545571028328,
-    "ratio": 0.0779636392757082
-   },
-   "pointwise": {
-    "representation": 4.3318705558277946e-16,
-    "preint": 4.071164694544567e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 6.5
-  },
-  {
-   "id": "basket_asian_call-L2-m8-s1",
-   "track": "options",
-   "family": "basket_asian_call",
-   "d": 16,
-   "reference": {
-    "value": 3.567640997390589,
-    "uncertainty": 4.15708006593324e-06,
-    "rel_uncertainty": 1.1652181564719582e-06,
-    "e_floor": -4.93,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.4758901675146741,
-    "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
-    ],
-    "diff": 0.0007762212874315999
-   },
-   "oracle": {
-    "value": 3.568246647250553,
-    "se": 0.0005790579823361794,
-    "z": 1.045919656261799,
-    "ratio": 0.26147991406544974
-   },
-   "pointwise": {
-    "representation": 5.980131567158178e-16,
-    "preint": 6.970711394390006e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 6.6
-  },
-  {
-   "id": "basket_asian_call-L4-m8-s0",
-   "track": "options",
-   "family": "basket_asian_call",
+   "id": "H1-d32-k16",
+   "track": "hard",
+   "family": "H1",
    "d": 32,
    "reference": {
-    "value": 6.661908039740935,
-    "uncertainty": 5.715470657669821e-06,
-    "rel_uncertainty": 8.579329861016937e-07,
-    "e_floor": -5.07,
-    "method": "inverse-variance mean of the two preintegration routes"
+    "value": 1.3106825479243875,
+    "uncertainty": 1.3106825479243876e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
    },
    "agreement": {
-    "ratio": 0.14910198233929048,
+    "ratio": 0.0,
     "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "preintegration along tilted gradient direction + RQMC 2^20 x 16"
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
     ],
-    "diff": 2.394726639209921e-06
+    "diff": 0.0
    },
    "oracle": {
-    "value": 6.662057508062002,
-    "se": 0.0004908111850107723,
-    "z": 0.3045309471535015,
-    "ratio": 0.07613273678837537
+    "value": 1.310680401295471,
+    "se": 4.556800561171829e-05,
+    "z": -0.047108248162382224,
+    "ratio": 0.011777062032126901
    },
    "pointwise": {
-    "representation": 7.850384206430641e-16,
-    "preint": 2.133150837632191e-15
+    "distributions": 4.6019368368537724e-15
    },
    "passed": {
     "agreement": true,
     "oracle": true,
     "pointwise": true
    },
-   "seconds": 10.9
+   "seconds": 11.5
   },
   {
-   "id": "basket_asian_call-L4-m8-s1",
-   "track": "options",
-   "family": "basket_asian_call",
+   "id": "H1-d32-k32",
+   "track": "hard",
+   "family": "H1",
    "d": 32,
    "reference": {
-    "value": 0.4850356383882889,
-    "uncertainty": 3.899573840262804e-06,
-    "rel_uncertainty": 8.039767661651805e-06,
-    "e_floor": -4.09,
-    "method": "inverse-variance mean of the two preintegration routes"
+    "value": 1.4877269757893585,
+    "uncertainty": 1.4877269757893585e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
    },
    "agreement": {
-    "ratio": 0.19213495334724356,
+    "ratio": 0.0007462545498552208,
     "pair": [
-     "preintegration along closest monotone to gradient direction + RQMC 2^20 x 16",
-     "preintegration along closest monotone to tilted gradient direction + RQMC 2^20 x 16"
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
     ],
-    "diff": 2.0516728961306185e-06
+    "diff": 2.220446049250313e-16
    },
    "oracle": {
-    "value": 0.4852031570984138,
-    "se": 9.880439512456565e-05,
-    "z": 1.6953113774002113,
-    "ratio": 0.42382784435005283
+    "value": 1.487594105606119,
+    "se": 4.1463838592891674e-05,
+    "z": -3.2044834185290507,
+    "ratio": 0.8011208539136551
    },
    "pointwise": {
-    "representation": 5.658598372205473e-16,
-    "preint": 1.2878587085651816e-14
+    "distributions": 5.351315432892274e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 12.0
+  },
+  {
+   "id": "H1-d64-k4",
+   "track": "hard",
+   "family": "H1",
+   "d": 64,
+   "reference": {
+    "value": 1.6206831374826898,
+    "uncertainty": 1.6206831374826898e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.62064910500782,
+    "se": 0.00012622447694760446,
+    "z": -0.26961866424606856,
+    "ratio": 0.06740466603988077
+   },
+   "pointwise": {
+    "distributions": 1.4281520010553947e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 25.1
+  },
+  {
+   "id": "H1-d64-k32",
+   "track": "hard",
+   "family": "H1",
+   "d": 64,
+   "reference": {
+    "value": 1.2114555958071287,
+    "uncertainty": 1.2114555958071287e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.2113861016636478,
+    "se": 4.9681078936490164e-05,
+    "z": -1.3988050374214898,
+    "ratio": 0.3497012591421889
+   },
+   "pointwise": {
+    "distributions": 5.7816115928235274e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 25.1
+  },
+  {
+   "id": "H1-d64-k64",
+   "track": "hard",
+   "family": "H1",
+   "d": 64,
+   "reference": {
+    "value": 2.021376559766816,
+    "uncertainty": 2.021376559766816e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.021351736840634,
+    "se": 3.06614369523502e-05,
+    "z": -0.8095813063388807,
+    "ratio": 0.20239532625114387
+   },
+   "pointwise": {
+    "distributions": 2.1607665783254284e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 25.6
+  },
+  {
+   "id": "H2-d8-k4",
+   "track": "hard",
+   "family": "H2",
+   "d": 8,
+   "reference": {
+    "value": 1.740462898526026,
+    "uncertainty": 1.7404628985260261e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.7404110358174254,
+    "se": 3.6755972451008854e-05,
+    "z": -1.4110008562474379,
+    "ratio": 0.35275021364427517
+   },
+   "pointwise": {
+    "distributions": 1.4614438719259302e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 2.9
+  },
+  {
+   "id": "H2-d8-k8",
+   "track": "hard",
+   "family": "H2",
+   "d": 8,
+   "reference": {
+    "value": 1.580652124900216,
+    "uncertainty": 1.580652124900216e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.5806333309463747,
+    "se": 1.6202194070772878e-05,
+    "z": -1.159963506121189,
+    "ratio": 0.2899908758230247
+   },
+   "pointwise": {
+    "distributions": 1.586176757459102e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 2.9
+  },
+  {
+   "id": "H2-d16-k4",
+   "track": "hard",
+   "family": "H2",
+   "d": 16,
+   "reference": {
+    "value": 2.012913984297205,
+    "uncertainty": 2.0129139842972049e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.0128517865472784,
+    "se": 6.654646401263993e-05,
+    "z": -0.9346514626926896,
+    "ratio": 0.23366286549647508
+   },
+   "pointwise": {
+    "distributions": 1.04933630773239e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 5.9
+  },
+  {
+   "id": "H2-d16-k8",
+   "track": "hard",
+   "family": "H2",
+   "d": 16,
+   "reference": {
+    "value": 1.4638513684645185,
+    "uncertainty": 1.4638513684645185e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.000758426059190494,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 2.220446049250313e-16
+   },
+   "oracle": {
+    "value": 1.4637788104709286,
+    "se": 6.513580996944074e-05,
+    "z": -1.113949356335503,
+    "ratio": 0.27848733892740885
+   },
+   "pointwise": {
+    "distributions": 1.6559860697941107e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 5.9
+  },
+  {
+   "id": "H2-d16-k16",
+   "track": "hard",
+   "family": "H2",
+   "d": 16,
+   "reference": {
+    "value": 1.8273744562945786,
+    "uncertainty": 1.8273744562945788e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.8273764322809911,
+    "se": 1.2121028800702984e-05,
+    "z": 0.16302134455616782,
+    "ratio": 0.040755335985434404
+   },
+   "pointwise": {
+    "distributions": 3.584568979957031e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 6.2
+  },
+  {
+   "id": "H2-d32-k4",
+   "track": "hard",
+   "family": "H2",
+   "d": 32,
+   "reference": {
+    "value": 1.8795840859204027,
+    "uncertainty": 1.8795840859204028e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.8796369244689979,
+    "se": 7.34206695153214e-05,
+    "z": 0.7196685748574175,
+    "ratio": 0.1799171435992065
+   },
+   "pointwise": {
+    "distributions": 9.147136583208095e-16
    },
    "passed": {
     "agreement": true,
@@ -2355,145 +615,1078 @@
    "seconds": 11.0
   },
   {
-   "id": "basket_asian_call-L4-m16-s0",
-   "track": "options",
-   "family": "basket_asian_call",
-   "d": 64,
+   "id": "H2-d32-k16",
+   "track": "hard",
+   "family": "H2",
+   "d": 32,
    "reference": {
-    "value": 2.788266298672966,
-    "uncertainty": 1.9029969407474565e-06,
-    "rel_uncertainty": 6.825018620542663e-07,
-    "e_floor": -5.17,
-    "method": "inverse-variance mean of the two preintegration routes"
+    "value": 2.3201605269563808,
+    "uncertainty": 2.320160526956381e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
    },
    "agreement": {
-    "ratio": 0.5779357837310768,
+    "ratio": 0.000957022595399089,
     "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "preintegration along closest monotone to tilted gradient direction + RQMC 2^20 x 16"
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
     ],
-    "diff": 3.2254792077246464e-06
+    "diff": 4.440892098500626e-16
    },
    "oracle": {
-    "value": 2.786922014360099,
-    "se": 0.0006987998317346342,
-    "z": -1.9237036100655684,
-    "ratio": 0.4809259025163921
+    "value": 2.3201360011438235,
+    "se": 5.864694165451757e-05,
+    "z": -0.41819422915137583,
+    "ratio": 0.10454855718444153
    },
    "pointwise": {
-    "representation": 8.066408905836348e-16,
-    "preint": 3.4243207029115316e-15
+    "distributions": 3.8801593083364884e-15
    },
    "passed": {
     "agreement": true,
     "oracle": true,
     "pointwise": true
    },
-   "seconds": 22.0
+   "seconds": 10.7
   },
   {
-   "id": "basket_asian_call-L4-m16-s1",
-   "track": "options",
-   "family": "basket_asian_call",
+   "id": "H2-d32-k32",
+   "track": "hard",
+   "family": "H2",
+   "d": 32,
+   "reference": {
+    "value": 1.7864136722268043,
+    "uncertainty": 1.7864136722268044e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0018644444596775378,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 6.661338147750939e-16
+   },
+   "oracle": {
+    "value": 1.7864244707835706,
+    "se": 2.817568809478328e-05,
+    "z": 0.3832579609061309,
+    "ratio": 0.09581449007466039
+   },
+   "pointwise": {
+    "distributions": 5.10959976616649e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 10.9
+  },
+  {
+   "id": "H2-d64-k4",
+   "track": "hard",
+   "family": "H2",
    "d": 64,
    "reference": {
-    "value": 4.002665282883992,
-    "uncertainty": 6.668837683087233e-07,
-    "rel_uncertainty": 1.6660992643087598e-07,
-    "e_floor": -5.78,
+    "value": 2.2598526062171564,
+    "uncertainty": 2.2598526062171564e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.000982562333110385,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 4.440892098500626e-16
+   },
+   "oracle": {
+    "value": 2.2598972380983247,
+    "se": 0.0002953083645053449,
+    "z": 0.1511365289058832,
+    "ratio": 0.037784132219242206
+   },
+   "pointwise": {
+    "distributions": 1.1193332932095033e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 19.9
+  },
+  {
+   "id": "H2-d64-k32",
+   "track": "hard",
+   "family": "H2",
+   "d": 64,
+   "reference": {
+    "value": 1.8707587306005133,
+    "uncertainty": 1.8707587306005135e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.8707439627495541,
+    "se": 3.793079852742561e-05,
+    "z": -0.3893366744847416,
+    "ratio": 0.0973341685011716
+   },
+   "pointwise": {
+    "distributions": 3.9632907891930635e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 19.0
+  },
+  {
+   "id": "H2-d64-k64",
+   "track": "hard",
+   "family": "H2",
+   "d": 64,
+   "reference": {
+    "value": 1.9466582940853165,
+    "uncertainty": 1.9466582940853166e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, 1D integral over the density of the second form"
+   },
+   "agreement": {
+    "ratio": 0.002281289999376745,
+    "pair": [
+     "A: SciPy non-central chi-square, 1D integral over the density of the second form",
+     "B: Poisson mixture of central chi-square, 1D integral over the density of the first form"
+    ],
+    "diff": 8.881784197001252e-16
+   },
+   "oracle": {
+    "value": 1.9466346142956645,
+    "se": 4.6266875862343373e-05,
+    "z": -0.5118087013798593,
+    "ratio": 0.12795217521037655
+   },
+   "pointwise": {
+    "distributions": 9.642413271849012e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 19.1
+  },
+  {
+   "id": "H3-d8-k2",
+   "track": "hard",
+   "family": "H3",
+   "d": 8,
+   "reference": {
+    "value": 1.9487406834598975,
+    "uncertainty": 1.9487406834598975e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.9489847459687462,
+    "se": 7.51269960889019e-05,
+    "z": 3.248665879837152,
+    "ratio": 0.8121664694326125
+   },
+   "pointwise": {
+    "distributions": 9.273926835384289e-16
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 2.0
+  },
+  {
+   "id": "H3-d8-k4",
+   "track": "hard",
+   "family": "H3",
+   "d": 8,
+   "reference": {
+    "value": 1.2349504033448027,
+    "uncertainty": 1.2349504033448027e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.234954526589979,
+    "se": 8.088012106884574e-05,
+    "z": 0.050979710736238734,
+    "ratio": 0.01274492767919466
+   },
+   "pointwise": {
+    "distributions": 1.771693875780622e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 2.1
+  },
+  {
+   "id": "H3-d8-k8",
+   "track": "hard",
+   "family": "H3",
+   "d": 8,
+   "reference": {
+    "value": 1.5689695499819862,
+    "uncertainty": 1.5689695499819864e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0007076128562456188,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 2.220446049250313e-16
+   },
+   "oracle": {
+    "value": 1.5688495937459224,
+    "se": 0.0001109739232829887,
+    "z": -1.0809407518014233,
+    "ratio": 0.27023518785484
+   },
+   "pointwise": {
+    "distributions": 4.805160731262034e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 2.1
+  },
+  {
+   "id": "H3-d16-k2",
+   "track": "hard",
+   "family": "H3",
+   "d": 16,
+   "reference": {
+    "value": 1.5874342869064049,
+    "uncertainty": 1.5874342869064048e-13,
+    "rel_uncertainty": 9.999999999999999e-14,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.5875104257329533,
+    "se": 0.0001720758600248067,
+    "z": 0.44247244521961354,
+    "ratio": 0.11061811127939152
+   },
+   "pointwise": {
+    "distributions": 8.519603070141584e-16
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 4.3
+  },
+  {
+   "id": "H3-d16-k8",
+   "track": "hard",
+   "family": "H3",
+   "d": 16,
+   "reference": {
+    "value": 1.9483188091235464,
+    "uncertainty": 1.9483188091235465e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0005698364248326442,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 2.220446049250313e-16
+   },
+   "oracle": {
+    "value": 1.948546707620157,
+    "se": 0.0001495417677208059,
+    "z": 1.523978886194067,
+    "ratio": 0.3809947214244211
+   },
+   "pointwise": {
+    "distributions": 4.3225296369780345e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 4.1
+  },
+  {
+   "id": "H3-d16-k16",
+   "track": "hard",
+   "family": "H3",
+   "d": 16,
+   "reference": {
+    "value": 1.2526363888491068,
+    "uncertainty": 1.252636388849107e-13,
+    "rel_uncertainty": 1.0000000000000002e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.2524458212982268,
+    "se": 0.00015102691022388426,
+    "z": -1.2618118890036438,
+    "ratio": 0.3154529721855008
+   },
+   "pointwise": {
+    "distributions": 3.959320012450278e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 4.3
+  },
+  {
+   "id": "H3-d32-k2",
+   "track": "hard",
+   "family": "H3",
+   "d": 32,
+   "reference": {
+    "value": 1.9485040433993641,
+    "uncertainty": 1.9485040433993642e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.9486084041358949,
+    "se": 0.00016317806280978799,
+    "z": 0.6395512652482042,
+    "ratio": 0.15988781626432066
+   },
+   "pointwise": {
+    "distributions": 7.63377426671524e-16
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.3
+  },
+  {
+   "id": "H3-d32-k16",
+   "track": "hard",
+   "family": "H3",
+   "d": 32,
+   "reference": {
+    "value": 2.4199061436726956,
+    "uncertainty": 2.4199061436726957e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.000917575276651159,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 4.440892098500626e-16
+   },
+   "oracle": {
+    "value": 2.4201424160458647,
+    "se": 0.00013470342819747922,
+    "z": 1.7540190055345193,
+    "ratio": 0.43850475118668975
+   },
+   "pointwise": {
+    "distributions": 4.141618895865397e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.4
+  },
+  {
+   "id": "H3-d32-k32",
+   "track": "hard",
+   "family": "H3",
+   "d": 32,
+   "reference": {
+    "value": 2.1796629537628163,
+    "uncertainty": 2.1796629537628162e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.1796698657108013,
+    "se": 0.0001410225510770128,
+    "z": 0.049013068706316526,
+    "ratio": 0.01225326717184443
+   },
+   "pointwise": {
+    "distributions": 9.783568816794582e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.6
+  },
+  {
+   "id": "H3-d64-k2",
+   "track": "hard",
+   "family": "H3",
+   "d": 64,
+   "reference": {
+    "value": 1.7358598610298226,
+    "uncertainty": 1.7358598610298227e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.7357193385569274,
+    "se": 0.00011246466468773858,
+    "z": -1.2494810995557049,
+    "ratio": 0.3123702747683926
+   },
+   "pointwise": {
+    "distributions": 5.189485760341806e-16
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 18.0
+  },
+  {
+   "id": "H3-d64-k32",
+   "track": "hard",
+   "family": "H3",
+   "d": 64,
+   "reference": {
+    "value": 2.0462039744180087,
+    "uncertainty": 2.0462039744180087e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.046084573076822,
+    "se": 0.0001702461923372517,
+    "z": -0.7013451493245683,
+    "ratio": 0.17533628727845751
+   },
+   "pointwise": {
+    "distributions": 7.987720799375859e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 18.4
+  },
+  {
+   "id": "H3-d64-k64",
+   "track": "hard",
+   "family": "H3",
+   "d": 64,
+   "reference": {
+    "value": 1.1975008194990417,
+    "uncertainty": 1.1975008194990417e-13,
+    "rel_uncertainty": 9.999999999999999e-14,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 1.1974155698883486,
+    "se": 6.385310162336917e-05,
+    "z": -1.335089581019142,
+    "ratio": 0.33377239509829637
+   },
+   "pointwise": {
+    "distributions": 1.7407061408902864e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 19.0
+  },
+  {
+   "id": "H3t-d8-k2",
+   "track": "hard",
+   "family": "H3t",
+   "d": 8,
+   "reference": {
+    "value": 2.8279194929112834,
+    "uncertainty": 2.8279194929112834e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0007851871507715413,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 4.440892098500626e-16
+   },
+   "oracle": {
+    "value": 2.827219213416017,
+    "se": 0.006300685004840825,
+    "z": -0.11114339071523265,
+    "ratio": 0.027785847678496386
+   },
+   "pointwise": {
+    "distributions": 3.3200252410625575e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 2.0
+  },
+  {
+   "id": "H3t-d8-k4",
+   "track": "hard",
+   "family": "H3t",
+   "d": 8,
+   "reference": {
+    "value": 2.814023653111528,
+    "uncertainty": 2.814023653111528e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0015781289164326087,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 8.881784197001252e-16
+   },
+   "oracle": {
+    "value": 2.8084381832585894,
+    "se": 0.00603901158897892,
+    "z": -0.9248980185982926,
+    "ratio": 0.23122450464687952
+   },
+   "pointwise": {
+    "distributions": 5.023528092774024e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 2.1
+  },
+  {
+   "id": "H3t-d8-k8",
+   "track": "hard",
+   "family": "H3t",
+   "d": 8,
+   "reference": {
+    "value": 2.966214608929099,
+    "uncertainty": 2.9662146089290993e-13,
+    "rel_uncertainty": 1.0000000000000002e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0014971580563093291,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 8.881784197001252e-16
+   },
+   "oracle": {
+    "value": 2.9678788150420976,
+    "se": 0.0057348244863069464,
+    "z": 0.2901930332780341,
+    "ratio": 0.07254825831857042
+   },
+   "pointwise": {
+    "distributions": 4.380164518081609e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 2.0
+  },
+  {
+   "id": "H3t-d16-k2",
+   "track": "hard",
+   "family": "H3t",
+   "d": 16,
+   "reference": {
+    "value": 2.6767618934827273,
+    "uncertainty": 2.676761893482727e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0008295269200658327,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 4.440892098500626e-16
+   },
+   "oracle": {
+    "value": 2.6885910894482534,
+    "se": 0.011616656086662968,
+    "z": 1.0182961324909297,
+    "ratio": 0.2545740331212659
+   },
+   "pointwise": {
+    "distributions": 3.632932723230755e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 4.2
+  },
+  {
+   "id": "H3t-d16-k8",
+   "track": "hard",
+   "family": "H3t",
+   "d": 16,
+   "reference": {
+    "value": 2.66994143093096,
+    "uncertainty": 2.66994143093096e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.687804602505732,
+    "se": 0.017339276760811734,
+    "z": 1.0302143406087283,
+    "ratio": 0.25755358515119064
+   },
+   "pointwise": {
+    "distributions": 4.566194473243853e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 4.2
+  },
+  {
+   "id": "H3t-d16-k16",
+   "track": "hard",
+   "family": "H3t",
+   "d": 16,
+   "reference": {
+    "value": 3.11601521872646,
+    "uncertainty": 3.11601521872646e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0021377745871451427,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 1.3322676295501878e-15
+   },
+   "oracle": {
+    "value": 3.112340492001682,
+    "se": 0.005806050541797227,
+    "z": -0.6329133200484295,
+    "ratio": 0.1582283300099844
+   },
+   "pointwise": {
+    "distributions": 5.848840486462403e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 4.4
+  },
+  {
+   "id": "H3t-d32-k2",
+   "track": "hard",
+   "family": "H3t",
+   "d": 32,
+   "reference": {
+    "value": 2.667923083582588,
+    "uncertainty": 2.667923083582588e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.6633669763203796,
+    "se": 0.008310830135716915,
+    "z": -0.5482132576176677,
+    "ratio": 0.137053314403317
+   },
+   "pointwise": {
+    "distributions": 3.405078876206888e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.2
+  },
+  {
+   "id": "H3t-d32-k16",
+   "track": "hard",
+   "family": "H3t",
+   "d": 32,
+   "reference": {
+    "value": 2.3226471225373673,
+    "uncertainty": 2.322647122537367e-13,
+    "rel_uncertainty": 9.999999999999999e-14,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0028679940586384843,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 1.3322676295501878e-15
+   },
+   "oracle": {
+    "value": 2.306513456707467,
+    "se": 0.02075918128683129,
+    "z": -0.7771821830051913,
+    "ratio": 0.19429554575075436
+   },
+   "pointwise": {
+    "distributions": 8.558687058028597e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.5
+  },
+  {
+   "id": "H3t-d32-k32",
+   "track": "hard",
+   "family": "H3t",
+   "d": 32,
+   "reference": {
+    "value": 2.1982182052185295,
+    "uncertainty": 2.1982182052185296e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0010101117550473445,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 4.440892098500626e-16
+   },
+   "oracle": {
+    "value": 2.197071537896015,
+    "se": 0.003867146602374389,
+    "z": -0.2965150899142038,
+    "ratio": 0.07412877247749751
+   },
+   "pointwise": {
+    "distributions": 9.046792468000638e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.6
+  },
+  {
+   "id": "H3t-d64-k2",
+   "track": "hard",
+   "family": "H3t",
+   "d": 64,
+   "reference": {
+    "value": 2.2374007999750316,
+    "uncertainty": 2.2374007999750316e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.239352369212404,
+    "se": 0.00497531521103828,
+    "z": 0.39225037100013616,
+    "ratio": 0.09806259274893156
+   },
+   "pointwise": {
+    "distributions": 3.005540174490134e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 18.1
+  },
+  {
+   "id": "H3t-d64-k32",
+   "track": "hard",
+   "family": "H3t",
+   "d": 64,
+   "reference": {
+    "value": 2.6475716534668137,
+    "uncertainty": 2.647571653466814e-13,
+    "rel_uncertainty": 1.0000000000000002e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.006709381546196242,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 3.552713678800501e-15
+   },
+   "oracle": {
+    "value": 2.6452441867097516,
+    "se": 0.005566067823199175,
+    "z": -0.4181527841542427,
+    "ratio": 0.10453819603731755
+   },
+   "pointwise": {
+    "distributions": 7.750902835547077e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 19.0
+  },
+  {
+   "id": "H3t-d64-k64",
+   "track": "hard",
+   "family": "H3t",
+   "d": 64,
+   "reference": {
+    "value": 1.756773696261189,
+    "uncertainty": 1.756773696261189e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "A: SciPy non-central chi-square, closed form"
+   },
+   "agreement": {
+    "ratio": 0.008215571163686871,
+    "pair": [
+     "A: SciPy non-central chi-square, closed form",
+     "B: Poisson mixture of central chi-square, closed form"
+    ],
+    "diff": 2.886579864025407e-15
+   },
+   "oracle": {
+    "value": 1.7542891649502899,
+    "se": 0.0031284740626983036,
+    "z": -0.7941671438235621,
+    "ratio": 0.1985417859531033
+   },
+   "pointwise": {
+    "distributions": 2.863558400930311e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 19.5
+  },
+  {
+   "id": "asian_call-L1-m32-s0",
+   "track": "options",
+   "family": "asian_call",
+   "d": 32,
+   "reference": {
+    "value": 17.157157789109178,
+    "uncertainty": 1.2580370339009128e-06,
+    "rel_uncertainty": 7.332432617128898e-08,
+    "e_floor": -6.13,
     "method": "inverse-variance mean of the two preintegration routes"
    },
    "agreement": {
-    "ratio": 0.2225328777879483,
+    "ratio": 0.23342599758930402,
     "pair": [
      "preintegration along gradient direction + RQMC 2^20 x 16",
      "preintegration along tilted gradient direction + RQMC 2^20 x 16"
     ],
-    "diff": 4.998746261364317e-07
+    "diff": 1.0523087325964298e-06
    },
    "oracle": {
-    "value": 4.003102530428045,
-    "se": 0.0005078344686702245,
-    "z": 0.8610039868060043,
-    "ratio": 0.21525099670150108
+    "value": 17.15745342006808,
+    "se": 0.0007147699361921248,
+    "z": 0.41360288542514595,
+    "ratio": 0.10340072135628649
    },
    "pointwise": {
-    "representation": 1.0827902982867003e-15,
-    "preint": 9.541560272456157e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 21.1
-  },
-  {
-   "id": "asian_spread-L2-m8-s0",
-   "track": "options",
-   "family": "asian_spread",
-   "d": 16,
-   "reference": {
-    "value": 2.4717651343886504,
-    "uncertainty": 4.1533298082399816e-07,
-    "rel_uncertainty": 1.6803092455898883e-07,
-    "e_floor": -5.77,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.623580126270905,
-    "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "plain RQMC of the payoff 2^18 x 16"
-    ],
-    "diff": 0.000686407982623205
-   },
-   "oracle": {
-    "value": 2.4720999894921682,
-    "se": 0.00047095142382156877,
-    "z": 0.7110183176262069,
-    "ratio": 0.17775457940655173
-   },
-   "pointwise": {
-    "representation": 5.249866894575026e-15,
-    "preint": 4.671285024399139e-15
-   },
-   "passed": {
-    "agreement": true,
-    "oracle": true,
-    "pointwise": true
-   },
-   "seconds": 6.7
-  },
-  {
-   "id": "asian_spread-L2-m8-s1",
-   "track": "options",
-   "family": "asian_spread",
-   "d": 16,
-   "reference": {
-    "value": 3.6126560076870815,
-    "uncertainty": 7.846665443328762e-07,
-    "rel_uncertainty": 2.171993521285301e-07,
-    "e_floor": -5.66,
-    "method": "inverse-variance mean of the two preintegration routes"
-   },
-   "agreement": {
-    "ratio": 0.4864523738287489,
-    "pair": [
-     "preintegration along gradient direction + RQMC 2^20 x 16",
-     "plain RQMC of the payoff 2^18 x 16"
-    ],
-    "diff": 0.0012609287970768435
-   },
-   "oracle": {
-    "value": 3.6115821758536155,
-    "se": 0.0012431738311738728,
-    "z": -0.8637825079419821,
-    "ratio": 0.21594562698549552
-   },
-   "pointwise": {
-    "representation": 5.40584440174393e-15,
-    "preint": 1.966815368660047e-15
+    "representation": 6.040728607350965e-16,
+    "preint": 8.282755739544813e-16
    },
    "passed": {
     "agreement": true,
@@ -2503,71 +1696,652 @@
    "seconds": 6.6
   },
   {
-   "id": "asian_spread-L2-m32-s0",
+   "id": "asian_call-L1-m32-s1",
    "track": "options",
-   "family": "asian_spread",
-   "d": 64,
+   "family": "asian_call",
+   "d": 32,
    "reference": {
-    "value": 10.334037570703604,
-    "uncertainty": 1.842433522935059e-06,
-    "rel_uncertainty": 1.7828786767315911e-07,
-    "e_floor": -5.75,
+    "value": 9.84651060808486,
+    "uncertainty": 1.2633270989608588e-06,
+    "rel_uncertainty": 1.283020096402024e-07,
+    "e_floor": -5.89,
     "method": "inverse-variance mean of the two preintegration routes"
    },
    "agreement": {
-    "ratio": 0.1657860588080241,
+    "ratio": 0.2521304402047584,
     "pair": [
      "preintegration along gradient direction + RQMC 2^20 x 16",
-     "plain RQMC of the payoff 2^18 x 16"
+     "preintegration along tilted gradient direction + RQMC 2^20 x 16"
     ],
-    "diff": 0.0008441150648845763
+    "diff": 1.2471615917775125e-06
    },
    "oracle": {
-    "value": 10.332646937286949,
-    "se": 0.0014679168666824195,
-    "z": -0.9473515336664426,
-    "ratio": 0.23683788341661066
+    "value": 9.849177787824031,
+    "se": 0.0012713381642030334,
+    "z": 2.0979308794120937,
+    "ratio": 0.5244827198530234
    },
    "pointwise": {
-    "representation": 1.0793152727670107e-14,
-    "preint": 1.890831642493473e-15
+    "representation": 5.929527679308874e-16,
+    "preint": 1.6236423430525058e-15
    },
    "passed": {
     "agreement": true,
     "oracle": true,
     "pointwise": true
    },
-   "seconds": 18.9
+   "seconds": 6.8
   },
   {
-   "id": "asian_spread-L2-m32-s1",
+   "id": "asian_call-L1-m64-s0",
    "track": "options",
-   "family": "asian_spread",
+   "family": "asian_call",
    "d": 64,
    "reference": {
-    "value": 5.802192669734189,
-    "uncertainty": 2.578248788648587e-07,
-    "rel_uncertainty": 4.443576653525196e-08,
-    "e_floor": -6.35,
+    "value": 9.58629501412822,
+    "uncertainty": 3.740229422710689e-07,
+    "rel_uncertainty": 3.901642310400799e-08,
+    "e_floor": -6.41,
     "method": "inverse-variance mean of the two preintegration routes"
    },
    "agreement": {
-    "ratio": 0.20167904807622236,
+    "ratio": 0.28137486082876456,
     "pair": [
      "preintegration along gradient direction + RQMC 2^20 x 16",
-     "plain RQMC of the payoff 2^18 x 16"
+     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
     ],
-    "diff": 0.0007432242648341969
+    "diff": 0.0001333643342498192
    },
    "oracle": {
-    "value": 5.802826707128705,
-    "se": 0.0009749341679066264,
-    "z": 0.6503386720096012,
-    "ratio": 0.1625846680024003
+    "value": 9.58443963902064,
+    "se": 0.0012497482992815199,
+    "z": -1.4845990183894986,
+    "ratio": 0.37114975459737465
    },
    "pointwise": {
-    "representation": 4.8204322562627996e-15,
-    "preint": 1.989992424127927e-15
+    "representation": 8.686992147108143e-16,
+    "preint": 3.706034159771355e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 14.5
+  },
+  {
+   "id": "asian_call-L1-m64-s1",
+   "track": "options",
+   "family": "asian_call",
+   "d": 64,
+   "reference": {
+    "value": 8.074424619809724,
+    "uncertainty": 1.8205391119626565e-07,
+    "rel_uncertainty": 2.2546982573794317e-08,
+    "e_floor": -6.65,
+    "method": "inverse-variance mean of the two preintegration routes"
+   },
+   "agreement": {
+    "ratio": 0.1238895461742833,
+    "pair": [
+     "preintegration along gradient direction + RQMC 2^20 x 16",
+     "preintegration along tilted gradient direction + RQMC 2^20 x 16"
+    ],
+    "diff": 4.184945439078547e-07
+   },
+   "oracle": {
+    "value": 8.074977566966203,
+    "se": 0.0006091085617602694,
+    "z": 0.9077973754567847,
+    "ratio": 0.22694934386419618
+   },
+   "pointwise": {
+    "representation": 8.240971743021453e-16,
+    "preint": 5.2799507275121055e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 14.6
+  },
+  {
+   "id": "basket_asian_call-L2-m16-s0",
+   "track": "options",
+   "family": "basket_asian_call",
+   "d": 32,
+   "reference": {
+    "value": 2.5331969320289063,
+    "uncertainty": 6.596686493476832e-06,
+    "rel_uncertainty": 2.6040954061133206e-06,
+    "e_floor": -4.58,
+    "method": "inverse-variance mean of the two preintegration routes"
+   },
+   "agreement": {
+    "ratio": 0.3545777095962014,
+    "pair": [
+     "preintegration along closest monotone to tilted gradient direction + RQMC 2^20 x 16",
+     "plain RQMC of the payoff 2^18 x 16 + geometric control variate"
+    ],
+    "diff": 0.00044377133986461814
+   },
+   "oracle": {
+    "value": 2.532956077533135,
+    "se": 0.0009527102523007909,
+    "z": -0.252809134434235,
+    "ratio": 0.06320228360855876
+   },
+   "pointwise": {
+    "representation": 6.383710175780518e-16,
+    "preint": 1.542708739801978e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.7
+  },
+  {
+   "id": "basket_asian_call-L2-m16-s1",
+   "track": "options",
+   "family": "basket_asian_call",
+   "d": 32,
+   "reference": {
+    "value": 4.321653309705907,
+    "uncertainty": 1.8061776016738693e-06,
+    "rel_uncertainty": 4.1793671825026187e-07,
+    "e_floor": -5.38,
+    "method": "inverse-variance mean of the two preintegration routes"
+   },
+   "agreement": {
+    "ratio": 0.23552153988629862,
+    "pair": [
+     "preintegration along gradient direction + RQMC 2^20 x 16",
+     "preintegration along tilted gradient direction + RQMC 2^20 x 16"
+    ],
+    "diff": 1.1532230033139967e-06
+   },
+   "oracle": {
+    "value": 4.322172616485242,
+    "se": 0.0009447015285983551,
+    "z": 0.5497044920067241,
+    "ratio": 0.13742612300168103
+   },
+   "pointwise": {
+    "representation": 6.442737463007839e-16,
+    "preint": 2.8772548339024297e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.8
+  },
+  {
+   "id": "basket_asian_call-L2-m32-s0",
+   "track": "options",
+   "family": "basket_asian_call",
+   "d": 64,
+   "reference": {
+    "value": 5.186027409820142,
+    "uncertainty": 1.5072897019475154e-06,
+    "rel_uncertainty": 2.9064437628951714e-07,
+    "e_floor": -5.54,
+    "method": "inverse-variance mean of the two preintegration routes"
+   },
+   "agreement": {
+    "ratio": 0.4328683488846766,
+    "pair": [
+     "preintegration along gradient direction + RQMC 2^20 x 16",
+     "preintegration along tilted gradient direction + RQMC 2^20 x 16"
+    ],
+    "diff": 2.0298836744814253e-06
+   },
+   "oracle": {
+    "value": 5.186116424632161,
+    "se": 0.000809997817659863,
+    "z": 0.10989510459553076,
+    "ratio": 0.02747377614888269
+   },
+   "pointwise": {
+    "representation": 7.7714729751228425e-16,
+    "preint": 2.9114834808452703e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 17.8
+  },
+  {
+   "id": "basket_asian_call-L2-m32-s1",
+   "track": "options",
+   "family": "basket_asian_call",
+   "d": 64,
+   "reference": {
+    "value": 0.11411765715750213,
+    "uncertainty": 8.277256433988524e-07,
+    "rel_uncertainty": 7.2532653054421515e-06,
+    "e_floor": -4.14,
+    "method": "inverse-variance mean of the two preintegration routes"
+   },
+   "agreement": {
+    "ratio": 0.3089647778242914,
+    "pair": [
+     "preintegration along gradient direction + RQMC 2^20 x 16",
+     "preintegration along tilted gradient direction + RQMC 2^20 x 16"
+    ],
+    "diff": 6.885737698358874e-07
+   },
+   "oracle": {
+    "value": 0.11453556249523264,
+    "se": 0.000412971164471534,
+    "z": 1.0119477591032413,
+    "ratio": 0.2529869397758103
+   },
+   "pointwise": {
+    "representation": 8.712511596689411e-16,
+    "preint": 6.161737786669619e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 17.5
+  },
+  {
+   "id": "digital_asian-L1-m32-s0",
+   "track": "options",
+   "family": "digital_asian",
+   "d": 32,
+   "reference": {
+    "value": 2.6267810042956254,
+    "uncertainty": 3.117311703368662e-07,
+    "rel_uncertainty": 1.1867421373425733e-07,
+    "e_floor": -5.93,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.05147479956817687,
+    "pair": [
+     "uniform-scaling preintegration + RQMC 2^20 x 16",
+     "preintegration along the gradient direction + RQMC 2^20 x 16"
+    ],
+    "diff": 5.201660346898507e-08
+   },
+   "oracle": {
+    "value": 2.6272538350418335,
+    "se": 0.0008638677603700993,
+    "z": 0.5473415775869783,
+    "ratio": 0.13683539439674458
+   },
+   "pointwise": {
+    "line": 1.6060903008954429e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 7.0
+  },
+  {
+   "id": "digital_asian-L1-m32-s1",
+   "track": "options",
+   "family": "digital_asian",
+   "d": 32,
+   "reference": {
+    "value": 3.4289097371112987,
+    "uncertainty": 4.0621908477919657e-07,
+    "rel_uncertainty": 1.184688766760649e-07,
+    "e_floor": -5.93,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.33292155164081066,
+    "pair": [
+     "uniform-scaling preintegration + RQMC 2^20 x 16",
+     "preintegration along the gradient direction + RQMC 2^20 x 16"
+    ],
+    "diff": 5.231236799296823e-07
+   },
+   "oracle": {
+    "value": 3.429065294569819,
+    "se": 0.0012556787998418111,
+    "z": 0.12388315995722131,
+    "ratio": 0.030970789989305327
+   },
+   "pointwise": {
+    "line": 7.770794402261303e-16
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 6.7
+  },
+  {
+   "id": "digital_asian-L1-m64-s0",
+   "track": "options",
+   "family": "digital_asian",
+   "d": 64,
+   "reference": {
+    "value": 0.5493776600219767,
+    "uncertainty": 2.119269453588309e-08,
+    "rel_uncertainty": 3.8575821475950295e-08,
+    "e_floor": -6.41,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.18921103111163587,
+    "pair": [
+     "uniform-scaling preintegration + RQMC 2^20 x 16",
+     "preintegration along the gradient direction + RQMC 2^20 x 16"
+    ],
+    "diff": 2.0153280178014654e-07
+   },
+   "oracle": {
+    "value": 0.549552297758737,
+    "se": 0.0006393882358936154,
+    "z": 0.2731325459961938,
+    "ratio": 0.06828313649904845
+   },
+   "pointwise": {
+    "line": 4.884981308350689e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 14.4
+  },
+  {
+   "id": "digital_asian-L1-m64-s1",
+   "track": "options",
+   "family": "digital_asian",
+   "d": 64,
+   "reference": {
+    "value": 0.5656040803745804,
+    "uncertainty": 1.3229512703675572e-08,
+    "rel_uncertainty": 2.3390058810951496e-08,
+    "e_floor": -6.63,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.19525481299858724,
+    "pair": [
+     "uniform-scaling preintegration + RQMC 2^20 x 16",
+     "preintegration along the gradient direction + RQMC 2^20 x 16"
+    ],
+    "diff": 1.6944757952330747e-07
+   },
+   "oracle": {
+    "value": 0.5653471213829164,
+    "se": 0.0006501158693348446,
+    "z": -0.3952510679688443,
+    "ratio": 0.09881276699221107
+   },
+   "pointwise": {
+    "line": 1.4210854715202004e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 14.9
+  },
+  {
+   "id": "rainbow_asian_max-L2-m16-s0",
+   "track": "options",
+   "family": "rainbow_asian_max",
+   "d": 32,
+   "reference": {
+    "value": 6.6009185181942,
+    "uncertainty": 2.4361140307911796e-05,
+    "rel_uncertainty": 3.6905682505798035e-06,
+    "e_floor": -4.43,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.23328826316851783,
+    "pair": [
+     "uniform-scaling preintegration (parallel to the kink A_1 = A_2) + RQMC 2^20 x 16",
+     "conditioning on the first increments (Stulz) + RQMC 2^20 x 16"
+    ],
+    "diff": 1.5763239010979646e-05
+   },
+   "oracle": {
+    "value": 6.599968867959527,
+    "se": 0.0013052594258923956,
+    "z": -0.7275426161282321,
+    "ratio": 0.18188565403205803
+   },
+   "pointwise": {
+    "line": 6.458580579065975e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.2
+  },
+  {
+   "id": "rainbow_asian_max-L2-m16-s1",
+   "track": "options",
+   "family": "rainbow_asian_max",
+   "d": 32,
+   "reference": {
+    "value": 13.538177336866811,
+    "uncertainty": 2.4241713556490574e-05,
+    "rel_uncertainty": 1.7906187039281997e-06,
+    "e_floor": -4.75,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.1576381721262467,
+    "pair": [
+     "uniform-scaling preintegration (parallel to the kink A_1 = A_2) + RQMC 2^20 x 16",
+     "conditioning on the first increments (Stulz) + RQMC 2^20 x 16"
+    ],
+    "diff": 1.0390193276421655e-05
+   },
+   "oracle": {
+    "value": 13.537364013114843,
+    "se": 0.0019960025676921587,
+    "z": -0.4074729663618217,
+    "ratio": 0.10186824159045542
+   },
+   "pointwise": {
+    "line": 4.198749761241013e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.3
+  },
+  {
+   "id": "rainbow_asian_max-L2-m32-s0",
+   "track": "options",
+   "family": "rainbow_asian_max",
+   "d": 64,
+   "reference": {
+    "value": 12.095985164736879,
+    "uncertainty": 1.3481092366022296e-05,
+    "rel_uncertainty": 1.1145096643573429e-06,
+    "e_floor": -4.95,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.21783197144835195,
+    "pair": [
+     "uniform-scaling preintegration (parallel to the kink A_1 = A_2) + RQMC 2^20 x 16",
+     "conditioning on the first increments (Stulz) + RQMC 2^20 x 16"
+    ],
+    "diff": 1.3664283571301894e-05
+   },
+   "oracle": {
+    "value": 12.094604481130935,
+    "se": 0.0029523663787994372,
+    "z": -0.4676526655216663,
+    "ratio": 0.11691316638041657
+   },
+   "pointwise": {
+    "line": 2.0559710856874615e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 18.1
+  },
+  {
+   "id": "rainbow_asian_max-L2-m32-s1",
+   "track": "options",
+   "family": "rainbow_asian_max",
+   "d": 64,
+   "reference": {
+    "value": 1.4496375445834937,
+    "uncertainty": 5.011486067041434e-06,
+    "rel_uncertainty": 3.4570614466813648e-06,
+    "e_floor": -4.46,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.40601877291853494,
+    "pair": [
+     "uniform-scaling preintegration (parallel to the kink A_1 = A_2) + RQMC 2^20 x 16",
+     "conditioning on the first increments (Stulz) + RQMC 2^20 x 16"
+    ],
+    "diff": 6.984988007552317e-06
+   },
+   "oracle": {
+    "value": 1.4497767803090014,
+    "se": 0.0011612211748143683,
+    "z": 0.11990444581547464,
+    "ratio": 0.02997611145386866
+   },
+   "pointwise": {
+    "line": 4.487475548090946e-18
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 18.5
+  },
+  {
+   "id": "rainbow_asian_min-L2-m16-s0",
+   "track": "options",
+   "family": "rainbow_asian_min",
+   "d": 32,
+   "reference": {
+    "value": 2.0414486625943122,
+    "uncertainty": 6.192891345945036e-06,
+    "rel_uncertainty": 3.0335768219000866e-06,
+    "e_floor": -4.52,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.022883163815770203,
+    "pair": [
+     "uniform-scaling preintegration (parallel to the kink A_1 = A_2) + RQMC 2^20 x 16",
+     "conditioning on the first increments (Stulz) + RQMC 2^20 x 16"
+    ],
+    "diff": 1.1293886927887797e-06
+   },
+   "oracle": {
+    "value": 2.041007553222959,
+    "se": 0.0009424597595520906,
+    "z": -0.46803941363641355,
+    "ratio": 0.11700985340910339
+   },
+   "pointwise": {
+    "line": 3.6437331985295025e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.0
+  },
+  {
+   "id": "rainbow_asian_min-L2-m16-s1",
+   "track": "options",
+   "family": "rainbow_asian_min",
+   "d": 32,
+   "reference": {
+    "value": 6.069380153042525,
+    "uncertainty": 1.7998098604527754e-06,
+    "rel_uncertainty": 2.965393195136322e-07,
+    "e_floor": -5.53,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.2752810564199828,
+    "pair": [
+     "uniform-scaling preintegration (parallel to the kink A_1 = A_2) + RQMC 2^20 x 16",
+     "conditioning on the first increments (Stulz) + RQMC 2^20 x 16"
+    ],
+    "diff": 1.3380640298876756e-05
+   },
+   "oracle": {
+    "value": 6.069639320003272,
+    "se": 0.0012299282298562015,
+    "z": 0.21071711635206852,
+    "ratio": 0.05267927908801713
+   },
+   "pointwise": {
+    "line": 2.780414070099547e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.0
+  },
+  {
+   "id": "rainbow_asian_min-L2-m32-s0",
+   "track": "options",
+   "family": "rainbow_asian_min",
+   "d": 64,
+   "reference": {
+    "value": 0.8940400562751258,
+    "uncertainty": 3.188221969150914e-06,
+    "rel_uncertainty": 3.5660840325590423e-06,
+    "e_floor": -4.45,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.30732422364372586,
+    "pair": [
+     "uniform-scaling preintegration (parallel to the kink A_1 = A_2) + RQMC 2^20 x 16",
+     "conditioning on the first increments (Stulz) + RQMC 2^20 x 16"
+    ],
+    "diff": 6.403231707197143e-06
+   },
+   "oracle": {
+    "value": 0.8935841061763233,
+    "se": 0.0006295466408559001,
+    "z": -0.7242504678034142,
+    "ratio": 0.18106261695085354
+   },
+   "pointwise": {
+    "line": 5.329070518200751e-15
    },
    "passed": {
     "agreement": true,
@@ -2575,6 +2349,474 @@
     "pointwise": true
    },
    "seconds": 18.6
+  },
+  {
+   "id": "rainbow_asian_min-L2-m32-s1",
+   "track": "options",
+   "family": "rainbow_asian_min",
+   "d": 64,
+   "reference": {
+    "value": 10.677255595203386,
+    "uncertainty": 1.1365550226826589e-05,
+    "rel_uncertainty": 1.0644636278944573e-06,
+    "e_floor": -4.97,
+    "method": "inverse-variance mean of the 2 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.13990162968261277,
+    "pair": [
+     "uniform-scaling preintegration (parallel to the kink A_1 = A_2) + RQMC 2^20 x 16",
+     "conditioning on the first increments (Stulz) + RQMC 2^20 x 16"
+    ],
+    "diff": 8.687934430540167e-06
+   },
+   "oracle": {
+    "value": 10.679415717567217,
+    "se": 0.0034612180207003983,
+    "z": 0.6240927491216444,
+    "ratio": 0.1560231872804111
+   },
+   "pointwise": {
+    "line": 1.9964195745561303e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 18.6
+  },
+  {
+   "id": "barrier_do_call-L1-m16-s0",
+   "track": "options",
+   "family": "barrier_do_call",
+   "d": 16,
+   "reference": {
+    "value": 12.488978890895899,
+    "uncertainty": 1.24889788908959e-12,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)"
+   },
+   "agreement": {
+    "ratio": 0.31607927755476856,
+    "pair": [
+     "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)",
+     "monotone-direction preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 0.0003038762581031307
+   },
+   "oracle": {
+    "value": 12.490391557454743,
+    "se": 0.0062986522270863715,
+    "z": 0.22428076799809882,
+    "ratio": 0.0560701919967453
+   },
+   "pointwise": {
+    "line": 3.1291469709580165e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 3.3
+  },
+  {
+   "id": "barrier_do_call-L1-m16-s1",
+   "track": "options",
+   "family": "barrier_do_call",
+   "d": 16,
+   "reference": {
+    "value": 12.057613648644288,
+    "uncertainty": 1.2057613648644288e-12,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)"
+   },
+   "agreement": {
+    "ratio": 0.3126493125569549,
+    "pair": [
+     "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)",
+     "monotone-direction preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 0.00029032127890538106
+   },
+   "oracle": {
+    "value": 12.057866560772363,
+    "se": 0.004686375823072001,
+    "z": 0.05396753005359963,
+    "ratio": 0.013491882512532074
+   },
+   "pointwise": {
+    "line": 1.1785793714496582e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 3.4
+  },
+  {
+   "id": "barrier_do_call-L1-m64-s0",
+   "track": "options",
+   "family": "barrier_do_call",
+   "d": 64,
+   "reference": {
+    "value": 7.6171927236737,
+    "uncertainty": 7.6171927236737e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)"
+   },
+   "agreement": {
+    "ratio": 0.24503427360361257,
+    "pair": [
+     "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)",
+     "monotone-direction preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 0.00039406870619096424
+   },
+   "oracle": {
+    "value": 7.616926267814584,
+    "se": 0.003118870372020134,
+    "z": -0.08543345100395412,
+    "ratio": 0.021358362749684445
+   },
+   "pointwise": {
+    "line": 5.36368302448585e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 14.7
+  },
+  {
+   "id": "barrier_do_call-L1-m64-s1",
+   "track": "options",
+   "family": "barrier_do_call",
+   "d": 64,
+   "reference": {
+    "value": 6.1527423994969626,
+    "uncertainty": 6.152742399496963e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)"
+   },
+   "agreement": {
+    "ratio": 0.0761550163063269,
+    "pair": [
+     "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)",
+     "monotone-direction preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 0.0002006163407042294
+   },
+   "oracle": {
+    "value": 6.152922542176074,
+    "se": 0.004274749692157843,
+    "z": 0.04214110581537925,
+    "ratio": 0.01053527645346572
+   },
+   "pointwise": {
+    "line": 4.330646541155735e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 15.1
+  },
+  {
+   "id": "barrier_dko_call-L1-m16-s0",
+   "track": "options",
+   "family": "barrier_dko_call",
+   "d": 16,
+   "reference": {
+    "value": 2.2892289236227783,
+    "uncertainty": 2.2892289236227785e-13,
+    "rel_uncertainty": 1.0000000000000002e-13,
+    "e_floor": -12.0,
+    "method": "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)"
+   },
+   "agreement": {
+    "ratio": 0.13407659918605136,
+    "pair": [
+     "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)",
+     "monotone-direction preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 3.7341819749237004e-05
+   },
+   "oracle": {
+    "value": 2.290381992558781,
+    "se": 0.0030277547079285223,
+    "z": 0.3808330090225607,
+    "ratio": 0.09520825225384055
+   },
+   "pointwise": {
+    "line": 2.7158703412072396e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 3.8
+  },
+  {
+   "id": "barrier_dko_call-L1-m16-s1",
+   "track": "options",
+   "family": "barrier_dko_call",
+   "d": 16,
+   "reference": {
+    "value": 0.1590892600818739,
+    "uncertainty": 1.590892600818739e-14,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)"
+   },
+   "agreement": {
+    "ratio": 0.08734565934818737,
+    "pair": [
+     "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)",
+     "monotone-direction preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 1.4070125786885823e-05
+   },
+   "oracle": {
+    "value": 0.15935335635011774,
+    "se": 0.000637129569297146,
+    "z": 0.4145095141874751,
+    "ratio": 0.1036273785462219
+   },
+   "pointwise": {
+    "line": 1.509903313490213e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 3.7
+  },
+  {
+   "id": "barrier_dko_call-L1-m64-s0",
+   "track": "options",
+   "family": "barrier_dko_call",
+   "d": 64,
+   "reference": {
+    "value": 2.269415466089926,
+    "uncertainty": 2.2694154660899262e-13,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)"
+   },
+   "agreement": {
+    "ratio": 0.10298222454882469,
+    "pair": [
+     "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)",
+     "monotone-direction preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 5.984803300584929e-05
+   },
+   "oracle": {
+    "value": 2.266747181098399,
+    "se": 0.004081847508284322,
+    "z": -0.6536954127050889,
+    "ratio": 0.16342385317400074
+   },
+   "pointwise": {
+    "line": 1.8002965043945294e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 15.7
+  },
+  {
+   "id": "barrier_dko_call-L1-m64-s1",
+   "track": "options",
+   "family": "barrier_dko_call",
+   "d": 64,
+   "reference": {
+    "value": 0.6087310841897251,
+    "uncertainty": 6.087310841897251e-14,
+    "rel_uncertainty": 1e-13,
+    "e_floor": -12.0,
+    "method": "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)"
+   },
+   "agreement": {
+    "ratio": 0.23312176020016015,
+    "pair": [
+     "recursive Gauss-Legendre quadrature of the transition kernel (QUAD)",
+     "monotone-direction preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 9.411370957357335e-05
+   },
+   "oracle": {
+    "value": 0.6112877240346528,
+    "se": 0.0013009164009843133,
+    "z": 1.9652606754694448,
+    "ratio": 0.4913151688616137
+   },
+   "pointwise": {
+    "line": 2.6201263381153694e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 15.7
+  },
+  {
+   "id": "heston_asian-L1-m16-s0",
+   "track": "options",
+   "family": "heston_asian",
+   "d": 32,
+   "reference": {
+    "value": 12.533620705922921,
+    "uncertainty": 3.082824936311034e-05,
+    "rel_uncertainty": 2.4596443506976446e-06,
+    "e_floor": -4.61,
+    "method": "inverse-variance mean of the 3 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.22093713445699645,
+    "pair": [
+     "monotone-direction preintegration + RQMC 2^20 x 16",
+     "uniform-scaling preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 9.240198462734384e-05
+   },
+   "oracle": {
+    "value": 12.533674574703344,
+    "se": 0.0007076129109589382,
+    "z": 0.07611944354381335,
+    "ratio": 0.019029860885953338
+   },
+   "pointwise": {
+    "line": 4.81872987516429e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.5
+  },
+  {
+   "id": "heston_asian-L1-m16-s1",
+   "track": "options",
+   "family": "heston_asian",
+   "d": 32,
+   "reference": {
+    "value": 13.129960287165718,
+    "uncertainty": 0.00022157091199827725,
+    "rel_uncertainty": 1.687521570151728e-05,
+    "e_floor": -3.77,
+    "method": "inverse-variance mean of the 3 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.40608001810081334,
+    "pair": [
+     "monotone-direction preintegration + RQMC 2^20 x 16",
+     "uniform-scaling preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 0.0002484249933534244
+   },
+   "oracle": {
+    "value": 13.129759021272424,
+    "se": 0.000667866232795592,
+    "z": -0.2995306247468474,
+    "ratio": 0.07488265618671185
+   },
+   "pointwise": {
+    "line": 7.035097869953457e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.5
+  },
+  {
+   "id": "heston_asian-L1-m32-s0",
+   "track": "options",
+   "family": "heston_asian",
+   "d": 64,
+   "reference": {
+    "value": 6.653193716432432,
+    "uncertainty": 4.189977518967197e-05,
+    "rel_uncertainty": 6.2976935552298054e-06,
+    "e_floor": -4.2,
+    "method": "inverse-variance mean of the 3 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.36324060908894906,
+    "pair": [
+     "monotone-direction preintegration + RQMC 2^20 x 16",
+     "uniform-scaling preintegration + RQMC 2^20 x 16"
+    ],
+    "diff": 5.1536134511920295e-05
+   },
+   "oracle": {
+    "value": 6.654781570761855,
+    "se": 0.0015030953146901356,
+    "z": 1.0563440464065617,
+    "ratio": 0.2640860116016404
+   },
+   "pointwise": {
+    "line": 1.0412731041560276e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 16.8
+  },
+  {
+   "id": "heston_asian-L1-m32-s1",
+   "track": "options",
+   "family": "heston_asian",
+   "d": 64,
+   "reference": {
+    "value": 19.174843293322407,
+    "uncertainty": 0.0004364855540829797,
+    "rel_uncertainty": 2.2763448305988752e-05,
+    "e_floor": -3.64,
+    "method": "inverse-variance mean of the 3 RQMC routes"
+   },
+   "agreement": {
+    "ratio": 0.43338891926771556,
+    "pair": [
+     "monotone-direction preintegration + RQMC 2^20 x 16",
+     "conditioning on the second asset shock + RQMC 2^20 x 16"
+    ],
+    "diff": 0.0013843197987597478
+   },
+   "oracle": {
+    "value": 19.171321162522762,
+    "se": 0.0015479189220744417,
+    "z": -2.26541215057139,
+    "ratio": 0.5663530376428475
+   },
+   "pointwise": {
+    "line": 6.299517718681051e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 16.9
   }
  ]
 }
