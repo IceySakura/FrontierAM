@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
+import localvol
 import options
 import paths
 import synthetic
@@ -13,6 +14,8 @@ from gauss import rotation
 def canonical(spec: dict):
     if spec['family'] in synthetic.FAMILIES:
         return lambda y: synthetic.value(spec, y)
+    if spec['family'] in localvol.FAMILIES:
+        return lambda y: localvol.payoff(spec, y)
     if spec['family'] in paths.FAMILIES:
         return lambda y: paths.payoff(spec, y)
     return lambda y: options.payoff(spec, y)

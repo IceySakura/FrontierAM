@@ -51,6 +51,7 @@ PUBLIC = {
                                      'env': {'FRONTIERAM_POLAR_DATA': 'wen'}},
     'blackbox-cubature-v2': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
     'blackbox-cubature-v3': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
+    'blackbox-cubature-v3.1': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
     'continuum-estimation': {'family': 'continuum-estimation', 'store': STORE, 'env': {'FRONTIERAM_CONTINUUM_DATA': 'public'}},
     'fluorescence-deconvolution': {'family': 'fluorescence-deconvolution', 'store': STORE, 'env': {'FRONTIERAM_FLUOR_DATA': 'public'}},
     # pdhcg-qp has one reference (score 100 p / (1 + g / g_ref)); its public baseline keeps the reference rows as strong.
@@ -352,7 +353,7 @@ def cubature_score(task: str, rows: list[dict], weak: list[dict], strong: list[d
         return 0.0
     if not weak or not strong:
         return None
-    if task == 'blackbox-cubature-v3':  # two tracks, cells and per-instance floors
+    if task in ('blackbox-cubature-v3', 'blackbox-cubature-v3.1'):  # two tracks, cells and per-instance floors
         from .operator_drivers.blackbox_cubature_v3 import gain as gain_v3, score_100 as score_v3
 
         as_v3 = lambda rs: [{'id': r['id'], 'track': r['track'], 'family': r['category'], 'cell': r['cell'],

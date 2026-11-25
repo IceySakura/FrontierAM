@@ -723,8 +723,9 @@ class BlackboxCubatureV3(BlackboxCubature):
         directory = Path('/run/frontieram/cubature-samples') / output.name
         directory.mkdir(parents=True)
         directory.chmod(0o755)
+        cap = [str(self.spec['sample_cap'])] if self.spec.get('sample_cap') else []
         process = subprocess.Popen([str(GRADER_PYTHON), '-B', str(ROOT / 'arena/operator_drivers/cubature_samples.py'),
-                                    str(directory), str(self.VERSION / 'data/samples/instances.json')],
+                                    str(directory), str(self.VERSION / 'data/samples/instances.json'), *cap],
                                    cwd=ROOT, stdout=subprocess.PIPE, stderr=(output / 'sample-service.log').open('wb'),
                                    text=True)
         if process.stdout.readline().strip() != 'ready':
@@ -738,6 +739,12 @@ class BlackboxCubatureV3(BlackboxCubature):
             except subprocess.TimeoutExpired:
                 process.kill()
         return ['--mount', f'type=bind,src={directory},dst=/run/cubature-samples'], stop
+
+
+class BlackboxCubatureV31(BlackboxCubatureV3):
+    """v3.1: instances that cannot be identified within the budget (anisotropic synthetic forms, local-volatility
+    options) and a capped sample oracle (task.json sample_cap); data in versions/v3.1/data, the v3 driver and code."""
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.1'
 
 
 class ContinuumEstimation(OperatorTask):
@@ -794,7 +801,7 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'species-tree': SpeciesTree, 'species-tree-v2': SpeciesTreeV2, 'species-tree-v3': SpeciesTreeV2,
            'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance,
            'blackbox-cubature': BlackboxCubature, 'blackbox-cubature-v2': BlackboxCubatureV2,
-           'blackbox-cubature-v3': BlackboxCubatureV3,
+           'blackbox-cubature-v3': BlackboxCubatureV3, 'blackbox-cubature-v3.1': BlackboxCubatureV31,
            'continuum-estimation': ContinuumEstimation, 'fluorescence-deconvolution': FluorescenceDeconvolution}
 
 

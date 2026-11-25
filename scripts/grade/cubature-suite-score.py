@@ -50,12 +50,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--store', type=Path, required=True)
     parser.add_argument('--task', default='blackbox-cubature',
-                        choices=['blackbox-cubature', 'blackbox-cubature-v2', 'blackbox-cubature-v3'])
+                        choices=['blackbox-cubature', 'blackbox-cubature-v2', 'blackbox-cubature-v3', 'blackbox-cubature-v3.1'])
     parser.add_argument('--reference')
     parser.add_argument('--candidate')
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
-    if args.task == 'blackbox-cubature-v3':
+    v3 = args.task in ('blackbox-cubature-v3', 'blackbox-cubature-v3.1')
+    if v3:
         gain, score_100 = (lambda rows, ref, _guard: blackbox_cubature_v3.gain(rows, ref)), blackbox_cubature_v3.score_100
     else:
         gain, score_100 = blackbox_cubature.gain, blackbox_cubature.score_100
@@ -77,7 +78,7 @@ def main():
             g = gain(candidate['rows'], strong['rows'], guard)
             g0 = gain([row for row in weak['rows'] if row['id'] in ids], strong['rows'], guard)
             result.update(gain=g['gain'], families=g['families'], score=score_100(g, g0))
-            if args.task == 'blackbox-cubature-v3':
+            if v3:
                 result.update(tracks=g['tracks'], mc_tracks=g0['tracks'], cells=g['cells'],
                               bounds=blackbox_cubature_v3.bound_diagnostics(candidate['rows']))
         else:

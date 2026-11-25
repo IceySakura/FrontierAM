@@ -7,9 +7,10 @@ Unix socket mounted at /run/cubature-samples/oracle.sock (workspace tools/oracle
 Requests and replies are JSON lines; one connection may send any number of requests:
     {"instance": ID, "points": [[...], ...]}  ->  {"values": [...]}     (at most 4096 rows, |z_i| <= 40)
     {"list": true}                            ->  {"instances": [{"id", "dimension"}, ...]}
-Errors reply {"error": message}. There is no budget here; the local evaluator enforces the formal limits itself.
+Errors reply {"error": message}. The local evaluator enforces the formal per-run limits itself; an optional CAP limits
+the points answered per sample over the whole attempt (v3.1: 2^18, so a sample cannot be mapped out by brute force).
 
-Usage: cubature_samples.py SOCKET_DIR INSTANCES_JSON   (prints "ready" once listening)
+Usage: cubature_samples.py SOCKET_DIR INSTANCES_JSON [CAP]   (prints "ready" once listening)
 """
 from __future__ import annotations
 
@@ -17,6 +18,7 @@ import json
 import os
 import socketserver
 import sys
+import threading
 from pathlib import Path
 
 import numpy as np
@@ -30,12 +32,14 @@ BOUND = 40.0
 
 def main():
     directory, listing = Path(sys.argv[1]), Path(sys.argv[2])
+    cap = int(sys.argv[3]) if len(sys.argv) > 3 else None
     instances = {i['id']: i for i in json.loads(listing.read_text())['instances']}
     functions = {k: oracle.make(v['spec']) for k, v in instances.items()}
+    used, lock = {k: 0 for k in instances}, threading.Lock()
 
     def answer(request: dict) -> dict:
         if request.get('list'):
-            return {'instances': [{'id': k, 'dimension': v['d']} for k, v in instances.items()]}
+            return {'instances': [{'id': k, 'dimension': v['d'], 'used': used[k], 'cap': cap} for k, v in instances.items()]}
         name = request.get('instance')
         if name not in functions:
             return {'error': f'unknown instance {name!r}'}
@@ -48,6 +52,10 @@ def main():
             return {'error': f'expected 1 to {MAX_ROWS} rows of {d} coordinates'}
         if not np.all(np.isfinite(points)) or np.any(np.abs(points) > BOUND):
             return {'error': f'coordinates must be finite with |z_i| <= {BOUND:g}'}
+        with lock:
+            if cap is not None and used[name] + len(points) > cap:
+                return {'error': f'query cap reached: {used[name]} of {cap} points used on {name} in this attempt'}
+            used[name] += len(points)
         return {'values': np.asarray(functions[name](points), dtype=float).tolist()}
 
     class Handler(socketserver.StreamRequestHandler):

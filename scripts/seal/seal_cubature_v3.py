@@ -7,7 +7,7 @@ joined with the references' errors on the samples (data/samples/reference_rows.j
 by scripts/grade/cubature-v3-samples.py). lock.json records the task image, the workspace hash and the hashes of the
 public and private instance files (which stay in the internal repository).
 
-Usage: seal_cubature_v3.py [--force]
+Usage: seal_cubature_v3.py [--version v3|v3.1] [--force] [--provisional]
 """
 from __future__ import annotations
 
@@ -23,6 +23,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3'
 SEALED = ROOT / '.runtime-ops/blackbox-cubature-v3'
+
+
+def select(version: str) -> None:
+    global VERSION, SEALED
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions' / version
+    SEALED = ROOT / '.runtime-ops' / json.loads((VERSION / 'task.json').read_text())['name']
 EXECUTABLE = {'tools/local_eval.py', 'examples/mc_submission/run.sh'}
 
 
@@ -74,11 +80,13 @@ def workspace_tar(destination: Path, provisional: bool = False) -> int:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--version', default='v3', choices=('v3', 'v3.1'))
     parser.add_argument('--force', action='store_true', help='replace an existing seal')
     parser.add_argument('--provisional', action='store_true',
                         help='no samples.json yet: lets the task image be loaded into the grading daemons early; '
                              'reseal with --force before any attempt')
     args = parser.parse_args()
+    select(args.version)
     spec_path = VERSION / 'task.json'
     spec = json.loads(spec_path.read_text())
     tag = spec['images']['task']['tag']

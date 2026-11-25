@@ -35,6 +35,7 @@ from pathlib import Path  # noqa: E402
 
 import numpy as np  # noqa: E402
 
+import localvol  # noqa: E402
 import options  # noqa: E402
 import paths  # noqa: E402
 import synthetic  # noqa: E402
@@ -57,6 +58,11 @@ FORMAL_OPTION_FAMILIES = ('asian_call', 'basket_asian_call', 'digital_asian', 'r
 RQMC_M = {'basket_asian_call': 23, 'rainbow_asian_min': 23}
 SEEDS = (0, 1)
 SAMPLE_NAMESPACE = 4
+# v3.1 (DUAL_PLAN 9.9): anisotropic synthetic forms, and local-volatility option families in place of the GBM ones.
+ANISO = 3.0
+LV_CONFIGS = (('lv_call', 1, 32), ('lv_call', 1, 64), ('lv_digital', 1, 32), ('lv_digital', 1, 64),
+              ('lv_do_call', 1, 16), ('lv_do_call', 1, 64), ('lv_dko_call', 1, 16), ('lv_dko_call', 1, 64))
+VARIANT = 'v3'
 
 
 def _synthetic(fam: str, d: int, k: int, s: int | None) -> dict:
@@ -68,33 +74,36 @@ def _synthetic(fam: str, d: int, k: int, s: int | None) -> dict:
 
 def _option(fam: str, L: int, m: int, s: int) -> dict:
     d = 2 * m if fam == 'heston_asian' else L * m
+    stream = [3, localvol.FAMILIES.index(fam), m, s] if fam in localvol.FAMILIES else [2, OPTION_FAMILIES.index(fam), L, m, s]
     return {'id': f'{fam}-L{L}-m{m}-s{s}', 'track': 'options', 'family': fam, 'L': L, 'm': m, 'd': d, 'k': None,
-            'stream': [2, OPTION_FAMILIES.index(fam), L, m, s]}
+            'stream': stream}
 
 
 def plan(only: set | None, which: str = 'prototype') -> list[dict]:
     tasks = []
-    configs = {fam: [(L, m) for f, L, m in OPTION_CONFIGS if f == fam] for fam in OPTION_FAMILIES}
+    option_configs = LV_CONFIGS if VARIANT == 'v3.1' else OPTION_CONFIGS
+    formal = localvol.FAMILIES if VARIANT == 'v3.1' else FORMAL_OPTION_FAMILIES
+    configs = {fam: [(L, m) for f, L, m in option_configs if f == fam] for fam in (*OPTION_FAMILIES, *localvol.FAMILIES)}
     if which == 'prototype':
         tasks += [_synthetic(fam, d, k, None) for fam in synthetic.FAMILIES for d in HARD_DIMS
                   for k in synthetic.k_levels(fam, d)]
-        tasks += [_option(fam, L, m, s) for fam, L, m in OPTION_CONFIGS for s in SEEDS]
+        tasks += [_option(fam, L, m, s) for fam, L, m in option_configs for s in SEEDS]
     elif which == 'private':
         tasks += [_synthetic(fam, d, k, s) for fam in synthetic.FAMILIES for d in HARD_DIMS
                   for k in synthetic.k_levels(fam, d) for s in SEEDS]
-        tasks += [_option(fam, L, m, s) for fam in FORMAL_OPTION_FAMILIES for L, m in configs[fam] for s in SEEDS]
+        tasks += [_option(fam, L, m, s) for fam in formal for L, m in configs[fam] for s in SEEDS]
     elif which == 'public':
         for fi, fam in enumerate(synthetic.FAMILIES):
             for di, d in enumerate(HARD_DIMS):
                 levels = synthetic.k_levels(fam, d)
                 tasks.append(_synthetic(fam, d, levels[(fi + di) % len(levels)], 0))
-        tasks += [_option(fam, *configs[fam][fi % 2], 0) for fi, fam in enumerate(FORMAL_OPTION_FAMILIES)]
+        tasks += [_option(fam, *configs[fam][fi % 2], 0) for fi, fam in enumerate(formal)]
     elif which == 'samples':
         for fi, fam in enumerate(synthetic.FAMILIES):
             for di, d in enumerate((8, 32)):
                 levels = synthetic.k_levels(fam, d)
                 tasks.append(_synthetic(fam, d, levels[(fi + 2 * di) % len(levels)], 0))
-        tasks += [_option(fam, *configs[fam][(fi + 1) % 2], 0) for fi, fam in enumerate(FORMAL_OPTION_FAMILIES)]
+        tasks += [_option(fam, *configs[fam][(fi + 1) % 2], 0) for fi, fam in enumerate(formal)]
     else:
         raise ValueError(which)
     if which != 'prototype':  # set-qualified IDs: the samples and public sets reuse configurations and seed 0
@@ -129,10 +138,14 @@ def build(task: dict, namespace: int, rqmc_m: int, redraw: int = 0) -> dict:
     rng = np.random.default_rng([namespace, *task['stream'], *([redraw] if redraw else [])])
     fam = task['family']
     if task['track'] == 'hard':
-        spec = synthetic.sample(fam, task['d'], task['k'], rng)
+        spec = synthetic.sample(fam, task['d'], task['k'], rng, aniso=ANISO if VARIANT == 'v3.1' else None)
         spec['rotation_seed'] = int(rng.integers(2 ** 31))
         a, b = synthetic.reference(spec), synthetic.reference_swapped(spec)
         routes = [_det_route(a['method'], a), _det_route(b['method'], b)]
+    elif fam in localvol.FAMILIES:
+        spec = localvol.sample(fam, rng, m=task['m'])
+        spec['rotation_seed'] = int(rng.integers(2 ** 31))
+        routes = localvol.references(spec)
     elif fam in paths.FAMILIES:
         spec = paths.sample(fam, rng, L=task['L'], m=task['m'])
         spec['rotation_seed'] = int(rng.integers(2 ** 31))
@@ -148,9 +161,18 @@ def build(task: dict, namespace: int, rqmc_m: int, redraw: int = 0) -> dict:
     return out
 
 
+def _build(variant: str, *args):
+    """build() in a worker process, with the variant set there too (workers do not share module state)."""
+    global VARIANT
+    VARIANT = variant
+    return build(*args)
+
+
 def cost(task: dict) -> float:
     if task['track'] != 'options':
         return task['d'] / 64
+    if task['family'] in localvol.FAMILIES:
+        return task['m'] ** 1.5 / 8
     return task['d'] * (task['m'] or 1) * 2 ** (RQMC_M.get(task['family'], 20) - 20)
 
 
@@ -158,6 +180,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('out', type=Path)
     ap.add_argument('--set', default='prototype', choices=('prototype', 'samples', 'public', 'private'))
+    ap.add_argument('--variant', default='v3', choices=('v3', 'v3.1'))
     ap.add_argument('--workers', type=int, default=6)
     ap.add_argument('--rqmc-m', type=int, default=20)
     ap.add_argument('--namespace', type=int, default=None,
@@ -170,6 +193,8 @@ def main():
     ap.add_argument('--redraw', nargs='*', default=[], help='ID=R: use the R-th redraw of that instance')
     ap.add_argument('--merge', action='store_true', help='replace only the rebuilt instances in an existing set')
     args = ap.parse_args()
+    global VARIANT
+    VARIANT = args.variant
     path = args.out / 'instances.json'
     old = json.loads(path.read_text()) if args.merge and path.exists() else None
     namespace = args.namespace
@@ -195,7 +220,7 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     results = []
     with ProcessPoolExecutor(args.workers) as pool:
-        futures = {pool.submit(build, t, namespace, args.rqmc_m, redraw.get(t['id'], 0)): t for t in tasks}
+        futures = {pool.submit(_build, args.variant, t, namespace, args.rqmc_m, redraw.get(t['id'], 0)): t for t in tasks}
         for fut in as_completed(futures):
             res = fut.result()
             ref = res['reference']
@@ -208,7 +233,7 @@ def main():
     order = {t['id']: i for i, t in enumerate(plan(None, args.set))}
     results.sort(key=lambda r: order[r['id']])
     path.write_text(json.dumps(
-        {'generator': 'tasks/blackbox-cubature/versions/v3/generation/generate.py', 'set': args.set,
+        {'generator': 'tasks/blackbox-cubature/versions/v3/generation/generate.py', 'variant': args.variant, 'set': args.set,
          'namespace': namespace, 'rqmc_m': args.rqmc_m, 'rqmc_m_by_family': RQMC_M,
          'redraws': {k: v for k, v in redraw.items() if v}, 'instances': results}, indent=1) + '\n')
     print(f'wrote {len(results)} instances to {path}')
