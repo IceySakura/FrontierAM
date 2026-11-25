@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # ihvp-sequence-v4: grade each new-model attempt on private once its submission is frozen (attempt ended), never
-# earlier, then rebuild tasks/ihvp-sequence/analysis/V4_RESULTS.md. Log: var/stores/store/reruns/ihvp-v4-finals.log
+# earlier, then rebuild tasks/ihvp-sequence/analysis/V4_RESULTS.md (V4_REPORT=0: no rebuild). Only models on the board
+# (scripts/rounds/v63-publish.py MODELS) are published. Log: var/stores/store/reruns/ihvp-v4-finals.log
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 export FRONTIERAM_RUNTIME=$PWD/.runtime-recal
@@ -13,9 +14,10 @@ grade_one() {
     [ "$sub" = - ] && { echo "{\"label\": \"$label\", \"submission\": null}"; return; }
     echo "{\"time\": \"$(date +%FT%T)\", \"event\": \"final_started\", \"label\": \"$label\", \"submission\": \"$sub\"}"
     nexus/.venv/bin/python scripts/analyze/ihvp-v4-runs.py final "$sub" "$label"
-    scripts/rounds/publish-now.sh "ihvp v4 $label"
+    nexus/.venv/bin/python scripts/analyze/ihvp-v4-runs.py scores
+    grep -q "', '$tag')" scripts/rounds/v63-publish.py && scripts/rounds/publish-now.sh "ihvp v4 $label"
 }
 for tag in ${V4_TAGS:-sol opus}; do for setting in ${V4_SETTINGS:-single iterative}; do grade_one $tag $setting & done; done
 wait
-nexus/.venv/bin/python scripts/analyze/ihvp-v4-runs.py report
+[ "${V4_REPORT:-1}" = 0 ] || nexus/.venv/bin/python scripts/analyze/ihvp-v4-runs.py report
 echo "{\"time\": \"$(date +%FT%T)\", \"event\": \"finals_done\"}"

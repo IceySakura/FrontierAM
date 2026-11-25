@@ -26,6 +26,9 @@ family() { case $1 in conic) echo conic;; exponential-v3) echo exponential;; gal
     blackbox-cubature-v2) echo blackbox-cubature;; continuum-estimation) echo continuum-estimation;; fluorescence-deconvolution) echo fluorescence-deconvolution;; pdhcg-qp-v1) echo pdhcg-qp;;
     trajectory-covariance-v2) echo trajectory-covariance;; ihvp-sequence|ihvp-sequence-v2|ihvp-sequence-v3|ihvp-sequence-v4|ihvp-sequence-v5) echo ihvp-sequence;; esac; }
 runtime() { [ "$1" = conic ] && echo "$CONIC_RT" || echo "$EXP_RT"; }
+# Only models on the board (scripts/rounds/v63-publish.py MODELS) are published: publish-now.sh commits every staged
+# change and every task's meta.json and solutions, so another model's cells stay local until the user boards it.
+publish() { grep -q "', '$TAG')" scripts/rounds/v63-publish.py && scripts/rounds/publish-now.sh "$1"; }
 # frozen submission ID; '-' for an invalid submission (scores 0); '' while running or after an infrastructure failure
 # (status unmeasured: the attempt is rerun, its log renamed, never graded)
 frozen() { python3 -c "import json,sys;r=[json.loads(l) for l in open(sys.argv[1]) if 'develop_finished' in l];print(r[-1]['submission'] if r and r[-1]['status']=='frozen' else ('-' if r and r[-1]['status']=='invalid_submission' else ''))" "$1" 2>/dev/null; }
@@ -87,7 +90,7 @@ grade() {  # setting, task
               "$attempt_log")
         cp "$STORE/dev-runs/$run/develop_result.json" "$out/develop_result.json" 2>/dev/null
         log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": null"
-        scripts/rounds/publish-now.sh "$label" &
+        publish "$label" &
         return 0
     fi
     case $task in
@@ -165,7 +168,7 @@ PY
             id=job ;;
     esac
     log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": \"$sub\", \"suite\": \"$id\""
-    scripts/rounds/publish-now.sh "$label" &
+    publish "$label" &
 }
 
 TASKS=${V63_TASKS:-"conic exponential-v3 galaxy-gravity-v3 galaxy-gravity-v4 polarization-demosaicking-v2 species-tree-v3 trajectory-covariance-v2 ihvp-sequence ihvp-sequence-v2 ihvp-sequence-v3"}
