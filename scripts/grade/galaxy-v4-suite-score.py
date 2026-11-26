@@ -4,7 +4,12 @@ Each shard part lists its cases with the mean error of the three calls (None unl
 error is the equal-weight mean over the 20 scale x family cells of the mean over each cell's snapshots; any failed
 call invalidates the submission (score 0). The score uses the v3 log mapping (arena.public_v63.galaxy_score).
 
-Usage: galaxy-v4-suite-score.py --store STORE --reference SUITE [--candidate SUITE] --out OUT.json
+With --per-group (v6.3 board since 2026-11-26, user decision) a failure costs only its cell: a cell with a failed or
+ungraded case takes the error of the 0-point anchor (classic tree, theta 0.8) in that cell, the other cells keep their
+own, and the same mean and mapping apply; a build failure thus still scores 0. The all-or-nothing score stays in
+score_complete. An infrastructure failure is not scored either way.
+
+Usage: galaxy-v4-suite-score.py --store STORE --reference SUITE [--candidate SUITE] --out OUT.json [--per-group]
 """
 
 import argparse
@@ -51,6 +56,7 @@ def main():
     parser.add_argument('--reference', required=True)
     parser.add_argument('--candidate')
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--per-group', action='store_true', help='failed cells at the 0-point anchor (see above)')
     args = parser.parse_args()
     reference = merged(args.store, args.reference)
     weak, strong = reference['weak'], reference['strong']
@@ -66,6 +72,13 @@ def main():
             result['score'] = galaxy_score(candidate['raw_error'], weak['raw_error'], strong['raw_error'])
         else:
             result['score'] = None
+        if args.per_group and candidate['status'] != 'infrastructure_failure' and result['anchors_ok']:
+            own = candidate['cells']
+            failed = sorted(k for k in weak['cells'] if own.get(k) is None)
+            cells = {k: weak['cells'][k] if k in failed else own[k] for k in weak['cells']}
+            raw = sum(cells.values()) / len(cells)
+            result.update(rule='per-group', score_complete=result['score'], failed_cells=failed, per_group_cells=cells,
+                          per_group_raw_error=raw, score=galaxy_score(raw, weak['raw_error'], strong['raw_error']))
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=1) + '\n')
     print(json.dumps({k: v for k, v in result.items() if k not in ('weak', 'strong', 'candidate')}

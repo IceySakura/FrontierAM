@@ -336,12 +336,13 @@ SCORING_DISCLOSURE['galaxy-gravity-v3'] = (
 
 SCORING_DISCLOSURE['galaxy-gravity-v4'] = (
     'Every call on every held-out snapshot must stay within that snapshot\'s own CPU limit (given in GALAXY_CPU_LIMIT_S), '
-    'the wall-clock and memory limits, and return finite accelerations for all particles; a single failed call makes '
-    'the whole submission score zero. Snapshots come in four sizes from 65,536 to 4,194,304 particles. Given validity, '
-    'the score depends only on the relative acceleration error averaged with equal weight over the 20 size x scene '
-    'combinations, on a logarithmic scale: matching a standard tree code scores zero, matching an improved tree-code '
-    'reference is the midpoint of the scale, and an error of 1e-15 (double precision) is the maximum. Using less CPU '
-    'time earns nothing extra.'
+    'the wall-clock and memory limits, and return finite accelerations for all particles. Snapshots come in four sizes '
+    'from 65,536 to 4,194,304 particles. The score depends only on the relative acceleration error averaged with equal '
+    'weight over the 20 size x scene combinations, on a logarithmic scale: matching a standard tree code scores zero, '
+    'matching an improved tree-code reference is the midpoint of the scale, and an error of 1e-15 (double precision) is '
+    'the maximum. A failed call costs its whole size x scene combination, which then counts at the standard tree '
+    'code\'s error; a failed build fails every combination. Using less CPU time earns nothing extra. The submission '
+    'directory may hold at most 256 MiB.'
 )
 
 SCORING_DISCLOSURE['ihvp-sequence'] = (
@@ -354,10 +355,23 @@ SCORING_DISCLOSURE['ihvp-sequence'] = (
 )
 SCORING_DISCLOSURE['polarization-demosaicking'] = (
     'Every held-out scene must be reconstructed within its wall-clock limit (startup and imports included), memory '
-    'limit and output contract; a single failed scene makes the whole submission score zero. Given that, the score '
+    'limit and output contract; a single failed scene makes the whole submission score zero, except that a scene that '
+    'only ran over its limit is run once more in a second grading of the same submission and passes if either run '
+    'finished within the limit. Given that, the score '
     'depends only on the mean RMSE over all scenes and the four angles, compared with two reference methods measured on '
     'the same scenes and limits: matching the weaker one scores zero, matching the stronger one is the midpoint of the '
     'scale and zero error is the maximum. Speed within the limit earns nothing extra, so keep a safety margin under it.'
+)
+SCORING_DISCLOSURE['exponential-v3'] = (
+    'Every control case must return results within its limits and accuracy tolerance, or the submission scores zero. '
+    'Each scored case counts on its own: within its limits and accuracy tolerance it scores 100 / (1 + r), where r is '
+    'your time on it divided by the fastest time of a panel of published methods on that case (Expokit, KIOPS, '
+    'expmv, SciPy expm_multiply, a Chebyshev method, SLEPc MFN, ExponentialUtilities.jl); a failed case scores zero. '
+    'Case scores are averaged with equal weight over matrices, structure families, scenarios and accuracy levels, so '
+    'matching the per-case fastest published method everywhere is the midpoint of the scale and being faster scores '
+    'higher. Timing follows the task\'s own interface rules (API.md): it starts before the first matrix byte is '
+    'delivered and ends when all results are out and the process has exited; imports and input-independent '
+    'initialisation before READY are not timed.'
 )
 SCORING_DISCLOSURE['blackbox-cubature-v2'] = (
     'Every held-out instance runs once in a fresh process within 30 wall-clock seconds and the 2048-point query budget; '

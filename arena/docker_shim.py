@@ -22,6 +22,12 @@ def rewrite(args: list[str], config: dict) -> list[str]:
             out += [arg, config['platform'] if arg == '--platform' else config['cpuset']]
             i += 2
             continue
+        if config.get('tmp_exec') and arg == '--tmpfs' and i + 1 < len(args) and args[i + 1].startswith('/tmp:') \
+                and 'exec' not in args[i + 1].split(':', 1)[1].split(','):
+            # Docker mounts a tmpfs noexec unless told otherwise; the development container's /tmp is executable.
+            out += [arg, args[i + 1] + ',exec']
+            i += 2
+            continue
         if arg.startswith('--platform='):
             out.append('--platform=' + config['platform'])
         elif arg.startswith('--cpuset-cpus='):

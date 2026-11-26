@@ -5,7 +5,14 @@ i). This merges the shards of each suite, builds the per-case virtual best of th
 100 / (1 + R) of the v1 scorer, the geometric speed ratio with its hierarchical bootstrap interval, the winner per
 case and every failure. Writes results to OUT/score.json with merged run reports beside it.
 
+With --per-case (v6.3 board since 2026-11-26, user decision) a failed case no longer zeroes the submission: each
+scored case gets 100 / (1 + r) when valid and 0 when not, averaged with the scorer's five-level equal weights (workloads
+within mother, mothers within family, families within scenario, scenarios within precision, precisions); a failed
+control still invalidates. A candidate as fast as the panel's per-case best still scores 50. The whole-submission
+score of the v1 rule stays in score_complete.
+
 Usage: exp2-suite-score.py --store STORE [--panel-store STORE] --panel PANEL_SUITE --candidate CANDIDATE_SUITE --out OUT
+       [--per-case]
 """
 
 import argparse
@@ -42,6 +49,21 @@ def merged_parts(store: Path, suite: str, out: Path) -> dict:
     return parts
 
 
+LEVELS = ('precision', 'scenario', 'family', 'mother')
+
+
+def per_case_score(cases: list[dict], case_results: dict) -> float:
+    def mean(group: list[dict], depth: int) -> float:
+        if depth == len(LEVELS):
+            return sum(100 / (1 + case_results[c['id']]['relative_time']) if case_results[c['id']]['valid'] else 0.0
+                       for c in group) / len(group)
+        parts: dict[str, list[dict]] = {}
+        for case in group:
+            parts.setdefault(case[LEVELS[depth]], []).append(case)
+        return sum(mean(part, depth + 1) for part in parts.values()) / len(parts)
+    return mean([c for c in cases if c['role'] == 'scored'], 0)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--store', type=Path, default=ROOT / 'var/stores/store', help='store holding the candidate suite')
@@ -52,6 +74,10 @@ def main():
     parser.add_argument('--task', default='exponential-v2', help='exponential-v3 validates with the v6.3 limits')
     parser.add_argument('--extra-panel', action='append', default=[], metavar='STORE:SUITE',
                         help='another panel measurement (e.g. one added member) joining the virtual best')
+    parser.add_argument('--per-case', action='store_true', help='per-case scores (see above) instead of all-or-nothing')
+    parser.add_argument('--recheck', action='append', default=[], metavar='SUITE',
+                        help='a quiet re-measurement of some candidate cases (scripts/grade/exp-cpu-recheck.py); '
+                             'its aggregates replace those of the same cases')
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     task = TASKS[args.task]
@@ -61,12 +87,17 @@ def main():
         store, suite = extra.split(':', 1)
         panel['parts'].update(merged_parts(Path(store), suite, args.out))
     candidate = merged_parts(args.store, args.candidate, args.out)['candidate']
+    rechecked = {}
+    for suite in args.recheck:
+        for case_id, aggregate in merged_parts(args.store, suite, args.out)['candidate']['aggregates'].items():
+            candidate['aggregates'][case_id], rechecked[case_id] = aggregate, suite
     ok, reason = task.baseline_ok(panel)
     reference, winners, uncovered = task.virtual_best(panel)
     result = {'panel_suite': args.panel, 'candidate_suite': args.candidate, 'panel_ok': ok, 'panel_reason': reason,
               'uncovered_cases': uncovered,
               'member_valid_cases': {m: sum(a['valid'] for a in p['aggregates'].values())
-                                     for m, p in panel['parts'].items()}}
+                                     for m, p in panel['parts'].items()},
+              **({'rechecked_cases': rechecked} if rechecked else {})}
     if candidate['status'] != 'ok':
         result.update(status='invalid_submission', score=0.0, reason=candidate['reasons'])
     elif uncovered:
@@ -77,6 +108,13 @@ def main():
                       failed_cases=scored['failed_cases'], winners=winners,
                       speed_ratio=speed_ratio(cases, candidate, panel) if scored['status'] == 'ok' else None,
                       case_results=scored['case_results'])
+        if args.per_case:
+            result.update(rule='per-case', score_complete=scored['score'], controls_valid=scored['controls_valid'],
+                          score=per_case_score(cases, scored['case_results']) if scored['controls_valid'] else 0.0,
+                          status='ok' if scored['controls_valid'] else 'invalid_submission',
+                          valid_scored_cases=sum(1 for c in cases if c['role'] == 'scored'
+                                                 and scored['case_results'][c['id']]['valid']),
+                          scored_cases=sum(1 for c in cases if c['role'] == 'scored'))
     (args.out / 'score.json').write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({k: v for k, v in result.items() if k not in ('case_results', 'winners')}, indent=1))
 

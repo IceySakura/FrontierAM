@@ -43,6 +43,7 @@ class OperatorTask(Task):
     grade_isolation = 'shared'
     paired = False
     grade_timeout = 6 * 3600
+    tmp_exec = False          # True: the shim makes the grader's /tmp tmpfs executable (arena/docker_shim.py)
 
     def __init__(self, spec: dict):
         self.spec = spec
@@ -102,7 +103,8 @@ class OperatorTask(Task):
         wrapper.write_text(f'#!/bin/sh\nexec {sys.executable} -IS {ROOT / "arena/docker_shim.py"} "$@"\n')
         wrapper.chmod(0o755)
         config = {'platform': 'linux/amd64', 'cpuset': placement.cpuset, 'cgroup_parent': placement.cgroup_parent,
-                  'images': {old: lock['image']['id'] for old in lock['image']['replaces']}, 'log': str(log)}
+                  'images': {old: lock['image']['id'] for old in lock['image']['replaces']}, 'log': str(log),
+                  'tmp_exec': self.tmp_exec}
         return {**os.environ, 'PATH': f'{shim_dir}:{os.environ.get("PATH", "/usr/bin:/bin")}',
                 'DOCKER_HOST': placement.docker_host, 'FRONTIERAM_REAL_DOCKER': shutil.which('docker'),
                 'FRONTIERAM_DOCKER_SHIM': json.dumps(config), 'PYTHONDONTWRITEBYTECODE': '1'}
@@ -203,8 +205,10 @@ class GalaxyGravityV4(GalaxyGravityV3):
     cells with equal weight, then applies the v3 log mapping.
 
     FRONTIERAM_GALAXY_DATA=public grades the feedback pool. FRONTIERAM_GALAXY_V4_TIMING=<seconds> replaces every case
-    limit by that value (limit calibration, scripts/analyze/galaxy-v4-calibrate.py)."""
+    limit by that value (limit calibration, scripts/analyze/galaxy-v4-calibrate.py). The grader's /tmp allows
+    execution as the development container's does (tmp_exec; user decision 2026-11-26)."""
     grade_timeout = 8 * 3600
+    tmp_exec = True
 
     def cases(self) -> list[dict]:
         if os.environ.get('FRONTIERAM_GALAXY_DATA') == 'public':
@@ -235,12 +239,18 @@ class GalaxyGravityV4(GalaxyGravityV3):
         return {'exit_status': 'finished', 'kind': 'candidate',
                 'parts': {'candidate': self.run_grader(source, output / 'candidate', placement, case_ids)}}
 
+    max_submission_bytes = 256 * 2**20    # stated in SCORING_DISCLOSURE (user decision 2026-11-26)
+
     def run_grader(self, source, out, placement, case_ids=None):
         root = self.root()
         cases = self.cases()
         if case_ids:
             wanted = set(case_ids)
             cases = [c for c in cases if c['case'] in wanted]
+        size = sum(p.stat().st_size for p in Path(source).rglob('*') if p.is_file() and not p.is_symlink())
+        if size > self.max_submission_bytes and not (Path(source) / PAIR).exists():
+            return {'status': 'submission_failure', 'reason': f'submission holds {size} bytes, above the 256 MiB limit',
+                    'raw_error': None, 'package_score': None, 'calls': 0, 'cases': [], 'max_cpu_s': None}
         config = {'image': self.lock()['image']['id'], 'cpu': int(placement.cpuset), 'repeats': 3, 'mode': 'diagnostic',
                   'cases': cases}
         out.parent.mkdir(parents=True, exist_ok=True)
@@ -785,20 +795,26 @@ class BlackboxCubatureV33(BlackboxCubatureV32):
 
 class ContinuumEstimation(OperatorTask):
     """The author's continuum-estimation 1.0.1 verifier, ported to x86-64 (arena/operator_drivers/continuum.py).
-    Private: the 60 primary cases; public feedback (FRONTIERAM_CONTINUUM_DATA=public): the 8 public examples. The
-    weak and strong references rerun here are the 0- and 50-point anchors (the package's 0/5/10 mapping, x10)."""
+    Since 2026-11-26 (user decision) the 60 primary cases are split (versions/v1/data/private/feedback-split.json):
+    private = the 45 scored cases; public feedback (FRONTIERAM_CONTINUUM_DATA=public) = the 15 held-out feedback cases,
+    no longer the 8 examples whose truth is in the workspace. FRONTIERAM_CONTINUUM_DATA=primary or public8 reproduces
+    the earlier 60-case and 8-example gradings. The weak and strong references rerun here are the 0- and 50-point
+    anchors (the package's 0/5/10 mapping, x10)."""
     grade_memory = 4 * GIB
     grade_timeout = 3 * 3600
+    split = ROOT / 'tasks/continuum-estimation/versions/v1/data/private/feedback-split.json'
 
     def data_set(self) -> str:
-        return 'public' if os.environ.get('FRONTIERAM_CONTINUUM_DATA') == 'public' else 'primary'
+        value = os.environ.get('FRONTIERAM_CONTINUUM_DATA')
+        return {'public': 'feedback', 'public8': 'public', 'primary': 'primary'}.get(value, 'scored')
 
     def run_grader(self, source, out, placement):
         out.parent.mkdir(parents=True, exist_ok=True)
         driver = ROOT / 'arena/operator_drivers/continuum.py'
         done = subprocess.run([str(GRADER_PYTHON), '-B', str(driver), str(self.root()), str(self.sealed / 'workspace'),
                                str(source), str(out), '--image', self.lock()['image']['id'], '--cpuset', placement.cpuset,
-                               '--cgroup-parent', placement.cgroup_parent, '--partition', self.data_set()],
+                               '--cgroup-parent', placement.cgroup_parent, '--partition', self.data_set(),
+                               '--split', str(self.split)],
                               env={**os.environ, 'DOCKER_HOST': placement.docker_host},
                               capture_output=True, text=True, timeout=self.grade_timeout)
         (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)

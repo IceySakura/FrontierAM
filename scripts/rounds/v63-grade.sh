@@ -42,8 +42,21 @@ suite() {  # task, submission|--reference -> suite id; grades it now
     local task=$1 target=$2 id
     id=$(FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE suite --task "$task" $target --shards 7 \
          --isolation "$(isolation "$task")" --cap-s $CAP | last_id) || return 1
-    FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE grade-worker --task "$task" --workers 7 --drain \
-        >> var/stores/store/reruns/v63-worker.log 2>&1
+    # every shard unpacks the submission: above 200 MB, start the shards 90 s apart so the unpacking does not stall
+    # the grader's `docker create` past its 30 s (qwen4 galaxy v4, 985 MB, 11-26)
+    local size=0
+    case $target in --submission*) size=$(stat -c %s "$STORE/submissions/${target#--submission }/source.tar" 2>/dev/null || echo 0);; esac
+    if [ "$size" -gt 209715200 ]; then
+        for _ in 1 2 3 4 5 6 7; do
+            FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE grade-worker --task "$task" --workers 1 --drain \
+                >> var/stores/store/reruns/v63-worker.log 2>&1 &
+            sleep 90
+        done
+        wait
+    else
+        FRONTIERAM_RUNTIME=$(runtime "$task") ./bench --store $STORE grade-worker --task "$task" --workers 7 --drain \
+            >> var/stores/store/reruns/v63-worker.log 2>&1
+    fi
     # another loop's worker for the same task may still be grading some of this suite's shards
     # a shard that is in no queue and not done has failed: give up this suite (the cell is regraded on a later pass)
     local state
@@ -111,13 +124,15 @@ PY
         exponential-v3)
             id=$(suite exponential-v3 "--submission $sub") || return 1
             .venv-ops/bin/python scripts/grade/exp2-suite-score.py --task exponential-v3 --store $STORE --panel-store var/stores/store \
-                --panel $PANEL --candidate "$id" --out "$out" \
+                --panel $PANEL --candidate "$id" --out "$out" --per-case \
+                >> var/stores/store/reruns/v63-score.log 2>&1
+            .venv-ops/bin/python scripts/grade/exp-cpu-recheck.py --store $STORE --candidate "$id" --out "$out" \
                 >> var/stores/store/reruns/v63-score.log 2>&1 ;;
         galaxy-gravity-v4)
             done_event anchor "$task" || return 1
             id=$(suite "$task" "--submission $sub") || return 1
             .venv-ops/bin/python scripts/grade/galaxy-v4-suite-score.py --store $STORE --reference "$(value anchor "$task" suite)" \
-                --candidate "$id" --out "$out/score.json" >> var/stores/store/reruns/v63-score.log 2>&1 ;;
+                --candidate "$id" --out "$out/score.json" --per-group >> var/stores/store/reruns/v63-score.log 2>&1 ;;
         blackbox-cubature-v2)
             done_event anchor "$task" || return 1
             id=$(suite "$task" "--submission $sub") || return 1
@@ -165,6 +180,8 @@ if metrics.exists():  # raw error and the run details of the candidate part
     record['candidate'] = json.loads(metrics.read_text())['parts'].get('candidate')
 json.dump(record, open(f'{out}/score.json', 'w'), indent=1)
 PY
+            [ "$(family "$task")" = polarization-demosaicking ] && .venv-ops/bin/python scripts/grade/polarization-retry.py \
+                --store $STORE --submission "$sub" --out "$out" >> var/stores/store/reruns/v63-score.log 2>&1
             id=job ;;
     esac
     log "\"event\": \"graded\", \"label\": \"$label\", \"submission\": \"$sub\", \"suite\": \"$id\""
