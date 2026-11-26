@@ -22,6 +22,7 @@ BASELINES = ROOT / 'var/stores/store-v63/baselines/polarization-demosaicking-v3'
 
 
 def main() -> None:
+    import arena.tasks  # noqa: F401  (imported first: arena.operator_tasks alone hits the import cycle)
     from arena.operator_tasks import score_100
     scored = json.loads(SPLIT.read_text())['scored']
     baseline = json.loads((BASELINES / (BASELINES / 'ACTIVE').read_text().strip() / 'baseline.json').read_text())

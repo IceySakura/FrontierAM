@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # polarization-demosaicking-v3 after the feedback split (2026-11-26, results/OPEN_ITEMS.md): once the formal baseline
-# re-measured on the 116 scored scenes is active, rescore every v6.3 cell from its per-scene results, measure the
-# feedback baseline on the 16 held-out scenes, run one feedback evaluation as a check, publish, then (after the
+# on the 116 scored scenes is active, rescore every v6.3 cell from its per-scene results, check the feedback baseline on
+# the 16 held-out scenes, run one feedback evaluation as a check, publish, then (after the
 # continuum reruns' lane has finished) rerun the 8 iterative cells (v63-lane.sh, at most MAX at a time) with one grading
 # loop per model (v63-grade.sh grades polarization only while development is idle, and publishes each cell).
 # Stops at the first failed check. Usage: polarization-split-chain.sh [MAX]   (log: var/stores/store/reruns/polarization-split-chain.log)
@@ -27,7 +27,8 @@ say '"event": "formal_baseline_116"'
 
 .venv-ops/bin/python scripts/grade/polarization-rescore-116.py >> $LOG 2>&1 || { say '"event": "rescore_failed"'; exit 1; }
 
-./bench public-baseline-v63 --task polarization-demosaicking-v3 --replace >> $LOG 2>&1
+# the feedback anchors come from the qualified reference run (scripts/grade/polarization-anchors-116.py): a re-measure
+# with development running timed the strong reference out at 1.0009 s on two scenes
 python3 - "$SPLIT" <<'PY' || { say '"event": "feedback_baseline_failed"'; exit 1; }
 import json, sys
 b = json.load(open('var/stores/store-public-v63/public-baselines/polarization-demosaicking-v3.json'))

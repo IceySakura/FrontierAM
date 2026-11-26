@@ -11,7 +11,8 @@ not include attempt-to-attempt variation of the model. Cells that failed all-or-
   trajectory-covariance-v2      mean over the 30 setting x prefix cells of the mean loss; parent chains are resampled
                                 within each setting (all five prefixes of a parent together), linear mapping
 
-Usage: case-bootstrap.py [--resamples 2000] [--seed 0]   -> var/raw/case-bootstrap.json and a table on stdout
+Usage: case-bootstrap.py [--resamples 2000] [--seed 0]   -> results/case-bootstrap.json and a table on stdout
+(scores and their spread only; scripts/rounds/v63-publish.py marks the neighbours it cannot separate)
 """
 
 import argparse
@@ -161,7 +162,7 @@ def bootstrap(cells: dict, weak: dict, strong: dict, resamples: int, rng: random
     for setting in SETTING:
         ranked = sorted((k for k in cells if k[1] == setting), key=lambda k: -out[k]['score'])
         for a, b in zip(ranked, ranked[1:]):
-            out[a][f'p_above_next'] = sum(x > y for x, y in zip(draws[a], draws[b])) / resamples
+            out[a].update(p_above_next=sum(x > y for x, y in zip(draws[a], draws[b])) / resamples, next=b[0])
     return {'cases': len(keys), 'cells': out}
 
 
@@ -178,7 +179,7 @@ def main() -> None:
         for (model, setting), c in sorted(result[task]['cells'].items(), key=lambda kv: (kv[0][1], -kv[1]['score'])):
             above = f'  P(> next) {c["p_above_next"]:.2f}' if 'p_above_next' in c else ''
             print(f'  {setting} {model:20s} {c["score"]:6.1f}  sd {c["sd"]:4.2f}  90% [{c["ci90"][0]:.1f}, {c["ci90"][1]:.1f}]{above}')
-    out = ROOT / 'var/raw/case-bootstrap.json'
+    out = ROOT / 'results/case-bootstrap.json'
     out.write_text(json.dumps({t: {'cases': r['cases'], 'cells': {f'{m}/{s}': c for (m, s), c in r['cells'].items()}}
                                for t, r in result.items()}, indent=1, ensure_ascii=False) + '\n')
 

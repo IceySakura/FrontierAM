@@ -92,6 +92,7 @@ def main():
     metrics = store / 'results' / second['id'] / 'grade/metrics.json'
     second['candidate'] = json.loads(metrics.read_text())['parts'].get('candidate') if metrics.exists() else {}
     if composed is not None:
+        import arena.tasks  # noqa: F401  (imported first: arena.operator_tasks alone hits the import cycle)
         from arena.operator_tasks import score_100
         from arena.store import Store
         error = math.fsum(float(r['mean_rmse']) for r in composed) / len(composed)

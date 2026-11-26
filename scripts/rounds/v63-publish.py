@@ -192,6 +192,31 @@ NOTES[('galaxy-gravity-v4', 'single', 'minimax-m3.1-flash')] = (
     '原评分构建失败：`build.sh` 把 CPU 检测小程序编译到 `/tmp` 再执行，评测构建容器的 `/tmp` 不可执行（Docker tmpfs 默认 noexec），'
     '开发容器可执行，题面未写明，属评测设施与开发环境不一致；11-26 起构建容器的 `/tmp` 可执行，同一冻结提交重评，以重评为准'
     '（原结果留作 `score.tmp-noexec.json`，results/OPEN_ITEMS.md）。60 分钟到时截停。')
+# Neighbours the case-resampling bootstrap cannot separate (results/case-bootstrap.json from
+# scripts/analyze/case-bootstrap.py; user decision 2026-11-26: mark them instead of running extra attempts). Test-case
+# sampling only, not attempt-to-attempt spread; a mark applies only while the cell still has the bootstrapped score.
+TIE_P = 0.9
+TIE_NOTE = '按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：'
+
+
+def ties() -> dict:
+    """(task, setting, model) -> (bootstrapped score, ['other（本格领先的概率 p）', ...])."""
+    path = ROOT / 'results/case-bootstrap.json'
+    out = {}
+    for task, result in (json.loads(path.read_text()) if path.exists() else {}).items():
+        cells = result['cells']
+        for key, cell in cells.items():
+            model, label = key.rsplit('/', 1)
+            if cell.get('p_above_next') is None or cell['p_above_next'] >= TIE_P:
+                continue
+            setting, other, p = {'单轮': 'single', '迭代': 'iterative'}[label], cell['next'], cell['p_above_next']
+            out.setdefault((task, setting, model), (cell['score'], []))[1].append(f'{other}（本格领先的概率 {p:.2f}）')
+            out.setdefault((task, setting, other), (cells[f'{other}/{label}']['score'], []))[1].append(
+                f'{model}（本格领先的概率 {1 - p:.2f}）')
+    return out
+
+
+TIES = ties()
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
@@ -376,7 +401,12 @@ def main():
                     note = REGRADE[(task, setting, model)] + ('以重评为准。' if regraded else '重评待开发槽全空后进行。')
                     if (task, setting, model) in PENDING and n < RERUN[(task, setting, model)][0]:
                         note += PENDING[(task, setting, model)]
+                tie = TIES.get((task, setting, model))
+                tie = tie[1] if tie and value is not None and abs(value - tie[0]) < 0.05 else None
+                if tie:
+                    note = ' '.join(filter(None, (note, TIE_NOTE + '；'.join(tie) + '。')))
                 results.append({'model': model, 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': n,
+                                **({'tie': True} if tie else {}),
                                 'submission': submission_of(task, setting, n, tag), 'store': 'var/stores/store-v63', 'raw': raw,
                                 'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),
                                 'notes_md': note, **({'folder': name} if task in SUBFOLDER else {}), **reviews.get((model, SETTING[setting]), {})})

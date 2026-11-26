@@ -224,7 +224,7 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
         lines += [f'## 模型成绩与解法（题目版本 {group.get("version")} · 协议 {protocol}）', '', group['title'], '',
                   '| 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |', '| --- | --- | --- | --- | --- | --- | --- |']
         for r, folder, _ in rows:
-            score = '—' if r.get('score') is None else f'{r["score"]:.1f}'
+            score = '—' if r.get('score') is None else f'{r["score"]:.1f}' + ('≈' if r.get('tie') else '')
             link = f'[`{folder}/`](solutions/{protocol}/{folder}/)' if folder else ''
             process = process_text(r.get('_process'), r.get('setting') == '迭代')
             lines.append(f'| {MODEL.get(r["model"], r["model"])} | {r.get("setting", "")} | {r["raw"]} | {r["mapping"]} | {score} | {process} | {link} |')
@@ -270,7 +270,7 @@ def write_board(metas: list[dict], names: list[str]) -> None:
         for model, setting in columns:
             hits = sorted((r for r in results if r['model'] == model and r.get('setting', '单轮') == setting),
                           key=lambda r: r.get('attempt', 1))
-            row_s.append(' / '.join('—' if r.get('score') is None else f'{r["score"]:.1f}'
+            row_s.append(' / '.join('—' if r.get('score') is None else f'{r["score"]:.1f}' + ('≈' if r.get('tie') else '')
                                     for r in hits))
             row_p.append(' / '.join(process_text(r.get('_process'), setting == '迭代') or '—' for r in hits))
         link = f'[{name}](tasks/{name}/README.md)'
@@ -285,7 +285,7 @@ def write_board(metas: list[dict], names: list[str]) -> None:
     charts = (f'![平均分 · compared by 迭代](dashboard/assets/{CHART_FILES["迭代"]})\n\n'
               f'<details><summary>Compared by 单轮</summary>\n\n![平均分 · compared by 单轮](dashboard/assets/{CHART_FILES["单轮"]})\n\n</details>')
     board = (f'协议 {protocol}；更早协议与题目版本的成绩见各题 README。' + '\n\n' + charts + '\n\n'
-             + '\n'.join(scores) + '\n\n满分 100，参照 = 50；列按迭代平均分排序（还缺格的行按缺格记 0 估算位置）；平均为各题分数的简单平均，没有成绩的题不计。\n\n**提交次数与用时**\n\n'
+             + '\n'.join(scores) + '\n\n满分 100，参照 = 50；列按迭代平均分排序（还缺格的行按缺格记 0 估算位置）；平均为各题分数的简单平均，没有成绩的题不计；≈ 表示与同一题、同一设置的相邻名次按测试用例重抽分不开（领先概率低于 0.9；只计用例抽样，不含尝试间波动）。\n\n**提交次数与用时**\n\n'
              + '\n'.join(process))
     readme = ROOT / 'README.md'
     text = readme.read_text()

@@ -87,6 +87,11 @@ def fmt_score(score) -> str:
     return '—' if score is None else f'{score:.1f}'
 
 
+def tie_mark(r: dict) -> str:
+    """≈ for a cell the case-resampling bootstrap cannot separate from a neighbour (scripts/rounds/v63-publish.py)."""
+    return '<span title="按测试用例重抽与同设置的相邻名次分不开">≈</span>' if r.get('tie') else ''
+
+
 def model_name(model: str) -> str:
     return MODEL_NAMES.get(model, model)
 
@@ -265,7 +270,7 @@ def result_rows(task: dict, group: dict) -> str:
         rows.append(f'<tr><td><a href="#{anchor_of(r)}">{html.escape(model_name(r["model"]))}</a></td>'
                     f'<td>{html.escape(protocol_label(r))}</td>'
                     f'<td>{md(r["raw"])[3:-4]}</td><td>{md(r["mapping"])[3:-4]}</td>'
-                    f'<td class="num score {score_class(r["score"])}">{fmt_score(r["score"])}</td>'
+                    f'<td class="num score {score_class(r["score"])}">{fmt_score(r["score"])}{tie_mark(r)}</td>'
                     f'<td>{html.escape(process_cell(task, r))}</td></tr>')
     return ('<table><tr><th>模型</th><th>协议</th><th>原始指标</th><th>换算</th><th class="num">得分（满分 100）</th>'
             '<th>提交次数与用时</th></tr>' + ''.join(rows) + '</table>')
@@ -389,7 +394,7 @@ def task_page(task: dict) -> str:
             body.append('<details><summary>旧版本的做法</summary>')
         for r in ordered(group['results']):
             body.append(f'<h3 id="{anchor_of(r)}">{html.escape(model_name(r["model"]))}（{html.escape(protocol_label(r))}）'
-                        f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span></h3>')
+                        f' <span class="score {score_class(r["score"])}">{fmt_score(r["score"])}{tie_mark(r)}</span></h3>')
             if r.get('notes_md'):
                 body.append(f'<div class="note">{md(r["notes_md"])}</div>')
             if r.get('setting') == '迭代':
@@ -435,7 +440,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
             for setting in ('单轮', '迭代'):
                 same = [r for r in hit if r.get('setting', '单轮') == setting]
                 if same:
-                    scores = ' / '.join(f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}</span>'
+                    scores = ' / '.join(f'<span class="score {score_class(r["score"])}">{fmt_score(r["score"])}{tie_mark(r)}</span>'
                                         for r in same)
                     count = f'（{len(same)} 次）' if len(same) > 1 else ''
                     process = ' / '.join(filter(None, (process_cell(task, r) for r in same)))
@@ -471,7 +476,8 @@ def index_page(site: dict, tasks: list[dict]) -> str:
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
             f'{charts}'
             '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。'
-            '列按迭代平均分排序（还缺格的行按缺格记 0 估算位置）；最后一行为各题分数的简单平均（没有成绩的题不计）。旧版本的成绩在表格下方折叠。</p>'
+            '列按迭代平均分排序（还缺格的行按缺格记 0 估算位置）；最后一行为各题分数的简单平均（没有成绩的题不计）。'
+            '≈ 表示与同一题、同一设置的相邻名次按测试用例重抽分不开（领先概率低于 0.9；只计用例抽样，不含尝试间波动）。旧版本的成绩在表格下方折叠。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>'
             + (f'<details><summary>旧版本的成绩（{len(history)} 组）</summary>'
                f'<table class="matrix"><tr><th>题目 / 版本</th>{old_head}</tr>{"".join(history)}</table></details>' if history else ''))
