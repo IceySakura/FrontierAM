@@ -200,12 +200,13 @@ def _galaxy(out: Path) -> list[dict]:
 
 
 def _polarization(out: Path) -> list[dict]:
-    if (out / 'per_scene.csv').exists():  # v3 (grade_vnext.py)
+    if (out / 'per_scene.csv').exists():  # v3 (grade_vnext.py); held-out feedback scenes are staged as dataset__scene
         import csv
         rows = []
         for r in csv.DictReader((out / 'per_scene.csv').open()):
             status = 'passed' if r['status'] == 'ok' else 'timeout' if 'timeout' in r['status'] else feedback.status_of(r['status'])
-            rows.append({'id': f'{r["dataset"]}/{r["scene"]}', 'category': 'all', 'status': status,
+            dataset, scene = r['scene'].split('__', 1) if '__' in r['scene'] else (r['dataset'], r['scene'])
+            rows.append({'id': f'{dataset}/{scene}', 'category': dataset if '__' in r['scene'] else 'all', 'status': status,
                          'accuracy': float(r['mean_rmse']) if status == 'passed' and r.get('mean_rmse') else None,
                          'seconds': float(r['wall_s']) if r.get('wall_s') else None})
         return rows

@@ -131,6 +131,15 @@ for _model in ('gpt-6.2-sol', 'gpt-6-astra', 'gpt-6.1-sol', 'claude-opus-5-5', '
     RERUN[('continuum-estimation', 'iterative', _model)] = (_n, CONTINUUM_SPLIT.format(_n))
     PENDING[('continuum-estimation', 'iterative', _model)] = (
         f'反馈集改为 15 个留出例后的第 {_n} 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。')
+# polarization iteratives (user decision 2026-11-26): the feedback was the five shipped Wen5 scenes; it became 16 held-out
+# formal scenes (Qiu 4, Wen 12), scored on the other 116; every iterative cell is rerun.
+POL_SPLIT = ('此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；'
+             '11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，'
+             '本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。')
+for _model in ('gpt-6.2-sol', 'gpt-6-astra', 'gpt-6.1-sol', 'claude-opus-5-5', 'hy4', 'qwen4-max', 'qwen3.8-max-0902', 'minimax-m3.1-flash'):
+    RERUN[('polarization-demosaicking-v3', 'iterative', _model)] = (2, POL_SPLIT)
+    PENDING[('polarization-demosaicking-v3', 'iterative', _model)] = (
+        '反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。')
 # gpt-6-astra runs on the user's ChatGPT Pro account through the Codex backend instead of AI Hub (user decision 2026-11-21).
 ASTRA_ROUTE = ('经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token'
                '（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的'
@@ -295,8 +304,10 @@ def cell(task: str, score: dict) -> tuple[str, str]:
     if family == 'polarization-demosaicking':
         anchors = baseline_anchors(task)
         if raw is None:
-            return f'无效提交（{candidate.get("reason") or "有场景失败"}）', '任一场景失败记 0'
-        return f'RMSE \\(E = {raw:.4f}\\)（\\(U = {anchors["weak"]:.4f}\\)，\\(W = {anchors["strong"]:.4f}\\)）', LINEAR
+            return f'无效提交（{candidate.get("reason") or "有场景失败"}）', '任一计分场景失败记 0'
+        scenes = f'，{candidate["expected_cases"]} 景' if candidate.get('expected_cases') else ''
+        return (f'RMSE \\(E = {raw:.4f}\\){scenes}（\\(U = {anchors["weak"]:.4f}\\)，\\(W = {anchors["strong"]:.4f}\\)）',
+                LINEAR)
     weak, strong = score['weak']['raw_error'], score['strong']['raw_error']
     name = 'nRF' if family == 'species-tree' else '白化误差'
     return f'{name} \\(E = {raw:.4f}\\)（\\(U = {weak:.4f}\\)，\\(W = {strong:.4f}\\)）', LINEAR
@@ -358,11 +369,13 @@ def main():
                 note = rerun_note or NOTES.get((task, setting) if tag == 'sol' else (task, setting, model), '')
                 if (task, setting, model) in UNMEASURED and n < RERUN[(task, setting, model)][0]:
                     raw, mapping, value, note = '未测', '评测方问题，记未测（不记 0）', None, UNMEASURED[(task, setting, model)]
-                if (task, setting, model) in REGRADE:
+                if (task, setting, model) in REGRADE and n == 1:   # every regrade concerns a first attempt
                     regraded = (folder / 'score.first.json').exists()
                     if not regraded:
                         raw, mapping, value = '未测', '评测方问题，记未测（不记 0）', None
                     note = REGRADE[(task, setting, model)] + ('以重评为准。' if regraded else '重评待开发槽全空后进行。')
+                    if (task, setting, model) in PENDING and n < RERUN[(task, setting, model)][0]:
+                        note += PENDING[(task, setting, model)]
                 results.append({'model': model, 'protocol': 'v6.3', 'setting': SETTING[setting], 'attempt': n,
                                 'submission': submission_of(task, setting, n, tag), 'store': 'var/stores/store-v63', 'raw': raw,
                                 'mapping': mapping, 'score': None if value is None or (isinstance(value, float) and math.isnan(value)) else round(value, 3),

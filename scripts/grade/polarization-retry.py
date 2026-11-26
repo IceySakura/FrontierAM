@@ -4,8 +4,10 @@ The 1.000 s per-scene limit meets short environment stalls (results/OPEN_ITEMS.m
 scenes times out at 1.000x s while the others take their usual time, and in another grading other scenes stall. User
 decision 2026-11-26: a scene that timed out is run again, and it passes if either grading ran it within the limit.
 Outputs are deterministic, so a scene that passed in both gradings must have the same per-channel RMSEs; otherwise
-nothing is composed. E is the package's own aggregate over the composed rows, the score uses the store's active-baseline
-anchors like every polarization score. Any failure other than a timeout is final and nothing is regraded.
+nothing is composed. Only the scored scenes count (since 2026-11-26 the other 16 are held-out feedback,
+versions/v3/data/private/feedback-split.json); E is their mean per-scene RMSE, as in the task's own grading, and the
+score uses the store's active-baseline anchors like every polarization score. Any failure other than a timeout is
+final and nothing is regraded.
 
 Usage: polarization-retry.py --store STORE --submission SUB --out OUT_DIR
   OUT_DIR/score.json holds the first grading's job record (scripts/rounds/v63-grade.sh); it moves to score.first.json.
@@ -13,7 +15,6 @@ Usage: polarization-retry.py --store STORE --submission SUB --out OUT_DIR
 
 import argparse
 import csv
-import importlib.util
 import json
 import math
 import os
@@ -25,13 +26,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 TASK = 'polarization-demosaicking-v3'
-PACKAGE = ROOT / ('.runtime-ops/polarization-demosaicking-v3/packages/operator/'
-                  'polarization-demosaicking-maintenance-vnext-1.3.0-dev/harbor/polarization-demosaicking')
+SPLIT = ROOT / 'tasks/polarization-demosaicking/versions/v3/data/private/feedback-split.json'
 
 
 def rows_of(store: Path, job: str) -> list[dict]:
     path = store / 'results' / job / 'grade/candidate/per_scene.csv'
-    return list(csv.DictReader(path.open())) if path.exists() else []
+    rows = list(csv.DictReader(path.open())) if path.exists() else []
+    if SPLIT.exists():
+        scored = set(json.loads(SPLIT.read_text())['scored'])
+        rows = [r for r in rows if f'{r["dataset"]}/{r["scene"]}' in scored]
+    return rows
 
 
 def only_timeouts(rows: list[dict]) -> bool:
@@ -88,15 +92,12 @@ def main():
     metrics = store / 'results' / second['id'] / 'grade/metrics.json'
     second['candidate'] = json.loads(metrics.read_text())['parts'].get('candidate') if metrics.exists() else {}
     if composed is not None:
-        spec = importlib.util.spec_from_file_location('polarization_scoring', PACKAGE / 'scoring.py')
-        scoring = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(scoring)
-        aggregate = scoring.aggregate(composed, scoring.CANONICAL_CLASSIC, scoring.CANONICAL_ADVANCED)
         from arena.operator_tasks import score_100
         from arena.store import Store
+        error = math.fsum(float(r['mean_rmse']) for r in composed) / len(composed)
         anchors = Store(store).active_baseline(TASK)['metrics']['parts']
-        score = score_100(aggregate['E'], anchors['weak']['raw_error'], anchors['strong']['raw_error'])
-        second['candidate'].update(status='ok', raw_error=aggregate['E'], cases_passed=len(composed), reason=None,
+        score = score_100(error, anchors['weak']['raw_error'], anchors['strong']['raw_error'])
+        second['candidate'].update(status='ok', raw_error=error, cases_passed=len(composed), reason=None,
                                    max_wall_s=max(float(r['wall_s']) for r in composed),
                                    scene_statuses={f'{r["dataset"]}/{r["scene"]}': 'ok' for r in composed},
                                    scene_rmse={f'{r["dataset"]}/{r["scene"]}': float(r['mean_rmse']) for r in composed})

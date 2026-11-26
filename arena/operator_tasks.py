@@ -346,19 +346,43 @@ class PolarizationDemosaicking(OperatorTask):
 
 
 class PolarizationDemosaickingV3(PolarizationDemosaicking):
-    """The author's vNext 1.3.0-dev package: 132 formal scenes (Qiu32 + Wen100), graded by grade_vnext.py; the Wen5
-    development scenes (--mode dev) are the public feedback set (FRONTIERAM_POLAR_DATA=wen). Same per-scene contract
-    as v2 (1 CPU, 8 GiB, 1.000 s wall); the local reference pair gives the 0- and 50-point anchors."""
+    """The author's vNext 1.3.0-dev package: 132 formal scenes (Qiu32 + Wen100), graded by grade_vnext.py. Same
+    per-scene contract as v2 (1 CPU, 8 GiB, 1.000 s wall); the local reference pair gives the 0- and 50-point anchors.
+    Since 2026-11-26 (user decision, results/OPEN_ITEMS.md) 16 formal scenes (versions/v3/data/private/
+    feedback-split.json) are the held-out public feedback (FRONTIERAM_POLAR_DATA=wen) and the private score uses the
+    other 116; FRONTIERAM_POLAR_DATA=wen5 grades the five shipped Wen5 scenes, the feedback set before that."""
+    split = ROOT / 'tasks/polarization-demosaicking/versions/v3/data/private/feedback-split.json'
+
+    def stage_feedback(self, out: Path) -> Path:
+        """A data root whose wen5/ holds the feedback scenes (hard links) as dataset__scene, for grade_vnext --mode dev."""
+        data, root = self.root() / 'data', out.parent / f'{out.name}-feedback-data'
+        shutil.rmtree(root, ignore_errors=True)
+        names = []
+        for scene_id in json.loads(self.split.read_text())['feedback']:
+            dataset, scene = scene_id.split('/', 1)
+            target = root / 'wen5' / f'{dataset}__{scene}'
+            target.mkdir(parents=True)
+            for item in (data / {'qiu': 'qiu32', 'wen': 'wen100'}[dataset] / scene).iterdir():
+                try:
+                    os.link(item, target / item.name)
+                except OSError:
+                    shutil.copy2(item, target / item.name)
+            names.append(target.name)
+        (root / 'wen5' / 'scenes.txt').write_text('\n'.join(names) + '\n')
+        return root
 
     def run_grader(self, source, out, placement):
         import csv
         out.parent.mkdir(parents=True, exist_ok=True)
         self.warm_image(placement, out.parent / f'{out.name}-warmup.json')
-        mode = 'dev' if os.environ.get('FRONTIERAM_POLAR_DATA') == 'wen' else 'formal'
+        data = os.environ.get('FRONTIERAM_POLAR_DATA')
+        mode = 'dev' if data in ('wen', 'wen5') else 'formal'
         grader = self.root() / 'harbor/polarization-demosaicking/grade_vnext.py'
+        command = [str(GRADER_PYTHON), '-B', str(grader), str(source), str(out), '--mode', mode]
+        if data == 'wen':
+            command += ['--data-root', str(self.stage_feedback(out))]
         env = self.shim_environment(placement, out.parent / f'{out.name}-docker.jsonl')
-        done = subprocess.run([str(GRADER_PYTHON), '-B', str(grader), str(source), str(out), '--mode', mode],
-                              cwd=grader.parent, env=env, capture_output=True, text=True, timeout=self.grade_timeout)
+        done = subprocess.run(command, cwd=grader.parent, env=env, capture_output=True, text=True, timeout=self.grade_timeout)
         (out.parent / f'{out.name}-grader.log').write_text(done.stdout + done.stderr)
         summary = json.loads((out / 'summary.json').read_text()) if (out / 'summary.json').exists() else {}
         scored = summary.get('score') or {}
@@ -366,13 +390,24 @@ class PolarizationDemosaickingV3(PolarizationDemosaicking):
         status = scored.get('status', 'infrastructure_failure')
         if status not in ('ok', 'infrastructure_failure'):
             status = 'submission_failure'
-        walls = [float(r['wall_s']) for r in rows if r.get('wall_s')]
         raw = scored.get('E') if mode == 'formal' else scored.get('mean_rmse')
-        return {'status': status, 'raw_error': raw, 'reason': scored.get('reason') or (summary.get('build') or {}).get('reason'),
-                'package_score': scored.get('score'), 'cases_passed': sum(r.get('status') == 'ok' for r in rows),
-                'expected_cases': summary.get('scene_count'), 'max_wall_s': max(walls, default=None), 'mode': mode,
-                'scene_statuses': {f'{r["dataset"]}/{r["scene"]}': r['status'] for r in rows},
-                'scene_rmse': {f'{r["dataset"]}/{r["scene"]}': float(r['mean_rmse']) for r in rows if r.get('mean_rmse')}}
+        reason = scored.get('reason') or (summary.get('build') or {}).get('reason')
+        expected, package_score = summary.get('scene_count'), scored.get('score')
+        scene_id = lambda r: r['scene'].replace('__', '/', 1) if '__' in r['scene'] else f'{r["dataset"]}/{r["scene"]}'
+        if mode == 'formal' and self.split.exists():   # the private score: the scored scenes only
+            keep = set(json.loads(self.split.read_text())['scored'])
+            rows, expected, package_score = [r for r in rows if scene_id(r) in keep], len(keep), None
+            if status != 'infrastructure_failure' and (summary.get('build') or {}).get('status') == 'ok':
+                bad = [r for r in rows if r.get('status') != 'ok']
+                status = 'submission_failure' if bad or len(rows) != len(keep) else 'ok'
+                raw = math.fsum(float(r['mean_rmse']) for r in rows) / len(rows) if status == 'ok' else None
+                reason = f'{scene_id(bad[0])}: {bad[0].get("reason") or bad[0].get("status")}' if bad else None
+        walls = [float(r['wall_s']) for r in rows if r.get('wall_s')]
+        return {'status': status, 'raw_error': raw, 'reason': reason,
+                'package_score': package_score, 'cases_passed': sum(r.get('status') == 'ok' for r in rows),
+                'expected_cases': expected, 'max_wall_s': max(walls, default=None), 'mode': mode,
+                'scene_statuses': {scene_id(r): r['status'] for r in rows},
+                'scene_rmse': {scene_id(r): float(r['mean_rmse']) for r in rows if r.get('mean_rmse')}}
 
 
 class FluorescenceDeconvolution(PolarizationDemosaicking):
