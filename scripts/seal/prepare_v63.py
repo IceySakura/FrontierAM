@@ -6,7 +6,8 @@ the samples, the new limits and (galaxy) the new reference and log-scale mapping
 limits and set sizes. Every text edit must match exactly once. The new seal is a hard-linked copy of the parent seal;
 edited files are unlinked before writing, so the parent stays byte-identical.
 
-Usage: prepare_v63.py TASK [--force]     TASK: galaxy-gravity | polarization-demosaicking | species-tree | trajectory-covariance
+Usage: prepare_v63.py TASK [--force | --manifests-only]
+       TASK: galaxy-gravity | polarization-demosaicking | species-tree | trajectory-covariance
 """
 
 import argparse
@@ -120,11 +121,12 @@ TASKS = {
              'if not (0 < limit <= (300 if mode == "build" else 135) and 0 < memory <= MEMORY):'),
             ('runtime/worker.py', 'limit_s not in {2, 300 if mode == "build" else 180}:',
              'limit_s not in {2, 300 if mode == "build" else 135}:'))],
-        # Cases are independent draws with the same parameters, so leading cases are a random subset.
-        'data_manifests': {'private/manifest.json': ('case', 96), 'packages/public/public-dev/manifest.json': ('case', 5)},
+        # Cases are independent draws with the same parameters, so leading cases are a random subset. Public feedback
+        # skips the 2 samples shipped with their truth (001, 002) and keeps the next 20 (results/OPEN_ITEMS.md).
+        'data_manifests': {'private/manifest.json': ('case', 96), 'packages/public/public-dev/manifest.json': ('case', 20, 2)},
         'task': {'instruction': 'Read /workspace/problem.md in full and inspect /workspace/samples. Implement the species-tree '
                                 'inference program described there.'},
-        'lock': {'case_limit_s': 135, 'formal_cases': 96, 'public_cases': 5},
+        'lock': {'case_limit_s': 135, 'formal_cases': 96, 'public_cases': 20},
     },
     'galaxy-gravity': {
         'parent': 'galaxy-gravity-v2', 'name': 'galaxy-gravity-v3', 'version': 'v3',
@@ -198,14 +200,30 @@ def seal_changes(seal: Path, cfg: dict) -> list[dict]:
         before = sha(path)
         rewrite(path, replace_once(path.read_text(), old, new, relative).encode())
         applied.append({'file': relative, 'old': old, 'new': new, 'sha256_before': before, 'sha256_after': sha(path)})
-    for relative, (key, count) in cfg.get('data_manifests', {}).items():
-        path = seal / relative
-        manifest = json.loads(path.read_text())
-        before, manifest['cases'] = len(manifest['cases']), manifest['cases'][:count]
+    return applied + manifest_changes(seal, cfg)
+
+
+def manifest_changes(seal: Path, cfg: dict) -> list[dict]:
+    """Cut each data manifest from the parent seal's copy: (key, count[, skip]) keeps cases[skip:skip + count]."""
+    applied = []
+    for relative, (key, count, *skip) in cfg.get('data_manifests', {}).items():
+        path, start = seal / relative, skip[0] if skip else 0
+        manifest = json.loads((OPS / cfg['parent'] / relative).read_text())
+        before, manifest['cases'] = len(manifest['cases']), manifest['cases'][start:start + count]
         rewrite(path, (json.dumps(manifest, indent=1) + '\n').encode())
         applied.append({'file': relative, 'cases_before': before, 'cases_after': len(manifest['cases']),
                         'kept': [c[key] for c in manifest['cases']], 'sha256_after': sha(path)})
     return applied
+
+
+def recut_manifests(seal: Path, cfg: dict) -> None:
+    """--manifests-only: rewrite the data manifests and their lock entries in place; everything else stays."""
+    lock = json.loads((seal / 'lock.json').read_text())
+    changes = {c['file']: c for c in manifest_changes(seal, cfg)}
+    lock['v63_changes'] = [changes.pop(c['file'], c) for c in lock['v63_changes']] + list(changes.values())
+    lock.update(cfg['lock'], manifests_recut_utc=datetime.now(timezone.utc).isoformat(timespec='seconds'))
+    rewrite(seal / 'lock.json', (json.dumps(lock, indent=2) + '\n').encode())
+    print(json.dumps({'recut': str(seal), 'manifests': [c for c in lock['v63_changes'] if 'kept' in c]}, indent=1))
 
 
 def private_copy(parent: Path, seal: Path) -> None:
@@ -220,9 +238,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('task', choices=sorted(TASKS))
     parser.add_argument('--force', action='store_true')
+    parser.add_argument('--manifests-only', action='store_true', help='re-cut the data manifests of an existing seal')
     args = parser.parse_args()
     cfg = TASKS[args.task]
     parent, seal = OPS / cfg['parent'], OPS / cfg['name']
+    if args.manifests_only:
+        return recut_manifests(seal, cfg)
     if seal.exists():
         if not args.force:
             raise SystemExit(f'{seal} exists; pass --force to reseal')

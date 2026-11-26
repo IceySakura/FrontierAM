@@ -300,7 +300,7 @@
     {
       "dir": "v3",
       "registry": "species-tree-v3",
-      "note": "协议 v6.3 版本：每例 135 秒；private 96 例、public 5 例；工作区只含 2 个样例（scripts/seal/prepare_v63.py）"
+      "note": "协议 v6.3 版本：每例 135 秒；private 96 例、public 反馈 20 例（003–022，不含给模型的 2 个样例；2026-11-26 前为 001–005）；工作区只含 2 个样例（scripts/seal/prepare_v63.py）"
     }
   ],
   "locations": {
@@ -316,7 +316,7 @@
       "001",
       "002"
     ],
-    "public": "5 个公开用例（001–005）",
+    "public": "20 个反馈用例（003–022；不含样例 001–002）",
     "groups": null,
     "feedback": {
       "task": "species-tree-v3",
