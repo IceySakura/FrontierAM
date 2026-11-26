@@ -74,7 +74,7 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | RMSE \(E = 1.2932\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 57.1 | 41 分钟 | [`v3/gpt-6.2-sol-single-1/`](solutions/v6.3/v3/gpt-6.2-sol-single-1/) |
-| GPT-6.2 Sol | 迭代 | RMSE \(E = 1.3811\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 54.2≈ | 3 次提交，45 分钟 | [`v3/gpt-6.2-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.2-sol-iterative-1/) |
+| GPT-6.2 Sol | 迭代 | RMSE \(E = 1.3483\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 55.3 | 11 次提交，33 分钟 | [`v3/gpt-6.2-sol-iterative-2/`](solutions/v6.3/v3/gpt-6.2-sol-iterative-2/) |
 | GPT-6 Astra | 单轮 | RMSE \(E = 1.3867\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 54.0 | 58 分钟 | [`v3/gpt-6-astra-single-1/`](solutions/v6.3/v3/gpt-6-astra-single-1/) |
 | GPT-6 Astra | 迭代 | RMSE \(E = 1.3935\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.8 | 15 次提交，229 分钟 | [`v3/gpt-6-astra-iterative-2/`](solutions/v6.3/v3/gpt-6-astra-iterative-2/) |
 | GPT-6.1 Sol | 单轮 | RMSE \(E = 1.4158\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
@@ -98,11 +98,11 @@
 
 ### GPT-6.2 Sol（迭代，v6.3）
 
-第一次评分时机器上同时有 6 个开发会话和 conic、galaxy、species 等评分，20 景在 1.0 秒单景时限超时（通过的景中位约 0.7 秒）；polarization 的计时受开发负载影响（11-12 实测最坏 2.0–2.8 倍），按 11-14、11-17 的做法记未测，开发槽全空时对同一冻结提交重评，以重评为准。反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6-astra（本格领先的概率 0.37）。
+此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：28.6（2 分钟） → 59.4（28 分钟） → 59.8（41 分钟）
+public 分数随测试提交：21.0（1 分钟） → 52.3（4 分钟） → 0.0（11 分钟） → 53.1（14 分钟） → 52.1（16 分钟） → 53.3（21 分钟） → 54.1（22 分钟） → 0.0（24 分钟） → 54.6（26 分钟） → 55.1（28 分钟） → 55.1（31 分钟）
 
-源码 [`solutions/v6.3/v3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/v3/gpt-6.2-sol-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261120T083610Z-eeda57`）。
+源码 [`solutions/v6.3/v3/gpt-6.2-sol-iterative-2/source/`](solutions/v6.3/v3/gpt-6.2-sol-iterative-2/source/)（提交 `polarization-demosaicking-v3-20261126T163759Z-c7a526`）。
 
 ### GPT-6 Astra（单轮，v6.3）
 
