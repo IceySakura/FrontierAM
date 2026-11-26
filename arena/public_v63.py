@@ -480,9 +480,9 @@ def public_scope(task, store: Store, job: str) -> bool:
     if fam == 'fluorescence-deconvolution':
         summary = grade / 'candidate/summary.json'
         return read_json(summary).get('scope') == 'public' if summary.exists() else True
-    if fam == 'continuum-estimation':
+    if fam == 'continuum-estimation':  # feedback: the 15 held-out cases (since 2026-11-26); public: the 8 examples
         summary = grade / 'candidate/summary.json'
-        return read_json(summary).get('partition') == 'public' if summary.exists() else True
+        return read_json(summary).get('partition') in ('feedback', 'public') if summary.exists() else True
     if fam == 'blackbox-cubature':
         part = read_json(grade / 'metrics.json')['parts'].get('candidate', {}) if (grade / 'metrics.json').exists() else {}
         return part.get('data', 'public') == 'public'
