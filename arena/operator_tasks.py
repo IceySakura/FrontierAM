@@ -777,6 +777,12 @@ class BlackboxCubatureV32(BlackboxCubatureV31):
                 '--mount', f'type=bind,src={lean / "lake"},dst=/usr/local/bin/lake,readonly'], stop
 
 
+class BlackboxCubatureV33(BlackboxCubatureV32):
+    """v3.3: v3.2 with a statement that says ending early earns nothing and that one significant verified theory result
+    is worth more than several elementary ones (only the strongest counts); environment, data and scores as v3.2."""
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.3'
+
+
 class ContinuumEstimation(OperatorTask):
     """The author's continuum-estimation 1.0.1 verifier, ported to x86-64 (arena/operator_drivers/continuum.py).
     Private: the 60 primary cases; public feedback (FRONTIERAM_CONTINUUM_DATA=public): the 8 public examples. The
@@ -832,7 +838,7 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance,
            'blackbox-cubature': BlackboxCubature, 'blackbox-cubature-v2': BlackboxCubatureV2,
            'blackbox-cubature-v3': BlackboxCubatureV3, 'blackbox-cubature-v3.1': BlackboxCubatureV31,
-           'blackbox-cubature-v3.2': BlackboxCubatureV32,
+           'blackbox-cubature-v3.2': BlackboxCubatureV32, 'blackbox-cubature-v3.3': BlackboxCubatureV33,
            'continuum-estimation': ContinuumEstimation, 'fluorescence-deconvolution': FluorescenceDeconvolution}
 
 

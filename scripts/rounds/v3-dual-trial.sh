@@ -4,7 +4,7 @@
 # it never enters the leaderboard. Grading is separate: a private suite against the locally measured reference suite
 # (scripts/grade/cubature-suite-score.py --task blackbox-cubature-v3).
 # Usage: [TASK=blackbox-cubature-v3.1] v3-dual-trial.sh [MODEL] [N]
-# log: var/stores/store/reruns/v3trial-<tag>-iterative-<n>.log (v3), v31trial-... (v3.1), v32trial-... (v3.2)
+# log: var/stores/store/reruns/v3trial-<tag>-iterative-<n>.log (v3), v31trial-... (v3.1), v32trial-... (v3.2), v33trial-...
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 MODEL=${1:-gpt-6.2-sol}
@@ -12,6 +12,7 @@ N=${2:-1}
 case $MODEL in gpt-6.2-sol) TAG=sol62;; gpt-6.1-sol) TAG=sol;; claude-opus-5-5) TAG=opus;; *) echo "unknown model $MODEL" >&2; exit 2;; esac
 TASK=${TASK:-blackbox-cubature-v3}
 case $TASK in blackbox-cubature-v3) PFX=v3trial;; blackbox-cubature-v3.1) PFX=v31trial;; blackbox-cubature-v3.2) PFX=v32trial;;
+  blackbox-cubature-v3.3) PFX=v33trial;;
   *) echo "unknown task $TASK" >&2; exit 2;; esac
 LOG=var/stores/store/reruns/$PFX-$TAG-iterative-$N.log
 [ -e "$LOG" ] && { echo "$LOG exists" >&2; exit 1; }

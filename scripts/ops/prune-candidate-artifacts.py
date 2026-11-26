@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Free disk by removing the bulky candidate artifacts kept from finished grading jobs (user decision 2026-11-26).
 
-Under the grade/candidate/ directory of every finished job (result.json present, job listed under jobs/done or
-jobs/failed, not under jobs/running), files of at least 1 MiB that are not text records are removed: candidate outputs
-(raw.npy, worker/pred.npy, handoff/output.bin) and build products. Every JSON/CSV/text/log file stays, so summaries,
-per-case records and verdicts remain readable; a regrade from grade/source.tar recreates the rest. Each pruned
-directory gets PRUNED.json, and the full list goes to var/stores/pruned-candidate-<UTC date>.jsonl.
+Since 2026-11-26 every grading job prunes its own grade/candidate/ (arena/prune.py, called from arena/cli.py
+grade_job); this script applies the same rule to results graded before that. Under the grade/candidate/ directory of
+every finished job (result.json present, job listed under jobs/done or jobs/failed, not under jobs/running), files of
+at least 1 MiB that are not text records are removed: candidate outputs (raw.npy, worker/pred.npy, handoff/output.bin)
+and build products. Every JSON/CSV/text/log file stays, so summaries, per-case records and verdicts remain readable;
+a regrade from grade/source.tar recreates the rest. Each pruned directory gets PRUNED.json, and the full list goes to
+var/stores/pruned-candidate-<UTC date>.jsonl.
 
 Usage: prune-candidate-artifacts.py [--dry-run] STORE...
 """
@@ -14,14 +16,15 @@ import argparse
 import collections
 import json
 import os
+import sys
 import time
 
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-MIN_BYTES = 1 << 20
-TEXT = {'.json', '.jsonl', '.csv', '.tsv', '.txt', '.log', '.md', '.yaml', '.yml', '.toml', '.py', '.sh', '.cfg', '.ini',
-        '.h', '.hpp', '.c', '.cc', '.cpp', '.rs', '.jl', '.f90'}
+sys.path.insert(0, str(ROOT))
+
+from arena.prune import MIN_BYTES, bulky  # noqa: E402
 
 
 def task_of(job: Path) -> str:
@@ -53,12 +56,8 @@ def main() -> None:
                     skipped.append(f'{store.name}/{job.name}')
                     continue
                 removed, size = [], 0
-                for path in candidate.rglob('*'):
-                    if path.is_symlink() or not path.is_file() or path.suffix.lower() in TEXT:
-                        continue
+                for path in bulky(candidate):
                     bytes_ = path.stat().st_size
-                    if bytes_ < MIN_BYTES:
-                        continue
                     removed.append(str(path.relative_to(candidate)))
                     size += bytes_
                     if not args.dry_run:

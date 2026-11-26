@@ -52,6 +52,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'blackbox-cubature-v3': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.1': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.2': 'frontieram-blackbox-cubature-v3-harness:v6',
+                  'blackbox-cubature-v3.3': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'continuum-estimation': 'frontieram-continuum-estimation-harness:v6',
                   'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6',
                   'pdhcg-qp-v1': 'frontieram-pdhcg-qp-v1-harness:v6'}
@@ -393,6 +394,10 @@ SCORING_DISCLOSURE['blackbox-cubature-v3.2'] = (
     '0-100 scale, strictly stronger results score above it and strictly weaker ones below it, and incomparable ones '
     'are valued by what the human papers themselves present as important. The theory score is the best score among '
     'the verified results; unformalized results score nothing.'
+)
+SCORING_DISCLOSURE['blackbox-cubature-v3.3'] = SCORING_DISCLOSURE['blackbox-cubature-v3.2'] + (
+    ' Because only the strongest verified result counts, one result that goes beyond the human results is worth more '
+    'than several elementary ones; ending the session early earns nothing.'
 )
 SCORING_DISCLOSURE['continuum-estimation'] = (
     'Every held-out case runs once in a fresh restricted process within 60 wall-clock seconds (startup included); an '

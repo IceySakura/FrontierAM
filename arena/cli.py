@@ -27,6 +27,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from . import machine
+from .prune import prune_candidate
 from .runtime import ROOT, child_environment, load_runtime, sha
 from .slots import Broker, Lease
 from .store import Store, new_id, read_json, utc, write_json
@@ -275,6 +276,12 @@ def grade_job(layout, broker, runtime, store, job) -> dict:
                                    text=True, timeout=60).stdout.split()
             if names:
                 subprocess.run(['docker', '--host', placement.docker_host, 'rm', '-f', *names], capture_output=True, timeout=120)
+        try:  # disk only: a failure here must not change the job's outcome
+            pruned = prune_candidate(results / 'grade/candidate', 'removed after grading (arena/prune.py)')
+            if pruned['files']:
+                say(event='candidate_pruned', job=job['id'], files=pruned['files'], bytes=pruned['bytes'])
+        except OSError as error:
+            say(event='candidate_prune_failed', job=job['id'], error=f'{type(error).__name__}: {error}')
         isolation = {'policy': lease.isolation, 'held_idle': [slot_id for slot_id, _ in lease.held]}
         after = broker.leases()
         probe_after = probe(lease.id, lease.host_cpu)
