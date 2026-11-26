@@ -10,14 +10,14 @@
 <rect x="132" y="104.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
 <rect x="132" y="104.0" width="282.2" height="16" rx="4" fill="#d97757"/>
 <text x="596" y="117.0" font-size="13" font-weight="700" fill="#111827">62.4</text>
-<text x="120" y="149.0" font-size="13" fill="#374151" text-anchor="end">GPT-6 Astra</text>
+<text x="120" y="149.0" font-size="13" fill="#374151" text-anchor="end">GPT-6.1 Sol</text>
 <rect x="132" y="136.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
-<rect x="132" y="136.0" width="277.4" height="16" rx="4" fill="#be185d"/>
-<text x="596" y="149.0" font-size="13" font-weight="700" fill="#111827">61.4</text>
-<text x="120" y="181.0" font-size="13" fill="#374151" text-anchor="end">GPT-6.1 Sol</text>
+<rect x="132" y="136.0" width="276.5" height="16" rx="4" fill="#10a37f"/>
+<text x="596" y="149.0" font-size="13" font-weight="700" fill="#111827">61.2</text>
+<text x="120" y="181.0" font-size="13" fill="#374151" text-anchor="end">GPT-6 Astra</text>
 <rect x="132" y="168.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
-<rect x="132" y="168.0" width="276.5" height="16" rx="4" fill="#10a37f"/>
-<text x="596" y="181.0" font-size="13" font-weight="700" fill="#111827">61.2</text>
+<rect x="132" y="168.0" width="276.2" height="16" rx="4" fill="#be185d"/>
+<text x="596" y="181.0" font-size="13" font-weight="700" fill="#111827">61.1</text>
 <text x="120" y="213.0" font-size="13" fill="#374151" text-anchor="end">Hunyuan 4</text>
 <rect x="132" y="200.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
 <rect x="132" y="200.0" width="228.9" height="16" rx="4" fill="#3b6ff5"/>
