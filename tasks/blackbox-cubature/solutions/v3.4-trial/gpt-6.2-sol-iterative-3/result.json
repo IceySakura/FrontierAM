@@ -1,0 +1,39 @@
+{
+ "task": "blackbox-cubature-v3.4",
+ "model": "gpt-6.2-sol",
+ "setting": "iterative (v6.3 harness, 6 h limit, validation run; public internet during development through arena/netproxy.py)",
+ "attempt_note": "attempt 1 (19:51) had no working network (the harness environment dropped the proxy variables) and was stopped, unmeasured; attempt 2 was interrupted at launch; this is attempt 3",
+ "dev_run": "dev-blackbox-cubature-v3.4-20261126T120613Z-d296e9",
+ "submission": "blackbox-cubature-v3.4-20261126T132411Z-2fd126",
+ "started_local": "2026-11-26 20:06",
+ "agent_stop_reason": "formal_submission",
+ "development_seconds": 4672.1,
+ "model_requests": 191,
+ "test_submissions": 20,
+ "public_scores": [59.0, 63.0, 63.1, 64.6, 66.9, 66.3, 66.4, 64.2, 65.9, 66.2, 64.9, 65.5, 67.0, 66.6, 66.6, 67.0, 67.3, 65.0, 67.3, 67.2],
+ "network": {
+  "log": "netproxy.jsonl",
+  "allowed": {"api.crossref.org": 5, "arxiv.org": 4, "export.arxiv.org": 1, "api.openalex.org": 2, "link.springer.com": 1, "idp.springer.com": 1},
+  "refused": {"github.com": 1, "api.github.com": 1, "pypi.org": 1, "chatgpt.com and ab.chatgpt.com (Codex telemetry)": "several"}
+ },
+ "private_suite": "suite-blackbox-cubature-v3.4-20261126T132959Z-abb27c",
+ "reference_suite": "suite-blackbox-cubature-v3.1-20261125T120404Z-5b7631",
+ "program": {
+  "raw": {"G": 0.54801573641228, "hard": 0.712, "options": 0.384, "G0": -0.36177241147284983},
+  "mapping": "G >= 0: 50 + 25 G",
+  "score": 63.700393410307,
+  "detail": "score.json"
+ },
+ "theory": {
+  "formal_check": "lean-check/lean-check.json (lake comparator accepted all 4 proved results R1-R4; 18 modules, about 2860 lines)",
+  "review": "tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 8 (provisional, not an expert review)",
+  "results": [
+   {"id": "R1", "verified": true, "faithful": true, "class": "incomparable", "score": 35},
+   {"id": "R2", "verified": true, "faithful": true, "class": "incomparable", "score": 35},
+   {"id": "R3", "verified": true, "faithful": true, "class": "incomparable", "score": 40},
+   {"id": "R4", "verified": true, "faithful": true, "class": "incomparable", "score": 42}
+  ],
+  "mapping": "human SOTA = 50; incomparable results priced by the human papers' own viewpoint; reproductions of classical special cases below 50; theory score = maximum over verified results",
+  "score": 42
+ }
+}

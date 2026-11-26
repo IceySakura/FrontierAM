@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md, R1: Deterministic relative Gaussian mass certificate for a shifted ellipsoid",
+      "lean": ["Cubature.ellipsoid_mass_certificate"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": ["He and Wang, SIAM J. Numer. Anal. 53 (2015), Theorem 3.5", "Gilbert, Kuo and Sloan, arXiv:2112.11621, Theorems 1 and 2 and Conclusion"],
+        "explanation": "On an explicitly narrower quadratic jump class, point values give a deterministic relative certificate with exponential accuracy at fixed geometry. The scrambled-net result covers general boundaries; the Cartesian preintegration obstruction is not contradicted."
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md, R2: Exact dimension threshold for deterministic quadratic-value information",
+      "lean": ["Cubature.centered_ellipsoid_query_lower", "Cubature.exact_quadratic_reconstruction"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": ["Barany and Furedi, Computing the Volume is Difficult, DOI 10.1007/BF02187886, Theorem 1 and Section 2"],
+        "explanation": "The classical transcript lower bound concerns much broader convex bodies, Lebesgue volume and separation information. The proof here stays within uniformly conditioned ellipsoids and gives an exact deterministic threshold with quadratic-value information, for relative Gaussian mass."
+      }
+    },
+    {
+      "id": "R3",
+      "claim": "THEORY.md, R3: Joint dimension and precision lower bound for membership queries",
+      "lean": ["Cubature.ellipsoid_membership_precision_lower"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": ["Barany and Furedi, Computing the Volume is Difficult, DOI 10.1007/BF02187886, Theorem 1 and Section 2"],
+        "explanation": "Counts transcript cells while keeping all hard instances well-conditioned ellipsoids, with a precision-dependent lower bound for relative Gaussian mass. The human result treats arbitrary convex bodies with richer separation information and has a much larger broad-class volume gap."
+      }
+    },
+    {
+      "id": "R4",
+      "claim": "THEORY.md, R4: Joint dimension and precision lower bound at a fixed radius",
+      "lean": ["Cubature.fixed_radius_ellipsoid_precision_lower"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": ["Barany and Furedi, Computing the Volume is Difficult, DOI 10.1007/BF02187886, Theorem 1 and Section 2"],
+        "explanation": "The lower bound has order d^2 log m on one fixed-radius well-conditioned ellipsoid class, with relative tolerance proportional to d^(-8)m^(-2). A paired transport controls the Gaussian density at fixed radius. The human result covers general convex bodies and richer oracles, with a different volume gap and cost regime."
+      }
+    }
+  ]
+}

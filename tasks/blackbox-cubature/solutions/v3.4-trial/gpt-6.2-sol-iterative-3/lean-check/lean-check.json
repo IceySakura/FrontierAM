@@ -1,0 +1,140 @@
+{
+ "source": "/data/workspace/FrontierAM/tasks/blackbox-cubature/solutions/v3.4-trial/gpt-6.2-sol-iterative-3/source",
+ "toolchain": "leanprover/lean4:v4.35.0",
+ "packages": {
+  "cslib": "5b56df99362532c46e1175381fbbdd755bd56030",
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "plausible": "dfa4f38190d07c37e315953e08b90fe2d95b3c24",
+  "LeanSearchClient": "d6b4c7be5be75ec4917c873ac50c756dc1436372",
+  "importGraph": "a41f0e9a4dea23188ea9cc1c41ac9f8bbafe0b93",
+  "proofwidgets": "df72b022e558978a1c50264cfc4d7fec86fa8e04",
+  "aesop": "4a174c490d8707121c4a9290800489f105d85e07",
+  "Qq": "dce0ad79c486cb1fb504af04f953c3466b0c6db8",
+  "batteries": "66e469188fe07963e5cf666c7d4433f45b8131c5",
+  "Cli": "c24fe6078c630e89b489bffe59b3e20ac30d12c8"
+ },
+ "permitted_axioms": [
+  "propext",
+  "Quot.sound",
+  "Classical.choice"
+ ],
+ "paranoid": false,
+ "manifest_problems": [],
+ "work": "/data/workspace/FrontierAM/var/lean-check/lean-check-7b3a0a",
+ "lean_files": [
+  "Theory/Certificate.lean",
+  "Theory/FixedAlgebra.lean",
+  "Theory/FixedMass.lean",
+  "Theory/FixedTransport.lean",
+  "Theory/FixedTree.lean",
+  "Theory/Gaussian.lean",
+  "Theory/Geometry.lean",
+  "Theory/LowerAlgebra.lean",
+  "Theory/LowerMeasure.lean",
+  "Theory/LowerModel.lean",
+  "Theory/Model.lean",
+  "Theory/PrecisionAlgebra.lean",
+  "Theory/PrecisionMeasure.lean",
+  "Theory/PrecisionModel.lean",
+  "Theory/PrecisionTree.lean",
+  "Theory/Proofs.lean",
+  "Theory/Reconstruct.lean",
+  "Theory/Statements.lean"
+ ],
+ "statement_layer": {
+  "Theory.Statements": [],
+  "Theory.PrecisionModel": [],
+  "Theory.LowerModel": [],
+  "Theory.Model": []
+ },
+ "results": [
+  {
+   "id": "R1",
+   "claim": "THEORY.md, R1: Deterministic relative Gaussian mass certificate for a shifted ellipsoid",
+   "lean": [
+    "Cubature.ellipsoid_mass_certificate"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "He and Wang, SIAM J. Numer. Anal. 53 (2015), Theorem 3.5",
+     "Gilbert, Kuo and Sloan, arXiv:2112.11621, Theorems 1 and 2 and Conclusion"
+    ],
+    "explanation": "On an explicitly narrower quadratic jump class, point values give a deterministic relative certificate with exponential accuracy at fixed geometry. The scrambled-net result covers general boundaries; the Cartesian preintegration obstruction is not contradicted."
+   },
+   "verified": true
+  },
+  {
+   "id": "R2",
+   "claim": "THEORY.md, R2: Exact dimension threshold for deterministic quadratic-value information",
+   "lean": [
+    "Cubature.centered_ellipsoid_query_lower",
+    "Cubature.exact_quadratic_reconstruction"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Barany and Furedi, Computing the Volume is Difficult, DOI 10.1007/BF02187886, Theorem 1 and Section 2"
+    ],
+    "explanation": "The classical transcript lower bound concerns much broader convex bodies, Lebesgue volume and separation information. The proof here stays within uniformly conditioned ellipsoids and gives an exact deterministic threshold with quadratic-value information, for relative Gaussian mass."
+   },
+   "verified": true
+  },
+  {
+   "id": "R3",
+   "claim": "THEORY.md, R3: Joint dimension and precision lower bound for membership queries",
+   "lean": [
+    "Cubature.ellipsoid_membership_precision_lower"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Barany and Furedi, Computing the Volume is Difficult, DOI 10.1007/BF02187886, Theorem 1 and Section 2"
+    ],
+    "explanation": "Counts transcript cells while keeping all hard instances well-conditioned ellipsoids, with a precision-dependent lower bound for relative Gaussian mass. The human result treats arbitrary convex bodies with richer separation information and has a much larger broad-class volume gap."
+   },
+   "verified": true
+  },
+  {
+   "id": "R4",
+   "claim": "THEORY.md, R4: Joint dimension and precision lower bound at a fixed radius",
+   "lean": [
+    "Cubature.fixed_radius_ellipsoid_precision_lower"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Barany and Furedi, Computing the Volume is Difficult, DOI 10.1007/BF02187886, Theorem 1 and Section 2"
+    ],
+    "explanation": "The lower bound has order d^2 log m on one fixed-radius well-conditioned ellipsoid class, with relative tolerance proportional to d^(-8)m^(-2). A paired transport controls the Gaussian density at fixed radius. The human result covers general convex bodies and richer oracles, with a different volume gap and cost regime."
+   },
+   "verified": true
+  }
+ ],
+ "runs": {
+  "all": {
+   "theorems": [
+    "Cubature.ellipsoid_mass_certificate",
+    "Cubature.centered_ellipsoid_query_lower",
+    "Cubature.exact_quadratic_reconstruction",
+    "Cubature.ellipsoid_membership_precision_lower",
+    "Cubature.fixed_radius_ellipsoid_precision_lower"
+   ],
+   "accepted": true,
+   "exit_code": 0,
+   "seconds": 207.8,
+   "errors": [],
+   "last_line": "Your solution is okay!"
+  }
+ },
+ "verified": [
+  "R1",
+  "R2",
+  "R3",
+  "R4"
+ ]
+}

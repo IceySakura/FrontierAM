@@ -1,0 +1,121 @@
+Resolving dependencies
+Building Theory.Statements
+⚠ [3557/3560] Built Theory.Model (2.0s)
+warning: Theory/Model.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Model.lean: imports `Mathlib.MeasureTheory.Measure.WithDensity` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Model.lean: imports `Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Model.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3558/3560] Built Theory.LowerModel (2.8s)
+warning: Theory/LowerModel.lean: imports `Mathlib.LinearAlgebra.Matrix.Hermitian` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LowerModel.lean:43:16: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [3559/3560] Built Theory.PrecisionModel (2.7s)
+⚠ [3560/3560] Built Theory.Statements (2.8s)
+warning: Theory/Statements.lean:11:8: declaration uses `sorry`
+warning: Theory/Statements.lean:32:8: declaration uses `sorry`
+warning: Theory/Statements.lean:43:8: declaration uses `sorry`
+warning: Theory/Statements.lean:51:8: declaration uses `sorry`
+warning: Theory/Statements.lean:62:8: declaration uses `sorry`
+Build completed successfully (3560 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.ellipsoid_mass_certificate, Cubature.centered_ellipsoid_query_lower, Cubature.exact_quadratic_reconstruction, Cubature.ellipsoid_membership_precision_lower, Cubature.fixed_radius_ellipsoid_precision_lower, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Statements
+Building Theory.Proofs
+⚠ [3553/3558] Replayed Theory.Model
+warning: Theory/Model.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Model.lean: imports `Mathlib.MeasureTheory.Measure.WithDensity` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Model.lean: imports `Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Model.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3558/3612] Replayed Theory.LowerModel
+warning: Theory/LowerModel.lean: imports `Mathlib.LinearAlgebra.Matrix.Hermitian` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LowerModel.lean:43:16: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3599/3612] Built Theory.Geometry (9.4s)
+warning: Theory/Geometry.lean:29:60: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/Geometry.lean:29:64: Unused tactic linter: `norm_num` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/Geometry.lean:29:64: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Theory/Geometry.lean:44:40: This simp argument is unused:
+  ite_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [quadratic, coordinate, mul_ite]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Theory/Geometry.lean:53:64: This simp argument is unused:
+  add_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [chord, h, quadratic, Pi.add_apply, coordinate, mul_add, Finset.sum_add_distrib, mul_ite, ite_mul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Theory/Geometry.lean:54:37: This simp argument is unused:
+  ite_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [chord, h, quadratic, Pi.add_apply, coordinate, mul_add, add_mul, Finset.sum_add_distrib, mul_ite]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [3600/3612] Built Theory.Gaussian (9.5s)
+✔ [3601/3612] Built Theory.Reconstruct (4.7s)
+✔ [3602/3612] Built Theory.Certificate (3.7s)
+⚠ [3603/3612] Built Theory.LowerAlgebra (6.1s)
+warning: Theory/LowerAlgebra.lean: imports `Mathlib.Analysis.Matrix.Spectrum` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LowerAlgebra.lean: imports `Mathlib.Data.Sym.Card` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LowerAlgebra.lean:200:12: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [h, hp₀]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+✔ [3604/3612] Built Theory.LowerMeasure (13s)
+⚠ [3605/3612] Built Theory.PrecisionAlgebra (14s)
+warning: Theory/PrecisionAlgebra.lean:22:18: Variable name `hv` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hv
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [3606/3612] Built Theory.PrecisionMeasure (7.6s)
+✔ [3607/3612] Built Theory.PrecisionTree (6.6s)
+⚠ [3608/3612] Built Theory.FixedAlgebra (5.6s)
+warning: Theory/FixedAlgebra.lean:121:20: This simp argument is unused:
+  Pi.mul_apply
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [diagonal_apply_eq, Matrix.add_apply, Matrix.one_apply_eq, Matrix.smul_apply, smul_eq_mul,
+    spectralStep, mul_pow, hs, one_mul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3609/3612] Built Theory.FixedTransport (7.6s)
+warning: Theory/FixedTransport.lean:28:13: Variable name `hη` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hη
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Theory/FixedTransport.lean:118:26: Variable name `h0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [3610/3612] Built Theory.FixedMass (7.3s)
+✔ [3611/3612] Built Theory.FixedTree (4.9s)
+✔ [3612/3612] Built Theory.Proofs (4.8s)
+Build completed successfully (3612 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.ellipsoid_mass_certificate, Cubature.centered_ellipsoid_query_lower, Cubature.exact_quadratic_reconstruction, Cubature.ellipsoid_membership_precision_lower, Cubature.fixed_radius_ellipsoid_precision_lower, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Proofs
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
