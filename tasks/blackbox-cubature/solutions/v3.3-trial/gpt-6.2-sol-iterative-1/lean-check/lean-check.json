@@ -1,0 +1,222 @@
+{
+ "source": "/data/workspace/FrontierAM/tasks/blackbox-cubature/solutions/v3.3-trial/gpt-6.2-sol-iterative-1/source",
+ "toolchain": "leanprover/lean4:v4.35.0",
+ "packages": {
+  "cslib": "5b56df99362532c46e1175381fbbdd755bd56030",
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "plausible": "dfa4f38190d07c37e315953e08b90fe2d95b3c24",
+  "LeanSearchClient": "d6b4c7be5be75ec4917c873ac50c756dc1436372",
+  "importGraph": "a41f0e9a4dea23188ea9cc1c41ac9f8bbafe0b93",
+  "proofwidgets": "df72b022e558978a1c50264cfc4d7fec86fa8e04",
+  "aesop": "4a174c490d8707121c4a9290800489f105d85e07",
+  "Qq": "dce0ad79c486cb1fb504af04f953c3466b0c6db8",
+  "batteries": "66e469188fe07963e5cf666c7d4433f45b8131c5",
+  "Cli": "c24fe6078c630e89b489bffe59b3e20ac30d12c8"
+ },
+ "permitted_axioms": [
+  "propext",
+  "Quot.sound",
+  "Classical.choice"
+ ],
+ "paranoid": false,
+ "manifest_problems": [],
+ "work": "/data/workspace/FrontierAM/var/lean-check/lean-check-ce262c",
+ "lean_files": [
+  "Theory/Antipodal.lean",
+  "Theory/Balls.lean",
+  "Theory/CylindricalAlgebra.lean",
+  "Theory/CylindricalLearner.lean",
+  "Theory/CylindricalMass.lean",
+  "Theory/CylindricalModel.lean",
+  "Theory/CylindricalRays.lean",
+  "Theory/EvenRecovery.lean",
+  "Theory/Gaussian.lean",
+  "Theory/Geometry.lean",
+  "Theory/KinkGap.lean",
+  "Theory/KinkGeometry.lean",
+  "Theory/KinkLower.lean",
+  "Theory/LipRay.lean",
+  "Theory/LipReduction.lean",
+  "Theory/LowerBounds.lean",
+  "Theory/Model.lean",
+  "Theory/Proofs.lean",
+  "Theory/Randomized.lean",
+  "Theory/RankAdaptive.lean",
+  "Theory/RankAdaptiveModel.lean",
+  "Theory/RankCapLower.lean",
+  "Theory/RankCapModel.lean",
+  "Theory/RankCapRecovery.lean",
+  "Theory/Recovery.lean",
+  "Theory/Statements.lean",
+  "Theory/Tree.lean",
+  "Theory/ValueTree.lean"
+ ],
+ "statement_layer": {
+  "Theory.Statements": [],
+  "Theory.CylindricalModel": [],
+  "Theory.RankCapModel": [],
+  "Theory.ValueTree": [],
+  "Theory.Model": [],
+  "Theory.RankAdaptiveModel": [],
+  "Theory.KinkGeometry": [],
+  "Theory.Balls": [],
+  "Theory.Geometry": [],
+  "Theory.Tree": [],
+  "Theory.Gaussian": [],
+  "Theory.Recovery": []
+ },
+ "results": [
+  {
+   "id": "R1",
+   "claim": "THEORY.md, R1: adaptive separation for Gaussian mass of unknown ellipsoids",
+   "lean": [
+    "Cubature.ellipsoid_query_separation",
+    "Cubature.ellipsoid_nonadaptive_mean_square"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Gilbert, Kuo and Sloan (2022), Theorem 1 on tangencies in linear preintegration",
+     "Plaskota and Wasilkowski (2005), adaptive/nonadaptive rates for one unknown singularity"
+    ],
+    "explanation": "Works for a narrower algebraic class, but handles intrinsically nonmonotone closed surfaces using value queries, gives a relative deterministic guarantee even at small Gaussian mass, and separates adaptive from arbitrary nonadaptive rules including randomized designs."
+   },
+   "verified": true
+  },
+  {
+   "id": "R2",
+   "claim": "THEORY.md, R2: antipodal recovery in the presence of an unknown odd background",
+   "lean": [
+    "Cubature.odd_background_query_separation"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Gilbert, Kuo and Sloan (2022), Theorem 1 on tangencies in linear preintegration",
+     "Plaskota and Wasilkowski (2005), one unknown singularity"
+    ],
+    "explanation": "Pairs of real values remove an infinite-dimensional nuisance exactly. The unknown offsets are recovered stably up to reflection, giving the same exponential precision order and nonadaptive obstruction for this restricted multidimensional class."
+   },
+   "verified": true
+  },
+  {
+   "id": "R3",
+   "claim": "THEORY.md, R3: exact background oracle reduction and decoding shell bound",
+   "lean": [
+    "Cubature.closed_jump_cubature_reduction",
+    "Cubature.decoding_shell_probability"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Gilbert, Kuo and Sloan (2022), Theorem 1 on tangencies in linear preintegration",
+     "Plaskota and Wasilkowski (2005), one unknown singularity",
+     "Griewank, Kuo, Leövey and Sloan (2018), smoothness under strictly monotone preintegration"
+    ],
+    "explanation": "No globally monotone direction or oracle for the defining function is needed. The theorem restores an exact unrestricted-background query transcript with logarithmic-in-accuracy geometric cost and proves a relative shell bound for the extra calls. The boundary is restricted to well-scaled ellipsoids and the jump has known unit size, so this does not imply the human theorems on their broader geometric classes."
+   },
+   "verified": true
+  },
+  {
+   "id": "R4",
+   "claim": "THEORY.md, R4: exact dimension-dependent query threshold for continuous centered quadratic kinks",
+   "lean": [
+    "Cubature.centered_kink_optimal_queries"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Bakhvalov (1959), optimal asymptotic query rates on smoothness classes",
+     "Plaskota and Wasilkowski (2005), adaptive localization of one unknown univariate singularity"
+    ],
+    "explanation": "A finite-parameter class permits exact cubature but requires the full quadratic parameter count below a positive error threshold, even with adaptive real queries. Neither standard smoothness rates nor results for one-dimensional singularities give this multivariate information threshold."
+   },
+   "verified": true
+  },
+  {
+   "id": "R5",
+   "claim": "THEORY.md, R5: adaptive exact recovery and integration in linear dimension for rank at most two",
+   "lean": [
+    "Cubature.rank_two_kink_linear_queries"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Liu and Owen (2023), active-subspace preintegration and scrambled-net variance comparison",
+     "Xiao and Wang (2019), gradient principal components for derivative pricing"
+    ],
+    "explanation": "The exact PSD rank restriction and pure cap form are stronger structural assumptions. Within them, a value-only rule uses at most 3d calls to recover the quadratic and the Gaussian integral, with a lower bound of d calls below a dimension-independent absolute tolerance. This addresses query complexity of unknown directions rather than variance after an active direction is provided."
+   },
+   "verified": true
+  },
+  {
+   "id": "R6",
+   "claim": "THEORY.md, R6: exact rank-adaptive cubature with no supplied rank or orientation",
+   "lean": [
+    "Cubature.rank_adaptive_exact_cap_cubature"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Liu and Owen (2023), active-subspace preintegration and scrambled-net variance comparison",
+     "Xiao and Wang (2019), GPCA rotation",
+     "Classical pivoted Cholesky on an available matrix"
+    ],
+    "explanation": "The rank and active range are inferred from the real payoff alone. In the pure PSD cap class the exact cost is bounded by d times (rank plus one) along the actual transcript, without specifying a rank bound in the algorithm. The class and zero-noise information model are narrower than the active-subspace and derivative-pricing models; the elimination identity itself is the classical Gram projection."
+   },
+   "verified": true
+  },
+  {
+   "id": "R7",
+   "claim": "THEORY.md, R7: stable linear-dimension reconstruction and Gaussian cubature for rank-two binary jumps",
+   "lean": [
+    "Cubature.rank_two_jump_query_bound"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "Gilbert, Kuo and Sloan (2022), Theorem 1 on tangencies in linear preintegration",
+     "Liu and Owen (2023), preintegration via an active subspace"
+    ],
+    "explanation": "A supplied witness of one curved ray is weaker information than an active basis or point access to the defining quadratic. The theorem recovers a rank-two centered jump from binary values with explicit linear dimension query count, uniform entry stability even near a rank change, and a deterministic Gaussian mass bound. It does not give preintegrand regularity or apply to general nonquadratic boundaries."
+   },
+   "verified": true
+  }
+ ],
+ "runs": {
+  "all": {
+   "theorems": [
+    "Cubature.ellipsoid_query_separation",
+    "Cubature.ellipsoid_nonadaptive_mean_square",
+    "Cubature.odd_background_query_separation",
+    "Cubature.closed_jump_cubature_reduction",
+    "Cubature.decoding_shell_probability",
+    "Cubature.centered_kink_optimal_queries",
+    "Cubature.rank_two_kink_linear_queries",
+    "Cubature.rank_adaptive_exact_cap_cubature",
+    "Cubature.rank_two_jump_query_bound"
+   ],
+   "accepted": true,
+   "exit_code": 0,
+   "seconds": 295.7,
+   "errors": [],
+   "last_line": "Your solution is okay!"
+  }
+ },
+ "verified": [
+  "R1",
+  "R2",
+  "R3",
+  "R4",
+  "R5",
+  "R6",
+  "R7"
+ ]
+}
