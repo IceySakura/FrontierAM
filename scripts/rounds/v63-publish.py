@@ -120,6 +120,17 @@ for _task in ('continuum-estimation', 'fluorescence-deconvolution'):
                                                                                    'gpt-6.2-sol', 'gpt-6-astra', 'qwen4-max',
                                                                                    'minimax-m3.1-flash'))):
         NOTES[_key] = ' '.join(filter(None, (NOTES.get(_key), SAMPLE_FEEDBACK)))
+# continuum iteratives (user decision 2026-11-26): the feedback became 15 held-out primary cases, scored on the other 45;
+# every iterative cell is rerun. PENDING: shown on the earlier attempt (regraded on the 45 cases) until the rerun has a result.
+CONTINUUM_SPLIT = ('此前尝试的测试反馈用的是工作区里带真值的 8 个样例（迭代中最后一次 public 82–97 分，私有 23–73 分）；11-26 起 60 个 '
+                   'primary 例按真值排序每 4 个取 1 作为不发给模型的反馈集（15 例），正式计分用其余 45 例，本格为此后的第 {0} 次尝试'
+                   '（results/OPEN_ITEMS.md）。')
+PENDING = {}
+for _model in ('gpt-6.2-sol', 'gpt-6-astra', 'gpt-6.1-sol', 'claude-opus-5-5', 'hy4', 'qwen4-max', 'qwen3.8-max-0902', 'minimax-m3.1-flash'):
+    _n = 3 if _model == 'qwen3.8-max-0902' else 2
+    RERUN[('continuum-estimation', 'iterative', _model)] = (_n, CONTINUUM_SPLIT.format(_n))
+    PENDING[('continuum-estimation', 'iterative', _model)] = (
+        f'反馈集改为 15 个留出例后的第 {_n} 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。')
 # gpt-6-astra runs on the user's ChatGPT Pro account through the Codex backend instead of AI Hub (user decision 2026-11-21).
 ASTRA_ROUTE = ('经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token'
                '（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的'
@@ -339,7 +350,9 @@ def main():
                     continue
                 value = score.get('score')
                 rerun_note = RERUN[(task, setting, model)][1] if n > 1 else ''
-                if n > 1 and n < RERUN[(task, setting, model)][0]:   # the replacing attempt has no result yet
+                if (task, setting, model) in PENDING and n < RERUN[(task, setting, model)][0]:
+                    rerun_note = PENDING[(task, setting, model)]
+                elif n > 1 and n < RERUN[(task, setting, model)][0]:   # the replacing attempt has no result yet
                     rerun_note = CUT_1 + '（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试，替代它的下一次尝试仍在进行。'
                 note = rerun_note or NOTES.get((task, setting) if tag == 'sol' else (task, setting, model), '')
                 if (task, setting, model) in UNMEASURED and n < RERUN[(task, setting, model)][0]:
