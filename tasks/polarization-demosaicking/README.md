@@ -82,7 +82,7 @@
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.5758\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 44.2≈ | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | RMSE \(E = 1.4792\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.9 | 26 次提交，128 分钟 | [`v3/claude-opus-5-5-iterative-2/`](solutions/v6.3/v3/claude-opus-5-5-iterative-2/) |
 | Hunyuan 4 | 单轮 | RMSE \(E = 1.5431\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.0 | 57 分钟 | [`v3/hy4-single-1/`](solutions/v6.3/v3/hy4-single-1/) |
-| Hunyuan 4 | 迭代 | RMSE \(E = 1.4563\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.7 | 5 次提交，152 分钟 | [`v3/hy4-iterative-1/`](solutions/v6.3/v3/hy4-iterative-1/) |
+| Hunyuan 4 | 迭代 | RMSE \(E = 1.5696\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 44.7 | 18 次提交，173 分钟 | [`v3/hy4-iterative-2/`](solutions/v6.3/v3/hy4-iterative-2/) |
 | Qwen4 Max | 单轮 | RMSE \(E = 1.5854\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.4≈ | 33 分钟 | [`v3/qwen4-max-single-1/`](solutions/v6.3/v3/qwen4-max-single-1/) |
 | Qwen4 Max | 迭代 | RMSE \(E = 1.4555\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.7 | 20 次提交，75 分钟 | [`v3/qwen4-max-iterative-2/`](solutions/v6.3/v3/qwen4-max-iterative-2/) |
 | Qwen3.8 Max | 单轮 | RMSE \(E = 1.6419\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 38.6 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
@@ -150,11 +150,11 @@ public 分数随测试提交：33.7（21 分钟） → 0.0（26 分钟） → 34
 
 ### Hunyuan 4（迭代，v6.3）
 
-反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。
+此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：52.1（43 分钟） → 56.1（99 分钟） → 56.3（122 分钟） → 56.3（136 分钟） → 56.3（143 分钟）
+public 分数随测试提交：40.5（46 分钟） → 39.9（80 分钟） → 35.9（89 分钟） → 32.0（93 分钟） → 30.7（96 分钟） → 41.4（104 分钟） → 40.0（110 分钟） → 40.8（122 分钟） → 41.4（124 分钟） → 41.2（136 分钟） → 41.4（141 分钟） → 40.3（148 分钟） → 40.3（150 分钟） → 40.9（155 分钟） → 41.4（160 分钟） → 41.4（164 分钟） → 40.4（167 分钟） → 41.4（170 分钟）
 
-源码 [`solutions/v6.3/v3/hy4-iterative-1/source/`](solutions/v6.3/v3/hy4-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T130859Z-fc85cd`）。
+源码 [`solutions/v6.3/v3/hy4-iterative-2/source/`](solutions/v6.3/v3/hy4-iterative-2/source/)（提交 `polarization-demosaicking-v3-20261126T213910Z-8fff02`）；未复制的二进制或大文件：weights.npz（271,308 字节）。
 
 ### Qwen4 Max（单轮，v6.3）
 
