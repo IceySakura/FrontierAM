@@ -134,13 +134,13 @@
           "model": "hy4",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 1,
-          "submission": "continuum-estimation-20261117T111508Z-f546c9",
+          "attempt": 2,
+          "submission": "continuum-estimation-20261126T134345Z-0c1b82",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00290018\\)，45 例，单例最长 0.3 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
+          "raw": "损失 \\(E = 0.00159891\\)，45 例，单例最长 7.7 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 45.947,
-          "notes_md": "反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。"
+          "score": 50.071,
+          "notes_md": "此前尝试的测试反馈用的是工作区里带真值的 8 个样例（迭代中最后一次 public 82–97 分，私有 23–73 分）；11-26 起 60 个 primary 例按真值排序每 4 个取 1 作为不发给模型的反馈集（15 例），正式计分用其余 45 例，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。"
         },
         {
           "model": "qwen4-max",

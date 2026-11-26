@@ -16,8 +16,8 @@
 <text x="596" y="149.0" font-size="13" font-weight="700" fill="#111827">64.1</text>
 <text x="120" y="181.0" font-size="13" fill="#374151" text-anchor="end">Hunyuan 4</text>
 <rect x="132" y="168.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
-<rect x="132" y="168.0" width="236.8" height="16" rx="4" fill="#3b6ff5"/>
-<text x="596" y="181.0" font-size="13" font-weight="700" fill="#111827">52.4</text>
+<rect x="132" y="168.0" width="238.7" height="16" rx="4" fill="#3b6ff5"/>
+<text x="596" y="181.0" font-size="13" font-weight="700" fill="#111827">52.8</text>
 <text x="120" y="213.0" font-size="13" fill="#374151" text-anchor="end">Qwen3.8 Max</text>
 <rect x="132" y="200.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
 <rect x="132" y="200.0" width="201.3" height="16" rx="4" fill="#7c5cff"/>

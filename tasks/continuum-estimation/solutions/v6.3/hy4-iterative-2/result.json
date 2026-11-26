@@ -1,0 +1,171 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "continuum-estimation-20261126T134345Z-0c1b82",
+ "raw": "损失 \\(E = 0.00159891\\)，45 例，单例最长 7.7 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 50.071,
+ "review": null,
+ "process": {
+  "minutes": 179.6,
+  "public_tests": 31,
+  "public_curve": [
+   {
+    "minute": 54.4,
+    "score": 76.66046646018437,
+    "status": "ok"
+   },
+   {
+    "minute": 57.6,
+    "score": 70.75874910571164,
+    "status": "ok"
+   },
+   {
+    "minute": 59.7,
+    "score": 76.66046646018437,
+    "status": "ok"
+   },
+   {
+    "minute": 62.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 80.4,
+    "score": 76.0975606277548,
+    "status": "ok"
+   },
+   {
+    "minute": 84.7,
+    "score": 64.48689401418389,
+    "status": "ok"
+   },
+   {
+    "minute": 101.3,
+    "score": 76.04594409238653,
+    "status": "ok"
+   },
+   {
+    "minute": 103.7,
+    "score": 76.66046646018437,
+    "status": "ok"
+   },
+   {
+    "minute": 109.6,
+    "score": 77.61730635251696,
+    "status": "ok"
+   },
+   {
+    "minute": 113.9,
+    "score": 83.86694863456603,
+    "status": "ok"
+   },
+   {
+    "minute": 116.5,
+    "score": 87.8087367707214,
+    "status": "ok"
+   },
+   {
+    "minute": 119.0,
+    "score": 82.89677504950274,
+    "status": "ok"
+   },
+   {
+    "minute": 122.2,
+    "score": 89.11806767052869,
+    "status": "ok"
+   },
+   {
+    "minute": 124.0,
+    "score": 86.96964900123187,
+    "status": "ok"
+   },
+   {
+    "minute": 126.9,
+    "score": 83.8374683453547,
+    "status": "ok"
+   },
+   {
+    "minute": 129.1,
+    "score": 88.36230512184125,
+    "status": "ok"
+   },
+   {
+    "minute": 130.9,
+    "score": 86.88625603638609,
+    "status": "ok"
+   },
+   {
+    "minute": 133.0,
+    "score": 79.9302183053009,
+    "status": "ok"
+   },
+   {
+    "minute": 136.7,
+    "score": 88.87392349639538,
+    "status": "ok"
+   },
+   {
+    "minute": 139.8,
+    "score": 88.14240675756835,
+    "status": "ok"
+   },
+   {
+    "minute": 143.4,
+    "score": 89.1180680212292,
+    "status": "ok"
+   },
+   {
+    "minute": 146.4,
+    "score": 89.81135331991393,
+    "status": "ok"
+   },
+   {
+    "minute": 147.9,
+    "score": 88.70128298721403,
+    "status": "ok"
+   },
+   {
+    "minute": 149.4,
+    "score": 89.1201766242424,
+    "status": "ok"
+   },
+   {
+    "minute": 151.1,
+    "score": 89.42412724522144,
+    "status": "ok"
+   },
+   {
+    "minute": 153.8,
+    "score": 89.7601152953806,
+    "status": "ok"
+   },
+   {
+    "minute": 157.9,
+    "score": 89.81135373989973,
+    "status": "ok"
+   },
+   {
+    "minute": 161.2,
+    "score": 86.34113268407964,
+    "status": "ok"
+   },
+   {
+    "minute": 163.9,
+    "score": 87.89559875430723,
+    "status": "ok"
+   },
+   {
+    "minute": 171.3,
+    "score": 89.81135373989973,
+    "status": "ok"
+   },
+   {
+    "minute": 174.1,
+    "score": 89.51385301065758,
+    "status": "ok"
+   }
+  ]
+ }
+}
