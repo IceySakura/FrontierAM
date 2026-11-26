@@ -342,7 +342,8 @@ SCORING_DISCLOSURE['galaxy-gravity-v4'] = (
     'matching an improved tree-code reference is the midpoint of the scale, and an error of 1e-15 (double precision) is '
     'the maximum. A failed call costs its whole size x scene combination, which then counts at the standard tree '
     'code\'s error; a failed build fails every combination. Using less CPU time earns nothing extra. The submission '
-    'directory may hold at most 256 MiB.'
+    'directory may hold at most 256 MiB. Where the task statement says that any failed call makes the whole '
+    'submission score zero, this rule applies instead.'
 )
 
 SCORING_DISCLOSURE['ihvp-sequence'] = (
@@ -371,7 +372,8 @@ SCORING_DISCLOSURE['exponential-v3'] = (
     'matching the per-case fastest published method everywhere is the midpoint of the scale and being faster scores '
     'higher. Timing follows the task\'s own interface rules (API.md): it starts before the first matrix byte is '
     'delivered and ends when all results are out and the process has exited; imports and input-independent '
-    'initialisation before READY are not timed.'
+    'initialisation before READY are not timed. Where the task files (INSTRUCTION.md, RULES.json) say that any failed '
+    'session makes the main score zero, this per-case rule applies instead.'
 )
 SCORING_DISCLOSURE['blackbox-cubature-v2'] = (
     'Every held-out instance runs once in a fresh process within 30 wall-clock seconds and the 2048-point query budget; '
