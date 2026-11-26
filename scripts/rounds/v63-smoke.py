@@ -64,7 +64,7 @@ FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3'
           'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature',
           'blackbox-cubature-v3': 'blackbox-cubature-v3', 'blackbox-cubature-v3.1': 'blackbox-cubature-v3',
           'blackbox-cubature-v3.2': 'blackbox-cubature-v3', 'blackbox-cubature-v3.3': 'blackbox-cubature-v3',
-          'blackbox-cubature-v3.4': 'blackbox-cubature-v3',
+          'blackbox-cubature-v3.4': 'blackbox-cubature-v3', 'blackbox-cubature-v3.5': 'blackbox-cubature-v3',
           'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution'}
 V5_FILES = ('README.md', 'statement.md', 'interface.md', 'solver.py', 'smoke.json')  # the MODEL_ONLY package, nothing else
 # Versions that keep the author's workspace layout: their public-dev material is the samples; these files must be there.
@@ -82,8 +82,9 @@ AUTHOR_LAYOUT['blackbox-cubature-v3.2'] = AUTHOR_LAYOUT['blackbox-cubature-v3'] 
     '/workspace/examples/lean_project/lakefile.toml', '/workspace/tools/lean_check.py']
 AUTHOR_LAYOUT['blackbox-cubature-v3.3'] = AUTHOR_LAYOUT['blackbox-cubature-v3.2']
 AUTHOR_LAYOUT['blackbox-cubature-v3.4'] = AUTHOR_LAYOUT['blackbox-cubature-v3.2']
-LEAN_TASKS = ('blackbox-cubature-v3.2', 'blackbox-cubature-v3.3', 'blackbox-cubature-v3.4')
-NETWORK_TASKS = ('blackbox-cubature-v3.4',)
+AUTHOR_LAYOUT['blackbox-cubature-v3.5'] = AUTHOR_LAYOUT['blackbox-cubature-v3.2']
+LEAN_TASKS = ('blackbox-cubature-v3.2', 'blackbox-cubature-v3.3', 'blackbox-cubature-v3.4', 'blackbox-cubature-v3.5')
+NETWORK_TASKS = ('blackbox-cubature-v3.4', 'blackbox-cubature-v3.5')
 NETWORK_PROBES = {'arxiv': 'https://export.arxiv.org/api/query?search_query=all:cubature&max_results=1',
                   'github': 'https://github.com/', 'pypi': 'https://pypi.org/simple/numpy/',
                   'openai': 'https://api.openai.com/v1/models', 'intranet': 'https://git.woa.com/'}

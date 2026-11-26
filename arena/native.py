@@ -54,6 +54,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'blackbox-cubature-v3.2': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.3': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.4': 'frontieram-blackbox-cubature-v3-harness:v6',
+                  'blackbox-cubature-v3.5': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'continuum-estimation': 'frontieram-continuum-estimation-harness:v6',
                   'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6',
                   'pdhcg-qp-v1': 'frontieram-pdhcg-qp-v1-harness:v6'}
@@ -435,6 +436,7 @@ SCORING_DISCLOSURE['blackbox-cubature-v3.3'] = SCORING_DISCLOSURE['blackbox-cuba
     'than several elementary ones; ending the session early earns nothing.'
 )
 SCORING_DISCLOSURE['blackbox-cubature-v3.4'] = SCORING_DISCLOSURE['blackbox-cubature-v3.3']
+SCORING_DISCLOSURE['blackbox-cubature-v3.5'] = SCORING_DISCLOSURE['blackbox-cubature-v3.3']
 SCORING_DISCLOSURE['continuum-estimation'] = (
     'Every held-out case runs once in a fresh restricted process within 60 wall-clock seconds (startup included); an '
     'invalid, missing, late or unsuccessful output on any case makes the whole submission score zero. Given that, the '

@@ -295,6 +295,11 @@
       "dir": "v3.4",
       "registry": "blackbox-cubature-v3.4",
       "note": "v3.3 加开发阶段联网：宿主侧代理放行公网，拒绝 GitHub 及其镜像、包管理源、在线大模型服务与内网，请求全部记录；厂商侧联网工具关闭；评测仍离线；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.13）"
+    },
+    {
+      "dir": "v3.5",
+      "registry": "blackbox-cubature-v3.5",
+      "note": "v3.4 加题面中的人类 SOTA 目标（Gilbert–Kuo–Sloan 2022、He–Wang 2015、Rademacher–Vempala 2008、Liu–Owen 2023，均按原文核对），要求至少选一个尝试严格改进；其余同 v3.4；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.14）"
     }
   ],
   "locations": {

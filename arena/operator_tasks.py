@@ -875,6 +875,12 @@ class BlackboxCubatureV34(BlackboxCubatureV33):
                  'UNIX-CONNECT:/run/netproxy/proxy.sock']]
 
 
+class BlackboxCubatureV35(BlackboxCubatureV34):
+    """v3.5: v3.4 (public internet during development) with human SOTA targets in the statement, each anchored in a
+    verified theorem or author-stated gap, and a request for a strict improvement on at least one."""
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.5'
+
+
 class ContinuumEstimation(OperatorTask):
     """The author's continuum-estimation 1.0.1 verifier, ported to x86-64 (arena/operator_drivers/continuum.py).
     Since 2026-11-26 (user decision) the 60 primary cases are split (versions/v1/data/private/feedback-split.json):
@@ -937,7 +943,7 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'blackbox-cubature': BlackboxCubature, 'blackbox-cubature-v2': BlackboxCubatureV2,
            'blackbox-cubature-v3': BlackboxCubatureV3, 'blackbox-cubature-v3.1': BlackboxCubatureV31,
            'blackbox-cubature-v3.2': BlackboxCubatureV32, 'blackbox-cubature-v3.3': BlackboxCubatureV33,
-           'blackbox-cubature-v3.4': BlackboxCubatureV34,
+           'blackbox-cubature-v3.4': BlackboxCubatureV34, 'blackbox-cubature-v3.5': BlackboxCubatureV35,
            'continuum-estimation': ContinuumEstimation, 'fluorescence-deconvolution': FluorescenceDeconvolution}
 
 
