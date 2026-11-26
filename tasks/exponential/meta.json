@@ -411,7 +411,7 @@
       "syn_signed_p4_k1",
       "control_diagonal"
     ],
-    "public": "16 例全尺寸公开用例（每个结构族单请求、复用各 1 例）",
+    "public": "43 例全尺寸公开用例（每个结构族第一个公开母矩阵的 p4/p7/p10 单请求与复用全部会话，加 2 个对照例；2026-11-26 前为 16 例，只有 p4）",
     "groups": "结构族（manifest 的 family 字段）：mesh_diffusion / standard_fem / geometric_graph / standard_graph / network_operator / signed_incidence / diagonal_local / analytic",
     "feedback": {
       "task": "exponential-v3",
@@ -419,7 +419,7 @@
       "accuracy": null,
       "lower_is_better": true,
       "timed": true,
-      "note": "Any failed case makes the final score 0. Category scores use the plain mean time ratio of the category."
+      "note": "Each scored case scores 100/(1+r), r = your time / the reference's time on that case; a failed case scores 0. The total averages these level by level (precision, scenario, family, matrix) as in the final score; a failed control case makes it 0. Category scores are plain means of the per-case scores."
     }
   },
   "insights": [

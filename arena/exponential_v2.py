@@ -217,6 +217,24 @@ class ExponentialV2(Task):
                 'speed_ratio': speed, 'detail': result}
 
 
+CASE_LEVELS = ('precision', 'scenario', 'family', 'mother')
+
+
+def per_case_score(cases: list[dict], case_results: dict) -> float:
+    """The per-case rule (2026-11-26, results/OPEN_ITEMS.md): each scored case gets 100/(1+r) with r its time over the
+    panel's virtual best (0 if invalid), averaged with the same nesting as R (precision, scenario, family, mother).
+    case_results is score_submission()['case_results']; failed controls make the submission invalid elsewhere."""
+    def mean(group: list[dict], depth: int) -> float:
+        if depth == len(CASE_LEVELS):
+            return sum(100 / (1 + case_results[c['id']]['relative_time']) if case_results[c['id']]['valid'] else 0.0
+                       for c in group) / len(group)
+        parts: dict[str, list[dict]] = {}
+        for case in group:
+            parts.setdefault(case[CASE_LEVELS[depth]], []).append(case)
+        return sum(mean(part, depth + 1) for part in parts.values()) / len(parts)
+    return mean([c for c in cases if c['role'] == 'scored'], 0)
+
+
 def _runs(part: dict) -> dict[str, list[dict]]:
     by_case: dict[str, list[dict]] = {}
     for run in json.loads(Path(part['report']).read_text())['runs']:

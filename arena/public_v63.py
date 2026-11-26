@@ -535,14 +535,11 @@ def report_from(task, store: Store, record: dict, partial: dict, unfinished: lis
             return conic_score(sum(r['accuracy'] for r in mine) / len(mine), sum(r['accuracy'] for r in theirs) / len(theirs)) \
                 if mine and theirs else None
     elif family(task.name) == 'exponential':
-        def score_of(mine, theirs):
-            if not mine:
-                return None
-            if any(r['status'] != 'passed' for r in mine):
-                return 0.0
+        def score_of(mine, theirs):  # plain mean of the per-case scores; a failed case scores 0
             best = {r['id']: r['seconds'] for r in theirs}
-            ratios = [r['seconds'] / best[r['id']] for r in mine if best.get(r['id'])]
-            return 100 / (1 + sum(ratios) / len(ratios)) if ratios else None
+            scores = [100 / (1 + r['seconds'] / best[r['id']]) if r['status'] == 'passed' else 0.0
+                      for r in mine if best.get(r['id'])]
+            return sum(scores) / len(scores) if scores else None
     else:
         weak = {r['id']: r for r in reference['weak']}
 
@@ -550,12 +547,13 @@ def report_from(task, store: Store, record: dict, partial: dict, unfinished: lis
             return mapped(task.name, mine, [weak[r['id']] for r in mine if r['id'] in weak], theirs)
 
     total = score_of(rows, ref_rows)
-    if family(task.name) == 'exponential' and all(r['status'] == 'passed' for r in rows):
+    if family(task.name) == 'exponential':
+        from .exponential_v2 import per_case_score
         cases = [c for c in task.cases() if c['id'] in ids]
-        if any(c['role'] == 'scored' for c in cases):  # the formal hierarchical mean, as in the final score
+        if any(c['role'] == 'scored' for c in cases):  # the formal per-case hierarchical mean, as in the final score
             measured = {k: v for k, v in candidate['aggregates'].items() if k in ids}
-            total = task.scoring().score_submission(cases, measured,
-                                                    {c['id']: reference['best'][c['id']] for c in cases})['score']
+            scored = task.scoring().score_submission(cases, measured, {c['id']: reference['best'][c['id']] for c in cases})
+            total = per_case_score(cases, scored['case_results']) if scored['controls_valid'] else 0.0
     return feedback.build(task.name, rows, ref_rows, score=total, categorized=bool(cfg.get('category')),
                           accuracy_name=cfg.get('accuracy'), lower_is_better=cfg.get('lower_is_better', True),
                           timed=cfg.get('timed', True), category_score=score_of,

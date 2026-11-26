@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 import arena.tasks  # noqa: E402,F401  (registers the tasks)
-from arena.exponential_v2 import speed_ratio  # noqa: E402
+from arena.exponential_v2 import per_case_score, speed_ratio  # noqa: E402
 from arena.tasks import TASKS  # noqa: E402
 
 
@@ -47,21 +47,6 @@ def merged_parts(store: Path, suite: str, out: Path) -> dict:
         report.write_text(json.dumps({'runs': merged.pop('runs'), 'aggregates': merged['aggregates']}) + '\n')
         merged['report'] = str(report)
     return parts
-
-
-LEVELS = ('precision', 'scenario', 'family', 'mother')
-
-
-def per_case_score(cases: list[dict], case_results: dict) -> float:
-    def mean(group: list[dict], depth: int) -> float:
-        if depth == len(LEVELS):
-            return sum(100 / (1 + case_results[c['id']]['relative_time']) if case_results[c['id']]['valid'] else 0.0
-                       for c in group) / len(group)
-        parts: dict[str, list[dict]] = {}
-        for case in group:
-            parts.setdefault(case[LEVELS[depth]], []).append(case)
-        return sum(mean(part, depth + 1) for part in parts.values()) / len(parts)
-    return mean([c for c in cases if c['role'] == 'scored'], 0)
 
 
 def main():

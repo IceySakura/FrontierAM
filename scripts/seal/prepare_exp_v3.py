@@ -6,10 +6,12 @@ Same data, panel, image, evaluator and scorer as exponential-v2, with three chan
     scorer, RULES.json and the documents that state them); every edit must match exactly once;
   - the workspace: documents, tools, SDK, starter and samples/ (meta.json v63_data samples from the smoke set);
     the full smoke set and the full-size public cases (dev_full/, part of the public-feedback set) are no longer given;
-  - the public-feedback seal keeps two public cases per structure family (one one_shot, one reuse).
+  - the public-feedback seal keeps every session (both scenarios, all three precisions) of the first public mother of
+    each structure family, plus two controls (since 2026-11-26, user decision; it kept only the p4 sessions before,
+    so no failure at p7 or p10 could show in the feedback).
 The new seals are hard-linked copies of the v2 seals; edited files are unlinked before writing.
 
-Usage: prepare_exp_v3.py [--force]      (writes .runtime-exp3 and .runtime-exp3-public)
+Usage: prepare_exp_v3.py [--force] [--public-only]      (writes .runtime-exp3 and .runtime-exp3-public)
 """
 
 import argparse
@@ -130,15 +132,14 @@ def write_tar(members: dict[str, bytes], out: Path) -> None:
 
 
 def public_subset(seal: Path) -> list[str]:
-    """Two public cases per structure family for the feedback seal: one one_shot and one reuse."""
+    """The feedback seal: every session of the first public mother of each structure family, and two controls."""
     path = seal / 'data/manifest.json'
     manifest = json.loads(path.read_text())
-    kept, seen = [], set()
+    first: dict[str, str] = {}
     for case in manifest['cases']:
-        key = (case['family'], case['scenario'])
-        if key not in seen and case['role'] == 'scored':
-            seen.add(key)
-            kept.append(case)
+        if case['role'] == 'scored':
+            first.setdefault(case['family'], case['mother'])
+    kept = [c for c in manifest['cases'] if c['role'] == 'scored' and c['mother'] == first[c['family']]]
     for family in sorted({c['family'] for c in manifest['cases']} - {c['family'] for c in kept}):
         kept += [c for c in manifest['cases'] if c['family'] == family][:2]
     manifest['cases'] = kept
@@ -149,9 +150,12 @@ def public_subset(seal: Path) -> list[str]:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--force', action='store_true')
+    parser.add_argument('--public-only', action='store_true', help='reseal only the public-feedback seal')
     args = parser.parse_args()
     members = workspace(ROOT / '.runtime-exp2/public.tar')
     for parent, seal in SEALS.items():
+        if args.public_only and not seal.name.endswith('-public'):
+            continue
         if seal.exists():
             if not args.force:
                 raise SystemExit(f'{seal} exists; pass --force to reseal')
