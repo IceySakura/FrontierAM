@@ -511,7 +511,13 @@ M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1
 
 **顺带发现**：FrontierAM 的启动脚本此前没有传 `builtin_tools`，所以所有离线运行都把厂商侧联网工具提供给了模型（Codex 的 `web_search`，Claude Code 的 WebSearch 与 WebFetch；试点仓库当时是关掉的）。审计 371 次开发运行的 40248 个响应（`var/raw/web-tool-audit-20261126.tsv`）：只有 1 次实际调用，即 11-20 galaxy-gravity-v4 的 GPT-6.2 Sol v6.3 迭代运行中的一次 `web_search`，状态为完成，查询内容上游没有保留；cubature 的所有试跑都没有调用。上游会真正执行这个搜索。
 
-**试跑**：GPT-6.2 Sol，迭代，6 小时上限，验证运行，11-26 19:51 开始（`dev-blackbox-cubature-v3.4-20261126T115124Z-276f36`）。
+**厂商侧搜索是否真的联网（核实）**：直接向 AIHub 发带 `web_search` 工具的 GPT-6.2 Sol 请求，问“最近三天 arXiv math.NA 的一篇新论文”：模型实际发起搜索（9 个来源，均为 2026 年 11 月的 arXiv 列表页），给出 `2611.34685`；宿主机打开 arXiv 摘要页，标题完全一致，是当天 math.NA 最新列表的第一篇。所以厂商侧联网工具是真实的联网通道，galaxy 那一格的重跑有依据。
+
+**试跑**：GPT-6.2 Sol，迭代，6 小时上限，验证运行。
+
+- 第 1 次（19:51，`dev-blackbox-cubature-v3.4-20261126T115124Z-276f36`）：模型约 10 分钟时用 `curl` 访问 Crossref 和 arXiv，报“无法解析主机名”，代理日志为空。原因：ATR 给 harness 的环境变量是一套只含 `PATH`、`LANG` 等的最小集合，容器上设置的代理变量没有传给 Codex；冒烟测试用脚本直接 `docker exec`，所以没有暴露这个问题。已停止，记为未测（平台原因）。修复：启动脚本把代理变量补进 harness 环境。用真实 harness 做端到端验证（Codex 加 GPT-6.2 Sol、同样的容器配置，提示词只要求执行两条 `curl`，输出不进存储）：arXiv 放行、GitHub 拒绝，均记入代理日志；Codex 自身对 GitHub 和 chatgpt.com 的连接（更新检查、遥测）也被拒绝。
+- 第 2 次：启动命令被中断，主进程退出，留下的孤儿容器已删除。
+- 第 3 次：11-26 20:06 开始（`dev-blackbox-cubature-v3.4-20261126T120613Z-d296e9`）。
 
 ## 参考文献
 

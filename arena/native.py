@@ -155,6 +155,10 @@ with ExitStack() as stack:
     home = Path("/home/agent/atr-home")
     launch = harness.setup(home, endpoint, task)
     environment = launch.environment()
+    # ATR's harness environment is a minimal named base; a task with network access sets its proxy on the container.
+    for name in ("HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy", "NO_PROXY", "no_proxy"):
+        if name in os.environ:
+            environment[name] = os.environ[name]
     if spec["harness"] == "claude":
         environment["API_TIMEOUT_MS"] = str(WINDOW_MS)
         # The transport sends only pings until an answer is complete; Claude Code's first-byte and idle watchdogs
