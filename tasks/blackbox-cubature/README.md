@@ -23,6 +23,7 @@
 | `v3.2` | `blackbox-cubature-v3.2` | v3.1 加理论评分原则：理论结论须 Lean 4 形式化并通过 lake comparator，每条与人类强结果对比（更强、更弱、相当、不可比），理论分取通过结论中的最高分；开发容器提供离线 Lean v4.35 与 Mathlib、8 GiB 内存；实验部分同 v3.1；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.11，analysis/THEORY_REVIEW.md） |
 | `v3.3` | `blackbox-cubature-v3.3` | v3.2 的题面修订：写明提前结束不加分、理论分只看最强的一条通过验证的结论（一条有分量的结论胜过多条初等结论），建议先在 THEORY.md 定目标与证明路线再分步形式化；环境、数据与评分同 v3.2；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.12） |
 | `v3.4` | `blackbox-cubature-v3.4` | v3.3 加开发阶段联网：宿主侧代理放行公网，拒绝 GitHub 及其镜像、包管理源、在线大模型服务与内网，请求全部记录；厂商侧联网工具关闭；评测仍离线；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.13） |
+| `v3.5` | `blackbox-cubature-v3.5` | v3.4 加题面中的人类 SOTA 目标（Gilbert–Kuo–Sloan 2022、He–Wang 2015、Rademacher–Vempala 2008、Liu–Owen 2023，均按原文核对），要求至少选一个尝试严格改进；其余同 v3.4；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.14） |
 
 ## 题目背景
 

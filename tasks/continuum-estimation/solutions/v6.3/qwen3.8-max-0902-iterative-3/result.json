@@ -1,0 +1,61 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "continuum-estimation-20261126T153554Z-33fe8e",
+ "raw": "损失 \\(E = 0.00306695\\)，45 例，单例最长 2.1 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 45.427,
+ "review": null,
+ "process": {
+  "minutes": 177.2,
+  "public_tests": 9,
+  "public_curve": [
+   {
+    "minute": 93.0,
+    "score": 72.87486651796371,
+    "status": "ok"
+   },
+   {
+    "minute": 117.3,
+    "score": 70.38057499528404,
+    "status": "ok"
+   },
+   {
+    "minute": 136.6,
+    "score": 76.13129893268793,
+    "status": "ok"
+   },
+   {
+    "minute": 144.7,
+    "score": 77.33577509604365,
+    "status": "ok"
+   },
+   {
+    "minute": 150.2,
+    "score": 80.44491583061932,
+    "status": "ok"
+   },
+   {
+    "minute": 156.8,
+    "score": 80.37131605505037,
+    "status": "ok"
+   },
+   {
+    "minute": 166.1,
+    "score": 80.19422471336432,
+    "status": "ok"
+   },
+   {
+    "minute": 171.5,
+    "score": 80.19422471336432,
+    "status": "ok"
+   },
+   {
+    "minute": 175.3,
+    "score": 80.19422471336432,
+    "status": "ok"
+   }
+  ]
+ }
+}
