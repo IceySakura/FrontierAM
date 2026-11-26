@@ -21,6 +21,7 @@
 | `v3` | `blackbox-cubature-v3` | 理论 + 实验双考候选版：高斯测度，困难合成赛道（4 族）与文献期权赛道（6 族）等权，GPCA-RQMC = 50、普通蒙特卡洛 = 0，按真值精度截断；只做试跑，不上榜（analysis/DUAL_PLAN.md） |
 | `v3.1` | `blackbox-cubature-v3.1` | v3 的修订候选版：困难赛道改为谱各异的各向异性二次型（广义卡方真值），期权赛道改为单资产局部波动率 Euler 模型（反向 Nyström 真值），样例查询上限 2^18；评分、参照与镜像同 v3；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.9） |
 | `v3.2` | `blackbox-cubature-v3.2` | v3.1 加理论评分原则：理论结论须 Lean 4 形式化并通过 lake comparator，每条与人类强结果对比（更强、更弱、相当、不可比），理论分取通过结论中的最高分；开发容器提供离线 Lean v4.35 与 Mathlib、8 GiB 内存；实验部分同 v3.1；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.11，analysis/THEORY_REVIEW.md） |
+| `v3.3` | `blackbox-cubature-v3.3` | v3.2 的题面修订：写明提前结束不加分、理论分只看最强的一条通过验证的结论（一条有分量的结论胜过多条初等结论），建议先在 THEORY.md 定目标与证明路线再分步形式化；环境、数据与评分同 v3.2；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.12） |
 
 ## 题目背景
 

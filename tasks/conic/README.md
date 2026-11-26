@@ -81,6 +81,7 @@
 | Hunyuan 4 | 单轮 | 253 / 650（\(p = 0.389\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 57 分钟 | [`hy4-single-2/`](solutions/v6.3/hy4-single-2/) |
 | Hunyuan 4 | 迭代 | 286 / 650（\(p = 0.440\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 12 次提交，172 分钟 | [`hy4-iterative-2/`](solutions/v6.3/hy4-iterative-2/) |
 | Qwen4 Max | 单轮 | 166 / 650（\(p = 0.255\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 31 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | 241 / 650（\(p = 0.371\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 20 次提交，180 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
 | Qwen3.8 Max | 单轮 | 246 / 650（\(p = 0.378\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 60 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
 | Qwen3.8 Max | 迭代 | 196 / 650（\(p = 0.302\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 0 次提交，96 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | 74 / 650（\(p = 0.114\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 30 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
@@ -155,6 +156,14 @@ public 分数随测试提交：0.0（54 分钟） → 0.0（63 分钟） → 0.0
 ### Qwen4 Max（单轮，v6.3）
 
 源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `conic-20261125T094519Z-f56c32`）；未复制的二进制或大文件：solver（80,952 字节）。
+
+### Qwen4 Max（迭代，v6.3）
+
+第 1 次运行在第 75 分钟中断：模型为清理自己卡住的 `python -` 进程执行 `pkill -f 'python -'`，一并杀掉了容器内命令行为 `/opt/atr-venv/bin/python -c …` 的 harness 启动器（harness 隔离缺陷，记未测）；本格为同编号重跑。
+
+public 分数随测试提交：0.0（26 分钟） → 0.0（38 分钟） → 0.0（49 分钟） → 0.0（56 分钟） → 0.0（63 分钟） → 0.0（71 分钟） → 0.0（78 分钟） → 0.0（86 分钟） → 0.0（93 分钟） → 0.0（100 分钟） → 0.0（109 分钟） → 0.0（117 分钟） → 0.0（124 分钟） → 0.0（131 分钟） → 0.0（138 分钟） → 0.0（145 分钟） → 0.0（152 分钟） → 0.0（159 分钟） → 0.0（166 分钟） → 0.0（173 分钟）
+
+源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `conic-20261126T054642Z-c1977e`）；未复制的二进制或大文件：lib/libgfortran-040039e1-0352e75f.so.5.0.0（2,833,617 字节）、lib/libquadmath-96973f99-934c22de.so.0.0.0（250,985 字节）、lib/libscipy_openblas-b75cc656.so（24,817,849 字节）、solver（261,640 字节）。
 
 ### Qwen3.8 Max（单轮，v6.3）
 

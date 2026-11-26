@@ -1,0 +1,116 @@
+{
+ "model": "qwen4-max",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "conic-20261126T054642Z-c1977e",
+ "raw": "241 / 650（\\(p = 0.371\\)，参照 \\(p_B = 0.789\\)）",
+ "mapping": "\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 179.5,
+  "public_tests": 20,
+  "public_curve": [
+   {
+    "minute": 26.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 37.5,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 48.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 56.3,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 62.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 70.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 78.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 86.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 92.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 100.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 108.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 116.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 124.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 131.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 137.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 144.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 152.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 159.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 166.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 172.9,
+    "score": 0.0,
+    "status": "ok"
+   }
+  ]
+ }
+}
