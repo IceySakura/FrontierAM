@@ -91,15 +91,14 @@
           "model": "gpt-6.1-sol",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 1,
-          "tie": true,
-          "submission": "polarization-demosaicking-v3-20261117T150533Z-919ebe",
+          "attempt": 2,
+          "submission": "polarization-demosaicking-v3-20261126T184954Z-85558f",
           "store": "var/stores/store-v63",
-          "raw": "RMSE \\(E = 1.4334\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
+          "raw": "RMSE \\(E = 1.3839\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 52.442,
-          "notes_md": "反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：claude-opus-5-5（本格领先的概率 0.39）。",
-          "folder": "v3/gpt-6.1-sol-iterative-1"
+          "score": 54.085,
+          "notes_md": "此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。",
+          "folder": "v3/gpt-6.1-sol-iterative-2"
         },
         {
           "model": "claude-opus-5-5",

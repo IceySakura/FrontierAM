@@ -1,0 +1,5 @@
+{
+  "models": [
+    {"file": "weights.npz", "weight": 1, "transforms": [0]}
+  ]
+}

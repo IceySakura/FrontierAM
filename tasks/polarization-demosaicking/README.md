@@ -78,7 +78,7 @@
 | GPT-6 Astra | 单轮 | RMSE \(E = 1.3867\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 54.0 | 58 分钟 | [`v3/gpt-6-astra-single-1/`](solutions/v6.3/v3/gpt-6-astra-single-1/) |
 | GPT-6 Astra | 迭代 | RMSE \(E = 1.3770\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 54.3≈ | 5 次提交，144 分钟 | [`v3/gpt-6-astra-iterative-1/`](solutions/v6.3/v3/gpt-6-astra-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | RMSE \(E = 1.4158\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | RMSE \(E = 1.4334\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.4≈ | 9 次提交，235 分钟 | [`v3/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/) |
+| GPT-6.1 Sol | 迭代 | RMSE \(E = 1.3839\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 54.1 | 13 次提交，165 分钟 | [`v3/gpt-6.1-sol-iterative-2/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-2/) |
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.5758\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 44.2≈ | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | RMSE \(E = 1.4289\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6≈ | 8 次提交，130 分钟 | [`v3/claude-opus-5-5-iterative-1/`](solutions/v6.3/v3/claude-opus-5-5-iterative-1/) |
 | Hunyuan 4 | 单轮 | RMSE \(E = 1.5431\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.0 | 57 分钟 | [`v3/hy4-single-1/`](solutions/v6.3/v3/hy4-single-1/) |
@@ -124,11 +124,11 @@ public 分数随测试提交：56.4（15 分钟） → 58.4（39 分钟） → 5
 
 ### GPT-6.1 Sol（迭代，v6.3）
 
-反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：claude-opus-5-5（本格领先的概率 0.39）。
+此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：56.2（9 分钟） → 59.6（26 分钟） → 60.7（54 分钟） → 0.0（132 分钟） → 60.7（140 分钟） → 61.4（144 分钟） → 0.0（205 分钟） → 0.0（223 分钟） → 61.7（226 分钟）
+public 分数随测试提交：0.0（3 分钟） → 39.6（15 分钟） → 43.9（18 分钟） → 46.8（25 分钟） → 51.4（33 分钟） → 51.9（55 分钟） → 52.5（78 分钟） → 53.8（119 分钟） → 53.6（132 分钟） → 53.0（135 分钟） → 52.8（142 分钟） → 53.6（156 分钟） → 53.8（161 分钟）
 
-源码 [`solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T150533Z-919ebe`）；未复制的二进制或大文件：weights.npz（102,566 字节）。
+源码 [`solutions/v6.3/v3/gpt-6.1-sol-iterative-2/source/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-2/source/)（提交 `polarization-demosaicking-v3-20261126T184954Z-85558f`）；未复制的二进制或大文件：kernels/kernel_1_24_9_1024_True.bin（10,293 字节）、kernels/kernel_24_24_3_1024_True.bin（26,898 字节）、kernels/kernel_24_8_1_1024_False.bin（1,681 字节）、weights.npz（52,526 字节）。
 
 ### Claude Opus 5.5（单轮，v6.3）
 
