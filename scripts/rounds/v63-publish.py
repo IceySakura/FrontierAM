@@ -11,7 +11,7 @@ import json
 import math
 import re
 import sys
-
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -158,15 +158,16 @@ REGRADE = {('polarization-demosaicking-v3', 'single', 'gpt-6.2-sol'): POL_LOAD.f
            ('exponential-v3', 'single', 'qwen4-max'):
                '第一次评分有两个分片负载报警（探针 1.38、1.42），判无效的两例都是 CPU 上限；只重测这两例时 '
                '`syn_geometric_p10_k1` 以 10.3 秒 CPU 通过（原评分三次触 15 秒上限），故记未测，开发槽全空时整套重评：'
-               'k1 通过，`syn_geometric_p10_k16` 复用仍超 150 秒 CPU 上限，仍判无效，'}
+               'k1 通过，`syn_geometric_p10_k16` 复用仍超 150 秒 CPU 上限，按逐例计分该例记 0，'}
 NOTES[('conic', 'iterative', 'qwen4-max')] = (
     '第 1 次运行在第 75 分钟中断：模型为清理自己卡住的 `python -` 进程执行 `pkill -f \'python -\'`，一并杀掉了容器内命令行为 '
     '`/opt/atr-venv/bin/python -c …` 的 harness 启动器（harness 隔离缺陷，记未测）；本格为同编号重跑。')
 NOTES[('galaxy-gravity-v4', 'iterative', 'qwen4-max')] = (
     '提交含 985 MB 预计算表，私有评分时 7 个分片同时解包，评测器 30 秒的 `docker create` 超时（评测设施问题，两次记未测）；'
-    '分片错开 90 秒启动后评完：419 万粒子各例超出 2 GiB 内存上限，100 万粒子 jaffe 一例超 CPU 上限，判无效。')
+    '分片错开 90 秒启动后评完：419 万粒子各例超出 2 GiB 内存上限，100 万粒子 jaffe 一例超 CPU 上限，这 5 组按经典树误差计入。')
 NOTES[('galaxy-gravity-v4', 'iterative', 'minimax-m3.1-flash')] = (
-    '最大档 3 例（419 万粒子）三次重复都超 CPU 上限（100–110 秒；所在分片负载探针 1.06–1.10），判无效。')
+    '419 万粒子 disc 组 3 例三次重复都超 CPU 上限（100–110 秒；所在分片负载探针 1.06–1.10），该组按经典树误差计入；'
+    '100 万粒子各组和 419 万粒子其余组的相对误差约 1（disc 组 22），总误差高于 \\(E_0\\)。')
 NOTES[('galaxy-gravity-v4', 'single', 'minimax-m3.1-flash')] = (
     '`build.sh` 把 CPU 检测小程序编译到 `/tmp` 再执行；评测构建容器的 `/tmp` 不可执行（Docker tmpfs 默认 noexec），开发容器'
     '可执行，题面未写明，构建失败，按题目规则记 0（已记入 results/OPEN_ITEMS.md 待反馈出题人）。60 分钟到时截停。')
@@ -212,21 +213,49 @@ def cell(task: str, score: dict) -> tuple[str, str]:
                 '与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；'
                 '\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)')
     if family == 'conic':
+        if score.get('p0') is not None:
+            return (f'{score["successes"]} / {score["cases"]}（\\(p = {score["p"]:.3f}\\)；弱参照 HiGHS \\(p_0 = {score["p0"]:.3f}\\)，'
+                    f'参照 \\(p_B = {score["p_B"]:.3f}\\)）',
+                    '\\(p \\le p_0\\) 记 0；\\(p_0 < p \\le p_B\\) 为 \\(50\\,(p-p_0)/(p_B-p_0)\\)；高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)')
         return (f'{score["successes"]} / {score["cases"]}（\\(p = {score["p"]:.3f}\\)，参照 \\(p_B = {score["p_B"]:.3f}\\)）',
                 '\\(p \\le 0.9\\,p_B\\) 记 0；否则 \\(50\\,(p-0.9p_B)/(0.1p_B)\\)，高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)')
     if family == 'exponential':
+        failed = score.get('failed_cases') or {}
+        reasons = '，'.join(f'`{r}` {n}' for r, n in Counter(failed.values()).most_common())
+        if score.get('rule') == 'per-case':
+            if score.get('status') != 'ok':
+                return f'无效提交（对照例不合格；{len(failed)} 例不合格：{reasons}）', '对照例不合格记 0'
+            valid, scored = score['valid_scored_cases'], score['scored_cases']
+            whole = (f'，总体 \\(R = {score["relative_time"]:.3f}\\)' if score.get('relative_time') is not None
+                     else f'；不合格：{reasons}')
+            return (f'{valid}/{scored} 个计分例合格{whole}（\\(r\\)：逐例用时 ÷ 7 方法参照组该例最快成员）',
+                    '逐例 \\(100/(1+r)\\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均')
         if score.get('status') != 'ok':
-            return f'无效提交（{len(score.get("failed_cases") or {})} 例不合格）', '任一用例不合格记 0'
+            return f'无效提交（{len(failed)} 例不合格）', '任一用例不合格记 0'
         return (f'74/74 合格，\\(R = {score["relative_time"]:.3f}\\)（对 7 方法参照组逐例最快成员）',
                 '\\(100/(1+R)\\)')
     candidate = score.get('candidate') or {}
     raw = candidate.get('raw_error')
     if task == 'galaxy-gravity-v4':
+        log_map = ('对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；'
+                   '\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)')
+        anchors = (f'经典树 theta 0.8：\\(E_0 = {score["weak"]["raw_error"]:.3g}\\)，'
+                   f'改进树 theta 0.7：\\(E_{{50}} = {score["strong"]["raw_error"]:.3g}\\)')
+        failed = score.get('failed_cells') or []
+        if score.get('rule') == 'per-group' and len(failed) < len(score.get('per_group_cells') or {}):
+            raw = score['per_group_raw_error']
+            named = f'（{"、".join(failed)}）' if len(failed) <= 5 else ''
+            lost = f'；{len(failed)} 组失败{named}，按经典树该组误差计入' if failed else ''
+            return (f'\\(E = {raw:.3g}\\)，20 组（4 档规模 × 5 类）等权{lost}；CPU 用量最多到逐例时限的 '
+                    f'{100 * (candidate.get("max_cpu_fraction") or 0):.0f}%（{anchors}）',
+                    log_map + '；失败或超限的组按经典树参照该组的误差计')
         if score.get('score') == 0.0 and raw is None:
-            return f'无效提交（{"；".join(filter(None, candidate.get("reasons") or [])) or "有调用失败"}）', '任一调用失败记 0'
+            reasons = '；'.join(dict.fromkeys(filter(None, candidate.get('reasons') or [])))
+            if score.get('rule') == 'per-group':
+                return f'无效提交（{reasons or "20 组全部失败"}）', '构建失败或全部组失败记 0'
+            return f'无效提交（{reasons or "有调用失败"}）', '任一调用失败记 0'
         return (f'\\(E = {raw:.3g}\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 {100 * (candidate.get("max_cpu_fraction") or 0):.0f}%'
-                f'（经典树 theta 0.8：\\(E_0 = {score["weak"]["raw_error"]:.3g}\\)，改进树 theta 0.7：\\(E_{{50}} = {score["strong"]["raw_error"]:.3g}\\)）',
-                '对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)')
+                f'（{anchors}）', log_map)
     if family == 'galaxy-gravity':
         anchors = baseline_anchors(task)
         return (f'\\(E = {raw:.3g}\\)，单次最多 {candidate.get("max_cpu_s", 0):.2f} CPU 秒（出题方 Treecode2：\\(U = {anchors["weak"]:.3g}\\)，\\(W = {anchors["strong"]:.3g}\\)）',
@@ -292,7 +321,8 @@ def main():
                 try:
                     if score.get('invalid'):
                         raw, mapping = f'无效提交（{score["invalid"]}）', '无效提交记 0'
-                    elif (score.get('candidate') or {}).get('status') == 'submission_failure' and (score.get('candidate') or {}).get('raw_error') is None:
+                    elif ((score.get('candidate') or {}).get('status') == 'submission_failure'
+                          and (score.get('candidate') or {}).get('raw_error') is None and score.get('rule') != 'per-group'):
                         reasons = score['candidate'].get('reasons') or [score['candidate'].get('reason')]
                         if isinstance(reasons, str):  # some scorers store the list as its (truncated) text
                             reasons = re.findall(r"'([^']+)'", reasons) or [reasons]
