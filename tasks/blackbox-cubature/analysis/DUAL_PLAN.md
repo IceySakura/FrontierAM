@@ -406,6 +406,22 @@ M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1
 
 **结论**：v3.1 的实验部分不再被一眼识别做穿（70.7 分，低于 80 分提醒线，族间有区分），理论部分也随之转向一般方法与正则性，双考结构的设计目标基本达到。剩余问题：H3t 仍大面积封顶（可考虑非二次的闭合跳跃面或更稀有的尾部）；局部波动率障碍族上提交与参照持平，说明还有方法余量；反馈集只有 20 例、噪声大（MC 约 59 分）。下一步：专家评审两份理论文档、整理 rubric；视需要再跑 Claude Opus 5.5 做对照。
 
+### 9.11 v3.2：理论须 Lean 形式化（11-26）
+
+用户 11-25 定下理论评分原则（`THEORY_REVIEW.md` 第 1–2 节），11-26 选择“接入 Lean 后重跑”，理论分取验证通过结论中的最高分。v3.2 只改理论部分和环境；实验部分（v3.1 的实例、参照、评分、镜像、样例上限）不变，数据直接取 `versions/v3.1/data`（`task.json` 的 `data_dir`），封存时核对三个实例文件的哈希与 v3.1 相同。
+
+**题面**（`versions/v3.2/workspace/problem.md`）：每条结论编号并给出对应的 Lean 定理名；与一个或多个最强可比人类结果对比，归为严格更强、严格更弱、相当、不可比（不可比时依据人类论文自身的观点论证价值）；新增“形式化”与“计分（理论部分）”两节，写明只有通过 `lake comparator` 且陈述被认定忠实的结论计分，与人类结果相当为 50 分，理论分取通过结论中的最高分。
+
+**形式化约定**：`theory/formal/` 是一个 Lake 工程（模板 `workspace/examples/lean_project/`）。`Theory/Statements.lean` 放陈述（证明为 `sorry`），是审阅者判断忠实性的依据；`Theory/Proofs.lean` 逐字重复陈述并给出证明，不得导入前者；`manifest.json` 逐条列出编号、位置、Lean 定理名、状态（`proved`、`stated`、`informal`）和对比分类。
+
+**开发环境**：只读挂载试点仓库的 Lean v4.35 工具链（`/opt/lean`）和预编译的 Mathlib、CSLib（`/opt/lean-packages`）；`lean`、`lake` 经 `/usr/local/bin` 的包装脚本在 PATH 上；`/etc/gitconfig` 信任这些属于 root 的依赖仓库（lake 会对它们调用 git）。模板的 `packagesDir` 指向只读依赖，`buildDir` 在 `/tmp`，提交里只有源码。开发容器内存由 4 GiB 提高到 8 GiB（租约 8.5 GiB；`arena/native.py` 读取任务的 `dev_container_memory`）。在只读根文件系统、无 capability、非 root 的条件下实测：`lake build` 13 秒，comparator 自检 133–136 秒，内存峰值 1.7 GiB。工作区的 `tools/lean_check.py` 运行与评测相同的检查（不带沙箱）。
+
+**评分端**（`scripts/grade/lean-comparator.py`）：只取提交中的 `theory/formal/Theory/**/*.lean`，lakefile、依赖版本和工具链由评分端固定；运行官方 `lake comparator`（内核重放、陈述与证明逐条一致、公理只允许 `propext`、`Quot.sound`、`Classical.choice`），它自带的 bwrap 沙箱负责构建和导出不可信代码；评分端另外让 comparator 以无特权用户（uid 2600）在新的网络命名空间里运行（comparator 解析依赖的一步会主动开放网络）。全部标为 `proved` 的结论先一起判，被拒时逐条判；陈述层中的记号、宏和编译期代码列出交给审阅者。自测（`scripts/grade/lean-comparator-selftest.py`）：试点的 8 个攻击用例加两个新用例，只有 Honest 通过；新用例 SkipKernel（关闭内核检查后用 `addDecl` 塞入类型错误的证明）编译和导出都成功，由内核重放拒绝；IOEscape（编译期写宿主机文件、访问网络）没有留下任何宿主机写入，网络不可达（`curl` 退出码 6）。
+
+**冒烟测试**（`scripts/rounds/v63-smoke.py`，迭代设定）：容器内存上限 8 GiB，模板在容器内通过本地形式化检查，样例服务、测试反馈（示例 MC 提交公开集 59.0 分）和最终冻结均正常。第一次冒烟时最终冻结导出超时（同时有一轮没绑核的评分端自测占满 CPU）；单独复现暂停状态的导出只需 0.3 秒（有无 Lean 挂载相同），重跑冒烟通过。顺带修正了冒烟脚本在迭代设定下误用单次设定检查的问题。
+
+**试跑**：GPT-6.2 Sol，迭代，6 小时上限，验证运行，11-26 10:56 开始（`dev-blackbox-cubature-v3.2-20261126T025620Z-25cc02`）。评分：程序部分在私有集上对照 v3.1 的参照套件（同一批实例）；理论部分先跑 `lean-comparator.py`，再按 `THEORY_REVIEW.md` 逐条审阅陈述忠实性和对比分类。
+
 ## 参考文献
 
 1. ✓ A. Hinrichs, E. Novak, M. Ullrich, H. Woźniakowski, The curse of dimensionality for numerical integration of smooth functions, Math. Comp. 83 (2014) 2853–2863。

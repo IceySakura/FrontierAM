@@ -7,7 +7,10 @@ joined with the references' errors on the samples (data/samples/reference_rows.j
 by scripts/grade/cubature-v3-samples.py). lock.json records the task image, the workspace hash and the hashes of the
 public and private instance files (which stay in the internal repository).
 
-Usage: seal_cubature_v3.py [--version v3|v3.1] [--force] [--provisional]
+A version whose task.json names data_dir (v3.2: the v3.1 instance sets) takes its samples and instance files from
+there and only its workspace from its own directory.
+
+Usage: seal_cubature_v3.py [--version v3|v3.1|v3.2] [--force] [--provisional]
 """
 from __future__ import annotations
 
@@ -22,14 +25,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3'
+DATA = VERSION / 'data'
 SEALED = ROOT / '.runtime-ops/blackbox-cubature-v3'
 
 
 def select(version: str) -> None:
-    global VERSION, SEALED
+    global VERSION, DATA, SEALED
     VERSION = ROOT / 'tasks/blackbox-cubature/versions' / version
-    SEALED = ROOT / '.runtime-ops' / json.loads((VERSION / 'task.json').read_text())['name']
-EXECUTABLE = {'tools/local_eval.py', 'examples/mc_submission/run.sh'}
+    spec = json.loads((VERSION / 'task.json').read_text())
+    DATA = ROOT / 'tasks/blackbox-cubature' / spec['data_dir'] if 'data_dir' in spec else VERSION / 'data'
+    SEALED = ROOT / '.runtime-ops' / spec['name']
+EXECUTABLE = {'tools/local_eval.py', 'tools/lean_check.py', 'examples/mc_submission/run.sh'}
 
 
 def sha256(path: Path) -> str:
@@ -37,8 +43,8 @@ def sha256(path: Path) -> str:
 
 
 def samples_json() -> bytes:
-    data = json.loads((VERSION / 'data/samples/instances.json').read_text())
-    refs = json.loads((VERSION / 'data/samples/reference_rows.json').read_text())
+    data = json.loads((DATA / 'samples/instances.json').read_text())
+    refs = json.loads((DATA / 'samples/reference_rows.json').read_text())
     strong, weak = ({r['id']: r for r in refs[k]} for k in ('strong', 'weak'))
     out = []
     for inst in data['instances']:
@@ -80,7 +86,7 @@ def workspace_tar(destination: Path, provisional: bool = False) -> int:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--version', default='v3', choices=('v3', 'v3.1'))
+    parser.add_argument('--version', default='v3', choices=('v3', 'v3.1', 'v3.2'))
     parser.add_argument('--force', action='store_true', help='replace an existing seal')
     parser.add_argument('--provisional', action='store_true',
                         help='no samples.json yet: lets the task image be loaded into the grading daemons early; '
@@ -101,7 +107,7 @@ def main():
             path.unlink()
     SEALED.mkdir(parents=True, exist_ok=True)
     count = workspace_tar(SEALED / 'public.tar', args.provisional)
-    data = {name: VERSION / 'data' / name / 'instances.json' for name in ('samples', 'public', 'private')}
+    data = {name: DATA / name / 'instances.json' for name in ('samples', 'public', 'private')}
     lock = {'name': spec['name'], 'status': spec['status'], 'sealed_utc': datetime.now(timezone.utc).isoformat(),
             'spec_sha256': sha256(spec_path), 'image': {'tag': tag, 'id': info['Id'], 'replaces': []},
             'public_tar_sha256': sha256(SEALED / 'public.tar'),

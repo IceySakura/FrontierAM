@@ -63,6 +63,7 @@ FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3'
           'ihvp-sequence-v2': 'ihvp-sequence', 'ihvp-sequence-v3': 'ihvp-sequence', 'ihvp-sequence-v4': 'ihvp-sequence', 'ihvp-sequence-v5': 'ihvp-sequence',
           'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature',
           'blackbox-cubature-v3': 'blackbox-cubature-v3', 'blackbox-cubature-v3.1': 'blackbox-cubature-v3',
+          'blackbox-cubature-v3.2': 'blackbox-cubature-v3',
           'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution'}
 V5_FILES = ('README.md', 'statement.md', 'interface.md', 'solver.py', 'smoke.json')  # the MODEL_ONLY package, nothing else
 # Versions that keep the author's workspace layout: their public-dev material is the samples; these files must be there.
@@ -76,6 +77,8 @@ AUTHOR_LAYOUT = {'polarization-demosaicking-v3': ['/workspace/public-dev/check.p
                                           '/workspace/samples/samples.json', '/workspace/tools/local_eval.py',
                                           '/workspace/examples/mc_submission/run.sh']}
 AUTHOR_LAYOUT['blackbox-cubature-v3.1'] = AUTHOR_LAYOUT['blackbox-cubature-v3']
+AUTHOR_LAYOUT['blackbox-cubature-v3.2'] = AUTHOR_LAYOUT['blackbox-cubature-v3'] + [
+    '/workspace/examples/lean_project/lakefile.toml', '/workspace/tools/lean_check.py']
 
 
 def script(task: str, setting: str) -> str:
@@ -84,6 +87,11 @@ def script(task: str, setting: str) -> str:
              'cd /workspace/submission', SUBMISSIONS[family], "echo 'v6.3 smoke submission' > README.md", 'cd /workspace']
     if task.startswith('blackbox-cubature-v3'):  # samples answered by the host-side service through the mounted socket
         lines += ['python3 /workspace/tools/local_eval.py --only H1-d8 asian 2>&1 | tail -4']
+    if task == 'blackbox-cubature-v3.2':  # Lean in the container: the template passes the local formal check
+        lines += ['echo "memory.max=$(cat /sys/fs/cgroup/memory.max)"; command -v lean lake',
+                  'cp -r /workspace/examples/lean_project /workspace/submission/theory/formal && '
+                  'chmod -R u+w /workspace/submission/theory/formal',
+                  'python3 /workspace/tools/lean_check.py 2>&1 | tail -8']
     if task in ('ihvp-sequence-v2', 'ihvp-sequence-v3', 'ihvp-sequence-v4'):  # samples run through the host-side service
         lines += ['python3 /workspace/samples/run_sample.py smoke', 'python3 /workspace/samples/run_sample.py sample_02']
     if setting == 'iterative':
@@ -124,6 +132,9 @@ def main():
               'limit_in_prompt': f'{int(seconds // 60) if seconds >= 60 else 0} minutes' in prompt or 'minutes' in prompt}
     if task_name.startswith('blackbox-cubature-v3'):  # the local evaluator reached the sample service and scored
         checks.update(sample_service=' e=' in log and 'FAILED' not in log.split('WORKSPACE-END', 1)[-1])
+    if task_name == 'blackbox-cubature-v3.2':
+        checks.update(memory_8gib='memory.max=8589934592' in log,
+                      lean_check='LEAN-CHECK: 1/1 proved results accepted' in log)
     if setting == 'iterative':
         report = log.rsplit('REPORT-BEGIN\n', 1)[-1].split('REPORT-END', 1)[0]
         ids = json.loads((out / 'evaluations/test-01/report/report.json').read_text()) if \
@@ -146,9 +157,11 @@ def main():
                                           '/workspace/samples/smoke.json', '/workspace/samples/support/api.py',
                                           '/workspace/samples/support/worker.py']))
     else:
-        expected = 'development_deadline' if setting == 'single-deadline' else 'turn_completed'
-        checks.update(no_submit_client='No such file or directory' in log, stop_reason=result.get('agent_stop_reason') == expected,
-                      within_limit=result.get('development_seconds', 1e9) <= seconds + 15, never_reached='NOT-REACHED' not in log)
+        if setting != 'iterative':
+            expected = 'development_deadline' if setting == 'single-deadline' else 'turn_completed'
+            checks.update(no_submit_client='No such file or directory' in log,
+                          stop_reason=result.get('agent_stop_reason') == expected)
+        checks.update(within_limit=result.get('development_seconds', 1e9) <= seconds + 15, never_reached='NOT-REACHED' not in log)
     print(json.dumps(checks))
     sys.exit(0 if all(checks.values()) else 1)
 

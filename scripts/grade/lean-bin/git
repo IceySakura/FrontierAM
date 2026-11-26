@@ -1,0 +1,3 @@
+#!/bin/sh
+# The shared Mathlib/CSLib checkouts belong to root; the comparator runs as the unprivileged pilot user.
+exec /usr/bin/git -c safe.directory="*" "$@"

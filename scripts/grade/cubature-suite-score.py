@@ -50,12 +50,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--store', type=Path, required=True)
     parser.add_argument('--task', default='blackbox-cubature',
-                        choices=['blackbox-cubature', 'blackbox-cubature-v2', 'blackbox-cubature-v3', 'blackbox-cubature-v3.1'])
+                        choices=['blackbox-cubature', 'blackbox-cubature-v2', 'blackbox-cubature-v3', 'blackbox-cubature-v3.1',
+                                 'blackbox-cubature-v3.2'])
     parser.add_argument('--reference')
     parser.add_argument('--candidate')
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
-    v3 = args.task in ('blackbox-cubature-v3', 'blackbox-cubature-v3.1')
+    v3 = args.task in ('blackbox-cubature-v3', 'blackbox-cubature-v3.1', 'blackbox-cubature-v3.2')
     if v3:
         gain, score_100 = (lambda rows, ref, _guard: blackbox_cubature_v3.gain(rows, ref)), blackbox_cubature_v3.score_100
     else:

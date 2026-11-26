@@ -655,8 +655,13 @@ class BlackboxCubatureV3(BlackboxCubature):
     enter the workspace."""
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3'
 
+    @property
+    def data_dir(self) -> Path:
+        """versions/<version>/data, or the instance sets of an earlier version named by task.json data_dir."""
+        return ROOT / 'tasks/blackbox-cubature' / self.spec['data_dir'] if 'data_dir' in self.spec else self.VERSION / 'data'
+
     def cases(self) -> list[dict]:
-        return json.loads((self.VERSION / 'data' / self.data_set() / 'instances.json').read_text())['instances']
+        return json.loads((self.data_dir / self.data_set() / 'instances.json').read_text())['instances']
 
     def suite(self, runtime=None) -> list[dict]:
         limit = self.spec.get('case_limit_s', 30)
@@ -725,7 +730,7 @@ class BlackboxCubatureV3(BlackboxCubature):
         directory.chmod(0o755)
         cap = [str(self.spec['sample_cap'])] if self.spec.get('sample_cap') else []
         process = subprocess.Popen([str(GRADER_PYTHON), '-B', str(ROOT / 'arena/operator_drivers/cubature_samples.py'),
-                                    str(directory), str(self.VERSION / 'data/samples/instances.json'), *cap],
+                                    str(directory), str(self.data_dir / 'samples/instances.json'), *cap],
                                    cwd=ROOT, stdout=subprocess.PIPE, stderr=(output / 'sample-service.log').open('wb'),
                                    text=True)
         if process.stdout.readline().strip() != 'ready':
@@ -745,6 +750,31 @@ class BlackboxCubatureV31(BlackboxCubatureV3):
     """v3.1: instances that cannot be identified within the budget (anisotropic synthetic forms, local-volatility
     options) and a capped sample oracle (task.json sample_cap); data in versions/v3.1/data, the v3 driver and code."""
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.1'
+
+
+class BlackboxCubatureV32(BlackboxCubatureV31):
+    """v3.2: the v3.1 instances and program score; theory results count only when formalized in Lean and accepted by
+    `lake comparator` (scripts/grade/lean-comparator.py), each placed against strong human results
+    (analysis/THEORY_REVIEW.md). The workspace gets the theory pilot's offline Lean v4.35 with prebuilt Mathlib and
+    CSLib, read-only, and an 8 GiB development container (8.5 GiB lease) for Lean beside the program."""
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.2'
+    LEAN_TOOLCHAIN = Path('/data/workspace/frontieram-theory-pilot/.elan/toolchains/leanprover--lean4---v4.35.0')
+    LEAN_PACKAGES = Path('/data/workspace/frontieram-theory-pilot/lean/.lake/packages')
+    dev_memory = 8 * GIB + GIB // 2
+    dev_container_memory = 8 * GIB
+
+    def dev_service(self, output: Path):
+        """The samples' oracle, plus Lean: toolchain at /opt/lean (lean and lake on PATH through /usr/local/bin),
+        the prebuilt packages at /opt/lean-packages, and a system git configuration that trusts their root-owned
+        checkouts (lake runs git on them)."""
+        mounts, stop = super().dev_service(output)
+        lean = self.VERSION / 'lean'
+        return [*mounts,
+                '--mount', f'type=bind,src={self.LEAN_TOOLCHAIN},dst=/opt/lean,readonly',
+                '--mount', f'type=bind,src={self.LEAN_PACKAGES},dst=/opt/lean-packages,readonly',
+                '--mount', f'type=bind,src={lean / "gitconfig"},dst=/etc/gitconfig,readonly',
+                '--mount', f'type=bind,src={lean / "lean"},dst=/usr/local/bin/lean,readonly',
+                '--mount', f'type=bind,src={lean / "lake"},dst=/usr/local/bin/lake,readonly'], stop
 
 
 class ContinuumEstimation(OperatorTask):
@@ -802,6 +832,7 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'trajectory-covariance': TrajectoryCovariance, 'trajectory-covariance-v2': TrajectoryCovariance,
            'blackbox-cubature': BlackboxCubature, 'blackbox-cubature-v2': BlackboxCubatureV2,
            'blackbox-cubature-v3': BlackboxCubatureV3, 'blackbox-cubature-v3.1': BlackboxCubatureV31,
+           'blackbox-cubature-v3.2': BlackboxCubatureV32,
            'continuum-estimation': ContinuumEstimation, 'fluorescence-deconvolution': FluorescenceDeconvolution}
 
 

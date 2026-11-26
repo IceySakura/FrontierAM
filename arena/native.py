@@ -51,6 +51,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'blackbox-cubature-v2': 'frontieram-blackbox-cubature-v2-harness:v6',
                   'blackbox-cubature-v3': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.1': 'frontieram-blackbox-cubature-v3-harness:v6',
+                  'blackbox-cubature-v3.2': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'continuum-estimation': 'frontieram-continuum-estimation-harness:v6',
                   'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6',
                   'pdhcg-qp-v1': 'frontieram-pdhcg-qp-v1-harness:v6'}
@@ -381,6 +382,18 @@ SCORING_DISCLOSURE['blackbox-cubature-v3'] = (
     'during the attempt.'
 )
 SCORING_DISCLOSURE['blackbox-cubature-v3.1'] = SCORING_DISCLOSURE['blackbox-cubature-v3']
+SCORING_DISCLOSURE['blackbox-cubature-v3.2'] = (
+    SCORING_DISCLOSURE['blackbox-cubature-v3'].split(' The theory document')[0]
+    + ' The theory is scored separately and reported on its own; it is not part of the program score and gets no '
+    'feedback during the attempt. Only results formalized in Lean count: the statement in '
+    'theory/formal/Theory/Statements.lean, the proof in theory/formal/Theory/Proofs.lean, listed as proved in '
+    'theory/formal/manifest.json, accepted by `lake comparator` (kernel-checked, statements identical, axioms limited '
+    'to propext, Quot.sound and Classical.choice), and judged by reviewers to state faithfully what THEORY.md claims. '
+    'Each such result is placed against the strongest comparable human results: equal to them is the midpoint of a '
+    '0-100 scale, strictly stronger results score above it and strictly weaker ones below it, and incomparable ones '
+    'are valued by what the human papers themselves present as important. The theory score is the best score among '
+    'the verified results; unformalized results score nothing.'
+)
 SCORING_DISCLOSURE['continuum-estimation'] = (
     'Every held-out case runs once in a fresh restricted process within 60 wall-clock seconds (startup included); an '
     'invalid, missing, late or unsuccessful output on any case makes the whole submission score zero. Given that, the '
@@ -926,9 +939,10 @@ def develop(spec: dict, runtime: dict) -> dict:
     assets = task.assets(runtime)
     docker = assets.controller.Docker(runtime['docker_path'], placement.docker_host, placement.cpuset,
                                       placement.cgroup_parent)
+    memory = getattr(task, 'dev_container_memory', MEMORY)
     write(output / 'v6_conditions.json', {'harness': harness, 'route': route, 'image': HARNESS_IMAGES[task.name],
                                           'model_options': MODEL_OPTIONS.get(model),
-                                          'development_seconds': seconds, 'memory_bytes': MEMORY,
+                                          'development_seconds': seconds, 'memory_bytes': memory,
                                           'protocol': protocol,
                                           'setting': setting if protocol in ('v6.2', 'v6.3') else None,
                                           'test_cap_seconds': TEST_CAP_SECONDS if iterative else None,
@@ -993,7 +1007,7 @@ def develop(spec: dict, runtime: dict) -> dict:
             *docker.prefix, 'create', '--name', name, '--network', 'none', '--read-only', '--cap-drop', 'ALL',
             '--security-opt', 'no-new-privileges:true', '--cgroupns', 'private',
             '--cpus', '1', '--cpuset-cpus', placement.cpuset, '--cgroup-parent', placement.cgroup_parent,
-            '--memory', str(MEMORY), '--memory-swap', str(MEMORY),
+            '--memory', str(memory), '--memory-swap', str(memory),
             # Node-based harnesses share this container with the candidate's code; v4's 32 processes and 128 file
             # descriptors cannot hold a native client, so v6 raises both and records it in v6_conditions.json.
             '--pids-limit', '1024', '--ulimit', 'nofile=16384:16384', '--ulimit', 'core=0:0',
