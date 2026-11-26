@@ -80,7 +80,7 @@
 | GPT-6.1 Sol | 单轮 | RMSE \(E = 1.4158\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | RMSE \(E = 1.3839\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 54.1 | 13 次提交，165 分钟 | [`v3/gpt-6.1-sol-iterative-2/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-2/) |
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.5758\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 44.2≈ | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
-| Claude Opus 5.5 | 迭代 | RMSE \(E = 1.4289\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6≈ | 8 次提交，130 分钟 | [`v3/claude-opus-5-5-iterative-1/`](solutions/v6.3/v3/claude-opus-5-5-iterative-1/) |
+| Claude Opus 5.5 | 迭代 | RMSE \(E = 1.4792\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.9 | 26 次提交，128 分钟 | [`v3/claude-opus-5-5-iterative-2/`](solutions/v6.3/v3/claude-opus-5-5-iterative-2/) |
 | Hunyuan 4 | 单轮 | RMSE \(E = 1.5431\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.0 | 57 分钟 | [`v3/hy4-single-1/`](solutions/v6.3/v3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | RMSE \(E = 1.4563\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.7 | 5 次提交，152 分钟 | [`v3/hy4-iterative-1/`](solutions/v6.3/v3/hy4-iterative-1/) |
 | Qwen4 Max | 单轮 | RMSE \(E = 1.5854\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.4≈ | 33 分钟 | [`v3/qwen4-max-single-1/`](solutions/v6.3/v3/qwen4-max-single-1/) |
@@ -138,11 +138,11 @@ public 分数随测试提交：0.0（3 分钟） → 39.6（15 分钟） → 43.
 
 ### Claude Opus 5.5（迭代，v6.3）
 
-反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6.1-sol（本格领先的概率 0.61）。
+此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：54.8（35 分钟） → 56.0（52 分钟） → 56.3（55 分钟） → 56.8（74 分钟） → 56.8（85 分钟） → 57.3（97 分钟） → 57.3（101 分钟） → 57.3（110 分钟）
+public 分数随测试提交：33.7（21 分钟） → 0.0（26 分钟） → 34.0（37 分钟） → 27.9（43 分钟） → 35.6（54 分钟） → 21.5（58 分钟） → 24.4（60 分钟） → 25.9（61 分钟） → 33.3（64 分钟） → 0.0（68 分钟） → 44.2（72 分钟） → 47.3（74 分钟） → 47.4（78 分钟） → 46.9（79 分钟） → 39.0（83 分钟） → 42.7（86 分钟） → 48.2（91 分钟） → 48.5（93 分钟） → 48.5（94 分钟） → 48.5（101 分钟） → 48.5（104 分钟） → 48.5（107 分钟） → 48.2（109 分钟） → 48.5（116 分钟） → 48.6（123 分钟） → 48.6（126 分钟）
 
-源码 [`solutions/v6.3/v3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/v3/claude-opus-5-5-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T091144Z-63ea62`）；未复制的二进制或大文件：filters_dt.npy（29,056 字节）、filters_rob.npy（11,840 字节）、filters_v1t.npy（23,552 字节）。
+源码 [`solutions/v6.3/v3/claude-opus-5-5-iterative-2/source/`](solutions/v6.3/v3/claude-opus-5-5-iterative-2/source/)（提交 `polarization-demosaicking-v3-20261126T184609Z-2df6af`）；未复制的二进制或大文件：wtab.npz（1,537,724 字节）、wtab_bayer.npz（1,537,724 字节）。
 
 ### Hunyuan 4（单轮，v6.3）
 
