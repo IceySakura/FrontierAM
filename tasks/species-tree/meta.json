@@ -37,12 +37,13 @@
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 1,
+          "tie": true,
           "submission": "species-tree-v3-20261120T084646Z-28c6ee",
           "store": "var/stores/store-v63",
           "raw": "nRF \\(E = 0.1253\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 52.539,
-          "notes_md": ""
+          "notes_md": "按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6.1-sol（本格领先的概率 0.48）。"
         },
         {
           "model": "gpt-6-astra",
@@ -85,12 +86,13 @@
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 2,
+          "tie": true,
           "submission": "species-tree-v3-20261117T063610Z-197bc5",
           "store": "var/stores/store-v63",
           "raw": "nRF \\(E = 0.1253\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 52.571,
-          "notes_md": "第 1 次尝试中有回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断（基础设施问题，记未测）；本格为 sol 改走 AI Hub azure 通道后的第 2 次尝试。"
+          "notes_md": "第 1 次尝试中有回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断（基础设施问题，记未测）；本格为 sol 改走 AI Hub azure 通道后的第 2 次尝试。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6.2-sol（本格领先的概率 0.52）。"
         },
         {
           "model": "claude-opus-5-5",
@@ -133,12 +135,13 @@
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 1,
+          "tie": true,
           "submission": "species-tree-v3-20261113T151956Z-b398a9",
           "store": "var/stores/store-v63",
           "raw": "nRF \\(E = 0.1382\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 30.135,
-          "notes_md": ""
+          "notes_md": "按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：qwen4-max（本格领先的概率 0.73）；minimax-m3.1-flash（本格领先的概率 0.16）。"
         },
         {
           "model": "qwen4-max",
@@ -157,12 +160,13 @@
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 1,
+          "tie": true,
           "submission": "species-tree-v3-20261125T162613Z-165802",
           "store": "var/stores/store-v63",
           "raw": "nRF \\(E = 0.1393\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 26.622,
-          "notes_md": ""
+          "notes_md": "按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：hy4（本格领先的概率 0.27）。"
         },
         {
           "model": "qwen3.8-max-0902",
@@ -205,12 +209,13 @@
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 1,
+          "tie": true,
           "submission": "species-tree-v3-20261125T174939Z-d6abf0",
           "store": "var/stores/store-v63",
           "raw": "nRF \\(E = 0.1368\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 34.73,
-          "notes_md": ""
+          "notes_md": "按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：hy4（本格领先的概率 0.84）。"
         },
         {
           "model": "intern-s2",

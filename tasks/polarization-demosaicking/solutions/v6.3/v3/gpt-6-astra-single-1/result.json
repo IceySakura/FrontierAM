@@ -3,9 +3,9 @@
  "protocol": "v6.3",
  "setting": "单轮",
  "submission": "polarization-demosaicking-v3-20261121T170206Z-8f7931",
- "raw": "RMSE \\(E = 1.3848\\)（\\(U = 2.1080\\)，\\(W = 1.5007\\)）",
+ "raw": "RMSE \\(E = 1.3867\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
  "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
- "score": 53.86,
+ "score": 53.993,
  "review": null,
  "process": {
   "minutes": 58.5,

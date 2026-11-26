@@ -84,24 +84,26 @@
 
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.2 Sol | 单轮 | \(E = 0.123\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 58.4 | 30 分钟 | [`v4/gpt-6.2-sol-single-1/`](solutions/v6.3/v4/gpt-6.2-sol-single-1/) |
+| GPT-6.2 Sol | 单轮 | \(E = 0.123\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 58.4≈ | 30 分钟 | [`v4/gpt-6.2-sol-single-1/`](solutions/v6.3/v4/gpt-6.2-sol-single-1/) |
 | GPT-6.2 Sol | 迭代 | \(E = 0.1143\)，最长序列 28.2 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 61.3 | 5 次提交，45 分钟 | [`v4/gpt-6.2-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.2-sol-iterative-1/) |
 | GPT-6 Astra | 单轮 | \(E = 0.1177\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 60.2 | 55 分钟 | [`v4/gpt-6-astra-single-1/`](solutions/v6.3/v4/gpt-6-astra-single-1/) |
-| GPT-6 Astra | 迭代 | \(E = 0.1089\)，最长序列 28.5 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 63.2 | 9 次提交，102 分钟 | [`v4/gpt-6-astra-iterative-1/`](solutions/v6.3/v4/gpt-6-astra-iterative-1/) |
+| GPT-6 Astra | 迭代 | \(E = 0.1089\)，最长序列 28.5 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 63.2≈ | 9 次提交，102 分钟 | [`v4/gpt-6-astra-iterative-1/`](solutions/v6.3/v4/gpt-6-astra-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | \(E = 0.1104\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.6 | 57 分钟 | [`v4/gpt-6.1-sol-single-1/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | \(E = 0.1093\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 63.0 | 8 次提交，122 分钟 | [`v4/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/) |
-| Claude Opus 5.5 | 单轮 | \(E = 0.1225\)，最长序列 27.9 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 58.5 | 19 分钟 | [`v4/claude-opus-5-5-single-1/`](solutions/v6.3/v4/claude-opus-5-5-single-1/) |
-| Claude Opus 5.5 | 迭代 | \(E = 0.1176\)，最长序列 28.2 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 60.2 | 8 次提交，159 分钟 | [`v4/claude-opus-5-5-iterative-2/`](solutions/v6.3/v4/claude-opus-5-5-iterative-2/) |
-| Hunyuan 4 | 单轮 | \(E = 0.1402\)，最长序列 27.8 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6 | 60 分钟 | [`v4/hy4-single-1/`](solutions/v6.3/v4/hy4-single-1/) |
+| GPT-6.1 Sol | 迭代 | \(E = 0.1093\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 63.0≈ | 8 次提交，122 分钟 | [`v4/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | \(E = 0.1225\)，最长序列 27.9 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 58.5≈ | 19 分钟 | [`v4/claude-opus-5-5-single-1/`](solutions/v6.3/v4/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | \(E = 0.1176\)，最长序列 28.2 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 60.2≈ | 8 次提交，159 分钟 | [`v4/claude-opus-5-5-iterative-2/`](solutions/v6.3/v4/claude-opus-5-5-iterative-2/) |
+| Hunyuan 4 | 单轮 | \(E = 0.1402\)，最长序列 27.8 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6≈ | 60 分钟 | [`v4/hy4-single-1/`](solutions/v6.3/v4/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | \(E = 0.1296\)，最长序列 27.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 56.1 | 4 次提交，183 分钟 | [`v4/hy4-iterative-1/`](solutions/v6.3/v4/hy4-iterative-1/) |
 | Qwen4 Max | 单轮 | \(E = 0.1297\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 56.1 | 33 分钟 | [`v4/qwen4-max-single-1/`](solutions/v6.3/v4/qwen4-max-single-1/) |
-| Qwen4 Max | 迭代 | \(E = 0.1176\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 60.2 | 6 次提交，56 分钟 | [`v4/qwen4-max-iterative-1/`](solutions/v6.3/v4/qwen4-max-iterative-1/) |
-| Qwen3.8 Max | 单轮 | \(E = 0.1411\)，最长序列 28.0 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.2 | 38 分钟 | [`v4/qwen3.8-max-0902-single-1/`](solutions/v6.3/v4/qwen3.8-max-0902-single-1/) |
+| Qwen4 Max | 迭代 | \(E = 0.1176\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 60.2≈ | 6 次提交，56 分钟 | [`v4/qwen4-max-iterative-1/`](solutions/v6.3/v4/qwen4-max-iterative-1/) |
+| Qwen3.8 Max | 单轮 | \(E = 0.1411\)，最长序列 28.0 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.2≈ | 38 分钟 | [`v4/qwen3.8-max-0902-single-1/`](solutions/v6.3/v4/qwen3.8-max-0902-single-1/) |
 | Qwen3.8 Max | 迭代 | \(E = 0.1424\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.8 | 4 次提交，179 分钟 | [`v4/qwen3.8-max-0902-iterative-2/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | \(E = 0.1675\)，最长序列 28.1 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 40.2 | 29 分钟 | [`v4/minimax-m3.1-flash-single-1/`](solutions/v6.3/v4/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | \(E = 0.1375\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.5 | 6 次提交，162 分钟 | [`v4/minimax-m3.1-flash-iterative-1/`](solutions/v6.3/v4/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
+
+按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：claude-opus-5-5（本格领先的概率 0.40）。
 
 源码 [`solutions/v6.3/v4/gpt-6.2-sol-single-1/source/`](solutions/v6.3/v4/gpt-6.2-sol-single-1/source/)（提交 `ihvp-sequence-v4-20261120T075106Z-563315`）。
 
@@ -119,7 +121,7 @@ public 分数随测试提交：49.8（1 分钟） → 43.4（10 分钟） → 59
 
 ### GPT-6 Astra（迭代，v6.3）
 
-经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
+经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6.1-sol（本格领先的概率 0.86）。
 
 public 分数随测试提交：51.6（1 分钟） → 59.2（11 分钟） → 60.0（20 分钟） → 62.6（33 分钟） → 61.5（42 分钟） → 60.3（55 分钟） → 62.8（65 分钟） → 63.1（78 分钟） → 63.4（90 分钟）
 
@@ -133,7 +135,7 @@ public 分数随测试提交：51.6（1 分钟） → 59.2（11 分钟） → 60
 
 ### GPT-6.1 Sol（迭代，v6.3）
 
-按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。
+按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6-astra（本格领先的概率 0.14）。
 
 public 分数随测试提交：50.9（3 分钟） → 53.4（14 分钟） → 60.5（37 分钟） → 60.8（48 分钟） → 60.5（59 分钟） → 61.4（91 分钟） → 62.5（100 分钟） → 63.2（111 分钟）
 
@@ -141,19 +143,21 @@ public 分数随测试提交：50.9（3 分钟） → 53.4（14 分钟） → 60
 
 ### Claude Opus 5.5（单轮，v6.3）
 
-热启动 CG 加小规模回收紧缩子空间，没有识别矩阵结构。
+热启动 CG 加小规模回收紧缩子空间，没有识别矩阵结构。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6.2-sol（本格领先的概率 0.60）。
 
 源码 [`solutions/v6.3/v4/claude-opus-5-5-single-1/source/`](solutions/v6.3/v4/claude-opus-5-5-single-1/source/)（提交 `ihvp-sequence-v4-20261112T150516Z-1af015`）。
 
 ### Claude Opus 5.5（迭代，v6.3）
 
-第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。
+第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：qwen4-max（本格领先的概率 0.49）。
 
 public 分数随测试提交：49.7（23 分钟） → 56.2（67 分钟） → 59.6（79 分钟） → 60.2（98 分钟） → 60.0（115 分钟） → 57.8（124 分钟） → 58.8（135 分钟） → 59.1（148 分钟）
 
 源码 [`solutions/v6.3/v4/claude-opus-5-5-iterative-2/source/`](solutions/v6.3/v4/claude-opus-5-5-iterative-2/source/)（提交 `ihvp-sequence-v4-20261116T051743Z-ef8440`）。
 
 ### Hunyuan 4（单轮，v6.3）
+
+按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：qwen3.8-max-0902（本格领先的概率 0.71）。
 
 源码 [`solutions/v6.3/v4/hy4-single-1/source/`](solutions/v6.3/v4/hy4-single-1/source/)（提交 `ihvp-sequence-v4-20261113T104130Z-fae7db`）。
 
@@ -169,11 +173,15 @@ public 分数随测试提交：46.6（33 分钟） → 54.8（107 分钟） → 
 
 ### Qwen4 Max（迭代，v6.3）
 
+按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：claude-opus-5-5（本格领先的概率 0.51）。
+
 public 分数随测试提交：48.7（6 分钟） → 58.2（15 分钟） → 59.9（23 分钟） → 60.8（30 分钟） → 60.5（39 分钟） → 60.7（48 分钟）
 
 源码 [`solutions/v6.3/v4/qwen4-max-iterative-1/source/`](solutions/v6.3/v4/qwen4-max-iterative-1/source/)（提交 `ihvp-sequence-v4-20261125T172232Z-44c487`）。
 
 ### Qwen3.8 Max（单轮，v6.3）
+
+按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：hy4（本格领先的概率 0.29）。
 
 源码 [`solutions/v6.3/v4/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/v4/qwen3.8-max-0902-single-1/source/)（提交 `ihvp-sequence-v4-20261113T104910Z-b6cf92`）。
 

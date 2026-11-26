@@ -3,7 +3,7 @@
  "protocol": "v6.3",
  "setting": "迭代",
  "submission": "polarization-demosaicking-v2-20261112T064029Z-017b5e",
- "raw": "RMSE \\(E = 1.2173\\)（\\(U = 1.8082\\)，\\(W = 1.1099\\)）",
+ "raw": "RMSE \\(E = 1.2173\\)，32 景（\\(U = 1.8082\\)，\\(W = 1.1099\\)）",
  "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
  "score": 42.31,
  "review": null,
