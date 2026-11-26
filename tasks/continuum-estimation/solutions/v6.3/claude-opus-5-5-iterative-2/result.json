@@ -1,0 +1,51 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "continuum-estimation-20261126T111510Z-68175b",
+ "raw": "损失 \\(E = 0.00359067\\)，45 例，单例最长 0.5 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 43.793,
+ "review": null,
+ "process": {
+  "minutes": 65.2,
+  "public_tests": 7,
+  "public_curve": [
+   {
+    "minute": 9.6,
+    "score": 77.70441650720562,
+    "status": "ok"
+   },
+   {
+    "minute": 27.5,
+    "score": 70.57281870274394,
+    "status": "ok"
+   },
+   {
+    "minute": 36.3,
+    "score": 75.05275452660365,
+    "status": "ok"
+   },
+   {
+    "minute": 39.1,
+    "score": 73.81551418916143,
+    "status": "ok"
+   },
+   {
+    "minute": 48.2,
+    "score": 75.23809474029592,
+    "status": "ok"
+   },
+   {
+    "minute": 59.5,
+    "score": 77.70441650720562,
+    "status": "ok"
+   },
+   {
+    "minute": 62.5,
+    "score": 77.70441650720562,
+    "status": "ok"
+   }
+  ]
+ }
+}

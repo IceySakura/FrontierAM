@@ -27,5 +27,8 @@
    "cases": 42,
    "successes": 0
   }
- }
+ },
+ "score_0.9pB": 0.0,
+ "p0": 0.25384615384615383,
+ "rule": "weak-anchor"
 }

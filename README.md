@@ -15,38 +15,38 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 
 </details>
 
-| task | GPT-6.2 Sol 单轮 | GPT-6.2 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | GPT-6 Astra 单轮 | GPT-6 Astra 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Qwen4 Max 单轮 | Qwen4 Max 迭代 | MiniMax M3.1 Flash 单轮 | MiniMax M3.1 Flash 迭代 |
+| task | GPT-6.2 Sol 单轮 | GPT-6.2 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | GPT-6 Astra 单轮 | GPT-6 Astra 迭代 | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Qwen4 Max 单轮 | Qwen4 Max 迭代 | MiniMax M3.1 Flash 单轮 | MiniMax M3.1 Flash 迭代 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [conic](tasks/conic/README.md) | 0.0 | 0.0 | 0.0 | 73.7 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| [exponential](tasks/exponential/README.md) | 65.3 | 70.3 | 59.3 | 68.9 | 58.6 | 66.9 | 60.9 | 58.9 | 38.2 | 59.3 | 20.8 | 55.2 | 43.3 | 60.4 | 15.7 | 60.0 |
-| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 72.8 | 66.2 | 57.8 | 64.4 | 0.0 | 66.1 | 51.9 | 69.6 | 0.0 | 53.1 | 0.0 | 50.9 | 0.0 | 0.0 | 0.0 | 0.0 |
-| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 57.0 | 54.2 | 43.3 | 52.4 | 53.0 | 52.2 | 53.9 | 54.2 | 46.7 | 51.6 | 37.7 | 50.6 | 42.4 | 0.0 | 32.7 | 49.1 |
-| [trajectory-covariance](tasks/trajectory-covariance/README.md) | 63.9 | 64.0 | 52.6 | 62.6 | 0.0 | 62.3 | 55.2 | 63.7 | 47.9 | 59.3 | 0.0 | 51.1 | 51.4 | 51.0 | 50.8 | 49.8 |
-| [species-tree](tasks/species-tree/README.md) | 52.3 | 52.5 | 28.1 | 51.2 | 49.3 | 52.6 | 54.7 | 53.5 | 0.0 | 30.1 | 0.0 | 0.0 | 0.0 | 26.6 | 0.0 | 34.7 |
-| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 58.4 | 61.3 | 58.5 | 60.2 | 62.6 | 63.0 | 60.2 | 63.2 | 52.6 | 56.1 | 52.2 | 51.8 | 56.1 | 60.2 | 40.2 | 53.5 |
+| [conic](tasks/conic/README.md) | 39.2 | 36.8 | 33.5 | 73.7 | 36.9 | 32.5 | 28.4 | 28.6 | 12.6 | 17.4 | 11.6 | 4.5 | 0.1 | 10.9 | 0.0 | 1.6 |
+| [exponential](tasks/exponential/README.md) | 65.3 | 70.3 | 59.3 | 68.9 | 60.9 | 58.9 | 58.6 | 66.9 | 38.2 | 59.3 | 20.8 | 55.2 | 43.3 | 60.4 | 15.7 | 60.0 |
+| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 72.8 | 66.2 | 57.8 | 64.4 | 51.9 | 69.6 | 0.0 | 66.1 | 0.0 | 53.1 | 0.0 | 50.9 | 0.0 | 0.0 | 0.0 | 0.0 |
+| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 57.0 | 54.2 | 43.3 | 52.4 | 53.9 | 54.2 | 53.0 | 52.2 | 46.7 | 51.6 | 37.7 | 50.6 | 42.4 | 0.0 | 32.7 | 49.1 |
+| [trajectory-covariance](tasks/trajectory-covariance/README.md) | 63.9 | 64.0 | 52.6 | 62.6 | 55.2 | 63.7 | 0.0 | 62.3 | 47.9 | 59.3 | 0.0 | 51.1 | 51.4 | 51.0 | 50.8 | 49.8 |
+| [species-tree](tasks/species-tree/README.md) | 52.3 | 52.5 | 28.1 | 51.2 | 54.7 | 53.5 | 49.3 | 52.6 | 0.0 | 30.1 | 0.0 | 0.0 | 0.0 | 26.6 | 0.0 | 34.7 |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 58.4 | 61.3 | 58.5 | 60.2 | 60.2 | 63.2 | 62.6 | 63.0 | 52.6 | 56.1 | 52.2 | 51.8 | 56.1 | 60.2 | 40.2 | 53.5 |
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| [blackbox-cubature](tasks/blackbox-cubature/README.md) | 73.5 | 93.4 | 45.7 | 83.9 | 59.3 | 87.4 | 58.7 | 83.9 | 56.6 | 66.0 | 11.9 | 55.2 | 65.7 | 58.8 | 43.4 | 53.6 |
-| [continuum-estimation](tasks/continuum-estimation/README.md) | 70.0 | 72.4 | 36.3 | 14.1 | 72.6 | 67.7 | 73.7 | 68.7 | 73.3 | 45.9 | 0.0 | 48.8 | 69.2 | 58.8 | 44.7 | 21.9 |
-| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 96.1 | 95.2 | 77.0 | 92.9 | 94.3 | 93.5 | 94.4 | 95.2 | 79.4 | 85.0 | 66.8 | 77.3 | 56.5 | 79.9 | 47.1 | 66.9 |
-| **平均** | **60.9** | **62.9** | **45.9** | **62.4** | **45.0** | **61.2** | **56.4** | **61.1** | **39.5** | **50.6** | **18.9** | **44.1** | **38.5** | **39.6** | **27.5** | **39.0** |
+| [blackbox-cubature](tasks/blackbox-cubature/README.md) | 73.5 | 93.4 | 45.7 | 83.9 | 58.7 | 83.9 | 59.3 | 87.4 | 56.6 | 66.0 | 11.9 | 55.2 | 65.7 | 58.8 | 43.4 | 53.6 |
+| [continuum-estimation](tasks/continuum-estimation/README.md) | 70.0 | 72.4 | 36.3 | 43.8 | 73.7 | 68.7 | 72.6 | 67.7 | 73.3 | 45.9 | 0.0 | 48.8 | 69.2 | 58.8 | 44.7 | 21.9 |
+| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 96.1 | 95.2 | 77.0 | 92.9 | 94.4 | 95.2 | 94.3 | 93.5 | 79.4 | 85.0 | 66.8 | 77.3 | 56.5 | 79.9 | 47.1 | 66.9 |
+| **平均** | **64.9** | **66.6** | **49.2** | **65.4** | **60.1** | **64.4** | **47.8** | **64.0** | **40.7** | **52.4** | **20.1** | **44.5** | **38.5** | **40.7** | **27.5** | **39.1** |
 
 满分 100，参照 = 50；列按迭代平均分排序（还缺格的行按缺格记 0 估算位置）；平均为各题分数的简单平均，没有成绩的题不计。
 
 **提交次数与用时**
 
-| task | GPT-6.2 Sol 单轮 | GPT-6.2 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | GPT-6 Astra 单轮 | GPT-6 Astra 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Qwen4 Max 单轮 | Qwen4 Max 迭代 | MiniMax M3.1 Flash 单轮 | MiniMax M3.1 Flash 迭代 |
+| task | GPT-6.2 Sol 单轮 | GPT-6.2 Sol 迭代 | Claude Opus 5.5 单轮 | Claude Opus 5.5 迭代 | GPT-6 Astra 单轮 | GPT-6 Astra 迭代 | GPT-6.1 Sol 单轮 | GPT-6.1 Sol 迭代 | Hunyuan 4 单轮 | Hunyuan 4 迭代 | Qwen3.8 Max 单轮 | Qwen3.8 Max 迭代 | Qwen4 Max 单轮 | Qwen4 Max 迭代 | MiniMax M3.1 Flash 单轮 | MiniMax M3.1 Flash 迭代 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [conic](tasks/conic/README.md) | 46 分钟 | 7 次提交，86 分钟 | 43 分钟 | 10 次提交，156 分钟 | 57 分钟 | 7 次提交，239 分钟 | 58 分钟 | 6 次提交，240 分钟 | 57 分钟 | 12 次提交，172 分钟 | 60 分钟 | 0 次提交，96 分钟 | 31 分钟 | 20 次提交，180 分钟 | 30 分钟 | 13 次提交，190 分钟 |
-| [exponential](tasks/exponential/README.md) | 32 分钟 | 10 次提交，58 分钟 | 28 分钟 | 13 次提交，124 分钟 | 54 分钟 | 8 次提交，205 分钟 | 57 分钟 | 5 次提交，232 分钟 | 57 分钟 | 10 次提交，121 分钟 | 32 分钟 | 5 次提交，186 分钟 | 33 分钟 | 18 次提交，66 分钟 | 38 分钟 | 7 次提交，74 分钟 |
-| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 57 分钟 | 8 次提交，146 分钟 | 36 分钟 | 7 次提交，164 分钟 | 60 分钟 | 5 次提交，217 分钟 | 60 分钟 | 4 次提交，236 分钟 | 60 分钟 | 8 次提交，186 分钟 | 58 分钟 | 3 次提交，198 分钟 | 31 分钟 | 10 次提交，189 分钟 | 60 分钟 | 6 次提交，195 分钟 |
-| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 41 分钟 | 3 次提交，45 分钟 | 13 分钟 | 8 次提交，130 分钟 | 60 分钟 | 9 次提交，235 分钟 | 58 分钟 | 5 次提交，144 分钟 | 57 分钟 | 5 次提交，152 分钟 | 41 分钟 | 8 次提交，114 分钟 | 33 分钟 | 6 次提交，110 分钟 | 23 分钟 | 10 次提交，86 分钟 |
-| [trajectory-covariance](tasks/trajectory-covariance/README.md) | 42 分钟 | 11 次提交，28 分钟 | 14 分钟 | 18 次提交，127 分钟 | 2 分钟 | 28 次提交，116 分钟 | 52 分钟 | 17 次提交，186 分钟 | 53 分钟 | 21 次提交，177 分钟 | 35 分钟 | 5 次提交，169 分钟 | 26 分钟 | 16 次提交，47 分钟 | 47 分钟 | 6 次提交，117 分钟 |
-| [species-tree](tasks/species-tree/README.md) | 46 分钟 | 6 次提交，50 分钟 | 26 分钟 | 4 次提交，110 分钟 | 58 分钟 | 13 次提交，128 分钟 | 58 分钟 | 22 次提交，227 分钟 | 58 分钟 | 4 次提交，157 分钟 | 30 分钟 | 2 次提交，230 分钟 | 44 分钟 | 12 次提交，96 分钟 | 53 分钟 | 4 次提交，66 分钟 |
-| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 30 分钟 | 5 次提交，45 分钟 | 19 分钟 | 8 次提交，159 分钟 | 57 分钟 | 8 次提交，122 分钟 | 55 分钟 | 9 次提交，102 分钟 | 60 分钟 | 4 次提交，183 分钟 | 38 分钟 | 4 次提交，179 分钟 | 33 分钟 | 6 次提交，56 分钟 | 29 分钟 | 6 次提交，162 分钟 |
+| [conic](tasks/conic/README.md) | 46 分钟 | 7 次提交，86 分钟 | 43 分钟 | 10 次提交，156 分钟 | 58 分钟 | 6 次提交，240 分钟 | 57 分钟 | 7 次提交，239 分钟 | 57 分钟 | 12 次提交，172 分钟 | 60 分钟 | 0 次提交，96 分钟 | 31 分钟 | 20 次提交，180 分钟 | 30 分钟 | 13 次提交，190 分钟 |
+| [exponential](tasks/exponential/README.md) | 32 分钟 | 10 次提交，58 分钟 | 28 分钟 | 13 次提交，124 分钟 | 57 分钟 | 5 次提交，232 分钟 | 54 分钟 | 8 次提交，205 分钟 | 57 分钟 | 10 次提交，121 分钟 | 32 分钟 | 5 次提交，186 分钟 | 33 分钟 | 18 次提交，66 分钟 | 38 分钟 | 7 次提交，74 分钟 |
+| [galaxy-gravity](tasks/galaxy-gravity/README.md) | 57 分钟 | 8 次提交，146 分钟 | 36 分钟 | 7 次提交，164 分钟 | 60 分钟 | 4 次提交，236 分钟 | 60 分钟 | 5 次提交，217 分钟 | 60 分钟 | 8 次提交，186 分钟 | 58 分钟 | 3 次提交，198 分钟 | 31 分钟 | 10 次提交，189 分钟 | 60 分钟 | 6 次提交，195 分钟 |
+| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 41 分钟 | 3 次提交，45 分钟 | 13 分钟 | 8 次提交，130 分钟 | 58 分钟 | 5 次提交，144 分钟 | 60 分钟 | 9 次提交，235 分钟 | 57 分钟 | 5 次提交，152 分钟 | 41 分钟 | 8 次提交，114 分钟 | 33 分钟 | 6 次提交，110 分钟 | 23 分钟 | 10 次提交，86 分钟 |
+| [trajectory-covariance](tasks/trajectory-covariance/README.md) | 42 分钟 | 11 次提交，28 分钟 | 14 分钟 | 18 次提交，127 分钟 | 52 分钟 | 17 次提交，186 分钟 | 2 分钟 | 28 次提交，116 分钟 | 53 分钟 | 21 次提交，177 分钟 | 35 分钟 | 5 次提交，169 分钟 | 26 分钟 | 16 次提交，47 分钟 | 47 分钟 | 6 次提交，117 分钟 |
+| [species-tree](tasks/species-tree/README.md) | 46 分钟 | 6 次提交，50 分钟 | 26 分钟 | 4 次提交，110 分钟 | 58 分钟 | 22 次提交，227 分钟 | 58 分钟 | 13 次提交，128 分钟 | 58 分钟 | 4 次提交，157 分钟 | 30 分钟 | 2 次提交，230 分钟 | 44 分钟 | 12 次提交，96 分钟 | 53 分钟 | 4 次提交，66 分钟 |
+| [ihvp-sequence](tasks/ihvp-sequence/README.md) | 30 分钟 | 5 次提交，45 分钟 | 19 分钟 | 8 次提交，159 分钟 | 55 分钟 | 9 次提交，102 分钟 | 57 分钟 | 8 次提交，122 分钟 | 60 分钟 | 4 次提交，183 分钟 | 38 分钟 | 4 次提交，179 分钟 | 33 分钟 | 6 次提交，56 分钟 | 29 分钟 | 6 次提交，162 分钟 |
 | [pdhcg-qp](tasks/pdhcg-qp/README.md) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| [blackbox-cubature](tasks/blackbox-cubature/README.md) | 50 分钟 | 9 次提交，24 分钟 | 11 分钟 | 16 次提交，97 分钟 | 60 分钟 | 15 次提交，221 分钟 | 55 分钟 | 18 次提交，232 分钟 | 51 分钟 | 12 次提交，179 分钟 | 56 分钟 | 1 次提交，240 分钟 | 31 分钟 | 13 次提交，121 分钟 | 26 分钟 | 9 次提交，90 分钟 |
-| [continuum-estimation](tasks/continuum-estimation/README.md) | 12 分钟 | 10 次提交，12 分钟 | 24 分钟 | 5 次提交，80 分钟 | 49 分钟 | 3 次提交，38 分钟 | 44 分钟 | 12 次提交，47 分钟 | 51 分钟 | 7 次提交，135 分钟 | 60 分钟 | 4 次提交，216 分钟 | 21 分钟 | 5 次提交，40 分钟 | 60 分钟 | 5 次提交，101 分钟 |
-| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 20 分钟 | 5 次提交，24 分钟 | 25 分钟 | 4 次提交，199 分钟 | 59 分钟 | 3 次提交，182 分钟 | 57 分钟 | 4 次提交，132 分钟 | 53 分钟 | 8 次提交，178 分钟 | 49 分钟 | 3 次提交，220 分钟 | 22 分钟 | 6 次提交，65 分钟 | 22 分钟 | 14 次提交，74 分钟 |
+| [blackbox-cubature](tasks/blackbox-cubature/README.md) | 50 分钟 | 9 次提交，24 分钟 | 11 分钟 | 16 次提交，97 分钟 | 55 分钟 | 18 次提交，232 分钟 | 60 分钟 | 15 次提交，221 分钟 | 51 分钟 | 12 次提交，179 分钟 | 56 分钟 | 1 次提交，240 分钟 | 31 分钟 | 13 次提交，121 分钟 | 26 分钟 | 9 次提交，90 分钟 |
+| [continuum-estimation](tasks/continuum-estimation/README.md) | 12 分钟 | 10 次提交，12 分钟 | 24 分钟 | 7 次提交，65 分钟 | 44 分钟 | 12 次提交，47 分钟 | 49 分钟 | 3 次提交，38 分钟 | 51 分钟 | 7 次提交，135 分钟 | 60 分钟 | 4 次提交，216 分钟 | 21 分钟 | 5 次提交，40 分钟 | 60 分钟 | 5 次提交，101 分钟 |
+| [fluorescence-deconvolution](tasks/fluorescence-deconvolution/README.md) | 20 分钟 | 5 次提交，24 分钟 | 25 分钟 | 4 次提交，199 分钟 | 57 分钟 | 4 次提交，132 分钟 | 59 分钟 | 3 次提交，182 分钟 | 53 分钟 | 8 次提交，178 分钟 | 49 分钟 | 3 次提交，220 分钟 | 22 分钟 | 6 次提交，65 分钟 | 22 分钟 | 14 次提交，74 分钟 |
 <!-- board:end -->
 
 评测从接入到计分的完整流程：[评测流程](docs/BENCH_PROCESS.md)。成绩能说明什么以及需要人类关注的事项：[结果解读](results/INSIGHTS.md)。
