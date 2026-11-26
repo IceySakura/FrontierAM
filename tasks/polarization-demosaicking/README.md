@@ -75,20 +75,18 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | RMSE \(E = 1.2894\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 57.0 | 41 分钟 | [`v3/gpt-6.2-sol-single-1/`](solutions/v6.3/v3/gpt-6.2-sol-single-1/) |
 | GPT-6.2 Sol | 迭代 | RMSE \(E = 1.3760\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 54.2 | 3 次提交，45 分钟 | [`v3/gpt-6.2-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.2-sol-iterative-1/) |
-| GPT-6.1 Sol | 单轮 | RMSE \(E = 1.4113\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | RMSE \(E = 1.4339\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.2 | 9 次提交，235 分钟 | [`v3/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/) |
 | GPT-6 Astra | 单轮 | RMSE \(E = 1.3848\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.9 | 58 分钟 | [`v3/gpt-6-astra-single-1/`](solutions/v6.3/v3/gpt-6-astra-single-1/) |
 | GPT-6 Astra | 迭代 | RMSE \(E = 1.3757\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 54.2 | 5 次提交，144 分钟 | [`v3/gpt-6-astra-iterative-1/`](solutions/v6.3/v3/gpt-6-astra-iterative-1/) |
+| GPT-6.1 Sol | 单轮 | RMSE \(E = 1.4113\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.0 | 60 分钟 | [`v3/gpt-6.1-sol-single-1/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | RMSE \(E = 1.4339\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.2 | 9 次提交，235 分钟 | [`v3/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.5821\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.3 | 13 分钟 | [`v3/claude-opus-5-5-single-1/`](solutions/v6.3/v3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | RMSE \(E = 1.4282\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.4 | 8 次提交，130 分钟 | [`v3/claude-opus-5-5-iterative-1/`](solutions/v6.3/v3/claude-opus-5-5-iterative-1/) |
-| Qwen3.8 Max | 单轮 | RMSE \(E = 1.6500\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 37.7 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
-| Qwen3.8 Max | 迭代 | RMSE \(E = 1.4841\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.6 | 8 次提交，114 分钟 | [`v3/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/) |
 | Hunyuan 4 | 单轮 | RMSE \(E = 1.5411\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 46.7 | 57 分钟 | [`v3/hy4-single-1/`](solutions/v6.3/v3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | RMSE \(E = 1.4536\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.6 | 5 次提交，152 分钟 | [`v3/hy4-iterative-1/`](solutions/v6.3/v3/hy4-iterative-1/) |
-| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v3/intern-s2-single-1/`](solutions/v6.3/v3/intern-s2-single-1/) |
-| Intern S2 | 迭代 | RMSE \(E = 2.0613\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 3.8 | 1 次提交，113 分钟 | [`v3/intern-s2-iterative-1/`](solutions/v6.3/v3/intern-s2-iterative-1/) |
 | Qwen4 Max | 单轮 | RMSE \(E = 1.5932\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 42.4 | 33 分钟 | [`v3/qwen4-max-single-1/`](solutions/v6.3/v3/qwen4-max-single-1/) |
 | Qwen4 Max | 迭代 | RMSE \(E = 2.4842\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 6 次提交，110 分钟 | [`v3/qwen4-max-iterative-1/`](solutions/v6.3/v3/qwen4-max-iterative-1/) |
+| Qwen3.8 Max | 单轮 | RMSE \(E = 1.6500\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 37.7 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
+| Qwen3.8 Max | 迭代 | RMSE \(E = 1.4841\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.6 | 8 次提交，114 分钟 | [`v3/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/) |
 | MiniMax M3.1 Flash | 单轮 | RMSE \(E = 1.7104\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 32.7 | 23 分钟 | [`v3/minimax-m3.1-flash-single-1/`](solutions/v6.3/v3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | RMSE \(E = 1.5112\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.1 | 10 次提交，86 分钟 | [`v3/minimax-m3.1-flash-iterative-1/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-1/) |
 
@@ -106,16 +104,6 @@ public 分数随测试提交：28.6（2 分钟） → 59.4（28 分钟） → 59
 
 源码 [`solutions/v6.3/v3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/v3/gpt-6.2-sol-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261120T083610Z-eeda57`）。
 
-### GPT-6.1 Sol（单轮，v6.3）
-
-源码 [`solutions/v6.3/v3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T071526Z-fbb4de`）；未复制的二进制或大文件：auxiliary.npz（70,723 字节）、weights.npz（89,495 字节）。
-
-### GPT-6.1 Sol（迭代，v6.3）
-
-public 分数随测试提交：56.2（9 分钟） → 59.6（26 分钟） → 60.7（54 分钟） → 0.0（132 分钟） → 60.7（140 分钟） → 61.4（144 分钟） → 0.0（205 分钟） → 0.0（223 分钟） → 61.7（226 分钟）
-
-源码 [`solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T150533Z-919ebe`）；未复制的二进制或大文件：weights.npz（102,566 字节）。
-
 ### GPT-6 Astra（单轮，v6.3）
 
 经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
@@ -130,6 +118,16 @@ public 分数随测试提交：56.4（15 分钟） → 58.4（39 分钟） → 5
 
 源码 [`solutions/v6.3/v3/gpt-6-astra-iterative-1/source/`](solutions/v6.3/v3/gpt-6-astra-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261121T201503Z-472bb3`）；未复制的二进制或大文件：model.npz（107,004 字节）。
 
+### GPT-6.1 Sol（单轮，v6.3）
+
+源码 [`solutions/v6.3/v3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/v3/gpt-6.1-sol-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T071526Z-fbb4de`）；未复制的二进制或大文件：auxiliary.npz（70,723 字节）、weights.npz（89,495 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+public 分数随测试提交：56.2（9 分钟） → 59.6（26 分钟） → 60.7（54 分钟） → 0.0（132 分钟） → 60.7（140 分钟） → 61.4（144 分钟） → 0.0（205 分钟） → 0.0（223 分钟） → 61.7（226 分钟）
+
+源码 [`solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/v3/gpt-6.1-sol-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T150533Z-919ebe`）；未复制的二进制或大文件：weights.npz（102,566 字节）。
+
 ### Claude Opus 5.5（单轮，v6.3）
 
 源码 [`solutions/v6.3/v3/claude-opus-5-5-single-1/source/`](solutions/v6.3/v3/claude-opus-5-5-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T045252Z-3abed5`）；未复制的二进制或大文件：weights.npy（38,528 字节）。
@@ -140,16 +138,6 @@ public 分数随测试提交：54.8（35 分钟） → 56.0（52 分钟） → 5
 
 源码 [`solutions/v6.3/v3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/v3/claude-opus-5-5-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T091144Z-63ea62`）；未复制的二进制或大文件：filters_dt.npy（29,056 字节）、filters_rob.npy（11,840 字节）、filters_v1t.npy（23,552 字节）。
 
-### Qwen3.8 Max（单轮，v6.3）
-
-源码 [`solutions/v6.3/v3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T053246Z-a82a2c`）。
-
-### Qwen3.8 Max（迭代，v6.3）
-
-public 分数随测试提交：0.0（30 分钟） → 50.6（53 分钟） → 51.0（84 分钟） → 0.0（97 分钟） → 52.1（97 分钟） → 52.2（98 分钟） → 52.2（106 分钟） → 52.5（108 分钟）
-
-源码 [`solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T103725Z-7cc50d`）。
-
 ### Hunyuan 4（单轮，v6.3）
 
 源码 [`solutions/v6.3/v3/hy4-single-1/source/`](solutions/v6.3/v3/hy4-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T065348Z-ee3277`）。
@@ -159,20 +147,6 @@ public 分数随测试提交：0.0（30 分钟） → 50.6（53 分钟） → 51
 public 分数随测试提交：52.1（43 分钟） → 56.1（99 分钟） → 56.3（122 分钟） → 56.3（136 分钟） → 56.3（143 分钟）
 
 源码 [`solutions/v6.3/v3/hy4-iterative-1/source/`](solutions/v6.3/v3/hy4-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T130859Z-fc85cd`）。
-
-### Intern S2（单轮，v6.3）
-
-11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。
-
-源码 [`solutions/v6.3/v3/intern-s2-single-1/source/`](solutions/v6.3/v3/intern-s2-single-1/source/)（提交 `polarization-demosaicking-v3-20261118T091157Z-beb736`）；未复制的二进制或大文件：（提交存档不在本服务器）。
-
-### Intern S2（迭代，v6.3）
-
-11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。
-
-public 分数随测试提交：0.0（111 分钟）
-
-源码 [`solutions/v6.3/v3/intern-s2-iterative-1/source/`](solutions/v6.3/v3/intern-s2-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261118T202105Z-c28eac`）。
 
 ### Qwen4 Max（单轮，v6.3）
 
@@ -185,6 +159,16 @@ public 分数随测试提交：0.0（111 分钟）
 public 分数随测试提交：0.0（8 分钟） → 37.7（24 分钟） → 0.0（62 分钟） → 37.7（66 分钟） → 39.9（68 分钟） → 43.1（75 分钟）
 
 源码 [`solutions/v6.3/v3/qwen4-max-iterative-1/source/`](solutions/v6.3/v3/qwen4-max-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261125T144957Z-613c0f`）；未复制的二进制或大文件：weights.npz（17,390 字节）。
+
+### Qwen3.8 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/v3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/source/)（提交 `polarization-demosaicking-v3-20261117T053246Z-a82a2c`）。
+
+### Qwen3.8 Max（迭代，v6.3）
+
+public 分数随测试提交：0.0（30 分钟） → 50.6（53 分钟） → 51.0（84 分钟） → 0.0（97 分钟） → 52.1（97 分钟） → 52.2（98 分钟） → 52.2（106 分钟） → 52.5（108 分钟）
+
+源码 [`solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T103725Z-7cc50d`）。
 
 ### MiniMax M3.1 Flash（单轮，v6.3）
 
@@ -208,12 +192,10 @@ public 分数随测试提交：53.0（27 分钟） → 51.9（47 分钟） → 5
 | GPT-6.1 Sol | 迭代 | RMSE \(E = 1.0456\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.9 | 23 次提交，211 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | RMSE \(E = 1.4320\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 26.9 | 31 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | RMSE \(E = 1.2173\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 42.3 | 22 次提交，169 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
-| Qwen3.8 Max | 单轮 | RMSE \(E = 1.1935\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 44.0 | 30 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
-| Qwen3.8 Max | 迭代 | RMSE \(E = 1.1512\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.0 | 14 次提交，202 分钟 | [`qwen3.8-max-0902-iterative-1/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/) |
 | Hunyuan 4 | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 43 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | RMSE \(E = 1.2144\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 42.5 | 31 次提交，196 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
-| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
-| Intern S2 | 迭代 | 无效提交（solution.py and README.md are required） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，240 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
+| Qwen3.8 Max | 单轮 | RMSE \(E = 1.1935\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 44.0 | 30 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
+| Qwen3.8 Max | 迭代 | RMSE \(E = 1.1512\)（\(U = 1.8082\)，\(W = 1.1099\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.0 | 14 次提交，202 分钟 | [`qwen3.8-max-0902-iterative-1/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/) |
 
 ### GPT-6.1 Sol（单轮，v6.3）
 
@@ -239,16 +221,6 @@ public 分数随测试提交：47.3（20 分钟） → 51.0（31 分钟） → 0
 
 源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `polarization-demosaicking-v2-20261112T064029Z-017b5e`）；未复制的二进制或大文件：model.npz（19,330 字节）。
 
-### Qwen3.8 Max（单轮，v6.3）
-
-源码 [`solutions/v6.3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/qwen3.8-max-0902-single-1/source/)（提交 `polarization-demosaicking-v2-20261113T120225Z-89850e`）。
-
-### Qwen3.8 Max（迭代，v6.3）
-
-public 分数随测试提交：34.7（78 分钟） → 26.0（100 分钟） → 37.0（128 分钟） → 39.8（133 分钟） → 37.8（139 分钟） → 39.7（144 分钟） → 35.8（148 分钟） → 34.6（160 分钟） → 36.9（165 分钟） → 40.1（179 分钟） → 39.5（183 分钟） → 39.7（190 分钟） → 39.4（195 分钟） → 40.1（200 分钟）
-
-源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/source/)（提交 `polarization-demosaicking-v2-20261113T101122Z-cd0499`）；未复制的二进制或大文件：filter_map_30_38.npy（153,728 字节）、filter_map_528_528.npy（35,819,648 字节）。
-
 ### Hunyuan 4（单轮，v6.3）
 
 源码 [`solutions/v6.3/hy4-single-1/source/`](solutions/v6.3/hy4-single-1/source/)（提交 `polarization-demosaicking-v2-20261113T113200Z-32fbde`）；未复制的二进制或大文件：params.npz（25,312 字节）。
@@ -259,17 +231,15 @@ public 分数随测试提交：38.0（13 分钟） → 46.8（21 分钟） → 4
 
 源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `polarization-demosaicking-v2-20261113T142233Z-a57fcb`）。
 
-### Intern S2（单轮，v6.3）
+### Qwen3.8 Max（单轮，v6.3）
 
-书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
+源码 [`solutions/v6.3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/qwen3.8-max-0902-single-1/source/)（提交 `polarization-demosaicking-v2-20261113T120225Z-89850e`）。
 
-源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `polarization-demosaicking-v2-20261116T053043Z-b06743`）；未复制的二进制或大文件：（提交存档不在本服务器）。
+### Qwen3.8 Max（迭代，v6.3）
 
-### Intern S2（迭代，v6.3）
+public 分数随测试提交：34.7（78 分钟） → 26.0（100 分钟） → 37.0（128 分钟） → 39.8（133 分钟） → 37.8（139 分钟） → 39.7（144 分钟） → 35.8（148 分钟） → 34.6（160 分钟） → 36.9（165 分钟） → 40.1（179 分钟） → 39.5（183 分钟） → 39.7（190 分钟） → 39.4（195 分钟） → 40.1（200 分钟）
 
-书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
-
-源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `polarization-demosaicking-v2-20261116T093358Z-fd94ba`）。
+源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/source/)（提交 `polarization-demosaicking-v2-20261113T101122Z-cd0499`）；未复制的二进制或大文件：filter_map_30_38.npy（153,728 字节）、filter_map_528_528.npy（35,819,648 字节）。
 
 ## 模型成绩与解法（题目版本 v1.2 · 协议 v6.2）
 

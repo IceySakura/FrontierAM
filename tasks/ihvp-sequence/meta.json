@@ -47,32 +47,6 @@
           "folder": "v4/gpt-6.2-sol-iterative-1"
         },
         {
-          "model": "gpt-6.1-sol",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "ihvp-sequence-v4-20261112T154321Z-cd03a1",
-          "store": "var/stores/store-v63",
-          "raw": "\\(E = 0.1104\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 62.629,
-          "notes_md": "通用回收 CG（历史子空间投影加 C 内核 CG），没有识别矩阵结构。",
-          "folder": "v4/gpt-6.1-sol-single-1"
-        },
-        {
-          "model": "gpt-6.1-sol",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "ihvp-sequence-v4-20261112T164810Z-0ddd31",
-          "store": "var/stores/store-v63",
-          "raw": "\\(E = 0.1093\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 63.014,
-          "notes_md": "按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。",
-          "folder": "v4/gpt-6.1-sol-iterative-1"
-        },
-        {
           "model": "gpt-6-astra",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -97,6 +71,32 @@
           "score": 63.155,
           "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。",
           "folder": "v4/gpt-6-astra-iterative-1"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261112T154321Z-cd03a1",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1104\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 62.629,
+          "notes_md": "通用回收 CG（历史子空间投影加 C 内核 CG），没有识别矩阵结构。",
+          "folder": "v4/gpt-6.1-sol-single-1"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261112T164810Z-0ddd31",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1093\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 63.014,
+          "notes_md": "按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。",
+          "folder": "v4/gpt-6.1-sol-iterative-1"
         },
         {
           "model": "claude-opus-5-5",
@@ -125,32 +125,6 @@
           "folder": "v4/claude-opus-5-5-iterative-2"
         },
         {
-          "model": "qwen3.8-max-0902",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "ihvp-sequence-v4-20261113T104910Z-b6cf92",
-          "store": "var/stores/store-v63",
-          "raw": "\\(E = 0.1411\\)，最长序列 28.0 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 52.25,
-          "notes_md": "",
-          "folder": "v4/qwen3.8-max-0902-single-1"
-        },
-        {
-          "model": "qwen3.8-max-0902",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 2,
-          "submission": "ihvp-sequence-v4-20261115T195623Z-612899",
-          "store": "var/stores/store-v63",
-          "raw": "\\(E = 0.1424\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 51.821,
-          "notes_md": "第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。",
-          "folder": "v4/qwen3.8-max-0902-iterative-2"
-        },
-        {
           "model": "hy4",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -175,32 +149,6 @@
           "score": 56.137,
           "notes_md": "",
           "folder": "v4/hy4-iterative-1"
-        },
-        {
-          "model": "intern-s2",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "ihvp-sequence-v4-20261115T175832Z-cab8b2",
-          "store": "var/stores/store-v63",
-          "raw": "\\(E = 0.2255\\)，最长序列 28.7 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 11.33,
-          "notes_md": "带 L-BFGS 预条件器的 PCG 加子空间投影、按剩余时间分配迭代，没有识别矩阵结构；误差只略好于冷启动 CG。 书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。",
-          "folder": "v4/intern-s2-single-1"
-        },
-        {
-          "model": "intern-s2",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "ihvp-sequence-v4-20261116T093358Z-8cc53a",
-          "store": "var/stores/store-v63",
-          "raw": "\\(E = 0.7302\\)，最长序列 4.9 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 0.0,
-          "notes_md": "书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。",
-          "folder": "v4/intern-s2-iterative-1"
         },
         {
           "model": "qwen4-max",
@@ -229,6 +177,32 @@
           "folder": "v4/qwen4-max-iterative-1"
         },
         {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261113T104910Z-b6cf92",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1411\\)，最长序列 28.0 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 52.25,
+          "notes_md": "",
+          "folder": "v4/qwen3.8-max-0902-single-1"
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 2,
+          "submission": "ihvp-sequence-v4-20261115T195623Z-612899",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1424\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 51.821,
+          "notes_md": "第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。",
+          "folder": "v4/qwen3.8-max-0902-iterative-2"
+        },
+        {
           "model": "minimax-m3.1-flash",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -253,6 +227,32 @@
           "score": 53.46,
           "notes_md": "",
           "folder": "v4/minimax-m3.1-flash-iterative-1"
+        },
+        {
+          "model": "intern-s2",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261115T175832Z-cab8b2",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.2255\\)，最长序列 28.7 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 11.33,
+          "notes_md": "带 L-BFGS 预条件器的 PCG 加子空间投影、按剩余时间分配迭代，没有识别矩阵结构；误差只略好于冷启动 CG。 书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。",
+          "folder": "v4/intern-s2-single-1"
+        },
+        {
+          "model": "intern-s2",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261116T093358Z-8cc53a",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.7302\\)，最长序列 4.9 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 0.0,
+          "notes_md": "书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。",
+          "folder": "v4/intern-s2-iterative-1"
         }
       ]
     },

@@ -85,20 +85,18 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | 74/74 合格，\(R = 0.615\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 61.9 | 32 分钟 | [`gpt-6.2-sol-single-1/`](solutions/v6.3/gpt-6.2-sol-single-1/) |
 | GPT-6.2 Sol | 迭代 | 74/74 合格，\(R = 0.487\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 67.2 | 10 次提交，58 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
-| GPT-6.1 Sol | 单轮 | 74/74 合格，\(R = 0.813\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 55.2 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.567\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 63.8 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | GPT-6 Astra | 单轮 | 74/74 合格，\(R = 0.706\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 58.6 | 57 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
 | GPT-6 Astra | 迭代 | 74/74 合格，\(R = 0.725\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 58.0 | 5 次提交，232 分钟 | [`gpt-6-astra-iterative-1/`](solutions/v6.3/gpt-6-astra-iterative-1/) |
+| GPT-6.1 Sol | 单轮 | 74/74 合格，\(R = 0.813\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 55.2 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.567\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 63.8 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 28 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 13 次提交，124 分钟 | [`claude-opus-5-5-iterative-2/`](solutions/v6.3/claude-opus-5-5-iterative-2/) |
-| Qwen3.8 Max | 单轮 | 无效提交（23 例不合格） | 任一用例不合格记 0 | 0.0 | 32 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
-| Qwen3.8 Max | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 5 次提交，186 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 57 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 74/74 合格，\(R = 0.776\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 56.3 | 10 次提交，121 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
-| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
-| Intern S2 | 迭代 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 0 次提交，240 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
 | Qwen4 Max | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 33 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
 | Qwen4 Max | 迭代 | 74/74 合格，\(R = 0.726\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 57.9 | 18 次提交，66 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| Qwen3.8 Max | 单轮 | 无效提交（23 例不合格） | 任一用例不合格记 0 | 0.0 | 32 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
+| Qwen3.8 Max | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 5 次提交，186 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | 无效提交（20 例不合格） | 任一用例不合格记 0 | 0.0 | 38 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 7 次提交，74 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
@@ -111,20 +109,6 @@
 public 分数随测试提交：55.9（4 分钟） → 59.0（12 分钟） → 61.9（17 分钟） → 61.5（26 分钟） → 60.7（35 分钟） → 58.8（39 分钟） → 59.9（46 分钟） → 58.7（49 分钟） → 61.0（53 分钟） → 61.1（56 分钟）
 
 源码 [`solutions/v6.3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/gpt-6.2-sol-iterative-1/source/)（提交 `exponential-v3-20261120T084833Z-8489cb`）；未复制的二进制或大文件：propagate（290,312 字节）。
-
-### GPT-6.1 Sol（单轮，v6.3）
-
-C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递推，正向量加权 Gershgorin 收紧谱区间；小连通块扩展精度对角化。
-
-源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `exponential-v3-20261111T003322Z-4a23d6`）；未复制的二进制或大文件：solver（151,704 字节）。
-
-### GPT-6.1 Sol（迭代，v6.3）
-
-刚度小的会话直接用自适应 Taylor；对角和小连通块扩展精度谱分解；一般情形用合并的 Chebyshev 展开（行和与 Collatz 界给谱区间，Reinsch 形式的 Clenshaw 递推）。重跑（原尝试受测试排队故障影响）。
-
-public 分数随测试提交：49.2（5 分钟） → 54.6（19 分钟） → 57.2（38 分钟） → 57.1（45 分钟） → 57.0（65 分钟） → 57.9（84 分钟） → 57.7（132 分钟） → 59.4（180 分钟）
-
-源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `exponential-v3-20261111T101604Z-fa725b`）；未复制的二进制或大文件：solver（226,200 字节）。
 
 ### GPT-6 Astra（单轮，v6.3）
 
@@ -140,6 +124,20 @@ public 分数随测试提交：55.4（7 分钟） → 56.6（37 分钟） → 56
 
 源码 [`solutions/v6.3/gpt-6-astra-iterative-1/source/`](solutions/v6.3/gpt-6-astra-iterative-1/source/)（提交 `exponential-v3-20261121T205534Z-525cf5`）；未复制的二进制或大文件：solver（107,368 字节）。
 
+### GPT-6.1 Sol（单轮，v6.3）
+
+C++ 实现：Chebyshev 展开把指数与 φ₁ 合成一条稳定 Clenshaw 递推，正向量加权 Gershgorin 收紧谱区间；小连通块扩展精度对角化。
+
+源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `exponential-v3-20261111T003322Z-4a23d6`）；未复制的二进制或大文件：solver（151,704 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+刚度小的会话直接用自适应 Taylor；对角和小连通块扩展精度谱分解；一般情形用合并的 Chebyshev 展开（行和与 Collatz 界给谱区间，Reinsch 形式的 Clenshaw 递推）。重跑（原尝试受测试排队故障影响）。
+
+public 分数随测试提交：49.2（5 分钟） → 54.6（19 分钟） → 57.2（38 分钟） → 57.1（45 分钟） → 57.0（65 分钟） → 57.9（84 分钟） → 57.7（132 分钟） → 59.4（180 分钟）
+
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `exponential-v3-20261111T101604Z-fa725b`）；未复制的二进制或大文件：solver（226,200 字节）。
+
 ### Claude Opus 5.5（单轮，v6.3）
 
 源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `exponential-v3-20261112T074603Z-e693ee`）；未复制的二进制或大文件：libcheb_avx2.so（19,736 字节）、libcheb_generic.so（19,736 字节）。
@@ -151,6 +149,28 @@ public 分数随测试提交：55.4（7 分钟） → 56.6（37 分钟） → 56
 public 分数随测试提交：53.7（20 分钟） → 54.8（34 分钟） → 59.1（43 分钟） → 61.3（54 分钟） → 58.8（65 分钟） → 59.9（76 分钟） → 61.2（81 分钟） → 62.9（90 分钟） → 62.3（95 分钟） → 62.4（99 分钟） → 62.2（106 分钟） → 60.8（115 分钟） → 61.6（121 分钟）
 
 源码 [`solutions/v6.3/claude-opus-5-5-iterative-2/source/`](solutions/v6.3/claude-opus-5-5-iterative-2/source/)（提交 `exponential-v3-20261116T044238Z-05598c`）；未复制的二进制或大文件：expsolve_gen（88,664 字节）、expsolve_v3（109,424 字节）、libexpkern_gen.so（57,616 字节）、libexpkern_v3.so（74,208 字节）。
+
+### Hunyuan 4（单轮，v6.3）
+
+源码 [`solutions/v6.3/hy4-single-1/source/`](solutions/v6.3/hy4-single-1/source/)（提交 `exponential-v3-20261113T114630Z-965262`）；未复制的二进制或大文件：solve（48,336 字节）。
+
+### Hunyuan 4（迭代，v6.3）
+
+public 分数随测试提交：30.7（47 分钟） → 42.2（63 分钟） → 45.9（73 分钟） → 44.1（89 分钟） → 46.7（92 分钟） → 51.1（98 分钟） → 42.2（102 分钟） → 50.6（104 分钟） → 52.8（110 分钟） → 50.2（117 分钟）
+
+源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `exponential-v3-20261113T131731Z-c8c28a`）；未复制的二进制或大文件：libfamexp.so（28,080 字节）。
+
+### Qwen4 Max（单轮，v6.3）
+
+第一次评分有两个分片负载报警（探针 1.38、1.42），判无效的两例都是 CPU 上限；只重测这两例时 `syn_geometric_p10_k1` 以 10.3 秒 CPU 通过（原评分三次触 15 秒上限），故记未测，开发槽全空时整套重评：k1 通过，`syn_geometric_p10_k16` 复用仍超 150 秒 CPU 上限，仍判无效，以重评为准。
+
+源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `exponential-v3-20261125T094628Z-5bfd67`）；未复制的二进制或大文件：fame_core.so（40,608 字节）。
+
+### Qwen4 Max（迭代，v6.3）
+
+public 分数随测试提交：0.0（8 分钟） → 49.0（13 分钟） → 53.3（20 分钟） → 0.0（25 分钟） → 53.5（30 分钟） → 52.5（32 分钟） → 51.6（35 分钟） → 50.6（38 分钟） → 50.3（41 分钟） → 53.2（43 分钟） → 54.4（45 分钟） → 54.1（47 分钟） → 50.7（50 分钟） → 51.3（54 分钟） → 50.4（55 分钟） → 50.2（60 分钟） → 51.7（61 分钟） → 50.0（63 分钟）
+
+源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `exponential-v3-20261125T125928Z-549d39`）；未复制的二进制或大文件：libkernel.so（50,160 字节）。
 
 ### Qwen3.8 Max（单轮，v6.3）
 
@@ -165,40 +185,6 @@ public 分数随测试提交：53.7（20 分钟） → 54.8（34 分钟） → 5
 public 分数随测试提交：49.5（72 分钟） → 50.3（118 分钟） → 50.7（144 分钟） → 51.5（160 分钟） → 50.8（168 分钟）
 
 源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/source/)（提交 `exponential-v3-20261115T214734Z-d31252`）；未复制的二进制或大文件：bin/famexp2（29,872 字节）。
-
-### Hunyuan 4（单轮，v6.3）
-
-源码 [`solutions/v6.3/hy4-single-1/source/`](solutions/v6.3/hy4-single-1/source/)（提交 `exponential-v3-20261113T114630Z-965262`）；未复制的二进制或大文件：solve（48,336 字节）。
-
-### Hunyuan 4（迭代，v6.3）
-
-public 分数随测试提交：30.7（47 分钟） → 42.2（63 分钟） → 45.9（73 分钟） → 44.1（89 分钟） → 46.7（92 分钟） → 51.1（98 分钟） → 42.2（102 分钟） → 50.6（104 分钟） → 52.8（110 分钟） → 50.2（117 分钟）
-
-源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `exponential-v3-20261113T131731Z-c8c28a`）；未复制的二进制或大文件：libfamexp.so（28,080 字节）。
-
-### Intern S2（单轮，v6.3）
-
-书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
-
-源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `exponential-v3-20261116T041309Z-44f19a`）；未复制的二进制或大文件：（提交存档不在本服务器）。
-
-### Intern S2（迭代，v6.3）
-
-书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
-
-源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `exponential-v3-20261116T093358Z-b4e086`）；未复制的二进制或大文件：（提交存档不在本服务器）。
-
-### Qwen4 Max（单轮，v6.3）
-
-第一次评分有两个分片负载报警（探针 1.38、1.42），判无效的两例都是 CPU 上限；只重测这两例时 `syn_geometric_p10_k1` 以 10.3 秒 CPU 通过（原评分三次触 15 秒上限），故记未测，开发槽全空时整套重评：k1 通过，`syn_geometric_p10_k16` 复用仍超 150 秒 CPU 上限，仍判无效，以重评为准。
-
-源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `exponential-v3-20261125T094628Z-5bfd67`）；未复制的二进制或大文件：fame_core.so（40,608 字节）。
-
-### Qwen4 Max（迭代，v6.3）
-
-public 分数随测试提交：0.0（8 分钟） → 49.0（13 分钟） → 53.3（20 分钟） → 0.0（25 分钟） → 53.5（30 分钟） → 52.5（32 分钟） → 51.6（35 分钟） → 50.6（38 分钟） → 50.3（41 分钟） → 53.2（43 分钟） → 54.4（45 分钟） → 54.1（47 分钟） → 50.7（50 分钟） → 51.3（54 分钟） → 50.4（55 分钟） → 50.2（60 分钟） → 51.7（61 分钟） → 50.0（63 分钟）
-
-源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `exponential-v3-20261125T125928Z-549d39`）；未复制的二进制或大文件：libkernel.so（50,160 字节）。
 
 ### MiniMax M3.1 Flash（单轮，v6.3）
 

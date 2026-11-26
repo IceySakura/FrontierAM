@@ -66,20 +66,18 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | 损失 \(E = 0.000952333\)，60 例，单例最长 1.0 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 71.1 | 12 分钟 | [`gpt-6.2-sol-single-1/`](solutions/v6.3/gpt-6.2-sol-single-1/) |
 | GPT-6.2 Sol | 迭代 | 损失 \(E = 0.000876417\)，60 例，单例最长 1.1 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 73.4 | 5 次提交，20 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
-| GPT-6.1 Sol | 单轮 | 损失 \(E = 0.000942335\)，60 例，单例最长 9.0 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 71.4 | 49 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | 损失 \(E = 0.00102139\)，60 例，单例最长 3.0 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 69.0 | 3 次提交，38 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | GPT-6 Astra | 单轮 | 损失 \(E = 0.000896961\)，60 例，单例最长 2.3 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 72.8 | 44 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
 | GPT-6 Astra | 迭代 | 损失 \(E = 0.000896108\)，60 例，单例最长 4.7 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 72.8 | 4 次提交，56 分钟 | [`gpt-6-astra-iterative-1/`](solutions/v6.3/gpt-6-astra-iterative-1/) |
+| GPT-6.1 Sol | 单轮 | 损失 \(E = 0.000942335\)，60 例，单例最长 9.0 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 71.4 | 49 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | 损失 \(E = 0.00102139\)，60 例，单例最长 3.0 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 69.0 | 3 次提交，38 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | 损失 \(E = 0.00474595\)，60 例，单例最长 1.2 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 40.0 | 24 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | 损失 \(E = 0.0101005\)，60 例，单例最长 0.4 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 22.8 | 5 次提交，80 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
-| Qwen3.8 Max | 单轮 | 无效提交（60 of 60 cases failed; first case_000: README.md and run.sh are required） | 任一用例无效、缺失、超时或失败记 0 | 0.0 | 60 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
-| Qwen3.8 Max | 迭代 | 损失 \(E = 0.00168707\)，60 例，单例最长 0.5 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.9 | 4 次提交，216 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | 损失 \(E = 0.000840049\)，60 例，单例最长 1.6 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 74.5 | 51 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 损失 \(E = 0.00232668\)，60 例，单例最长 0.3 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.8 | 7 次提交，135 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
-| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
-| Intern S2 | 迭代 | 损失 \(E = 0.00965148\)，60 例，单例最长 0.1 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 24.2 | 4 次提交，213 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
 | Qwen4 Max | 单轮 | 损失 \(E = 0.00108602\)，60 例，单例最长 0.7 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 67.1 | 21 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
 | Qwen4 Max | 迭代 | 损失 \(E = 0.00122283\)，60 例，单例最长 0.8 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.9 | 5 次提交，40 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| Qwen3.8 Max | 单轮 | 无效提交（60 of 60 cases failed; first case_000: README.md and run.sh are required） | 任一用例无效、缺失、超时或失败记 0 | 0.0 | 60 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
+| Qwen3.8 Max | 迭代 | 损失 \(E = 0.00168707\)，60 例，单例最长 0.5 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.9 | 4 次提交，216 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | 损失 \(E = 0.00267888\)，60 例，单例最长 1.3 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 46.7 | 60 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | 损失 \(E = 0.00837313\)，60 例，单例最长 1.1 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 28.3 | 5 次提交，101 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
@@ -95,18 +93,6 @@ public 分数随测试提交：35.8（3 分钟） → 80.0（4 分钟） → 82.
 
 源码 [`solutions/v6.3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/gpt-6.2-sol-iterative-1/source/)（提交 `continuum-estimation-20261120T090954Z-ca982a`）。
 
-### GPT-6.1 Sol（单轮，v6.3）
-
-源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `continuum-estimation-20261117T100054Z-6bbc6f`）。
-
-### GPT-6.1 Sol（迭代，v6.3）
-
-出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
-
-public 分数随测试提交：97.3（9 分钟） → 97.4（16 分钟） → 97.4（24 分钟）
-
-源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `continuum-estimation-20261117T154315Z-cf43e8`）。
-
 ### GPT-6 Astra（单轮，v6.3）
 
 经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
@@ -121,6 +107,18 @@ public 分数随测试提交：92.6（8 分钟） → 95.9（18 分钟） → 96
 
 源码 [`solutions/v6.3/gpt-6-astra-iterative-1/source/`](solutions/v6.3/gpt-6-astra-iterative-1/source/)（提交 `continuum-estimation-20261121T215822Z-89843b`）。
 
+### GPT-6.1 Sol（单轮，v6.3）
+
+源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `continuum-estimation-20261117T100054Z-6bbc6f`）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
+
+public 分数随测试提交：97.3（9 分钟） → 97.4（16 分钟） → 97.4（24 分钟）
+
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `continuum-estimation-20261117T154315Z-cf43e8`）。
+
 ### Claude Opus 5.5（单轮，v6.3）
 
 源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `continuum-estimation-20261117T055656Z-ee456a`）。
@@ -132,18 +130,6 @@ public 分数随测试提交：92.6（8 分钟） → 95.9（18 分钟） → 96
 public 分数随测试提交：89.4（8 分钟） → 89.9（30 分钟） → 90.0（36 分钟） → 90.0（47 分钟） → 90.5（71 分钟）
 
 源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `continuum-estimation-20261117T090022Z-90b6d7`）。
-
-### Qwen3.8 Max（单轮，v6.3）
-
-源码 [`solutions/v6.3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/qwen3.8-max-0902-single-1/source/)（提交 `continuum-estimation-20261117T074044Z-58fc7f`）。
-
-### Qwen3.8 Max（迭代，v6.3）
-
-两次尝试都有回合遇到上游（阿里百炼）流约 600 秒没有任何输出后断开（AIHub 记为成功、0 token，无其他供应商可换），第 1 次损失约 70 分钟、第 2 次约 30 分钟；按用户决定（11-18）取损失较少的第 2 次为正式格。
-
-public 分数随测试提交：30.7（30 分钟） → 0.0（56 分钟） → 85.9（136 分钟） → 86.1（212 分钟）
-
-源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/source/)（提交 `continuum-estimation-20261118T064024Z-317d25`）。
 
 ### Hunyuan 4（单轮，v6.3）
 
@@ -157,20 +143,6 @@ public 分数随测试提交：28.0（29 分钟） → 0.0（34 分钟） → 49
 
 源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `continuum-estimation-20261117T111508Z-f546c9`）。
 
-### Intern S2（单轮，v6.3）
-
-11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。
-
-源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `continuum-estimation-20261118T101203Z-8c0524`）；未复制的二进制或大文件：（提交存档不在本服务器）。
-
-### Intern S2（迭代，v6.3）
-
-11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。 出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
-
-public 分数随测试提交：85.5（156 分钟） → 86.8（181 分钟） → 86.8（202 分钟） → 86.8（207 分钟）
-
-源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `continuum-estimation-20261119T010622Z-44268a`）。
-
 ### Qwen4 Max（单轮，v6.3）
 
 源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `continuum-estimation-20261125T114010Z-b10c67`）。
@@ -182,6 +154,18 @@ public 分数随测试提交：85.5（156 分钟） → 86.8（181 分钟） →
 public 分数随测试提交：38.7（10 分钟） → 89.5（18 分钟） → 88.9（33 分钟） → 93.0（35 分钟） → 93.7（39 分钟）
 
 源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `continuum-estimation-20261125T180305Z-bdc8e2`）。
+
+### Qwen3.8 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/qwen3.8-max-0902-single-1/source/)（提交 `continuum-estimation-20261117T074044Z-58fc7f`）。
+
+### Qwen3.8 Max（迭代，v6.3）
+
+两次尝试都有回合遇到上游（阿里百炼）流约 600 秒没有任何输出后断开（AIHub 记为成功、0 token，无其他供应商可换），第 1 次损失约 70 分钟、第 2 次约 30 分钟；按用户决定（11-18）取损失较少的第 2 次为正式格。
+
+public 分数随测试提交：30.7（30 分钟） → 0.0（56 分钟） → 85.9（136 分钟） → 86.1（212 分钟）
+
+源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/source/)（提交 `continuum-estimation-20261118T064024Z-317d25`）。
 
 ### MiniMax M3.1 Flash（单轮，v6.3）
 

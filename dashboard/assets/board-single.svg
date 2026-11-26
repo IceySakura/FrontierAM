@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="382" viewBox="0 0 640 382" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif">
-<rect width="640" height="382" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="350" viewBox="0 0 640 350" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+<rect width="640" height="350" fill="#ffffff"/>
 <text x="16" y="28" font-size="16" font-weight="700" fill="#111827">平均分 · compared by 单轮</text>
 <text x="16" y="48" font-size="12" fill="#6b7280">10 道题的平均分 · 满分 100</text>
 <text x="120" y="85.0" font-size="13" fill="#374151" text-anchor="end">GPT-6.2 Sol</text>
@@ -34,12 +34,8 @@
 <rect x="132" y="296.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
 <rect x="132" y="296.0" width="76.2" height="16" rx="4" fill="#7c5cff"/>
 <text x="596" y="309.0" font-size="13" font-weight="700" fill="#111827">16.9</text>
-<text x="120" y="341.0" font-size="13" fill="#374151" text-anchor="end">Intern S2</text>
-<rect x="132" y="328.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
-<rect x="132" y="328.0" width="5.1" height="16" rx="4" fill="#0ea5b7"/>
-<text x="596" y="341.0" font-size="13" font-weight="700" fill="#111827">1.1</text>
-<line x1="358.0" y1="60" x2="358.0" y2="356" stroke="#9ca3af" stroke-dasharray="4 3"/>
-<text x="132.0" y="372" font-size="11" fill="#9ca3af" text-anchor="middle">0</text>
-<text x="358.0" y="372" font-size="11" fill="#6b7280" text-anchor="middle">参照 50</text>
-<text x="584.0" y="372" font-size="11" fill="#9ca3af" text-anchor="middle">100</text>
+<line x1="358.0" y1="60" x2="358.0" y2="324" stroke="#9ca3af" stroke-dasharray="4 3"/>
+<text x="132.0" y="340" font-size="11" fill="#9ca3af" text-anchor="middle">0</text>
+<text x="358.0" y="340" font-size="11" fill="#6b7280" text-anchor="middle">参照 50</text>
+<text x="584.0" y="340" font-size="11" fill="#9ca3af" text-anchor="middle">100</text>
 </svg>

@@ -45,30 +45,6 @@
           "notes_md": ""
         },
         {
-          "model": "gpt-6.1-sol",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "species-tree-v3-20261110T201658Z-e087ed",
-          "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.1323\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 49.324,
-          "notes_md": "支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；最多 60 个基因座自助树，再用动态规划求兼容分裂频率最大的共识树。"
-        },
-        {
-          "model": "gpt-6.1-sol",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 2,
-          "submission": "species-tree-v3-20261117T063610Z-197bc5",
-          "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.1253\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 52.571,
-          "notes_md": "第 1 次尝试中有回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断（基础设施问题，记未测）；本格为 sol 改走 AI Hub azure 通道后的第 2 次尝试。"
-        },
-        {
           "model": "gpt-6-astra",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -93,6 +69,30 @@
           "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。"
         },
         {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "species-tree-v3-20261110T201658Z-e087ed",
+          "store": "var/stores/store-v63",
+          "raw": "nRF \\(E = 0.1323\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 49.324,
+          "notes_md": "支持度加权的内部节点距离 NJ 起点、加权四元组 NNI；最多 60 个基因座自助树，再用动态规划求兼容分裂频率最大的共识树。"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 2,
+          "submission": "species-tree-v3-20261117T063610Z-197bc5",
+          "store": "var/stores/store-v63",
+          "raw": "nRF \\(E = 0.1253\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 52.571,
+          "notes_md": "第 1 次尝试中有回合被 ATR 本地代理当时默认的 600 秒连接空闲超时切断（基础设施问题，记未测）；本格为 sol 改走 AI Hub azure 通道后的第 2 次尝试。"
+        },
+        {
           "model": "claude-opus-5-5",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -114,6 +114,54 @@
           "raw": "nRF \\(E = 0.1288\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 51.246,
+          "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "species-tree-v3-20261113T114818Z-2aedb2",
+          "store": "var/stores/store-v63",
+          "raw": "nRF \\(E = 0.1574\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 0.0,
+          "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "species-tree-v3-20261113T151956Z-b398a9",
+          "store": "var/stores/store-v63",
+          "raw": "nRF \\(E = 0.1382\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 30.135,
+          "notes_md": ""
+        },
+        {
+          "model": "qwen4-max",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "species-tree-v3-20261125T110027Z-121f1d",
+          "store": "var/stores/store-v63",
+          "raw": "nRF \\(E = 0.2038\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 0.0,
+          "notes_md": ""
+        },
+        {
+          "model": "qwen4-max",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "species-tree-v3-20261125T162613Z-165802",
+          "store": "var/stores/store-v63",
+          "raw": "nRF \\(E = 0.1393\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 26.622,
           "notes_md": ""
         },
         {
@@ -141,27 +189,27 @@
           "notes_md": "第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断；第 2、3 次尝试中有回合因上游流中断后改发非流式请求被切断，或因客户端约 13 分钟收不到内容时静默重发、原请求作废（均为基础设施故障，记未测）；本格为修复后的第 4 次尝试。"
         },
         {
-          "model": "hy4",
+          "model": "minimax-m3.1-flash",
           "protocol": "v6.3",
           "setting": "单轮",
           "attempt": 1,
-          "submission": "species-tree-v3-20261113T114818Z-2aedb2",
+          "submission": "species-tree-v3-20261125T111247Z-d31cdf",
           "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.1574\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "raw": "nRF \\(E = 0.2155\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 0.0,
           "notes_md": ""
         },
         {
-          "model": "hy4",
+          "model": "minimax-m3.1-flash",
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 1,
-          "submission": "species-tree-v3-20261113T151956Z-b398a9",
+          "submission": "species-tree-v3-20261125T174939Z-d6abf0",
           "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.1382\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "raw": "nRF \\(E = 0.1368\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 30.135,
+          "score": 34.73,
           "notes_md": ""
         },
         {
@@ -187,54 +235,6 @@
           "mapping": "任一用例失败或提交检查未通过记 0",
           "score": 0.0,
           "notes_md": "11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-16 的第 1 次在 11-17 停书生时中止，未测； 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。"
-        },
-        {
-          "model": "qwen4-max",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "species-tree-v3-20261125T110027Z-121f1d",
-          "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.2038\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 0.0,
-          "notes_md": ""
-        },
-        {
-          "model": "qwen4-max",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "species-tree-v3-20261125T162613Z-165802",
-          "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.1393\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 26.622,
-          "notes_md": ""
-        },
-        {
-          "model": "minimax-m3.1-flash",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "species-tree-v3-20261125T111247Z-d31cdf",
-          "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.2155\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 0.0,
-          "notes_md": ""
-        },
-        {
-          "model": "minimax-m3.1-flash",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "species-tree-v3-20261125T174939Z-d6abf0",
-          "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.1368\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 34.73,
-          "notes_md": ""
         }
       ]
     },

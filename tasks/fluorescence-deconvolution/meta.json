@@ -47,30 +47,6 @@
           "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
         },
         {
-          "model": "gpt-6.1-sol",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "fluorescence-deconvolution-20261117T121636Z-2df5ef",
-          "store": "var/stores/store-v63",
-          "raw": "nMSE \\(E = 0.01821\\)，96 例，单例最长 1.10 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 94.35,
-          "notes_md": ""
-        },
-        {
-          "model": "gpt-6.1-sol",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "fluorescence-deconvolution-20261117T184503Z-5b3f6f",
-          "store": "var/stores/store-v63",
-          "raw": "nMSE \\(E = 0.02092\\)，96 例，单例最长 0.74 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 93.509,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
-        },
-        {
           "model": "gpt-6-astra",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -95,6 +71,30 @@
           "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。 经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。"
         },
         {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "fluorescence-deconvolution-20261117T121636Z-2df5ef",
+          "store": "var/stores/store-v63",
+          "raw": "nMSE \\(E = 0.01821\\)，96 例，单例最长 1.10 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 94.35,
+          "notes_md": ""
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "fluorescence-deconvolution-20261117T184503Z-5b3f6f",
+          "store": "var/stores/store-v63",
+          "raw": "nMSE \\(E = 0.02092\\)，96 例，单例最长 0.74 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 93.509,
+          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+        },
+        {
           "model": "claude-opus-5-5",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -116,6 +116,54 @@
           "raw": "nMSE \\(E = 0.02284\\)，96 例，单例最长 0.91 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 92.912,
+          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "fluorescence-deconvolution-20261117T080810Z-ec50e3",
+          "store": "var/stores/store-v63",
+          "raw": "nMSE \\(E = 0.06654\\)，96 例，单例最长 0.41 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 79.355,
+          "notes_md": ""
+        },
+        {
+          "model": "hy4",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "fluorescence-deconvolution-20261117T160645Z-009254",
+          "store": "var/stores/store-v63",
+          "raw": "nMSE \\(E = 0.04844\\)，96 例，单例最长 0.48 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 84.97,
+          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+        },
+        {
+          "model": "qwen4-max",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "fluorescence-deconvolution-20261125T115329Z-082e58",
+          "store": "var/stores/store-v63",
+          "raw": "nMSE \\(E = 0.14013\\)，96 例，单例最长 0.28 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 56.519,
+          "notes_md": ""
+        },
+        {
+          "model": "qwen4-max",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "fluorescence-deconvolution-20261125T190823Z-a1365e",
+          "store": "var/stores/store-v63",
+          "raw": "nMSE \\(E = 0.06478\\)，96 例，单例最长 0.38 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 79.901,
           "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
         },
         {
@@ -143,27 +191,27 @@
           "notes_md": "两次尝试都有回合遇到上游（阿里百炼）流约 600 秒没有任何输出后断开（AIHub 记为成功、0 token，无其他供应商可换），第 1 次损失约 50 分钟、第 2 次约 40 分钟；按用户决定（11-18）取损失较少的第 2 次为正式格。"
         },
         {
-          "model": "hy4",
+          "model": "minimax-m3.1-flash",
           "protocol": "v6.3",
           "setting": "单轮",
           "attempt": 1,
-          "submission": "fluorescence-deconvolution-20261117T080810Z-ec50e3",
+          "submission": "fluorescence-deconvolution-20261125T120701Z-f473fb",
           "store": "var/stores/store-v63",
-          "raw": "nMSE \\(E = 0.06654\\)，96 例，单例最长 0.41 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+          "raw": "nMSE \\(E = 0.16457\\)，96 例，单例最长 0.40 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 79.355,
+          "score": 47.087,
           "notes_md": ""
         },
         {
-          "model": "hy4",
+          "model": "minimax-m3.1-flash",
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 1,
-          "submission": "fluorescence-deconvolution-20261117T160645Z-009254",
+          "submission": "fluorescence-deconvolution-20261125T215519Z-30dcbf",
           "store": "var/stores/store-v63",
-          "raw": "nMSE \\(E = 0.04844\\)，96 例，单例最长 0.48 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+          "raw": "nMSE \\(E = 0.10660\\)，96 例，单例最长 0.36 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 84.97,
+          "score": 66.923,
           "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
         },
         {
@@ -189,54 +237,6 @@
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 32.338,
           "notes_md": "11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
-        },
-        {
-          "model": "qwen4-max",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "fluorescence-deconvolution-20261125T115329Z-082e58",
-          "store": "var/stores/store-v63",
-          "raw": "nMSE \\(E = 0.14013\\)，96 例，单例最长 0.28 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 56.519,
-          "notes_md": ""
-        },
-        {
-          "model": "qwen4-max",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "fluorescence-deconvolution-20261125T190823Z-a1365e",
-          "store": "var/stores/store-v63",
-          "raw": "nMSE \\(E = 0.06478\\)，96 例，单例最长 0.38 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 79.901,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
-        },
-        {
-          "model": "minimax-m3.1-flash",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "fluorescence-deconvolution-20261125T120701Z-f473fb",
-          "store": "var/stores/store-v63",
-          "raw": "nMSE \\(E = 0.16457\\)，96 例，单例最长 0.40 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 47.087,
-          "notes_md": ""
-        },
-        {
-          "model": "minimax-m3.1-flash",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "fluorescence-deconvolution-20261125T215519Z-30dcbf",
-          "store": "var/stores/store-v63",
-          "raw": "nMSE \\(E = 0.10660\\)，96 例，单例最长 0.36 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
-          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 66.923,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
         }
       ]
     }

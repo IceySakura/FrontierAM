@@ -49,32 +49,6 @@
           "folder": "v2/gpt-6.2-sol-iterative-1"
         },
         {
-          "model": "gpt-6.1-sol",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "blackbox-cubature-v2-20261117T084315Z-e1ad13",
-          "store": "var/stores/store-v63",
-          "raw": "增益 \\(G = 0.371\\)（fourier -0.12，折点 ridge -0.76，乘积峰 +2.00），144 例，单例最长 17.3 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
-          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
-          "score": 59.266,
-          "notes_md": "",
-          "folder": "v2/gpt-6.1-sol-single-1"
-        },
-        {
-          "model": "gpt-6.1-sol",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "blackbox-cubature-v2-20261117T155806Z-e78d6e",
-          "store": "var/stores/store-v63",
-          "raw": "增益 \\(G = 1.496\\)（fourier +0.88，折点 ridge +1.60，乘积峰 +2.00），144 例，单例最长 2.7 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
-          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
-          "score": 87.393,
-          "notes_md": "",
-          "folder": "v2/gpt-6.1-sol-iterative-1"
-        },
-        {
           "model": "gpt-6-astra",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -99,6 +73,32 @@
           "score": 83.926,
           "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。",
           "folder": "v2/gpt-6-astra-iterative-1"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261117T084315Z-e1ad13",
+          "store": "var/stores/store-v63",
+          "raw": "增益 \\(G = 0.371\\)（fourier -0.12，折点 ridge -0.76，乘积峰 +2.00），144 例，单例最长 17.3 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+          "score": 59.266,
+          "notes_md": "",
+          "folder": "v2/gpt-6.1-sol-single-1"
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261117T155806Z-e78d6e",
+          "store": "var/stores/store-v63",
+          "raw": "增益 \\(G = 1.496\\)（fourier +0.88，折点 ridge +1.60，乘积峰 +2.00），144 例，单例最长 2.7 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+          "score": 87.393,
+          "notes_md": "",
+          "folder": "v2/gpt-6.1-sol-iterative-1"
         },
         {
           "model": "claude-opus-5-5",
@@ -127,32 +127,6 @@
           "folder": "v2/claude-opus-5-5-iterative-1"
         },
         {
-          "model": "qwen3.8-max-0902",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "blackbox-cubature-v2-20261117T054921Z-23c0f5",
-          "store": "var/stores/store-v63",
-          "raw": "增益 \\(G = -0.544\\)（fourier -0.77，折点 ridge -0.86，乘积峰 -0.00），144 例，单例最长 5.8 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
-          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
-          "score": 11.863,
-          "notes_md": "",
-          "folder": "v2/qwen3.8-max-0902-single-1"
-        },
-        {
-          "model": "qwen3.8-max-0902",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "blackbox-cubature-v2-20261117T140100Z-184b43",
-          "store": "var/stores/store-v63",
-          "raw": "增益 \\(G = 0.207\\)（fourier -0.28，折点 ridge -1.06，乘积峰 +1.96），144 例，单例最长 1.1 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
-          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
-          "score": 55.186,
-          "notes_md": "两次尝试都有回合遇到上游（阿里百炼）流约 600 秒没有任何输出后断开（AIHub 记为成功、0 token，无其他供应商可换），第 1 次损失约 23 分钟、第 2 次约 49 分钟；按用户决定（11-18）取损失较少的第 1 次为正式格。",
-          "folder": "v2/qwen3.8-max-0902-iterative-1"
-        },
-        {
           "model": "hy4",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -177,32 +151,6 @@
           "score": 65.997,
           "notes_md": "",
           "folder": "v2/hy4-iterative-1"
-        },
-        {
-          "model": "intern-s2",
-          "protocol": "v6.3",
-          "setting": "单轮",
-          "attempt": 1,
-          "submission": "blackbox-cubature-v2-20261118T091157Z-dccff7",
-          "store": "var/stores/store-v63",
-          "raw": "无效提交（开发结束时没有冻结出有效提交）",
-          "mapping": "无效提交记 0",
-          "score": 0.0,
-          "notes_md": "11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。",
-          "folder": "v2/intern-s2-single-1"
-        },
-        {
-          "model": "intern-s2",
-          "protocol": "v6.3",
-          "setting": "迭代",
-          "attempt": 1,
-          "submission": "blackbox-cubature-v2-20261119T002111Z-5d7611",
-          "store": "var/stores/store-v63",
-          "raw": "增益 \\(G = -0.243\\)（fourier -1.29，折点 ridge +0.03，乘积峰 +0.54），144 例，单例最长 2.1 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
-          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
-          "score": 32.978,
-          "notes_md": "11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。",
-          "folder": "v2/intern-s2-iterative-1"
         },
         {
           "model": "qwen4-max",
@@ -231,6 +179,32 @@
           "folder": "v2/qwen4-max-iterative-1"
         },
         {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261117T054921Z-23c0f5",
+          "store": "var/stores/store-v63",
+          "raw": "增益 \\(G = -0.544\\)（fourier -0.77，折点 ridge -0.86，乘积峰 -0.00），144 例，单例最长 5.8 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+          "score": 11.863,
+          "notes_md": "",
+          "folder": "v2/qwen3.8-max-0902-single-1"
+        },
+        {
+          "model": "qwen3.8-max-0902",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261117T140100Z-184b43",
+          "store": "var/stores/store-v63",
+          "raw": "增益 \\(G = 0.207\\)（fourier -0.28，折点 ridge -1.06，乘积峰 +1.96），144 例，单例最长 1.1 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+          "score": 55.186,
+          "notes_md": "两次尝试都有回合遇到上游（阿里百炼）流约 600 秒没有任何输出后断开（AIHub 记为成功、0 token，无其他供应商可换），第 1 次损失约 23 分钟、第 2 次约 49 分钟；按用户决定（11-18）取损失较少的第 1 次为正式格。",
+          "folder": "v2/qwen3.8-max-0902-iterative-1"
+        },
+        {
           "model": "minimax-m3.1-flash",
           "protocol": "v6.3",
           "setting": "单轮",
@@ -255,6 +229,32 @@
           "score": 53.644,
           "notes_md": "",
           "folder": "v2/minimax-m3.1-flash-iterative-1"
+        },
+        {
+          "model": "intern-s2",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261118T091157Z-dccff7",
+          "store": "var/stores/store-v63",
+          "raw": "无效提交（开发结束时没有冻结出有效提交）",
+          "mapping": "无效提交记 0",
+          "score": 0.0,
+          "notes_md": "11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。",
+          "folder": "v2/intern-s2-single-1"
+        },
+        {
+          "model": "intern-s2",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "blackbox-cubature-v2-20261119T002111Z-5d7611",
+          "store": "var/stores/store-v63",
+          "raw": "增益 \\(G = -0.243\\)（fourier -1.29，折点 ridge +0.03，乘积峰 +0.54），144 例，单例最长 2.1 秒（普通蒙特卡洛 \\(G_0 = -0.713\\)，HumanPortfolio-v1 为 0）",
+          "mapping": "与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\\(G \\ge 0\\) 为 \\(50 + 25\\,G\\)；\\(G < 0\\) 为 \\(\\max(0,\\,50\\,(G - G_0)/(-G_0))\\)",
+          "score": 32.978,
+          "notes_md": "11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。",
+          "folder": "v2/intern-s2-iterative-1"
         }
       ]
     }

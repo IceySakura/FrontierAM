@@ -83,20 +83,18 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | \(E = 2.75e-09\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 98%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 72.8 | 57 分钟 | [`v4/gpt-6.2-sol-single-1/`](solutions/v6.3/v4/gpt-6.2-sol-single-1/) |
 | GPT-6.2 Sol | 迭代 | \(E = 1e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 94%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 66.2 | 8 次提交，146 分钟 | [`v4/gpt-6.2-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.2-sol-iterative-1/) |
-| GPT-6.1 Sol | 单轮 | \(E = 0.0265\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 99%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 0.0 | 60 分钟 | [`v4/gpt-6.1-sol-single-1/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | \(E = 1.03e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 92%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 66.1 | 5 次提交，217 分钟 | [`v4/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/) |
 | GPT-6 Astra | 单轮 | \(E = 0.000242\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 98%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 51.9 | 60 分钟 | [`v4/gpt-6-astra-single-1/`](solutions/v6.3/v4/gpt-6-astra-single-1/) |
 | GPT-6 Astra | 迭代 | \(E = 1.5e-08\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 100%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 69.6 | 4 次提交，236 分钟 | [`v4/gpt-6-astra-iterative-1/`](solutions/v6.3/v4/gpt-6-astra-iterative-1/) |
+| GPT-6.1 Sol | 单轮 | \(E = 0.0265\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 99%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 0.0 | 60 分钟 | [`v4/gpt-6.1-sol-single-1/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | \(E = 1.03e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 92%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 66.1 | 5 次提交，217 分钟 | [`v4/gpt-6.1-sol-iterative-1/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | \(E = 9.3e-06\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 63%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 57.8 | 36 分钟 | [`v4/claude-opus-5-5-single-2/`](solutions/v6.3/v4/claude-opus-5-5-single-2/) |
 | Claude Opus 5.5 | 迭代 | \(E = 2.58e-07\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 73%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 64.4 | 7 次提交，164 分钟 | [`v4/claude-opus-5-5-iterative-1/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/) |
-| Qwen3.8 Max | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 58 分钟 | [`v4/qwen3.8-max-0902-single-2/`](solutions/v6.3/v4/qwen3.8-max-0902-single-2/) |
-| Qwen3.8 Max | 迭代 | \(E = 0.000413\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 96%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 50.9 | 3 次提交，198 分钟 | [`v4/qwen3.8-max-0902-iterative-4/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-4/) |
 | Hunyuan 4 | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v4/hy4-single-2/`](solutions/v6.3/v4/hy4-single-2/) |
 | Hunyuan 4 | 迭代 | \(E = 0.000122\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 94%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 53.1 | 8 次提交，186 分钟 | [`v4/hy4-iterative-2/`](solutions/v6.3/v4/hy4-iterative-2/) |
-| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v4/intern-s2-single-1/`](solutions/v6.3/v4/intern-s2-single-1/) |
-| Intern S2 | 迭代 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，240 分钟 | [`v4/intern-s2-iterative-1/`](solutions/v6.3/v4/intern-s2-iterative-1/) |
 | Qwen4 Max | 单轮 | \(E = 0.0462\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 82%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 0.0 | 31 分钟 | [`v4/qwen4-max-single-1/`](solutions/v6.3/v4/qwen4-max-single-1/) |
 | Qwen4 Max | 迭代 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 10 次提交，189 分钟 | [`v4/qwen4-max-iterative-1/`](solutions/v6.3/v4/qwen4-max-iterative-1/) |
+| Qwen3.8 Max | 单轮 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 58 分钟 | [`v4/qwen3.8-max-0902-single-2/`](solutions/v6.3/v4/qwen3.8-max-0902-single-2/) |
+| Qwen3.8 Max | 迭代 | \(E = 0.000413\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 96%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 50.9 | 3 次提交，198 分钟 | [`v4/qwen3.8-max-0902-iterative-4/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-4/) |
 | MiniMax M3.1 Flash | 单轮 | 无效提交（build nonzero_exit） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v4/minimax-m3.1-flash-single-1/`](solutions/v6.3/v4/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 6 次提交，195 分钟 | [`v4/minimax-m3.1-flash-iterative-1/`](solutions/v6.3/v4/minimax-m3.1-flash-iterative-1/) |
 
@@ -109,16 +107,6 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 public 分数随测试提交：59.0（15 分钟） → 63.4（32 分钟） → 64.6（56 分钟） → 0.0（70 分钟） → 63.8（88 分钟） → 65.5（105 分钟） → 65.3（120 分钟） → 65.4（134 分钟）
 
 源码 [`solutions/v6.3/v4/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/v4/gpt-6.2-sol-iterative-1/source/)（提交 `galaxy-gravity-v4-20261120T101428Z-a1e515`）；未复制的二进制或大文件：solve（163,288 字节）。
-
-### GPT-6.1 Sol（单轮，v6.3）
-
-源码 [`solutions/v6.3/v4/gpt-6.1-sol-single-1/source/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/source/)（提交 `galaxy-gravity-v4-20261112T130631Z-857089`）；未复制的二进制或大文件：solve（292,088 字节）。
-
-### GPT-6.1 Sol（迭代，v6.3）
-
-public 分数随测试提交：61.3（40 分钟） → 0.0（97 分钟） → 0.0（131 分钟） → 63.6（153 分钟） → 65.8（197 分钟）
-
-源码 [`solutions/v6.3/v4/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/source/)（提交 `galaxy-gravity-v4-20261112T154314Z-94db54`）；未复制的二进制或大文件：solve（183,888 字节）。
 
 ### GPT-6 Astra（单轮，v6.3）
 
@@ -134,6 +122,16 @@ public 分数随测试提交：0.0（48 分钟） → 64.7（78 分钟） → 69
 
 源码 [`solutions/v6.3/v4/gpt-6-astra-iterative-1/source/`](solutions/v6.3/v4/gpt-6-astra-iterative-1/source/)（提交 `galaxy-gravity-v4-20261121T214846Z-42d260`）；未复制的二进制或大文件：harmonic.hpp（2,335,167 字节）、solve（3,023,312 字节）。
 
+### GPT-6.1 Sol（单轮，v6.3）
+
+源码 [`solutions/v6.3/v4/gpt-6.1-sol-single-1/source/`](solutions/v6.3/v4/gpt-6.1-sol-single-1/source/)（提交 `galaxy-gravity-v4-20261112T130631Z-857089`）；未复制的二进制或大文件：solve（292,088 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+public 分数随测试提交：61.3（40 分钟） → 0.0（97 分钟） → 0.0（131 分钟） → 63.6（153 分钟） → 65.8（197 分钟）
+
+源码 [`solutions/v6.3/v4/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/v4/gpt-6.1-sol-iterative-1/source/)（提交 `galaxy-gravity-v4-20261112T154314Z-94db54`）；未复制的二进制或大文件：solve（183,888 字节）。
+
 ### Claude Opus 5.5（单轮，v6.3）
 
 第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。
@@ -145,20 +143,6 @@ public 分数随测试提交：0.0（48 分钟） → 64.7（78 分钟） → 69
 public 分数随测试提交：53.8（49 分钟） → 60.7（69 分钟） → 63.4（83 分钟） → 63.2（105 分钟） → 63.5（125 分钟） → 63.9（139 分钟） → 63.9（145 分钟）
 
 源码 [`solutions/v6.3/v4/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/v4/claude-opus-5-5-iterative-1/source/)（提交 `galaxy-gravity-v4-20261112T145010Z-8ba575`）；未复制的二进制或大文件：solve（323,216 字节）、solve.prebuilt（323,216 字节）。
-
-### Qwen3.8 Max（单轮，v6.3）
-
-第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。
-
-源码 [`solutions/v6.3/v4/qwen3.8-max-0902-single-2/source/`](solutions/v6.3/v4/qwen3.8-max-0902-single-2/source/)（提交 `galaxy-gravity-v4-20261114T090056Z-bf3072`）；未复制的二进制或大文件：solve（55,104 字节）。
-
-### Qwen3.8 Max（迭代，v6.3）
-
-第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断；第 2、3 次尝试中有回合因上游流中断后改发非流式请求被切断，或因客户端约 13 分钟收不到内容时静默重发、原请求作废（均为基础设施故障，记未测）；本格为修复后的第 4 次尝试。
-
-public 分数随测试提交：21.5（82 分钟） → 50.3（108 分钟） → 50.1（167 分钟）
-
-源码 [`solutions/v6.3/v4/qwen3.8-max-0902-iterative-4/source/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-4/source/)（提交 `galaxy-gravity-v4-20261115T223048Z-5f539f`）；未复制的二进制或大文件：solve（38,768 字节）。
 
 ### Hunyuan 4（单轮，v6.3）
 
@@ -174,18 +158,6 @@ public 分数随测试提交：0.0（69 分钟） → 48.8（95 分钟） → 52
 
 源码 [`solutions/v6.3/v4/hy4-iterative-2/source/`](solutions/v6.3/v4/hy4-iterative-2/source/)（提交 `galaxy-gravity-v4-20261115T214833Z-ba9b4d`）；未复制的二进制或大文件：solve（81,768 字节）。
 
-### Intern S2（单轮，v6.3）
-
-书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
-
-源码 [`solutions/v6.3/v4/intern-s2-single-1/source/`](solutions/v6.3/v4/intern-s2-single-1/source/)（提交 `galaxy-gravity-v4-20261116T053043Z-68e401`）；未复制的二进制或大文件：（提交存档不在本服务器）。
-
-### Intern S2（迭代，v6.3）
-
-书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
-
-源码 [`solutions/v6.3/v4/intern-s2-iterative-1/source/`](solutions/v6.3/v4/intern-s2-iterative-1/source/)（提交 `galaxy-gravity-v4-20261116T093358Z-6b3879`）；未复制的二进制或大文件：out-disc.bin（1,572,864 字节）、out-einasto.bin（1,572,864 字节）、out-group.bin（1,572,864 字节）、out-hernquist.bin（1,572,864 字节）、out-jaffe.bin（1,572,864 字节）、out.bin（768 字节）、s1（22,712 字节）、s2（22,712 字节）、smoke.out（768 字节）、solve（22,664 字节）、solve_d（22,712 字节）、solve_dbg（40,008 字节）、solve_dbg2（39,240 字节）、solve_dbg3（39,568 字节）、solve_dbg4（39,816 字节）、solve_dbg5（39,648 字节）、solve_g（34,256 字节）、validate（22,712 字节）。
-
 ### Qwen4 Max（单轮，v6.3）
 
 源码 [`solutions/v6.3/v4/qwen4-max-single-1/source/`](solutions/v6.3/v4/qwen4-max-single-1/source/)（提交 `galaxy-gravity-v4-20261125T101622Z-a9fd2e`）；未复制的二进制或大文件：solve（79,728 字节）。
@@ -197,6 +169,20 @@ public 分数随测试提交：0.0（69 分钟） → 48.8（95 分钟） → 52
 public 分数随测试提交：0.0（45 分钟） → 0.0（88 分钟） → 0.0（102 分钟） → 0.0（113 分钟） → 0.0（123 分钟） → 0.0（134 分钟） → 0.0（145 分钟） → 0.0（155 分钟） → —（166 分钟） → —（178 分钟）（—：没有拿到报告）
 
 源码 [`solutions/v6.3/v4/qwen4-max-iterative-1/source/`](solutions/v6.3/v4/qwen4-max-iterative-1/source/)（提交 `galaxy-gravity-v4-20261125T160512Z-fe2477`）；未复制的二进制或大文件：fmm_p10_r220.bin（618,396,340 字节）、fmm_p8_r100.bin（127,861,332 字节）、fmm_p8_r140.bin（250,147,412 字节）、libgfortran-040039e1.so.5.0.0（2,686,065 字节）、libopenblasp-r0-23e5df77.3.21.dev.so（32,957,169 字节）、libquadmath-96973f99.so.0.0.0（247,609 字节）、solve（143,848 字节）。
+
+### Qwen3.8 Max（单轮，v6.3）
+
+第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试。
+
+源码 [`solutions/v6.3/v4/qwen3.8-max-0902-single-2/source/`](solutions/v6.3/v4/qwen3.8-max-0902-single-2/source/)（提交 `galaxy-gravity-v4-20261114T090056Z-bf3072`）；未复制的二进制或大文件：solve（55,104 字节）。
+
+### Qwen3.8 Max（迭代，v6.3）
+
+第 1 次尝试中有回合被模型网关链路的 1100 秒空闲超时切断；第 2、3 次尝试中有回合因上游流中断后改发非流式请求被切断，或因客户端约 13 分钟收不到内容时静默重发、原请求作废（均为基础设施故障，记未测）；本格为修复后的第 4 次尝试。
+
+public 分数随测试提交：21.5（82 分钟） → 50.3（108 分钟） → 50.1（167 分钟）
+
+源码 [`solutions/v6.3/v4/qwen3.8-max-0902-iterative-4/source/`](solutions/v6.3/v4/qwen3.8-max-0902-iterative-4/source/)（提交 `galaxy-gravity-v4-20261115T223048Z-5f539f`）；未复制的二进制或大文件：solve（38,768 字节）。
 
 ### MiniMax M3.1 Flash（单轮，v6.3）
 

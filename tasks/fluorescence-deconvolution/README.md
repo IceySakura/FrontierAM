@@ -66,20 +66,18 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | nMSE \(E = 0.01264\)，96 例，单例最长 0.72 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 96.1 | 20 分钟 | [`gpt-6.2-sol-single-1/`](solutions/v6.3/gpt-6.2-sol-single-1/) |
 | GPT-6.2 Sol | 迭代 | nMSE \(E = 0.01558\)，96 例，单例最长 0.85 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 95.2 | 5 次提交，24 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
-| GPT-6.1 Sol | 单轮 | nMSE \(E = 0.01821\)，96 例，单例最长 1.10 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 94.3 | 59 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | nMSE \(E = 0.02092\)，96 例，单例最长 0.74 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 93.5 | 3 次提交，182 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | GPT-6 Astra | 单轮 | nMSE \(E = 0.01808\)，96 例，单例最长 0.61 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 94.4 | 57 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
 | GPT-6 Astra | 迭代 | nMSE \(E = 0.01536\)，96 例，单例最长 0.81 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 95.2 | 4 次提交，132 分钟 | [`gpt-6-astra-iterative-1/`](solutions/v6.3/gpt-6-astra-iterative-1/) |
+| GPT-6.1 Sol | 单轮 | nMSE \(E = 0.01821\)，96 例，单例最长 1.10 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 94.3 | 59 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | nMSE \(E = 0.02092\)，96 例，单例最长 0.74 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 93.5 | 3 次提交，182 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
 | Claude Opus 5.5 | 单轮 | nMSE \(E = 0.07422\)，96 例，单例最长 0.23 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.0 | 25 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | nMSE \(E = 0.02284\)，96 例，单例最长 0.91 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 92.9 | 4 次提交，199 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
-| Qwen3.8 Max | 单轮 | nMSE \(E = 0.10694\)，96 例，单例最长 0.20 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 66.8 | 49 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
-| Qwen3.8 Max | 迭代 | nMSE \(E = 0.07322\)，96 例，单例最长 0.19 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.3 | 3 次提交，220 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | Hunyuan 4 | 单轮 | nMSE \(E = 0.06654\)，96 例，单例最长 0.41 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 79.4 | 53 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | nMSE \(E = 0.04844\)，96 例，单例最长 0.48 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 85.0 | 8 次提交，178 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
-| Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
-| Intern S2 | 迭代 | nMSE \(E = 0.18191\)，96 例，单例最长 0.29 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 32.3 | 1 次提交，164 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
 | Qwen4 Max | 单轮 | nMSE \(E = 0.14013\)，96 例，单例最长 0.28 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 56.5 | 22 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
 | Qwen4 Max | 迭代 | nMSE \(E = 0.06478\)，96 例，单例最长 0.38 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 79.9 | 6 次提交，65 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| Qwen3.8 Max | 单轮 | nMSE \(E = 0.10694\)，96 例，单例最长 0.20 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 66.8 | 49 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
+| Qwen3.8 Max | 迭代 | nMSE \(E = 0.07322\)，96 例，单例最长 0.19 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.3 | 3 次提交，220 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | nMSE \(E = 0.16457\)，96 例，单例最长 0.40 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.1 | 22 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | nMSE \(E = 0.10660\)，96 例，单例最长 0.36 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 66.9 | 14 次提交，74 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
@@ -95,18 +93,6 @@ public 分数随测试提交：40.4（2 分钟） → 95.0（9 分钟） → 96.
 
 源码 [`solutions/v6.3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/gpt-6.2-sol-iterative-1/source/)（提交 `fluorescence-deconvolution-20261120T091644Z-d81f50`）。
 
-### GPT-6.1 Sol（单轮，v6.3）
-
-源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `fluorescence-deconvolution-20261117T121636Z-2df5ef`）；未复制的二进制或大文件：core.so（103,344 字节）。
-
-### GPT-6.1 Sol（迭代，v6.3）
-
-出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
-
-public 分数随测试提交：66.1（9 分钟） → 94.5（37 分钟） → 95.5（171 分钟）
-
-源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `fluorescence-deconvolution-20261117T184503Z-5b3f6f`）；未复制的二进制或大文件：solver.so（176,144 字节）、solver_fast.so（184,336 字节）。
-
 ### GPT-6 Astra（单轮，v6.3）
 
 经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。
@@ -121,6 +107,18 @@ public 分数随测试提交：75.0（7 分钟） → 94.2（40 分钟） → 94
 
 源码 [`solutions/v6.3/gpt-6-astra-iterative-1/source/`](solutions/v6.3/gpt-6-astra-iterative-1/source/)（提交 `fluorescence-deconvolution-20261121T231648Z-81e42a`）；未复制的二进制或大文件：kernels.so（34,480 字节）。
 
+### GPT-6.1 Sol（单轮，v6.3）
+
+源码 [`solutions/v6.3/gpt-6.1-sol-single-1/source/`](solutions/v6.3/gpt-6.1-sol-single-1/source/)（提交 `fluorescence-deconvolution-20261117T121636Z-2df5ef`）；未复制的二进制或大文件：core.so（103,344 字节）。
+
+### GPT-6.1 Sol（迭代，v6.3）
+
+出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
+
+public 分数随测试提交：66.1（9 分钟） → 94.5（37 分钟） → 95.5（171 分钟）
+
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-1/source/`](solutions/v6.3/gpt-6.1-sol-iterative-1/source/)（提交 `fluorescence-deconvolution-20261117T184503Z-5b3f6f`）；未复制的二进制或大文件：solver.so（176,144 字节）、solver_fast.so（184,336 字节）。
+
 ### Claude Opus 5.5（单轮，v6.3）
 
 源码 [`solutions/v6.3/claude-opus-5-5-single-1/source/`](solutions/v6.3/claude-opus-5-5-single-1/source/)（提交 `fluorescence-deconvolution-20261117T070120Z-a62bc0`）。
@@ -132,18 +130,6 @@ public 分数随测试提交：75.0（7 分钟） → 94.2（40 分钟） → 94
 public 分数随测试提交：78.8（21 分钟） → 89.0（46 分钟） → 89.1（52 分钟） → 93.5（197 分钟）
 
 源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `fluorescence-deconvolution-20261117T132401Z-a0ecca`）；未复制的二进制或大文件：model.npz（1,735,675 字节）。
-
-### Qwen3.8 Max（单轮，v6.3）
-
-源码 [`solutions/v6.3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/qwen3.8-max-0902-single-1/source/)（提交 `fluorescence-deconvolution-20261117T074310Z-68427e`）。
-
-### Qwen3.8 Max（迭代，v6.3）
-
-两次尝试都有回合遇到上游（阿里百炼）流约 600 秒没有任何输出后断开（AIHub 记为成功、0 token，无其他供应商可换），第 1 次损失约 50 分钟、第 2 次约 40 分钟；按用户决定（11-18）取损失较少的第 2 次为正式格。
-
-public 分数随测试提交：75.1（100 分钟） → 78.3（119 分钟） → 78.8（218 分钟）
-
-源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/source/)（提交 `fluorescence-deconvolution-20261118T064428Z-b197e6`）。
 
 ### Hunyuan 4（单轮，v6.3）
 
@@ -157,20 +143,6 @@ public 分数随测试提交：69.1（18 分钟） → 85.3（44 分钟） → 8
 
 源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `fluorescence-deconvolution-20261117T160645Z-009254`）；未复制的二进制或大文件：ensemble_weights.npz（960,466 字节）。
 
-### Intern S2（单轮，v6.3）
-
-11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。
-
-源码 [`solutions/v6.3/intern-s2-single-1/source/`](solutions/v6.3/intern-s2-single-1/source/)（提交 `fluorescence-deconvolution-20261118T101203Z-243425`）；未复制的二进制或大文件：（提交存档不在本服务器）。
-
-### Intern S2（迭代，v6.3）
-
-11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
-
-public 分数随测试提交：4.5（116 分钟）
-
-源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `fluorescence-deconvolution-20261119T030540Z-88870e`）。
-
 ### Qwen4 Max（单轮，v6.3）
 
 源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `fluorescence-deconvolution-20261125T115329Z-082e58`）；未复制的二进制或大文件：solver.so（23,928 字节）。
@@ -182,6 +154,18 @@ public 分数随测试提交：4.5（116 分钟）
 public 分数随测试提交：53.5（10 分钟） → 65.9（26 分钟） → 74.8（38 分钟） → 80.6（44 分钟） → 82.0（51 分钟） → 82.3（56 分钟）
 
 源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `fluorescence-deconvolution-20261125T190823Z-a1365e`）；未复制的二进制或大文件：deconv.so（25,232 字节）、mlp_torch.npz（17,012 字节）、mlp_torch128.npz（32,116 字节）、mlp_weights.npz（17,012 字节）。
+
+### Qwen3.8 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/qwen3.8-max-0902-single-1/source/)（提交 `fluorescence-deconvolution-20261117T074310Z-68427e`）。
+
+### Qwen3.8 Max（迭代，v6.3）
+
+两次尝试都有回合遇到上游（阿里百炼）流约 600 秒没有任何输出后断开（AIHub 记为成功、0 token，无其他供应商可换），第 1 次损失约 50 分钟、第 2 次约 40 分钟；按用户决定（11-18）取损失较少的第 2 次为正式格。
+
+public 分数随测试提交：75.1（100 分钟） → 78.3（119 分钟） → 78.8（218 分钟）
+
+源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/source/)（提交 `fluorescence-deconvolution-20261118T064428Z-b197e6`）。
 
 ### MiniMax M3.1 Flash（单轮，v6.3）
 

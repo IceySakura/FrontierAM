@@ -4,16 +4,16 @@
 
 | task | 已评提交 |
 | --- | --- |
-| [conic](conic/README.md) | 29 |
-| [exponential](exponential/README.md) | 27 |
-| [galaxy-gravity](galaxy-gravity/README.md) | 25 |
-| [polarization-demosaicking](polarization-demosaicking/README.md) | 30 |
-| [trajectory-covariance](trajectory-covariance/README.md) | 20 |
-| [species-tree](species-tree/README.md) | 21 |
-| [ihvp-sequence](ihvp-sequence/README.md) | 26 |
+| [conic](conic/README.md) | 27 |
+| [exponential](exponential/README.md) | 25 |
+| [galaxy-gravity](galaxy-gravity/README.md) | 23 |
+| [polarization-demosaicking](polarization-demosaicking/README.md) | 26 |
+| [trajectory-covariance](trajectory-covariance/README.md) | 18 |
+| [species-tree](species-tree/README.md) | 19 |
+| [ihvp-sequence](ihvp-sequence/README.md) | 24 |
 | [pdhcg-qp](pdhcg-qp/README.md) | 0 |
-| [blackbox-cubature](blackbox-cubature/README.md) | 18 |
-| [continuum-estimation](continuum-estimation/README.md) | 18 |
-| [fluorescence-deconvolution](fluorescence-deconvolution/README.md) | 18 |
+| [blackbox-cubature](blackbox-cubature/README.md) | 16 |
+| [continuum-estimation](continuum-estimation/README.md) | 16 |
+| [fluorescence-deconvolution](fluorescence-deconvolution/README.md) | 16 |
 
 本文件由 `scripts/site/build_task_pages.py` 生成。
