@@ -14,7 +14,7 @@
     "exputils": 58
   },
   "status": "ok",
-  "score": 64.42000396184952,
+  "score": 65.70222544921394,
   "relative_time": 0.5523128508222614,
   "failed_cases": {},
   "winners": {
@@ -917,5 +917,10 @@
       "reference_time_seconds": 0.006367304013110697,
       "reference_memory_bytes": 15290368.0
     }
-  }
+  },
+  "rule": "per-case",
+  "score_complete": 64.42000396184952,
+  "controls_valid": true,
+  "valid_scored_cases": 66,
+  "scored_cases": 66
 }

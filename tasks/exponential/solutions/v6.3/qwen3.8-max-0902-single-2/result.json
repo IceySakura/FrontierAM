@@ -3,9 +3,9 @@
  "protocol": "v6.3",
  "setting": "单轮",
  "submission": "exponential-v3-20261115T191348Z-e34f92",
- "raw": "无效提交（23 例不合格）",
- "mapping": "任一用例不合格记 0",
- "score": 0.0,
+ "raw": "43/66 个计分例合格；不合格：`accuracy_failure` 13，`cpu_limit` 10（\\(r\\)：逐例用时 ÷ 7 方法参照组该例最快成员）",
+ "mapping": "逐例 \\(100/(1+r)\\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均",
+ "score": 20.833,
  "review": null,
  "process": {
   "minutes": 31.9,

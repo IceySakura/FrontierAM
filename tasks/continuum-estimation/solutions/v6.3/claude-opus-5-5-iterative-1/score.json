@@ -1,24 +1,24 @@
 {
- "id": "job-20261117T090042Z-b048cb",
+ "id": "job-20261126T093842Z-babb60",
  "task": "continuum-estimation",
  "submission": "continuum-estimation-20261117T090022Z-90b6d7",
  "kind": "candidate",
  "note": null,
- "isolation": null,
- "enqueued_utc": "2026-11-17T09:00:42+00:00",
- "claimed_utc": "2026-11-17T09:00:43+00:00",
- "worker_pid": 1726372,
+ "isolation": "shared",
+ "enqueued_utc": "2026-11-26T09:38:42+00:00",
+ "claimed_utc": "2026-11-26T09:38:43+00:00",
+ "worker_pid": 1599672,
  "status": "ok",
- "score": 22.760508497340684,
- "finished_utc": "2026-11-17T09:01:14+00:00",
+ "score": 14.074162792395134,
+ "finished_utc": "2026-11-26T09:39:53+00:00",
  "candidate": {
   "status": "ok",
-  "raw_error": 0.01010050200707131,
+  "raw_error": 0.013115706992016106,
   "reason": null,
   "package_score": null,
-  "cases": 60,
+  "cases": 45,
   "failures": 0,
-  "max_wall_s": 0.4353509850334376,
-  "data": "primary"
+  "max_wall_s": 0.45724100805819035,
+  "data": "scored"
  }
 }

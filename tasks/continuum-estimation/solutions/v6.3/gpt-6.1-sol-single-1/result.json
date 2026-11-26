@@ -3,9 +3,9 @@
  "protocol": "v6.3",
  "setting": "单轮",
  "submission": "continuum-estimation-20261117T100054Z-6bbc6f",
- "raw": "损失 \\(E = 0.000942335\\)，60 例，单例最长 9.0 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+ "raw": "损失 \\(E = 0.000876169\\)，45 例，单例最长 9.1 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
  "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
- "score": 71.413,
+ "score": 72.64,
  "review": null,
  "process": {
   "minutes": 49.1,

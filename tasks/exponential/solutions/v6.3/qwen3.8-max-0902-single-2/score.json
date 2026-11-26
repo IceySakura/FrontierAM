@@ -13,8 +13,8 @@
     "slepc": 68,
     "exputils": 58
   },
-  "status": "invalid_submission",
-  "score": 0.0,
+  "status": "ok",
+  "score": 20.833113170381726,
   "relative_time": null,
   "failed_cases": {
     "standard_SNAP_email-Enron_p4_k16": "accuracy_failure",
@@ -933,5 +933,10 @@
       "reference_time_seconds": 0.006367304013110697,
       "reference_memory_bytes": 15290368.0
     }
-  }
+  },
+  "rule": "per-case",
+  "score_complete": 0.0,
+  "controls_valid": true,
+  "valid_scored_cases": 43,
+  "scored_cases": 66
 }

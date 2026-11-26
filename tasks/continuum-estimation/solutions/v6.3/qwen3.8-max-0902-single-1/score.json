@@ -1,24 +1,24 @@
 {
- "id": "job-20261117T074106Z-473249",
+ "id": "job-20261126T095522Z-78559a",
  "task": "continuum-estimation",
  "submission": "continuum-estimation-20261117T074044Z-58fc7f",
  "kind": "candidate",
  "note": null,
- "isolation": null,
- "enqueued_utc": "2026-11-17T07:41:06+00:00",
- "claimed_utc": "2026-11-17T07:41:07+00:00",
- "worker_pid": 1053601,
+ "isolation": "shared",
+ "enqueued_utc": "2026-11-26T09:55:22+00:00",
+ "claimed_utc": "2026-11-26T09:55:23+00:00",
+ "worker_pid": 1649282,
  "status": "submission_failure",
  "score": 0.0,
- "finished_utc": "2026-11-17T07:41:15+00:00",
+ "finished_utc": "2026-11-26T09:55:29+00:00",
  "candidate": {
   "status": "submission_failure",
   "raw_error": 1.0,
-  "reason": "60 of 60 cases failed; first case_000: README.md and run.sh are required",
+  "reason": "45 of 45 cases failed; first case_002: README.md and run.sh are required",
   "package_score": null,
-  "cases": 60,
-  "failures": 60,
+  "cases": 45,
+  "failures": 45,
   "max_wall_s": 0,
-  "data": "primary"
+  "data": "scored"
  }
 }

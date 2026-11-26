@@ -29,9 +29,9 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261120T074711Z-5ceaf6",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.000952333\\)，60 例，单例最长 1.0 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.000961162\\)，45 例，单例最长 1.0 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 71.109,
+          "score": 69.986,
           "notes_md": ""
         },
         {
@@ -41,10 +41,10 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261120T090954Z-ca982a",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.000876417\\)，60 例，单例最长 1.1 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.000826802\\)，45 例，单例最长 1.1 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 73.412,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+          "score": 74.182,
+          "notes_md": "反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。"
         },
         {
           "model": "gpt-6-astra",
@@ -53,9 +53,9 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261121T174536Z-f8cfee",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.000896961\\)，60 例，单例最长 2.3 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.000841913\\)，45 例，单例最长 2.3 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 72.789,
+          "score": 73.71,
           "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。"
         },
         {
@@ -65,10 +65,10 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261121T215822Z-89843b",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.000896108\\)，60 例，单例最长 4.7 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.000919333\\)，45 例，单例最长 4.6 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 72.815,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。 经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。"
+          "score": 71.292,
+          "notes_md": "反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。"
         },
         {
           "model": "gpt-6.1-sol",
@@ -77,9 +77,9 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261117T100054Z-6bbc6f",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.000942335\\)，60 例，单例最长 9.0 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.000876169\\)，45 例，单例最长 9.1 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 71.413,
+          "score": 72.64,
           "notes_md": ""
         },
         {
@@ -89,10 +89,10 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261117T154315Z-cf43e8",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00102139\\)，60 例，单例最长 3.0 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.00103382\\)，45 例，单例最长 2.3 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 69.014,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+          "score": 67.717,
+          "notes_md": "反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。"
         },
         {
           "model": "claude-opus-5-5",
@@ -101,9 +101,9 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261117T055656Z-ee456a",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00474595\\)，60 例，单例最长 1.2 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.00600676\\)，45 例，单例最长 1.3 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 40.017,
+          "score": 36.254,
           "notes_md": ""
         },
         {
@@ -113,10 +113,10 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261117T090022Z-90b6d7",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.0101005\\)，60 例，单例最长 0.4 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.0131157\\)，45 例，单例最长 0.5 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 22.761,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+          "score": 14.074,
+          "notes_md": "反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。"
         },
         {
           "model": "hy4",
@@ -125,9 +125,9 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261117T075924Z-1e478f",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.000840049\\)，60 例，单例最长 1.6 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.00085626\\)，45 例，单例最长 1.5 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 74.516,
+          "score": 73.262,
           "notes_md": ""
         },
         {
@@ -137,10 +137,10 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261117T111508Z-f546c9",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00232668\\)，60 例，单例最长 0.3 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.00290018\\)，45 例，单例最长 0.3 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 47.813,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+          "score": 45.947,
+          "notes_md": "反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。"
         },
         {
           "model": "qwen4-max",
@@ -149,9 +149,9 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261125T114010Z-b10c67",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00108602\\)，60 例，单例最长 0.7 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.000985423\\)，45 例，单例最长 0.8 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 67.054,
+          "score": 69.228,
           "notes_md": ""
         },
         {
@@ -161,10 +161,10 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261125T180305Z-bdc8e2",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00122283\\)，60 例，单例最长 0.8 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.001318\\)，45 例，单例最长 0.8 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 62.903,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+          "score": 58.843,
+          "notes_md": "反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。"
         },
         {
           "model": "qwen3.8-max-0902",
@@ -173,7 +173,7 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261117T074044Z-58fc7f",
           "store": "var/stores/store-v63",
-          "raw": "无效提交（60 of 60 cases failed; first case_000: README.md and run.sh are required）",
+          "raw": "无效提交（45 of 45 cases failed; first case_002: README.md and run.sh are required）",
           "mapping": "任一用例无效、缺失、超时或失败记 0",
           "score": 0.0,
           "notes_md": ""
@@ -185,10 +185,10 @@
           "attempt": 2,
           "submission": "continuum-estimation-20261118T064024Z-317d25",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00168707\\)，60 例，单例最长 0.5 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.00198245\\)，45 例，单例最长 0.5 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 49.875,
-          "notes_md": "两次尝试都有回合遇到上游（阿里百炼）流约 600 秒没有任何输出后断开（AIHub 记为成功、0 token，无其他供应商可换），第 1 次损失约 70 分钟、第 2 次约 30 分钟；按用户决定（11-18）取损失较少的第 2 次为正式格。"
+          "score": 48.81,
+          "notes_md": "反馈集改为 15 个留出例后的第 3 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。"
         },
         {
           "model": "minimax-m3.1-flash",
@@ -197,9 +197,9 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261125T124448Z-5009de",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00267888\\)，60 例，单例最长 1.3 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.00329319\\)，45 例，单例最长 1.3 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 46.678,
+          "score": 44.721,
           "notes_md": ""
         },
         {
@@ -209,10 +209,10 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261125T221313Z-78dc64",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00837313\\)，60 例，单例最长 1.1 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.0105931\\)，45 例，单例最长 1.1 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 28.327,
-          "notes_md": "出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
+          "score": 21.945,
+          "notes_md": "反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。"
         },
         {
           "model": "intern-s2",
@@ -233,9 +233,9 @@
           "attempt": 1,
           "submission": "continuum-estimation-20261119T010622Z-44268a",
           "store": "var/stores/store-v63",
-          "raw": "损失 \\(E = 0.00965148\\)，60 例，单例最长 0.1 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+          "raw": "损失 \\(E = 0.0112537\\)，45 例，单例最长 0.2 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 24.208,
+          "score": 19.884,
           "notes_md": "11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。 出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。"
         }
       ]

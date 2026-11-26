@@ -984,5 +984,10 @@
       "reference_time_seconds": 0.006367304013110697,
       "reference_memory_bytes": 15290368.0
     }
-  }
+  },
+  "rule": "per-case",
+  "score_complete": 0.0,
+  "controls_valid": false,
+  "valid_scored_cases": 0,
+  "scored_cases": 66
 }

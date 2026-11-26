@@ -41,7 +41,7 @@
 | 层 | 内容 |
 | --- | --- |
 | samples（给模型） | syn_diffusion2d_p4_k1, syn_geometric_p4_k1, syn_heavytail_p4_k1, syn_logspectrum_p4_k1, syn_signed_p4_k1, control_diagonal |
-| public（不给，反馈用） | 16 例全尺寸公开用例（每个结构族单请求、复用各 1 例） |
+| public（不给，反馈用） | 43 例全尺寸公开用例（每个结构族第一个公开母矩阵的 p4/p7/p10 单请求与复用全部会话，加 2 个对照例；2026-11-26 前为 16 例，只有 p4） |
 | 反馈分类 | 结构族（manifest 的 family 字段）：mesh_diffusion / standard_fem / geometric_graph / standard_graph / network_operator / signed_incidence / diagonal_local / analytic |
 
 ## 评测依据
@@ -83,22 +83,22 @@
 
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6.2 Sol | 单轮 | 74/74 合格，\(R = 0.615\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 61.9 | 32 分钟 | [`gpt-6.2-sol-single-1/`](solutions/v6.3/gpt-6.2-sol-single-1/) |
-| GPT-6.2 Sol | 迭代 | 74/74 合格，\(R = 0.487\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 67.2 | 10 次提交，58 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
-| GPT-6 Astra | 单轮 | 74/74 合格，\(R = 0.706\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 58.6 | 57 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
-| GPT-6 Astra | 迭代 | 74/74 合格，\(R = 0.725\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 58.0 | 5 次提交，232 分钟 | [`gpt-6-astra-iterative-1/`](solutions/v6.3/gpt-6-astra-iterative-1/) |
-| GPT-6.1 Sol | 单轮 | 74/74 合格，\(R = 0.813\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 55.2 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | 74/74 合格，\(R = 0.567\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 63.8 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
-| Claude Opus 5.5 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 28 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
-| Claude Opus 5.5 | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 13 次提交，124 分钟 | [`claude-opus-5-5-iterative-2/`](solutions/v6.3/claude-opus-5-5-iterative-2/) |
-| Hunyuan 4 | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 57 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
-| Hunyuan 4 | 迭代 | 74/74 合格，\(R = 0.776\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 56.3 | 10 次提交，121 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
-| Qwen4 Max | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 33 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
-| Qwen4 Max | 迭代 | 74/74 合格，\(R = 0.726\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 57.9 | 18 次提交，66 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
-| Qwen3.8 Max | 单轮 | 无效提交（23 例不合格） | 任一用例不合格记 0 | 0.0 | 32 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
-| Qwen3.8 Max | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 5 次提交，186 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
-| MiniMax M3.1 Flash | 单轮 | 无效提交（20 例不合格） | 任一用例不合格记 0 | 0.0 | 38 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
-| MiniMax M3.1 Flash | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 7 次提交，74 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
+| GPT-6.2 Sol | 单轮 | 66/66 个计分例合格，总体 \(R = 0.615\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 65.3 | 32 分钟 | [`gpt-6.2-sol-single-1/`](solutions/v6.3/gpt-6.2-sol-single-1/) |
+| GPT-6.2 Sol | 迭代 | 66/66 个计分例合格，总体 \(R = 0.487\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 70.3 | 10 次提交，58 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
+| GPT-6 Astra | 单轮 | 66/66 个计分例合格，总体 \(R = 0.706\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 60.9 | 57 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
+| GPT-6 Astra | 迭代 | 66/66 个计分例合格，总体 \(R = 0.725\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 58.9 | 5 次提交，232 分钟 | [`gpt-6-astra-iterative-1/`](solutions/v6.3/gpt-6-astra-iterative-1/) |
+| GPT-6.1 Sol | 单轮 | 66/66 个计分例合格，总体 \(R = 0.813\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 58.6 | 54 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
+| GPT-6.1 Sol | 迭代 | 66/66 个计分例合格，总体 \(R = 0.567\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 66.9 | 8 次提交，205 分钟 | [`gpt-6.1-sol-iterative-1/`](solutions/v6.3/gpt-6.1-sol-iterative-1/) |
+| Claude Opus 5.5 | 单轮 | 65/66 个计分例合格；不合格：`accuracy_failure` 1（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 59.3 | 28 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
+| Claude Opus 5.5 | 迭代 | 65/66 个计分例合格；不合格：`accuracy_failure` 1（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 68.9 | 13 次提交，124 分钟 | [`claude-opus-5-5-iterative-2/`](solutions/v6.3/claude-opus-5-5-iterative-2/) |
+| Hunyuan 4 | 单轮 | 65/66 个计分例合格；不合格：`accuracy_failure` 1（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 38.2 | 57 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
+| Hunyuan 4 | 迭代 | 66/66 个计分例合格，总体 \(R = 0.776\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 59.3 | 10 次提交，121 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
+| Qwen4 Max | 单轮 | 65/66 个计分例合格；不合格：`cpu_limit` 1（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 43.3 | 33 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | 66/66 个计分例合格，总体 \(R = 0.726\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 60.4 | 18 次提交，66 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| Qwen3.8 Max | 单轮 | 43/66 个计分例合格；不合格：`accuracy_failure` 13，`cpu_limit` 10（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 20.8 | 32 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
+| Qwen3.8 Max | 迭代 | 65/66 个计分例合格；不合格：`accuracy_failure` 1（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 55.2 | 5 次提交，186 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
+| MiniMax M3.1 Flash | 单轮 | 46/66 个计分例合格；不合格：`accuracy_failure` 20（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 15.7 | 38 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | 65/66 个计分例合格；不合格：`accuracy_failure` 1（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 60.0 | 7 次提交，74 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -162,7 +162,7 @@ public 分数随测试提交：30.7（47 分钟） → 42.2（63 分钟） → 4
 
 ### Qwen4 Max（单轮，v6.3）
 
-第一次评分有两个分片负载报警（探针 1.38、1.42），判无效的两例都是 CPU 上限；只重测这两例时 `syn_geometric_p10_k1` 以 10.3 秒 CPU 通过（原评分三次触 15 秒上限），故记未测，开发槽全空时整套重评：k1 通过，`syn_geometric_p10_k16` 复用仍超 150 秒 CPU 上限，仍判无效，以重评为准。
+第一次评分有两个分片负载报警（探针 1.38、1.42），判无效的两例都是 CPU 上限；只重测这两例时 `syn_geometric_p10_k1` 以 10.3 秒 CPU 通过（原评分三次触 15 秒上限），故记未测，开发槽全空时整套重评：k1 通过，`syn_geometric_p10_k16` 复用仍超 150 秒 CPU 上限，按逐例计分该例记 0，以重评为准。
 
 源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `exponential-v3-20261125T094628Z-5bfd67`）；未复制的二进制或大文件：fame_core.so（40,608 字节）。
 

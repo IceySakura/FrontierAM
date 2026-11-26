@@ -13,8 +13,8 @@
     "slepc": 68,
     "exputils": 58
   },
-  "status": "invalid_submission",
-  "score": 0.0,
+  "status": "ok",
+  "score": 15.696496860492303,
   "relative_time": null,
   "failed_cases": {
     "standard_Schmid_thermal1_p4_k16": "accuracy_failure",
@@ -930,5 +930,10 @@
       "reference_time_seconds": 0.006367304013110697,
       "reference_memory_bytes": 15290368.0
     }
-  }
+  },
+  "rule": "per-case",
+  "score_complete": 0.0,
+  "controls_valid": true,
+  "valid_scored_cases": 46,
+  "scored_cases": 66
 }
