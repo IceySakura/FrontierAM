@@ -260,7 +260,7 @@
     "samples": [
       "8 个公开例子（public/dev，含真值）"
     ],
-    "public": "与样例相同的 8 个例子",
+    "public": "15 个不发给模型的反馈例（60 个 primary 例按真值排序每 4 个取 1，正式计分只用其余 45 例；2026-11-26 前为与样例相同的 8 例）",
     "groups": null,
     "feedback": {
       "task": "continuum-estimation",
