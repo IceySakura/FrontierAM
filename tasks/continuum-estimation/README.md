@@ -75,7 +75,7 @@
 | Hunyuan 4 | 单轮 | 损失 \(E = 0.00085626\)，45 例，单例最长 1.5 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 73.3 | 51 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 损失 \(E = 0.00290018\)，45 例，单例最长 0.3 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 45.9 | 7 次提交，135 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Qwen4 Max | 单轮 | 损失 \(E = 0.000985423\)，45 例，单例最长 0.8 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 69.2 | 21 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
-| Qwen4 Max | 迭代 | 损失 \(E = 0.001318\)，45 例，单例最长 0.8 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 58.8 | 5 次提交，40 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| Qwen4 Max | 迭代 | 损失 \(E = 0.00280131\)，45 例，单例最长 0.7 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 46.3 | 30 次提交，83 分钟 | [`qwen4-max-iterative-2/`](solutions/v6.3/qwen4-max-iterative-2/) |
 | Qwen3.8 Max | 单轮 | 无效提交（45 of 45 cases failed; first case_002: README.md and run.sh are required） | 任一用例无效、缺失、超时或失败记 0 | 0.0 | 60 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
 | Qwen3.8 Max | 迭代 | 损失 \(E = 0.00198245\)，45 例，单例最长 0.5 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 48.8 | 4 次提交，216 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | 损失 \(E = 0.00329319\)，45 例，单例最长 1.3 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 44.7 | 60 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
@@ -149,11 +149,11 @@ public 分数随测试提交：28.0（29 分钟） → 0.0（34 分钟） → 49
 
 ### Qwen4 Max（迭代，v6.3）
 
-反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。
+此前尝试的测试反馈用的是工作区里带真值的 8 个样例（迭代中最后一次 public 82–97 分，私有 23–73 分）；11-26 起 60 个 primary 例按真值排序每 4 个取 1 作为不发给模型的反馈集（15 例），正式计分用其余 45 例，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：38.7（10 分钟） → 89.5（18 分钟） → 88.9（33 分钟） → 93.0（35 分钟） → 93.7（39 分钟）
+public 分数随测试提交：46.6（16 分钟） → 48.1（25 分钟） → 49.1（35 分钟） → 48.4（38 分钟） → 48.8（43 分钟） → 49.1（46 分钟） → 48.9（47 分钟） → 49.1（49 分钟） → 49.0（50 分钟） → 48.9（55 分钟） → 48.7（58 分钟） → 49.1（60 分钟） → 49.5（60 分钟） → 49.7（62 分钟） → 49.8（64 分钟） → 49.5（65 分钟） → 49.9（66 分钟） → 49.7（68 分钟） → 49.9（69 分钟） → 49.7（70 分钟） → 49.8（71 分钟） → 49.9（72 分钟） → 49.8（73 分钟） → 49.9（74 分钟） → 49.8（76 分钟） → 49.9（77 分钟） → 49.8（78 分钟） → 49.8（80 分钟） → 49.8（80 分钟） → 49.8（82 分钟）
 
-源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `continuum-estimation-20261125T180305Z-bdc8e2`）。
+源码 [`solutions/v6.3/qwen4-max-iterative-2/source/`](solutions/v6.3/qwen4-max-iterative-2/source/)（提交 `continuum-estimation-20261126T123834Z-306b3e`）。
 
 ### Qwen3.8 Max（单轮，v6.3）
 
