@@ -86,7 +86,7 @@
 | Qwen4 Max | 单轮 | RMSE \(E = 1.5854\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.4≈ | 33 分钟 | [`v3/qwen4-max-single-1/`](solutions/v6.3/v3/qwen4-max-single-1/) |
 | Qwen4 Max | 迭代 | RMSE \(E = 1.4555\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.7 | 20 次提交，75 分钟 | [`v3/qwen4-max-iterative-2/`](solutions/v6.3/v3/qwen4-max-iterative-2/) |
 | Qwen3.8 Max | 单轮 | RMSE \(E = 1.6419\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 38.6 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
-| Qwen3.8 Max | 迭代 | RMSE \(E = 1.4889\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.6≈ | 8 次提交，114 分钟 | [`v3/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/) |
+| Qwen3.8 Max | 迭代 | RMSE \(E = 1.6174\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 40.7 | 9 次提交，148 分钟 | [`v3/qwen3.8-max-0902-iterative-2/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | RMSE \(E = 1.7097\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 32.9 | 23 分钟 | [`v3/minimax-m3.1-flash-single-1/`](solutions/v6.3/v3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | RMSE \(E = 1.6657\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 36.6 | 2 次提交，56 分钟 | [`v3/minimax-m3.1-flash-iterative-2/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-2/) |
 
@@ -176,11 +176,11 @@ public 分数随测试提交：36.0（10 分钟） → 43.8（15 分钟） → 4
 
 ### Qwen3.8 Max（迭代，v6.3）
 
-反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：minimax-m3.1-flash（本格领先的概率 0.83）。
+此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：0.0（30 分钟） → 50.6（53 分钟） → 51.0（84 分钟） → 0.0（97 分钟） → 52.1（97 分钟） → 52.2（98 分钟） → 52.2（106 分钟） → 52.5（108 分钟）
+public 分数随测试提交：1.0（23 分钟） → 0.0（52 分钟） → 9.9（112 分钟） → 10.1（118 分钟） → 35.9（124 分钟） → 37.2（129 分钟） → 38.3（135 分钟） → 37.6（139 分钟） → 36.8（143 分钟）
 
-源码 [`solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/source/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261117T103725Z-7cc50d`）。
+源码 [`solutions/v6.3/v3/qwen3.8-max-0902-iterative-2/source/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-2/source/)（提交 `polarization-demosaicking-v3-20261126T222204Z-d6232c`）。
 
 ### MiniMax M3.1 Flash（单轮，v6.3）
 

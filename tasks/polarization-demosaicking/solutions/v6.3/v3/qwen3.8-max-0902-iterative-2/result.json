@@ -1,0 +1,61 @@
+{
+ "model": "qwen3.8-max-0902",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "polarization-demosaicking-v3-20261126T222204Z-d6232c",
+ "raw": "RMSE \\(E = 1.6174\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 40.701,
+ "review": null,
+ "process": {
+  "minutes": 147.5,
+  "public_tests": 9,
+  "public_curve": [
+   {
+    "minute": 22.7,
+    "score": 1.014349265933783,
+    "status": "ok"
+   },
+   {
+    "minute": 52.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 112.2,
+    "score": 9.86454773241554,
+    "status": "ok"
+   },
+   {
+    "minute": 118.5,
+    "score": 10.130421777806054,
+    "status": "ok"
+   },
+   {
+    "minute": 123.7,
+    "score": 35.864569187933206,
+    "status": "ok"
+   },
+   {
+    "minute": 128.6,
+    "score": 37.15227940725411,
+    "status": "ok"
+   },
+   {
+    "minute": 134.8,
+    "score": 38.3447211695303,
+    "status": "ok"
+   },
+   {
+    "minute": 139.0,
+    "score": 37.59677346466651,
+    "status": "ok"
+   },
+   {
+    "minute": 143.3,
+    "score": 36.82602404960835,
+    "status": "ok"
+   }
+  ]
+ }
+}
