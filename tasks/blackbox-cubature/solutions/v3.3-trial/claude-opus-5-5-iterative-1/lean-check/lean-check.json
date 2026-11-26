@@ -1,0 +1,153 @@
+{
+ "source": "/data/workspace/FrontierAM/tasks/blackbox-cubature/solutions/v3.3-trial/claude-opus-5-5-iterative-1/source",
+ "toolchain": "leanprover/lean4:v4.35.0",
+ "packages": {
+  "cslib": "5b56df99362532c46e1175381fbbdd755bd56030",
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "plausible": "dfa4f38190d07c37e315953e08b90fe2d95b3c24",
+  "LeanSearchClient": "d6b4c7be5be75ec4917c873ac50c756dc1436372",
+  "importGraph": "a41f0e9a4dea23188ea9cc1c41ac9f8bbafe0b93",
+  "proofwidgets": "df72b022e558978a1c50264cfc4d7fec86fa8e04",
+  "aesop": "4a174c490d8707121c4a9290800489f105d85e07",
+  "Qq": "dce0ad79c486cb1fb504af04f953c3466b0c6db8",
+  "batteries": "66e469188fe07963e5cf666c7d4433f45b8131c5",
+  "Cli": "c24fe6078c630e89b489bffe59b3e20ac30d12c8"
+ },
+ "permitted_axioms": [
+  "propext",
+  "Quot.sound",
+  "Classical.choice"
+ ],
+ "paranoid": false,
+ "manifest_problems": [],
+ "work": "/data/workspace/FrontierAM/var/lean-check/lean-check-626572",
+ "lean_files": [
+  "Theory/Defs.lean",
+  "Theory/Lemmas.lean",
+  "Theory/Proofs.lean",
+  "Theory/Statements.lean"
+ ],
+ "statement_layer": {
+  "Theory.Statements": [],
+  "Theory.Defs": []
+ },
+ "results": [
+  {
+   "id": "R1",
+   "claim": "THEORY.md §3.2, result R1 (summary in §5)",
+   "lean": [
+    "Cubature.adaptive_lower_bound_step"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "equal",
+    "human": [
+     "K. Sikorski, Bisection is optimal, Numer. Math. 40 (1982) 111-117",
+     "L. Plaskota, G. W. Wasilkowski, Adaption allows efficient integration of functions with unknown singularities, Numer. Math. 102 (2005) 123-144"
+    ],
+    "explanation": "Adversary lower bound: every deterministic adaptive algorithm using n function values has error >= 2^-(n+1) on some f in J (one jump on a line, value on the surface arbitrary, constants 0 and 1 included), for the integral against the standard Gaussian measure. With R2 the minimal worst-case error is exactly 2^-(n+1). This is the integration counterpart of Sikorski's theorem that bisection is optimal for zero finding (optimal worst-case error (b-a)/2^(n+1)), transported to the Gaussian measure via the quantile transform (the Lean proofs hold for every atomless probability measure on R). It is consistent with Plaskota-Wasilkowski 2005 (one unknown singularity: adaption recovers the smooth rate); for piecewise-constant integrands the adaptive rate is exponential and we give the exact constant. A reproduction of classical bisection optimality, hence 'equal'."
+   },
+   "verified": true
+  },
+  {
+   "id": "R2",
+   "claim": "THEORY.md §3.3, result R2 (summary in §5)",
+   "lean": [
+    "Cubature.bisection_upper_bound_step",
+    "Cubature.minimal_adaptive_error_step"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "equal",
+    "human": [
+     "K. Sikorski, Bisection is optimal, Numer. Math. 40 (1982) 111-117",
+     "L. Plaskota, G. W. Wasilkowski, Adaption allows efficient integration of functions with unknown singularities, Numer. Math. 102 (2005) 123-144"
+    ],
+    "explanation": "Bisection in Gaussian quantile coordinates (query the quantile of the midpoint of the current interval of levels) has worst-case error <= 2^-(n+1) on J, robust to arbitrary values on the jump; combined with R1, 2^-(n+1) is the exact minimal worst-case error (IsLeast statement). Same optimal constant as Sikorski's bisection optimality for zero finding; within Plaskota-Wasilkowski's framework it is the piecewise-constant extreme (exponential rate). Equal to known results, with exact constants under the Gaussian measure."
+   },
+   "verified": true
+  },
+  {
+   "id": "R3",
+   "claim": "THEORY.md §3.4, result R3 (summary in §5)",
+   "lean": [
+    "Cubature.nonadaptive_lower_bound_step",
+    "Cubature.nonadaptive_upper_bound_step",
+    "Cubature.minimal_nonadaptive_error_step"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "equal",
+    "human": [
+     "L. Plaskota, G. W. Wasilkowski, Adaption allows efficient integration of functions with unknown singularities, Numer. Math. 102 (2005) 123-144",
+     "E. Novak, On the power of adaption, J. Complexity 12 (1996) 199-237",
+     "J. Kiefer, Optimum sequential search and approximation methods under minimum regularity assumptions, J. SIAM 5 (1957) 105-136 (integration of monotone functions)"
+    ],
+    "explanation": "Nonadaptive algorithms (n fixed nodes, arbitrary nonlinear output) have worst-case error >= 1/(2(n+1)) on J, and nodes at the Gaussian quantiles i/(n+1) attain it, so 1/(2(n+1)) is the exact minimal nonadaptive error, versus 2^-(n+1) adaptively (R1/R2): an exponential gap. Plaskota-Wasilkowski 2005 show that nonadaptive algorithms cannot converge faster than n^-1 for integrands with an unknown jump; Novak 1996 surveys when adaption helps (non-convex classes such as J). The value 1/(2(n+1)) coincides with Kiefer's optimal error for monotone functions (to which J essentially belongs after the quantile transform); we show the 0/1 step subclass is already extremal. Equal to known results."
+   },
+   "verified": true
+  },
+  {
+   "id": "R4",
+   "claim": "THEORY.md §3.5, result R4 (summary in §5)",
+   "lean": [
+    "Cubature.adaptive_lower_bound_interval",
+    "Cubature.nonadaptive_upper_bound_interval"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "equal",
+    "human": [
+     "L. Plaskota, G. W. Wasilkowski, Y. Zhao, The power of adaption for approximating functions with singularities, Math. Comp. 77 (2008) 2309-2338",
+     "L. Plaskota, G. W. Wasilkowski, Adaption allows efficient integration of functions with unknown singularities, Numer. Math. 102 (2005) 123-144"
+    ],
+    "explanation": "Two crossings (indicators of bounded intervals, a closed surface crossed twice): every deterministic adaptive algorithm with n values has error >= 1/(2(n+1)) on some f in P, while a nonadaptive quantile rule has error <= 1/(n+1); so adaption gains at most a factor 2. This is the worst-case phenomenon of Plaskota-Wasilkowski-Zhao 2008 (with two or more unknown singularities adaption does not help in the worst-case setting), here for integration against the Gaussian measure with explicit constants. Equal."
+   },
+   "verified": true
+  },
+  {
+   "id": "R5",
+   "claim": "THEORY.md §3.6, result R5 (summary in §5)",
+   "lean": [
+    "Cubature.randomized_lower_bound_step"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "equal",
+    "human": [
+     "E. Novak, Deterministic and Stochastic Error Bounds in Numerical Analysis, Lecture Notes in Math. 1349, Springer 1988 (Bakhvalov's averaging technique for randomized lower bounds)",
+     "K. Sikorski, Bisection is optimal, Numer. Math. 40 (1982) 111-117"
+    ],
+    "explanation": "Randomized lower bound on J: for any probability distribution over deterministic adaptive algorithms with n values (estimates measurable in the random parameter), some f in J has expected error >= 1/(2(2^(n+1)-1)) > 2^-(n+2), i.e. more than half the deterministic optimum 2^-(n+1) of R1/R2: randomization cannot improve bisection by a factor 2 or more. Proof by Bakhvalov's averaging technique (Novak 1988) over 2^(n+1) step functions: 0/1-valued information has at most 2^n outcomes. A standard technique and the classical order 2^-n; equal."
+   },
+   "verified": true
+  }
+ ],
+ "runs": {
+  "all": {
+   "theorems": [
+    "Cubature.adaptive_lower_bound_step",
+    "Cubature.bisection_upper_bound_step",
+    "Cubature.minimal_adaptive_error_step",
+    "Cubature.nonadaptive_lower_bound_step",
+    "Cubature.nonadaptive_upper_bound_step",
+    "Cubature.minimal_nonadaptive_error_step",
+    "Cubature.adaptive_lower_bound_interval",
+    "Cubature.nonadaptive_upper_bound_interval",
+    "Cubature.randomized_lower_bound_step"
+   ],
+   "accepted": true,
+   "exit_code": 0,
+   "seconds": 159.6,
+   "errors": [],
+   "last_line": "Your solution is okay!"
+  }
+ },
+ "verified": [
+  "R1",
+  "R2",
+  "R3",
+  "R4",
+  "R5"
+ ]
+}

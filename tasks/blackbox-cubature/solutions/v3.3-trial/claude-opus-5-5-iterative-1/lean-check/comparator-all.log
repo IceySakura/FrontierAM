@@ -1,0 +1,69 @@
+Resolving dependencies
+Building Theory.Statements
+⚠ [3210/3211] Built Theory.Defs (2.8s)
+warning: Theory/Defs.lean: imports `Mathlib.Probability.Distributions.Gaussian.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3211/3211] Built Theory.Statements (2.8s)
+warning: Theory/Statements.lean:25:8: declaration uses `sorry`
+warning: Theory/Statements.lean:32:8: declaration uses `sorry`
+warning: Theory/Statements.lean:39:8: declaration uses `sorry`
+warning: Theory/Statements.lean:46:8: declaration uses `sorry`
+warning: Theory/Statements.lean:53:8: declaration uses `sorry`
+warning: Theory/Statements.lean:61:8: declaration uses `sorry`
+warning: Theory/Statements.lean:68:8: declaration uses `sorry`
+warning: Theory/Statements.lean:76:8: declaration uses `sorry`
+warning: Theory/Statements.lean:87:8: declaration uses `sorry`
+Build completed successfully (3211 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.adaptive_lower_bound_step, Cubature.bisection_upper_bound_step, Cubature.minimal_adaptive_error_step, Cubature.nonadaptive_lower_bound_step, Cubature.nonadaptive_upper_bound_step, Cubature.minimal_nonadaptive_error_step, Cubature.adaptive_lower_bound_interval, Cubature.nonadaptive_upper_bound_interval, Cubature.randomized_lower_bound_step, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Statements
+Building Theory.Proofs
+⚠ [3210/3216] Replayed Theory.Defs
+warning: Theory/Defs.lean: imports `Mathlib.Probability.Distributions.Gaussian.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3215/3216] Built Theory.Lemmas (16s)
+warning: Theory/Lemmas.lean: imports `Mathlib.Probability.CDF` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Lemmas.lean:62:58: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/Lemmas.lean:62:58: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Theory/Lemmas.lean:65:58: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/Lemmas.lean:65:58: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Theory/Lemmas.lean:90:13: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/Lemmas.lean:90:13: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Theory/Lemmas.lean:123:0: automatically included section variable(s) unused in theorem `Cubature.integral_ici_eq_ioi`:
+  [IsProbabilityMeasure μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsProbabilityMeasure μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/Lemmas.lean:128:0: automatically included section variable(s) unused in theorem `Cubature.integral_mono_stepFam`:
+  [NullSingletonClass μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NullSingletonClass μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/Lemmas.lean:347:0: automatically included section variable(s) unused in theorem `Cubature.integral_gap_eq`:
+  [NullSingletonClass μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NullSingletonClass μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/Lemmas.lean:465:0: automatically included section variable(s) unused in theorem `Cubature.exists_cdf_eq_of_continuous`:
+  [IsProbabilityMeasure μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsProbabilityMeasure μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [3216/3216] Built Theory.Proofs (2.7s)
+Build completed successfully (3216 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.adaptive_lower_bound_step, Cubature.bisection_upper_bound_step, Cubature.minimal_adaptive_error_step, Cubature.nonadaptive_lower_bound_step, Cubature.nonadaptive_upper_bound_step, Cubature.minimal_nonadaptive_error_step, Cubature.adaptive_lower_bound_interval, Cubature.nonadaptive_upper_bound_interval, Cubature.randomized_lower_bound_step, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Proofs
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!

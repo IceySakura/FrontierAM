@@ -1,0 +1,35 @@
+{
+ "task": "blackbox-cubature-v3.3",
+ "model": "claude-opus-5-5",
+ "setting": "iterative (v6.3 harness, 6 h limit, validation run)",
+ "dev_run": "dev-blackbox-cubature-v3.3-20261126T072424Z-fb7fb5",
+ "submission": "blackbox-cubature-v3.3-20261126T101343Z-38b9ad",
+ "started_local": "2026-11-26 15:24",
+ "agent_stop_reason": "formal_submission",
+ "development_seconds": 10153.8,
+ "model_requests": 293,
+ "test_submissions": 9,
+ "public_scores": [55.7, 61.5, 62.7, 66.0, 65.5, 64.6, 65.0, 64.9, 65.0],
+ "private_suite": "suite-blackbox-cubature-v3.3-20261126T111448Z-e779e8",
+ "reference_suite": "suite-blackbox-cubature-v3.1-20261125T120404Z-5b7631",
+ "program": {
+  "raw": {"G": 0.4491352835444665, "hard": 0.476, "options": 0.422, "G0": -0.36177241147284983},
+  "mapping": "G >= 0: 50 + 25 G",
+  "score": 61.22838208861167,
+  "detail": "score.json"
+ },
+ "theory": {
+  "formal_check": "lean-check/lean-check.json (lake comparator accepted all 5 proved results R1-R5; 4 modules, about 1300 lines)",
+  "review": "tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 7 (provisional, not an expert review)",
+  "results": [
+   {"id": "R1", "verified": true, "faithful": true, "class": "equal (Sikorski 1982 via the quantile transform)", "score": 30, "score_literal": 50},
+   {"id": "R2", "verified": true, "faithful": true, "class": "equal (Sikorski 1982)", "score": 30, "score_literal": 50},
+   {"id": "R3", "verified": true, "faithful": true, "class": "equal (Kiefer 1957 constant on the step subclass)", "score": 30, "score_literal": 50},
+   {"id": "R4", "verified": true, "faithful": true, "class": "equal (integration analogue of Plaskota-Wasilkowski-Zhao 2008)", "score": 25, "score_literal": 50},
+   {"id": "R5", "verified": true, "faithful": true, "class": "equal (Bakhvalov averaging)", "score": 20, "score_literal": 50}
+  ],
+  "mapping": "human SOTA = 50; theory score = maximum over verified results. 'score': a reproduction is 50 only when the matched human result is a strong SOTA result for the task's question, and reproductions of classical special cases are priced below 50 (recommended, pending the user's decision); 'score_literal': every 'equal' result is 50",
+  "score": 30,
+  "score_literal": 50
+ }
+}
