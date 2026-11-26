@@ -64,15 +64,14 @@
           "model": "gpt-6-astra",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 1,
-          "tie": true,
-          "submission": "polarization-demosaicking-v3-20261121T201503Z-472bb3",
+          "attempt": 2,
+          "submission": "polarization-demosaicking-v3-20261126T195427Z-557fa1",
           "store": "var/stores/store-v63",
-          "raw": "RMSE \\(E = 1.3770\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
+          "raw": "RMSE \\(E = 1.3935\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 54.314,
-          "notes_md": "第一次评分只有第一景 qiu/ball 超时（1.0007 秒，首景冷启动）；第一次重评时同机有其他项目的进程启动，31 景成段超时；第二次重评（机器安静）只有 qiu/lock 一景因偶发停顿超时（1.0009 秒，其余最长 0.755 秒）。各次评分逐景 RMSE 完全相同（输出是确定的），每景都至少两次在时限内跑完；按用户确认（11-23），取第二次重评，qiu/lock 用第一次评分中的结果（0.737 秒）补齐，合成完整评分。评测环境约 2.5% 的场景有 0.2–0.3 秒的停顿，已记入 results/OPEN_ITEMS.md 待反馈出题人；以重评为准。反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6.2-sol（本格领先的概率 0.63）。",
-          "folder": "v3/gpt-6-astra-iterative-1"
+          "score": 53.766,
+          "notes_md": "此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。",
+          "folder": "v3/gpt-6-astra-iterative-2"
         },
         {
           "model": "gpt-6.1-sol",
