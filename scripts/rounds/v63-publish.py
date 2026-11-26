@@ -180,8 +180,9 @@ NOTES[('galaxy-gravity-v4', 'iterative', 'minimax-m3.1-flash')] = (
     '419 万粒子 disc 组 3 例三次重复都超 CPU 上限（100–110 秒；所在分片负载探针 1.06–1.10），该组按经典树误差计入；'
     '100 万粒子各组和 419 万粒子其余组的相对误差约 1（disc 组 22），总误差高于 \\(E_0\\)。')
 NOTES[('galaxy-gravity-v4', 'single', 'minimax-m3.1-flash')] = (
-    '`build.sh` 把 CPU 检测小程序编译到 `/tmp` 再执行；评测构建容器的 `/tmp` 不可执行（Docker tmpfs 默认 noexec），开发容器'
-    '可执行，题面未写明，构建失败，按题目规则记 0（已记入 results/OPEN_ITEMS.md 待反馈出题人）。60 分钟到时截停。')
+    '原评分构建失败：`build.sh` 把 CPU 检测小程序编译到 `/tmp` 再执行，评测构建容器的 `/tmp` 不可执行（Docker tmpfs 默认 noexec），'
+    '开发容器可执行，题面未写明，属评测设施与开发环境不一致；11-26 起构建容器的 `/tmp` 可执行，同一冻结提交重评，以重评为准'
+    '（原结果留作 `score.tmp-noexec.json`，results/OPEN_ITEMS.md）。60 分钟到时截停。')
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
