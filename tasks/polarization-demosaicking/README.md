@@ -84,7 +84,7 @@
 | Hunyuan 4 | 单轮 | RMSE \(E = 1.5431\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.0 | 57 分钟 | [`v3/hy4-single-1/`](solutions/v6.3/v3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | RMSE \(E = 1.4563\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.7 | 5 次提交，152 分钟 | [`v3/hy4-iterative-1/`](solutions/v6.3/v3/hy4-iterative-1/) |
 | Qwen4 Max | 单轮 | RMSE \(E = 1.5854\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.4≈ | 33 分钟 | [`v3/qwen4-max-single-1/`](solutions/v6.3/v3/qwen4-max-single-1/) |
-| Qwen4 Max | 迭代 | RMSE \(E = 2.5027\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 6 次提交，110 分钟 | [`v3/qwen4-max-iterative-1/`](solutions/v6.3/v3/qwen4-max-iterative-1/) |
+| Qwen4 Max | 迭代 | RMSE \(E = 1.4555\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.7 | 20 次提交，75 分钟 | [`v3/qwen4-max-iterative-2/`](solutions/v6.3/v3/qwen4-max-iterative-2/) |
 | Qwen3.8 Max | 单轮 | RMSE \(E = 1.6419\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 38.6 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
 | Qwen3.8 Max | 迭代 | RMSE \(E = 1.4889\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.6≈ | 8 次提交，114 分钟 | [`v3/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/) |
 | MiniMax M3.1 Flash | 单轮 | RMSE \(E = 1.7097\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 32.9 | 23 分钟 | [`v3/minimax-m3.1-flash-single-1/`](solutions/v6.3/v3/minimax-m3.1-flash-single-1/) |
@@ -164,11 +164,11 @@ public 分数随测试提交：52.1（43 分钟） → 56.1（99 分钟） → 5
 
 ### Qwen4 Max（迭代，v6.3）
 
-第一次评分（开发槽全空）与 exponential 的 7 分片重评同时进行，前 9 景连续超时（约 1.0005 秒，其余约 0.85 秒），记未测；机器空闲时重评又有 4 景因环境停顿超时（约 1.001 秒）；第三次评分 132 景都在时限内（最长 0.911 秒），以重评为准。反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。
+此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：0.0（8 分钟） → 37.7（24 分钟） → 0.0（62 分钟） → 37.7（66 分钟） → 39.9（68 分钟） → 43.1（75 分钟）
+public 分数随测试提交：36.0（10 分钟） → 43.8（15 分钟） → 47.8（28 分钟） → 52.0（34 分钟） → 50.8（40 分钟） → 52.0（42 分钟） → 0.0（56 分钟） → 52.1（59 分钟） → 52.4（60 分钟） → 0.0（62 分钟） → 52.4（63 分钟） → 0.0（64 分钟） → 0.0（66 分钟） → 52.4（66 分钟） → 52.4（68 分钟） → 52.4（69 分钟） → 52.4（70 分钟） → 51.8（72 分钟） → 52.4（73 分钟） → 52.4（74 分钟）
 
-源码 [`solutions/v6.3/v3/qwen4-max-iterative-1/source/`](solutions/v6.3/v3/qwen4-max-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261125T144957Z-613c0f`）；未复制的二进制或大文件：weights.npz（17,390 字节）。
+源码 [`solutions/v6.3/v3/qwen4-max-iterative-2/source/`](solutions/v6.3/v3/qwen4-max-iterative-2/source/)（提交 `polarization-demosaicking-v3-20261126T200449Z-ff67ee`）。
 
 ### Qwen3.8 Max（单轮，v6.3）
 

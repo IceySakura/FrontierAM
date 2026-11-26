@@ -171,14 +171,14 @@
           "model": "qwen4-max",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 1,
-          "submission": "polarization-demosaicking-v3-20261125T144957Z-613c0f",
+          "attempt": 2,
+          "submission": "polarization-demosaicking-v3-20261126T200449Z-ff67ee",
           "store": "var/stores/store-v63",
-          "raw": "RMSE \\(E = 2.5027\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
+          "raw": "RMSE \\(E = 1.4555\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 0.0,
-          "notes_md": "第一次评分（开发槽全空）与 exponential 的 7 分片重评同时进行，前 9 景连续超时（约 1.0005 秒，其余约 0.85 秒），记未测；机器空闲时重评又有 4 景因环境停顿超时（约 1.001 秒）；第三次评分 132 景都在时限内（最长 0.911 秒），以重评为准。反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。",
-          "folder": "v3/qwen4-max-iterative-1"
+          "score": 51.708,
+          "notes_md": "此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。",
+          "folder": "v3/qwen4-max-iterative-2"
         },
         {
           "model": "qwen3.8-max-0902",

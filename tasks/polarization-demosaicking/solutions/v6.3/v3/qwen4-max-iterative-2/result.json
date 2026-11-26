@@ -1,0 +1,116 @@
+{
+ "model": "qwen4-max",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "polarization-demosaicking-v3-20261126T200449Z-ff67ee",
+ "raw": "RMSE \\(E = 1.4555\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 51.708,
+ "review": null,
+ "process": {
+  "minutes": 74.8,
+  "public_tests": 20,
+  "public_curve": [
+   {
+    "minute": 10.3,
+    "score": 35.97456534523591,
+    "status": "ok"
+   },
+   {
+    "minute": 15.0,
+    "score": 43.77614134072259,
+    "status": "ok"
+   },
+   {
+    "minute": 27.6,
+    "score": 47.76068383948395,
+    "status": "ok"
+   },
+   {
+    "minute": 33.9,
+    "score": 52.02651718035554,
+    "status": "ok"
+   },
+   {
+    "minute": 40.1,
+    "score": 50.818514573353156,
+    "status": "ok"
+   },
+   {
+    "minute": 41.9,
+    "score": 52.02651718697037,
+    "status": "ok"
+   },
+   {
+    "minute": 55.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 59.3,
+    "score": 52.06907585630931,
+    "status": "ok"
+   },
+   {
+    "minute": 60.4,
+    "score": 52.417413243813215,
+    "status": "ok"
+   },
+   {
+    "minute": 61.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 62.8,
+    "score": 52.435798026978745,
+    "status": "ok"
+   },
+   {
+    "minute": 63.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 65.5,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 66.3,
+    "score": 52.435798026978745,
+    "status": "ok"
+   },
+   {
+    "minute": 67.7,
+    "score": 52.43579802697934,
+    "status": "ok"
+   },
+   {
+    "minute": 69.3,
+    "score": 52.44373973209174,
+    "status": "ok"
+   },
+   {
+    "minute": 70.5,
+    "score": 52.420247818778435,
+    "status": "ok"
+   },
+   {
+    "minute": 71.8,
+    "score": 51.84056449166496,
+    "status": "ok"
+   },
+   {
+    "minute": 73.1,
+    "score": 52.43579802697934,
+    "status": "ok"
+   },
+   {
+    "minute": 74.0,
+    "score": 52.435713058151286,
+    "status": "ok"
+   }
+  ]
+ }
+}
