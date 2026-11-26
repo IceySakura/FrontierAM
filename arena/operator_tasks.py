@@ -828,6 +828,53 @@ class BlackboxCubatureV33(BlackboxCubatureV32):
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.3'
 
 
+class BlackboxCubatureV34(BlackboxCubatureV33):
+    """v3.4: v3.3 with the public internet during development (user decision 2026-11-26), through arena/netproxy.py on
+    a Unix socket bridged into the container (which keeps --network none); GitHub and its mirrors, package indexes,
+    hosted language models and internal networks are refused and every request is logged (netproxy.jsonl in the run).
+    Provider-side web tools stay off, since they would bypass the proxy. Grading is offline as before."""
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.4'
+    PROXY_PORT = 3128
+    dev_network = ('public internet through arena/netproxy.py (refused: GitHub and mirrors, package indexes, hosted '
+                   'language models, internal networks); provider-side web tools disabled')
+    dev_builtin_tools = {'codex': ('apply_patch', 'create_goal', 'exec_command', 'get_goal', 'request_user_input',
+                                   'tool_search', 'update_goal', 'update_plan', 'view_image', 'write_stdin')}
+    network_note = (' The development container reaches the public internet through a logged proxy (HTTPS_PROXY is '
+                    'set) for literature and reference material; GitHub and its mirrors, package indexes, hosted '
+                    'language-model services and internal networks are blocked, and the submission is graded offline '
+                    'with the installed packages only. ')
+
+    def dev_service(self, output: Path):
+        mounts, stop_samples = super().dev_service(output)
+        directory = Path('/run/frontieram/netproxy') / output.name
+        directory.mkdir(parents=True)
+        directory.chmod(0o755)
+        process = subprocess.Popen([str(GRADER_PYTHON), '-B', '-m', 'arena.netproxy', str(directory / 'proxy.sock'),
+                                    str(output / 'netproxy.jsonl')], cwd=ROOT, stdout=subprocess.PIPE,
+                                   stderr=(output / 'netproxy.log').open('wb'), text=True)
+        if process.stdout.readline().strip() != 'ready':
+            process.kill()
+            stop_samples()
+            raise RuntimeError(f'network proxy did not start ({output / "netproxy.log"})')
+
+        def stop():
+            stop_samples()
+            process.terminate()
+            try:
+                process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                process.kill()
+        proxy = f'http://127.0.0.1:{self.PROXY_PORT}'
+        variables = [f'{name}={proxy}' for name in ('HTTPS_PROXY', 'https_proxy', 'HTTP_PROXY', 'http_proxy')]
+        variables += ['NO_PROXY=127.0.0.1,localhost,::1', 'no_proxy=127.0.0.1,localhost,::1']
+        return [*mounts, '--mount', f'type=bind,src={directory},dst=/run/netproxy',
+                *(arg for variable in variables for arg in ('--env', variable))], stop
+
+    def dev_exec(self) -> list[list[str]]:
+        return [['socat', f'TCP-LISTEN:{self.PROXY_PORT},bind=127.0.0.1,fork,reuseaddr',
+                 'UNIX-CONNECT:/run/netproxy/proxy.sock']]
+
+
 class ContinuumEstimation(OperatorTask):
     """The author's continuum-estimation 1.0.1 verifier, ported to x86-64 (arena/operator_drivers/continuum.py).
     Since 2026-11-26 (user decision) the 60 primary cases are split (versions/v1/data/private/feedback-split.json):
@@ -890,6 +937,7 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'blackbox-cubature': BlackboxCubature, 'blackbox-cubature-v2': BlackboxCubatureV2,
            'blackbox-cubature-v3': BlackboxCubatureV3, 'blackbox-cubature-v3.1': BlackboxCubatureV31,
            'blackbox-cubature-v3.2': BlackboxCubatureV32, 'blackbox-cubature-v3.3': BlackboxCubatureV33,
+           'blackbox-cubature-v3.4': BlackboxCubatureV34,
            'continuum-estimation': ContinuumEstimation, 'fluorescence-deconvolution': FluorescenceDeconvolution}
 
 

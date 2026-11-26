@@ -1,0 +1,51 @@
+{
+  "name": "blackbox-cubature-v3.4",
+  "title": "高斯测度下分段光滑函数的黑盒积分（理论 + 实验，v3.4：开发阶段可联网查文献）",
+  "status": "candidate",
+  "status_reason": "v3.3 with the public internet during development (user decision 2026-11-26: theory tasks aim beyond human SOTA, so the agent may read the literature). Access goes through arena/netproxy.py on a Unix socket bridged into the container (which keeps --network none); refused: GitHub and its mirrors (the benchmark repository is public there; HTTPS shows only hostnames), package indexes, hosted language models and internal networks; every request is logged. Provider-side web tools are off. Grading stays offline with the installed packages. Everything else as v3.3. Trial runs only; not on the board.",
+  "derived_from": "blackbox-cubature-v3.3",
+  "case_limit_s": 30,
+  "images": {
+    "task": {
+      "tag": "frontieram-blackbox-cubature:amd64-v3",
+      "dockerfile": "../v3/Dockerfile.amd64",
+      "replaces": []
+    }
+  },
+  "references": {
+    "weak": "repo:tasks/blackbox-cubature/references/r2/mc",
+    "strong": "repo:tasks/blackbox-cubature/references/r2/gpca_rqmc"
+  },
+  "data_dir": "versions/v3.1/data",
+  "data": {
+    "samples": "versions/v3.1/data/samples/instances.json (the v3.1 samples)",
+    "public": "versions/v3.1/data/public/instances.json (feedback set, 20 instances; internal repository only)",
+    "private": "versions/v3.1/data/private/instances.json (formal set, 108 instances; internal repository only)",
+    "generator": "versions/v3/generation/generate.py --variant v3.1 --set samples|public|private"
+  },
+  "lean": {
+    "toolchain": "leanprover/lean4:v4.35.0 (/data/workspace/frontieram-theory-pilot/.elan, mounted at /opt/lean)",
+    "packages": "mathlib v4.35.0 and cslib v4.35.0 with their dependencies, prebuilt (/data/workspace/frontieram-theory-pilot/lean/.lake/packages, mounted at /opt/lean-packages)",
+    "check": "scripts/grade/lean-comparator.py: lake comparator, Theory.Statements (challenge) against Theory.Proofs (solution), axioms propext, Quot.sound, Classical.choice"
+  },
+  "scoring": {
+    "raw": "G: two-track mean of family means of cell means of per-instance gains g = clip(e_GPCA-RQMC - e, -2, 2), e = log10 relative error clipped to [e_floor, 0]",
+    "mapping": "G >= 0: 50 + 25 G; G < 0: 50 (G - G0) / -G0, G0 = plain Monte Carlo's G on the same instances; any failed instance scores 0",
+    "theory": "reported separately (analysis/THEORY_REVIEW.md): only results accepted by lake comparator and judged faithful count; each is placed against the strongest comparable human results (equal = 50, strictly stronger 50-100, strictly weaker 0-50, incomparable by the human papers' own viewpoint); theory score = maximum over verified results, 0 without any"
+  },
+  "submission_note": "Put an executable run.sh and the complete source in /workspace/submission, the theory document in /workspace/submission/theory/THEORY.md and its Lean formalization in /workspace/submission/theory/formal/ (start from /workspace/examples/lean_project/). Each instance runs ./run.sh in a fresh process with a read-only copy of the submission (only /tmp and the home directory are writable, and they are wiped between instances), speaking the JSON Lines protocol of problem.md on stdin/stdout.",
+  "instruction": "Read /workspace/problem.md and /workspace/THEORY_APPENDIX.md in full, and look at /workspace/samples, /workspace/tools and /workspace/examples. Write the cubature program, the theory document and its Lean formalization described there.",
+  "feedback": {
+    "task": "blackbox-cubature-v3.4",
+    "category": "family",
+    "accuracy": "relative error",
+    "lower_is_better": true,
+    "timed": false,
+    "note": "Any failed, timed-out or protocol-violating instance makes the final program score 0. A category score compares the instances of one family with the reference in the same way as the final score. The theory gets no feedback; /workspace/tools/lean_check.py runs the formal check locally."
+  },
+  "sample_cap": 262144,
+  "network": {
+    "development": "public internet through arena/netproxy.py (deny list in that module), requests logged to netproxy.jsonl in the run",
+    "grading": "none"
+  }
+}

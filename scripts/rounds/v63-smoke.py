@@ -64,6 +64,7 @@ FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3'
           'polarization-demosaicking-v3': 'polarization-demosaicking', 'blackbox-cubature-v2': 'blackbox-cubature',
           'blackbox-cubature-v3': 'blackbox-cubature-v3', 'blackbox-cubature-v3.1': 'blackbox-cubature-v3',
           'blackbox-cubature-v3.2': 'blackbox-cubature-v3', 'blackbox-cubature-v3.3': 'blackbox-cubature-v3',
+          'blackbox-cubature-v3.4': 'blackbox-cubature-v3',
           'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution'}
 V5_FILES = ('README.md', 'statement.md', 'interface.md', 'solver.py', 'smoke.json')  # the MODEL_ONLY package, nothing else
 # Versions that keep the author's workspace layout: their public-dev material is the samples; these files must be there.
@@ -80,7 +81,12 @@ AUTHOR_LAYOUT['blackbox-cubature-v3.1'] = AUTHOR_LAYOUT['blackbox-cubature-v3']
 AUTHOR_LAYOUT['blackbox-cubature-v3.2'] = AUTHOR_LAYOUT['blackbox-cubature-v3'] + [
     '/workspace/examples/lean_project/lakefile.toml', '/workspace/tools/lean_check.py']
 AUTHOR_LAYOUT['blackbox-cubature-v3.3'] = AUTHOR_LAYOUT['blackbox-cubature-v3.2']
-LEAN_TASKS = ('blackbox-cubature-v3.2', 'blackbox-cubature-v3.3')
+AUTHOR_LAYOUT['blackbox-cubature-v3.4'] = AUTHOR_LAYOUT['blackbox-cubature-v3.2']
+LEAN_TASKS = ('blackbox-cubature-v3.2', 'blackbox-cubature-v3.3', 'blackbox-cubature-v3.4')
+NETWORK_TASKS = ('blackbox-cubature-v3.4',)
+NETWORK_PROBES = {'arxiv': 'https://export.arxiv.org/api/query?search_query=all:cubature&max_results=1',
+                  'github': 'https://github.com/', 'pypi': 'https://pypi.org/simple/numpy/',
+                  'openai': 'https://api.openai.com/v1/models', 'intranet': 'https://git.woa.com/'}
 
 
 def script(task: str, setting: str) -> str:
@@ -89,6 +95,9 @@ def script(task: str, setting: str) -> str:
              'cd /workspace/submission', SUBMISSIONS[family], "echo 'v6.3 smoke submission' > README.md", 'cd /workspace']
     if task.startswith('blackbox-cubature-v3'):  # samples answered by the host-side service through the mounted socket
         lines += ['python3 /workspace/tools/local_eval.py --only H1-d8 asian 2>&1 | tail -4']
+    if task in NETWORK_TASKS:  # through the proxy: literature reachable, the refused destinations not
+        lines += [f'echo "NET-{name}=$(curl -sS -m 20 -o /dev/null -w %{{http_code}} {url} 2>/dev/null)"'
+                  for name, url in NETWORK_PROBES.items()]
     if task in LEAN_TASKS:  # Lean in the container: the template passes the local formal check
         lines += ['echo "memory.max=$(cat /sys/fs/cgroup/memory.max)"; command -v lean lake',
                   'cp -r /workspace/examples/lean_project /workspace/submission/theory/formal && '
@@ -134,6 +143,10 @@ def main():
               'limit_in_prompt': f'{int(seconds // 60) if seconds >= 60 else 0} minutes' in prompt or 'minutes' in prompt}
     if task_name.startswith('blackbox-cubature-v3'):  # the local evaluator reached the sample service and scored
         checks.update(sample_service=' e=' in log and 'FAILED' not in log.split('WORKSPACE-END', 1)[-1])
+    if task_name in NETWORK_TASKS:
+        checks.update(network_literature='NET-arxiv=200' in log,
+                      network_refused=all(f'NET-{name}=000' in log for name in ('github', 'pypi', 'openai', 'intranet')),
+                      network_logged=(out / 'netproxy.jsonl').exists() and 'deny:github_or_mirror' in (out / 'netproxy.jsonl').read_text())
     if task_name in LEAN_TASKS:
         checks.update(memory_8gib='memory.max=8589934592' in log,
                       lean_check='LEAN-CHECK: 1/1 proved results accepted' in log)

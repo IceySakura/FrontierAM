@@ -290,6 +290,11 @@
       "dir": "v3.3",
       "registry": "blackbox-cubature-v3.3",
       "note": "v3.2 的题面修订：写明提前结束不加分、理论分只看最强的一条通过验证的结论（一条有分量的结论胜过多条初等结论），建议先在 THEORY.md 定目标与证明路线再分步形式化；环境、数据与评分同 v3.2；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.12）"
+    },
+    {
+      "dir": "v3.4",
+      "registry": "blackbox-cubature-v3.4",
+      "note": "v3.3 加开发阶段联网：宿主侧代理放行公网，拒绝 GitHub 及其镜像、包管理源、在线大模型服务与内网，请求全部记录；厂商侧联网工具关闭；评测仍离线；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.13）"
     }
   ],
   "locations": {

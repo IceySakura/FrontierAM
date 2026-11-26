@@ -53,6 +53,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'blackbox-cubature-v3.1': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.2': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.3': 'frontieram-blackbox-cubature-v3-harness:v6',
+                  'blackbox-cubature-v3.4': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'continuum-estimation': 'frontieram-continuum-estimation-harness:v6',
                   'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6',
                   'pdhcg-qp-v1': 'frontieram-pdhcg-qp-v1-harness:v6'}
@@ -129,7 +130,8 @@ endpoint = Endpoint(base_url=spec["base_url"], token=spec["token"], model=spec["
 # the longest max-effort response ends the attempt; every client gets the full development window instead.
 WINDOW_MS = int(spec["client_timeout_seconds"] * 1000)
 options = {"step": {"httpIdleTimeoutMs": 0, "retry": {"provider": {"timeoutMs": WINDOW_MS}}}}
-task = Task(prompt=spec["prompt"], workspace=Path("/workspace"), harness_options=options.get(spec["harness"], {}))
+task = Task(prompt=spec["prompt"], workspace=Path("/workspace"), harness_options=options.get(spec["harness"], {}),
+            builtin_tools=None if spec.get("builtin_tools") is None else tuple(spec["builtin_tools"]))
 harness = resolve(spec["harness"])
 refused = harness.refuses(task)
 if refused:
@@ -417,6 +419,7 @@ SCORING_DISCLOSURE['blackbox-cubature-v3.3'] = SCORING_DISCLOSURE['blackbox-cuba
     ' Because only the strongest verified result counts, one result that goes beyond the human results is worth more '
     'than several elementary ones; ending the session early earns nothing.'
 )
+SCORING_DISCLOSURE['blackbox-cubature-v3.4'] = SCORING_DISCLOSURE['blackbox-cubature-v3.3']
 SCORING_DISCLOSURE['continuum-estimation'] = (
     'Every held-out case runs once in a fresh restricted process within 60 wall-clock seconds (startup included); an '
     'invalid, missing, late or unsuccessful output on any case makes the whole submission score zero. Given that, the '
@@ -614,7 +617,7 @@ def prompt(task_name: str, runtime: dict, protocol: str = 'v6', setting: str = '
                   'or hidden feedback.')
     return (
         task.instruction.replace(' Use only the offline workspace tool.', '')
-        + ' The machine is offline: no network access and no package downloads; use what is installed. '
+        + getattr(task, 'network_note', ' The machine is offline: no network access and no package downloads; use what is installed. ')
         + getattr(task, 'submission_note', SUBMISSION_NOTE) + ' '
         + budget
         + runtime['architecture_override_prompt']
@@ -937,6 +940,11 @@ def develop(spec: dict, runtime: dict) -> dict:
     task = TASKS[spec['task']]
     model = spec['model']
     harness = HARNESS[model]
+    # A task with network access names the harness built-ins it keeps: provider-side web tools would bypass its proxy.
+    tool_policy = getattr(task, 'dev_builtin_tools', None)
+    if tool_policy is not None and harness not in tool_policy:
+        raise ValueError(f'{task.name} defines no built-in tool policy for the {harness} harness')
+    builtin_tools = tool_policy[harness] if tool_policy is not None else None
     placement = Placement(**spec['placement'])
     output = Path(spec['output'])
     frozen_dir = output / 'task'
@@ -969,7 +977,9 @@ def develop(spec: dict, runtime: dict) -> dict:
                                           'protocol': protocol,
                                           'setting': setting if protocol in ('v6.2', 'v6.3') else None,
                                           'test_cap_seconds': TEST_CAP_SECONDS if iterative else None,
-                                          'upstream_stream': model in UPSTREAM_STREAM})
+                                          'upstream_stream': model in UPSTREAM_STREAM,
+                                          'network': getattr(task, 'dev_network', 'none'),
+                                          'builtin_tools': builtin_tools})
     credential_env, credential_file = CREDENTIALS.get(model, DEFAULT_CREDENTIAL)
     token = secrets.token_urlsafe(32)
     port = _free_port()
@@ -1053,8 +1063,11 @@ def develop(spec: dict, runtime: dict) -> dict:
                             '--no-same-owner', '-xf', '-'], stdin=stream, check=True, capture_output=True, timeout=120)
         docker.run('exec', '-d', name, 'socat', f'TCP-LISTEN:{CONTAINER_PORT},bind=127.0.0.1,fork,reuseaddr',
                    'UNIX-CONNECT:/run/atr/atr.sock')
+        for command in (task.dev_exec() if hasattr(task, 'dev_exec') else []):  # e.g. the bridge to a web proxy
+            docker.run('exec', '-d', name, *command)
         launcher_spec = {
             'base_url': f'http://127.0.0.1:{CONTAINER_PORT}', 'token': token, 'model': model, 'harness': harness,
+            'builtin_tools': builtin_tools,
             'prompt': prompt(task.name, runtime, protocol, setting, seconds), 'client_timeout_seconds': seconds, **route,
         }
         (output / 'prompt.txt').write_text(launcher_spec['prompt'])

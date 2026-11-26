@@ -10,7 +10,7 @@ public and private instance files (which stay in the internal repository).
 A version whose task.json names data_dir (v3.2: the v3.1 instance sets) takes its samples and instance files from
 there and only its workspace from its own directory.
 
-Usage: seal_cubature_v3.py [--version v3|v3.1|v3.2|v3.3] [--force] [--provisional]
+Usage: seal_cubature_v3.py [--version v3|v3.1|v3.2|v3.3|v3.4] [--force] [--provisional]
 """
 from __future__ import annotations
 
@@ -86,7 +86,7 @@ def workspace_tar(destination: Path, provisional: bool = False) -> int:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--version', default='v3', choices=('v3', 'v3.1', 'v3.2', 'v3.3'))
+    parser.add_argument('--version', default='v3', choices=('v3', 'v3.1', 'v3.2', 'v3.3', 'v3.4'))
     parser.add_argument('--force', action='store_true', help='replace an existing seal')
     parser.add_argument('--provisional', action='store_true',
                         help='no samples.json yet: lets the task image be loaded into the grading daemons early; '

@@ -494,6 +494,25 @@ M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1
 
 108 例全部有效，单例最长 5.2 秒。Opus 的程序学习完整二次曲面后用控制变量，\(d=64\) 时退回 RQMC；困难赛道的 H1、H2 几乎没有增益，期权赛道与 GPT-6.2 Sol 接近（看涨更好，数字更差）。理论上两个模型的策略截然不同：GPT-6.2 Sol 做多维有限参数类上的新结论（均为不可比），Opus 做一维经典结果的精确复现（均为相当）。按映射字面后者得分会更高；用户 11-26 确定“相当 = 50”只适用于对上题目所属问题上的强 SOTA，复现经典特例定在 50 以下（`THEORY_REVIEW.md` 第 2、7 节）。
 
+### 9.13 v3.4：开发阶段可联网（11-26）
+
+用户提出：结合理论的题目希望超越人类 SOTA，做题 agent 应能联网查文献。选择“放开公网，只屏蔽我们自己的仓库和内网”，只重跑 GPT-6.2 Sol。
+
+**实现**：开发容器仍是 `--network none`；宿主侧代理 `arena/netproxy.py` 监听 Unix 套接字，经 socat 桥接为容器内的 `127.0.0.1:3128`，`HTTPS_PROXY`/`HTTP_PROXY` 已设置（`NO_PROXY` 覆盖本机，模型 API 走原来的 ATR 通道）。放行任意公网目标的 HTTPS（443）与 HTTP（80），拒绝：
+
+- GitHub 及其镜像（主机名含 github、ghproxy、fastgit、gitclone，以及 Gitee、Software Heritage、Sourcegraph）。FrontierAM 仓库在 GitHub 上公开，含实例生成器、前几次试跑的程序与证明和评审文档；HTTPS 下代理只看得到主机名，所以只能整域屏蔽。Mathlib 文档站 `leanprover-community.github.io` 放行；
+- 包管理源（PyPI、conda、npm 等，以及 Hugging Face）：评测时仍是离线镜像，开发时装的包用不上；
+- 在线大模型服务（OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter 等）：一次试跑只评一个模型；
+- 内网：`*.woa.com`、`*.oa.com`，以及解析到私有、运营商 NAT、链路本地、组播或内部网段的任何地址（对实际连接的地址检查，公网域名解析到内网也拒绝）。
+
+每个请求记一行到运行目录的 `netproxy.jsonl`。厂商侧联网工具（Codex 的 `web_search`）关闭，因为它在厂商侧执行、会绕过代理：`arena/native.py` 按任务的 `dev_builtin_tools` 启动 harness，v3.4 只为 Codex 定义了工具列表（其余 harness 拒绝启动）。提示词里“机器离线”一句换成联网说明；题面新增“网络（开发阶段）”一节，引用要求改为可核对的出处（arXiv 编号或 DOI 与定理编号），禁止项改为“程序在评测时联网、查找或使用与本评测相关的材料、使用在线 AI 服务”。
+
+**验证**：21 个单元测试（域名规则、标签边界、公网名解析到回环被拒）；宿主机实测 arXiv、明文 HTTP、Mathlib 文档、Bing 放行，GitHub、raw.githubusercontent、PyPI、OpenAI、git.woa.com、10.0.0.1 拒绝；冒烟测试全部检查项通过（容器内 arXiv 200，GitHub、PyPI、OpenAI、内网被拒并记入日志）；试跑第一个请求的工具列表为 10 个，没有 `web_search`。
+
+**顺带发现**：FrontierAM 的启动脚本此前没有传 `builtin_tools`，所以所有离线运行都把厂商侧联网工具提供给了模型（Codex 的 `web_search`，Claude Code 的 WebSearch 与 WebFetch；试点仓库当时是关掉的）。审计 371 次开发运行的 40248 个响应（`var/raw/web-tool-audit-20261126.tsv`）：只有 1 次实际调用，即 11-20 galaxy-gravity-v4 的 GPT-6.2 Sol v6.3 迭代运行中的一次 `web_search`，状态为完成，查询内容上游没有保留；cubature 的所有试跑都没有调用。上游会真正执行这个搜索。
+
+**试跑**：GPT-6.2 Sol，迭代，6 小时上限，验证运行，11-26 19:51 开始（`dev-blackbox-cubature-v3.4-20261126T115124Z-276f36`）。
+
 ## 参考文献
 
 1. ✓ A. Hinrichs, E. Novak, M. Ullrich, H. Woźniakowski, The curse of dimensionality for numerical integration of smooth functions, Math. Comp. 83 (2014) 2853–2863。

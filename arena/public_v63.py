@@ -54,6 +54,7 @@ PUBLIC = {
     'blackbox-cubature-v3.1': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
     'blackbox-cubature-v3.2': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
     'blackbox-cubature-v3.3': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
+    'blackbox-cubature-v3.4': {'family': 'blackbox-cubature', 'store': STORE, 'env': {'FRONTIERAM_CUBATURE_DATA': 'public'}},
     'continuum-estimation': {'family': 'continuum-estimation', 'store': STORE, 'env': {'FRONTIERAM_CONTINUUM_DATA': 'public'}},
     'fluorescence-deconvolution': {'family': 'fluorescence-deconvolution', 'store': STORE, 'env': {'FRONTIERAM_FLUOR_DATA': 'public'}},
     # pdhcg-qp has one reference (score 100 p / (1 + g / g_ref)); its public baseline keeps the reference rows as strong.
