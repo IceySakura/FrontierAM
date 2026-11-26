@@ -115,6 +115,16 @@ MEMORY = 4 * 2**30
 # tasks; native harness threads under UID 1000 made concurrent grading fail with "Cannot fork".
 DEV_UID = 2000
 
+# Offline protocol (user decision 2026-11-26): provider-side web tools run on the provider's servers, outside the
+# container's --network none, so harnesses do not offer them. Codex takes an explicit built-in list, Claude Code a
+# disallow list; a task with network access names its own built-ins (dev_builtin_tools). Not yet covered: dsh
+# (tool-web; its composition entries differ per installed profile) and antigravity (built-ins from the Gemini SDK).
+OFFLINE_BUILTIN_TOOLS = {
+    'codex': ('apply_patch', 'create_goal', 'exec_command', 'get_goal', 'request_user_input', 'tool_search',
+              'update_goal', 'update_plan', 'view_image', 'write_stdin'),
+}
+OFFLINE_HARNESS_OPTIONS = {'claude': {'disallowed_tools': ['WebSearch', 'WebFetch']}}
+
 LAUNCHER = r'''
 import json, os, subprocess, sys
 from contextlib import ExitStack
@@ -130,7 +140,8 @@ endpoint = Endpoint(base_url=spec["base_url"], token=spec["token"], model=spec["
 # the longest max-effort response ends the attempt; every client gets the full development window instead.
 WINDOW_MS = int(spec["client_timeout_seconds"] * 1000)
 options = {"step": {"httpIdleTimeoutMs": 0, "retry": {"provider": {"timeoutMs": WINDOW_MS}}}}
-task = Task(prompt=spec["prompt"], workspace=Path("/workspace"), harness_options=options.get(spec["harness"], {}),
+task = Task(prompt=spec["prompt"], workspace=Path("/workspace"),
+            harness_options={**options.get(spec["harness"], {}), **spec.get("harness_options", {})},
             builtin_tools=None if spec.get("builtin_tools") is None else tuple(spec["builtin_tools"]))
 harness = resolve(spec["harness"])
 refused = harness.refuses(task)
@@ -944,7 +955,8 @@ def develop(spec: dict, runtime: dict) -> dict:
     tool_policy = getattr(task, 'dev_builtin_tools', None)
     if tool_policy is not None and harness not in tool_policy:
         raise ValueError(f'{task.name} defines no built-in tool policy for the {harness} harness')
-    builtin_tools = tool_policy[harness] if tool_policy is not None else None
+    builtin_tools = tool_policy[harness] if tool_policy is not None else OFFLINE_BUILTIN_TOOLS.get(harness)
+    harness_options = {} if tool_policy is not None else OFFLINE_HARNESS_OPTIONS.get(harness, {})
     placement = Placement(**spec['placement'])
     output = Path(spec['output'])
     frozen_dir = output / 'task'
@@ -979,7 +991,7 @@ def develop(spec: dict, runtime: dict) -> dict:
                                           'test_cap_seconds': TEST_CAP_SECONDS if iterative else None,
                                           'upstream_stream': model in UPSTREAM_STREAM,
                                           'network': getattr(task, 'dev_network', 'none'),
-                                          'builtin_tools': builtin_tools})
+                                          'builtin_tools': builtin_tools, 'harness_options': harness_options})
     credential_env, credential_file = CREDENTIALS.get(model, DEFAULT_CREDENTIAL)
     token = secrets.token_urlsafe(32)
     port = _free_port()
@@ -1067,7 +1079,7 @@ def develop(spec: dict, runtime: dict) -> dict:
             docker.run('exec', '-d', name, *command)
         launcher_spec = {
             'base_url': f'http://127.0.0.1:{CONTAINER_PORT}', 'token': token, 'model': model, 'harness': harness,
-            'builtin_tools': builtin_tools,
+            'builtin_tools': builtin_tools, 'harness_options': harness_options,
             'prompt': prompt(task.name, runtime, protocol, setting, seconds), 'client_timeout_seconds': seconds, **route,
         }
         (output / 'prompt.txt').write_text(launcher_spec['prompt'])

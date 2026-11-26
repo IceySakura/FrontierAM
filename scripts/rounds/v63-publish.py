@@ -155,6 +155,13 @@ SOL62_FEEDBACK = ('第 1 次尝试的第 2–8 次测试在评测方构建失败
                   '反馈流程却把它报成“未测（评测方原因，不是对提交的判定）”，模型因此没有收到构建失败的信息；评测方问题，记未测')
 RERUN[('conic', 'iterative', 'gpt-6.2-sol')] = (2, SOL62_FEEDBACK + '；本格为修复反馈分类后的第 2 次尝试。')
 UNMEASURED = {('conic', 'iterative', 'gpt-6.2-sol'): SOL62_FEEDBACK + '；修复反馈分类后的第 2 次尝试进行中。'}
+# gpt-6.2-sol galaxy-gravity-v4 iterative: the v6 launcher offered Codex's provider-side web_search until 2026-11-26,
+# and attempt 1 ran one search (completed upstream, query not kept). User decision 2026-11-26: offline runs no longer
+# offer provider-side web tools and this cell is rerun; attempt 1 shows as unmeasured until the rerun has a result.
+SOL62_WEB = ('第 1 次尝试中模型用 Codex 自带的 web_search 做过一次联网搜索（在厂商侧执行，不经过断网的容器；查询内容未保留）；'
+             '自 11-26 起离线运行不再提供厂商侧联网工具（用户决定）')
+RERUN[('galaxy-gravity-v4', 'iterative', 'gpt-6.2-sol')] = (2, SOL62_WEB + '；本格为关闭联网工具后的第 2 次尝试。')
+UNMEASURED[('galaxy-gravity-v4', 'iterative', 'gpt-6.2-sol')] = SOL62_WEB + '；关闭联网工具后的第 2 次尝试进行中。'
 # gpt-6.2-sol polarization v3: the first gradings ran beside 6 development attempts and other gradings, and scenes
 # timed out at the 1 s limit. As in the 11-14 and 11-17 cases: unmeasured, regraded once no development slot is leased
 # (scripts/rounds/regrade-dev-idle.sh keeps the first result as score.first.json); the regrade stands once it exists.

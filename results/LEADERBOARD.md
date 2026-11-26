@@ -27,6 +27,7 @@
 
 - 模型流量走 agent-traffic-runtime（ATR）。每个模型使用自己的原生 harness，推理强度、输出长度和上下文都设为 ATR 目录中验证过的最高值。
 - harness 运行在断网的开发容器内，通过 Unix socket 连到宿主上的 `atr serve`。凭据只留在宿主，不进入容器。
+- 厂商侧联网工具（Codex 的 `web_search`，Claude Code 的 WebSearch 与 WebFetch）在厂商服务器上执行，不经过容器网络。11-26 之前它们一直在提供给模型的工具列表里（v6 启动脚本没有关掉）；审计 40248 个响应，只有 galaxy-gravity-v4 的 GPT-6.2 Sol 迭代那一格实际搜索过一次，该格已在关闭工具后重跑。11-26 起离线运行不再提供这些工具（用户决定；dsh 与 antigravity 两种 harness 在下次运行前另行核实）。
 - 开发容器以 UID 2000 运行。原因是 RLIMIT_NPROC 按 UID 在整台主机统计，评测器的进程上限会和开发 harness 的线程互相干扰（`docs/platform/CONCURRENCY.md` §5）。
 - 客户端超时覆盖整个开发窗口：ATR 的非流式传输在长回答生成完之前不发送任何数据，原来的短超时会误判为失败。
 
