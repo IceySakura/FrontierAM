@@ -1,0 +1,26 @@
+{
+ "model": "minimax-m3.1-flash",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "polarization-demosaicking-v3-20261126T210023Z-a2f787",
+ "raw": "RMSE \\(E = 1.6657\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 36.635,
+ "review": null,
+ "process": {
+  "minutes": 55.5,
+  "public_tests": 2,
+  "public_curve": [
+   {
+    "minute": 32.0,
+    "score": 34.60464879132083,
+    "status": "ok"
+   },
+   {
+    "minute": 49.7,
+    "score": 34.60464879132083,
+    "status": "ok"
+   }
+  ]
+ }
+}

@@ -88,7 +88,7 @@
 | Qwen3.8 Max | 单轮 | RMSE \(E = 1.6419\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 38.6 | 41 分钟 | [`v3/qwen3.8-max-0902-single-1/`](solutions/v6.3/v3/qwen3.8-max-0902-single-1/) |
 | Qwen3.8 Max | 迭代 | RMSE \(E = 1.4889\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.6≈ | 8 次提交，114 分钟 | [`v3/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-1/) |
 | MiniMax M3.1 Flash | 单轮 | RMSE \(E = 1.7097\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 32.9 | 23 分钟 | [`v3/minimax-m3.1-flash-single-1/`](solutions/v6.3/v3/minimax-m3.1-flash-single-1/) |
-| MiniMax M3.1 Flash | 迭代 | RMSE \(E = 1.5052\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.1≈ | 10 次提交，86 分钟 | [`v3/minimax-m3.1-flash-iterative-1/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-1/) |
+| MiniMax M3.1 Flash | 迭代 | RMSE \(E = 1.6657\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 36.6 | 2 次提交，56 分钟 | [`v3/minimax-m3.1-flash-iterative-2/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-2/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -188,11 +188,11 @@ public 分数随测试提交：0.0（30 分钟） → 50.6（53 分钟） → 51
 
 ### MiniMax M3.1 Flash（迭代，v6.3）
 
-反馈集改为 16 个留出场景后的第 2 次尝试进行中；此处暂列此前尝试在 116 个计分场景上的成绩（其测试反馈是 Wen5 样例）。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：qwen3.8-max-0902（本格领先的概率 0.17）。
+此前尝试的测试反馈用的是发给模型的 5 个 Wen5 样例，没有 Qiu 场景（qwen4 在样例上拟合的回归器反馈 43 分、私有 0 分）；11-26 起 132 个正式场景中按强参照误差分层取出 16 景（Qiu 4、Wen 12）作为不发给模型的反馈集，正式计分用其余 116 景，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：53.0（27 分钟） → 51.9（47 分钟） → 54.6（50 分钟） → 0.0（54 分钟） → 54.3（59 分钟） → 54.4（62 分钟） → 54.4（65 分钟） → 56.3（68 分钟） → 56.3（78 分钟） → 56.3（84 分钟）
+public 分数随测试提交：34.6（32 分钟） → 34.6（50 分钟）
 
-源码 [`solutions/v6.3/v3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261125T164305Z-9ff305`）；未复制的二进制或大文件：filters.npy（10,496 字节）。
+源码 [`solutions/v6.3/v3/minimax-m3.1-flash-iterative-2/source/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-2/source/)（提交 `polarization-demosaicking-v3-20261126T210023Z-a2f787`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
