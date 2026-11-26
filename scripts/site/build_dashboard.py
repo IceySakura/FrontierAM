@@ -26,7 +26,7 @@ from pathlib import Path
 
 import markdown
 
-from board_stats import SETTINGS, averages, chart_svgs, rank_models, ranking_html
+from board_stats import HIDDEN, SETTINGS, averages, chart_svgs, rank_models, ranking_html
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / 'dashboard'
@@ -406,8 +406,8 @@ def task_page(task: dict) -> str:
     return page(task['title'], '\n'.join(body), depth=1)
 
 
-BOARD_MODELS = ['gpt-6.2-sol', 'gpt-6.1-sol', 'gpt-6-astra', 'claude-opus-5-5', 'qwen3.8-max-0902', 'hy4', 'intern-s2', 'qwen4-max',
-                'minimax-m3.1-flash']
+BOARD_MODELS = ['gpt-6.2-sol', 'gpt-6-astra', 'gpt-6.1-sol', 'claude-opus-5-5', 'hy4', 'qwen4-max', 'qwen3.8-max-0902',
+                'minimax-m3.1-flash', 'intern-s2']
 
 
 def index_page(site: dict, tasks: list[dict]) -> str:
@@ -423,7 +423,8 @@ def index_page(site: dict, tasks: list[dict]) -> str:
     older_groups = [g for t in tasks for g in t['result_groups'][1:]]
     # The main board always lists these models (empty cells where they have no result), then any other with results,
     # ordered by their iterative average.
-    models = rank_models(newest_groups, [*BOARD_MODELS, *(m for m in models_of(newest_groups) if m not in BOARD_MODELS)])
+    models = rank_models(newest_groups, [*(m for m in BOARD_MODELS if m not in HIDDEN),
+                                         *(m for m in models_of(newest_groups) if m not in BOARD_MODELS)])
     head = ''.join(f'<th>{html.escape(model_name(m))}</th>' for m in models)
 
     def cells_for(task: dict, group: dict, models: list[str]) -> str:
@@ -470,7 +471,7 @@ def index_page(site: dict, tasks: list[dict]) -> str:
             '<h2>总榜（满分 100，本机参照实现 = 50）</h2>'
             f'{charts}'
             '<p>每道题只列最新版本（题目版本 · 协议）的成绩；同一格多次尝试按次数依次列出。空格表示该模型没有在这道题上尝试；“—”表示尚未评测。'
-            '列按迭代平均分排序；最后一行为各题分数的简单平均（没有成绩的题不计）。旧版本的成绩在表格下方折叠。</p>'
+            '列按迭代平均分排序（还缺格的行按缺格记 0 估算位置）；最后一行为各题分数的简单平均（没有成绩的题不计）。旧版本的成绩在表格下方折叠。</p>'
             f'<table class="matrix"><tr><th>题目 / 版本</th>{head}</tr>{"".join(rows)}</table>'
             + (f'<details><summary>旧版本的成绩（{len(history)} 组）</summary>'
                f'<table class="matrix"><tr><th>题目 / 版本</th>{old_head}</tr>{"".join(history)}</table></details>' if history else ''))
@@ -490,13 +491,17 @@ def main():
               '所有分数为本机实测；隐藏测试数据不在本站公开')
     site = json.loads((SRC / 'site.json').read_text())
     tasks = sorted((json.loads(p.read_text()) for p in ROOT.glob('tasks/*/meta.json')), key=lambda t: t['order'])
+    for task in tasks:
+        for group in task['result_groups']:
+            group['results'] = [r for r in group['results'] if r['model'] not in HIDDEN]
+    shown = [m for m in BOARD_MODELS if m not in HIDDEN]
     staging = args.out.with_name(args.out.name + '.new')
     if staging.exists():
         shutil.rmtree(staging)
     (staging / 'tasks').mkdir(parents=True)
     shutil.copytree(SRC / 'assets', staging / 'assets')
     newest = [t['result_groups'][0] for t in tasks if t['result_groups']]
-    for file, svg in chart_svgs(newest, BOARD_MODELS, {m: model_name(m) for m in BOARD_MODELS}).items():
+    for file, svg in chart_svgs(newest, shown, {m: model_name(m) for m in shown}).items():
         (staging / 'assets' / file).write_text(svg)
     (staging / 'index.html').write_text(index_page(site, tasks))
     (staging / 'protocol.html').write_text(page('评测协议', md(site['protocol_md'])))

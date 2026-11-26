@@ -19,7 +19,7 @@ import tarfile
 
 from pathlib import Path
 
-from board_stats import CHART_FILES, SETTINGS, averages, chart_svgs, rank_models
+from board_stats import CHART_FILES, HIDDEN, SETTINGS, averages, chart_svgs, rank_models
 
 ROOT = Path(__file__).resolve().parents[2]
 TASKS = ROOT / 'tasks'
@@ -246,10 +246,10 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
     return '\n'.join(lines)
 
 
-COLUMNS = [('gpt-6.2-sol', '单轮'), ('gpt-6.2-sol', '迭代'), ('gpt-6.1-sol', '单轮'), ('gpt-6.1-sol', '迭代'), ('gpt-6-astra', '单轮'), ('gpt-6-astra', '迭代'),
-           ('claude-opus-5-5', '单轮'), ('claude-opus-5-5', '迭代'), ('qwen3.8-max-0902', '单轮'), ('qwen3.8-max-0902', '迭代'),
-           ('hy4', '单轮'), ('hy4', '迭代'), ('intern-s2', '单轮'), ('intern-s2', '迭代'), ('qwen4-max', '单轮'), ('qwen4-max', '迭代'),
-           ('minimax-m3.1-flash', '单轮'), ('minimax-m3.1-flash', '迭代')]
+COLUMNS = [('gpt-6.2-sol', '单轮'), ('gpt-6.2-sol', '迭代'), ('gpt-6-astra', '单轮'), ('gpt-6-astra', '迭代'), ('gpt-6.1-sol', '单轮'), ('gpt-6.1-sol', '迭代'),
+           ('claude-opus-5-5', '单轮'), ('claude-opus-5-5', '迭代'), ('hy4', '单轮'), ('hy4', '迭代'), ('qwen4-max', '单轮'), ('qwen4-max', '迭代'),
+           ('qwen3.8-max-0902', '单轮'), ('qwen3.8-max-0902', '迭代'), ('minimax-m3.1-flash', '单轮'), ('minimax-m3.1-flash', '迭代'),
+           ('intern-s2', '单轮'), ('intern-s2', '迭代')]
 PROTOCOLS = ('v6.3', 'v6.2', 'v6.1', 'v6')  # newest first; the board shows the newest one that has results
 
 
@@ -259,7 +259,7 @@ def write_board(metas: list[dict], names: list[str]) -> None:
     newest = [next((g for g in meta['result_groups'] if g.get('protocol') == protocol), None) for meta in metas]  # newest task version
     groups = [g for g in newest if g]
     # every model of this round always (cells stay empty without a result), ordered by the iterative average
-    models = rank_models(groups, list(dict.fromkeys(m for m, _ in COLUMNS)))
+    models = rank_models(groups, [m for m in dict.fromkeys(m for m, _ in COLUMNS) if m not in HIDDEN])
     columns = [(m, s) for m in models for s in SETTINGS]
     head = '| task | ' + ' | '.join(f'{MODEL[m]} {s}' for m, s in columns) + ' |'
     rule = '| --- |' + ' --- |' * len(columns)
@@ -285,7 +285,7 @@ def write_board(metas: list[dict], names: list[str]) -> None:
     charts = (f'![平均分 · compared by 迭代](dashboard/assets/{CHART_FILES["迭代"]})\n\n'
               f'<details><summary>Compared by 单轮</summary>\n\n![平均分 · compared by 单轮](dashboard/assets/{CHART_FILES["单轮"]})\n\n</details>')
     board = (f'协议 {protocol}；更早协议与题目版本的成绩见各题 README。' + '\n\n' + charts + '\n\n'
-             + '\n'.join(scores) + '\n\n满分 100，参照 = 50；列按迭代平均分排序；平均为各题分数的简单平均，没有成绩的题不计。\n\n**提交次数与用时**\n\n'
+             + '\n'.join(scores) + '\n\n满分 100，参照 = 50；列按迭代平均分排序（还缺格的行按缺格记 0 估算位置）；平均为各题分数的简单平均，没有成绩的题不计。\n\n**提交次数与用时**\n\n'
              + '\n'.join(process))
     readme = ROOT / 'README.md'
     text = readme.read_text()
@@ -300,6 +300,8 @@ def main():
     for meta_path in sorted(TASKS.glob('*/meta.json'), key=lambda p: json.loads(p.read_text())['order']):
         family = meta_path.parent
         meta = json.loads(meta_path.read_text())
+        for group in meta['result_groups']:
+            group['results'] = [r for r in group['results'] if r['model'] not in HIDDEN]
         version = family / 'versions' / meta['current_version']
         (version / 'statement.md').write_text(statement(meta['statement']))
         listed = []

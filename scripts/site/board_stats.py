@@ -10,6 +10,8 @@ COLORS = {'gpt-6.1-sol': '#10a37f', 'claude-opus-5-5': '#d97757', 'hy4': '#3b6ff
           'minimax-m3.1-flash': '#dc2626'}
 # Board column order: the newer version directly before its predecessor (user instruction, 2026-11-19).
 BEFORE = {'gpt-6.2-sol': 'gpt-6.1-sol'}
+# Kept in meta.json, shown on no page (README board, task pages, dashboard) by default (user instruction, 2026-11-26).
+HIDDEN = {'intern-s2'}
 FONT = ("Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, "
         "'PingFang SC', 'Microsoft YaHei', sans-serif")
 
@@ -33,15 +35,16 @@ def averages(groups: list[dict], models: list[str]) -> dict:
 
 
 def rank_models(groups: list[dict], models: list[str]) -> list[str]:
-    """Models ordered by their iterative average, then their single average (best first; no score last); a model
-    whose iterative row is still missing tasks follows the complete ones. A model in BEFORE then moves directly before
-    the model it names, whatever the averages."""
+    """Models ordered by their iterative average, then their single average (best first; no score last). A row still
+    missing tasks ranks by its average with the missing cells counted as 0, so it sits roughly where it will end up
+    instead of jumping ahead on a few cells (user instruction, 2026-11-26: order roughly by ranking). A model in BEFORE
+    then moves directly before the model it names, whatever the averages."""
     means = averages(groups, models)
 
-    def key(model: str):
-        return (means[(model, '迭代')][1] < len(groups),
-                *(-(means[(model, s)][0] if means[(model, s)][0] is not None else -1.0) for s in ('迭代', '单轮')))
-    order = sorted(models, key=key)
+    def ranked(model: str, setting: str) -> float:
+        mean, count = means[(model, setting)]
+        return -1.0 if mean is None else mean * count / len(groups)
+    order = sorted(models, key=lambda m: tuple(-ranked(m, s) for s in ('迭代', '单轮')))
     for model, anchor in BEFORE.items():
         if model in order and anchor in order and order.index(model) > order.index(anchor):
             order.remove(model)
