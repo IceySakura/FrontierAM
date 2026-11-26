@@ -1,0 +1,45 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md, R1: Query complexity for offset ellipsoids",
+      "lean": ["Cubature.translated_ellipsoid_cubature"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo and Sloan (2022), Theorem 1 on square-root singularities after directional preintegration",
+          "Matousek (1995), half-space discrepancy lower bound"
+        ],
+        "explanation": "Exploits an identified parametric family and a supplied interior anchor. Reconstructs the jump with adaptive black-box comparisons and a worst-case relative bound even in the Gaussian tail; it does not apply to general nonmonotone surfaces or equal-weight rules."
+      }
+    },
+    {
+      "id": "R3",
+      "claim": "THEORY.md, R3: An adaptive lower bound without an interior witness",
+      "lean": ["Cubature.hidden_ball_relative_lower", "Cubature.hidden_ball_randomized_relative_lower"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Hinrichs, Novak, Ullrich and Wozniakowski (2014), Theorem 1 on the curse for C^r_d"
+        ],
+        "explanation": "Their lower bounds concern worst-case absolute integration error on bounded smooth function classes. This result concerns relative Gaussian error for translates of one known compact jump shape with unknown height, and quantifies interior discovery for deterministic strategies and finite uniform random seeds."
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md, R2: Robust value-only localization of an internal kink",
+      "lean": ["Cubature.noisy_internal_kink"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Plaskota and Wasilkowski (2005), single-unknown-singularity adaptive quadrature result",
+          "Bayer, Ben Hammouda and Tempone (2023), numerical smoothing by root finding"
+        ],
+        "explanation": "The noisy-query conclusion is local and only for a separated linear kink over a second-difference-bounded background. It permits nonzero kink levels and either sign of derivative jump; it does not give a global integration rate."
+      }
+    }
+  ]
+}

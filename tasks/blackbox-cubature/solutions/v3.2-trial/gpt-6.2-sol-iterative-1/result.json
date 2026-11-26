@@ -1,0 +1,39 @@
+{
+ "task": "blackbox-cubature-v3.2",
+ "model": "gpt-6.2-sol",
+ "setting": "iterative (v6.3 harness, 6 h limit, validation run)",
+ "dev_run": "dev-blackbox-cubature-v3.2-20261126T025620Z-25cc02",
+ "submission": "blackbox-cubature-v3.2-20261126T033228Z-d46e41",
+ "started_local": "2026-11-26 10:56",
+ "agent_stop_reason": "formal_submission",
+ "development_seconds": 2162.1,
+ "model_requests": 116,
+ "test_submissions": 5,
+ "tests": [
+  {"test": 1, "status": "ok", "public_score": 70.23344262108492},
+  {"test": 2, "status": "ok", "public_score": 70.99040988408598},
+  {"test": 3, "status": "ok", "public_score": 71.24165155814812},
+  {"test": 4, "status": "ok", "public_score": 71.13975351117698},
+  {"test": 5, "status": "ok", "public_score": 73.33160203985148}
+ ],
+ "private_suite": "suite-blackbox-cubature-v3.2-20261126T034021Z-714e38",
+ "reference_suite": "suite-blackbox-cubature-v3.1-20261125T120404Z-5b7631",
+ "reference_suite_note": "the v3.1 reference suite measured on this machine on 2026-11-25 for the same private instance file (identical hash); the references are seeded and deterministic (the v3.1 and v3.2 public baselines agree bit for bit)",
+ "program": {
+  "raw": {"G": 0.4749497991189766, "hard": 0.872, "options": 0.078, "G0": -0.36177241147284983},
+  "mapping": "G >= 0: 50 + 25 G",
+  "score": 61.87374497797441,
+  "detail": "score.json"
+ },
+ "theory": {
+  "formal_check": "lean-check/lean-check.json (lake comparator accepted all 3 proved results: R1, R2, R3; no flagged commands in the statement layer)",
+  "review": "tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 5 (provisional, not an expert review)",
+  "results": [
+   {"id": "R1", "verified": true, "faithful": true, "class": "incomparable", "score": 35},
+   {"id": "R2", "verified": true, "faithful": true, "class": "incomparable (leaning weaker)", "score": 25},
+   {"id": "R3", "verified": true, "faithful": true, "class": "incomparable (leaning weaker)", "score": 20}
+  ],
+  "mapping": "human SOTA = 50; incomparable results priced by the human papers' own viewpoint, below 50 when they do not advance a question those papers raise; theory score = maximum over verified results",
+  "score": 35
+ }
+}
