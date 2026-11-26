@@ -6,7 +6,8 @@ SETTINGS = ('单轮', '迭代')
 CHART_FILES = {'单轮': 'board-single.svg', '迭代': 'board-iterative.svg'}
 # One colour per model, the same in both charts.
 COLORS = {'gpt-6.1-sol': '#10a37f', 'claude-opus-5-5': '#d97757', 'hy4': '#3b6ff5', 'qwen3.8-max-0902': '#7c5cff',
-          'intern-s2': '#0ea5b7', 'gpt-6.2-sol': '#065f46', 'gpt-6-astra': '#be185d'}
+          'intern-s2': '#0ea5b7', 'gpt-6.2-sol': '#065f46', 'gpt-6-astra': '#be185d', 'qwen4-max': '#5b21b6',
+          'minimax-m3.1-flash': '#dc2626'}
 # Board column order: the newer version directly before its predecessor (user instruction, 2026-11-19).
 BEFORE = {'gpt-6.2-sol': 'gpt-6.1-sol'}
 FONT = ("Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, "

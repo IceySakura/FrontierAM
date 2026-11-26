@@ -117,7 +117,8 @@ SAMPLE_FEEDBACK = ('出题人只提供带真值的公开样例和 private 集，
                    '模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。')
 for _task in ('continuum-estimation', 'fluorescence-deconvolution'):
     for _key in ((_task, 'iterative'), *((_task, 'iterative', _model) for _model in ('claude-opus-5-5', 'qwen3.8-max-0902', 'hy4', 'intern-s2',
-                                                                                   'gpt-6.2-sol', 'gpt-6-astra'))):
+                                                                                   'gpt-6.2-sol', 'gpt-6-astra', 'qwen4-max',
+                                                                                   'minimax-m3.1-flash'))):
         NOTES[_key] = ' '.join(filter(None, (NOTES.get(_key), SAMPLE_FEEDBACK)))
 # gpt-6-astra runs on the user's ChatGPT Pro account through the Codex backend instead of AI Hub (user decision 2026-11-21).
 ASTRA_ROUTE = ('经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token'
@@ -147,13 +148,34 @@ REGRADE = {('polarization-demosaicking-v3', 'single', 'gpt-6.2-sol'): POL_LOAD.f
                '第一次评分只有第一景 qiu/ball 超时（1.0007 秒，首景冷启动）；第一次重评时同机有其他项目的进程启动，31 景成段超时；'
                '第二次重评（机器安静）只有 qiu/lock 一景因偶发停顿超时（1.0009 秒，其余最长 0.755 秒）。各次评分逐景 RMSE 完全相同'
                '（输出是确定的），每景都至少两次在时限内跑完；按用户确认（11-23），取第二次重评，qiu/lock 用第一次评分中的结果'
-               '（0.737 秒）补齐，合成完整评分。评测环境约 2.5% 的场景有 0.2–0.3 秒的停顿，已记入 results/OPEN_ITEMS.md 待反馈出题人；'}
+               '（0.737 秒）补齐，合成完整评分。评测环境约 2.5% 的场景有 0.2–0.3 秒的停顿，已记入 results/OPEN_ITEMS.md 待反馈出题人；',
+           # first grading beside a 7-shard exponential regrade; a quiet regrade hit an environment stall; the third
+           # grading ran every scene within the limit (results/OPEN_ITEMS.md, 11-26)
+           ('polarization-demosaicking-v3', 'iterative', 'qwen4-max'):
+               '第一次评分（开发槽全空）与 exponential 的 7 分片重评同时进行，前 9 景连续超时（约 1.0005 秒，其余约 0.85 秒），'
+               '记未测；机器空闲时重评又有 4 景因环境停顿超时（约 1.001 秒）；第三次评分 132 景都在时限内（最长 0.911 秒），',
+           # two shards flagged slow_slot; a two-case remeasure passed k1 at 10.3 s CPU against the 15 s cap
+           ('exponential-v3', 'single', 'qwen4-max'):
+               '第一次评分有两个分片负载报警（探针 1.38、1.42），判无效的两例都是 CPU 上限；只重测这两例时 '
+               '`syn_geometric_p10_k1` 以 10.3 秒 CPU 通过（原评分三次触 15 秒上限），故记未测，开发槽全空时整套重评：'
+               'k1 通过，`syn_geometric_p10_k16` 复用仍超 150 秒 CPU 上限，仍判无效，'}
+NOTES[('conic', 'iterative', 'qwen4-max')] = (
+    '第 1 次运行在第 75 分钟中断：模型为清理自己卡住的 `python -` 进程执行 `pkill -f \'python -\'`，一并杀掉了容器内命令行为 '
+    '`/opt/atr-venv/bin/python -c …` 的 harness 启动器（harness 隔离缺陷，记未测）；本格为同编号重跑。')
+NOTES[('galaxy-gravity-v4', 'iterative', 'qwen4-max')] = (
+    '提交含 985 MB 预计算表，私有评分时 7 个分片同时解包，评测器 30 秒的 `docker create` 超时（评测设施问题，两次记未测）；'
+    '分片错开 90 秒启动后评完：419 万粒子各例超出 2 GiB 内存上限，100 万粒子 jaffe 一例超 CPU 上限，判无效。')
+NOTES[('galaxy-gravity-v4', 'iterative', 'minimax-m3.1-flash')] = (
+    '最大档 3 例（419 万粒子）三次重复都超 CPU 上限（100–110 秒；所在分片负载探针 1.06–1.10），判无效。')
+NOTES[('galaxy-gravity-v4', 'single', 'minimax-m3.1-flash')] = (
+    '`build.sh` 把 CPU 检测小程序编译到 `/tmp` 再执行；评测构建容器的 `/tmp` 不可执行（Docker tmpfs 默认 noexec），开发容器'
+    '可执行，题面未写明，构建失败，按题目规则记 0（已记入 results/OPEN_ITEMS.md 待反馈出题人）。60 分钟到时截停。')
 TITLE = '协议 v6.3（单轮 1 小时 / 迭代 4 小时；2026-11-10 起）'
 LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)'
 
 
 MODELS = [('gpt-6.2-sol', 'sol62'), ('gpt-6.1-sol', 'sol'), ('gpt-6-astra', 'astra'), ('claude-opus-5-5', 'opus'), ('qwen3.8-max-0902', 'qwen'), ('hy4', 'hy4'),
-          ('intern-s2', 'intern')]  # (model, attempt-log tag); NOTES keys add the model for opus
+          ('intern-s2', 'intern'), ('qwen4-max', 'qwen4'), ('minimax-m3.1-flash', 'minimax')]  # (model, attempt-log tag); NOTES keys add the model for opus
 
 
 def submission_of(task: str, setting: str, n: int, tag: str = 'sol') -> str | None:
