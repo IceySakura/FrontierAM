@@ -11,8 +11,10 @@ score changes. The curve of a cell is the private score of its latest test snaps
   register TASK...   stage every snapshot into the curves store as a submission (re-validated like any archive)
   grade TASK...      grade the registered snapshots on private (slot broker; polarization only with development idle)
   collect            private score and raw metric per snapshot -> var/raw/scale-curves/scores.json
+  curves             per-cell step curves, the per-model average over the tasks, summary rows and SVG panels
+                     -> var/raw/scale-curves/{curves.json,svg/}
 
-Usage: FRONTIERAM_RUNTIME=$PWD/.runtime-recal scale-curves.py inventory|register|grade|collect [TASK ...] [--workers N]
+Usage: FRONTIERAM_RUNTIME=$PWD/.runtime-recal scale-curves.py inventory|register|grade|collect|curves [TASK ...] [--workers N]
 """
 
 import argparse
@@ -243,9 +245,103 @@ def ihvp_score(summary: Path) -> dict:
     return {'score': score, 'status': 'ok', 'raw_error': loss, 'valid': valid, 'cases': n}
 
 
+MINUTES = 240
+MARKS = (60, 120, 180, 240)
+
+
+def cells() -> dict:
+    """(task, model) -> attempt, its tests in time order (public and private score) and its end (formal score)."""
+    scores, out = load('scores.json'), {}
+    for row in json.loads((OUT / 'inventory.json').read_text()):
+        cell = out.setdefault((row['task'], row['model']), {'task': row['task'], 'model': row['model'],
+                                                             'attempt': row['attempt'], 'run': row['run'], 'tests': []})
+        if row.get('final'):
+            cell.update(end=(row['t_s'] or MINUTES * 60) / 60, formal=row.get('formal_score'), stop=row.get('stop'))
+        else:
+            s = scores.get(key(row)) or {}
+            cell['tests'].append({'test': row['test'], 'minute': (row['t_s'] or 0) / 60, 'public': row.get('public_score'),
+                                  'private': s.get('score'), 'status': s.get('status')})
+    for cell in out.values():
+        cell['tests'].sort(key=lambda t: t['minute'])
+    return out
+
+
+def at(cell: dict, minute: float, which: str = 'private') -> float | None:
+    """The score of the latest test snapshot requested by `minute` (0 before the first test); the formal score from the
+    end of the attempt on. A snapshot not graded yet keeps the previous value."""
+    if minute >= cell['end'] and which == 'private' and cell.get('formal') is not None:
+        return cell['formal']
+    value = 0.0
+    for test in cell['tests']:
+        if test['minute'] <= minute and test[which] is not None:
+            value = test[which]
+    return value
+
+
+def curves_svg(title: str, lines: dict[str, list[tuple[float, float]]], dots: dict[str, list[tuple[float, float]]],
+               names: dict[str, str]) -> str:
+    """Step curves (x = minutes, y = 0-100, reference 50 dashed), one colour per model; dots: public scores."""
+    sys.path.insert(0, str(ROOT / 'scripts/site'))
+    from board_stats import COLORS
+    width, height, left, pad = 560, 240, 34, 22
+    x = lambda m: left + (width - left - pad) * m / MINUTES
+    y = lambda s: height - pad - (height - 2 * pad) * max(0.0, min(100.0, s)) / 100
+    parts = [f'<text x="{left}" y="14" font-size="12" font-weight="600">{title}</text>',
+             f'<line x1="{left}" y1="{y(0)}" x2="{width - pad}" y2="{y(0)}" stroke="#bbb"/>',
+             f'<line x1="{left}" y1="{y(50)}" x2="{width - pad}" y2="{y(50)}" stroke="#bbb" stroke-dasharray="4 3"/>']
+    for s in (0, 50, 100):
+        parts.append(f'<text x="{left - 4}" y="{y(s) + 4}" text-anchor="end" font-size="10" fill="#888">{s}</text>')
+    for m in (0, 60, 120, 180, 240):
+        parts.append(f'<text x="{x(m)}" y="{height - 6}" text-anchor="middle" font-size="10" fill="#888">{m}</text>')
+    for model, points in lines.items():
+        colour = COLORS.get(model, '#6b7280')
+        path = ' '.join(f'{x(m):.1f},{y(s):.1f}' for m, s in points)
+        parts.append(f'<polyline points="{path}" fill="none" stroke="{colour}" stroke-width="1.6">'
+                     f'<title>{names.get(model, model)}</title></polyline>')
+        for m, s in dots.get(model, []):
+            parts.append(f'<circle cx="{x(m):.1f}" cy="{y(s):.1f}" r="2.2" fill="none" stroke="{colour}">'
+                         f'<title>{names.get(model, model)} public {s:.1f}（{m:.0f} 分钟）</title></circle>')
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="{width}" height="{height}" '
+            f'font-family="sans-serif">{"".join(parts)}</svg>\n')
+
+
+def build_curves() -> None:
+    """Curves of the latest test snapshot's private score per cell, their average over the tasks per model, summary rows."""
+    names = {m: m for m in TAGS}
+    grid = [m / 2 for m in range(0, 2 * MINUTES + 1)]
+    data = cells()
+    steps = {k: [(m, at(c, m)) for m in grid] for k, c in data.items()}
+    summary = []
+    for (task, model), cell in sorted(data.items()):
+        graded = [t for t in cell['tests'] if t['private'] is not None]
+        gaps = [t['public'] - t['private'] for t in graded if t['public'] is not None]
+        summary.append({'task': task, 'model': model, 'attempt': cell['attempt'], 'tests': len(cell['tests']),
+                        'graded': len(graded), 'end_minute': round(cell['end'], 1), 'formal': cell.get('formal'),
+                        'best_snapshot': max((t['private'] for t in graded), default=None),
+                        'first_test_minute': round(cell['tests'][0]['minute'], 1) if cell['tests'] else None,
+                        **{f'at_{m}': at(cell, m) for m in MARKS},
+                        'mean_public_minus_private': sum(gaps) / len(gaps) if gaps else None})
+    models = sorted({m for _, m in data}, key=list(TAGS).index)
+    tasks = [t for t in TASKS if any(k[0] == t for k in data)]
+    average = {m: [(g, sum(at(data[(t, m)], g) for t in tasks) / len(tasks)) for g in grid]
+               for m in models if all((t, m) in data for t in tasks)}
+    svg = OUT / 'svg'
+    svg.mkdir(parents=True, exist_ok=True)
+    for task in tasks:
+        lines = {m: steps[(task, m)] for m in models if (task, m) in steps}
+        dots = {m: [(t['minute'], t['public']) for t in data[(task, m)]['tests'] if t['public'] is not None]
+                for m in models if (task, m) in data}
+        (svg / f'{task}.svg').write_text(curves_svg(task, lines, dots, names))
+    (svg / 'average.svg').write_text(curves_svg(f'{len(tasks)} 题平均', average, {}, names))
+    save('curves.json', {'tasks': tasks, 'models': models, 'marks': list(MARKS), 'summary': summary,
+                         'average_at': {m: {str(g): s for g, s in pts if g in MARKS} for m, pts in average.items()},
+                         'cells': {f'{t}/{m}': c for (t, m), c in data.items()}})
+    print(json.dumps({'cells': len(data), 'tasks': tasks, 'average_models': len(average)}))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('command', choices=('inventory', 'register', 'grade', 'collect'))
+    parser.add_argument('command', choices=('inventory', 'register', 'grade', 'collect', 'curves'))
     parser.add_argument('tasks', nargs='*')
     parser.add_argument('--workers', type=int, default=3)
     args = parser.parse_args()
@@ -256,6 +352,8 @@ def main() -> None:
         register(tasks)
     elif args.command == 'grade':
         grade(tasks, args.workers)
+    elif args.command == 'curves':
+        build_curves()
     else:
         collect()
 
