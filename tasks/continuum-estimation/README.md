@@ -79,7 +79,7 @@
 | Qwen3.8 Max | 单轮 | 无效提交（45 of 45 cases failed; first case_002: README.md and run.sh are required） | 任一用例无效、缺失、超时或失败记 0 | 0.0 | 60 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
 | Qwen3.8 Max | 迭代 | 损失 \(E = 0.00306695\)，45 例，单例最长 2.1 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 45.4 | 9 次提交，177 分钟 | [`qwen3.8-max-0902-iterative-3/`](solutions/v6.3/qwen3.8-max-0902-iterative-3/) |
 | MiniMax M3.1 Flash | 单轮 | 损失 \(E = 0.00329319\)，45 例，单例最长 1.3 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 44.7 | 60 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
-| MiniMax M3.1 Flash | 迭代 | 损失 \(E = 0.0105931\)，45 例，单例最长 1.1 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 21.9 | 5 次提交，101 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
+| MiniMax M3.1 Flash | 迭代 | 损失 \(E = 0.0078232\)，45 例，单例最长 0.6 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 30.6 | 14 次提交，157 分钟 | [`minimax-m3.1-flash-iterative-2/`](solutions/v6.3/minimax-m3.1-flash-iterative-2/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -173,11 +173,11 @@ public 分数随测试提交：72.9（93 分钟） → 70.4（117 分钟） → 
 
 ### MiniMax M3.1 Flash（迭代，v6.3）
 
-反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。
+此前尝试的测试反馈用的是工作区里带真值的 8 个样例（迭代中最后一次 public 82–97 分，私有 23–73 分）；11-26 起 60 个 primary 例按真值排序每 4 个取 1 作为不发给模型的反馈集（15 例），正式计分用其余 45 例，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：34.5（13 分钟） → 41.8（28 分钟） → 41.9（60 分钟） → 91.6（73 分钟） → 91.6（94 分钟）
+public 分数随测试提交：73.4（53 分钟） → 75.5（80 分钟） → 73.5（96 分钟） → 75.8（101 分钟） → 77.6（110 分钟） → 76.5（112 分钟） → 77.7（115 分钟） → 77.2（116 分钟） → 77.1（120 分钟） → 77.6（124 分钟） → 77.6（127 分钟） → 75.8（133 分钟） → 77.6（137 分钟） → 77.5（148 分钟）
 
-源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `continuum-estimation-20261125T221313Z-78dc64`）。
+源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-2/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-2/source/)（提交 `continuum-estimation-20261126T160500Z-74c5e9`）。
 
 ## 观察与说明
 
