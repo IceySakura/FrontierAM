@@ -2783,972 +2783,1423 @@
   "max_cpu_fraction": 0.8388382432432432
  },
  "anchors_ok": true,
- "candidate_suite": "suite-galaxy-gravity-v4-20261125T103138Z-850187",
+ "candidate_suite": "suite-galaxy-gravity-v4-20261126T090427Z-4a7277",
  "candidate": {
-  "status": "submission_failure",
-  "reasons": [
-   "build nonzero_exit",
-   "build nonzero_exit",
-   "build nonzero_exit",
-   "build nonzero_exit",
-   "build nonzero_exit",
-   "build nonzero_exit",
-   "build nonzero_exit"
-  ],
+  "status": "ok",
+  "reasons": [],
   "cases": [
    {
     "case": "case-24",
     "n": 65536,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0014458829597125324,
+    "cpu_s": {
+     "min": 0.993453,
+     "mean": 1.0329003333333333,
+     "max": 1.110576
+    },
+    "peak_bytes": 17977344,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.6
    },
    {
     "case": "case-11",
     "n": 65536,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0014913632712793795,
+    "cpu_s": {
+     "min": 0.849843,
+     "mean": 0.8513283333333334,
+     "max": 0.85234
+    },
+    "peak_bytes": 17551360,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.6
    },
    {
     "case": "b4-262144-08",
     "n": 262144,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 5.310871147517159,
+    "cpu_s": {
+     "min": 3.835958,
+     "mean": 3.8364233333333337,
+     "max": 3.837142
+    },
+    "peak_bytes": 43757568,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 4.7
    },
    {
     "case": "b4-262144-09",
     "n": 262144,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0030591775883719126,
+    "cpu_s": {
+     "min": 3.891219,
+     "mean": 3.931919,
+     "max": 4.00617
+    },
+    "peak_bytes": 41590784,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 7.4
    },
    {
     "case": "b4-262144-02",
     "n": 262144,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0012566152199383852,
+    "cpu_s": {
+     "min": 4.767134,
+     "mean": 4.7984480000000005,
+     "max": 4.819649
+    },
+    "peak_bytes": 41631744,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 9.4
    },
    {
     "case": "b4-1048576-07",
     "n": 1048576,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 492.37387370171376,
+    "cpu_s": {
+     "min": 17.765034,
+     "mean": 17.765889666666666,
+     "max": 17.767005
+    },
+    "peak_bytes": 139251712,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 21.8
    },
    {
     "case": "b4-1048576-17",
     "n": 1048576,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 81.67184716886462,
+    "cpu_s": {
+     "min": 27.4376,
+     "mean": 27.452495666666668,
+     "max": 27.460291
+    },
+    "peak_bytes": 140902400,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 33.7
    },
    {
     "case": "b4-1048576-14",
     "n": 1048576,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 50.92040224728247,
+    "cpu_s": {
+     "min": 35.904803,
+     "mean": 35.947037333333334,
+     "max": 35.98017
+    },
+    "peak_bytes": 140337152,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 44.1
    },
    {
     "case": "b4-4194304-05",
     "n": 4194304,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 689.179924467676,
+    "cpu_s": {
+     "min": 81.561357,
+     "mean": 81.58011866666668,
+     "max": 81.591862
+    },
+    "peak_bytes": 536260608,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 100.1
    },
    {
     "case": "b4-4194304-18",
     "n": 4194304,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 75.34229979826144,
+    "cpu_s": {
+     "min": 121.01129,
+     "mean": 121.10655433333334,
+     "max": 121.16526
+    },
+    "peak_bytes": 537923584,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 148.6
    },
    {
     "case": "b4-4194304-13",
     "n": 4194304,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 200.69964135095972,
+    "cpu_s": {
+     "min": 166.638186,
+     "mean": 167.017864,
+     "max": 167.705239
+    },
+    "peak_bytes": 537325568,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 204.9
    },
    {
     "case": "case-07",
     "n": 65536,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 3.291997209480697,
+    "cpu_s": {
+     "min": 0.598502,
+     "mean": 0.6678166666666666,
+     "max": 0.741794
+    },
+    "peak_bytes": 18034688,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 0.9
    },
    {
     "case": "case-08",
     "n": 65536,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0009155339214040665,
+    "cpu_s": {
+     "min": 0.755254,
+     "mean": 0.75732,
+     "max": 0.758452
+    },
+    "peak_bytes": 18452480,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.1
    },
    {
     "case": "case-12",
     "n": 65536,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.001440633661590119,
+    "cpu_s": {
+     "min": 0.673554,
+     "mean": 0.797151,
+     "max": 0.862549
+    },
+    "peak_bytes": 17780736,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.6
    },
    {
     "case": "case-04",
     "n": 65536,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0007742574855818603,
+    "cpu_s": {
+     "min": 1.101534,
+     "mean": 1.287541,
+     "max": 1.657515
+    },
+    "peak_bytes": 16781312,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 2.1
    },
    {
     "case": "b4-262144-19",
     "n": 262144,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 3.691976789888711,
+    "cpu_s": {
+     "min": 6.69253,
+     "mean": 6.693521,
+     "max": 6.695487
+    },
+    "peak_bytes": 41283584,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 8.2
    },
    {
     "case": "b4-262144-10",
     "n": 262144,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.003170878574025567,
+    "cpu_s": {
+     "min": 3.783073,
+     "mean": 3.9773073333333335,
+     "max": 4.087145
+    },
+    "peak_bytes": 42856448,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 7.3
    },
    {
     "case": "b4-1048576-09",
     "n": 1048576,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 1.7272946321951423,
+    "cpu_s": {
+     "min": 26.864986,
+     "mean": 26.87613,
+     "max": 26.890582
+    },
+    "peak_bytes": 140210176,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 33.0
    },
    {
     "case": "b4-1048576-11",
     "n": 1048576,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 2.758285462262787,
+    "cpu_s": {
+     "min": 28.80856,
+     "mean": 28.817570666666665,
+     "max": 28.822443
+    },
+    "peak_bytes": 141586432,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 35.4
    },
    {
     "case": "b4-1048576-13",
     "n": 1048576,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 102.41343987453955,
+    "cpu_s": {
+     "min": 35.908216,
+     "mean": 35.91157333333334,
+     "max": 35.91542
+    },
+    "peak_bytes": 140181504,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 44.1
    },
    {
     "case": "b4-1048576-15",
     "n": 1048576,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 110.16385283382327,
+    "cpu_s": {
+     "min": 36.368137,
+     "mean": 36.38539633333333,
+     "max": 36.412853
+    },
+    "peak_bytes": 139952128,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 44.5
    },
    {
     "case": "b4-1048576-16",
     "n": 1048576,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 135.6437782886301,
+    "cpu_s": {
+     "min": 36.026445,
+     "mean": 36.055873999999996,
+     "max": 36.093779
+    },
+    "peak_bytes": 140390400,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 44.2
    },
    {
     "case": "b4-4194304-12",
     "n": 4194304,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 31.921217068744237,
+    "cpu_s": {
+     "min": 123.568206,
+     "mean": 123.59793333333333,
+     "max": 123.64835
+    },
+    "peak_bytes": 536702976,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 151.9
    },
    {
     "case": "b4-4194304-14",
     "n": 4194304,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 138.85515139957224,
+    "cpu_s": {
+     "min": 164.637024,
+     "mean": 164.6779336666667,
+     "max": 164.705655
+    },
+    "peak_bytes": 536956928,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 202.4
    },
    {
     "case": "case-22",
     "n": 65536,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0016619996129097713,
+    "cpu_s": {
+     "min": 0.940668,
+     "mean": 0.9819693333333332,
+     "max": 1.062404
+    },
+    "peak_bytes": 17649664,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.6
    },
    {
     "case": "case-01",
     "n": 65536,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0010439910387536754,
+    "cpu_s": {
+     "min": 1.086077,
+     "mean": 1.1751826666666665,
+     "max": 1.224511
+    },
+    "peak_bytes": 17448960,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 2.0
    },
    {
     "case": "b4-262144-06",
     "n": 262144,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 9.02622268546957,
+    "cpu_s": {
+     "min": 3.837729,
+     "mean": 3.8401793333333334,
+     "max": 3.842064
+    },
+    "peak_bytes": 43671552,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 4.7
    },
    {
     "case": "b4-262144-20",
     "n": 262144,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 52.03042319293994,
+    "cpu_s": {
+     "min": 6.282373,
+     "mean": 6.285793000000001,
+     "max": 6.291105
+    },
+    "peak_bytes": 41172992,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 7.7
    },
    {
     "case": "b4-262144-01",
     "n": 262144,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0013544031884469279,
+    "cpu_s": {
+     "min": 4.43935,
+     "mean": 5.000987333333334,
+     "max": 5.891485
+    },
+    "peak_bytes": 41836544,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 9.4
    },
    {
     "case": "b4-1048576-08",
     "n": 1048576,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 610.1016548152724,
+    "cpu_s": {
+     "min": 18.250533,
+     "mean": 18.258283666666667,
+     "max": 18.264408
+    },
+    "peak_bytes": 139022336,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 22.4
    },
    {
     "case": "b4-1048576-19",
     "n": 1048576,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 74.3554580144852,
+    "cpu_s": {
+     "min": 27.777253,
+     "mean": 27.812940666666666,
+     "max": 27.873752
+    },
+    "peak_bytes": 140898304,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 34.1
    },
    {
     "case": "b4-1048576-03",
     "n": 1048576,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.7863870471468711,
+    "cpu_s": {
+     "min": 26.396874,
+     "mean": 29.703456,
+     "max": 33.046952
+    },
+    "peak_bytes": 143147008,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 40.6
    },
    {
     "case": "b4-4194304-07",
     "n": 4194304,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 885.0139079589278,
+    "cpu_s": {
+     "min": 88.191708,
+     "mean": 88.22807266666666,
+     "max": 88.259534
+    },
+    "peak_bytes": 536051712,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 108.3
    },
    {
     "case": "b4-4194304-10",
     "n": 4194304,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 26.498374273821707,
+    "cpu_s": {
+     "min": 126.288125,
+     "mean": 126.28978533333333,
+     "max": 126.292254
+    },
+    "peak_bytes": 536662016,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 155.3
    },
    {
     "case": "b4-4194304-15",
     "n": 4194304,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 150.4828585404142,
+    "cpu_s": {
+     "min": 156.136358,
+     "mean": 156.60929366666667,
+     "max": 157.088048
+    },
+    "peak_bytes": 535072768,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 191.7
    },
    {
     "case": "case-09",
     "n": 65536,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.3341561912379803,
+    "cpu_s": {
+     "min": 0.727942,
+     "mean": 0.761095,
+     "max": 0.821745
+    },
+    "peak_bytes": 17956864,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.0
    },
    {
     "case": "case-21",
     "n": 65536,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0019916466155124914,
+    "cpu_s": {
+     "min": 0.929534,
+     "mean": 0.931682,
+     "max": 0.934177
+    },
+    "peak_bytes": 17850368,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.6
    },
    {
     "case": "case-17",
     "n": 65536,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0012460360848246005,
+    "cpu_s": {
+     "min": 1.568477,
+     "mean": 1.5754766666666666,
+     "max": 1.580135
+    },
+    "peak_bytes": 17825792,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 2.4
    },
    {
     "case": "case-19",
     "n": 65536,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0012449907331097511,
+    "cpu_s": {
+     "min": 1.468805,
+     "mean": 1.561687,
+     "max": 1.610907
+    },
+    "peak_bytes": 17592320,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 2.1
    },
    {
     "case": "b4-262144-11",
     "n": 262144,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.271028633034656,
+    "cpu_s": {
+     "min": 4.227845,
+     "mean": 4.922058666666667,
+     "max": 6.028121
+    },
+    "peak_bytes": 42020864,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 7.4
    },
    {
     "case": "b4-262144-13",
     "n": 262144,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 6.271515876586244,
+    "cpu_s": {
+     "min": 8.247113,
+     "mean": 8.270065666666667,
+     "max": 8.292951
+    },
+    "peak_bytes": 41836544,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 10.1
    },
    {
     "case": "b4-262144-14",
     "n": 262144,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 7.584259906117747,
+    "cpu_s": {
+     "min": 8.233425,
+     "mean": 8.243772666666667,
+     "max": 8.258359
+    },
+    "peak_bytes": 41226240,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 10.1
    },
    {
     "case": "b4-262144-03",
     "n": 262144,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0010009223322104068,
+    "cpu_s": {
+     "min": 4.933777,
+     "mean": 5.855772333333333,
+     "max": 6.349579
+    },
+    "peak_bytes": 41648128,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 9.3
    },
    {
     "case": "b4-1048576-20",
     "n": 1048576,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 74.10673101558469,
+    "cpu_s": {
+     "min": 27.471953,
+     "mean": 27.501772333333335,
+     "max": 27.523644
+    },
+    "peak_bytes": 140349440,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 33.7
    },
    {
     "case": "b4-1048576-04",
     "n": 1048576,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0017432776180887244,
+    "cpu_s": {
+     "min": 25.142422,
+     "mean": 27.610855333333333,
+     "max": 30.346418
+    },
+    "peak_bytes": 140050432,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 43.4
    },
    {
     "case": "b4-4194304-06",
     "n": 4194304,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 625.5615896207872,
+    "cpu_s": {
+     "min": 89.237879,
+     "mean": 89.24152600000001,
+     "max": 89.248003
+    },
+    "peak_bytes": 535576576,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 109.6
    },
    {
     "case": "b4-4194304-19",
     "n": 4194304,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 75.09444328181426,
+    "cpu_s": {
+     "min": 126.778085,
+     "mean": 126.90067233333333,
+     "max": 127.065095
+    },
+    "peak_bytes": 538533888,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 155.8
    },
    {
     "case": "b4-4194304-16",
     "n": 4194304,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 156.37345715075122,
+    "cpu_s": {
+     "min": 154.342307,
+     "mean": 154.54611400000002,
+     "max": 154.791895
+    },
+    "peak_bytes": 535166976,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 189.3
    },
    {
     "case": "case-06",
     "n": 65536,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.007107634965783709,
+    "cpu_s": {
+     "min": 0.615751,
+     "mean": 0.6697266666666667,
+     "max": 0.765885
+    },
+    "peak_bytes": 20283392,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.0
    },
    {
     "case": "case-13",
     "n": 65536,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0038530811018953385,
+    "cpu_s": {
+     "min": 0.616739,
+     "mean": 0.7163616666666667,
+     "max": 0.915083
+    },
+    "peak_bytes": 19218432,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.6
    },
    {
     "case": "case-16",
     "n": 65536,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 1.7198101994578596,
+    "cpu_s": {
+     "min": 1.569483,
+     "mean": 1.6736949999999997,
+     "max": 1.727383
+    },
+    "peak_bytes": 16912384,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 2.1
    },
    {
     "case": "b4-262144-05",
     "n": 262144,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 4.356578985355823,
+    "cpu_s": {
+     "min": 4.248917,
+     "mean": 4.258450333333333,
+     "max": 4.266928
+    },
+    "peak_bytes": 43024384,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 5.2
    },
    {
     "case": "b4-262144-12",
     "n": 262144,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.06805121803504127,
+    "cpu_s": {
+     "min": 4.196437,
+     "mean": 5.4244753333333335,
+     "max": 6.537709
+    },
+    "peak_bytes": 44961792,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 8.0
    },
    {
     "case": "b4-262144-15",
     "n": 262144,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 36.67091332377768,
+    "cpu_s": {
+     "min": 8.270344,
+     "mean": 8.274985666666666,
+     "max": 8.279077
+    },
+    "peak_bytes": 40828928,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 10.1
    },
    {
     "case": "b4-1048576-05",
     "n": 1048576,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 446.01040859333006,
+    "cpu_s": {
+     "min": 18.488821,
+     "mean": 18.497853000000003,
+     "max": 18.502559
+    },
+    "peak_bytes": 141070336,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 22.6
    },
    {
     "case": "b4-1048576-02",
     "n": 1048576,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.00210244087270531,
+    "cpu_s": {
+     "min": 22.324981,
+     "mean": 24.898915333333335,
+     "max": 26.303793
+    },
+    "peak_bytes": 140001280,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 40.5
    },
    {
     "case": "b4-4194304-17",
     "n": 4194304,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 80.90583472682444,
+    "cpu_s": {
+     "min": 127.667038,
+     "mean": 128.106361,
+     "max": 128.64628
+    },
+    "peak_bytes": 537276416,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 156.9
    },
    {
     "case": "b4-4194304-11",
     "n": 4194304,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 2.353529002546735,
+    "cpu_s": {
+     "min": 117.782,
+     "mean": 117.79724733333335,
+     "max": 117.814965
+    },
+    "peak_bytes": 537784320,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 144.8
    },
    {
     "case": "b4-4194304-03",
     "n": 4194304,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 181.71329933232747,
+    "cpu_s": {
+     "min": 151.034851,
+     "mean": 151.06308,
+     "max": 151.09385
+    },
+    "peak_bytes": 536682496,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 185.8
    },
    {
     "case": "case-14",
     "n": 65536,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.001262122240059993,
+    "cpu_s": {
+     "min": 0.856822,
+     "mean": 0.8589576666666666,
+     "max": 0.861582
+    },
+    "peak_bytes": 17850368,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.5
    },
    {
     "case": "case-18",
     "n": 65536,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0013776000988178967,
+    "cpu_s": {
+     "min": 1.531724,
+     "mean": 1.5787226666666667,
+     "max": 1.668653
+    },
+    "peak_bytes": 17821696,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 2.2
    },
    {
     "case": "case-03",
     "n": 65536,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.17260897504364034,
+    "cpu_s": {
+     "min": 1.178952,
+     "mean": 1.3310706666666665,
+     "max": 1.633487
+    },
+    "peak_bytes": 17211392,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 2.0
    },
    {
     "case": "b4-262144-17",
     "n": 262144,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 2.224243581752904,
+    "cpu_s": {
+     "min": 6.032978,
+     "mean": 6.037437999999999,
+     "max": 6.044178
+    },
+    "peak_bytes": 41840640,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 7.4
    },
    {
     "case": "b4-262144-04",
     "n": 262144,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.001241547993372703,
+    "cpu_s": {
+     "min": 4.402426,
+     "mean": 5.2785606666666665,
+     "max": 6.611524
+    },
+    "peak_bytes": 44355584,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 9.3
    },
    {
     "case": "b4-1048576-18",
     "n": 1048576,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 74.95814111210788,
+    "cpu_s": {
+     "min": 30.055335,
+     "mean": 30.074226999999997,
+     "max": 30.106591
+    },
+    "peak_bytes": 139915264,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 36.9
    },
    {
     "case": "b4-1048576-10",
     "n": 1048576,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 2.001628228419255,
+    "cpu_s": {
+     "min": 26.947136,
+     "mean": 26.957537666666667,
+     "max": 26.966502
+    },
+    "peak_bytes": 140484608,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 33.1
    },
    {
     "case": "b4-4194304-20",
     "n": 4194304,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 75.1072570619576,
+    "cpu_s": {
+     "min": 132.912088,
+     "mean": 132.94573466666668,
+     "max": 132.999247
+    },
+    "peak_bytes": 535216128,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 163.4
    },
    {
     "case": "b4-4194304-09",
     "n": 4194304,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 15.664362423324901,
+    "cpu_s": {
+     "min": 118.75837,
+     "mean": 118.80004066666667,
+     "max": 118.844525
+    },
+    "peak_bytes": 538349568,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 146.0
    },
    {
     "case": "b4-4194304-02",
     "n": 4194304,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 19.47838635032336,
+    "cpu_s": {
+     "min": 144.947375,
+     "mean": 144.97863666666666,
+     "max": 145.015694
+    },
+    "peak_bytes": 535056384,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 178.3
    },
    {
     "case": "case-23",
     "n": 65536,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0011655621081602633,
+    "cpu_s": {
+     "min": 0.980606,
+     "mean": 1.0640613333333333,
+     "max": 1.221398
+    },
+    "peak_bytes": 17346560,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 1.6
    },
    {
     "case": "case-02",
     "n": 65536,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.186971070929988,
+    "cpu_s": {
+     "min": 1.027896,
+     "mean": 1.2736619999999998,
+     "max": 1.634745
+    },
+    "peak_bytes": 18206720,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 2.0
    },
    {
     "case": "b4-262144-07",
     "n": 262144,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 15.878597914270927,
+    "cpu_s": {
+     "min": 3.83721,
+     "mean": 3.8376069999999998,
+     "max": 3.83806
+    },
+    "peak_bytes": 41304064,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 4.7
    },
    {
     "case": "b4-262144-18",
     "n": 262144,
     "family": "einasto",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 2.0505008127734,
+    "cpu_s": {
+     "min": 6.198597,
+     "mean": 6.202975333333334,
+     "max": 6.209199
+    },
+    "peak_bytes": 41549824,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 7.6
    },
    {
     "case": "b4-262144-16",
     "n": 262144,
     "family": "jaffe",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 20.9140357984113,
+    "cpu_s": {
+     "min": 8.161939,
+     "mean": 8.170737666666668,
+     "max": 8.175943
+    },
+    "peak_bytes": 41869312,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 10.0
    },
    {
     "case": "b4-1048576-06",
     "n": 1048576,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 519.6644477873062,
+    "cpu_s": {
+     "min": 17.856191,
+     "mean": 17.860077333333333,
+     "max": 17.862446
+    },
+    "peak_bytes": 138629120,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 21.9
    },
    {
     "case": "b4-1048576-12",
     "n": 1048576,
     "family": "group",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.3596358564648634,
+    "cpu_s": {
+     "min": 28.016572,
+     "mean": 28.11643033333333,
+     "max": 28.177243
+    },
+    "peak_bytes": 140533760,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 34.6
    },
    {
     "case": "b4-1048576-01",
     "n": 1048576,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 0.0010471159681626678,
+    "cpu_s": {
+     "min": 30.061964,
+     "mean": 30.25507433333333,
+     "max": 30.396596
+    },
+    "peak_bytes": 140521472,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 40.6
    },
    {
     "case": "b4-4194304-08",
     "n": 4194304,
     "family": "disc",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 616.4215759255105,
+    "cpu_s": {
+     "min": 86.552086,
+     "mean": 86.57226666666668,
+     "max": 86.583098
+    },
+    "peak_bytes": 536133632,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 106.3
    },
    {
     "case": "b4-4194304-01",
     "n": 4194304,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 15.254068238592684,
+    "cpu_s": {
+     "min": 142.801889,
+     "mean": 142.84080633333335,
+     "max": 142.910529
+    },
+    "peak_bytes": 536023040,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 175.6
    },
    {
     "case": "b4-4194304-04",
     "n": 4194304,
     "family": "smooth-hernquist",
-    "complete": false,
-    "raw_error": null,
-    "cpu_s": null,
-    "peak_bytes": 0,
-    "statuses": {},
+    "complete": true,
+    "raw_error": 6.364629382073827,
+    "cpu_s": {
+     "min": 140.576317,
+     "mean": 140.60166166666667,
+     "max": 140.615371
+    },
+    "peak_bytes": 536887296,
+    "statuses": {
+     "ok": 3
+    },
     "cpu_limit_s": 172.9
    }
   ],
   "cells": {
-   "1048576/disc": null,
-   "1048576/einasto": null,
-   "1048576/group": null,
-   "1048576/jaffe": null,
-   "1048576/smooth-hernquist": null,
-   "262144/disc": null,
-   "262144/einasto": null,
-   "262144/group": null,
-   "262144/jaffe": null,
-   "262144/smooth-hernquist": null,
-   "4194304/disc": null,
-   "4194304/einasto": null,
-   "4194304/group": null,
-   "4194304/jaffe": null,
-   "4194304/smooth-hernquist": null,
-   "65536/disc": null,
-   "65536/einasto": null,
-   "65536/group": null,
-   "65536/jaffe": null,
-   "65536/smooth-hernquist": null
+   "1048576/disc": 517.0375962244057,
+   "1048576/einasto": 76.2730443277606,
+   "1048576/group": 1.711711044835512,
+   "1048576/jaffe": 99.78536831106885,
+   "1048576/smooth-hernquist": 0.19781997040145696,
+   "262144/disc": 8.643067683153369,
+   "262144/einasto": 14.99928609433874,
+   "262144/group": 0.08632747680802369,
+   "262144/jaffe": 17.860181226223244,
+   "262144/smooth-hernquist": 0.0012133721834921057,
+   "4194304/disc": 704.0442494932254,
+   "4194304/einasto": 76.61245871721444,
+   "4194304/group": 19.109370692109394,
+   "4194304/jaffe": 161.60277711042434,
+   "4194304/smooth-hernquist": 55.702595825829334,
+   "65536/disc": 0.9085441424014663,
+   "65536/einasto": 0.0015662728240737646,
+   "65536/group": 0.0020118000687062076,
+   "65536/jaffe": 0.430919706593653,
+   "65536/smooth-hernquist": 0.09034957362449096
   },
-  "raw_error": null,
+  "raw_error": 87.75502295327472,
   "cases_graded": 80,
-  "max_cpu_fraction": null
+  "max_cpu_fraction": 0.8242155555555555
  },
  "score": 0.0,
  "rule": "per-group",
  "score_complete": 0.0,
- "failed_cells": [
-  "1048576/disc",
-  "1048576/einasto",
-  "1048576/group",
-  "1048576/jaffe",
-  "1048576/smooth-hernquist",
-  "262144/disc",
-  "262144/einasto",
-  "262144/group",
-  "262144/jaffe",
-  "262144/smooth-hernquist",
-  "4194304/disc",
-  "4194304/einasto",
-  "4194304/group",
-  "4194304/jaffe",
-  "4194304/smooth-hernquist",
-  "65536/disc",
-  "65536/einasto",
-  "65536/group",
-  "65536/jaffe",
-  "65536/smooth-hernquist"
- ],
+ "failed_cells": [],
  "per_group_cells": {
-  "1048576/disc": 0.003164896003069166,
-  "1048576/einasto": 0.0010936982934125507,
-  "1048576/group": 0.0021090570822939747,
-  "1048576/jaffe": 0.0009219220239686045,
-  "1048576/smooth-hernquist": 0.0010449184037748217,
-  "262144/disc": 0.003542188926042047,
-  "262144/einasto": 0.001231932751107852,
-  "262144/group": 0.001745916351319157,
-  "262144/jaffe": 0.0009736751245773422,
-  "262144/smooth-hernquist": 0.00122325954373199,
-  "4194304/disc": 0.0026522694207758986,
-  "4194304/einasto": 0.001040454449367906,
-  "4194304/group": 0.0012766078174972512,
-  "4194304/jaffe": 0.0009795897634978985,
-  "4194304/smooth-hernquist": 0.0009804092071265627,
-  "65536/disc": 0.004619309225780598,
-  "65536/einasto": 0.0015477290946117003,
-  "65536/group": 0.0022084693189121864,
-  "65536/jaffe": 0.0011974749988662259,
-  "65536/smooth-hernquist": 0.00152223473220165
+  "1048576/disc": 517.0375962244057,
+  "1048576/einasto": 76.2730443277606,
+  "1048576/group": 1.711711044835512,
+  "1048576/jaffe": 99.78536831106885,
+  "1048576/smooth-hernquist": 0.19781997040145696,
+  "262144/disc": 8.643067683153369,
+  "262144/einasto": 14.99928609433874,
+  "262144/group": 0.08632747680802369,
+  "262144/jaffe": 17.860181226223244,
+  "262144/smooth-hernquist": 0.0012133721834921057,
+  "4194304/disc": 704.0442494932254,
+  "4194304/einasto": 76.61245871721444,
+  "4194304/group": 19.109370692109394,
+  "4194304/jaffe": 161.60277711042434,
+  "4194304/smooth-hernquist": 55.702595825829334,
+  "65536/disc": 0.9085441424014663,
+  "65536/einasto": 0.0015662728240737646,
+  "65536/group": 0.0020118000687062076,
+  "65536/jaffe": 0.430919706593653,
+  "65536/smooth-hernquist": 0.09034957362449096
  },
- "per_group_raw_error": 0.001753800626596769
+ "per_group_raw_error": 87.75502295327472
 }

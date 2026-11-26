@@ -65,7 +65,7 @@
 | 模型 | 设置 | 原始指标 | 换算 | 得分 | 提交次数与用时 | 目录 |
 | --- | --- | --- | --- | --- | --- | --- |
 | GPT-6.2 Sol | 单轮 | 损失 \(E = 0.000961162\)，45 例，单例最长 1.0 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 70.0 | 12 分钟 | [`gpt-6.2-sol-single-1/`](solutions/v6.3/gpt-6.2-sol-single-1/) |
-| GPT-6.2 Sol | 迭代 | 损失 \(E = 0.000826802\)，45 例，单例最长 1.1 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 74.2 | 5 次提交，20 分钟 | [`gpt-6.2-sol-iterative-1/`](solutions/v6.3/gpt-6.2-sol-iterative-1/) |
+| GPT-6.2 Sol | 迭代 | 损失 \(E = 0.000883508\)，45 例，单例最长 0.2 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 72.4 | 10 次提交，12 分钟 | [`gpt-6.2-sol-iterative-2/`](solutions/v6.3/gpt-6.2-sol-iterative-2/) |
 | GPT-6 Astra | 单轮 | 损失 \(E = 0.000841913\)，45 例，单例最长 2.3 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 73.7 | 44 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
 | GPT-6 Astra | 迭代 | 损失 \(E = 0.000919333\)，45 例，单例最长 4.6 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 71.3 | 4 次提交，56 分钟 | [`gpt-6-astra-iterative-1/`](solutions/v6.3/gpt-6-astra-iterative-1/) |
 | GPT-6.1 Sol | 单轮 | 损失 \(E = 0.000876169\)，45 例，单例最长 9.1 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 72.6 | 49 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
@@ -87,11 +87,11 @@
 
 ### GPT-6.2 Sol（迭代，v6.3）
 
-反馈集改为 15 个留出例后的第 2 次尝试进行中；此处暂列此前尝试在 45 个计分例上的成绩（其测试反馈是带真值的样例）。
+此前尝试的测试反馈用的是工作区里带真值的 8 个样例（迭代中最后一次 public 82–97 分，私有 23–73 分）；11-26 起 60 个 primary 例按真值排序每 4 个取 1 作为不发给模型的反馈集（15 例），正式计分用其余 45 例，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：35.8（3 分钟） → 80.0（4 分钟） → 82.0（8 分钟） → 82.0（11 分钟） → 82.4（15 分钟）
+public 分数随测试提交：78.0（3 分钟） → 75.4（4 分钟） → 74.5（4 分钟） → 76.2（6 分钟） → 79.5（7 分钟） → 78.5（8 分钟） → 79.3（8 分钟） → 79.5（9 分钟） → 76.9（10 分钟） → 79.5（12 分钟）
 
-源码 [`solutions/v6.3/gpt-6.2-sol-iterative-1/source/`](solutions/v6.3/gpt-6.2-sol-iterative-1/source/)（提交 `continuum-estimation-20261120T090954Z-ca982a`）。
+源码 [`solutions/v6.3/gpt-6.2-sol-iterative-2/source/`](solutions/v6.3/gpt-6.2-sol-iterative-2/source/)（提交 `continuum-estimation-20261126T100955Z-1fdab2`）。
 
 ### GPT-6 Astra（单轮，v6.3）
 
