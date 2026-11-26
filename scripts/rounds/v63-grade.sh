@@ -15,6 +15,9 @@ case $MODEL in gpt-6.1-sol) TAG=sol PFX=;; gpt-6.2-sol) TAG=sol62 PFX=sol62-;; g
 EXP_RT=$R/.runtime-recal
 CONIC_RT=$R/.runtime-conic-v3
 P_B=0.7892307692307692          # conic v3 keeps every calibrated limit; the reference solves the same 513 of 650
+# Weak anchor (2026-11-26, results/OPEN_ITEMS.md): SciPy's bundled HiGHS on the zero and nonnegative cones only
+# (tasks/conic/references/weak-highs/), 165 of 650 on private (suite-conic-20261126T100025Z-507120, no flagged shard).
+P_0=0.25384615384615383
 PANEL=suite-exponential-v2-20261109T032227Z-c09381   # exponential v3: same cases and panel as v2, covered under v3 limits
 CAP=3600
 log() { echo "{\"time\": \"$(date +%FT%T)\", $1}" >> "$LOG"; }
@@ -110,15 +113,16 @@ grade() {  # setting, task
         conic)
             id=$(suite conic "--submission $sub") || return 1
             FRONTIERAM_RUNTIME=$CONIC_RT ./bench --store $STORE suite-report --suite "$id" > /dev/null 2>&1
-            python3 - "$id" "$out" "$P_B" <<'PY'
+            python3 - "$id" "$out" "$P_B" "$P_0" <<'PY'
 import json, sys
-suite, out, p_b = sys.argv[1], sys.argv[2], float(sys.argv[3])
+suite, out, p_b, p_0 = sys.argv[1], sys.argv[2], float(sys.argv[3]), float(sys.argv[4])
 report = json.load(open(f'var/stores/store-v63/suites/{suite}.report.json'))
 p = report['success_rate']
 score = None if p is None or not report['complete'] else (
-    0.0 if p <= 0.9 * p_b else 50 * (p - 0.9 * p_b) / (0.1 * p_b) if p <= p_b else 50 + 50 * (p - p_b) / (1 - p_b))
+    0.0 if p <= p_0 else 50 * (p - p_0) / (p_b - p_0) if p <= p_b else 50 + 50 * (p - p_b) / (1 - p_b))
 json.dump({'suite': suite, 'complete': report['complete'], 'successes': report['successes'], 'cases': report['cases_graded'],
-           'p': p, 'p_B': p_b, 'score': score, 'groups': report['groups']}, open(f'{out}/score.json', 'w'), indent=1)
+           'p': p, 'p_B': p_b, 'p0': p_0, 'rule': 'weak-anchor', 'score': score, 'groups': report['groups']},
+          open(f'{out}/score.json', 'w'), indent=1)
 PY
             ;;
         exponential-v3)

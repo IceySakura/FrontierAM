@@ -17,12 +17,12 @@ Current mappings:
 
 | Task | Raw metric | Final score |
 | --- | --- | --- |
-| exponential | time ratio R vs paired reference | 100 / (1 + R) |
-| conic | success rate p over 650 cases, p_B = local reference rate | 0 if p ≤ 0.9·p_B; 50·(p − 0.9·p_B)/(0.1·p_B) up to p_B; 50 + 50·(p − p_B)/(1 − p_B) above |
+| exponential | per scored case r_i = time / fastest panel member on that case (since 2026-11-26) | 100 / (1 + r_i) per case, 0 for a failed case, nested equal-weight mean; 0 if a control case fails |
+| conic | success rate p over 650 cases; p_B = local reference rate (0.789), p_0 = weak HiGHS anchor (0.254, since 2026-11-26) | 0 if p ≤ p_0; 50·(p − p_0)/(p_B − p_0) up to p_B; 50 + 50·(p − p_B)/(1 − p_B) above |
 
 ```text
-# ❌ "gpt-6.1-sol: S = 0.52 (0–10)"     # task-native scale
-# ✅ "gpt-6.1-sol: 5.2 / 100 (reference 50); p = 0.718 vs p_B = 0.789"
+# ❌ "gpt-6.1-sol: S = 4.33 (0–10)"     # task-native scale
+# ✅ "gpt-6.1-sol: 43.3 / 100 (reference 50); p = 0.718 vs p_0 = 0.254, p_B = 0.789"
 ```
 
 See README.md "最终得分约定" for the full statement.

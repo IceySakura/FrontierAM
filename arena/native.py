@@ -289,11 +289,13 @@ SCORING_DISCLOSURE = {
         '(interpreter startup and imports included), finish within that instance\'s own time limit and return a '
         'result that passes the independent checker: an optimal solution or a valid primal or dual infeasibility '
         'certificate; "unresolved" never counts. The final score depends only on the fraction of held-out instances '
-        'solved, compared with a strong reference solver on the same instances and limits: well below the reference '
-        'scores zero, matching it is the midpoint of the scale and solving everything is the maximum. Being faster '
+        'solved, compared with two reference solvers on the same instances and limits: matching a weak reference that '
+        'handles only the linear and quadratic instances (HiGHS) scores zero, matching the strong reference solver is '
+        'the midpoint of the scale (linear in between) and solving everything is the maximum. Being faster '
         'within a limit earns nothing extra. All five cone families (linear, quadratic, second-order cone, '
         'semidefinite, exponential) count; sizes range from tens to about a million variables, and most instances '
-        'have a one-second limit, so robustness across the whole range matters more than peak speed on a few.'
+        'have a one-second limit, so robustness across the whole range matters more than peak speed on a few. Where '
+        'the task statement puts the zero point at 0.9 times the reference rate, this rule applies instead.'
     ),
     'exponential-v2': (
         'Every case, scored sessions and controls alike, must return results within its limits and accuracy '
