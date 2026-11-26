@@ -1,0 +1,46 @@
+{
+ "model": "minimax-m3.1-flash",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "galaxy-gravity-v4-20261125T171414Z-efa660",
+ "raw": "无效提交（提交失败）",
+ "mapping": "任一用例失败或提交检查未通过记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 194.9,
+  "public_tests": 6,
+  "public_curve": [
+   {
+    "minute": 93.5,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 141.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 151.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 162.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 172.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 183.5,
+    "score": 0.0,
+    "status": "ok"
+   }
+  ]
+ }
+}

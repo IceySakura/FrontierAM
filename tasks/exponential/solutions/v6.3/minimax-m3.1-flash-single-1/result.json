@@ -1,0 +1,14 @@
+{
+ "model": "minimax-m3.1-flash",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "exponential-v3-20261125T095638Z-323242",
+ "raw": "无效提交（20 例不合格）",
+ "mapping": "任一用例不合格记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 38.5,
+  "public_tests": 0
+ }
+}

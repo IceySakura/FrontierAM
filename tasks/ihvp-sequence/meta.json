@@ -201,6 +201,58 @@
           "score": 0.0,
           "notes_md": "书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。",
           "folder": "v4/intern-s2-iterative-1"
+        },
+        {
+          "model": "qwen4-max",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261125T111858Z-4455a9",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1297\\)，最长序列 28.3 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 56.096,
+          "notes_md": "",
+          "folder": "v4/qwen4-max-single-1"
+        },
+        {
+          "model": "qwen4-max",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261125T172232Z-44c487",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1176\\)，最长序列 28.3 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 60.214,
+          "notes_md": "",
+          "folder": "v4/qwen4-max-iterative-1"
+        },
+        {
+          "model": "minimax-m3.1-flash",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261125T114456Z-675c48",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1675\\)，最长序列 28.1 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 40.195,
+          "notes_md": "",
+          "folder": "v4/minimax-m3.1-flash-single-1"
+        },
+        {
+          "model": "minimax-m3.1-flash",
+          "protocol": "v6.3",
+          "setting": "迭代",
+          "attempt": 1,
+          "submission": "ihvp-sequence-v4-20261125T203152Z-9b0b24",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.1375\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 53.46,
+          "notes_md": "",
+          "folder": "v4/minimax-m3.1-flash-iterative-1"
         }
       ]
     },

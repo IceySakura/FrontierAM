@@ -85,6 +85,10 @@ MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标
 | Hunyuan 4 | 迭代 | 白化误差 \(E = 0.1862\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 59.3 | 21 次提交，177 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（README.md and executable run.sh required） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
 | Intern S2 | 迭代 | 无效提交（README.md and executable run.sh required） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，240 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
+| Qwen4 Max | 单轮 | 白化误差 \(E = 0.2225\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.4 | 26 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | 白化误差 \(E = 0.2244\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.0 | 16 次提交，47 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| MiniMax M3.1 Flash | 单轮 | 白化误差 \(E = 0.2255\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.8 | 47 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | 白化误差 \(E = 0.2294\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.8 | 6 次提交，117 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -165,6 +169,26 @@ public 分数随测试提交：50.5（40 分钟） → 39.6（72 分钟） → 5
 书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
 
 源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `trajectory-covariance-v2-20261116T103359Z-fc533c`）。
+
+### Qwen4 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `trajectory-covariance-v2-20261125T104553Z-5a286b`）。
+
+### Qwen4 Max（迭代，v6.3）
+
+public 分数随测试提交：50.1（5 分钟） → 41.0（15 分钟） → 46.9（17 分钟） → 50.1（22 分钟） → 51.4（27 分钟） → 51.4（32 分钟） → 51.4（33 分钟） → 51.0（35 分钟） → 51.4（36 分钟） → 51.4（38 分钟） → 50.4（39 分钟） → 51.5（40 分钟） → 51.4（42 分钟） → 51.3（43 分钟） → 51.5（44 分钟） → 51.5（45 分钟）
+
+源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `trajectory-covariance-v2-20261125T165212Z-9849d6`）。
+
+### MiniMax M3.1 Flash（单轮，v6.3）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-single-1/source/`](solutions/v6.3/minimax-m3.1-flash-single-1/source/)（提交 `trajectory-covariance-v2-20261125T111901Z-d540df`）。
+
+### MiniMax M3.1 Flash（迭代，v6.3）
+
+public 分数随测试提交：0.0（30 分钟） → 0.0（58 分钟） → 33.1（72 分钟） → 33.1（86 分钟） → 50.0（99 分钟） → 50.0（110 分钟）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `trajectory-covariance-v2-20261125T191131Z-fe391d`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

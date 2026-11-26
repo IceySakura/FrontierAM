@@ -1,0 +1,22 @@
+{
+ "reference": "active baseline",
+ "anchors_ok": true,
+ "mc_gain": -0.7128250774548622,
+ "mc_families": {
+  "fourier_ridge": -0.6366459611691884,
+  "kinked_ridge_sum": -1.6082212749199498,
+  "product_peak": 0.10639200372455135
+ },
+ "candidate_suite": "suite-blackbox-cubature-v2-20261125T114449Z-2a9c8d",
+ "status": "ok",
+ "reasons": [],
+ "cases": 144,
+ "max_wall_s": 1.173505871091038,
+ "gain": -0.09440921581311074,
+ "families": {
+  "fourier_ridge": -0.5090969415236574,
+  "kinked_ridge_sum": -0.06534896538012233,
+  "product_peak": 0.2912182594644475
+ },
+ "score": 43.377813239245285
+}

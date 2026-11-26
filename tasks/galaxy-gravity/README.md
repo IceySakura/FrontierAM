@@ -95,6 +95,10 @@ N 体引力计算是天体物理模拟的核心：每一步都要算出每个粒
 | Hunyuan 4 | 迭代 | \(E = 0.000122\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 94%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 53.1 | 8 次提交，186 分钟 | [`v4/hy4-iterative-2/`](solutions/v6.3/v4/hy4-iterative-2/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v4/intern-s2-single-1/`](solutions/v6.3/v4/intern-s2-single-1/) |
 | Intern S2 | 迭代 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，240 分钟 | [`v4/intern-s2-iterative-1/`](solutions/v6.3/v4/intern-s2-iterative-1/) |
+| Qwen4 Max | 单轮 | \(E = 0.0462\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 82%（经典树 theta 0.8：\(E_0 = 0.00175\)，改进树 theta 0.7：\(E_{50} = 0.000665\)） | 对数刻度：\(E < E_{50}\) 为 \(50 + 50\,\log(E_{50}/E)/\log(E_{50}/10^{-15})\)；\(E_{50} \le E < E_0\) 为 \(50\,\log(E_0/E)/\log(E_0/E_{50})\) | 0.0 | 31 分钟 | [`v4/qwen4-max-single-1/`](solutions/v6.3/v4/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 10 次提交，189 分钟 | [`v4/qwen4-max-iterative-1/`](solutions/v6.3/v4/qwen4-max-iterative-1/) |
+| MiniMax M3.1 Flash | 单轮 | 无效提交（build nonzero_exit） | 任一用例失败或提交检查未通过记 0 | 0.0 | 60 分钟 | [`v4/minimax-m3.1-flash-single-1/`](solutions/v6.3/v4/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | 无效提交（提交失败） | 任一用例失败或提交检查未通过记 0 | 0.0 | 6 次提交，195 分钟 | [`v4/minimax-m3.1-flash-iterative-1/`](solutions/v6.3/v4/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -181,6 +185,32 @@ public 分数随测试提交：0.0（69 分钟） → 48.8（95 分钟） → 52
 书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
 
 源码 [`solutions/v6.3/v4/intern-s2-iterative-1/source/`](solutions/v6.3/v4/intern-s2-iterative-1/source/)（提交 `galaxy-gravity-v4-20261116T093358Z-6b3879`）；未复制的二进制或大文件：out-disc.bin（1,572,864 字节）、out-einasto.bin（1,572,864 字节）、out-group.bin（1,572,864 字节）、out-hernquist.bin（1,572,864 字节）、out-jaffe.bin（1,572,864 字节）、out.bin（768 字节）、s1（22,712 字节）、s2（22,712 字节）、smoke.out（768 字节）、solve（22,664 字节）、solve_d（22,712 字节）、solve_dbg（40,008 字节）、solve_dbg2（39,240 字节）、solve_dbg3（39,568 字节）、solve_dbg4（39,816 字节）、solve_dbg5（39,648 字节）、solve_g（34,256 字节）、validate（22,712 字节）。
+
+### Qwen4 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/v4/qwen4-max-single-1/source/`](solutions/v6.3/v4/qwen4-max-single-1/source/)（提交 `galaxy-gravity-v4-20261125T101622Z-a9fd2e`）；未复制的二进制或大文件：solve（79,728 字节）。
+
+### Qwen4 Max（迭代，v6.3）
+
+提交含 985 MB 预计算表，私有评分时 7 个分片同时解包，评测器 30 秒的 `docker create` 超时（评测设施问题，两次记未测）；分片错开 90 秒启动后评完：419 万粒子各例超出 2 GiB 内存上限，100 万粒子 jaffe 一例超 CPU 上限，判无效。
+
+public 分数随测试提交：0.0（45 分钟） → 0.0（88 分钟） → 0.0（102 分钟） → 0.0（113 分钟） → 0.0（123 分钟） → 0.0（134 分钟） → 0.0（145 分钟） → 0.0（155 分钟） → —（166 分钟） → —（178 分钟）（—：没有拿到报告）
+
+源码 [`solutions/v6.3/v4/qwen4-max-iterative-1/source/`](solutions/v6.3/v4/qwen4-max-iterative-1/source/)（提交 `galaxy-gravity-v4-20261125T160512Z-fe2477`）；未复制的二进制或大文件：fmm_p10_r220.bin（618,396,340 字节）、fmm_p8_r100.bin（127,861,332 字节）、fmm_p8_r140.bin（250,147,412 字节）、libgfortran-040039e1.so.5.0.0（2,686,065 字节）、libopenblasp-r0-23e5df77.3.21.dev.so（32,957,169 字节）、libquadmath-96973f99.so.0.0.0（247,609 字节）、solve（143,848 字节）。
+
+### MiniMax M3.1 Flash（单轮，v6.3）
+
+`build.sh` 把 CPU 检测小程序编译到 `/tmp` 再执行；评测构建容器的 `/tmp` 不可执行（Docker tmpfs 默认 noexec），开发容器可执行，题面未写明，构建失败，按题目规则记 0（已记入 results/OPEN_ITEMS.md 待反馈出题人）。60 分钟到时截停。
+
+源码 [`solutions/v6.3/v4/minimax-m3.1-flash-single-1/source/`](solutions/v6.3/v4/minimax-m3.1-flash-single-1/source/)（提交 `galaxy-gravity-v4-20261125T103135Z-c4cfa1`）；未复制的二进制或大文件：solve（59,792 字节）。
+
+### MiniMax M3.1 Flash（迭代，v6.3）
+
+最大档 3 例（419 万粒子）三次重复都超 CPU 上限（100–110 秒；所在分片负载探针 1.06–1.10），判无效。
+
+public 分数随测试提交：0.0（94 分钟） → 0.0（142 分钟） → 0.0（151 分钟） → 0.0（162 分钟） → 0.0（173 分钟） → 0.0（184 分钟）
+
+源码 [`solutions/v6.3/v4/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/v4/minimax-m3.1-flash-iterative-1/source/)（提交 `galaxy-gravity-v4-20261125T171414Z-efa660`）；未复制的二进制或大文件：solve（55,288 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

@@ -1,0 +1,41 @@
+{
+ "model": "minimax-m3.1-flash",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "continuum-estimation-20261125T221313Z-78dc64",
+ "raw": "损失 \\(E = 0.00837313\\)，60 例，单例最长 1.1 秒（一阶 Richardson：\\(U = 0.017163\\)，GRE：\\(W = 0.00164816\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 28.327,
+ "review": null,
+ "process": {
+  "minutes": 101.3,
+  "public_tests": 5,
+  "public_curve": [
+   {
+    "minute": 12.7,
+    "score": 34.45700016970324,
+    "status": "ok"
+   },
+   {
+    "minute": 27.8,
+    "score": 41.84140066894141,
+    "status": "ok"
+   },
+   {
+    "minute": 59.6,
+    "score": 41.94142887681669,
+    "status": "ok"
+   },
+   {
+    "minute": 72.9,
+    "score": 91.60685667738925,
+    "status": "ok"
+   },
+   {
+    "minute": 93.9,
+    "score": 91.60685667738925,
+    "status": "ok"
+   }
+  ]
+ }
+}

@@ -97,6 +97,10 @@
 | Hunyuan 4 | 迭代 | 74/74 合格，\(R = 0.776\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 56.3 | 10 次提交，121 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
 | Intern S2 | 迭代 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 0 次提交，240 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
+| Qwen4 Max | 单轮 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 33 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | 74/74 合格，\(R = 0.726\)（对 7 方法参照组逐例最快成员） | \(100/(1+R)\) | 57.9 | 18 次提交，66 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| MiniMax M3.1 Flash | 单轮 | 无效提交（20 例不合格） | 任一用例不合格记 0 | 0.0 | 38 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | 无效提交（1 例不合格） | 任一用例不合格记 0 | 0.0 | 7 次提交，74 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -183,6 +187,28 @@ public 分数随测试提交：30.7（47 分钟） → 42.2（63 分钟） → 4
 书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
 
 源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `exponential-v3-20261116T093358Z-b4e086`）；未复制的二进制或大文件：（提交存档不在本服务器）。
+
+### Qwen4 Max（单轮，v6.3）
+
+第一次评分有两个分片负载报警（探针 1.38、1.42），判无效的两例都是 CPU 上限；只重测这两例时 `syn_geometric_p10_k1` 以 10.3 秒 CPU 通过（原评分三次触 15 秒上限），故记未测，开发槽全空时整套重评：k1 通过，`syn_geometric_p10_k16` 复用仍超 150 秒 CPU 上限，仍判无效，以重评为准。
+
+源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `exponential-v3-20261125T094628Z-5bfd67`）；未复制的二进制或大文件：fame_core.so（40,608 字节）。
+
+### Qwen4 Max（迭代，v6.3）
+
+public 分数随测试提交：0.0（8 分钟） → 49.0（13 分钟） → 53.3（20 分钟） → 0.0（25 分钟） → 53.5（30 分钟） → 52.5（32 分钟） → 51.6（35 分钟） → 50.6（38 分钟） → 50.3（41 分钟） → 53.2（43 分钟） → 54.4（45 分钟） → 54.1（47 分钟） → 50.7（50 分钟） → 51.3（54 分钟） → 50.4（55 分钟） → 50.2（60 分钟） → 51.7（61 分钟） → 50.0（63 分钟）
+
+源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `exponential-v3-20261125T125928Z-549d39`）；未复制的二进制或大文件：libkernel.so（50,160 字节）。
+
+### MiniMax M3.1 Flash（单轮，v6.3）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-single-1/source/`](solutions/v6.3/minimax-m3.1-flash-single-1/source/)（提交 `exponential-v3-20261125T095638Z-323242`）。
+
+### MiniMax M3.1 Flash（迭代，v6.3）
+
+public 分数随测试提交：44.7（31 分钟） → 43.7（45 分钟） → 51.4（51 分钟） → 53.0（53 分钟） → 0.0（56 分钟） → 53.3（63 分钟） → 51.7（71 分钟）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `exponential-v3-20261125T135911Z-455269`）；未复制的二进制或大文件：libfamexp.so（19,768 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

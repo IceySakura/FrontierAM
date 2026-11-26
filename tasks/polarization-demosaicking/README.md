@@ -87,6 +87,10 @@
 | Hunyuan 4 | 迭代 | RMSE \(E = 1.4536\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.6 | 5 次提交，152 分钟 | [`v3/hy4-iterative-1/`](solutions/v6.3/v3/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v3/intern-s2-single-1/`](solutions/v6.3/v3/intern-s2-single-1/) |
 | Intern S2 | 迭代 | RMSE \(E = 2.0613\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 3.8 | 1 次提交，113 分钟 | [`v3/intern-s2-iterative-1/`](solutions/v6.3/v3/intern-s2-iterative-1/) |
+| Qwen4 Max | 单轮 | RMSE \(E = 1.5932\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 42.4 | 33 分钟 | [`v3/qwen4-max-single-1/`](solutions/v6.3/v3/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | RMSE \(E = 2.4842\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 6 次提交，110 分钟 | [`v3/qwen4-max-iterative-1/`](solutions/v6.3/v3/qwen4-max-iterative-1/) |
+| MiniMax M3.1 Flash | 单轮 | RMSE \(E = 1.7104\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 32.7 | 23 分钟 | [`v3/minimax-m3.1-flash-single-1/`](solutions/v6.3/v3/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | RMSE \(E = 1.5112\)（\(U = 2.1080\)，\(W = 1.5007\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.1 | 10 次提交，86 分钟 | [`v3/minimax-m3.1-flash-iterative-1/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -169,6 +173,28 @@ public 分数随测试提交：52.1（43 分钟） → 56.1（99 分钟） → 5
 public 分数随测试提交：0.0（111 分钟）
 
 源码 [`solutions/v6.3/v3/intern-s2-iterative-1/source/`](solutions/v6.3/v3/intern-s2-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261118T202105Z-c28eac`）。
+
+### Qwen4 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/v3/qwen4-max-single-1/source/`](solutions/v6.3/v3/qwen4-max-single-1/source/)（提交 `polarization-demosaicking-v3-20261125T102010Z-e0e282`）；未复制的二进制或大文件：weights.npy（6,592 字节）。
+
+### Qwen4 Max（迭代，v6.3）
+
+第一次评分（开发槽全空）与 exponential 的 7 分片重评同时进行，前 9 景连续超时（约 1.0005 秒，其余约 0.85 秒），记未测；机器空闲时重评又有 4 景因环境停顿超时（约 1.001 秒）；第三次评分 132 景都在时限内（最长 0.911 秒），以重评为准。
+
+public 分数随测试提交：0.0（8 分钟） → 37.7（24 分钟） → 0.0（62 分钟） → 37.7（66 分钟） → 39.9（68 分钟） → 43.1（75 分钟）
+
+源码 [`solutions/v6.3/v3/qwen4-max-iterative-1/source/`](solutions/v6.3/v3/qwen4-max-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261125T144957Z-613c0f`）；未复制的二进制或大文件：weights.npz（17,390 字节）。
+
+### MiniMax M3.1 Flash（单轮，v6.3）
+
+源码 [`solutions/v6.3/v3/minimax-m3.1-flash-single-1/source/`](solutions/v6.3/v3/minimax-m3.1-flash-single-1/source/)（提交 `polarization-demosaicking-v3-20261125T101957Z-d72924`）。
+
+### MiniMax M3.1 Flash（迭代，v6.3）
+
+public 分数随测试提交：53.0（27 分钟） → 51.9（47 分钟） → 54.6（50 分钟） → 0.0（54 分钟） → 54.3（59 分钟） → 54.4（62 分钟） → 54.4（65 分钟） → 56.3（68 分钟） → 56.3（78 分钟） → 56.3（84 分钟）
+
+源码 [`solutions/v6.3/v3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-1/source/)（提交 `polarization-demosaicking-v3-20261125T164305Z-9ff305`）；未复制的二进制或大文件：filters.npy（10,496 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

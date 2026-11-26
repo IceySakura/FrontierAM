@@ -1,0 +1,14 @@
+{
+ "model": "qwen4-max",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "ihvp-sequence-v4-20261125T111858Z-4455a9",
+ "raw": "\\(E = 0.1297\\)，最长序列 28.3 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 56.096,
+ "review": null,
+ "process": {
+  "minutes": 33.0,
+  "public_tests": 0
+ }
+}

@@ -18,6 +18,9 @@
 | --- | --- | --- |
 | `v1` | `blackbox-cubature` | 出题人 v4 包原样三族，多项式为守门族（只扣分） |
 | `v2` | `blackbox-cubature-v2` | 多项式族换成折点 ridge 叠加，三族都计分（当前版本） |
+| `v3` | `blackbox-cubature-v3` | 理论 + 实验双考候选版：高斯测度，困难合成赛道（4 族）与文献期权赛道（6 族）等权，GPCA-RQMC = 50、普通蒙特卡洛 = 0，按真值精度截断；只做试跑，不上榜（analysis/DUAL_PLAN.md） |
+| `v3.1` | `blackbox-cubature-v3.1` | v3 的修订候选版：困难赛道改为谱各异的各向异性二次型（广义卡方真值），期权赛道改为单资产局部波动率 Euler 模型（反向 Nyström 真值），样例查询上限 2^18；评分、参照与镜像同 v3；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.9） |
+| `v3.2` | `blackbox-cubature-v3.2` | v3.1 加理论评分原则：理论结论须 Lean 4 形式化并通过 lake comparator，每条与人类强结果对比（更强、更弱、相当、不可比），理论分取通过结论中的最高分；开发容器提供离线 Lean v4.35 与 Mathlib、8 GiB 内存；实验部分同 v3.1；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.11，analysis/THEORY_REVIEW.md） |
 
 ## 题目背景
 
@@ -78,6 +81,10 @@
 | Hunyuan 4 | 迭代 | 增益 \(G = 0.640\)（fourier +0.81，折点 ridge -0.90，乘积峰 +2.00），144 例，单例最长 11.4 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 66.0 | 12 次提交，179 分钟 | [`v2/hy4-iterative-1/`](solutions/v6.3/v2/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`v2/intern-s2-single-1/`](solutions/v6.3/v2/intern-s2-single-1/) |
 | Intern S2 | 迭代 | 增益 \(G = -0.243\)（fourier -1.29，折点 ridge +0.03，乘积峰 +0.54），144 例，单例最长 2.1 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 33.0 | 0 次提交，240 分钟 | [`v2/intern-s2-iterative-1/`](solutions/v6.3/v2/intern-s2-iterative-1/) |
+| Qwen4 Max | 单轮 | 增益 \(G = 0.629\)（fourier -0.10，折点 ridge -0.02，乘积峰 +2.00），144 例，单例最长 2.5 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 65.7 | 31 分钟 | [`v2/qwen4-max-single-1/`](solutions/v6.3/v2/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | 增益 \(G = 0.353\)（fourier -0.44，折点 ridge -0.50，乘积峰 +2.00），144 例，单例最长 26.8 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 58.8 | 13 次提交，121 分钟 | [`v2/qwen4-max-iterative-1/`](solutions/v6.3/v2/qwen4-max-iterative-1/) |
+| MiniMax M3.1 Flash | 单轮 | 增益 \(G = -0.094\)（fourier -0.51，折点 ridge -0.07，乘积峰 +0.29），144 例，单例最长 1.2 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 43.4 | 26 分钟 | [`v2/minimax-m3.1-flash-single-1/`](solutions/v6.3/v2/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | 增益 \(G = 0.146\)（fourier -0.98，折点 ridge -0.59，乘积峰 +2.00），144 例，单例最长 1.7 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 53.6 | 9 次提交，90 分钟 | [`v2/minimax-m3.1-flash-iterative-1/`](solutions/v6.3/v2/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -158,6 +165,26 @@ public 分数随测试提交：29.5（13 分钟） → 56.6（42 分钟） → 5
 11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。
 
 源码 [`solutions/v6.3/v2/intern-s2-iterative-1/source/`](solutions/v6.3/v2/intern-s2-iterative-1/source/)（提交 `blackbox-cubature-v2-20261119T002111Z-5d7611`）；未复制的二进制或大文件：libhcubature.so（12,616,192 字节）、libpcubature.so（12,616,192 字节）。
+
+### Qwen4 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/v2/qwen4-max-single-1/source/`](solutions/v6.3/v2/qwen4-max-single-1/source/)（提交 `blackbox-cubature-v2-20261125T113126Z-3c47b7`）。
+
+### Qwen4 Max（迭代，v6.3）
+
+public 分数随测试提交：52.5（19 分钟） → 52.5（39 分钟） → 23.6（50 分钟） → 41.9（62 分钟） → 50.6（70 分钟） → 50.6（76 分钟） → 51.1（82 分钟） → 38.4（88 分钟） → 46.5（96 分钟） → 50.5（102 分钟） → 52.5（107 分钟） → 50.5（112 分钟） → 52.5（117 分钟）
+
+源码 [`solutions/v6.3/v2/qwen4-max-iterative-1/source/`](solutions/v6.3/v2/qwen4-max-iterative-1/source/)（提交 `blackbox-cubature-v2-20261125T185325Z-295817`）。
+
+### MiniMax M3.1 Flash（单轮，v6.3）
+
+源码 [`solutions/v6.3/v2/minimax-m3.1-flash-single-1/source/`](solutions/v6.3/v2/minimax-m3.1-flash-single-1/source/)（提交 `blackbox-cubature-v2-20261125T114442Z-a1cb07`）。
+
+### MiniMax M3.1 Flash（迭代，v6.3）
+
+public 分数随测试提交：52.2（19 分钟） → 52.2（26 分钟） → 52.3（36 分钟） → 39.0（41 分钟） → 53.3（54 分钟） → 53.3（55 分钟） → 53.3（63 分钟） → 51.6（67 分钟） → 51.6（84 分钟）
+
+源码 [`solutions/v6.3/v2/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/v2/minimax-m3.1-flash-iterative-1/source/)（提交 `blackbox-cubature-v2-20261125T204134Z-599310`）。
 
 ## 观察与说明
 

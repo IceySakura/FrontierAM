@@ -98,6 +98,10 @@
 | Hunyuan 4 | 迭代 | \(E = 0.1296\)，最长序列 27.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 56.1 | 4 次提交，183 分钟 | [`v4/hy4-iterative-1/`](solutions/v6.3/v4/hy4-iterative-1/) |
 | Intern S2 | 单轮 | \(E = 0.2255\)，最长序列 28.7 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 11.3 | 60 分钟 | [`v4/intern-s2-single-1/`](solutions/v6.3/v4/intern-s2-single-1/) |
 | Intern S2 | 迭代 | \(E = 0.7302\)，最长序列 4.9 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 0 次提交，240 分钟 | [`v4/intern-s2-iterative-1/`](solutions/v6.3/v4/intern-s2-iterative-1/) |
+| Qwen4 Max | 单轮 | \(E = 0.1297\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 56.1 | 33 分钟 | [`v4/qwen4-max-single-1/`](solutions/v6.3/v4/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | \(E = 0.1176\)，最长序列 28.3 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 60.2 | 6 次提交，56 分钟 | [`v4/qwen4-max-iterative-1/`](solutions/v6.3/v4/qwen4-max-iterative-1/) |
+| MiniMax M3.1 Flash | 单轮 | \(E = 0.1675\)，最长序列 28.1 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 40.2 | 29 分钟 | [`v4/minimax-m3.1-flash-single-1/`](solutions/v6.3/v4/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | \(E = 0.1375\)，最长序列 28.4 秒（CG：\(U = 0.2483\)，L-BFGS-PCG：\(W = 0.1478\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 53.5 | 6 次提交，162 分钟 | [`v4/minimax-m3.1-flash-iterative-1/`](solutions/v6.3/v4/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -184,6 +188,26 @@ public 分数随测试提交：46.6（33 分钟） → 54.8（107 分钟） → 
 书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
 
 源码 [`solutions/v6.3/v4/intern-s2-iterative-1/source/`](solutions/v6.3/v4/intern-s2-iterative-1/source/)（提交 `ihvp-sequence-v4-20261116T093358Z-8cc53a`）。
+
+### Qwen4 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/v4/qwen4-max-single-1/source/`](solutions/v6.3/v4/qwen4-max-single-1/source/)（提交 `ihvp-sequence-v4-20261125T111858Z-4455a9`）。
+
+### Qwen4 Max（迭代，v6.3）
+
+public 分数随测试提交：48.7（6 分钟） → 58.2（15 分钟） → 59.9（23 分钟） → 60.8（30 分钟） → 60.5（39 分钟） → 60.7（48 分钟）
+
+源码 [`solutions/v6.3/v4/qwen4-max-iterative-1/source/`](solutions/v6.3/v4/qwen4-max-iterative-1/source/)（提交 `ihvp-sequence-v4-20261125T172232Z-44c487`）。
+
+### MiniMax M3.1 Flash（单轮，v6.3）
+
+源码 [`solutions/v6.3/v4/minimax-m3.1-flash-single-1/source/`](solutions/v6.3/v4/minimax-m3.1-flash-single-1/source/)（提交 `ihvp-sequence-v4-20261125T114456Z-675c48`）。
+
+### MiniMax M3.1 Flash（迭代，v6.3）
+
+public 分数随测试提交：0.0（22 分钟） → 52.7（67 分钟） → 53.8（108 分钟） → 54.0（124 分钟） → 53.4（142 分钟） → 54.3（151 分钟）
+
+源码 [`solutions/v6.3/v4/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/v4/minimax-m3.1-flash-iterative-1/source/)（提交 `ihvp-sequence-v4-20261125T203152Z-9b0b24`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

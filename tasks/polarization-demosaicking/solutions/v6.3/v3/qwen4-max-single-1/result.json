@@ -1,0 +1,14 @@
+{
+ "model": "qwen4-max",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "polarization-demosaicking-v3-20261125T102010Z-e0e282",
+ "raw": "RMSE \\(E = 1.5932\\)（\\(U = 2.1080\\)，\\(W = 1.5007\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 42.381,
+ "review": null,
+ "process": {
+  "minutes": 32.6,
+  "public_tests": 0
+ }
+}

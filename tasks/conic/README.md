@@ -84,6 +84,9 @@
 | Hunyuan 4 | 迭代 | 286 / 650（\(p = 0.440\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 12 次提交，172 分钟 | [`hy4-iterative-2/`](solutions/v6.3/hy4-iterative-2/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
 | Intern S2 | 迭代 | 无效提交（提交检查未通过，650 例均未运行） | 无效提交记 0 | 0.0 | 0 次提交，240 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
+| Qwen4 Max | 单轮 | 166 / 650（\(p = 0.255\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 31 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
+| MiniMax M3.1 Flash | 单轮 | 74 / 650（\(p = 0.114\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 30 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | 176 / 650（\(p = 0.271\)，参照 \(p_B = 0.789\)） | \(p \le 0.9\,p_B\) 记 0；否则 \(50\,(p-0.9p_B)/(0.1p_B)\)，高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 13 次提交，190 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -174,6 +177,20 @@ public 分数随测试提交：0.0（54 分钟） → 0.0（63 分钟） → 0.0
 书生 S2 端点生成约每秒 16–25 个 token（opus 约 90、hy4 约 50、qwen 约 37），单轮时间多耗在等生成上；迭代 7 次均未调用测试反馈、3 次缺 README 或 run.sh。11-17 以最多 2 个并发、模型卡采样参数复核 4 个单轮（polarization、trajectory 无提交，galaxy 提交不完整，ihvp 发散），均为 0 分，不替换正式结果（results/OPEN_ITEMS.md）。
 
 源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `conic-20261116T093357Z-7771b0`）。
+
+### Qwen4 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `conic-20261125T094519Z-f56c32`）；未复制的二进制或大文件：solver（80,952 字节）。
+
+### MiniMax M3.1 Flash（单轮，v6.3）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-single-1/source/`](solutions/v6.3/minimax-m3.1-flash-single-1/source/)（提交 `conic-20261125T093131Z-f92930`）。
+
+### MiniMax M3.1 Flash（迭代，v6.3）
+
+public 分数随测试提交：0.0（20 分钟） → 0.0（33 分钟） → 0.0（44 分钟） → 0.0（60 分钟） → 0.0（88 分钟） → 0.0（98 分钟） → 0.0（112 分钟） → 0.0（124 分钟） → 0.0（135 分钟） → 0.0（146 分钟） → 0.0（156 分钟） → 0.0（166 分钟） → 0.0（179 分钟）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `conic-20261125T151704Z-f24769`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

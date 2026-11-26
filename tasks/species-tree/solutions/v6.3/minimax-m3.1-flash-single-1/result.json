@@ -1,0 +1,14 @@
+{
+ "model": "minimax-m3.1-flash",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "species-tree-v3-20261125T111247Z-d31cdf",
+ "raw": "nRF \\(E = 0.2155\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 52.7,
+  "public_tests": 0
+ }
+}

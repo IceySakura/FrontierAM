@@ -1,0 +1,66 @@
+{
+ "model": "minimax-m3.1-flash",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "polarization-demosaicking-v3-20261125T164305Z-9ff305",
+ "raw": "RMSE \\(E = 1.5112\\)（\\(U = 2.1080\\)，\\(W = 1.5007\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 49.131,
+ "review": null,
+ "process": {
+  "minutes": 85.9,
+  "public_tests": 10,
+  "public_curve": [
+   {
+    "minute": 26.8,
+    "score": 53.00729212104254,
+    "status": "ok"
+   },
+   {
+    "minute": 47.3,
+    "score": 51.92486512267403,
+    "status": "ok"
+   },
+   {
+    "minute": 50.1,
+    "score": 54.633139877845245,
+    "status": "ok"
+   },
+   {
+    "minute": 53.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 58.7,
+    "score": 54.30135753827719,
+    "status": "ok"
+   },
+   {
+    "minute": 62.0,
+    "score": 54.41004849336277,
+    "status": "ok"
+   },
+   {
+    "minute": 65.0,
+    "score": 54.41004849336277,
+    "status": "ok"
+   },
+   {
+    "minute": 68.5,
+    "score": 56.31377166145671,
+    "status": "ok"
+   },
+   {
+    "minute": 78.4,
+    "score": 56.31377166145671,
+    "status": "ok"
+   },
+   {
+    "minute": 83.7,
+    "score": 56.31377166145671,
+    "status": "ok"
+   }
+  ]
+ }
+}

@@ -78,6 +78,10 @@
 | Hunyuan 4 | 迭代 | 损失 \(E = 0.00232668\)，60 例，单例最长 0.3 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.8 | 7 次提交，135 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-1/`](solutions/v6.3/intern-s2-single-1/) |
 | Intern S2 | 迭代 | 损失 \(E = 0.00965148\)，60 例，单例最长 0.1 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 24.2 | 4 次提交，213 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
+| Qwen4 Max | 单轮 | 损失 \(E = 0.00108602\)，60 例，单例最长 0.7 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 67.1 | 21 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | 损失 \(E = 0.00122283\)，60 例，单例最长 0.8 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 62.9 | 5 次提交，40 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| MiniMax M3.1 Flash | 单轮 | 损失 \(E = 0.00267888\)，60 例，单例最长 1.3 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 46.7 | 60 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | 损失 \(E = 0.00837313\)，60 例，单例最长 1.1 秒（一阶 Richardson：\(U = 0.017163\)，GRE：\(W = 0.00164816\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 28.3 | 5 次提交，101 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -166,6 +170,30 @@ public 分数随测试提交：28.0（29 分钟） → 0.0（34 分钟） → 49
 public 分数随测试提交：85.5（156 分钟） → 86.8（181 分钟） → 86.8（202 分钟） → 86.8（207 分钟）
 
 源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `continuum-estimation-20261119T010622Z-44268a`）。
+
+### Qwen4 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `continuum-estimation-20261125T114010Z-b10c67`）。
+
+### Qwen4 Max（迭代，v6.3）
+
+出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
+
+public 分数随测试提交：38.7（10 分钟） → 89.5（18 分钟） → 88.9（33 分钟） → 93.0（35 分钟） → 93.7（39 分钟）
+
+源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `continuum-estimation-20261125T180305Z-bdc8e2`）。
+
+### MiniMax M3.1 Flash（单轮，v6.3）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-single-1/source/`](solutions/v6.3/minimax-m3.1-flash-single-1/source/)（提交 `continuum-estimation-20261125T124448Z-5009de`）。
+
+### MiniMax M3.1 Flash（迭代，v6.3）
+
+出题人只提供带真值的公开样例和 private 集，没有留出的 public 集：迭代时的 public 反馈就是这些样例上的成绩，模型本地也能算出，不含留出信息（results/OPEN_ITEMS.md）。
+
+public 分数随测试提交：34.5（13 分钟） → 41.8（28 分钟） → 41.9（60 分钟） → 91.6（73 分钟） → 91.6（94 分钟）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `continuum-estimation-20261125T221313Z-78dc64`）。
 
 ## 观察与说明
 

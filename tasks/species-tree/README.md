@@ -95,6 +95,10 @@
 | Hunyuan 4 | 迭代 | nRF \(E = 0.1382\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 30.1 | 4 次提交，157 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Intern S2 | 单轮 | 无效提交（开发结束时没有冻结出有效提交） | 无效提交记 0 | 0.0 | 60 分钟 | [`intern-s2-single-2/`](solutions/v6.3/intern-s2-single-2/) |
 | Intern S2 | 迭代 | 无效提交（non-regular source or artifact: .venv/bin/python） | 任一用例失败或提交检查未通过记 0 | 0.0 | 0 次提交，186 分钟 | [`intern-s2-iterative-1/`](solutions/v6.3/intern-s2-iterative-1/) |
+| Qwen4 Max | 单轮 | nRF \(E = 0.2038\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 44 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
+| Qwen4 Max | 迭代 | nRF \(E = 0.1393\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 26.6 | 12 次提交，96 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| MiniMax M3.1 Flash | 单轮 | nRF \(E = 0.2155\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 53 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
+| MiniMax M3.1 Flash | 迭代 | nRF \(E = 0.1368\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 34.7 | 4 次提交，66 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -179,6 +183,26 @@ public 分数随测试提交：50.0（77 分钟） → 51.3（105 分钟） → 
 11-18 补跑：同一把 key 两个并发（裸测单请求 32.7 token/秒、两并发每路约 31），会话内生成约 17–23 token/秒，无上游错误、断流或重试（results/OPEN_ITEMS.md）。 11-16 的第 1 次在 11-17 停书生时中止，未测； 11-18 前两次迭代都在约 3 小时时因书生端点按自己的粗估判定上下文超限（HTTP 400，约 910 KB 请求、端点报告约 12 万 token）而退出，Claude Code 在这种单轮长会话中没有压缩；基础设施问题，两次均记未测。11-19 起 Claude Code 自动压缩阈值设为 100000，并由传输层在请求超过 800 KB 时清理最早的工具输出（最近 8 条消息不动），本格为此后的尝试。
 
 源码 [`solutions/v6.3/intern-s2-iterative-1/source/`](solutions/v6.3/intern-s2-iterative-1/source/)（提交 `species-tree-v3-20261118T213333Z-d6c213`）。
+
+### Qwen4 Max（单轮，v6.3）
+
+源码 [`solutions/v6.3/qwen4-max-single-1/source/`](solutions/v6.3/qwen4-max-single-1/source/)（提交 `species-tree-v3-20261125T110027Z-121f1d`）；未复制的二进制或大文件：species（136,080 字节）。
+
+### Qwen4 Max（迭代，v6.3）
+
+public 分数随测试提交：0.0（20 分钟） → 0.0（23 分钟） → 0.0（28 分钟） → 0.0（39 分钟） → 0.0（43 分钟） → 0.0（47 分钟） → 38.1（56 分钟） → 38.1（61 分钟） → 50.0（66 分钟） → 52.0（72 分钟） → 52.3（77 分钟） → 52.6（89 分钟）
+
+源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `species-tree-v3-20261125T162613Z-165802`）；未复制的二进制或大文件：species_tree（168,440 字节）。
+
+### MiniMax M3.1 Flash（单轮，v6.3）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-single-1/source/`](solutions/v6.3/minimax-m3.1-flash-single-1/source/)（提交 `species-tree-v3-20261125T111247Z-d31cdf`）。
+
+### MiniMax M3.1 Flash（迭代，v6.3）
+
+public 分数随测试提交：—（17 分钟） → 31.0（19 分钟） → 47.6（41 分钟） → 50.0（60 分钟）（—：没有拿到报告）
+
+源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `species-tree-v3-20261125T174939Z-d6abf0`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

@@ -1,0 +1,66 @@
+{
+ "model": "qwen4-max",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "galaxy-gravity-v4-20261125T160512Z-fe2477",
+ "raw": "无效提交（提交失败）",
+ "mapping": "任一用例失败或提交检查未通过记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 188.8,
+  "public_tests": 10,
+  "public_curve": [
+   {
+    "minute": 45.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 87.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 101.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 113.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 123.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 133.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 145.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 155.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 166.1,
+    "score": null,
+    "status": "unmeasured"
+   },
+   {
+    "minute": 178.1,
+    "score": null,
+    "status": "unmeasured"
+   }
+  ]
+ }
+}

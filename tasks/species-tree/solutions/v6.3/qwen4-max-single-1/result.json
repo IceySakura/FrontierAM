@@ -1,0 +1,14 @@
+{
+ "model": "qwen4-max",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "species-tree-v3-20261125T110027Z-121f1d",
+ "raw": "nRF \\(E = 0.2038\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 44.0,
+  "public_tests": 0
+ }
+}

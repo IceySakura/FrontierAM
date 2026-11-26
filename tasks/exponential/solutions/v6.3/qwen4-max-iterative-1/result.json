@@ -1,0 +1,106 @@
+{
+ "model": "qwen4-max",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261125T125928Z-549d39",
+ "raw": "74/74 合格，\\(R = 0.726\\)（对 7 方法参照组逐例最快成员）",
+ "mapping": "\\(100/(1+R)\\)",
+ "score": 57.932,
+ "review": null,
+ "process": {
+  "minutes": 65.9,
+  "public_tests": 18,
+  "public_curve": [
+   {
+    "minute": 7.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 12.7,
+    "score": 48.96592883923346,
+    "status": "ok"
+   },
+   {
+    "minute": 20.4,
+    "score": 53.331393341913305,
+    "status": "ok"
+   },
+   {
+    "minute": 25.2,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 29.9,
+    "score": 53.53320042420757,
+    "status": "ok"
+   },
+   {
+    "minute": 32.2,
+    "score": 52.525853091232044,
+    "status": "ok"
+   },
+   {
+    "minute": 35.0,
+    "score": 51.63575365640583,
+    "status": "ok"
+   },
+   {
+    "minute": 38.1,
+    "score": 50.615581296701755,
+    "status": "ok"
+   },
+   {
+    "minute": 40.8,
+    "score": 50.28787054582564,
+    "status": "ok"
+   },
+   {
+    "minute": 42.6,
+    "score": 53.19040979079567,
+    "status": "ok"
+   },
+   {
+    "minute": 44.9,
+    "score": 54.40581369590206,
+    "status": "ok"
+   },
+   {
+    "minute": 46.9,
+    "score": 54.077505442699724,
+    "status": "ok"
+   },
+   {
+    "minute": 50.2,
+    "score": 50.71821849729622,
+    "status": "ok"
+   },
+   {
+    "minute": 53.7,
+    "score": 51.25850943194281,
+    "status": "ok"
+   },
+   {
+    "minute": 55.3,
+    "score": 50.424972271890134,
+    "status": "ok"
+   },
+   {
+    "minute": 59.5,
+    "score": 50.18496507732072,
+    "status": "ok"
+   },
+   {
+    "minute": 61.4,
+    "score": 51.66026826025956,
+    "status": "ok"
+   },
+   {
+    "minute": 62.9,
+    "score": 50.047841374666966,
+    "status": "ok"
+   }
+  ]
+ }
+}

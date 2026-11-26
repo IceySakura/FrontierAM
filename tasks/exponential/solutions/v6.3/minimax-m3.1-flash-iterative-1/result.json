@@ -1,0 +1,51 @@
+{
+ "model": "minimax-m3.1-flash",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261125T135911Z-455269",
+ "raw": "无效提交（1 例不合格）",
+ "mapping": "任一用例不合格记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 74.3,
+  "public_tests": 7,
+  "public_curve": [
+   {
+    "minute": 31.1,
+    "score": 44.748076877931275,
+    "status": "ok"
+   },
+   {
+    "minute": 44.6,
+    "score": 43.666702925050195,
+    "status": "ok"
+   },
+   {
+    "minute": 50.9,
+    "score": 51.384166409692355,
+    "status": "ok"
+   },
+   {
+    "minute": 53.4,
+    "score": 53.0201633117002,
+    "status": "ok"
+   },
+   {
+    "minute": 55.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 63.1,
+    "score": 53.28785803902107,
+    "status": "ok"
+   },
+   {
+    "minute": 70.7,
+    "score": 51.730341456908995,
+    "status": "ok"
+   }
+  ]
+ }
+}
