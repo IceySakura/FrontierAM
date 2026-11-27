@@ -30,7 +30,8 @@ while galaxy_busy; do sleep 120; done
 say '"event": "galaxy_idle"'
 
 export FRONTIERAM_GALAXY_DATA=public FRONTIERAM_GALAXY_V4_TIMING=600
-id=$(./bench --store $PUB suite --task galaxy-gravity-v4 --reference --cases '["fb-4194304-disc"]' --shards 1 \
+echo '["fb-4194304-disc"]' > /tmp/galaxy-4m-cases.json
+id=$(./bench --store $PUB suite --task galaxy-gravity-v4 --reference --cases /tmp/galaxy-4m-cases.json --shards 1 \
      | python3 -c "import json,sys;print(json.loads(sys.stdin.readlines()[-1])['id'])") || { say '"event": "timing_queue_failed"'; exit 1; }
 ./bench --store $PUB grade-worker --task galaxy-gravity-v4 --workers 1 --drain >> $LOG 2>&1
 unset FRONTIERAM_GALAXY_V4_TIMING
