@@ -86,7 +86,7 @@
 | GPT-6 Astra | 单轮 | nRF \(E = 0.1196\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 54.7 | 58 分钟 | [`gpt-6-astra-single-1/`](solutions/v6.3/gpt-6-astra-single-1/) |
 | GPT-6 Astra | 迭代 | nRF \(E = 0.1298\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.8 | 19 次提交，227 分钟 | [`gpt-6-astra-iterative-2/`](solutions/v6.3/gpt-6-astra-iterative-2/) |
 | GPT-6.1 Sol | 单轮 | nRF \(E = 0.1323\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.3 | 58 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
-| GPT-6.1 Sol | 迭代 | nRF \(E = 0.1253\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 52.6 | 13 次提交，128 分钟 | [`gpt-6.1-sol-iterative-2/`](solutions/v6.3/gpt-6.1-sol-iterative-2/) |
+| GPT-6.1 Sol | 迭代 | nRF \(E = 0.1325\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 48.6 | 12 次提交，240 分钟 | [`gpt-6.1-sol-iterative-3/`](solutions/v6.3/gpt-6.1-sol-iterative-3/) |
 | Claude Opus 5.5 | 单轮 | nRF \(E = 0.1389\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 28.1 | 26 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | nRF \(E = 0.1288\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.2 | 4 次提交，110 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
 | Hunyuan 4 | 单轮 | nRF \(E = 0.1574\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 58 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
@@ -132,11 +132,11 @@ public 分数随测试提交：2.8（5 分钟） → 32.6（7 分钟） → 18.8
 
 ### GPT-6.1 Sol（迭代，v6.3）
 
-反馈改为 20 个留出用例后的第 3 次尝试进行中；此处暂列此前尝试的成绩（其反馈含工作区样例）。
+此前尝试的测试反馈是 5 个用例，其中 2 个就是工作区里带真值的样例；11-26 起反馈改为 20 个不发给模型的用例（与私有集同一组模拟参数、不同种子），本格为此后的第 3 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：33.3（7 分钟） → 51.0（11 分钟） → 23.8（15 分钟） → 51.3（22 分钟） → 52.0（24 分钟） → 45.2（29 分钟） → 51.3（35 分钟） → 53.0（44 分钟） → 50.0（54 分钟） → 58.9（73 分钟） → 59.9（86 分钟） → 60.6（106 分钟） → 60.6（124 分钟）
+public 分数随测试提交：36.2（8 分钟） → 35.8（16 分钟） → 39.0（33 分钟） → 38.5（46 分钟） → 37.2（69 分钟） → 41.7（90 分钟） → 32.1（143 分钟） → 42.2（163 分钟） → 45.9（166 分钟） → 45.0（172 分钟） → 43.1（181 分钟） → 46.8（201 分钟）
 
-源码 [`solutions/v6.3/gpt-6.1-sol-iterative-2/source/`](solutions/v6.3/gpt-6.1-sol-iterative-2/source/)（提交 `species-tree-v3-20261117T063610Z-197bc5`）；未复制的二进制或大文件：infer（108,856 字节）。
+源码 [`solutions/v6.3/gpt-6.1-sol-iterative-3/source/`](solutions/v6.3/gpt-6.1-sol-iterative-3/source/)（提交 `species-tree-v3-20261127T111205Z-7ac5cf`）；未复制的二进制或大文件：infer（298,664 字节）。
 
 ### Claude Opus 5.5（单轮，v6.3）
 
