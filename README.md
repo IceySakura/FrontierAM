@@ -20,7 +20,7 @@ FrontierAM 收集**有明确对错、可复现评分**的数值算法题，让 A
 | [conic](tasks/conic/README.md) | 33.5 | 73.7 | 36.9 | 32.5 | 39.2 | 36.8 | 28.4 | 28.6 | 12.6 | 17.4 | 0.1 | 10.9 | 11.6 | 4.5 | 0.0 | 1.6 |
 | [exponential](tasks/exponential/README.md) | 59.3 | 68.9 | 60.9 | 58.9 | 65.3 | 70.3 | 58.6 | 66.9 | 38.2 | 59.3 | 43.3 | 60.4 | 20.8 | 55.2 | 15.7 | 60.0 |
 | [galaxy-gravity](tasks/galaxy-gravity/README.md) | 57.8 | 64.4 | 51.9 | 69.6 | 72.8 | — | 0.0 | 66.1 | 0.0 | 53.1 | 0.0 | 0.0 | 0.0 | 50.9 | 0.0 | 0.0 |
-| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 44.2≈ | 50.9 | 54.0 | 53.8 | 57.1 | 55.3 | 53.0 | 54.1 | 47.0 | 44.7 | 43.4≈ | 51.7 | 38.6 | 40.7 | 32.9 | 36.6 |
+| [polarization-demosaicking](tasks/polarization-demosaicking/README.md) | 44.2≈ | 50.9≈ | 54.0 | 53.8 | 57.1 | 55.3 | 53.0 | 54.1 | 47.0 | 44.7 | 43.4≈ | 51.7≈ | 38.6 | 40.7 | 32.9 | 36.6 |
 | [trajectory-covariance](tasks/trajectory-covariance/README.md) | 52.6 | 62.6 | 55.2 | 63.7 | 63.9 | 64.0 | 0.0 | 62.3 | 47.9 | 59.3 | 51.4 | 51.0≈ | 0.0 | 51.1≈ | 50.8 | 49.8 |
 | [species-tree](tasks/species-tree/README.md) | 28.1 | 51.2 | 54.7 | 53.5 | 52.3 | 52.5≈ | 49.3 | 52.6≈ | 0.0 | 30.1≈ | 0.0 | 26.6≈ | 0.0 | 0.0 | 0.0 | 34.7≈ |
 | [ihvp-sequence](tasks/ihvp-sequence/README.md) | 58.5≈ | 60.2≈ | 60.2 | 63.2≈ | 58.4≈ | 61.3 | 62.6 | 63.0≈ | 52.6≈ | 56.1 | 56.1 | 60.2≈ | 52.2≈ | 51.8 | 40.2 | 53.5 |
