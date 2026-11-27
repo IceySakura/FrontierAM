@@ -1,0 +1,111 @@
+{
+ "model": "gpt-6-astra",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261127T100829Z-e10f0c",
+ "raw": "nRF \\(E = 0.1298\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 50.83,
+ "review": null,
+ "process": {
+  "minutes": 226.7,
+  "public_tests": 19,
+  "public_curve": [
+   {
+    "minute": 5.0,
+    "score": 2.752293577981666,
+    "status": "ok"
+   },
+   {
+    "minute": 7.3,
+    "score": 32.568807339449535,
+    "status": "ok"
+   },
+   {
+    "minute": 13.2,
+    "score": 18.807339449541267,
+    "status": "ok"
+   },
+   {
+    "minute": 19.7,
+    "score": 25.229357798165132,
+    "status": "ok"
+   },
+   {
+    "minute": 25.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 31.6,
+    "score": 24.770642201834868,
+    "status": "ok"
+   },
+   {
+    "minute": 34.2,
+    "score": 34.86238532110087,
+    "status": "ok"
+   },
+   {
+    "minute": 36.4,
+    "score": 23.853211009174334,
+    "status": "ok"
+   },
+   {
+    "minute": 39.0,
+    "score": 35.3211009174312,
+    "status": "ok"
+   },
+   {
+    "minute": 49.0,
+    "score": 35.3211009174312,
+    "status": "ok"
+   },
+   {
+    "minute": 57.7,
+    "score": 45.87155963302753,
+    "status": "ok"
+   },
+   {
+    "minute": 60.7,
+    "score": 50.552486187845304,
+    "status": "ok"
+   },
+   {
+    "minute": 67.4,
+    "score": 50.069060773480665,
+    "status": "ok"
+   },
+   {
+    "minute": 70.0,
+    "score": 35.3211009174312,
+    "status": "ok"
+   },
+   {
+    "minute": 77.7,
+    "score": 51.3121546961326,
+    "status": "ok"
+   },
+   {
+    "minute": 89.3,
+    "score": 50.27624309392266,
+    "status": "ok"
+   },
+   {
+    "minute": 98.1,
+    "score": 51.17403314917127,
+    "status": "ok"
+   },
+   {
+    "minute": 158.2,
+    "score": 51.10497237569061,
+    "status": "ok"
+   },
+   {
+    "minute": 198.1,
+    "score": 51.3121546961326,
+    "status": "ok"
+   }
+  ]
+ }
+}
