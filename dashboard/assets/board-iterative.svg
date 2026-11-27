@@ -8,8 +8,8 @@
 <text x="596" y="85.0" font-size="13" font-weight="700" fill="#111827">67.8</text>
 <text x="120" y="117.0" font-size="13" fill="#374151" text-anchor="end">Claude Opus 5.5</text>
 <rect x="132" y="104.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
-<rect x="132" y="104.0" width="294.9" height="16" rx="4" fill="#d97757"/>
-<text x="596" y="117.0" font-size="13" font-weight="700" fill="#111827">65.2</text>
+<rect x="132" y="104.0" width="293.6" height="16" rx="4" fill="#d97757"/>
+<text x="596" y="117.0" font-size="13" font-weight="700" fill="#111827">65.0</text>
 <text x="120" y="149.0" font-size="13" fill="#374151" text-anchor="end">GPT-6 Astra</text>
 <rect x="132" y="136.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
 <rect x="132" y="136.0" width="293.1" height="16" rx="4" fill="#be185d"/>
