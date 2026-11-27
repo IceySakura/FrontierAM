@@ -90,7 +90,7 @@
 | Claude Opus 5.5 | 单轮 | nRF \(E = 0.1389\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 28.1 | 26 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
 | Claude Opus 5.5 | 迭代 | nRF \(E = 0.1295\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.0 | 16 次提交，160 分钟 | [`claude-opus-5-5-iterative-2/`](solutions/v6.3/claude-opus-5-5-iterative-2/) |
 | Hunyuan 4 | 单轮 | nRF \(E = 0.1574\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 58 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
-| Hunyuan 4 | 迭代 | nRF \(E = 0.1382\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 30.1 | 4 次提交，157 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
+| Hunyuan 4 | 迭代 | nRF \(E = 0.1364\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 36.1 | 10 次提交，218 分钟 | [`hy4-iterative-2/`](solutions/v6.3/hy4-iterative-2/) |
 | Qwen4 Max | 单轮 | nRF \(E = 0.2038\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 44 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
 | Qwen4 Max | 迭代 | nRF \(E = 0.1393\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 26.6 | 12 次提交，96 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
 | Qwen3.8 Max | 单轮 | nRF \(E = 0.2013\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 30 分钟 | [`qwen3.8-max-0902-single-3/`](solutions/v6.3/qwen3.8-max-0902-single-3/) |
@@ -156,11 +156,11 @@ public 分数随测试提交：0.0（11 分钟） → 5.5（18 分钟） → 3.7
 
 ### Hunyuan 4（迭代，v6.3）
 
-反馈改为 20 个留出用例后的第 2 次尝试进行中；此处暂列此前尝试的成绩（其反馈含工作区样例）。
+此前尝试的测试反馈是 5 个用例，其中 2 个就是工作区里带真值的样例；11-26 起反馈改为 20 个不发给模型的用例（与私有集同一组模拟参数、不同种子），本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：50.0（77 分钟） → 51.3（105 分钟） → 50.7（133 分钟） → 51.3（150 分钟）
+public 分数随测试提交：25.7（37 分钟） → 11.9（92 分钟） → 32.1（107 分钟） → 30.7（130 分钟） → 30.7（144 分钟） → 33.0（161 分钟） → 30.3（180 分钟） → 33.0（193 分钟） → 31.2（200 分钟） → 32.1（210 分钟）
 
-源码 [`solutions/v6.3/hy4-iterative-1/source/`](solutions/v6.3/hy4-iterative-1/source/)（提交 `species-tree-v3-20261113T151956Z-b398a9`）。
+源码 [`solutions/v6.3/hy4-iterative-2/source/`](solutions/v6.3/hy4-iterative-2/source/)（提交 `species-tree-v3-20261127T145002Z-e9ea08`）；未复制的二进制或大文件：infer（186,952 字节）。
 
 ### Qwen4 Max（单轮，v6.3）
 

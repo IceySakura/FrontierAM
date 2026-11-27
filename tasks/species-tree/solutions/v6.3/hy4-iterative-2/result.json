@@ -1,0 +1,66 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261127T145002Z-e9ea08",
+ "raw": "nRF \\(E = 0.1364\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 36.081,
+ "review": null,
+ "process": {
+  "minutes": 217.8,
+  "public_tests": 10,
+  "public_curve": [
+   {
+    "minute": 37.1,
+    "score": 25.688073394495405,
+    "status": "ok"
+   },
+   {
+    "minute": 91.8,
+    "score": 11.926605504587135,
+    "status": "ok"
+   },
+   {
+    "minute": 106.9,
+    "score": 32.11009174311926,
+    "status": "ok"
+   },
+   {
+    "minute": 130.5,
+    "score": 30.733944954128468,
+    "status": "ok"
+   },
+   {
+    "minute": 144.1,
+    "score": 30.733944954128468,
+    "status": "ok"
+   },
+   {
+    "minute": 161.3,
+    "score": 33.0275229357798,
+    "status": "ok"
+   },
+   {
+    "minute": 179.9,
+    "score": 30.275229357798196,
+    "status": "ok"
+   },
+   {
+    "minute": 192.6,
+    "score": 33.0275229357798,
+    "status": "ok"
+   },
+   {
+    "minute": 199.7,
+    "score": 31.19266055045873,
+    "status": "ok"
+   },
+   {
+    "minute": 209.8,
+    "score": 32.11009174311926,
+    "status": "ok"
+   }
+  ]
+ }
+}

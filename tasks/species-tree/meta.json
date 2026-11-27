@@ -132,13 +132,13 @@
           "model": "hy4",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 1,
-          "submission": "species-tree-v3-20261113T151956Z-b398a9",
+          "attempt": 2,
+          "submission": "species-tree-v3-20261127T145002Z-e9ea08",
           "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.1382\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "raw": "nRF \\(E = 0.1364\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 30.135,
-          "notes_md": "反馈改为 20 个留出用例后的第 2 次尝试进行中；此处暂列此前尝试的成绩（其反馈含工作区样例）。"
+          "score": 36.081,
+          "notes_md": "此前尝试的测试反馈是 5 个用例，其中 2 个就是工作区里带真值的样例；11-26 起反馈改为 20 个不发给模型的用例（与私有集同一组模拟参数、不同种子），本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。"
         },
         {
           "model": "qwen4-max",
