@@ -6,6 +6,7 @@ Allowed: any public destination over HTTPS (CONNECT to port 443) or plain HTTP (
   is public there, and HTTPS shows the proxy only the hostname; the Mathlib documentation site stays reachable;
 * package indexes: the submission is graded offline with the installed packages only;
 * hosted language-model services: an attempt measures one model;
+* other benchmarks whose problems a task reuses (OptBound): their sites may carry solutions or discussions;
 * internal names, and every address in the private, carrier-grade NAT, link-local, multicast or internal ranges (the
   AIHub gateway, git.woa.com and the other internal services), checked on the address actually connected to.
 Every request is one JSON line in the log.
@@ -27,6 +28,7 @@ BLOCKED_NETWORKS = [ipaddress.ip_network(n) for n in (
     '169.254.0.0/16', '172.16.0.0/12', '192.168.0.0/16', '224.0.0.0/3')]
 ALLOWED = {'leanprover-community.github.io'}
 MIRROR_SUBSTRINGS = ('github', 'ghproxy', 'fastgit', 'gitclone')
+BENCHMARK_SUBSTRINGS = ('optbound',)
 DENIED = {
     'mirror': ('gitee.com', 'softwareheritage.org', 'sourcegraph.com'),
     'package_index': ('pypi.org', 'pythonhosted.org', 'pypi.python.org', 'anaconda.org', 'anaconda.com',
@@ -63,6 +65,8 @@ def refusal(host: str) -> str | None:
         return None
     if any(part in host for part in MIRROR_SUBSTRINGS):
         return 'github_or_mirror'
+    if any(part in host for part in BENCHMARK_SUBSTRINGS):
+        return 'benchmark'
     for reason, domains in DENIED.items():
         if any(host == domain or host.endswith('.' + domain) for domain in domains):
             return reason

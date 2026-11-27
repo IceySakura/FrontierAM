@@ -21,6 +21,7 @@ from arena.netproxy import Refused, refusal, resolve
     ('pypi.org', 'package_index'),
     ('api.openai.com', 'language_model'),
     ('generativelanguage.googleapis.com', 'language_model'),
+    ('optbound.reaslab.io', 'benchmark'),
     ('git.woa.com', 'internal'),
     ('10.1.2.3', 'internal_address'),
     ('100.64.0.1', 'internal_address'),

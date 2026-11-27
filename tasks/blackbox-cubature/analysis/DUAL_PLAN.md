@@ -550,6 +550,15 @@ M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1
 
 **结论**：给出目标后，模型第一次直接针对人类论文写明的空白，给出了经过验证的结论，理论分小幅上升；仍没有严格强于人类 SOTA 的结论。
 
+### 9.15 纯理论版 theory-v1（11-27）
+
+用户 11-27 提出：核心是评估模型在算法设计中权衡实验与理论，但至少要有一两道只看理论推进的题，看模型不考虑实验、只推进理论时能把人类 SOTA 刷新到什么程度。`blackbox-cubature-theory-v1` 是第一道：与 v3.5 相同的函数类、附录和人类 SOTA 目标 A–D，去掉程序部分。第二道换到优化复杂度：`decentralized-sum-of-nonconvex-theory-v1`（OptBound ULB-profile-63，开放问题，固定的 Lean 模型；设计见 `tasks/decentralized-sum-of-nonconvex/analysis/DESIGN.md`）。
+
+- **题面**：交付只有 `theory/THEORY.md` 与 `theory/formal/`；去掉交互协议、资源、样例和实验计分；附录中“隐藏实例”改称代表性实例族，误差准则去掉实验计分与误差界统计，期望结论去掉“说明隐藏实例中哪些族满足假设”。网络、形式化、理论计分与禁止事项同 v3.5。
+- **计分**（新题映射）：只有理论分，每条通过验证且忠实的结论按与最强可比人类结果的关系定分（相当 50，严格更强 50 以上，严格更弱 50 以下，不可比按人类论文自身的观点，复现经典特例低于 50），取最高；没有通过的结论为 0。
+- **实现**：`arena/operator_tasks.py` 新增 `TheoryOnlyTask`（单轮、Lean、联网、无样例服务；提示词中的单轮说明改为“冻结后做 Lean 检查与审阅一次”，去掉程序计时说明），Lean 挂载、代理服务与联网设置抽成模块级函数和 `PublicInternetDev`，v3.2–v3.5 改用它们（属性逐项核对未变）；`arena/native.py` 的提示词可由任务覆盖单轮说明与计时说明；封装 `seal_cubature_v3.py --version theory-v1`（无样例、锁中不记数据）；试跑 `scripts/rounds/theory-trial.sh`。冒烟测试 13 项全部通过（无样例、文献放行、GitHub 等拒绝、8 GiB、容器内 Lean 检查、单轮结束方式）。
+- **试跑**（11-27 13:28 起，验证运行，6 小时上限，两个模型并行）：GPT-6.2 Sol `dev-blackbox-cubature-theory-v1-20261127T052822Z-034b20`；Claude Opus 5.5 `dev-blackbox-cubature-theory-v1-20261127T052842Z-7c5d29`。评分：`lean-comparator.py` 后按 `THEORY_REVIEW.md` 第 2 节逐条审阅。
+
 ## 参考文献
 
 1. ✓ A. Hinrichs, E. Novak, M. Ullrich, H. Woźniakowski, The curse of dimensionality for numerical integration of smooth functions, Math. Comp. 83 (2014) 2853–2863。

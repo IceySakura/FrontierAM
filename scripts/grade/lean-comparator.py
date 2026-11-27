@@ -12,11 +12,16 @@ The statement layer (Statements and the submission modules it imports) is what a
 formal statement says what THEORY.md claims; commands that can make source text mean something else there
 (notation, macros, elaboration-time code) are listed for the reviewer, not rejected.
 
-Usage: lean-comparator.py SUBMISSION_SOURCE OUT_DIR [--paranoid] [--timeout SECONDS]
+A task that fixes part of the formal project (e.g. the problem model Theory/Model.lean of a theory-only task) passes
+--fixed RELATIVE=TEMPLATE for each such file: the template replaces the submission's copy before the build, and the
+report records whether the submission had changed it.
+
+Usage: lean-comparator.py SUBMISSION_SOURCE OUT_DIR [--fixed Theory/X.lean=PATH ...] [--paranoid] [--timeout SECONDS]
 Writes OUT_DIR/lean-check.json and OUT_DIR/comparator-*.log.
 """
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -114,8 +119,9 @@ def statement_layer(work: Path) -> list[str]:
     return seen
 
 
-def prepare(source: Path, work: Path) -> list[str]:
-    """Copy the submission's Lean modules into a fresh project owned by the unprivileged user."""
+def prepare(source: Path, work: Path, fixed: dict[str, Path], report: dict) -> list[str]:
+    """Copy the submission's Lean modules into a fresh project owned by the unprivileged user; fixed files come from
+    their templates."""
     formal = source / 'theory/formal'
     files = sorted(p for p in (formal / 'Theory').rglob('*.lean') if p.is_file() and not p.is_symlink()) \
         if (formal / 'Theory').is_dir() else []
@@ -126,6 +132,15 @@ def prepare(source: Path, work: Path) -> list[str]:
         target = work / 'Theory' / path.relative_to(formal / 'Theory')
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, target)
+    report['fixed'] = {}
+    for relative, template in fixed.items():
+        target = work / relative
+        submitted = target.read_bytes() if target.is_file() else None
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(template, target)
+        report['fixed'][relative] = {'template_sha256': hashlib.sha256(template.read_bytes()).hexdigest(),
+                                     'submission': 'missing' if submitted is None else
+                                     'unchanged' if submitted == template.read_bytes() else 'changed (replaced)'}
     (work / 'lakefile.toml').write_text(LAKEFILE)
     manifest = json.loads(MANIFEST.read_text())
     manifest['name'] = 'theory'
@@ -168,7 +183,15 @@ def main() -> None:
     parser.add_argument('out', type=Path)
     parser.add_argument('--paranoid', action='store_true')
     parser.add_argument('--timeout', type=float, default=3600)
+    parser.add_argument('--fixed', action='append', default=[], metavar='RELATIVE=TEMPLATE',
+                        help='a file of the formal project (relative to theory/formal) taken from TEMPLATE')
     args = parser.parse_args()
+    fixed = {}
+    for item in args.fixed:
+        relative, _, template = item.partition('=')
+        if not relative.startswith('Theory/') or '..' in Path(relative).parts or not Path(template).is_file():
+            parser.error(f'--fixed {item!r}: need Theory/...=EXISTING_FILE')
+        fixed[relative] = Path(template).resolve()
     source, out = args.source.resolve(), args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
     formal = source / 'theory/formal'
@@ -180,7 +203,7 @@ def main() -> None:
     work.mkdir(parents=True)
     report['work'] = str(work)
     try:
-        report['lean_files'] = prepare(source, work)
+        report['lean_files'] = prepare(source, work, fixed, report)
     except ValueError as error:
         report['lean_files'], report['prepare_error'] = [], str(error)
     layer = statement_layer(work)

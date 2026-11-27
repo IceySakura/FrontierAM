@@ -55,6 +55,8 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'blackbox-cubature-v3.3': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.4': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.5': 'frontieram-blackbox-cubature-v3-harness:v6',
+                  'blackbox-cubature-theory-v1': 'frontieram-blackbox-cubature-v3-harness:v6',
+                  'decentralized-sum-of-nonconvex-theory-v1': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'continuum-estimation': 'frontieram-continuum-estimation-harness:v6',
                   'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6',
                   'pdhcg-qp-v1': 'frontieram-pdhcg-qp-v1-harness:v6'}
@@ -435,6 +437,20 @@ SCORING_DISCLOSURE['blackbox-cubature-v3.3'] = SCORING_DISCLOSURE['blackbox-cuba
 )
 SCORING_DISCLOSURE['blackbox-cubature-v3.4'] = SCORING_DISCLOSURE['blackbox-cubature-v3.3']
 SCORING_DISCLOSURE['blackbox-cubature-v3.5'] = SCORING_DISCLOSURE['blackbox-cubature-v3.3']
+SCORING_DISCLOSURE['blackbox-cubature-theory-v1'] = (
+    'This task is scored on theory alone; there is no program. Only results formalized in Lean count: the statement in '
+    'theory/formal/Theory/Statements.lean, the proof in theory/formal/Theory/Proofs.lean, listed as proved in '
+    'theory/formal/manifest.json, accepted by `lake comparator` (kernel-checked, statements identical, axioms limited '
+    'to propext, Quot.sound and Classical.choice), and judged by reviewers to state faithfully what THEORY.md claims. '
+    'Each such result is placed against the strongest comparable human results on the task\'s question: equal to a '
+    'strong human result is the midpoint of a 0-100 scale, strictly stronger results score above it by the size and '
+    'significance of the improvement, strictly weaker ones below it, and incomparable ones are valued by what the '
+    'human papers themselves present as important; reproductions of classical special cases score below the '
+    'midpoint. The score is the best score among the verified results; unformalized results score nothing. Because '
+    'only the strongest verified result counts, one result that goes beyond the human results is worth more than '
+    'several elementary ones; ending the session early earns nothing.'
+)
+SCORING_DISCLOSURE['decentralized-sum-of-nonconvex-theory-v1'] = SCORING_DISCLOSURE['blackbox-cubature-theory-v1']
 SCORING_DISCLOSURE['continuum-estimation'] = (
     'Every held-out case runs once in a fresh restricted process within 60 wall-clock seconds (startup included); an '
     'invalid, missing, late or unsuccessful output on any case makes the whole submission score zero. Given that, the '
@@ -619,7 +635,7 @@ def prompt(task_name: str, runtime: dict, protocol: str = 'v6', setting: str = '
     if protocol == 'v6.3':
         minutes = int(round(seconds / 60))
         budget = (SETTING_ITERATIVE_V63.format(minutes=minutes, detail=feedback_detail(task_name), cap=TEST_CAP_SECONDS // 60)
-                  if setting == 'iterative' else SETTING_SINGLE_V63.format(minutes=minutes))
+                  if setting == 'iterative' else getattr(task, 'setting_single_v63', SETTING_SINGLE_V63).format(minutes=minutes))
         budget += ' How the final score is determined: ' + SCORING_DISCLOSURE[task_name]
     elif protocol == 'v6.2':
         budget = (SETTING_ITERATIVE.format(seconds=int(seconds), cap=TEST_CAP_SECONDS // 60,
@@ -636,7 +652,8 @@ def prompt(task_name: str, runtime: dict, protocol: str = 'v6', setting: str = '
         + getattr(task, 'submission_note', SUBMISSION_NOTE) + ' '
         + budget
         + runtime['architecture_override_prompt']
-        + ((TIMING_NOTE_SESSION if task_name.startswith('exponential') and protocol in ('v6.2', 'v6.3') else TIMING_NOTE)
+        + ((TIMING_NOTE_SESSION if task_name.startswith('exponential') and protocol in ('v6.2', 'v6.3')
+            else getattr(task, 'timing_note', TIMING_NOTE))
            if protocol in ('v6.1', 'v6.2', 'v6.3') else '')
     )
 
@@ -955,12 +972,17 @@ def develop(spec: dict, runtime: dict) -> dict:
     task = TASKS[spec['task']]
     model = spec['model']
     harness = HARNESS[model]
-    # A task with network access names the harness built-ins it keeps: provider-side web tools would bypass its proxy.
-    tool_policy = getattr(task, 'dev_builtin_tools', None)
-    if tool_policy is not None and harness not in tool_policy:
-        raise ValueError(f'{task.name} defines no built-in tool policy for the {harness} harness')
-    builtin_tools = tool_policy[harness] if tool_policy is not None else OFFLINE_BUILTIN_TOOLS.get(harness)
-    harness_options = {} if tool_policy is not None else OFFLINE_HARNESS_OPTIONS.get(harness, {})
+    # A task with network access names its tool policy per harness: provider-side web tools would bypass its proxy.
+    builtin_policy = getattr(task, 'dev_builtin_tools', None)
+    option_policy = getattr(task, 'dev_harness_options', None)
+    if builtin_policy is None and option_policy is None:
+        builtin_tools = OFFLINE_BUILTIN_TOOLS.get(harness)
+        harness_options = OFFLINE_HARNESS_OPTIONS.get(harness, {})
+    elif harness in (builtin_policy or {}) or harness in (option_policy or {}):
+        builtin_tools = (builtin_policy or {}).get(harness)
+        harness_options = (option_policy or {}).get(harness, {})
+    else:
+        raise ValueError(f'{task.name} defines no tool policy for the {harness} harness')
     placement = Placement(**spec['placement'])
     output = Path(spec['output'])
     frozen_dir = output / 'task'

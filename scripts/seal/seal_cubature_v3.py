@@ -8,9 +8,10 @@ by scripts/grade/cubature-v3-samples.py). lock.json records the task image, the 
 public and private instance files (which stay in the internal repository).
 
 A version whose task.json names data_dir (v3.2: the v3.1 instance sets) takes its samples and instance files from
-there and only its workspace from its own directory.
+there and only its workspace from its own directory. A theory-only version (task.json theory_only) has neither
+samples nor instance files.
 
-Usage: seal_cubature_v3.py [--version v3|v3.1|v3.2|v3.3|v3.4|v3.5] [--force] [--provisional]
+Usage: seal_cubature_v3.py [--version v3|v3.1|v3.2|v3.3|v3.4|v3.5|theory-v1] [--force] [--provisional]
 """
 from __future__ import annotations
 
@@ -63,10 +64,10 @@ def samples_json() -> bytes:
     return (json.dumps({'note': note, 'instances': out}, indent=1) + '\n').encode()
 
 
-def workspace_tar(destination: Path, provisional: bool = False) -> int:
+def workspace_tar(destination: Path, samples: bool = True) -> int:
     members = sorted(p for p in (VERSION / 'workspace').rglob('*') if p.is_file() and '__pycache__' not in p.parts)
     files = {str(p.relative_to(VERSION / 'workspace')): p.read_bytes() for p in members}
-    if not provisional:
+    if samples:
         files['samples/samples.json'] = samples_json()
     with tarfile.open(destination, 'x') as tar:
         for directory in sorted({str(Path(n).parent) for n in files} - {'.'}):
@@ -86,7 +87,7 @@ def workspace_tar(destination: Path, provisional: bool = False) -> int:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--version', default='v3', choices=('v3', 'v3.1', 'v3.2', 'v3.3', 'v3.4', 'v3.5'))
+    parser.add_argument('--version', default='v3', choices=('v3', 'v3.1', 'v3.2', 'v3.3', 'v3.4', 'v3.5', 'theory-v1'))
     parser.add_argument('--force', action='store_true', help='replace an existing seal')
     parser.add_argument('--provisional', action='store_true',
                         help='no samples.json yet: lets the task image be loaded into the grading daemons early; '
@@ -106,15 +107,17 @@ def main():
         for path in SEALED.iterdir():
             path.unlink()
     SEALED.mkdir(parents=True, exist_ok=True)
-    count = workspace_tar(SEALED / 'public.tar', args.provisional)
-    data = {name: DATA / name / 'instances.json' for name in ('samples', 'public', 'private')}
+    theory_only = spec.get('theory_only', False)
+    count = workspace_tar(SEALED / 'public.tar', samples=not (args.provisional or theory_only))
+    data = {} if theory_only else {name: DATA / name / 'instances.json' for name in ('samples', 'public', 'private')}
     lock = {'name': spec['name'], 'status': spec['status'], 'sealed_utc': datetime.now(timezone.utc).isoformat(),
             'spec_sha256': sha256(spec_path), 'image': {'tag': tag, 'id': info['Id'], 'replaces': []},
             'public_tar_sha256': sha256(SEALED / 'public.tar'),
             'data': {name: str(path.relative_to(ROOT)) for name, path in data.items()},
             'data_sha256': {name: sha256(path) for name, path in data.items() if path.exists()},
             'roots': {}, 'provisional': args.provisional,
-            'activation': 'Candidate (trial runs): both references are measured on this machine per data set.'}
+            'activation': ('Theory only (trial runs): scored by the Lean check and the theory review.' if theory_only
+                           else 'Candidate (trial runs): both references are measured on this machine per data set.')}
     (SEALED / 'lock.json').write_text(json.dumps(lock, indent=2) + '\n')
     print(json.dumps({'status': 'SEALED', 'task': spec['name'], 'workspace_files': count, 'image_id': info['Id'],
                       'data': sorted(lock['data_sha256'])}))

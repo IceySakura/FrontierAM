@@ -1,0 +1,37 @@
+{
+  "name": "decentralized-sum-of-nonconvex-theory-v1",
+  "title": "去中心化有限和 sum-of-nonconvex 强凸复合优化的迭代复杂度（纯理论，theory-v1）",
+  "status": "candidate",
+  "status_reason": "Theory-only task (user decision 2026-11-27): OptBound ULB-profile-63, an open oracle-complexity problem. Human results checked against the sources: upper bound Liu-Low (AAAI 2024, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3); no lower bound for the class (OptBound lists it as unknown); transferable lower bounds Woodworth-Srebro 2016 Theorem 8 and Scaman et al. 2017 Theorem 2; the n^{3/4}-type lower bound of Zhou-Gu 2019 Theorem 4.1 needs only average smoothness, and the component-smooth case is listed there as future work (and remains open for a related problem per arXiv:2611.05807). The formal model is fixed: Theory/Model.lean and Theory/Sanity.lean from the theory pilot's ULB-63 statement layer (definitions only), restored by the Lean check. Public internet during development through arena/netproxy.py, offline Lean v4.35 with Mathlib and CSLib, 8 GiB development container, single 6-hour session. Trial runs only; not on the board.",
+  "theory_only": true,
+  "source": {
+    "benchmark": "OptBound (https://optbound.reaslab.io/), ULB-profile-63",
+    "profile": "/data/workspace/frontieram-theory-pilot/optbound/site/profiles/ULB-profile-63.md",
+    "model": "/data/workspace/frontieram-theory-pilot/optbound/ulb-63/lean/ULB63/Model.lean and Sanity.lean (headers and import path adapted)"
+  },
+  "images": {
+    "task": {
+      "tag": "frontieram-blackbox-cubature:amd64-v3",
+      "dockerfile": "../../../blackbox-cubature/versions/v3/Dockerfile.amd64",
+      "replaces": [],
+      "note": "the blackbox-cubature v3 task image (Python only), reused; development runs in its harness image frontieram-blackbox-cubature-v3-harness:v6, which adds the harness, git (for lake), curl and socat (for the proxy bridge)"
+    }
+  },
+  "lean": {
+    "toolchain": "leanprover/lean4:v4.35.0 (/data/workspace/frontieram-theory-pilot/.elan, mounted at /opt/lean)",
+    "packages": "mathlib v4.35.0 and cslib v4.35.0 with their dependencies, prebuilt (/data/workspace/frontieram-theory-pilot/lean/.lake/packages, mounted at /opt/lean-packages)",
+    "fixed": ["Theory/Model.lean", "Theory/Sanity.lean"],
+    "check": "scripts/grade/lean-comparator.py --fixed Theory/Model.lean=<workspace>/examples/lean_project/Theory/Model.lean --fixed Theory/Sanity.lean=<workspace>/examples/lean_project/Theory/Sanity.lean: lake comparator, Theory.Statements (challenge) against Theory.Proofs (solution), axioms propext, Quot.sound, Classical.choice"
+  },
+  "network": {
+    "development": "public internet through arena/netproxy.py (deny list in that module, including OptBound), requests logged to netproxy.jsonl in the run; provider-side web tools off",
+    "grading": "none"
+  },
+  "scoring": {
+    "raw": "per result: verified by lake comparator and judged faithful to THEORY.md; classified against the strongest comparable human results (stronger / weaker / equal / incomparable)",
+    "mapping": "per result 0-100: equal to a strong human SOTA result on the task's question = 50; strictly stronger above 50 by the size and significance of the improvement (100 for a significant breakthrough on an important known result); strictly weaker below 50; incomparable priced by the human papers' own viewpoint, above 50 only for provable progress on an author-stated gap; reproductions of classical special cases below 50. Final score = maximum over verified results; 0 without any (tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 2)",
+    "theory": "the only score of this task"
+  },
+  "submission_note": "Put the theory document in /workspace/submission/theory/THEORY.md and its Lean formalization in /workspace/submission/theory/formal/ (start from /workspace/examples/lean_project/, whose Theory/Model.lean and Theory/Sanity.lean are the fixed problem model). There is no program to write.",
+  "instruction": "Read /workspace/problem.md, /workspace/PROFILE.md and /workspace/MODEL_NOTES.md in full, and look at /workspace/tools and /workspace/examples. Write the theory document and its Lean formalization described there."
+}

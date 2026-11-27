@@ -1,0 +1,4 @@
+# Mounted read-only at /etc/gitconfig in the development container: lake runs git on the prebuilt Mathlib/CSLib
+# checkouts under /opt/lean-packages, which belong to root.
+[safe]
+	directory = *

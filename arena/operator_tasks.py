@@ -800,29 +800,82 @@ class BlackboxCubatureV31(BlackboxCubatureV3):
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.1'
 
 
+# Lean for theory tasks: the theory pilot's offline Lean v4.35 with prebuilt Mathlib and CSLib, mounted read-only.
+LEAN_TOOLCHAIN = Path('/data/workspace/frontieram-theory-pilot/.elan/toolchains/leanprover--lean4---v4.35.0')
+LEAN_PACKAGES = Path('/data/workspace/frontieram-theory-pilot/lean/.lake/packages')
+PROXY_PORT = 3128
+
+
+def lean_mounts(version: Path) -> list[str]:
+    """Lean: toolchain at /opt/lean (lean and lake on PATH through /usr/local/bin, wrappers in <version>/lean), the
+    prebuilt packages at /opt/lean-packages, and a system git configuration that trusts their root-owned checkouts
+    (lake runs git)."""
+    lean = version / 'lean'
+    return ['--mount', f'type=bind,src={LEAN_TOOLCHAIN},dst=/opt/lean,readonly',
+            '--mount', f'type=bind,src={LEAN_PACKAGES},dst=/opt/lean-packages,readonly',
+            '--mount', f'type=bind,src={lean / "gitconfig"},dst=/etc/gitconfig,readonly',
+            '--mount', f'type=bind,src={lean / "lean"},dst=/usr/local/bin/lean,readonly',
+            '--mount', f'type=bind,src={lean / "lake"},dst=/usr/local/bin/lake,readonly']
+
+
+def proxy_service(output: Path):
+    """arena/netproxy.py on a Unix socket mounted at /run/netproxy, and the container's proxy variables; the container
+    keeps --network none and reaches the socket through PublicInternetDev.dev_exec."""
+    directory = Path('/run/frontieram/netproxy') / output.name
+    directory.mkdir(parents=True)
+    directory.chmod(0o755)
+    process = subprocess.Popen([str(GRADER_PYTHON), '-B', '-m', 'arena.netproxy', str(directory / 'proxy.sock'),
+                                str(output / 'netproxy.jsonl')], cwd=ROOT, stdout=subprocess.PIPE,
+                               stderr=(output / 'netproxy.log').open('wb'), text=True)
+    if process.stdout.readline().strip() != 'ready':
+        process.kill()
+        raise RuntimeError(f'network proxy did not start ({output / "netproxy.log"})')
+
+    def stop():
+        process.terminate()
+        try:
+            process.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            process.kill()
+    proxy = f'http://127.0.0.1:{PROXY_PORT}'
+    variables = [f'{name}={proxy}' for name in ('HTTPS_PROXY', 'https_proxy', 'HTTP_PROXY', 'http_proxy')]
+    variables += ['NO_PROXY=127.0.0.1,localhost,::1', 'no_proxy=127.0.0.1,localhost,::1']
+    return ['--mount', f'type=bind,src={directory},dst=/run/netproxy',
+            *(arg for variable in variables for arg in ('--env', variable))], stop
+
+
+class PublicInternetDev:
+    """Public internet during development (user decision 2026-11-26) through arena/netproxy.py; GitHub and its
+    mirrors, package indexes, hosted language models and internal networks are refused and every request is logged
+    (netproxy.jsonl in the run). Provider-side web tools stay off, since they would bypass the proxy."""
+    dev_network = ('public internet through arena/netproxy.py (refused: GitHub and mirrors, package indexes, hosted '
+                   'language models, internal networks); provider-side web tools disabled')
+    dev_builtin_tools = {'codex': ('apply_patch', 'create_goal', 'exec_command', 'get_goal', 'request_user_input',
+                                   'tool_search', 'update_goal', 'update_plan', 'view_image', 'write_stdin')}
+    dev_harness_options = {'claude': {'disallowed_tools': ['WebSearch', 'WebFetch']}}
+    network_note = (' The development container reaches the public internet through a logged proxy (HTTPS_PROXY is '
+                    'set) for literature and reference material; GitHub and its mirrors, package indexes, hosted '
+                    'language-model services and internal networks are blocked, and the submission is graded offline '
+                    'with the installed packages only. ')
+
+    def dev_exec(self) -> list[list[str]]:
+        return [['socat', f'TCP-LISTEN:{PROXY_PORT},bind=127.0.0.1,fork,reuseaddr',
+                 'UNIX-CONNECT:/run/netproxy/proxy.sock']]
+
+
 class BlackboxCubatureV32(BlackboxCubatureV31):
     """v3.2: the v3.1 instances and program score; theory results count only when formalized in Lean and accepted by
     `lake comparator` (scripts/grade/lean-comparator.py), each placed against strong human results
-    (analysis/THEORY_REVIEW.md). The workspace gets the theory pilot's offline Lean v4.35 with prebuilt Mathlib and
-    CSLib, read-only, and an 8 GiB development container (8.5 GiB lease) for Lean beside the program."""
+    (analysis/THEORY_REVIEW.md). The workspace gets Lean (lean_mounts) and an 8 GiB development container (8.5 GiB
+    lease) for Lean beside the program."""
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.2'
-    LEAN_TOOLCHAIN = Path('/data/workspace/frontieram-theory-pilot/.elan/toolchains/leanprover--lean4---v4.35.0')
-    LEAN_PACKAGES = Path('/data/workspace/frontieram-theory-pilot/lean/.lake/packages')
     dev_memory = 8 * GIB + GIB // 2
     dev_container_memory = 8 * GIB
 
     def dev_service(self, output: Path):
-        """The samples' oracle, plus Lean: toolchain at /opt/lean (lean and lake on PATH through /usr/local/bin),
-        the prebuilt packages at /opt/lean-packages, and a system git configuration that trusts their root-owned
-        checkouts (lake runs git on them)."""
+        """The samples' oracle, plus Lean."""
         mounts, stop = super().dev_service(output)
-        lean = self.VERSION / 'lean'
-        return [*mounts,
-                '--mount', f'type=bind,src={self.LEAN_TOOLCHAIN},dst=/opt/lean,readonly',
-                '--mount', f'type=bind,src={self.LEAN_PACKAGES},dst=/opt/lean-packages,readonly',
-                '--mount', f'type=bind,src={lean / "gitconfig"},dst=/etc/gitconfig,readonly',
-                '--mount', f'type=bind,src={lean / "lean"},dst=/usr/local/bin/lean,readonly',
-                '--mount', f'type=bind,src={lean / "lake"},dst=/usr/local/bin/lake,readonly'], stop
+        return [*mounts, *lean_mounts(self.VERSION)], stop
 
 
 class BlackboxCubatureV33(BlackboxCubatureV32):
@@ -831,57 +884,62 @@ class BlackboxCubatureV33(BlackboxCubatureV32):
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.3'
 
 
-class BlackboxCubatureV34(BlackboxCubatureV33):
-    """v3.4: v3.3 with the public internet during development (user decision 2026-11-26), through arena/netproxy.py on
-    a Unix socket bridged into the container (which keeps --network none); GitHub and its mirrors, package indexes,
-    hosted language models and internal networks are refused and every request is logged (netproxy.jsonl in the run).
-    Provider-side web tools stay off, since they would bypass the proxy. Grading is offline as before."""
+class BlackboxCubatureV34(PublicInternetDev, BlackboxCubatureV33):
+    """v3.4: v3.3 with the public internet during development (PublicInternetDev), bridged into the container (which
+    keeps --network none). Grading is offline as before."""
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.4'
-    PROXY_PORT = 3128
-    dev_network = ('public internet through arena/netproxy.py (refused: GitHub and mirrors, package indexes, hosted '
-                   'language models, internal networks); provider-side web tools disabled')
-    dev_builtin_tools = {'codex': ('apply_patch', 'create_goal', 'exec_command', 'get_goal', 'request_user_input',
-                                   'tool_search', 'update_goal', 'update_plan', 'view_image', 'write_stdin')}
-    network_note = (' The development container reaches the public internet through a logged proxy (HTTPS_PROXY is '
-                    'set) for literature and reference material; GitHub and its mirrors, package indexes, hosted '
-                    'language-model services and internal networks are blocked, and the submission is graded offline '
-                    'with the installed packages only. ')
 
     def dev_service(self, output: Path):
         mounts, stop_samples = super().dev_service(output)
-        directory = Path('/run/frontieram/netproxy') / output.name
-        directory.mkdir(parents=True)
-        directory.chmod(0o755)
-        process = subprocess.Popen([str(GRADER_PYTHON), '-B', '-m', 'arena.netproxy', str(directory / 'proxy.sock'),
-                                    str(output / 'netproxy.jsonl')], cwd=ROOT, stdout=subprocess.PIPE,
-                                   stderr=(output / 'netproxy.log').open('wb'), text=True)
-        if process.stdout.readline().strip() != 'ready':
-            process.kill()
+        try:
+            proxy, stop_proxy = proxy_service(output)
+        except Exception:
             stop_samples()
-            raise RuntimeError(f'network proxy did not start ({output / "netproxy.log"})')
+            raise
 
         def stop():
             stop_samples()
-            process.terminate()
-            try:
-                process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                process.kill()
-        proxy = f'http://127.0.0.1:{self.PROXY_PORT}'
-        variables = [f'{name}={proxy}' for name in ('HTTPS_PROXY', 'https_proxy', 'HTTP_PROXY', 'http_proxy')]
-        variables += ['NO_PROXY=127.0.0.1,localhost,::1', 'no_proxy=127.0.0.1,localhost,::1']
-        return [*mounts, '--mount', f'type=bind,src={directory},dst=/run/netproxy',
-                *(arg for variable in variables for arg in ('--env', variable))], stop
-
-    def dev_exec(self) -> list[list[str]]:
-        return [['socat', f'TCP-LISTEN:{self.PROXY_PORT},bind=127.0.0.1,fork,reuseaddr',
-                 'UNIX-CONNECT:/run/netproxy/proxy.sock']]
+            stop_proxy()
+        return [*mounts, *proxy], stop
 
 
 class BlackboxCubatureV35(BlackboxCubatureV34):
     """v3.5: v3.4 (public internet during development) with human SOTA targets in the statement, each anchored in a
     verified theorem or author-stated gap, and a request for a strict improvement on at least one."""
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.5'
+
+
+class TheoryOnlyTask(PublicInternetDev, OperatorTask):
+    """Theory only (user decision 2026-11-27): one single-setting session with Lean and the public internet, no
+    program. Scored only by the Lean check (scripts/grade/lean-comparator.py) and the theory review
+    (tasks/blackbox-cubature/analysis/THEORY_REVIEW.md); submissions are never queued for program grading."""
+    VERSION: Path
+    dev_memory = 8 * GIB + GIB // 2
+    dev_container_memory = 8 * GIB
+    setting_single_v63 = ('One attempt with a limit of {minutes} minutes of wall-clock time, including model requests '
+                          'and tool time. When you finish your turn, or when the limit is reached, /workspace/submission '
+                          'is frozen; its theory is then checked with Lean and reviewed once. There is no feedback '
+                          'during development.')
+    timing_note = ''
+
+    def dev_service(self, output: Path):
+        proxy, stop = proxy_service(output)
+        return [*lean_mounts(self.VERSION), *proxy], stop
+
+    def run_grader(self, source: Path, out: Path, placement: Placement) -> dict:
+        raise RuntimeError(f'{self.name} is theory only: check it with scripts/grade/lean-comparator.py')
+
+
+class BlackboxCubatureTheoryV1(TheoryOnlyTask):
+    """The blackbox-cubature v3.5 class, appendix and human SOTA targets without the program part."""
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/theory-v1'
+
+
+class DecentralizedSumOfNonconvexTheoryV1(TheoryOnlyTask):
+    """OptBound ULB-profile-63 (decentralized finite-sum, component-smooth sum-of-nonconvex, strongly convex composite):
+    matching oracle-complexity bounds against a fixed Lean model of the problem (Theory/Model.lean, which the Lean
+    check restores from the template before building)."""
+    VERSION = ROOT / 'tasks/decentralized-sum-of-nonconvex/versions/theory-v1'
 
 
 class ContinuumEstimation(OperatorTask):
@@ -947,6 +1005,8 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'blackbox-cubature-v3': BlackboxCubatureV3, 'blackbox-cubature-v3.1': BlackboxCubatureV31,
            'blackbox-cubature-v3.2': BlackboxCubatureV32, 'blackbox-cubature-v3.3': BlackboxCubatureV33,
            'blackbox-cubature-v3.4': BlackboxCubatureV34, 'blackbox-cubature-v3.5': BlackboxCubatureV35,
+           'blackbox-cubature-theory-v1': BlackboxCubatureTheoryV1,
+           'decentralized-sum-of-nonconvex-theory-v1': DecentralizedSumOfNonconvexTheoryV1,
            'continuum-estimation': ContinuumEstimation, 'fluorescence-deconvolution': FluorescenceDeconvolution}
 
 

@@ -9,6 +9,7 @@ Usage: v63-smoke.py TASK SETTING SECONDS OUT
 """
 
 import json
+import re
 import sys
 
 from pathlib import Path
@@ -49,6 +50,7 @@ SUBMISSIONS = {
     'blackbox-cubature': 'cp /workspace/examples/reference_submission/* . && chmod +x run.sh',
     'blackbox-cubature-v3': ('cp /workspace/examples/mc_submission/* . && chmod +x run.sh && mkdir -p theory && '
                              "echo '# smoke theory document' > theory/THEORY.md"),
+    'theory-only': "mkdir -p theory && echo '# smoke theory document' > theory/THEORY.md",
     'fluorescence-deconvolution': ("cat > solution.py <<'EOF'\nimport sys\nimport numpy as np\n"
                                    "d = np.load(sys.argv[1])\nnp.save(sys.argv[2], np.maximum(d['observed'], 0).astype(np.float32))\nEOF"),
     'continuum-estimation': ("cat > run.sh <<'EOF'\n#!/bin/sh\nexec python3 -c \"import json,os,sys; a=sys.argv[1:]; "
@@ -65,6 +67,7 @@ FAMILY = {'conic': 'conic', 'exponential-v3': 'exponential', 'galaxy-gravity-v3'
           'blackbox-cubature-v3': 'blackbox-cubature-v3', 'blackbox-cubature-v3.1': 'blackbox-cubature-v3',
           'blackbox-cubature-v3.2': 'blackbox-cubature-v3', 'blackbox-cubature-v3.3': 'blackbox-cubature-v3',
           'blackbox-cubature-v3.4': 'blackbox-cubature-v3', 'blackbox-cubature-v3.5': 'blackbox-cubature-v3',
+          'blackbox-cubature-theory-v1': 'theory-only', 'decentralized-sum-of-nonconvex-theory-v1': 'theory-only',
           'continuum-estimation': 'continuum-estimation', 'fluorescence-deconvolution': 'fluorescence-deconvolution'}
 V5_FILES = ('README.md', 'statement.md', 'interface.md', 'solver.py', 'smoke.json')  # the MODEL_ONLY package, nothing else
 # Versions that keep the author's workspace layout: their public-dev material is the samples; these files must be there.
@@ -83,11 +86,19 @@ AUTHOR_LAYOUT['blackbox-cubature-v3.2'] = AUTHOR_LAYOUT['blackbox-cubature-v3'] 
 AUTHOR_LAYOUT['blackbox-cubature-v3.3'] = AUTHOR_LAYOUT['blackbox-cubature-v3.2']
 AUTHOR_LAYOUT['blackbox-cubature-v3.4'] = AUTHOR_LAYOUT['blackbox-cubature-v3.2']
 AUTHOR_LAYOUT['blackbox-cubature-v3.5'] = AUTHOR_LAYOUT['blackbox-cubature-v3.2']
-LEAN_TASKS = ('blackbox-cubature-v3.2', 'blackbox-cubature-v3.3', 'blackbox-cubature-v3.4', 'blackbox-cubature-v3.5')
-NETWORK_TASKS = ('blackbox-cubature-v3.4', 'blackbox-cubature-v3.5')
+AUTHOR_LAYOUT['blackbox-cubature-theory-v1'] = ['/workspace/problem.md', '/workspace/THEORY_APPENDIX.md',
+                                                '/workspace/examples/lean_project/lakefile.toml', '/workspace/tools/lean_check.py']
+AUTHOR_LAYOUT['decentralized-sum-of-nonconvex-theory-v1'] = [
+    '/workspace/problem.md', '/workspace/PROFILE.md', '/workspace/MODEL_NOTES.md',
+    '/workspace/examples/lean_project/lakefile.toml', '/workspace/tools/lean_check.py']
+LEAN_TASKS = ('blackbox-cubature-v3.2', 'blackbox-cubature-v3.3', 'blackbox-cubature-v3.4', 'blackbox-cubature-v3.5',
+              'blackbox-cubature-theory-v1', 'decentralized-sum-of-nonconvex-theory-v1')
+NETWORK_TASKS = ('blackbox-cubature-v3.4', 'blackbox-cubature-v3.5', 'blackbox-cubature-theory-v1',
+                 'decentralized-sum-of-nonconvex-theory-v1')
 NETWORK_PROBES = {'arxiv': 'https://export.arxiv.org/api/query?search_query=all:cubature&max_results=1',
                   'github': 'https://github.com/', 'pypi': 'https://pypi.org/simple/numpy/',
-                  'openai': 'https://api.openai.com/v1/models', 'intranet': 'https://git.woa.com/'}
+                  'openai': 'https://api.openai.com/v1/models', 'intranet': 'https://git.woa.com/',
+                  'optbound': 'https://optbound.reaslab.io/'}
 
 
 def script(task: str, setting: str) -> str:
@@ -134,7 +145,8 @@ def main():
         result = develop(spec, runtime)
     print(json.dumps({k: v for k, v in result.items() if k != 'route'}, indent=1))
     log = (out / 'cli.log').read_text(errors='replace')
-    workspace = log.rsplit('WORKSPACE-BEGIN\n', 1)[-1].split('WORKSPACE-END', 1)[0]  # after the xtrace lines
+    listing = re.search(r'^WORKSPACE-BEGIN\n(.*?)^WORKSPACE-END', log, re.M | re.S)  # the output, not the xtrace lines
+    workspace = listing.group(1) if listing else ''
     prompt = (out / 'prompt.txt').read_text()
     layout = AUTHOR_LAYOUT.get(task_name)
     checks = {'frozen': result.get('source_frozen') is True,
@@ -144,9 +156,11 @@ def main():
               'limit_in_prompt': f'{int(seconds // 60) if seconds >= 60 else 0} minutes' in prompt or 'minutes' in prompt}
     if task_name.startswith('blackbox-cubature-v3'):  # the local evaluator reached the sample service and scored
         checks.update(sample_service=' e=' in log and 'FAILED' not in log.split('WORKSPACE-END', 1)[-1])
+    if task.spec.get('theory_only'):  # no samples and no sample service
+        checks.update(no_samples='/workspace/samples' not in workspace and not (out / 'sample-service.log').exists())
     if task_name in NETWORK_TASKS:
         checks.update(network_literature='NET-arxiv=200' in log,
-                      network_refused=all(f'NET-{name}=000' in log for name in ('github', 'pypi', 'openai', 'intranet')),
+                      network_refused=all(f'NET-{name}=000' in log for name in ('github', 'pypi', 'openai', 'intranet', 'optbound')),
                       network_logged=(out / 'netproxy.jsonl').exists() and 'deny:github_or_mirror' in (out / 'netproxy.jsonl').read_text())
     if task_name in LEAN_TASKS:
         checks.update(memory_8gib='memory.max=8589934592' in log,
