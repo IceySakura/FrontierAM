@@ -1,0 +1,41 @@
+{
+ "model": "minimax-m3.1-flash",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261127T162631Z-f838bb",
+ "raw": "nRF \\(E = 0.1971\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 72.2,
+  "public_tests": 5,
+  "public_curve": [
+   {
+    "minute": 23.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 36.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 48.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 51.5,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 64.6,
+    "score": 0.0,
+    "status": "ok"
+   }
+  ]
+ }
+}

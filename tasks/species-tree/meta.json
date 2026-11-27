@@ -204,13 +204,13 @@
           "model": "minimax-m3.1-flash",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 1,
-          "submission": "species-tree-v3-20261125T174939Z-d6abf0",
+          "attempt": 2,
+          "submission": "species-tree-v3-20261127T162631Z-f838bb",
           "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.1368\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "raw": "nRF \\(E = 0.1971\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
-          "score": 34.73,
-          "notes_md": "反馈改为 20 个留出用例后的第 2 次尝试进行中；此处暂列此前尝试的成绩（其反馈含工作区样例）。"
+          "score": 0.0,
+          "notes_md": "此前尝试的测试反馈是 5 个用例，其中 2 个就是工作区里带真值的样例；11-26 起反馈改为 20 个不发给模型的用例（与私有集同一组模拟参数、不同种子），本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。"
         },
         {
           "model": "intern-s2",
