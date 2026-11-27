@@ -20,7 +20,10 @@
   "lean": {
     "toolchain": "leanprover/lean4:v4.35.0 (/data/workspace/frontieram-theory-pilot/.elan, mounted at /opt/lean)",
     "packages": "mathlib v4.35.0 and cslib v4.35.0 with their dependencies, prebuilt (/data/workspace/frontieram-theory-pilot/lean/.lake/packages, mounted at /opt/lean-packages)",
-    "fixed": ["Theory/Model.lean", "Theory/Sanity.lean"],
+    "fixed": [
+      "Theory/Model.lean",
+      "Theory/Sanity.lean"
+    ],
     "check": "scripts/grade/lean-comparator.py --fixed Theory/Model.lean=<workspace>/examples/lean_project/Theory/Model.lean --fixed Theory/Sanity.lean=<workspace>/examples/lean_project/Theory/Sanity.lean: lake comparator, Theory.Statements (challenge) against Theory.Proofs (solution), axioms propext, Quot.sound, Classical.choice"
   },
   "network": {
@@ -28,8 +31,8 @@
     "grading": "none"
   },
   "scoring": {
-    "raw": "per result: verified by lake comparator and judged faithful to THEORY.md; classified against the strongest comparable human results (stronger / weaker / equal / incomparable)",
-    "mapping": "per result 0-100: equal to a strong human SOTA result on the task's question = 50; strictly stronger above 50 by the size and significance of the improvement (100 for a significant breakthrough on an important known result); strictly weaker below 50; incomparable priced by the human papers' own viewpoint, above 50 only for provable progress on an author-stated gap; reproductions of classical special cases below 50. Final score = maximum over verified results; 0 without any (tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 2)",
+    "raw": "per result: Lean check (lake comparator) and statement match; position in the partial order against the registered anchors (stronger / incomparable / dominated or equal) and, if incomparable, the registered value preferences",
+    "mapping": "tiers (user decision 2026-11-27, replacing the 11-26 continuous mapping): only results accepted by lake comparator and judged to match THEORY.md count; each is placed in the partial order (assumptions x strength) against the human SOTA anchors registered before review (tasks/decentralized-sum-of-nonconvex/analysis/THEORY_ANCHORS.md): strictly stronger than a registered anchor and not dominated by any known human result 100; incomparable with all and meeting a registered value preference (from the human papers' own text) 50; incomparable otherwise 25; dominated by or equal to a known human result (restatement, special case) 10; score = maximum over verified results, 0 without any (tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 2)",
     "theory": "the only score of this task"
   },
   "submission_note": "Put the theory document in /workspace/submission/theory/THEORY.md and its Lean formalization in /workspace/submission/theory/formal/ (start from /workspace/examples/lean_project/, whose Theory/Model.lean and Theory/Sanity.lean are the fixed problem model). There is no program to write.",

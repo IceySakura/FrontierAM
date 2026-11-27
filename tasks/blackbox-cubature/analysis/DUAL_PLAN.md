@@ -559,6 +559,15 @@ M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1
 - **实现**：`arena/operator_tasks.py` 新增 `TheoryOnlyTask`（单轮、Lean、联网、无样例服务；提示词中的单轮说明改为“冻结后做 Lean 检查与审阅一次”，去掉程序计时说明），Lean 挂载、代理服务与联网设置抽成模块级函数和 `PublicInternetDev`，v3.2–v3.5 改用它们（属性逐项核对未变）；`arena/native.py` 的提示词可由任务覆盖单轮说明与计时说明；封装 `seal_cubature_v3.py --version theory-v1`（无样例、锁中不记数据）；试跑 `scripts/rounds/theory-trial.sh`。冒烟测试 13 项全部通过（无样例、文献放行、GitHub 等拒绝、8 GiB、容器内 Lean 检查、单轮结束方式）。
 - **试跑**（11-27 13:28 起，验证运行，6 小时上限，两个模型并行）：GPT-6.2 Sol `dev-blackbox-cubature-theory-v1-20261127T052822Z-034b20`；Claude Opus 5.5 `dev-blackbox-cubature-theory-v1-20261127T052842Z-7c5d29`。评分：`lean-comparator.py` 后按 `THEORY_REVIEW.md` 第 2 节逐条审阅。
 
+### 9.16 理论分档（11-27 用户确定）
+
+用户：理论必须交付 Lean，评审只检查 Lean 与陈述匹配，正确性因此容易判定；强度预先准备人类 SOTA 结果，放在“假设 × 结论强度”的多维坐标上比较偏序，分三档给分，不让评审主观给 0–100：偏序优（严格强于某个人类 SOTA：假设更弱、或同假设结论更好、或两者兼有）很高；偏序不优（严格弱于或只是复述）很低；不可比为中间档，再按人类论文表达的价值偏好审查。
+
+- **档位**（默认，可调）：偏序优 100；不可比且满足登记的价值偏好 50；不可比但不满足 25；偏序不优 10；没有通过 Lean 与匹配检查 0；取各条最高。规则见 `THEORY_REVIEW.md` 第 2 节。
+- **锚点与价值偏好**（评审任何试跑之前登记，出处读原文核对）：本题 `THEORY_ANCHORS.md`（9 个锚点；P1–P5 取自 Gilbert–Kuo–Sloan、Liu–Owen、He 2017、Rademacher–Vempala 的结论或讨论原文与 Novak 2024 综述）；`decentralized-sum-of-nonconvex` 的 `analysis/THEORY_ANCHORS.md`（4 个锚点，换算到题目模型；P1–P3 取自 Zhou–Gu、Zhou 2026、Liu–Low 与 OptBound 题面）。
+- **重评**（`THEORY_REVIEW.md` 第 10 节，初评）：v3.2 Sol 35 → **25**；v3.3 Sol 42 → **50**（R3：非单调椭球跳跃上的精确剥离，回应 GKS 写明的空白）；v3.3 Opus 30 → **10**（经典结果复述）；v3.4 Sol 42 → **25**；v3.5 Sol 45 → **50**（R4）。仍没有偏序优的结论。
+- 正在运行的 theory-v1 试跑按分档评分；它们的题面写的是 11-26 的分类（严格更强、严格更弱、相当、不可比），与分档一一对应。后续版本的题面应公开锚点表与分档规则。
+
 ## 参考文献
 
 1. ✓ A. Hinrichs, E. Novak, M. Ullrich, H. Woźniakowski, The curse of dimensionality for numerical integration of smooth functions, Math. Comp. 83 (2014) 2853–2863。
