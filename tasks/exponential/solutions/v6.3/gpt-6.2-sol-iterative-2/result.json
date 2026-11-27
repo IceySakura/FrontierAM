@@ -1,0 +1,66 @@
+{
+ "model": "gpt-6.2-sol",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261127T172253Z-ce9b76",
+ "raw": "66/66 个计分例合格，总体 \\(R = 0.473\\)（\\(r\\)：逐例用时 ÷ 7 方法参照组该例最快成员）",
+ "mapping": "逐例 \\(100/(1+r)\\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均",
+ "score": 69.756,
+ "review": null,
+ "process": {
+  "minutes": 56.3,
+  "public_tests": 10,
+  "public_curve": [
+   {
+    "minute": 3.0,
+    "score": 61.3980177441592,
+    "status": "ok"
+   },
+   {
+    "minute": 7.8,
+    "score": 61.9597079056752,
+    "status": "ok"
+   },
+   {
+    "minute": 15.0,
+    "score": 62.34669208530075,
+    "status": "ok"
+   },
+   {
+    "minute": 25.2,
+    "score": 64.23853458841337,
+    "status": "ok"
+   },
+   {
+    "minute": 29.8,
+    "score": 63.897605527294694,
+    "status": "ok"
+   },
+   {
+    "minute": 33.0,
+    "score": 63.86488112879522,
+    "status": "ok"
+   },
+   {
+    "minute": 38.0,
+    "score": 65.02595549256573,
+    "status": "ok"
+   },
+   {
+    "minute": 45.7,
+    "score": 65.42635801226722,
+    "status": "ok"
+   },
+   {
+    "minute": 50.0,
+    "score": 64.11052869972694,
+    "status": "ok"
+   },
+   {
+    "minute": 53.1,
+    "score": 64.77329652246247,
+    "status": "ok"
+   }
+  ]
+ }
+}
