@@ -251,8 +251,11 @@ class GalaxyGravityV4(GalaxyGravityV3):
         if size > self.max_submission_bytes and not (Path(source) / PAIR).exists():
             return {'status': 'submission_failure', 'reason': f'submission holds {size} bytes, above the 256 MiB limit',
                     'raw_error': None, 'package_score': None, 'calls': 0, 'cases': [], 'max_cpu_s': None}
-        config = {'image': self.lock()['image']['id'], 'cpu': int(placement.cpuset), 'repeats': 3, 'mode': 'diagnostic',
-                  'cases': cases}
+        # feedback runs each snapshot once so that a test with the 4,194,304-particle snapshot stays within its 15-minute
+        # cap (2026-11-27); formal grading and limit calibration keep three calls
+        once = os.environ.get('FRONTIERAM_GALAXY_DATA') == 'public' and not os.environ.get('FRONTIERAM_GALAXY_V4_TIMING')
+        config = {'image': self.lock()['image']['id'], 'cpu': int(placement.cpuset), 'repeats': 1 if once else 3,
+                  'mode': 'diagnostic', 'cases': cases}
         out.parent.mkdir(parents=True, exist_ok=True)
         config_path = out.parent / f'{out.name}-config.json'
         config_path.write_text(json.dumps(config, indent=2) + '\n')

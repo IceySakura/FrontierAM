@@ -40,7 +40,7 @@ SCORING_OLD = ('每张快照取三次运行的 $e$ 的算术平均，并按粒�
                '分层均值仅用于描述，不隐含各规模等权或按粒子数加权。\n\n'
                '正式评分采用：**0分对应theta=0.8经典简单树的基准水平，5分对应theta=0.7改进树的基准水平；全部预测与参考一致的零误差对应10分。** '
                '最终权重和原始指标汇总在正式比较提交之前公布并冻结。当前开发试跑主要核验源码交接、输出合法性和资源限制，返回接口有效性及原始分层结果。')
-SCORING_NEW = '''每张快照取三次运行的 $e$ 的算术平均；每个“粒子规模 × 场景类别”组合（共 20 组）取其四张快照的算术平均；最后将 20 组等权平均，得到原始误差 $E$。$E$ 越低越好。方向偏差和大小偏差都会增加误差。只要 240 次全部在限时内有效，运行更快不会额外加分。
+SCORING_NEW = '''每张快照取三次运行的 $e$ 的算术平均；每个“粒子规模 × 场景类别”组合（共 20 组）取其四张快照的算术平均；最后将 20 组等权平均，得到原始误差 $E$。$E$ 越低越好。方向偏差和大小偏差都会增加误差。在限时内运行更快不会额外加分。
 
 **满分 100，参照 = 50，按原始误差的对数计分。** 0 分锚点 $E_0$ 是 theta=0.8 经典简单树参照的原始误差，50 分锚点 $E_{50}$ 是 theta=0.7 改进树参照的原始误差，两者都在评测机上按相同资源、时限和汇总规则标定。$E\\le 10^{-15}$（双精度可达的误差下限）对应 100 分。
 
@@ -95,8 +95,11 @@ def statement(limits: dict | None, cases: list[dict]) -> tuple[str, list[str]]:
     for old, new in [
         ('评测环境为 Linux ARM64。', '评测环境为 Linux x86-64（AMD EPYC 7K62）。'),
         ('整份提交不满足完整有效性要求。当前预标定会保留其余调用的原始记录及失败状态，失败快照不能以成功的部分调用代替完整结果。** 提交无法构建或启动同样视为失败。',
-         '整份提交记 0 分，不进入有效精度排名。** 提交无法构建或启动同样计 0 分。'),
+         # per-group rule since 2026-11-26 (results/OPEN_ITEMS.md)
+         '该次调用所在的“粒子规模 × 场景类别”组按经典树参照（0 分锚点）在该组的误差计入，其余组照常计入'
+         '（2026-11-26 起；此前任一次失败整份记 0 分）。** 提交无法构建或启动计 0 分；提交目录最多 256 MiB。'),
         (SCORING_OLD, SCORING_NEW),
+        ('全部调用有效后，按下述规则比较精度。', '再按下述规则比较精度。'),
         ('[公开开发数据、文件说明与本地自检入口](public-dev/README.md)', '[样例数据、文件说明与本地自检入口](samples/README.md)'),
     ]:
         text = replace_once(text, old, new, 'problem.md')
@@ -109,10 +112,53 @@ def statement(limits: dict | None, cases: list[dict]) -> tuple[str, list[str]]:
     return text, edits
 
 
+def refresh_public() -> None:
+    """--feedback-and-workspace: rebuild the feedback pool, the statement and the model workspace of the existing seal
+    as main() does, leaving the private side (grader, references, formal data and limits) as sealed."""
+    lock = json.loads((SEAL / 'lock.json').read_text())
+    public = SEAL / lock['roots']['public']
+    author = json.loads((PRIVATE / 'formal-config.json').read_text())
+    local = json.loads((PRIVATE / 'local-limits.json').read_text())['limits']
+    cases = [{'case': c['case'], 'n': c['n']} for c in author['cases']]
+    dev = public / 'public-dev'
+    shutil.rmtree(dev)
+    shutil.copytree(SAMPLES, dev, copy_function=os.link)
+    feedback = json.loads((FEEDBACK / 'manifest.json').read_text())
+    link_tree(FEEDBACK / 'cases', dev / 'cases')
+    fb_limits = json.loads((FEEDBACK / 'local-limits.json').read_text())['limits']
+    for c in feedback['cases']:
+        c['cpu_limit_s'] = fb_limits[c['case']]
+    rewrite(dev / 'manifest.json', (json.dumps(feedback, indent=1) + '\n').encode())
+    text, statement_edits = statement(local, cases)
+    rewrite(public / 'problem.md', text.encode())
+    members = {'problem.md': text.encode()}
+    for path in sorted(SAMPLES.rglob('*')):
+        if path.is_file():
+            members['samples/' + str(path.relative_to(SAMPLES))] = path.read_bytes()
+    with tarfile.open(SEAL / 'public.tar.new', 'w', format=tarfile.PAX_FORMAT) as archive:
+        for name in sorted(members):
+            info = tarfile.TarInfo(name)
+            info.size, info.mode, info.mtime, info.uid, info.gid = len(members[name]), 0o644, 0, 1000, 1000
+            archive.addfile(info, io.BytesIO(members[name]))
+    (SEAL / 'public.tar.new').replace(SEAL / 'public.tar')
+    lock.update(public_cases=len(feedback['cases']), public_tar_sha256=sha(SEAL / 'public.tar'),
+                workspace={'files': sorted(members), 'statement_edits': statement_edits},
+                public_refreshed_utc=datetime.now(timezone.utc).isoformat(timespec='seconds'))
+    (SEAL / 'lock.json.new').write_text(json.dumps(lock, indent=2) + '\n')
+    (SEAL / 'lock.json.new').replace(SEAL / 'lock.json')   # gradings of the formal set may read it meanwhile
+    (SPEC / 'statement.md').write_text(text)
+    print(json.dumps({'refreshed': str(SEAL), 'feedback_cases': len(feedback['cases']),
+                      'public_tar_sha256': lock['public_tar_sha256']}))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--force', action='store_true')
+    parser.add_argument('--feedback-and-workspace', action='store_true',
+                        help='rebuild only the feedback pool, statement and model workspace of the existing seal')
     args = parser.parse_args()
+    if args.feedback_and_workspace:
+        return refresh_public()
     if SEAL.exists():
         if not args.force:
             raise SystemExit(f'{SEAL} exists; pass --force to reseal')

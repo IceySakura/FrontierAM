@@ -4,12 +4,14 @@ One snapshot per scale and family at 65,536, 262,144 and 1,048,576 particles (15
 public generator from fresh private seeds, with full-particle reference accelerations from the task package's own
 direct-summation program. The 4,194,304 scale is left out: its full reference costs about 1.8e13 pair interactions per
 snapshot. Small snapshots get one all-particle run; at 1,048,576 the targets are split into chunks computed in parallel
-on grade leases (pinned) and concatenated in order.
+on grade leases (pinned) and concatenated in order. --extra N:FAMILY adds snapshots outside that grid: one 4,194,304-particle
+disc snapshot (user decision 2026-11-26), whose full reference was computed once with the symmetric all-particle run on
+one grade lease (13.7 h) and is reused here.
 
 Output: tasks/galaxy-gravity/versions/v4/data/public/{cases/,manifest.json,seeds.json} (Git LFS on git.woa only, never
 in a model workspace). Rerun-safe: finished snapshots are kept.
 
-Usage: PYTHONPATH=. FRONTIERAM_RUNTIME=... make_galaxy_v4_feedback.py [--chunks 7]
+Usage: PYTHONPATH=. FRONTIERAM_RUNTIME=... make_galaxy_v4_feedback.py [--chunks 7] [--extra 4194304:disc]
 """
 
 import argparse
@@ -47,6 +49,7 @@ def leased(command: list[str], label: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--chunks', type=int, default=7)
+    parser.add_argument('--extra', action='append', default=[], metavar='N:FAMILY', help='a snapshot outside the grid')
     args = parser.parse_args()
     (OUT / 'cases').mkdir(parents=True, exist_ok=True)
     build = Path(tempfile.mkdtemp(prefix='galaxy-direct-'))
@@ -56,36 +59,37 @@ def main() -> None:
     seeds_path = OUT / 'seeds.json'
     seeds = json.loads(seeds_path.read_text()) if seeds_path.exists() else {}
     cases = []
-    for n in SCALES:
-        for family in FAMILIES:
-            case = f'fb-{n}-{family}'
-            seeds.setdefault(case, secrets.randbits(63))
-            seeds_path.write_text(json.dumps(seeds, indent=1) + '\n')
-            inp, ref = OUT / 'cases' / f'{case}.in', OUT / 'cases' / f'{case}.ref'
-            if not (inp.exists() and inp.stat().st_size == 32 * n):
-                leased([str(PYTHON), str(GENERATOR), family, str(n), str(seeds[case]), str(inp)], f'galaxy v4 feedback gen {case}')
-            if not (ref.exists() and ref.stat().st_size == 24 * n):
-                if n < 1048576:
-                    leased([str(direct), str(inp), str(ref)], f'galaxy v4 feedback ref {case}')
-                else:
-                    bounds = np.linspace(0, n, args.chunks + 1, dtype=np.int64)
-                    parts = []
-                    for k in range(args.chunks):
-                        ids = build / f'{case}-{k}.ids'
-                        np.arange(bounds[k], bounds[k + 1], dtype='<i8').tofile(ids)
-                        parts.append((ids, build / f'{case}-{k}.out'))
-                    with ThreadPoolExecutor(max_workers=args.chunks) as pool:
-                        list(pool.map(lambda p: leased([str(direct), str(inp), str(p[1]), str(p[0])],
-                                                       f'galaxy v4 feedback ref {case} part'), parts))
-                    with open(ref, 'wb') as out:
-                        for _, part in parts:
-                            out.write(part.read_bytes())
-            truth = np.fromfile(ref, dtype='<f8').reshape(-1, 3)
-            if truth.shape[0] != n or not np.isfinite(truth).all() or not np.linalg.norm(truth, axis=1).min() > 0:
-                raise SystemExit(f'{case}: invalid reference')
-            cases.append({'case': case, 'family': family, 'n': n, 'input': f'cases/{case}.in', 'truth': f'cases/{case}.ref',
-                          'input_sha256': sha(inp), 'truth_sha256': sha(ref)})
-            print(json.dumps({'case': case, 'done': True}), flush=True)
+    grid = [(n, family) for n in SCALES for family in FAMILIES]
+    grid += [(int(e.split(':')[0]), e.split(':')[1]) for e in args.extra]
+    for n, family in grid:
+        case = f'fb-{n}-{family}'
+        seeds.setdefault(case, secrets.randbits(63))
+        seeds_path.write_text(json.dumps(seeds, indent=1) + '\n')
+        inp, ref = OUT / 'cases' / f'{case}.in', OUT / 'cases' / f'{case}.ref'
+        if not (inp.exists() and inp.stat().st_size == 32 * n):
+            leased([str(PYTHON), str(GENERATOR), family, str(n), str(seeds[case]), str(inp)], f'galaxy v4 feedback gen {case}')
+        if not (ref.exists() and ref.stat().st_size == 24 * n):
+            if n < 1048576:
+                leased([str(direct), str(inp), str(ref)], f'galaxy v4 feedback ref {case}')
+            else:
+                bounds = np.linspace(0, n, args.chunks + 1, dtype=np.int64)
+                parts = []
+                for k in range(args.chunks):
+                    ids = build / f'{case}-{k}.ids'
+                    np.arange(bounds[k], bounds[k + 1], dtype='<i8').tofile(ids)
+                    parts.append((ids, build / f'{case}-{k}.out'))
+                with ThreadPoolExecutor(max_workers=args.chunks) as pool:
+                    list(pool.map(lambda p: leased([str(direct), str(inp), str(p[1]), str(p[0])],
+                                                   f'galaxy v4 feedback ref {case} part'), parts))
+                with open(ref, 'wb') as out:
+                    for _, part in parts:
+                        out.write(part.read_bytes())
+        truth = np.fromfile(ref, dtype='<f8').reshape(-1, 3)
+        if truth.shape[0] != n or not np.isfinite(truth).all() or not np.linalg.norm(truth, axis=1).min() > 0:
+            raise SystemExit(f'{case}: invalid reference')
+        cases.append({'case': case, 'family': family, 'n': n, 'input': f'cases/{case}.in', 'truth': f'cases/{case}.ref',
+                      'input_sha256': sha(inp), 'truth_sha256': sha(ref)})
+        print(json.dumps({'case': case, 'done': True}), flush=True)
     (OUT / 'manifest.json').write_text(json.dumps({'scope': 'public feedback pool (maintainer-only)',
                                                    'generator_sha256': sha(GENERATOR), 'cases': cases}, indent=1) + '\n')
 
