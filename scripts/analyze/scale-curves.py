@@ -19,6 +19,7 @@ Usage: FRONTIERAM_RUNTIME=$PWD/.runtime-recal scale-curves.py inventory|register
 """
 
 import argparse
+import fcntl
 import hashlib
 import json
 import os
@@ -102,6 +103,13 @@ def save(name: str, data: dict) -> None:
     tmp = OUT / (name + '.tmp')
     tmp.write_text(json.dumps(data, indent=1) + '\n')
     tmp.replace(OUT / name)
+
+
+def record_queued(entries: dict) -> None:
+    """Merge into queued.json under a lock, since one grading process per task may run at the same time."""
+    with open(OUT / 'queued.lock', 'w') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        save('queued.json', {**load('queued.json'), **entries})
 
 
 def prepare_store(task: str) -> None:
@@ -215,7 +223,7 @@ def grade(tasks: list[str], workers: int) -> None:
                 isolation = 'dev_idle' if task in DEV_IDLE_TASKS else 'shared'
                 queued[submission] = {'job': store.enqueue(submission, kind='candidate', isolation=isolation,
                                                            note='scale-curves')}
-            save('queued.json', queued)
+            record_queued({submission: queued[submission]})
         if pending:
             env = {**os.environ, 'FRONTIERAM_RUNTIME': str(CONIC_RUNTIME)} if task == 'conic' else None
             subprocess.run([str(ROOT / 'bench'), '--store', str(CURVES), 'grade-worker', '--task', task, '--workers',
@@ -233,7 +241,7 @@ def grade_direct(task: str, submissions: list[str], workers: int) -> None:
     from arena.tasks import TASKS as ARENA_TASKS
 
     layout, _, _ = context()
-    broker, arena_task, queued = Broker(layout), ARENA_TASKS[task], load('queued.json')
+    broker, arena_task = Broker(layout), ARENA_TASKS[task]
 
     def one(submission):
         out = CURVES / 'ihvp-v4' / f'{submission}-private'
@@ -250,9 +258,7 @@ def grade_direct(task: str, submissions: list[str], workers: int) -> None:
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         list(pool.map(one, submissions))
-    for submission in submissions:
-        queued[submission] = {'direct': f'ihvp-v4/{submission}-private'}
-    save('queued.json', queued)
+    record_queued({submission: {'direct': f'ihvp-v4/{submission}-private'} for submission in submissions})
 
 
 def regrade(submissions: list[str]) -> None:
@@ -269,7 +275,7 @@ def regrade(submissions: list[str]) -> None:
         job = next((j['id'] for j in new if j.get('submission') == submission), None)
         if job:
             queued[submission] = {'job': job, 'superseded': (queued.get(submission) or {}).get('job')}
-            save('queued.json', queued)
+            record_queued({submission: queued[submission]})
         print(json.dumps({'regraded': submission, 'job': job}))
 
 
