@@ -19,6 +19,7 @@ Usage: FRONTIERAM_RUNTIME=$PWD/.runtime-recal scale-curves.py inventory|register
 """
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -38,8 +39,18 @@ TAGS = {'gpt-6.2-sol': 'sol62', 'gpt-6-astra': 'astra', 'gpt-6.1-sol': 'sol', 'c
 # task -> (family, v6.3 result-group version)
 TASKS = {'continuum-estimation': ('continuum-estimation', 'v1'), 'fluorescence-deconvolution': ('fluorescence-deconvolution', 'v1'),
          'blackbox-cubature-v2': ('blackbox-cubature', 'v2'), 'ihvp-sequence-v4': ('ihvp-sequence', 'v4'),
-         'polarization-demosaicking-v3': ('polarization-demosaicking', 'v3')}
-SUITE_TASKS = {'blackbox-cubature-v2'}
+         'polarization-demosaicking-v3': ('polarization-demosaicking', 'v3'), 'conic': ('conic', 'v3'),
+         'trajectory-covariance-v2': ('trajectory-covariance', 'v2')}
+SUITE_TASKS = {'blackbox-cubature-v2', 'conic', 'trajectory-covariance-v2'}
+# Costly tasks (results/OPEN_ITEMS.md, 11-27 plan): only the latest snapshot at each checkpoint is graded, so their curves
+# are exact at the checkpoints; conic on a fixed stratified third of its instances, scored against the reference's and
+# the weak anchor's rates on the same instances.
+CHECKPOINTS = (15, 30, 60, 90, 120, 180, 240)
+CHECKPOINT_TASKS = {'conic', 'trajectory-covariance-v2', 'species-tree-v3', 'exponential-v3', 'galaxy-gravity-v4'}
+CONIC_RUNTIME = ROOT / '.runtime-conic-v3'
+CONIC_MANIFEST = CONIC_RUNTIME / 'tasks/conic/original/tests/private/data/manifest.json'
+CONIC_WEAK = FORMAL / 'suites/suite-conic-20261126T100025Z-507120.report.json'   # HiGHS weak anchor, 165 of 650
+TRAJECTORY_REFERENCE = 'suite-trajectory-covariance-v2-20261110T120744Z-41b11a'
 DIRECT_TASKS = {'ihvp-sequence-v4'}            # graded by the operator driver on private, outside the job queue
 DEV_IDLE_TASKS = {'polarization-demosaicking-v3'}
 
@@ -60,12 +71,15 @@ def inventory() -> list[dict]:
             finished = [json.loads(line) for line in log.read_text().splitlines() if 'develop_finished' in line]
             run = finished[-1]['run']
             result = json.loads((FORMAL / 'dev-runs' / run / 'develop_result.json').read_text())
-            for e in (e for e in result.get('evaluations') or [] if e.get('kind') == 'test'):
+            tests = [e for e in result.get('evaluations') or [] if e.get('kind') == 'test']
+            latest = {max((e['n'] for e in tests if (e.get('requested_at_seconds') or 0) <= 60 * m), default=None)
+                      for m in CHECKPOINTS} - {None}
+            for e in tests:
                 tar = FORMAL / 'dev-runs' / run / 'evaluations' / f'test-{e["n"]:02d}' / 'source.tar'
                 rows.append({'task': task, 'model': cell['model'], 'attempt': n, 'run': run, 'test': e['n'],
                              't_s': e.get('requested_at_seconds'), 'public_score': e.get('score'),
                              'public_status': e.get('status'), 'archive': str(tar.relative_to(ROOT)),
-                             'archive_present': tar.is_file()})
+                             'archive_present': tar.is_file(), 'checkpoint': e['n'] in latest})
             rows.append({'task': task, 'model': cell['model'], 'attempt': n, 'run': run, 'test': None,
                          't_s': result.get('development_seconds'), 'final': True, 'submission': cell.get('submission'),
                          'formal_score': cell.get('score'), 'stop': result.get('agent_stop_reason')})
@@ -94,7 +108,17 @@ def prepare_store(task: str) -> None:
     """The curves store grades with the formal store's active baseline (anchors, paired reference)."""
     from arena.store import Store
     Store(CURVES)
-    if task in DIRECT_TASKS:
+    if task in DIRECT_TASKS or task == 'conic':   # conic is scored from its manifest and the weak-anchor report
+        return
+    if task == 'trajectory-covariance-v2':        # its scorer reads the reference suite from the candidate's store
+        record = FORMAL / 'suites' / f'{TRAJECTORY_REFERENCE}.json'
+        if not (CURVES / 'suites' / record.name).exists():
+            (CURVES / 'suites').mkdir(parents=True, exist_ok=True)
+            shutil.copy2(record, CURVES / 'suites' / record.name)
+            for shard in json.loads(record.read_text())['shards']:
+                metrics = CURVES / 'results' / shard['job'] / 'grade/metrics.json'
+                metrics.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(FORMAL / 'results' / shard['job'] / 'grade/metrics.json', metrics)
         return
     active = (FORMAL / 'baselines' / task / 'ACTIVE').read_text().strip()
     # a baseline derived from another measurement (polarization's 116 scored scenes) has no reference submission
@@ -109,8 +133,12 @@ def register(tasks: list[str]) -> None:
     from arena.store import Store
     from arena.tasks import TASKS as ARENA_TASKS
     runtime, store, registry = load_runtime(), Store(CURVES), load('registry.json')
+    if 'conic' in tasks and runtime['profile_path'] != str(CONIC_RUNTIME / 'conic-profile.json'):
+        raise SystemExit(f'register conic with FRONTIERAM_RUNTIME={CONIC_RUNTIME}')
     for row in json.loads((OUT / 'inventory.json').read_text()):
         if row.get('final') or row['task'] not in tasks or key(row) in registry or not row['archive_present']:
+            continue
+        if row['task'] in CHECKPOINT_TASKS and not row.get('checkpoint'):
             continue
         task = ARENA_TASKS[row['task']]
         prepare_store(row['task'])
@@ -133,9 +161,38 @@ def register(tasks: list[str]) -> None:
     print(json.dumps({'registered': len(registry)}))
 
 
-def bench(*args: str) -> list[dict]:
-    done = subprocess.run([str(ROOT / 'bench'), '--store', str(CURVES), *args], cwd=ROOT, capture_output=True, text=True)
+def bench(*args: str, runtime: Path | None = None) -> list[dict]:
+    env = {**os.environ, 'FRONTIERAM_RUNTIME': str(runtime)} if runtime else None
+    done = subprocess.run([str(ROOT / 'bench'), '--store', str(CURVES), *args], cwd=ROOT, capture_output=True, text=True,
+                          env=env)
     return [json.loads(line) for line in done.stdout.splitlines() if line.startswith('{')]
+
+
+def conic_subset() -> Path:
+    """A fixed third of the 650 conic instances, every third by hash within each cone family x reference-solved stratum
+    (the reference left unsolved exactly the instances whose limit is the 18 s unsolved limit)."""
+    path = OUT / 'conic-subset.json'
+    if not path.exists():
+        strata: dict[tuple, list[str]] = {}
+        for row in json.loads(CONIC_MANIFEST.read_text())['instances']:
+            strata.setdefault((row['group'], row['time_limit_seconds'] == 18.0), []).append(row['id'])
+        chosen = [i for ids in strata.values() for i in sorted(ids, key=lambda x: hashlib.sha256(x.encode()).hexdigest())[::3]]
+        path.write_text(json.dumps(sorted(chosen)) + '\n')
+    return path
+
+
+def conic_score(report: dict) -> dict:
+    """Weak-anchor mapping (scripts/rounds/v63-grade.sh) with p, p0 and p_B all on the subset's instances."""
+    subset = set(json.loads(conic_subset().read_text()))
+    solved_by_reference = {r['id'] for r in json.loads(CONIC_MANIFEST.read_text())['instances'] if r['time_limit_seconds'] != 18.0}
+    weak = {c['case_id'] for c in json.loads(CONIC_WEAK.read_text())['cases'] if c['success']}
+    cases = [c for c in report['cases'] if c['case_id'] in subset]
+    if len(cases) != len(subset) or not report.get('complete'):
+        return {'score': None, 'status': 'incomplete'}
+    p = sum(c['success'] for c in cases) / len(subset)
+    p0, pb = len(weak & subset) / len(subset), len(solved_by_reference & subset) / len(subset)
+    score = 0.0 if p <= p0 else 50 * (p - p0) / (pb - p0) if p <= pb else 50 + 50 * (p - pb) / (1 - pb)
+    return {'score': score, 'status': 'ok', 'raw_error': p, 'p0': p0, 'p_B': pb, 'cases': len(subset)}
 
 
 def grade(tasks: list[str], workers: int) -> None:
@@ -150,8 +207,9 @@ def grade(tasks: list[str], workers: int) -> None:
             continue
         for submission in pending:
             if task in SUITE_TASKS:
+                subset = ['--cases', str(conic_subset())] if task == 'conic' else []
                 record = bench('suite', '--task', task, '--submission', submission, '--shards', '7', '--isolation', 'shared',
-                               '--cap-s', '3600')
+                               '--cap-s', '3600', *subset, runtime=CONIC_RUNTIME if task == 'conic' else None)
                 queued[submission] = {'suite': record[-1]['id']}
             else:
                 isolation = 'dev_idle' if task in DEV_IDLE_TASKS else 'shared'
@@ -159,8 +217,9 @@ def grade(tasks: list[str], workers: int) -> None:
                                                            note='scale-curves')}
             save('queued.json', queued)
         if pending:
+            env = {**os.environ, 'FRONTIERAM_RUNTIME': str(CONIC_RUNTIME)} if task == 'conic' else None
             subprocess.run([str(ROOT / 'bench'), '--store', str(CURVES), 'grade-worker', '--task', task, '--workers',
-                            str(workers), '--drain'], cwd=ROOT, check=False)
+                            str(workers), '--drain'], cwd=ROOT, check=False, env=env)
 
 
 def grade_direct(task: str, submissions: list[str], workers: int) -> None:
@@ -232,16 +291,24 @@ def collect() -> None:
                 scores[snapshot] = {'submission': submission, 'score': s.get('score'), 'status': s.get('status'),
                                     'raw_error': (s.get('candidate') or {}).get('raw_error', s.get('raw_error'))}
         elif 'suite' in q:
+            task = json.loads((CURVES / 'suites' / f'{q["suite"]}.json').read_text())['task']
             out = OUT / 'suite-scores' / f'{q["suite"]}.json'
-            if not out.exists():
-                out.parent.mkdir(parents=True, exist_ok=True)
-                subprocess.run([str(ROOT / '.venv-ops/bin/python'), str(ROOT / 'scripts/grade/cubature-suite-score.py'),
-                                '--store', str(CURVES), '--task', 'blackbox-cubature-v2', '--candidate', q['suite'],
-                                '--out', str(out)], cwd=ROOT, capture_output=True, check=False)
+            out.parent.mkdir(parents=True, exist_ok=True)
+            if not out.exists() and task == 'conic':
+                bench('suite-report', '--suite', q['suite'], runtime=CONIC_RUNTIME)
+                report = CURVES / 'suites' / f'{q["suite"]}.report.json'
+                result = conic_score(json.loads(report.read_text())) if report.exists() else {'status': 'incomplete'}
+                if result['status'] == 'ok':
+                    out.write_text(json.dumps(result) + '\n')
+            elif not out.exists():
+                scorer, extra = {'blackbox-cubature-v2': ('cubature-suite-score.py', ['--task', 'blackbox-cubature-v2']),
+                                 'trajectory-covariance-v2': ('trajectory-suite-score.py', ['--reference', TRAJECTORY_REFERENCE])}[task]
+                subprocess.run([str(ROOT / '.venv-ops/bin/python'), str(ROOT / 'scripts/grade' / scorer), '--store', str(CURVES),
+                                *extra, '--candidate', q['suite'], '--out', str(out)], cwd=ROOT, capture_output=True, check=False)
             if out.exists():
                 s = json.loads(out.read_text())
-                scores[snapshot] = {'submission': submission, 'score': s.get('score'), 'status': s.get('status'),
-                                    'raw_error': s.get('gain')}
+                raw = s.get('gain') if task == 'blackbox-cubature-v2' else s.get('raw_error', (s.get('candidate') or {}).get('raw_error'))
+                scores[snapshot] = {'submission': submission, 'score': s.get('score'), 'status': s.get('status'), 'raw_error': raw}
         elif 'direct' in q:
             summary = CURVES / q['direct'] / 'summary.json'
             if summary.exists():
