@@ -312,8 +312,7 @@ SCORING_DISCLOSURE = {
         'the midpoint of the scale (linear in between) and solving everything is the maximum. Being faster '
         'within a limit earns nothing extra. All five cone families (linear, quadratic, second-order cone, '
         'semidefinite, exponential) count; sizes range from tens to about a million variables, and most instances '
-        'have a one-second limit, so robustness across the whole range matters more than peak speed on a few. Where '
-        'the task statement puts the zero point at 0.9 times the reference rate, this rule applies instead.'
+        'have a one-second limit, so robustness across the whole range matters more than peak speed on a few.'
     ),
     'exponential-v2': (
         'Every case, scored sessions and controls alike, must return results within its limits and accuracy '
@@ -392,8 +391,7 @@ SCORING_DISCLOSURE['exponential-v3'] = (
     'matching the per-case fastest published method everywhere is the midpoint of the scale and being faster scores '
     'higher. Timing follows the task\'s own interface rules (API.md): it starts before the first matrix byte is '
     'delivered and ends when all results are out and the process has exited; imports and input-independent '
-    'initialisation before READY are not timed. Where the task files (INSTRUCTION.md, RULES.json) say that any failed '
-    'session makes the main score zero, this per-case rule applies instead.'
+    'initialisation before READY are not timed.'
 )
 SCORING_DISCLOSURE['blackbox-cubature-v2'] = (
     'Every held-out instance runs once in a fresh process within 30 wall-clock seconds and the 2048-point query budget; '

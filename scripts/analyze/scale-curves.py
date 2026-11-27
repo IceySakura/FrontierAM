@@ -11,6 +11,7 @@ score changes. The curve of a cell is the private score of its latest test snaps
   register TASK...   stage every snapshot into the curves store as a submission (re-validated like any archive)
   grade TASK...      grade the registered snapshots on private (slot broker; polarization only with development idle)
   collect            private score and raw metric per snapshot -> var/raw/scale-curves/scores.json
+  regrade SUB...     grade snapshots again after abnormal load; the new job replaces the old one
   curves             per-cell step curves, the per-model average over the tasks, summary rows and SVG panels
                      -> var/raw/scale-curves/{curves.json,svg/}
 
@@ -96,9 +97,10 @@ def prepare_store(task: str) -> None:
     if task in DIRECT_TASKS:
         return
     active = (FORMAL / 'baselines' / task / 'ACTIVE').read_text().strip()
+    # a baseline derived from another measurement (polarization's 116 scored scenes) has no reference submission
     for src, dst in ((FORMAL / 'baselines' / task, CURVES / 'baselines' / task),
                      (FORMAL / 'submissions' / active, CURVES / 'submissions' / active)):
-        if not dst.exists():
+        if src.exists() and not dst.exists():
             shutil.copytree(src, dst, symlinks=True)
 
 
@@ -192,6 +194,24 @@ def grade_direct(task: str, submissions: list[str], workers: int) -> None:
     for submission in submissions:
         queued[submission] = {'direct': f'ihvp-v4/{submission}-private'}
     save('queued.json', queued)
+
+
+def regrade(submissions: list[str]) -> None:
+    """Grade snapshots once more (their first grading met abnormal machine load, results/OPEN_ITEMS.md 11-26); the new job
+    replaces the old one, which is kept as superseded."""
+    from arena.store import Store
+    store, queued = Store(CURVES), load('queued.json')
+    for submission in submissions:
+        task = store.submission(submission)['task']
+        before = {p.name for p in (CURVES / 'jobs/done').glob('*.json')}
+        bench('grade', '--submission', submission, '--task', task, '--isolation',
+              'dev_idle' if task in DEV_IDLE_TASKS else 'shared')
+        new = [json.loads(p.read_text()) for p in (CURVES / 'jobs/done').glob('*.json') if p.name not in before]
+        job = next((j['id'] for j in new if j.get('submission') == submission), None)
+        if job:
+            queued[submission] = {'job': job, 'superseded': (queued.get(submission) or {}).get('job')}
+            save('queued.json', queued)
+        print(json.dumps({'regraded': submission, 'job': job}))
 
 
 def collect() -> None:
@@ -341,7 +361,7 @@ def build_curves() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('command', choices=('inventory', 'register', 'grade', 'collect', 'curves'))
+    parser.add_argument('command', choices=('inventory', 'register', 'grade', 'regrade', 'collect', 'curves'))
     parser.add_argument('tasks', nargs='*')
     parser.add_argument('--workers', type=int, default=3)
     args = parser.parse_args()
@@ -354,6 +374,8 @@ def main() -> None:
         grade(tasks, args.workers)
     elif args.command == 'curves':
         build_curves()
+    elif args.command == 'regrade':   # TASK... are submission ids here
+        regrade(args.tasks)
     else:
         collect()
 

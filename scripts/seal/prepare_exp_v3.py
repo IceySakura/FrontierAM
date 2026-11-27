@@ -65,6 +65,15 @@ DOC_EDITS = {
         ('| one_shot | 数值会话墙钟60秒；整个进程CPU累计60秒，包含初始化 |', '| one_shot | 数值会话墙钟15秒；整个进程CPU累计15秒，包含初始化 |'),
         ('| reuse | 数值会话墙钟240秒；整个进程CPU累计240秒，包含初始化 |', '| reuse | 数值会话墙钟150秒；整个进程CPU累计150秒，包含初始化 |'),
         ('python tools/run_local.py --manifest dev/manifest.json', 'python tools/run_local.py --manifest samples/manifest.json'),
+        # the per-case rule (2026-11-26, results/OPEN_ITEMS.md)
+        ('任何必做会话、请求、格式、精度或资源检查失败，主分为0，同时给出开发覆盖率和失败反馈。不能只选成功子集。',
+         '控制例的任何检查失败，主分为0。计分会话逐例判定：请求、格式、精度或资源检查不合格的会话，该例得0分，其余会话照常计分'
+         '（2026-11-26起；此前任何必做会话失败即整份为0）。'),
+        ('完整合格时，令r_i=T_i/T_ref_i。先在同母算子的工作负载内平均，再依次按母算子、结构族、会话场景和精度档等权平均，得到R；主分为`100/(1+R)`。',
+         '令r_i=T_i/T_ref_i，合格会话的单例分为`100/(1+r_i)`，不合格会话为0。先在同母算子的工作负载内平均，再依次按母算子、结构族、'
+         '会话场景和精度档等权平均，得到主分。'),
+        ('控制例必须通过，但不参与时间均值。评分实现公开，见`tools/scoring.py`。',
+         '控制例必须通过，但不参与平均。合格判定与时间比的实现公开，见`tools/scoring.py`；主分按本节的逐例规则计算。'),
     ],
     'task/API.md': [('初始化墙钟最多15秒', '初始化墙钟最多10秒')],
 }
@@ -119,6 +128,11 @@ def workspace(parent_tar: Path) -> dict[str, bytes]:
     rules['scenarios']['one_shot'].update(wall_seconds=15, cpu_seconds=15)
     rules['scenarios']['reuse'].update(wall_seconds=150, cpu_seconds=150)
     rules['session']['startup_wall_seconds'] = 10
+    rules['score'].update(
+        primary_ratio='per scored case r_i = T_i / T_reference_i',
+        primary_map='per case 100/(1+r_i), 0 for a failed case; mean within mother, mothers within family, families '
+                    'within scenario, scenarios within precision, precision levels (since 2026-11-26)',
+        complete_submission_required=False, controls_required=True)
     members['task/RULES.json'] = (json.dumps(rules, indent=2) + '\n').encode()
     return members
 
@@ -151,8 +165,19 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--force', action='store_true')
     parser.add_argument('--public-only', action='store_true', help='reseal only the public-feedback seal')
+    parser.add_argument('--workspace-only', action='store_true',
+                        help='rewrite only the model workspace (public.tar) of the existing seals, with its lock entries')
     args = parser.parse_args()
     members = workspace(ROOT / '.runtime-exp2/public.tar')
+    if args.workspace_only:
+        for seal in SEALS.values():
+            write_tar(members, seal / 'public.tar.new')
+            (seal / 'public.tar.new').replace(seal / 'public.tar')
+            lock = json.loads((seal / 'lock.json').read_text())
+            lock['files']['public.tar'] = lock['public_tar_sha256'] = sha_bytes((seal / 'public.tar').read_bytes())
+            rewrite(seal / 'lock.json', (json.dumps(lock, indent=1) + '\n').encode())
+            print(json.dumps({'workspace': str(seal), 'public_tar_sha256': lock['public_tar_sha256']}))
+        return
     for parent, seal in SEALS.items():
         if args.public_only and not seal.name.endswith('-public'):
             continue

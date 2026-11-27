@@ -33,6 +33,14 @@ DOC_EDITS = {
         ('；其余实例为 300 秒。', '；其余实例为 18 秒。'),
         ('163 个公开实例供开发，不计入最终指标。', '5 个样例实例供开发，不计入最终指标。'),
         ('列出 163 个输入的路径', '列出 5 个样例输入的路径'),
+        # the weak-anchor mapping (2026-11-26, results/OPEN_ITEMS.md); p_W, since the statement's p_0 is the primal objective
+        ('令 \\(p_B\\) 为参考记录按本题时限和验收条件核算的成功率，满足 \\(0<p_B<1\\)。该参数由评测方预先固定，对所有提交一致使用，不公开具体值。',
+         '令 \\(p_B\\) 为参考记录按本题时限和验收条件核算的成功率，\\(p_W\\) 为弱参照（只求解零锥与非负锥的 HiGHS，其余锥返回 '
+         '`unresolved`）按同样条件核算的成功率，满足 \\(0<p_W<p_B<1\\)。这两个参数由评测方预先固定，对所有提交一致使用，不公开具体值。'),
+        ('0,&0\\le p\\le0.9p_B,\\\\[3pt]\n5\\dfrac{p-0.9p_B}{0.1p_B},&0.9p_B<p\\le p_B,\\\\[6pt]',
+         '0,&0\\le p\\le p_W,\\\\[3pt]\n5\\dfrac{p-p_W}{p_B-p_W},&p_W<p\\le p_B,\\\\[6pt]'),
+        ('参考成功率对应 5 分，其 90% 及以下对应 0 分，100% 成功率对应 10 分。这里的 90% 是相对比例，不是减去 10 个百分点。',
+         '参考成功率对应 5 分，弱参照的成功率及以下对应 0 分，100% 成功率对应 10 分（2026-11-26 起；此前 0 分点为参考成功率的 90%）。'),
     ],
     'public-dev/README.md': [
         ('本目录包含 **163 个开发实例**及接口示例', '本目录包含 **5 个样例实例**及接口示例'),
@@ -115,12 +123,27 @@ def rechain(task: Path, profile: dict) -> None:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--force', action='store_true')
+    parser.add_argument('--workspace-only', action='store_true',
+                        help='rewrite only the model workspace (conic-public.tar) of the existing seals, with its hashes')
     args = parser.parse_args()
     held_out = json.loads((ROOT / '.runtime-conic-solver1105-skip/tasks/conic/original/tests/private/data/manifest.json').read_text())
     public_dev = json.loads((ROOT / '.runtime-conic-solver1105-skip/tasks/conic/original/environment/public-dev/manifest.json').read_text())
     limits = {row['id']: UNSOLVED_LIMIT for row in held_out['instances'] + public_dev['instances']
               if row['time_limit_seconds'] >= 300}
     ws = workspace(ROOT / '.runtime-conic-solver1105-skip/conic-public.tar', limits)
+    if args.workspace_only:
+        for seal in SEALS.values():
+            rewrite(seal / 'conic-public.tar', ws)
+            profile_path = seal / 'conic-profile.json'
+            profile = json.loads(profile_path.read_text())
+            profile['public_tar_sha256'] = sha(seal / 'conic-public.tar')
+            rewrite(profile_path, profile)
+            lock_path = seal / 'runtime-lock.json'
+            lock = json.loads(lock_path.read_text())
+            lock['profile_sha256'] = sha(profile_path)
+            rewrite(lock_path, lock)
+            print(json.dumps({'workspace': str(seal), 'public_tar_sha256': profile['public_tar_sha256']}))
+        return
     for parent, seal in SEALS.items():
         if seal.exists():
             if not args.force:
