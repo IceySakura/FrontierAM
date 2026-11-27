@@ -25,13 +25,12 @@
           "protocol": "v6.3",
           "setting": "单轮",
           "attempt": 1,
-          "tie": true,
           "submission": "ihvp-sequence-v4-20261120T075106Z-563315",
           "store": "var/stores/store-v63",
           "raw": "\\(E = 0.123\\)，最长序列 28.3 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 58.393,
-          "notes_md": "按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：claude-opus-5-5（本格领先的概率 0.40）。",
+          "notes_md": "",
           "folder": "v4/gpt-6.2-sol-single-1"
         },
         {
@@ -65,13 +64,12 @@
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 1,
-          "tie": true,
           "submission": "ihvp-sequence-v4-20261121T215642Z-d60bad",
           "store": "var/stores/store-v63",
           "raw": "\\(E = 0.1089\\)，最长序列 28.5 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 63.155,
-          "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6.1-sol（本格领先的概率 0.86）。",
+          "notes_md": "经用户的 ChatGPT Pro 账号额度（Codex 后端）运行，不走 AI Hub：同一模型、推理 max；上下文窗口取该后端上限 872k token（其他 OpenAI 行经 AI Hub 为 1.05M，6.1-sol 与 6.2-sol 单次请求最大约 62 万 token）。该后端生成约慢 30%：同一提示的成对实测为每秒 47、51 个 token，AI Hub azure 为 69、74，限时内可做的工作相应少一些（用户 11-21 选择此通道）。",
           "folder": "v4/gpt-6-astra-iterative-1"
         },
         {
@@ -92,13 +90,12 @@
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 1,
-          "tie": true,
           "submission": "ihvp-sequence-v4-20261112T164810Z-0ddd31",
           "store": "var/stores/store-v63",
           "raw": "\\(E = 0.1093\\)，最长序列 28.4 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 63.014,
-          "notes_md": "按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6-astra（本格领先的概率 0.14）。",
+          "notes_md": "按截止时间分配的延续 CG（8 次测试，public 50.9 → 63.2），没有识别矩阵结构。",
           "folder": "v4/gpt-6.1-sol-iterative-1"
         },
         {
@@ -106,13 +103,12 @@
           "protocol": "v6.3",
           "setting": "单轮",
           "attempt": 1,
-          "tie": true,
           "submission": "ihvp-sequence-v4-20261112T150516Z-1af015",
           "store": "var/stores/store-v63",
           "raw": "\\(E = 0.1225\\)，最长序列 27.9 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 58.545,
-          "notes_md": "热启动 CG 加小规模回收紧缩子空间，没有识别矩阵结构。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：gpt-6.2-sol（本格领先的概率 0.60）。",
+          "notes_md": "热启动 CG 加小规模回收紧缩子空间，没有识别矩阵结构。",
           "folder": "v4/claude-opus-5-5-single-1"
         },
         {
@@ -120,13 +116,12 @@
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 2,
-          "tie": true,
           "submission": "ihvp-sequence-v4-20261116T051743Z-ef8440",
           "store": "var/stores/store-v63",
           "raw": "\\(E = 0.1176\\)，最长序列 28.2 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 60.195,
-          "notes_md": "第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。 按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：qwen4-max（本格领先的概率 0.49）。",
+          "notes_md": "第 1 次尝试中有回合因客户端约 300 秒等不到响应头而重发、原请求作废（基础设施故障，记未测）；本格为修复后的第 2 次尝试。",
           "folder": "v4/claude-opus-5-5-iterative-2"
         },
         {
@@ -134,13 +129,12 @@
           "protocol": "v6.3",
           "setting": "单轮",
           "attempt": 1,
-          "tie": true,
           "submission": "ihvp-sequence-v4-20261113T104130Z-fae7db",
           "store": "var/stores/store-v63",
           "raw": "\\(E = 0.1402\\)，最长序列 27.8 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 52.56,
-          "notes_md": "按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：qwen3.8-max-0902（本格领先的概率 0.71）。",
+          "notes_md": "",
           "folder": "v4/hy4-single-1"
         },
         {
@@ -174,13 +168,12 @@
           "protocol": "v6.3",
           "setting": "迭代",
           "attempt": 1,
-          "tie": true,
           "submission": "ihvp-sequence-v4-20261125T172232Z-44c487",
           "store": "var/stores/store-v63",
           "raw": "\\(E = 0.1176\\)，最长序列 28.3 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 60.214,
-          "notes_md": "按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：claude-opus-5-5（本格领先的概率 0.51）。",
+          "notes_md": "",
           "folder": "v4/qwen4-max-iterative-1"
         },
         {
@@ -188,13 +181,12 @@
           "protocol": "v6.3",
           "setting": "单轮",
           "attempt": 1,
-          "tie": true,
           "submission": "ihvp-sequence-v4-20261113T104910Z-b6cf92",
           "store": "var/stores/store-v63",
           "raw": "\\(E = 0.1411\\)，最长序列 28.0 秒（CG：\\(U = 0.2483\\)，L-BFGS-PCG：\\(W = 0.1478\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 52.25,
-          "notes_md": "按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：hy4（本格领先的概率 0.29）。",
+          "notes_md": "",
           "folder": "v4/qwen3.8-max-0902-single-1"
         },
         {

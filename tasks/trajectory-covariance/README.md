@@ -82,9 +82,9 @@ MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标
 | Hunyuan 4 | 单轮 | 白化误差 \(E = 0.2342\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.9 | 53 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | 白化误差 \(E = 0.1862\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 59.3 | 21 次提交，177 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Qwen4 Max | 单轮 | 白化误差 \(E = 0.2225\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.4 | 26 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
-| Qwen4 Max | 迭代 | 白化误差 \(E = 0.2244\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.0≈ | 16 次提交，47 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| Qwen4 Max | 迭代 | 白化误差 \(E = 0.2244\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.0 | 16 次提交，47 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
 | Qwen3.8 Max | 单轮 | 白化误差 \(E = 0.5920\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 35 分钟 | [`qwen3.8-max-0902-single-1/`](solutions/v6.3/qwen3.8-max-0902-single-1/) |
-| Qwen3.8 Max | 迭代 | 白化误差 \(E = 0.2240\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.1≈ | 5 次提交，169 分钟 | [`qwen3.8-max-0902-iterative-1/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/) |
+| Qwen3.8 Max | 迭代 | 白化误差 \(E = 0.2240\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.1 | 5 次提交，169 分钟 | [`qwen3.8-max-0902-iterative-1/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/) |
 | MiniMax M3.1 Flash | 单轮 | 白化误差 \(E = 0.2255\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.8 | 47 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | 白化误差 \(E = 0.2294\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.8 | 6 次提交，117 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
 
@@ -152,8 +152,6 @@ public 分数随测试提交：50.5（40 分钟） → 39.6（72 分钟） → 5
 
 ### Qwen4 Max（迭代，v6.3）
 
-按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：qwen3.8-max-0902（本格领先的概率 0.29）。
-
 public 分数随测试提交：50.1（5 分钟） → 41.0（15 分钟） → 46.9（17 分钟） → 50.1（22 分钟） → 51.4（27 分钟） → 51.4（32 分钟） → 51.4（33 分钟） → 51.0（35 分钟） → 51.4（36 分钟） → 51.4（38 分钟） → 50.4（39 分钟） → 51.5（40 分钟） → 51.4（42 分钟） → 51.3（43 分钟） → 51.5（44 分钟） → 51.5（45 分钟）
 
 源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `trajectory-covariance-v2-20261125T165212Z-9849d6`）。
@@ -163,8 +161,6 @@ public 分数随测试提交：50.1（5 分钟） → 41.0（15 分钟） → 46
 源码 [`solutions/v6.3/qwen3.8-max-0902-single-1/source/`](solutions/v6.3/qwen3.8-max-0902-single-1/source/)（提交 `trajectory-covariance-v2-20261113T111630Z-5a37c7`）。
 
 ### Qwen3.8 Max（迭代，v6.3）
-
-按测试用例重抽（配对 bootstrap 2000 次，只计用例抽样，不含尝试间波动）与同设置的相邻名次分不开：qwen4-max（本格领先的概率 0.71）。
 
 public 分数随测试提交：0.0（16 分钟） → 50.8（111 分钟） → 50.7（119 分钟） → 50.9（144 分钟） → 50.8（151 分钟）
 
