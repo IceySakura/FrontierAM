@@ -392,18 +392,21 @@
   "name": "galaxy-gravity",
   "v63_data": {
     "samples": [
-      "smoke",
-      "case-01"
+      "dev-hernquist",
+      "dev-jaffe",
+      "dev-einasto",
+      "dev-disc",
+      "dev-group"
     ],
-    "public": "10 张公开快照",
-    "groups": "Hernquist / Jaffe / Einasto / disc / group（各 2 张）",
+    "public": "16 张不发给模型的反馈快照：65,536 / 262,144 / 1,048,576 粒子 × 5 类场景各 1 张，外加 1 张 4,194,304 粒子 disc 快照；反馈每张调用 1 次（正式评测 3 次）。2026-11-27 前为前 15 张，不含 4,194,304 粒子快照",
+    "groups": "场景类别（manifest 的 family 字段）：smooth-hernquist / jaffe / einasto / disc / group",
     "feedback": {
-      "task": "galaxy-gravity-v3",
+      "task": "galaxy-gravity-v4",
       "category": "family",
       "accuracy": "relative acceleration error",
       "lower_is_better": true,
       "timed": false,
-      "note": "Any failed call makes the final score 0. CPU time counts only against the limit."
+      "note": "A failed call costs its whole size x scene combination, which then counts at the standard tree code's error. Each snapshot runs once here (three times in the final evaluation). CPU time counts only against the limit."
     }
   },
   "insights": [

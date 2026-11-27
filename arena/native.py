@@ -363,8 +363,7 @@ SCORING_DISCLOSURE['galaxy-gravity-v4'] = (
     'matching an improved tree-code reference is the midpoint of the scale, and an error of 1e-15 (double precision) is '
     'the maximum. A failed call costs its whole size x scene combination, which then counts at the standard tree '
     'code\'s error; a failed build fails every combination. Using less CPU time earns nothing extra. The submission '
-    'directory may hold at most 256 MiB. Where the task statement says that any failed call makes the whole '
-    'submission score zero, this rule applies instead.'
+    'directory may hold at most 256 MiB.'
 )
 
 SCORING_DISCLOSURE['ihvp-sequence'] = (
