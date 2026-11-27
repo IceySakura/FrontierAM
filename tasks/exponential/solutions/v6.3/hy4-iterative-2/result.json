@@ -1,0 +1,76 @@
+{
+ "model": "hy4",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261127T233719Z-0e1a37",
+ "raw": "65/66 个计分例合格；不合格：`accuracy_failure` 1（\\(r\\)：逐例用时 ÷ 7 方法参照组该例最快成员）",
+ "mapping": "逐例 \\(100/(1+r)\\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均",
+ "score": 58.267,
+ "review": null,
+ "process": {
+  "minutes": 120.1,
+  "public_tests": 12,
+  "public_curve": [
+   {
+    "minute": 27.8,
+    "score": 48.790806007471765,
+    "status": "ok"
+   },
+   {
+    "minute": 44.4,
+    "score": 54.280821593063074,
+    "status": "ok"
+   },
+   {
+    "minute": 60.6,
+    "score": 55.079928756668714,
+    "status": "ok"
+   },
+   {
+    "minute": 75.0,
+    "score": 55.017029143894995,
+    "status": "ok"
+   },
+   {
+    "minute": 78.8,
+    "score": 56.571706419654355,
+    "status": "ok"
+   },
+   {
+    "minute": 82.0,
+    "score": 55.30847367834415,
+    "status": "ok"
+   },
+   {
+    "minute": 85.2,
+    "score": 56.730082347930626,
+    "status": "ok"
+   },
+   {
+    "minute": 87.8,
+    "score": 54.72393615003426,
+    "status": "ok"
+   },
+   {
+    "minute": 99.7,
+    "score": 54.40619858982421,
+    "status": "ok"
+   },
+   {
+    "minute": 106.5,
+    "score": 55.79169586249734,
+    "status": "ok"
+   },
+   {
+    "minute": 111.1,
+    "score": 54.31478476543088,
+    "status": "ok"
+   },
+   {
+    "minute": 115.8,
+    "score": 55.42350730371647,
+    "status": "ok"
+   }
+  ]
+ }
+}
