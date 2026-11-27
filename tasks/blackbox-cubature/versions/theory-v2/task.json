@@ -1,0 +1,32 @@
+{
+  "name": "blackbox-cubature-theory-v2",
+  "title": "高斯测度下分段光滑函数的黑盒积分（纯理论，theory-v2）",
+  "status": "candidate",
+  "status_reason": "theory-v1 with the scoring practices adopted on 2026-11-27 from the DeMuon research task: the registered anchors (tasks/blackbox-cubature/analysis/THEORY_ANCHORS.md) and the value preferences P1-P5 are public in the statement, with the closed directions named; a reachable target E (Griewank-Kuo-Leovey-Sloan 2018 Theorem 3, the mixed-smoothness condition r_j >= sum of the other r_k: weaken it, or show by a counterexample that it cannot be weakened); a proof that a registered result cannot be improved or an assumption cannot be weakened is a top-tier result; a stated comparison protocol; citations must state their applicability; each manifest entry carries a result card. Environment and network as theory-v1. Trial runs only; not on the board.",
+  "derived_from": "blackbox-cubature-theory-v1",
+  "theory_only": true,
+  "images": {
+    "task": {
+      "tag": "frontieram-blackbox-cubature:amd64-v3",
+      "dockerfile": "../v3/Dockerfile.amd64",
+      "replaces": []
+    }
+  },
+  "data_dir": "versions/v3.1/data",
+  "lean": {
+    "toolchain": "leanprover/lean4:v4.35.0 (/data/workspace/frontieram-theory-pilot/.elan, mounted at /opt/lean)",
+    "packages": "mathlib v4.35.0 and cslib v4.35.0 with their dependencies, prebuilt (/data/workspace/frontieram-theory-pilot/lean/.lake/packages, mounted at /opt/lean-packages)",
+    "check": "scripts/grade/lean-comparator.py: lake comparator, Theory.Statements (challenge) against Theory.Proofs (solution), axioms propext, Quot.sound, Classical.choice"
+  },
+  "network": {
+    "development": "public internet through arena/netproxy.py (deny list in that module), requests logged to netproxy.jsonl in the run; provider-side web tools off",
+    "grading": "none"
+  },
+  "scoring": {
+    "raw": "per result: Lean check (lake comparator) and statement match; position in the partial order against the registered anchors and, if incomparable, the registered value preferences P1-P5",
+    "mapping": "tiers (tasks/blackbox-cubature/analysis/THEORY_REVIEW.md sections 2 and 2.1): strictly stronger than a registered anchor and dominated by no known human result, or a proof that a registered result cannot be improved or an assumption cannot be weakened, 100; incomparable and meeting a value preference P1-P5 50, otherwise 25; dominated by or equal to a known human result 10; score = maximum over verified results, 0 without any",
+    "theory": "the only score of this task"
+  },
+  "submission_note": "Put the theory document in /workspace/submission/theory/THEORY.md and its Lean formalization in /workspace/submission/theory/formal/ (start from /workspace/examples/lean_project/). There is no program to write.",
+  "instruction": "Read /workspace/problem.md and /workspace/THEORY_APPENDIX.md in full, and look at /workspace/tools and /workspace/examples. Write the theory document and its Lean formalization described there."
+}

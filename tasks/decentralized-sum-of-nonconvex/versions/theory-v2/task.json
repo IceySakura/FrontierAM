@@ -1,0 +1,41 @@
+{
+  "name": "decentralized-sum-of-nonconvex-theory-v2",
+  "title": "去中心化有限和 sum-of-nonconvex 强凸复合优化的迭代复杂度（纯理论，theory-v2）",
+  "status": "candidate",
+  "status_reason": "theory-v1 with the scoring practices adopted on 2026-11-27 from the DeMuon research task: the registered anchors are public in the statement (H-UB, H-LB-data, H-LB-pl from arXiv:2609.00045, H-LB-net, H-LB-avg) with the two closed directions named; a proof that a registered bound cannot be improved or an assumption cannot be weakened is a top-tier result (target D); a stated comparison protocol (same targets, common validity range, transient terms, thresholds and guarantee type, no compensating deterioration within a row, pending when unresolved); citations must state their applicability; each manifest entry carries a result card (coordinates and per-row marks). Score = max(frontier tier T, row score R). Model, environment and network as theory-v1. Trial runs only; not on the board.",
+  "theory_only": true,
+  "source": {
+    "benchmark": "OptBound (https://optbound.reaslab.io/), ULB-profile-63",
+    "profile": "/data/workspace/frontieram-theory-pilot/optbound/site/profiles/ULB-profile-63.md",
+    "model": "/data/workspace/frontieram-theory-pilot/optbound/ulb-63/lean/ULB63/Model.lean and Sanity.lean (headers and import path adapted)"
+  },
+  "images": {
+    "task": {
+      "tag": "frontieram-blackbox-cubature:amd64-v3",
+      "dockerfile": "../../../blackbox-cubature/versions/v3/Dockerfile.amd64",
+      "replaces": [],
+      "note": "the blackbox-cubature v3 task image (Python only), reused; development runs in its harness image frontieram-blackbox-cubature-v3-harness:v6, which adds the harness, git (for lake), curl and socat (for the proxy bridge)"
+    }
+  },
+  "lean": {
+    "toolchain": "leanprover/lean4:v4.35.0 (/data/workspace/frontieram-theory-pilot/.elan, mounted at /opt/lean)",
+    "packages": "mathlib v4.35.0 and cslib v4.35.0 with their dependencies, prebuilt (/data/workspace/frontieram-theory-pilot/lean/.lake/packages, mounted at /opt/lean-packages)",
+    "fixed": [
+      "Theory/Model.lean",
+      "Theory/Sanity.lean"
+    ],
+    "check": "scripts/grade/lean-comparator.py --fixed Theory/Model.lean=<workspace>/examples/lean_project/Theory/Model.lean --fixed Theory/Sanity.lean=<workspace>/examples/lean_project/Theory/Sanity.lean: lake comparator, Theory.Statements (challenge) against Theory.Proofs (solution), axioms propext, Quot.sound, Classical.choice"
+  },
+  "network": {
+    "development": "public internet through arena/netproxy.py (deny list in that module, including OptBound), requests logged to netproxy.jsonl in the run; provider-side web tools off",
+    "grading": "none"
+  },
+  "scoring": {
+    "raw": "per result: Lean check (lake comparator) and statement match; position in the partial order against the registered anchors; per-row marks (+ improved or proved optimal, = equivalent or established tradeoff, - worse, none) for the six rows of the statement",
+    "mapping": "score = max(T, R) (tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 2.1). T: strictly stronger than a registered anchor and dominated by no known human result, or a proof that a registered bound cannot be improved or an assumption cannot be weakened, 100; incomparable and answering a question stated in the human papers 50, otherwise 25; dominated by or equal to a known human result 10. R: rows assumptions and tuning information 15, upper bound data term 20, upper bound network and communication term 15, lower bound data term 20, lower bound network term 15, per-node computation, memory and per-edge message size 15; full for an improvement without compensating deterioration in the row or a proof of optimality, half for an equivalent result or an established tradeoff, 0 if worse, absent or unresolved; upper-bound and resource rows from one algorithm and tuning. Restatements only: T = R = 10. No verified result: 0.",
+    "theory": "the only score of this task"
+  },
+  "submission_note": "Put the theory document in /workspace/submission/theory/THEORY.md and its Lean formalization in /workspace/submission/theory/formal/ (start from /workspace/examples/lean_project/, whose Theory/Model.lean and Theory/Sanity.lean are the fixed problem model). There is no program to write.",
+  "instruction": "Read /workspace/problem.md, /workspace/PROFILE.md and /workspace/MODEL_NOTES.md in full, and look at /workspace/tools and /workspace/examples. Write the theory document and its Lean formalization described there.",
+  "derived_from": "decentralized-sum-of-nonconvex-theory-v1"
+}

@@ -1,0 +1,32 @@
+{
+  "results": [
+    {
+      "id": "R0",
+      "claim": "THEORY.md, example entry (replace)",
+      "lean": ["ULB63.minimax_eq_zero_example"],
+      "status": "proved",
+      "comparison": {
+        "class": "equal",
+        "human": ["Trivial: the initial point meets the target when the tolerance is at least the initial gap"],
+        "explanation": "Restates a fact of the model (Theory/Sanity.lean); shows the format only."
+      },
+      "coordinates": {
+        "kind": "other",
+        "class": "standard class (PROFILE.md section 1), every n >= 1",
+        "inputs": ["Delta", "epsilon"],
+        "bound": "minimax n m c L mu Delta rho epsilon = 0",
+        "validity": "Delta <= epsilon",
+        "guarantee": "exact",
+        "anchors": [],
+        "rows": {
+          "assumptions": "none",
+          "upper_data": "none",
+          "upper_network": "none",
+          "lower_data": "none",
+          "lower_network": "none",
+          "resources": "none"
+        }
+      }
+    }
+  ]
+}

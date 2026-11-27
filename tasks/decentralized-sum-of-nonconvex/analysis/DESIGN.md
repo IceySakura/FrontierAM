@@ -40,3 +40,7 @@ OptBound 表第 63 行：上界记 Liu–Low，下界记未知。按以上文献
 - 单轮设定，6 小时，验证运行（不上榜）：`scripts/rounds/theory-trial.sh decentralized-sum-of-nonconvex-theory-v1 MODEL N`。
 - 开发容器：8 GiB（8.5 GiB 租约），离线 Lean v4.35 + Mathlib/CSLib（只读挂载），公网经 `arena/netproxy.py`，厂商侧联网工具关闭；无样例服务。镜像复用 `frontieram-blackbox-cubature-v3-harness:v6`（含 git、curl、socat）。
 - 封装：`scripts/seal/seal_theory.py tasks/decentralized-sum-of-nonconvex/versions/theory-v1`。
+
+## theory-v2（11-27 晚）
+
+借鉴 DeMuon 题（`tasks/blackbox-cubature/analysis/DUAL_PLAN.md` 9.17）。题面公开登记的 5 个锚点（H-UB、H-LB-data、H-LB-pl、H-LB-net、H-LB-avg），写明两个已封死的方向（\(\kappa\le\sqrt N\) 的数据项下界、网络项下界），新增目标 D（证明某个登记的界不能再改进、或某个假设不能再弱）。计分为 \(\max(T,R)\)：\(T\) 为前沿分档；\(R\) 为六行的分行得分，每行改进或证明最优得满分、相当或公认权衡得一半、其余为 0，上界行与资源行必须来自同一个算法与调参。只有复述时 \(T=R=10\)。网络项下界按试点的上界在 \(\log n\) 以内已紧，这一点来自未发表的结果，题面不写，以免暗示上界的形状。

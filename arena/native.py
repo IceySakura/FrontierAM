@@ -57,6 +57,8 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'blackbox-cubature-v3.5': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-theory-v1': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'decentralized-sum-of-nonconvex-theory-v1': 'frontieram-blackbox-cubature-v3-harness:v6',
+                  'blackbox-cubature-theory-v2': 'frontieram-blackbox-cubature-v3-harness:v6',
+                  'decentralized-sum-of-nonconvex-theory-v2': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'continuum-estimation': 'frontieram-continuum-estimation-harness:v6',
                   'fluorescence-deconvolution': 'frontieram-fluorescence-deconvolution-harness:v6',
                   'pdhcg-qp-v1': 'frontieram-pdhcg-qp-v1-harness:v6'}
@@ -450,6 +452,28 @@ SCORING_DISCLOSURE['blackbox-cubature-theory-v1'] = (
     'several elementary ones; ending the session early earns nothing.'
 )
 SCORING_DISCLOSURE['decentralized-sum-of-nonconvex-theory-v1'] = SCORING_DISCLOSURE['blackbox-cubature-theory-v1']
+SCORING_DISCLOSURE['blackbox-cubature-theory-v2'] = (
+    'This task is scored on theory alone; there is no program. Only results formalized in Lean count: the statement in '
+    'theory/formal/Theory/Statements.lean, the proof in theory/formal/Theory/Proofs.lean, listed as proved in '
+    'theory/formal/manifest.json, accepted by `lake comparator` (kernel-checked, statements identical, axioms limited '
+    'to propext, Quot.sound and Classical.choice), and judged by reviewers to match what THEORY.md claims. Each such '
+    'result is compared, in assumptions and strength, with the human anchors registered in the statement, under the '
+    'comparison protocol stated there: strictly stronger than a registered anchor and dominated by no known human '
+    'result, or a rigorous proof that a registered result cannot be improved or an assumption cannot be weakened, '
+    'scores 100; incomparable with the known human results but answering one of the questions the statement lists '
+    'from the human papers 50, otherwise 25; dominated by or equal to a known human result (a restatement or special '
+    'case) 10. The score is the best of these among the verified results; unformalized results score nothing, and '
+    'ending the session early earns nothing.'
+)
+SCORING_DISCLOSURE['decentralized-sum-of-nonconvex-theory-v2'] = SCORING_DISCLOSURE['blackbox-cubature-theory-v2'].replace(
+    ' The score is the best of these among the verified results;',
+    ' That best tier is the frontier score. A second, row score grades the submission as a whole on six rows '
+    '(assumptions and tuning information 15, upper bound data term 20, upper bound network and communication term 15, '
+    'lower bound data term 20, lower bound network term 15, per-node computation, memory and per-edge message size 15): '
+    'full marks for an improvement without compensating deterioration in the row or a proof of optimality, half for an '
+    'equivalent result or an established tradeoff, nothing if worse, absent or unresolved; upper-bound and resource rows '
+    'must come from one algorithm and tuning. If every verified result restates known human results, both scores are '
+    '10. The task score is the larger of the two;')
 SCORING_DISCLOSURE['continuum-estimation'] = (
     'Every held-out case runs once in a fresh restricted process within 60 wall-clock seconds (startup included); an '
     'invalid, missing, late or unsuccessful output on any case makes the whole submission score zero. Given that, the '

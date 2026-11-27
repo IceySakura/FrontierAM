@@ -935,11 +935,24 @@ class BlackboxCubatureTheoryV1(TheoryOnlyTask):
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/theory-v1'
 
 
+class BlackboxCubatureTheoryV2(TheoryOnlyTask):
+    """theory-v1 with the anchors and value preferences public, a reachable target (Griewank-Kuo-Leovey-Sloan 2018
+    Theorem 3), proofs of optimality as top-tier results, a stated comparison protocol and result cards (user decision
+    2026-11-27, after the DeMuon research task)."""
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/theory-v2'
+
+
 class DecentralizedSumOfNonconvexTheoryV1(TheoryOnlyTask):
     """OptBound ULB-profile-63 (decentralized finite-sum, component-smooth sum-of-nonconvex, strongly convex composite):
     matching oracle-complexity bounds against a fixed Lean model of the problem (Theory/Model.lean, which the Lean
     check restores from the template before building)."""
     VERSION = ROOT / 'tasks/decentralized-sum-of-nonconvex/versions/theory-v1'
+
+
+class DecentralizedSumOfNonconvexTheoryV2(DecentralizedSumOfNonconvexTheoryV1):
+    """theory-v1 with public anchors (adding arXiv:2609.00045), proofs of optimality as top-tier results, a stated comparison
+    protocol, result cards, and the score max(frontier tier, row score) over six rows (user decision 2026-11-27)."""
+    VERSION = ROOT / 'tasks/decentralized-sum-of-nonconvex/versions/theory-v2'
 
 
 class ContinuumEstimation(OperatorTask):
@@ -1007,6 +1020,8 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'blackbox-cubature-v3.4': BlackboxCubatureV34, 'blackbox-cubature-v3.5': BlackboxCubatureV35,
            'blackbox-cubature-theory-v1': BlackboxCubatureTheoryV1,
            'decentralized-sum-of-nonconvex-theory-v1': DecentralizedSumOfNonconvexTheoryV1,
+           'blackbox-cubature-theory-v2': BlackboxCubatureTheoryV2,
+           'decentralized-sum-of-nonconvex-theory-v2': DecentralizedSumOfNonconvexTheoryV2,
            'continuum-estimation': ContinuumEstimation, 'fluorescence-deconvolution': FluorescenceDeconvolution}
 
 

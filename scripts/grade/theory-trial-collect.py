@@ -24,7 +24,9 @@ ROOT = Path(__file__).resolve().parents[2]
 STORE = ROOT / 'var/stores/store-v63'
 TAGS = {'gpt-6.2-sol': 'sol62', 'claude-opus-5-5': 'opus'}
 VERSIONS = {'blackbox-cubature-theory-v1': ('blackbox-cubature', 'theory-v1'),
-            'decentralized-sum-of-nonconvex-theory-v1': ('decentralized-sum-of-nonconvex', 'theory-v1')}
+            'decentralized-sum-of-nonconvex-theory-v1': ('decentralized-sum-of-nonconvex', 'theory-v1'),
+            'blackbox-cubature-theory-v2': ('blackbox-cubature', 'theory-v2'),
+            'decentralized-sum-of-nonconvex-theory-v2': ('decentralized-sum-of-nonconvex', 'theory-v2')}
 
 
 def finished(log: Path) -> dict | None:

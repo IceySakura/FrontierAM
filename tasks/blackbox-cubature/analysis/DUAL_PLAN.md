@@ -568,6 +568,20 @@ M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1
 - **重评**（`THEORY_REVIEW.md` 第 10 节，初评）：v3.2 Sol 35 → **25**；v3.3 Sol 42 → **50**（R3：非单调椭球跳跃上的精确剥离，回应 GKS 写明的空白）；v3.3 Opus 30 → **10**（经典结果复述）；v3.4 Sol 42 → **25**；v3.5 Sol 45 → **50**（R4）。仍没有偏序优的结论。
 - 正在运行的 theory-v1 试跑按分档评分；它们的题面写的是 11-26 的分类（严格更强、严格更弱、相当、不可比），与分档一一对应。后续版本的题面应公开锚点表与分档规则。
 
+### 9.17 theory-v2：借鉴 DeMuon 题的评分做法（11-27 晚）
+
+用户给了另一组人做的理论算法题（去中心化 Muon，参照 DeMuon arXiv:2510.01377 v2 的基础结果），选择采纳其中五项：最优性路径、细化的比较协议、优化题分行打分、积分题加可达参照、引用适用性与结果卡片。规则写在 `THEORY_REVIEW.md` 2.1 节。
+
+- **积分题 `blackbox-cubature-theory-v2`**：
+  - 题面公开 9 个锚点、价值偏好 P1–P5 与已封死的三个方向；
+  - 新增目标 E（Griewank–Kuo–Leövey–Sloan 2018 定理 3 的混合光滑条件 \(r_j\ge\sum_{k\ne j}r_k\)）：原文只说明证明中需要它，没有证明必要性，检索到 2026-11 未见放宽。放宽条件或用反例证明不能放宽都算偏序优，低维反例可以形式化；
+  - 目标 C 补上体积算法的现状；清单每条加结果卡片；仍按前沿分档、取最高。
+- **优化题 `decentralized-sum-of-nonconvex-theory-v2`**：
+  - 题面公开 5 个锚点（含 2609.00045）与两个已封死的方向，新增目标 D（最优性）；
+  - 得分为前沿分档 \(T\) 与分行得分 \(R\) 中的较大者。\(R\) 共六行：假设 15、上界数据项 20、上界网络项 15、下界数据项 20、下界网络项 15、资源 15；
+  - 清单的结果卡片带逐行标记，本地检查工具会核对。
+- **实现**：`BlackboxCubatureTheoryV2`、`DecentralizedSumOfNonconvexTheoryV2`，评分说明见 `arena/native.py`；`seal_theory.py` 封装；冒烟测试见 OPEN_ITEMS。试跑等 theory-v1 的 4 个结果评完再决定。
+
 ## 参考文献
 
 1. ✓ A. Hinrichs, E. Novak, M. Ullrich, H. Woźniakowski, The curse of dimensionality for numerical integration of smooth functions, Math. Comp. 83 (2014) 2853–2863。

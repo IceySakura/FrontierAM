@@ -17,7 +17,7 @@
 | 编号 | 类型 | 出处 | 内容 |
 | --- | --- | --- | --- |
 | A-MC | 算法保证 | 普通蒙特卡洛 | 任意 \(f\in L^2(\gamma_d)\)，随机化均方根误差 \(\sigma(f)\,n^{-1/2}\)，与维数无关；对 \(L^2\) 类是最优阶。只在更强假设下得到 \(n^{-1/2}\) 的结论被它支配 |
-| A-GKLS | 正则性 | Griewank–Kuo–Leövey–Sloan（J. Comput. Appl. Math. 344 (2018)；arXiv:1712.00920）定理 1、2 | \(f=\theta\cdot\mathrm{ind}(\phi)\)，在已知坐标 \(j\) 上 \(D_j\phi>0\) 处处成立且 \(x_j\to\infty\) 时 \(\phi\to\infty\)，\(\theta,\phi\) 属于加权 Sobolev 空间：预积分 \(P_jf\) 保持 \(r\) 阶光滑（定理 1），在 \(r_j\ge\sum_{k\ne j}r_k\) 时保持混合光滑（定理 2），因而 QMC 有理论速率 |
+| A-GKLS | 正则性 | Griewank–Kuo–Leövey–Sloan（J. Comput. Appl. Math. 344 (2018)；arXiv:1712.00920）定理 2、3 | \(f=\theta\cdot\mathrm{ind}(\phi)\)，在已知坐标 \(j\) 上 \(D_j\phi>0\) 处处成立且 \(x_j\to\infty\) 时 \(\phi\to\infty\)，\(\theta,\phi\) 属于加权 Sobolev 空间：预积分 \(P_jf\) 保持 \(r\) 阶光滑（定理 2），在 \(r_j\ge\sum_{k\ne j}r_k\) 时保持混合光滑（定理 3），因而 QMC 有理论速率 |
 | A-GKS | 正则性（反面） | Gilbert–Kuo–Sloan（arXiv:2112.11621）定理 1 | \(\phi\in C^2\)，某点 \(\partial\phi/\partial y_1=0\)、\(\partial^2\phi/\partial y_1^2\ne0\)、\(\nabla\phi\ne0\) 时，\(P_1f\) 沿不与 \(\nabla_{-1}\phi\) 正交的直线出现平方根奇性 |
 | A-HW | 算法保证 | He–Wang（SIAM J. Numer. Anal. 53 (2015)）定理 3.5、3.6（经 He，arXiv:1702.03361 命题 2.3 核对）；He 2017（同一 arXiv）对边界奇性的推广 | \(f=g\,\mathbf 1_\Omega\)，\(g\) 的 Hardy–Krause 变差有界，\(\partial\Omega\) 有 \((d-1)\) 维 Minkowski 容度：扰乱 \((t,d)\) 序列的方差 \(O(n^{-1-1/(2d-1)}(\log n)^{2d/(2d-1)})\)（无单调性、黑盒）；部分轴平行（不平行维数 \(d_u\)）时 \(d\) 换成 \(d_u\)。He 2017：沿单位立方体边界有奇性、增长率为 \(A_i\) 时期望误差 \(O(n^{-\gamma(1/2+1/(4d-2))+\epsilon})\)，\(\gamma=1-\max_iA_i\) |
 | A-LO | 算法保证 | Liu–Owen（SIAM J. Numer. Anal. 61 (2023)；arXiv:2202.02682） | 沿任一方向预积分不增加扰乱网的方差；主动子空间第一方向与“最大化线性组合的 Sobol' 指数”这一不可行选择的关系。方向在数值例中由样本梯度估计，没有给出估计误差对积分误差的保证 |
