@@ -162,6 +162,36 @@ SOL62_WEB = ('第 1 次尝试中模型用 Codex 自带的 web_search 做过一�
              '自 11-26 起离线运行不再提供厂商侧联网工具（用户决定）')
 RERUN[('galaxy-gravity-v4', 'iterative', 'gpt-6.2-sol')] = (2, SOL62_WEB + '；本格为关闭联网工具后的第 2 次尝试。')
 UNMEASURED[('galaxy-gravity-v4', 'iterative', 'gpt-6.2-sol')] = SOL62_WEB + '；关闭联网工具后的第 2 次尝试进行中。'
+# species, exponential and galaxy iteratives (user decision 2026-11-27): their feedback gaps were fixed (species 11-26:
+# 20 held-out cases instead of 5 including the 2 samples; exponential 11-26: 43 cases with p7 and p10, scored per case;
+# galaxy 11-27: a 4,194,304-particle snapshot), and every iterative cell is rerun (scripts/rounds/feedback-fix-reruns.sh).
+FEEDBACK_FIX = {
+    'species-tree-v3': ('此前尝试的测试反馈是 5 个用例，其中 2 个就是工作区里带真值的样例；11-26 起反馈改为 20 个不发给模型的用例'
+                        '（与私有集同一组模拟参数、不同种子），本格为此后的第 {0} 次尝试（results/OPEN_ITEMS.md）。',
+                        '反馈改为 20 个留出用例后的第 {0} 次尝试进行中；此处暂列此前尝试的成绩（其反馈含工作区样例）。'),
+    'exponential-v3': ('此前尝试的测试反馈只有 p4 精度档的 16 例，p7、p10 档的失败在反馈里看不到，且反馈按旧的全有或全无规则计分；'
+                       '11-26 起反馈为 43 例（每个结构族第一个公开母矩阵的 p4、p7、p10 全部会话加 2 个对照例），按逐例规则计分，'
+                       '本格为此后的第 {0} 次尝试（results/OPEN_ITEMS.md）。',
+                       '反馈扩到 43 例（含 p7、p10）后的第 {0} 次尝试进行中；此处暂列此前尝试的成绩（其反馈只有 p4）。'),
+    'galaxy-gravity-v4': ('此前尝试的测试反馈最大只到 1,048,576 粒子，4,194,304 粒子档的内存与 CPU 问题在反馈里看不到；11-27 起反馈加入'
+                          '1 张 4,194,304 粒子快照（每例跑 1 次），本格为此后的第 {0} 次尝试（results/OPEN_ITEMS.md）。',
+                          '反馈加入 4,194,304 粒子快照后的第 {0} 次尝试进行中；此处暂列此前尝试的成绩（其反馈最大到 1,048,576 粒子）。'),
+}
+FEEDBACK_FIX_ATTEMPT = {
+    'species-tree-v3': {'gpt-6.2-sol': 2, 'gpt-6-astra': 2, 'gpt-6.1-sol': 3, 'claude-opus-5-5': 2, 'hy4': 2, 'qwen4-max': 2,
+                        'qwen3.8-max-0902': 5, 'minimax-m3.1-flash': 2},
+    'exponential-v3': {'gpt-6.2-sol': 2, 'gpt-6-astra': 2, 'gpt-6.1-sol': 2, 'claude-opus-5-5': 3, 'hy4': 2, 'qwen4-max': 2,
+                       'qwen3.8-max-0902': 3, 'minimax-m3.1-flash': 2},
+    'galaxy-gravity-v4': {'gpt-6.2-sol': 3, 'gpt-6-astra': 2, 'gpt-6.1-sol': 2, 'claude-opus-5-5': 2, 'hy4': 3, 'qwen4-max': 2,
+                          'qwen3.8-max-0902': 5, 'minimax-m3.1-flash': 2},
+}
+for _task, _attempts in FEEDBACK_FIX_ATTEMPT.items():
+    for _model, _n in _attempts.items():
+        _note = FEEDBACK_FIX[_task][0].format(_n)
+        if (_task, _model) == ('galaxy-gravity-v4', 'gpt-6.2-sol'):
+            _note = SOL62_WEB + '；第 2 次尝试关闭了联网工具；' + _note
+        RERUN[(_task, 'iterative', _model)] = (_n, _note)
+        PENDING[(_task, 'iterative', _model)] = FEEDBACK_FIX[_task][1].format(_n)
 # gpt-6.2-sol polarization v3: the first gradings ran beside 6 development attempts and other gradings, and scenes
 # timed out at the 1 s limit. As in the 11-14 and 11-17 cases: unmeasured, regraded once no development slot is leased
 # (scripts/rounds/regrade-dev-idle.sh keeps the first result as score.first.json); the regrade stands once it exists.
@@ -374,7 +404,7 @@ def main():
                 elif n > 1 and n < RERUN[(task, setting, model)][0]:   # the replacing attempt has no result yet
                     rerun_note = CUT_1 + '（基础设施故障，记未测）；本格为上游改用流式后的第 2 次尝试，替代它的下一次尝试仍在进行。'
                 note = rerun_note or NOTES.get((task, setting) if tag == 'sol' else (task, setting, model), '')
-                if (task, setting, model) in UNMEASURED and n < RERUN[(task, setting, model)][0]:
+                if (task, setting, model) in UNMEASURED and n == 1 and n < RERUN[(task, setting, model)][0]:
                     raw, mapping, value, note = '未测', '评测方问题，记未测（不记 0）', None, UNMEASURED[(task, setting, model)]
                 if (task, setting, model) in REGRADE and n == 1:   # every regrade concerns a first attempt
                     regraded = (folder / 'score.first.json').exists()
