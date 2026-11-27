@@ -4,8 +4,8 @@
 <text x="16" y="48" font-size="12" fill="#6b7280">10 道题的平均分 · 满分 100</text>
 <text x="120" y="85.0" font-size="13" fill="#374151" text-anchor="end">GPT-6.2 Sol</text>
 <rect x="132" y="72.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
-<rect x="132" y="72.0" width="306.0" height="16" rx="4" fill="#065f46"/>
-<text x="596" y="85.0" font-size="13" font-weight="700" fill="#111827">67.7</text>
+<rect x="132" y="72.0" width="306.7" height="16" rx="4" fill="#065f46"/>
+<text x="596" y="85.0" font-size="13" font-weight="700" fill="#111827">67.9</text>
 <text x="120" y="117.0" font-size="13" fill="#374151" text-anchor="end">Claude Opus 5.5</text>
 <rect x="132" y="104.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
 <rect x="132" y="104.0" width="295.0" height="16" rx="4" fill="#d97757"/>
