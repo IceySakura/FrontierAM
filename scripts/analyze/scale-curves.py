@@ -10,6 +10,7 @@ score changes. The curve of a cell is the private score of its latest test snaps
   inventory          snapshots of the board's iterative cells -> var/raw/scale-curves/inventory.json
   register TASK...   stage every snapshot into the curves store as a submission (re-validated like any archive)
   grade TASK...      grade the registered snapshots on private (slot broker; polarization only with development idle)
+  spare TASK...      grade the queued jobs of TASK... only from memory the formal reruns leave over
   collect            private score and raw metric per snapshot -> var/raw/scale-curves/scores.json
   regrade SUB...     grade snapshots again after abnormal load; the new job replaces the old one
   curves             per-cell step curves, the per-model average over the tasks, summary rows and SVG panels
@@ -230,6 +231,65 @@ def grade(tasks: list[str], workers: int) -> None:
                             str(workers), '--drain'], cwd=ROOT, check=False, env=env)
 
 
+RERUN_LANE = 'feedback-fix-queue.txt'   # the formal rerun lane (scripts/rounds/feedback-fix-reruns.sh)
+RERUN_ATTEMPTS = 2                       # its concurrency
+TEST_GIB, DEV_GIB = 6.0, 8.5             # largest test lease of the rerun tasks (species), largest development lease
+
+
+def spare(tasks: list[str], most: int) -> None:
+    """Grade the queued pilot jobs of TASK... only from memory the formal runs leave over: nothing starts while a v6.3
+    test waits, and while the rerun lane runs, each running attempt keeps room for a test and each attempt not yet
+    started keeps room for its development lease. One process per runtime (conic has its own); they share a gate lock."""
+    import threading
+    import time
+
+    import arena.tasks  # noqa: F401
+    from arena.cli import context, grade_job
+    from arena.store import Store
+    from arena.tasks import TASKS as ARENA_TASKS
+
+    layout, broker, runtime = context()
+    store, gib = Store(CURVES), 2 ** 30
+    store.recover()
+    threads: list[threading.Thread] = []
+
+    def run(job: dict) -> None:
+        try:
+            grade_job(layout, broker, runtime, store, job)
+        except Exception as error:
+            store.finish(job, 'failed', status='unmeasured', reason=f'{type(error).__name__}: {error}')
+
+    while True:
+        threads = [t for t in threads if t.is_alive()]
+        pending = [j for j in store.jobs('pending') if j['task'] in tasks]
+        if not pending and not threads:
+            return
+        if pending and len(threads) < most:
+            with open(OUT / 'spare.lock', 'w') as lock:
+                fcntl.flock(lock, fcntl.LOCK_EX)
+                lane = subprocess.run(['pgrep', '-f', RERUN_LANE], capture_output=True).returncode == 0
+                live = broker._live('attempt')
+                reserve = (live * TEST_GIB + max(0, RERUN_ATTEMPTS - live) * DEV_GIB) * gib if lane else 0
+                used = sum(int(r.get('memory_bytes', 0)) for r in broker.leases())
+                need = ARENA_TASKS[pending[0]['task']].grade_memory
+                if broker._live('priority') == 0 and used + need + reserve <= layout['memory_budget_bytes']:
+                    job = store.claim(job_id=pending[0]['id'])
+                    if job is not None:
+                        thread = threading.Thread(target=run, args=(job,), daemon=True)
+                        thread.start()
+                        threads.append(thread)
+                        print(json.dumps({'event': 'spare_start', 'job': job['id'], 'task': job['task'], 'time': time.strftime('%H:%M:%S'),
+                                          'free_gib': round((layout['memory_budget_bytes'] - used - need) / gib, 1),
+                                          'reserve_gib': round(reserve / gib, 1)}), flush=True)
+                        owner = f'grade {job["id"]}'
+                        for _ in range(60):   # hold the gate until its lease counts
+                            if not thread.is_alive() or any(r.get('owner') == owner for r in broker.leases()):
+                                break
+                            time.sleep(1)
+                        continue
+        time.sleep(15)
+
+
 def grade_direct(task: str, submissions: list[str], workers: int) -> None:
     """ihvp-sequence-v4: the operator driver on the private split, as scripts/analyze/ihvp-v4-runs.py final."""
     import tarfile
@@ -434,7 +494,7 @@ def build_curves() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('command', choices=('inventory', 'register', 'grade', 'regrade', 'collect', 'curves'))
+    parser.add_argument('command', choices=('inventory', 'register', 'grade', 'spare', 'regrade', 'collect', 'curves'))
     parser.add_argument('tasks', nargs='*')
     parser.add_argument('--workers', type=int, default=3)
     args = parser.parse_args()
@@ -445,6 +505,8 @@ def main() -> None:
         register(tasks)
     elif args.command == 'grade':
         grade(tasks, args.workers)
+    elif args.command == 'spare':
+        spare(tasks, args.workers)
     elif args.command == 'curves':
         build_curves()
     elif args.command == 'regrade':   # TASK... are submission ids here
