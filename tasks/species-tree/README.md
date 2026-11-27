@@ -94,7 +94,7 @@
 | Qwen4 Max | 单轮 | nRF \(E = 0.2038\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 44 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
 | Qwen4 Max | 迭代 | nRF \(E = 0.1454\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 7.2 | 18 次提交，146 分钟 | [`qwen4-max-iterative-2/`](solutions/v6.3/qwen4-max-iterative-2/) |
 | Qwen3.8 Max | 单轮 | nRF \(E = 0.2013\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 30 分钟 | [`qwen3.8-max-0902-single-3/`](solutions/v6.3/qwen3.8-max-0902-single-3/) |
-| Qwen3.8 Max | 迭代 | nRF \(E = 0.1664\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 2 次提交，230 分钟 | [`qwen3.8-max-0902-iterative-4/`](solutions/v6.3/qwen3.8-max-0902-iterative-4/) |
+| Qwen3.8 Max | 迭代 | nRF \(E = 0.1502\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 3 次提交，211 分钟 | [`qwen3.8-max-0902-iterative-5/`](solutions/v6.3/qwen3.8-max-0902-iterative-5/) |
 | MiniMax M3.1 Flash | 单轮 | nRF \(E = 0.2155\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 53 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | nRF \(E = 0.1971\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 5 次提交，72 分钟 | [`minimax-m3.1-flash-iterative-2/`](solutions/v6.3/minimax-m3.1-flash-iterative-2/) |
 
@@ -182,11 +182,11 @@ public 分数随测试提交：0.0（21 分钟） → 0.0（40 分钟） → 0.0
 
 ### Qwen3.8 Max（迭代，v6.3）
 
-反馈改为 20 个留出用例后的第 5 次尝试进行中；此处暂列此前尝试的成绩（其反馈含工作区样例）。
+此前尝试的测试反馈是 5 个用例，其中 2 个就是工作区里带真值的样例；11-26 起反馈改为 20 个不发给模型的用例（与私有集同一组模拟参数、不同种子），本格为此后的第 5 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：0.0（181 分钟） → 0.0（202 分钟）
+public 分数随测试提交：—（120 分钟） → 0.0（162 分钟） → 0.0（194 分钟）（—：没有拿到报告）
 
-源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-4/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-4/source/)（提交 `species-tree-v3-20261115T230408Z-072208`）；未复制的二进制或大文件：species_tree（138,424 字节）。
+源码 [`solutions/v6.3/qwen3.8-max-0902-iterative-5/source/`](solutions/v6.3/qwen3.8-max-0902-iterative-5/source/)（提交 `species-tree-v3-20261127T182059Z-7e0c6b`）；未复制的二进制或大文件：solver（48,784 字节）。
 
 ### MiniMax M3.1 Flash（单轮，v6.3）
 

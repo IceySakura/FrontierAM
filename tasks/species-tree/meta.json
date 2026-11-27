@@ -180,13 +180,13 @@
           "model": "qwen3.8-max-0902",
           "protocol": "v6.3",
           "setting": "迭代",
-          "attempt": 4,
-          "submission": "species-tree-v3-20261115T230408Z-072208",
+          "attempt": 5,
+          "submission": "species-tree-v3-20261127T182059Z-7e0c6b",
           "store": "var/stores/store-v63",
-          "raw": "nRF \\(E = 0.1664\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+          "raw": "nRF \\(E = 0.1502\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
           "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
           "score": 0.0,
-          "notes_md": "反馈改为 20 个留出用例后的第 5 次尝试进行中；此处暂列此前尝试的成绩（其反馈含工作区样例）。"
+          "notes_md": "此前尝试的测试反馈是 5 个用例，其中 2 个就是工作区里带真值的样例；11-26 起反馈改为 20 个不发给模型的用例（与私有集同一组模拟参数、不同种子），本格为此后的第 5 次尝试（results/OPEN_ITEMS.md）。"
         },
         {
           "model": "minimax-m3.1-flash",
