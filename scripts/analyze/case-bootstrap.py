@@ -12,7 +12,7 @@ not include attempt-to-attempt variation of the model. Cells that failed all-or-
                                 within each setting (all five prefixes of a parent together), linear mapping
 
 Usage: case-bootstrap.py [--resamples 2000] [--seed 0]   -> results/case-bootstrap.json and a table on stdout
-(scores and their spread only; scripts/rounds/v63-publish.py marks the neighbours it cannot separate)
+(scores and their spread only; analysis, not shown on the board: user decision 2026-11-27)
 """
 
 import argparse
