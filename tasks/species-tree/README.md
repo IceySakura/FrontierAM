@@ -92,7 +92,7 @@
 | Hunyuan 4 | 单轮 | nRF \(E = 0.1574\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 58 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | nRF \(E = 0.1364\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 36.1 | 10 次提交，218 分钟 | [`hy4-iterative-2/`](solutions/v6.3/hy4-iterative-2/) |
 | Qwen4 Max | 单轮 | nRF \(E = 0.2038\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 44 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
-| Qwen4 Max | 迭代 | nRF \(E = 0.1393\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 26.6 | 12 次提交，96 分钟 | [`qwen4-max-iterative-1/`](solutions/v6.3/qwen4-max-iterative-1/) |
+| Qwen4 Max | 迭代 | nRF \(E = 0.1454\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 7.2 | 18 次提交，146 分钟 | [`qwen4-max-iterative-2/`](solutions/v6.3/qwen4-max-iterative-2/) |
 | Qwen3.8 Max | 单轮 | nRF \(E = 0.2013\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 30 分钟 | [`qwen3.8-max-0902-single-3/`](solutions/v6.3/qwen3.8-max-0902-single-3/) |
 | Qwen3.8 Max | 迭代 | nRF \(E = 0.1664\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 2 次提交，230 分钟 | [`qwen3.8-max-0902-iterative-4/`](solutions/v6.3/qwen3.8-max-0902-iterative-4/) |
 | MiniMax M3.1 Flash | 单轮 | nRF \(E = 0.2155\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 53 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
@@ -168,11 +168,11 @@ public 分数随测试提交：25.7（37 分钟） → 11.9（92 分钟） → 3
 
 ### Qwen4 Max（迭代，v6.3）
 
-反馈改为 20 个留出用例后的第 2 次尝试进行中；此处暂列此前尝试的成绩（其反馈含工作区样例）。
+此前尝试的测试反馈是 5 个用例，其中 2 个就是工作区里带真值的样例；11-26 起反馈改为 20 个不发给模型的用例（与私有集同一组模拟参数、不同种子），本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：0.0（20 分钟） → 0.0（23 分钟） → 0.0（28 分钟） → 0.0（39 分钟） → 0.0（43 分钟） → 0.0（47 分钟） → 38.1（56 分钟） → 38.1（61 分钟） → 50.0（66 分钟） → 52.0（72 分钟） → 52.3（77 分钟） → 52.6（89 分钟）
+public 分数随测试提交：0.0（21 分钟） → 0.0（40 分钟） → 0.0（44 分钟） → —（55 分钟） → 0.0（57 分钟） → —（66 分钟） → 0.0（72 分钟） → —（80 分钟） → 0.0（86 分钟） → 0.0（98 分钟） → 0.0（108 分钟） → 0.0（113 分钟） → 0.5（118 分钟） → 1.4（122 分钟） → 0.0（126 分钟） → 0.0（131 分钟） → 0.9（134 分钟） → 0.5（138 分钟）（—：没有拿到报告）
 
-源码 [`solutions/v6.3/qwen4-max-iterative-1/source/`](solutions/v6.3/qwen4-max-iterative-1/source/)（提交 `species-tree-v3-20261125T162613Z-165802`）；未复制的二进制或大文件：species_tree（168,440 字节）。
+源码 [`solutions/v6.3/qwen4-max-iterative-2/source/`](solutions/v6.3/qwen4-max-iterative-2/source/)（提交 `species-tree-v3-20261127T151412Z-21defa`）；未复制的二进制或大文件：species（134,256 字节）。
 
 ### Qwen3.8 Max（单轮，v6.3）
 

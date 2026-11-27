@@ -1,0 +1,33 @@
+{
+ "reference_suite": "suite-species-tree-v3-20261110T111226Z-defd8d",
+ "weak": {
+  "status": "ok",
+  "missed_splits": 3501,
+  "denominator": 23712,
+  "cases": 96,
+  "failed_cases": 0,
+  "reasons": [],
+  "raw_error": 0.14764676113360323
+ },
+ "strong": {
+  "status": "ok",
+  "missed_splits": 3131,
+  "denominator": 23712,
+  "cases": 96,
+  "failed_cases": 0,
+  "reasons": [],
+  "raw_error": 0.1320428475033738
+ },
+ "anchors_ok": true,
+ "candidate_suite": "suite-species-tree-v3-20261127T151431Z-874311",
+ "candidate": {
+  "status": "ok",
+  "missed_splits": 3448,
+  "denominator": 23712,
+  "cases": 96,
+  "failed_cases": 0,
+  "reasons": [],
+  "raw_error": 0.14541160593792174
+ },
+ "score": 7.162162162162084
+}

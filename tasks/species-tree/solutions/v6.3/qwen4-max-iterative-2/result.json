@@ -1,0 +1,106 @@
+{
+ "model": "qwen4-max",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261127T151412Z-21defa",
+ "raw": "nRF \\(E = 0.1454\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 7.162,
+ "review": null,
+ "process": {
+  "minutes": 145.5,
+  "public_tests": 18,
+  "public_curve": [
+   {
+    "minute": 21.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 39.5,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 44.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 55.1,
+    "score": null,
+    "status": "invalid_submission"
+   },
+   {
+    "minute": 56.6,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 66.3,
+    "score": null,
+    "status": "invalid_submission"
+   },
+   {
+    "minute": 72.4,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 80.5,
+    "score": null,
+    "status": "invalid_submission"
+   },
+   {
+    "minute": 86.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 98.1,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 107.7,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 112.8,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 118.0,
+    "score": 0.45871559633026715,
+    "status": "ok"
+   },
+   {
+    "minute": 121.6,
+    "score": 1.3761467889908015,
+    "status": "ok"
+   },
+   {
+    "minute": 126.0,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 131.3,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 134.3,
+    "score": 0.9174311926605343,
+    "status": "ok"
+   },
+   {
+    "minute": 138.2,
+    "score": 0.45871559633026715,
+    "status": "ok"
+   }
+  ]
+ }
+}
