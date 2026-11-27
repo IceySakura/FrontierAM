@@ -6,7 +6,7 @@
   "summary": "粒子数加倍到 131,072、每次调用仍是 5 CPU 秒，使精确的直接求和无法在预算内完成，比较近似算法的精度。",
   "statement": {
     "kind": "tar",
-    "path": ".runtime-ops/galaxy-gravity-v3/public.tar",
+    "path": ".runtime-ops/galaxy-gravity-v4/public.tar",
     "members": [
       "problem.md"
     ]
