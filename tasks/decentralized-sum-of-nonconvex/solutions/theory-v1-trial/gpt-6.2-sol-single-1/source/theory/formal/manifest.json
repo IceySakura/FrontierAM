@@ -1,0 +1,81 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md, R1 (deterministic bound)",
+      "lean": ["ULB63.finite_network_exact"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": ["Liu and Low, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3"],
+        "explanation": "Exact weighted-sum aggregation caps dependence on the spectral gap at fixed network size, but doing a full local pass per accelerated step is more expensive in data-rich, well-connected regimes."
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md, R2 (parallel bound)",
+      "lean": ["ULB63.finite_network_parallel"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": ["Liu and Low, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3"],
+        "explanation": "The effective batch is n B while a node pays B, so the exact-mixing upper bound has per-epoch gradient work O(m+sqrt(kappa)+kappa^2/n). This is a strict improvement in overlapping high-parallelism regimes; the rate need not improve PMGT-KatyushaX at small n."
+      }
+    },
+    {
+      "id": "R3",
+      "claim": "THEORY.md, R3 (fast-network minimax bracket)",
+      "lean": ["ULB63.fast_network_minimax_bracket"],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": ["Liu and Low, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3, restricted to the R3 regime", "Woodworth and Srebro, arXiv:1605.08003, Theorem 8; Scaman et al., arXiv:1702.08704, Theorems 1–2 (lower-bound precedents)"],
+        "explanation": "In R3's sufficiently parallel, well-connected regime the leading per-iteration bound improves the published finite-sum rate, and the same-model lower bound matches up to network and accuracy logarithms. This classification does not claim a global replacement for the human results."
+      }
+    },
+    {
+      "id": "R4",
+      "claim": "THEORY.md, R4 (finite-size network plateau)",
+      "lean": ["ULB63.slow_network_minimax_bracket"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": ["Scaman et al., arXiv:1702.08704, Theorems 1, 2 and 4", "Liu and Low, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3"],
+        "explanation": "The bracket proves size saturation with a lower bound for the averaged output, all algorithms and the prescribed n, plus a finite-sum data term. The Scaman matrix convention, oracle, network-size quantifier, and convergence metric differ. The upper bound here strictly improves the published inverse-gap dependence where that term is much larger than n."
+      }
+    },
+    {
+      "id": "R5",
+      "claim": "THEORY.md, R5 (matching parallel regime across the spectral range)",
+      "lean": ["ULB63.parallel_minimax_bracket"],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": ["Liu and Low, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3, in the matching regime", "Scaman et al., arXiv:1702.08704, Theorem 2 (network lower-bound precedent)", "Luo et al., arXiv:2210.13931v4, Theorem 5 and Corollary 2 (noncomposite PL comparison)"],
+        "explanation": "For sufficiently parallel workloads the bound matches up to logarithms across the full spectral range at fixed n, with leading work m + min(n,1/sqrt(1-rho))*sqrt(kappa). In the overlapping regime it removes polynomial m factors from accelerated computation and communication and caps the slow-network term. The lower bound checks the averaged first-hit and composite model, not a PL or local-output surrogate."
+      }
+    },
+    {
+      "id": "R6",
+      "claim": "THEORY.md, R6 (accelerated regularized upper bound)",
+      "lean": ["ULB63.accelerated_parallel_bound"],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": ["Liu and Low, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3", "Lin, Mairal and Harchaoui, arXiv:1506.02186, Theorem 3.1 and Proposition 3.2 (acceleration precedent)", "Luo et al., arXiv:2210.13931v4, Theorem 5 and Corollary 2 (noncomposite PL comparison)"],
+        "explanation": "Tuning the regularization in the large-condition regime improves the joint per-node work and communication bounds. In particular the accelerated data term has n^(-1/4) speedup and the accelerated network term needs no polynomial m factor. Only the original gradient, prox and static weighted-sum primitives are used, at a fixed budget."
+      }
+    },
+    {
+      "id": "R7",
+      "claim": "THEORY.md, R7 (optimized uniform upper bound and matching lower bound in a larger regime)",
+      "lean": ["ULB63.optimized_parallel_minimax"],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": ["Liu and Low, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3 (direct comparison)", "Lin, Mairal and Harchaoui, arXiv:1506.02186, Theorem 3.1 and Proposition 3.2 (acceleration precedent)", "Scaman et al., arXiv:1702.08704, Theorem 2 (network lower-bound precedent)", "Luo et al., arXiv:2210.13931v4, Theorem 5 and Corollary 2 (noncomposite PL comparison)"],
+        "explanation": "Across the full fixed class, the leading polynomial upper terms are m, m^(3/4)n^(-1/4)sqrt(kappa), and finite-radius times sqrt(kappa), up to logs. This yields strict improvements in shared parameter ranges and matches the explicit lower bound up to logs whenever the residual accelerated data term is affordable."
+      }
+    }
+  ]
+}

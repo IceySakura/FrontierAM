@@ -1,0 +1,4 @@
+{"t": 1795757848.727, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 821, "down": 1343986, "seconds": 0.203}
+{"t": 1795759474.963, "method": "CONNECT", "host": "export.arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 830, "down": 6018, "seconds": 12.753}
+{"t": 1795759493.156, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 823, "down": 60547, "seconds": 0.113}
+{"t": 1795760627.812, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 823, "down": 19998, "seconds": 0.117}

@@ -1,0 +1,135 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md §2.1 (proof §3), Theorem R1: for every matrix W and node sets SA, SB at W-graph distance >= D (|SA| = |SB| = a), every admissible algorithm needs T_eps >= D*(log(4 n mu Delta/(a L eps)) / (2 ell(a kappa/n)) - 2) on some instance with convex components, where ell(x) = log((sqrt(1+x)+1)/(sqrt(1+x)-1))",
+      "lean": [
+        "ULB63.lower_bound_network"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Scaman, Bach, Bubeck, Lee, Massoulie 2017, arXiv:1702.08704, Theorem 2",
+          "Hendrikx, Bach, Massoulie 2020, arXiv:2005.10675, Theorem 1"
+        ],
+        "explanation": "Per-gossip-matrix network lower bound at fixed n (graph-distance potential) for the problem's full class of randomized zero-respecting algorithms, which allow nonlinear local computation and adaptive component choice. The human bounds hold only for span-based black-box procedures, with richer oracles (conjugate gradients, component prox) and local condition numbers. Scaman's bound also picks n from the eigengap. Neither result implies the other."
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md §2.2 (proof §3.6), Theorem R2: minimax >= log(8 Delta/(kappa eps)) / (2 ell(kappa/3)) - 2 for all n >= 2, rho >= 0, where ell(x) = log((sqrt(1+x)+1)/(sqrt(1+x)-1)); this is Omega(sqrt(kappa) log(Delta/(kappa eps))) for kappa >= 3",
+      "lean": [
+        "ULB63.minimax_ge_sqrt_kappa_log"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "equal",
+        "human": [
+          "Nesterov's sqrt(kappa) log(1/eps) lower bound (Introductory Lectures, Thm 2.1.13)",
+          "Scaman et al. 2017, arXiv:1702.08704, Theorem 2 (complete graph case)"
+        ],
+        "explanation": "The classical sqrt(kappa) log(1/eps) term, reproved in the official decentralized model, where each iteration makes n parallel component queries. It is not implied by Woodworth-Srebro Thm 8, which gives only sqrt(m kappa/n) log after the n-fold parallel translation."
+      }
+    },
+    {
+      "id": "R3",
+      "claim": "THEORY.md §2.3 (proof §4), Theorem R3: for every W, every admissible algorithm needs T_eps >= max{(m/5)(1 - lambda eps/Delta), (m/10) log(Delta/(lambda eps)) / ell(kappa/(nm))}, lambda = 1 + kappa/(2nm), on some instance with convex components, where ell(x) = log((sqrt(1+x)+1)/(sqrt(1+x)-1)). This is Omega(m + sqrt(m kappa/n) log) for kappa >= nm, and Omega(m log(Delta/eps)/log(nm/kappa)) for kappa <= nm",
+      "lean": [
+        "ULB63.lower_bound_data"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "equal",
+        "human": [
+          "Woodworth, Srebro 2016, arXiv:1605.08003, Theorem 8 (transferred: N = nm components, n queries per iteration)"
+        ],
+        "explanation": "Where WS Thm 8 applies, R3 has the same orders as the transferred bound Omega(m + sqrt(m kappa/n) log); its log argument is nm Delta/(kappa eps) instead of (Delta/eps) sqrt(nm/kappa). For kappa <= nm, where WS Thm 8 is silent, R3 gives the well-conditioned rate Omega(m log(Delta/eps)/log(nm/kappa)). R3 holds for every W, and its instance does not depend on the algorithm. Unlike WS, it covers only zero-respecting algorithms, which is the problem's class."
+      }
+    },
+    {
+      "id": "R4",
+      "claim": "THEORY.md §2.4 (proof §5), Theorem R4: minimax >= max of the two R3 terms and the R2 term, for all n >= 2, rho >= 0",
+      "lean": [
+        "ULB63.minimax_ge_combined"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": [
+          "Woodworth, Srebro 2016, arXiv:1605.08003, Theorem 8 (the only listed classical lower bound that applies directly to the problem's algorithm class)"
+        ],
+        "explanation": "Dominates the WS-implied bound Omega(m + sqrt(m kappa/n) log) up to constants and the log argument. For n > m it is larger by sqrt(n/m), through the extra sqrt(kappa) log(Delta/(kappa eps)) term. For kappa <= nm, where WS Thm 8 is silent, it gives Omega(m log(Delta/eps)/log(nm/kappa)), which matches Liu-Low up to log(nm/kappa) and polylog factors when kappa <= sqrt(m) and 1-rho >= 1/m. Kernel-checked in the official model."
+      }
+    },
+    {
+      "id": "R5",
+      "claim": "THEORY.md §2.5 (proof §5), Theorem R5: for n >= 4 and rho >= sqrt(1 - 1/(2n^2)), minimax >= max of the R3 terms and (n/2)(log(16 Delta/(kappa eps)) / (2 ell(kappa/7)) - 2) (lazy path gossip matrix)",
+      "lean": [
+        "ULB63.minimax_ge_path_combined"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": [
+          "Woodworth, Srebro 2016, arXiv:1605.08003, Theorem 8",
+          "Scaman et al. 2017, arXiv:1702.08704, Theorem 2 / Corollary 2",
+          "Hendrikx et al. 2020, arXiv:2005.10675, Corollary 3"
+        ],
+        "explanation": "Network term n sqrt(kappa) log together with the data terms at fixed n, for the general randomized zero-respecting class. Scaman and Hendrikx hold only for span-based procedures, and their corollaries choose n from the spectral gap, so they do not apply at fixed n. Up to constants this is the special case K = n of R6, valid for 1 - rho <= 1/(4n^2)."
+      }
+    },
+    {
+      "id": "R6",
+      "claim": "THEORY.md §2.6 (proof §5), Theorem R6: for every 8 <= K <= n with rho >= sqrt(1 - 1/(4K^2)), minimax >= max of the R3 terms, the R2 term and (K/2 - 2)(log(16 Delta/(kappa eps)) / (2 ell(kappa/7)) - 2) (path of K cliques). With R4 this gives Omega(data + min{n, (1-rho)^(-1/2)} sqrt(kappa) log) for every rho",
+      "lean": [
+        "ULB63.minimax_ge_all"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": [
+          "Woodworth, Srebro 2016, arXiv:1605.08003, Theorem 8",
+          "Scaman et al. 2017, arXiv:1702.08704, Theorem 2 / Corollary 2",
+          "Hendrikx et al. 2020, arXiv:2005.10675, Theorem 1 / Corollary 3",
+          "Liu, Low 2024, arXiv:2402.02356v1, Corollary 5.3 (upper bound)"
+        ],
+        "explanation": "First lower bound for this problem class combining data terms (m, sqrt(m kappa/n) log), sqrt(kappa) log and the network term min{n, (1-rho)^(-1/2)} sqrt(kappa) log, at fixed n and every rho, valid for all randomized zero-respecting algorithms. The human network lower bounds are for span-based procedures and choose n from the gap (Scaman Cor 2, Hendrikx Cor 3) or are stated per graph with local condition numbers (Hendrikx Thm 1). Strictly stronger than the WS-implied bound. Together with Liu-Low it gives Theta~(sqrt(kappa/(1-rho)) log(Delta/eps)) for m = O(1) and 1 - rho >= c/n^2."
+      }
+    },
+    {
+      "id": "R7",
+      "claim": "THEORY.md §2.6 (Corollary R7, proof there), Theorem R7: for 0 <= rho < 1 and K_rho = min(n, floor(1/(2 sqrt(1-rho^2)))) >= 8, minimax >= (K_rho/2 - 2)(log(16 Delta/(kappa eps)) / (2 ell(kappa/7)) - 2), i.e. the network term Omega(min{n, (1-rho)^(-1/2)} sqrt(kappa) log(Delta/(kappa eps))) with rho explicit",
+      "lean": [
+        "ULB63.minimax_ge_explicit_rho"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": [
+          "Scaman et al. 2017, arXiv:1702.08704, Theorem 2 / Corollary 2",
+          "Hendrikx et al. 2020, arXiv:2005.10675, Corollary 3",
+          "Woodworth, Srebro 2016, arXiv:1605.08003, Theorem 8"
+        ],
+        "explanation": "The network term Omega(min{n, (1-rho)^(-1/2)} sqrt(kappa) log) at fixed n, for the problem's full randomized zero-respecting class, with rho explicit. The human network lower bounds hold only for span-based procedures and choose n ~ gamma^(-1/2); WS Thm 8 has no network term. With Liu-Low's upper bound it is tight up to log factors for m = O(1) and 1-rho >= c/n^2."
+      }
+    },
+    {
+      "id": "R8",
+      "claim": "THEORY.md §2.6 (Theorem R8; proof §5, Lemma 5.3): the R6 data and network bounds are attained with a positive semidefinite W in W_{n,rho} and an instance with convex components, i.e. they hold under the '(+)' restrictions W >= 0 and convex components of PROFILE §3 (and within Liu-Low's assumption 0 <= W <= I)",
+      "lean": [
+        "ULB63.lower_bound_psd"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": [
+          "Woodworth, Srebro 2016, arXiv:1605.08003, Theorem 8",
+          "Scaman et al. 2017, arXiv:1702.08704, Theorem 2",
+          "Hendrikx et al. 2020, arXiv:2005.10675, Theorem 1 / Corollary 3"
+        ],
+        "explanation": "R6's network and data terms on the smaller class with W PSD and convex components, i.e. a stronger lower bound statement for that restricted problem. The hard W also satisfies Liu-Low's network assumption, so R8 lower-bounds exactly the setting of their upper bound."
+      }
+    }
+  ]
+}

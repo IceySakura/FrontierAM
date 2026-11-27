@@ -1,0 +1,22 @@
+{
+ "score": 50,
+ "scale": "0-100, reference 50 (a new valuable point on the human frontier)",
+ "raw": {
+  "verified_results": [
+   "R1",
+   "R2",
+   "R3",
+   "R4",
+   "R5",
+   "R6",
+   "R7",
+   "R8",
+   "R9",
+   "R10"
+  ],
+  "tier": "incomparable, valuable (P1, P5)",
+  "decisive_result": "R1-R4 (radial fibers: sharp adaptive and nonadaptive error exponents N^{-1/2-s/(d-1)} on smooth star-shaped jumps, charged to the original point oracle)"
+ },
+ "mapping": "tiers (tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 2): partial-order better 100; incomparable and valuable 50; incomparable, low value 25; dominated or equal 10; nothing verified 0; maximum over results",
+ "review": "provisional (agent review, not an expert review), THEORY_REVIEW.md section 12"
+}

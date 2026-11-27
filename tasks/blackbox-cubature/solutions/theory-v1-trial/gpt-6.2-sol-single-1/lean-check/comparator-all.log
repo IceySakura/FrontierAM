@@ -1,0 +1,221 @@
+Resolving dependencies
+Building Theory.Statements
+⚠ [3796/3816] Built Theory.Query (15s)
+warning: Theory/Query.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3797/3816] Built Theory.Slab (15s)
+warning: Theory/Slab.lean: imports `Mathlib.MeasureTheory.Constructions.UnitInterval` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Slab.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Slab.lean: imports `Mathlib.Probability.Moments.Variance` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Slab.lean:58:0: automatically included section variable(s) unused in theorem `Cubature.slabPoint_mem`:
+  [MeasurableSpace X]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [MeasurableSpace X] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [3798/3816] Built Theory.Adaptive (15s)
+⚠ [3799/3816] Built Theory.Splines (47s)
+warning: Theory/Splines.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Splines.lean:155:8: automatically included section variable(s) unused in theorem `_private.Theory.Splines.0.Cubature.prod_unit`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [3800/3816] Built Theory.Nonadaptive (17s)
+warning: Theory/Nonadaptive.lean:154:23: Variable name `hM` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hM
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [3801/3816] Built Theory.SignedPilot (7.7s)
+⚠ [3802/3816] Built Theory.GaussianPolar (93s)
+warning: Theory/GaussianPolar.lean: imports `Mathlib.MeasureTheory.Constructions.HaarToSphere` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianPolar.lean: imports `Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianPolar.lean: imports `Mathlib.Probability.Distributions.Gaussian.Multivariate` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianPolar.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3803/3816] Built Theory.SphereCharts (4.5s)
+warning: Theory/SphereCharts.lean: imports `Mathlib.MeasureTheory.Constructions.UnitInterval` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [3804/3816] Built Theory.GaussianStar (9.1s)
+⚠ [3805/3816] Built Theory.SphereGrid (9.7s)
+warning: Theory/SphereGrid.lean: imports `Mathlib.MeasureTheory.Function.Floor` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3806/3816] Built Theory.LagrangeCell (17s)
+warning: Theory/LagrangeCell.lean: imports `Mathlib.LinearAlgebra.Lagrange` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LagrangeCell.lean: imports `Mathlib.Topology.Algebra.Polynomial` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LagrangeCell.lean: imports `Mathlib.Analysis.Complex.ExponentialBounds` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LagrangeCell.lean: imports `Mathlib.Data.Nat.Choose.Sum` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [3807/3816] Built Theory.SlopeMeasure (20s)
+⚠ [3808/3816] Built Theory.BallGeometry (25s)
+warning: Theory/BallGeometry.lean: imports `Mathlib.Analysis.Complex.ExponentialBounds` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/BallGeometry.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3809/3816] Built Theory.PolynomialGrid (17s)
+warning: Theory/PolynomialGrid.lean:138:27: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [3810/3816] Built Theory.BumpPatch (16s)
+⚠ [3811/3816] Built Theory.GaussianScaling (16s)
+warning: Theory/GaussianScaling.lean: imports `Mathlib.MeasureTheory.Measure.Haar.NormedSpace` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianScaling.lean: imports `Mathlib.Algebra.Order.Ring.Pow` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [3812/3816] Built Theory.HardFamily (9.4s)
+⚠ [3813/3816] Built Theory.EllipsoidForm (9.7s)
+warning: Theory/EllipsoidForm.lean: imports `Mathlib.Algebra.Order.Chebyshev` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3814/3816] Built Theory.HardMass (8.5s)
+warning: Theory/HardMass.lean:83:69: This simp argument is unused:
+  hb
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [bumpMassFn, hardMassBase, bitvalue]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3815/3816] Built Theory.RadialQuantile (3.3s)
+warning: Theory/RadialQuantile.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/RadialQuantile.lean:14:5: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3816/3816] Built Theory.Statements (3.6s)
+warning: Theory/Statements.lean:16:8: declaration uses `sorry`
+warning: Theory/Statements.lean:34:8: declaration uses `sorry`
+warning: Theory/Statements.lean:48:8: declaration uses `sorry`
+warning: Theory/Statements.lean:62:8: declaration uses `sorry`
+warning: Theory/Statements.lean:79:8: declaration uses `sorry`
+warning: Theory/Statements.lean:98:8: declaration uses `sorry`
+warning: Theory/Statements.lean:116:8: declaration uses `sorry`
+warning: Theory/Statements.lean:130:8: declaration uses `sorry`
+warning: Theory/Statements.lean:144:8: declaration uses `sorry`
+warning: Theory/Statements.lean:167:8: declaration uses `sorry`
+Build completed successfully (3816 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.gaussian_radial_adaptive_cubature, Cubature.gaussian_radial_nonadaptive_lower, Cubature.gaussian_radial_adaptive_lower, Cubature.gaussian_radial_nonadaptive_cubature, Cubature.gaussian_radial_polynomial_cubature, Cubature.gaussian_radial_analytic_cubature, Cubature.gaussian_radial_analytic_nonadaptive_lower, Cubature.gaussian_unlocated_ball_lower, Cubature.gaussian_analytic_same_budget_gap, Cubature.gaussian_ellipsoid_relative_cubature, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Statements
+Building Theory.Proofs
+⚠ [3785/3801] Replayed Theory.GaussianPolar
+warning: Theory/GaussianPolar.lean: imports `Mathlib.MeasureTheory.Constructions.HaarToSphere` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianPolar.lean: imports `Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianPolar.lean: imports `Mathlib.Probability.Distributions.Gaussian.Multivariate` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianPolar.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3787/3801] Replayed Theory.SphereCharts
+warning: Theory/SphereCharts.lean: imports `Mathlib.MeasureTheory.Constructions.UnitInterval` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3788/3801] Replayed Theory.Query
+warning: Theory/Query.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3789/3801] Replayed Theory.Slab
+warning: Theory/Slab.lean: imports `Mathlib.MeasureTheory.Constructions.UnitInterval` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Slab.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Slab.lean: imports `Mathlib.Probability.Moments.Variance` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Slab.lean:58:0: automatically included section variable(s) unused in theorem `Cubature.slabPoint_mem`:
+  [MeasurableSpace X]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [MeasurableSpace X] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [3793/3801] Replayed Theory.SphereGrid
+warning: Theory/SphereGrid.lean: imports `Mathlib.MeasureTheory.Function.Floor` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3794/3801] Replayed Theory.Splines
+warning: Theory/Splines.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Splines.lean:155:8: automatically included section variable(s) unused in theorem `_private.Theory.Splines.0.Cubature.prod_unit`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [3797/3801] Replayed Theory.Nonadaptive
+warning: Theory/Nonadaptive.lean:154:23: Variable name `hM` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hM
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3799/3801] Replayed Theory.HardMass
+warning: Theory/HardMass.lean:83:69: This simp argument is unused:
+  hb
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [bumpMassFn, hardMassBase, bitvalue]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3801/3826] Replayed Theory.RadialQuantile
+warning: Theory/RadialQuantile.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/RadialQuantile.lean:14:5: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3804/3826] Replayed Theory.LagrangeCell
+warning: Theory/LagrangeCell.lean: imports `Mathlib.LinearAlgebra.Lagrange` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LagrangeCell.lean: imports `Mathlib.Topology.Algebra.Polynomial` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LagrangeCell.lean: imports `Mathlib.Analysis.Complex.ExponentialBounds` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/LagrangeCell.lean: imports `Mathlib.Data.Nat.Choose.Sum` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3806/3826] Replayed Theory.PolynomialGrid
+warning: Theory/PolynomialGrid.lean:138:27: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3811/3826] Replayed Theory.BallGeometry
+warning: Theory/BallGeometry.lean: imports `Mathlib.Analysis.Complex.ExponentialBounds` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/BallGeometry.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3812/3826] Replayed Theory.GaussianScaling
+warning: Theory/GaussianScaling.lean: imports `Mathlib.MeasureTheory.Measure.Haar.NormedSpace` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianScaling.lean: imports `Mathlib.Algebra.Order.Ring.Pow` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3815/3826] Replayed Theory.EllipsoidForm
+warning: Theory/EllipsoidForm.lean: imports `Mathlib.Algebra.Order.Chebyshev` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [3817/3826] Built Theory.AnalyticBounds (22s)
+✔ [3818/3826] Built Theory.UnitGrid (23s)
+⚠ [3819/3826] Built Theory.BudgetDominance (23s)
+warning: Theory/BudgetDominance.lean: imports `Mathlib.Analysis.SpecificLimits.Normed` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/BudgetDominance.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [3820/3826] Built Theory.IIDMean (24s)
+⚠ [3821/3826] Built Theory.EllipsoidQueries (23s)
+warning: Theory/EllipsoidQueries.lean: imports `Mathlib.Data.Sym.Card` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3822/3826] Built Theory.TraceLower (24s)
+warning: Theory/TraceLower.lean: imports `Mathlib.Data.Finset.Option` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [3823/3826] Built Theory.AnalyticLower (12s)
+✔ [3824/3826] Built Theory.BallSearch (12s)
+✔ [3825/3826] Built Theory.FixedQueries (13s)
+⚠ [3826/3826] Built Theory.Proofs (5.8s)
+warning: Theory/Proofs.lean:113:17: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Theory/Proofs.lean:146:17: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Theory/Proofs.lean:179:19: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Theory/Proofs.lean:180:13: Variable name `hA` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hA
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Theory/Proofs.lean:304:15: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Theory/Proofs.lean:384:6: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/Proofs.lean:384:6: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Build completed successfully (3826 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.gaussian_radial_adaptive_cubature, Cubature.gaussian_radial_nonadaptive_lower, Cubature.gaussian_radial_adaptive_lower, Cubature.gaussian_radial_nonadaptive_cubature, Cubature.gaussian_radial_polynomial_cubature, Cubature.gaussian_radial_analytic_cubature, Cubature.gaussian_radial_analytic_nonadaptive_lower, Cubature.gaussian_unlocated_ball_lower, Cubature.gaussian_analytic_same_budget_gap, Cubature.gaussian_ellipsoid_relative_cubature, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Proofs
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!

@@ -1,0 +1,132 @@
+{"t": 1795758180.479, "method": "CONNECT", "host": "chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758180.491, "method": "CONNECT", "host": "github.com", "port": 443, "decision": "deny:github_or_mirror", "seconds": 0.0}
+{"t": 1795758180.571, "method": "CONNECT", "host": "api.github.com", "port": 443, "decision": "deny:github_or_mirror", "seconds": 0.0}
+{"t": 1795758180.585, "method": "CONNECT", "host": "chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758217.634, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 768, "down": 923283, "seconds": 0.324}
+{"t": 1795758217.663, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 768, "down": 493965, "seconds": 0.324}
+{"t": 1795758217.696, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 768, "down": 522068, "seconds": 0.31}
+{"t": 1795758217.675, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 768, "down": 530678, "seconds": 0.336}
+{"t": 1795758224.692, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 822, "down": 25305, "seconds": 0.312}
+{"t": 1795758224.726, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 823, "down": 44139, "seconds": 0.307}
+{"t": 1795758224.716, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 825, "down": 261355, "seconds": 0.333}
+{"t": 1795758224.749, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 823, "down": 119605, "seconds": 0.303}
+{"t": 1795758240.423, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758297.741, "method": "CONNECT", "host": "export.arxiv.org", "port": 443, "ip": "146.75.115.42", "decision": "allow", "up": 828, "down": 17072, "seconds": 0.735}
+{"t": 1795758300.423, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758360.423, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758374.493, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 823, "down": 468291, "seconds": 0.712}
+{"t": 1795758420.423, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758480.427, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758540.423, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758600.425, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758660.423, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758720.428, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758780.423, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758840.423, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758900.438, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795758960.424, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759012.557, "method": "CONNECT", "host": "export.arxiv.org", "port": 443, "ip": "167.82.3.42", "decision": "allow", "up": 868, "down": 3624, "seconds": 0.368}
+{"t": 1795759020.426, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759080.424, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759140.424, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759200.427, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759260.442, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759320.427, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759372.347, "method": "CONNECT", "host": "api.openalex.org", "port": 443, "ip": "104.20.26.229", "decision": "allow", "up": 896, "down": 5018, "seconds": 0.669}
+{"t": 1795759372.325, "method": "CONNECT", "host": "api.crossref.org", "port": 443, "ip": "100.63.248.125", "decision": "allow", "up": 829, "down": 24520, "seconds": 1.752}
+{"t": 1795759380.427, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759382.102, "method": "CONNECT", "host": "api.crossref.org", "port": 443, "ip": "100.63.248.125", "decision": "allow", "up": 829, "down": 27451, "seconds": 4.485}
+{"t": 1795759440.427, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759500.427, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759560.427, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759620.427, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759680.431, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759692.304, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 768, "down": 44559, "seconds": 0.236}
+{"t": 1795759692.309, "method": "CONNECT", "host": "api.crossref.org", "port": 443, "ip": "100.63.248.125", "decision": "allow", "up": 844, "down": 148996, "seconds": 8.461}
+{"t": 1795759740.428, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759790.081, "method": "CONNECT", "host": "api.crossref.org", "port": 443, "ip": "100.63.248.125", "decision": "allow", "up": 778, "down": 14024, "seconds": 1.163}
+{"t": 1795759800.432, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759860.429, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759920.429, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795759980.429, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760040.432, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760100.431, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760160.433, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760220.432, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760280.432, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760340.432, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760400.432, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760460.432, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760520.446, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760580.439, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.001}
+{"t": 1795760640.438, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760700.44, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760760.437, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760820.454, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760880.443, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760940.443, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795760965.591, "method": "CONNECT", "host": "api.crossref.org", "port": 443, "ip": "100.63.248.125", "decision": "allow", "up": 832, "down": 51437, "seconds": 3.155}
+{"t": 1795761000.443, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761060.449, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761120.443, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761180.444, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761240.444, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761300.444, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761360.446, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761420.444, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761480.444, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761540.444, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761600.444, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761660.444, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761720.466, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761780.449, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761840.45, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761900.449, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795761966.86, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 823, "down": 295373, "seconds": 1.018}
+{"t": 1795762020.449, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762140.449, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762200.451, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762260.451, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762320.451, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762380.451, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762620.455, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762680.452, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762702.204, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 768, "down": 47013, "seconds": 0.382}
+{"t": 1795762740.452, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762800.452, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762860.452, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795762920.453, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795763160.46, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795763220.455, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795763238.649, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 823, "down": 725862, "seconds": 0.997}
+{"t": 1795763280.454, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795763340.457, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795763400.457, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795763460.475, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795763520.461, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795763580.468, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764000.462, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764060.462, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764120.462, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764171.8, "method": "CONNECT", "host": "arxiv.org", "port": 443, "ip": "151.101.131.42", "decision": "allow", "up": 823, "down": 1316843, "seconds": 1.171}
+{"t": 1795764180.466, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764240.463, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764260.296, "method": "CONNECT", "host": "api.crossref.org", "port": 443, "ip": "100.63.248.125", "decision": "allow", "up": 812, "down": 19351, "seconds": 4.665}
+{"t": 1795764300.464, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764360.464, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764420.464, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764480.464, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764540.464, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764600.47, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764660.466, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764720.466, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764780.466, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764840.466, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764900.466, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795764960.506, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795765140.47, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795765200.47, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795765218.543, "method": "CONNECT", "host": "api.crossref.org", "port": 443, "ip": "100.63.248.125", "decision": "allow", "up": 846, "down": 101600, "seconds": 8.491}
+{"t": 1795765260.47, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795765320.47, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}
+{"t": 1795765377.21, "method": "CONNECT", "host": "ab.chatgpt.com", "port": 443, "decision": "deny:language_model", "seconds": 0.0}

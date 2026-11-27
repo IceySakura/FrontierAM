@@ -1,0 +1,216 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md §2, Theorem R1 (sharp sublevel-set estimate for strongly convex functions)",
+      "lean": [
+        "Cubature.volume_sublevel_le_of_strongConvexOn"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "equal",
+        "human": [
+          "van der Corput sublevel lemma, order 2 (E. M. Stein, Harmonic Analysis, 1993, Ch. VIII §1.2; Carbery-Christ-Wright, J. Amer. Math. Soc. 12 (1999))",
+          "Polya's sharp sublevel bound for polynomials"
+        ],
+        "explanation": "Classical order-2 sublevel estimate with the optimal constant 4, under strong convexity (no C^2 needed). Used as the engine of R2-R5; not claimed as new."
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md §3, Theorem R2 (global 1/2-Hoelder regularity of non-monotone preintegrated jumps)",
+      "lean": [
+        "Cubature.preintJump_holder_half",
+        "Cubature.preintJump_holder_half_of_density_le"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Theorem 1 and Conclusion"
+        ],
+        "explanation": "GKS Thm 1 proves (locally, asymptotically) that a square-root singularity exists when monotonicity fails and conclude there is no QMC theory. R2 proves the matching global quantitative upper bound |P(y)-P(y')| <= Ltheta d + 4 rho B sqrt(L d/alpha) under the uniform version of their non-degeneracy (strong convexity/concavity in the preintegration variable); exponent optimal (R4). This is the 'regularity upper bound matching the square-root singularity' named as progress on target A."
+      }
+    },
+    {
+      "id": "R2'",
+      "claim": "THEORY.md §3, Theorem R2' (piecewise non-degenerate sections: global form of the GKS Theorem 1 hypothesis)",
+      "lean": [
+        "Cubature.preintJump_holder_half_piecewise"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Theorems 1 and 2"
+        ],
+        "explanation": "Extends R2 to lines covered by r pieces on which phi is strongly convex, strongly concave or strongly monotone (finitely many non-degenerate critical points per line, uniform constants) - the global version of GKS's hypothesis (d_1 phi = 0 => d_1^2 phi != 0); conclusion: explicit 1/2-Hoelder bound, matching the singularities GKS prove (including the non-isolated ones of their Thm 2)."
+      }
+    },
+    {
+      "id": "R3",
+      "claim": "THEORY.md §4, Theorem R3 (non-monotone preintegrated kinks are C^{1,1/2})",
+      "lean": [
+        "Cubature.preintKink_second_difference",
+        "Cubature.preintKink_second_difference_of_density_le"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Section 1.2 (kink remark: (4/3) y^{3/2} rho(0))"
+        ],
+        "explanation": "GKS observe a y^{3/2} singularity for kinks in an example; R3 gives the matching global second-difference bound O(||h||^{3/2}) for the whole non-degenerate non-monotone class."
+      }
+    },
+    {
+      "id": "R4",
+      "claim": "THEORY.md §5, R4a/R4b (sharpness of the constant in R1 and of the exponent in R2)",
+      "lean": [
+        "Cubature.sublevel_bound_sharp",
+        "Cubature.gks_parabola_two_sided"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "equal",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Example 1",
+          "Polya's sharp sublevel bound"
+        ],
+        "explanation": "Non-asymptotic two-sided version of GKS Example 1 and optimality of the quadratic case; shows R1/R2 cannot be improved. Not claimed as new."
+      }
+    },
+    {
+      "id": "R5",
+      "claim": "THEORY.md §6, R5a-R5e (stratified/jittered RQMC after non-monotone preintegration: unbiased, MSE <= (Ltheta/m + 4 rho B sqrt(L/(alpha m)))^2/m^s = O(n^{-1-1/s}))",
+      "lean": [
+        "Cubature.stratified_sampling_mse",
+        "Cubature.preintJump_stratified_mse",
+        "Cubature.preintJump_jittered_cube_mse",
+        "Cubature.jittered_design_exists",
+        "Cubature.preintJump_integral_eq"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Conclusion ('no theoretical support for QMC')",
+          "Z. He, SIAM J. Numer. Anal. 57 (2019), arXiv:1708.09512, Assumption 3 and Theorem 14 (CQMC rates require monotonicity)",
+          "Z. He, X. Wang, SIAM J. Numer. Anal. 53 (2015), Theorems 3.5/3.6 (scrambled-net variance n^{-1-1/(2d-1)} log)",
+          "S. Haber, Math. Comp. 20 (1966) (stratified sampling, classical; R5a)"
+        ],
+        "explanation": "First proved convergence rate for a randomized QMC-type rule (jittered sampling) after preintegration when monotonicity fails: unbiased, MSE O(n^{-1-1/(d-1)}) with explicit constants, faster than MC; He 2019 needs monotonicity, GKS state no theory exists. Versus HW15 the exponent 1+1/(d-1) exceeds 1+1/(2d-1) on our subclass but the estimator differs, hence incomparable. R5a alone is classical."
+      }
+    },
+    {
+      "id": "R6",
+      "claim": "THEORY.md §7, R6a/R6b (quadric jump surfaces, arbitrary non-null preintegration direction)",
+      "lean": [
+        "Cubature.quadric_preint_holder",
+        "Cubature.quadric_preint_holder_local"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Theorem 1 and Examples 1-3"
+        ],
+        "explanation": "Exact global modulus |P_u(x)-P_u(x')| <= (|dbeta| + sqrt|dD|)/(sqrt(2 pi)|<u,Au>|) for every quadric and every direction with <u,Au> != 0, asymptotically exact on GKS Examples 1 and 3, plus explicit local 1/2-Hoelder constants; covers the hard-track quadric instances in any rotated orientation."
+      }
+    },
+    {
+      "id": "R7",
+      "claim": "THEORY.md §8, R7a-R7d (stratified/jittered RQMC after non-monotone preintegration under a tube (Minkowski-content type) condition: MSE O(n^{-1-3/(2s)}); verified on GKS Example 1)",
+      "lean": [
+        "Cubature.preintJump_stratified_mse_tube",
+        "Cubature.preintJump_jittered_cube_mse_tube",
+        "Cubature.gks_example_tube_condition",
+        "Cubature.gks_example_jittered_mse"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Z. He, X. Wang, SIAM J. Numer. Anal. 53 (2015), Theorem 3.5 (Minkowski-content boundary, scrambled-net variance O(n^{-1-1/(2d-1)}(log n)^{2d/(2d-1)}))",
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Conclusion",
+          "Z. He, SIAM J. Numer. Anal. 57 (2019), arXiv:1708.09512, Assumption 3 / Theorem 14"
+        ],
+        "explanation": "Under a tube condition of the same type as HW15's Minkowski-content assumption, preintegration (without monotonicity) followed by jittered sampling has MSE O(n^{-1-3/(2(d-1))}) with explicit constants, versus O(n^{-1-1/(2d-1)} log) for scrambled nets on the original integrand in HW15 Thm 3.5 and no available theory in GKS; different estimator, hence incomparable. The rate beats the worst-case Hoelder-1/2 (Bakhvalov) rate of R5 by exploiting that the singular set is thin. Hypotheses verified formally on GKS Example 1 (R7c, R7d)."
+      }
+    },
+    {
+      "id": "R8",
+      "claim": "THEORY.md §9, R8a-R8d (refined band estimate; stratified/jittered RQMC after non-monotone preintegration attains the Lipschitz rate up to a log: MSE O(n^{-1-2/s} log n) under transversality of the shadow boundary; verified on GKS Example 1)",
+      "lean": [
+        "Cubature.volume_band_le_of_strongConcaveOn_max",
+        "Cubature.preintJump_stratified_mse_height",
+        "Cubature.preintJump_stratified_mse_height_convex",
+        "Cubature.preintJump_jittered_cube_mse_height",
+        "Cubature.gks_example_jittered_mse_log"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Conclusion ('no theoretical support for QMC'; monotonicity necessary for smoothness)",
+          "Z. He, X. Wang, SIAM J. Numer. Anal. 53 (2015), Theorem 3.5 (scrambled-net variance O(n^{-1-1/(2d-1)}(log n)^{2d/(2d-1)}))",
+          "Z. He, SIAM J. Numer. Anal. 57 (2019), arXiv:1708.09512, Assumption 3 / Theorem 14 (CQMC needs monotonicity)",
+          "S. Haber, Math. Comp. 20 (1966) (jittered sampling O(n^{-1-2/s}) for Lipschitz integrands)"
+        ],
+        "explanation": "Shows that without any monotonicity, preintegration followed by jittered sampling attains MSE O(n^{-1-2/(d-1)} log n), i.e. the classical rate for Lipschitz (smooth) integrands up to a logarithm, under a transversality condition on the shadow boundary (formally verified on GKS Example 1, explicit bound (48 log(m/2)+24)/(pi m^{s+3})). This answers, for stratified RQMC, the GKS gap: the square-root singularity costs only a log factor. Versus HW15 the exponent 1+2/(d-1) exceeds 1+1/(2d-1), with a different estimator; versus He 2019 monotonicity is dropped but the estimator and rate differ; hence incomparable."
+      }
+    },
+    {
+      "id": "R9",
+      "claim": "THEORY.md §10, R9a-R9c (third-order tangency: sublevel estimate 10 (eta/alpha)^{1/3}, 1/3-Hoelder preintegration, sharp on GKS Example 4)",
+      "lean": [
+        "Cubature.volume_band_le_of_deriv_strong",
+        "Cubature.preintJump_holder_third",
+        "Cubature.gks_example4_two_sided"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Example 4 and Remark 1 (cube-root singularity when the second derivative also vanishes)",
+          "van der Corput sublevel lemma of order 3 (Stein 1993; Carbery-Christ-Wright 1999)"
+        ],
+        "explanation": "GKS exhibit a cube-root singularity for phi = y1^3 - y2 (outside their Theorem 1). R9 proves the matching global upper bound |P(y)-P(y')| <= Ltheta d + 10 rho B (L d/alpha)^{1/3} for all phi whose t-derivative is strongly convex/concave, and a two-sided cube-root bound on GKS Example 4, so the exponent 1/3 is exact. The sublevel estimate itself is a classical order-3 van der Corput bound (explicit constant 10)."
+      }
+    },
+    {
+      "id": "R10",
+      "claim": "THEORY.md §11, R10 and R10' (quadric jump surfaces in an arbitrary non-null direction, amplitude theta = 1 or Lipschitz: preintegration + stratified sampling has MSE O(h^2 log(1/h)/n), i.e. O(n^{-1-2/s} log n), under bounded density of the discriminant)",
+      "lean": [
+        "Cubature.quadric_stratified_mse",
+        "Cubature.quadric_theta_stratified_mse"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Theorem 1, Examples 1-3 and Conclusion",
+          "Z. He, X. Wang, SIAM J. Numer. Anal. 53 (2015), Theorem 3.5",
+          "Z. He, SIAM J. Numer. Anal. 57 (2019), arXiv:1708.09512, Assumption 3 / Theorem 14"
+        ],
+        "explanation": "For every quadric jump surface (any orientation, convex or saddle, inside or outside) and every preintegration direction off the null cone, preintegration + stratified RQMC attains the Lipschitz rate up to a logarithm, with explicit constants depending on ||A||, ||b||, R, the shadow-boundary density K and |<u,Au>|; no monotonicity and no uniform Lipschitz condition is needed. GKS give no rate for such integrands; He 2019 needs monotonicity; HW15 has a smaller exponent for a different estimator. Incomparable."
+      }
+    },
+    {
+      "id": "R11",
+      "claim": "THEORY.md §12, R11 (deterministic lower bound n^{-1/s} on the non-monotone class: fooling functions vanishing at all nodes)",
+      "lean": [
+        "Cubature.deterministic_lower_bound"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo, Sloan, arXiv:2112.11621, Conclusion (no theoretical support for QMC after non-monotone preintegration)",
+          "N. S. Bakhvalov 1959 (fooling-function lower bounds for Hoelder classes; classical technique)"
+        ],
+        "explanation": "Shows that the lack of QMC support observed by GKS is a genuine worst-case barrier: on the non-monotone class every deterministic rule (QMC included, adaptive or not) has error >= c_s n^{-1/s} (worse than Monte Carlo for s >= 3), whereas the randomized estimators of R5/R8 achieve n^{-1/2-1/(2s)} and n^{-1/2-1/s} sqrt(log n). The fooling-function technique is classical; its instantiation inside the preintegration class is new."
+      }
+    }
+  ]
+}

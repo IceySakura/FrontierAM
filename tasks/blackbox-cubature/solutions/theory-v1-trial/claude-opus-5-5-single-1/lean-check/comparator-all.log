@@ -1,0 +1,135 @@
+Resolving dependencies
+Building Theory.Statements
+⚠ [9047/9048] Built Theory.Defs (4.9s)
+warning: Theory/Defs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9048/9048] Built Theory.Statements (8.5s)
+warning: Theory/Statements.lean:28:8: declaration uses `sorry`
+warning: Theory/Statements.lean:39:8: declaration uses `sorry`
+warning: Theory/Statements.lean:54:8: declaration uses `sorry`
+warning: Theory/Statements.lean:70:8: declaration uses `sorry`
+warning: Theory/Statements.lean:90:8: declaration uses `sorry`
+warning: Theory/Statements.lean:103:8: declaration uses `sorry`
+warning: Theory/Statements.lean:117:8: declaration uses `sorry`
+warning: Theory/Statements.lean:126:8: declaration uses `sorry`
+warning: Theory/Statements.lean:141:8: declaration uses `sorry`
+warning: Theory/Statements.lean:160:8: declaration uses `sorry`
+warning: Theory/Statements.lean:192:8: declaration uses `sorry`
+warning: Theory/Statements.lean:213:8: declaration uses `sorry`
+warning: Theory/Statements.lean:223:8: declaration uses `sorry`
+warning: Theory/Statements.lean:238:8: declaration uses `sorry`
+warning: Theory/Statements.lean:251:8: declaration uses `sorry`
+warning: Theory/Statements.lean:266:8: declaration uses `sorry`
+warning: Theory/Statements.lean:293:8: declaration uses `sorry`
+warning: Theory/Statements.lean:316:8: declaration uses `sorry`
+warning: Theory/Statements.lean:325:8: declaration uses `sorry`
+warning: Theory/Statements.lean:340:8: declaration uses `sorry`
+warning: Theory/Statements.lean:354:8: declaration uses `sorry`
+warning: Theory/Statements.lean:385:8: declaration uses `sorry`
+warning: Theory/Statements.lean:417:8: declaration uses `sorry`
+warning: Theory/Statements.lean:447:8: declaration uses `sorry`
+warning: Theory/Statements.lean:462:8: declaration uses `sorry`
+warning: Theory/Statements.lean:472:8: declaration uses `sorry`
+warning: Theory/Statements.lean:488:8: declaration uses `sorry`
+warning: Theory/Statements.lean:506:8: declaration uses `sorry`
+warning: Theory/Statements.lean:539:8: declaration uses `sorry`
+warning: Theory/Statements.lean:575:8: declaration uses `sorry`
+Build completed successfully (9048 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.volume_sublevel_le_of_strongConvexOn, Cubature.preintJump_holder_half, Cubature.preintJump_holder_half_of_density_le, Cubature.preintJump_holder_half_piecewise, Cubature.preintKink_second_difference, Cubature.preintKink_second_difference_of_density_le, Cubature.sublevel_bound_sharp, Cubature.gks_parabola_two_sided, Cubature.stratified_sampling_mse, Cubature.preintJump_stratified_mse, Cubature.preintJump_jittered_cube_mse, Cubature.jittered_design_exists, Cubature.preintJump_integral_eq, Cubature.quadric_preint_holder, Cubature.quadric_preint_holder_local, Cubature.preintJump_stratified_mse_tube, Cubature.preintJump_jittered_cube_mse_tube, Cubature.gks_example_tube_condition, Cubature.gks_example_jittered_mse, Cubature.volume_band_le_of_strongConcaveOn_max, Cubature.preintJump_stratified_mse_height, Cubature.preintJump_stratified_mse_height_convex, Cubature.preintJump_jittered_cube_mse_height, Cubature.gks_example_jittered_mse_log, Cubature.volume_band_le_of_deriv_strong, Cubature.preintJump_holder_third, Cubature.gks_example4_two_sided, Cubature.quadric_stratified_mse, Cubature.quadric_theta_stratified_mse, Cubature.deterministic_lower_bound, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Statements
+Building Theory.Proofs
+⚠ [9047/9061] Replayed Theory.Defs
+warning: Theory/Defs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9048/9061] Built Theory.Sublevel (15s)
+warning: Theory/Sublevel.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [9049/9061] Built Theory.Preint (8.5s)
+⚠ [9050/9061] Built Theory.Sharp (26s)
+warning: Theory/Sharp.lean:27:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+
+Hint: Replace the deprecated name:
+  m̵e̵m̵_̵s̵e̵t̵O̵f̵_̵e̵q̵m̲e̲m̲_̲o̲f̲P̲r̲e̲d̲_̲e̲q̲
+warning: Theory/Sharp.lean:60:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+
+Hint: Replace the deprecated name:
+  m̵e̵m̵_̵s̵e̵t̵O̵f̵_̵e̵q̵m̲e̲m̲_̲o̲f̲P̲r̲e̲d̲_̲e̲q̲
+⚠ [9051/9061] Built Theory.Stratified (27s)
+warning: Theory/Stratified.lean:144:10: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [9052/9061] Built Theory.Quadric (38s)
+⚠ [9053/9061] Built Theory.Cube (13s)
+warning: Theory/Cube.lean:160:2: Try this: 
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [9054/9061] Built Theory.Tube (25s)
+warning: Theory/Tube.lean:357:2: Try this: 
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Theory/Tube.lean:424:49: `if_false` has been deprecated: Use `ite_false` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵f̵a̵l̵s̵e̵i̲t̲e̲_̲f̲a̲l̲s̲e̲
+warning: Theory/Tube.lean:393:75: Variable name `hη` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hη
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [9055/9061] Built Theory.Lower (59s)
+✔ [9056/9061] Built Theory.Cubic (44s)
+⚠ [9057/9061] Built Theory.Piecewise (56s)
+warning: Theory/Piecewise.lean:157:5: Variable name `hη` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hη
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [9058/9061] Built Theory.Refined (73s)
+warning: Theory/Refined.lean:597:2: Try this: 
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+✔ [9059/9061] Built Theory.QuadStrat (16s)
+⚠ [9060/9061] Built Theory.QuadTheta (19s)
+warning: Theory/QuadTheta.lean:427:32: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Theory/QuadTheta.lean:421:51: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Theory/QuadTheta.lean:421:51: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/QuadTheta.lean:427:28: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/QuadTheta.lean:427:32: Unused tactic linter: `ring` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [9061/9061] Built Theory.Proofs (8.4s)
+warning: Theory/Proofs.lean:192:10: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+Build completed successfully (9061 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.volume_sublevel_le_of_strongConvexOn, Cubature.preintJump_holder_half, Cubature.preintJump_holder_half_of_density_le, Cubature.preintJump_holder_half_piecewise, Cubature.preintKink_second_difference, Cubature.preintKink_second_difference_of_density_le, Cubature.sublevel_bound_sharp, Cubature.gks_parabola_two_sided, Cubature.stratified_sampling_mse, Cubature.preintJump_stratified_mse, Cubature.preintJump_jittered_cube_mse, Cubature.jittered_design_exists, Cubature.preintJump_integral_eq, Cubature.quadric_preint_holder, Cubature.quadric_preint_holder_local, Cubature.preintJump_stratified_mse_tube, Cubature.preintJump_jittered_cube_mse_tube, Cubature.gks_example_tube_condition, Cubature.gks_example_jittered_mse, Cubature.volume_band_le_of_strongConcaveOn_max, Cubature.preintJump_stratified_mse_height, Cubature.preintJump_stratified_mse_height_convex, Cubature.preintJump_jittered_cube_mse_height, Cubature.gks_example_jittered_mse_log, Cubature.volume_band_le_of_deriv_strong, Cubature.preintJump_holder_third, Cubature.gks_example4_two_sided, Cubature.quadric_stratified_mse, Cubature.quadric_theta_stratified_mse, Cubature.deterministic_lower_bound, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Proofs
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!

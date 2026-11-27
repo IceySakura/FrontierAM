@@ -1,0 +1,24 @@
+{
+ "task": "blackbox-cubature-theory-v1",
+ "model": "gpt-6.2-sol",
+ "setting": "single (v6.3 harness, 6 h limit, validation run; theory only; public internet during development)",
+ "dev_run": "dev-blackbox-cubature-theory-v1-20261127T052822Z-034b20",
+ "submission": "blackbox-cubature-theory-v1-20261127T070638Z-03a5c1",
+ "status": "frozen",
+ "agent_stop_reason": "turn_completed",
+ "development_seconds": 5890.132529222872,
+ "started_utc": "20261127T052822Z",
+ "network": {
+  "log": "netproxy.jsonl",
+  "requests": 128,
+  "allowed": 30,
+  "denied": 98,
+  "allowed_hosts": [
+   "api.crossref.org",
+   "api.openalex.org",
+   "arxiv.org",
+   "epubs.siam.org",
+   "export.arxiv.org"
+  ]
+ }
+}

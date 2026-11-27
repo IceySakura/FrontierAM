@@ -1,0 +1,48 @@
+Resolving dependencies
+Building Theory.Statements
+⚠ [9047/9048] Built Theory.Model (6.4s)
+warning: Theory/Model.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9048/9048] Built Theory.Statements (6.3s)
+warning: Theory/Statements.lean:6:8: declaration uses `sorry`
+warning: Theory/Statements.lean:21:8: declaration uses `sorry`
+warning: Theory/Statements.lean:37:8: declaration uses `sorry`
+warning: Theory/Statements.lean:54:8: declaration uses `sorry`
+warning: Theory/Statements.lean:69:8: declaration uses `sorry`
+warning: Theory/Statements.lean:88:8: declaration uses `sorry`
+warning: Theory/Statements.lean:107:8: declaration uses `sorry`
+Build completed successfully (9048 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, ULB63.finite_network_exact, ULB63.finite_network_parallel, ULB63.fast_network_minimax_bracket, ULB63.slow_network_minimax_bracket, ULB63.parallel_minimax_bracket, ULB63.accelerated_parallel_bound, ULB63.optimized_parallel_minimax, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Statements
+Building Theory.Proofs
+⚠ [9047/9073] Replayed Theory.Model
+warning: Theory/Model.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [9048/9073] Built Theory.Sanity (17s)
+✔ [9049/9073] Built Theory.Network (18s)
+✔ [9050/9073] Built Theory.Protocol (30s)
+✔ [9051/9073] Built Theory.Spectral (34s)
+✔ [9052/9073] Built Theory.Composite (38s)
+✔ [9053/9073] Built Theory.LowerTools (15s)
+✔ [9054/9073] Built Theory.FiniteMean (23s)
+✔ [9055/9073] Built Theory.Aggregation (26s)
+✔ [9056/9073] Built Theory.Hidden (36s)
+✔ [9057/9073] Built Theory.Epoch (39s)
+✔ [9058/9073] Built Theory.Chain (60s)
+✔ [9059/9073] Built Theory.Schedule (40s)
+✔ [9060/9073] Built Theory.Regularized (43s)
+✔ [9061/9073] Built Theory.Path (44s)
+✔ [9062/9073] Built Theory.Split (52s)
+✔ [9063/9073] Built Theory.Upper (34s)
+✔ [9064/9073] Built Theory.Blocks (28s)
+✔ [9065/9073] Built Theory.Inexact (43s)
+✔ [9066/9073] Built Theory.SplitInstance (38s)
+✔ [9067/9073] Built Theory.Batch (35s)
+✔ [9068/9073] Built Theory.Lifted (35s)
+✔ [9069/9073] Built Theory.SlowLower (25s)
+✔ [9070/9073] Built Theory.Nested (18s)
+✔ [9071/9073] Built Theory.ClusterLower (14s)
+✔ [9072/9073] Built Theory.Rate (30s)
+✔ [9073/9073] Built Theory.Proofs (6.0s)
+Build completed successfully (9073 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, ULB63.finite_network_exact, ULB63.finite_network_parallel, ULB63.fast_network_minimax_bracket, ULB63.slow_network_minimax_bracket, ULB63.parallel_minimax_bracket, ULB63.accelerated_parallel_bound, ULB63.optimized_parallel_minimax, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Proofs
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!

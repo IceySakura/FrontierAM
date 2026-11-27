@@ -558,6 +558,7 @@ M2 是关卡：若强参照在困难族上已接近 oracle 精度，就回到 M1
 - **计分**（新题映射）：只有理论分，每条通过验证且忠实的结论按与最强可比人类结果的关系定分（相当 50，严格更强 50 以上，严格更弱 50 以下，不可比按人类论文自身的观点，复现经典特例低于 50），取最高；没有通过的结论为 0。
 - **实现**：`arena/operator_tasks.py` 新增 `TheoryOnlyTask`（单轮、Lean、联网、无样例服务；提示词中的单轮说明改为“冻结后做 Lean 检查与审阅一次”，去掉程序计时说明），Lean 挂载、代理服务与联网设置抽成模块级函数和 `PublicInternetDev`，v3.2–v3.5 改用它们（属性逐项核对未变）；`arena/native.py` 的提示词可由任务覆盖单轮说明与计时说明；封装 `seal_cubature_v3.py --version theory-v1`（无样例、锁中不记数据）；试跑 `scripts/rounds/theory-trial.sh`。冒烟测试 13 项全部通过（无样例、文献放行、GitHub 等拒绝、8 GiB、容器内 Lean 检查、单轮结束方式）。
 - **试跑**（11-27 13:28 起，验证运行，6 小时上限，两个模型并行）：GPT-6.2 Sol `dev-blackbox-cubature-theory-v1-20261127T052822Z-034b20`；Claude Opus 5.5 `dev-blackbox-cubature-theory-v1-20261127T052842Z-7c5d29`。评分：`lean-comparator.py` 后按 `THEORY_REVIEW.md` 第 2 节逐条审阅。
+- **结果**（`THEORY_REVIEW.md` 第 12 节，初评）：两个模型都提前结束（Sol 98 分钟，Opus 177 分钟），全部结论通过 comparator（Sol 10/10，Opus 12/12）。Opus 证明了非单调预积分后的 ½-Hölder 正则性，以及“预积分 + 分层 RQMC”在无单调性时的速率；Sol 用径向纤维，在光滑星形跳跃上给出精确的自适应与非自适应误差指数。两者都回应了 GKS 写明的空白，都是“不可比·有价值”，理论分 **50 / 100**；没有偏序优的结论。
 
 ### 9.16 理论分档（11-27 用户确定）
 

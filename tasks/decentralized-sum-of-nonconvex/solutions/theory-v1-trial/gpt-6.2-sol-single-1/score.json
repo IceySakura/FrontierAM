@@ -1,0 +1,19 @@
+{
+ "score": 100,
+ "scale": "0-100, reference 50 (a new valuable point on the human frontier)",
+ "raw": {
+  "verified_results": [
+   "R1",
+   "R2",
+   "R3",
+   "R4",
+   "R5",
+   "R6",
+   "R7"
+  ],
+  "tier": "partial-order better",
+  "decisive_result": "R7 (upper bound strictly stronger than Liu-Low 2024 Theorem 5.1 / Corollary 5.3 as translated: data term m^{3/4} n^{-1/4} sqrt(kappa), network term min{n, log n / sqrt(1-rho)} sqrt(kappa), up to polylog factors; whole standard class)"
+ },
+ "mapping": "tiers (tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 2): partial-order better 100; incomparable and valuable 50; incomparable, low value 25; dominated or equal 10; nothing verified 0; maximum over results",
+ "review": "provisional (agent review, not an expert review), THEORY_REVIEW.md section 12"
+}

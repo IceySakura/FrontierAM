@@ -1,0 +1,24 @@
+{
+ "score": 50,
+ "scale": "0-100, reference 50 (a new valuable point on the human frontier)",
+ "raw": {
+  "verified_results": [
+   "R1",
+   "R2",
+   "R2'",
+   "R3",
+   "R4",
+   "R5",
+   "R6",
+   "R7",
+   "R8",
+   "R9",
+   "R10",
+   "R11"
+  ],
+  "tier": "incomparable, valuable (P1)",
+  "decisive_result": "R2/R5/R8 (sharp 1/2-Hoelder regularity of non-monotone preintegrated jumps; preintegration plus stratified RQMC with MSE O(n^{-1-2/s} log n) without monotonicity)"
+ },
+ "mapping": "tiers (tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 2): partial-order better 100; incomparable and valuable 50; incomparable, low value 25; dominated or equal 10; nothing verified 0; maximum over results",
+ "review": "provisional (agent review, not an expert review), THEORY_REVIEW.md section 12"
+}

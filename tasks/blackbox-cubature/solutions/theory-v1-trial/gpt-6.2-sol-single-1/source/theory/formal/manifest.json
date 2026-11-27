@@ -1,0 +1,142 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md, § R1: adaptive cubature with no per-node logarithm",
+      "lean": ["Cubature.gaussian_radial_adaptive_cubature"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo and Sloan, arXiv:2112.11621, Theorem 1 and Conclusion",
+          "He and Wang, doi:10.1137/15M1007963, Theorems 3.5–3.6",
+          "Cornelissen, Apers and Gribling, arXiv:2503.02207v1, Theorems 3.4 and 4.6"
+        ],
+        "explanation": "A query-counted radial alternative in the nonmonotone closed-jump regime. It has a faster variance exponent on the overlap with the scrambled-sequence bound, and attains the fixed-dimension randomized convex-volume precision exponent without logarithms for Gaussian radial bodies under a quadratic chart remainder. Neither general convexity alone nor the asymptotics of a fixed scramble is covered."
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md, § R2: a precision lower bound for nonadaptive rules",
+      "lean": ["Cubature.gaussian_radial_nonadaptive_lower"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Rademacher and Vempala, arXiv:cs/0608054v2, Theorems 2 and 8",
+          "Cornelissen, Apers and Gribling, arXiv:2503.02207v1, Theorem 4.6"
+        ],
+        "explanation": "A nonadaptive lower bound in precision for fixed-dimensional Gaussian mass of regular closed radial jumps. The unknown level creates a strict asymptotic gap from the adaptive bound on the same class. The cited volume bounds concern convex bodies, either in the high-dimensional regime or with adaptive queries."
+      }
+    },
+    {
+      "id": "R3",
+      "claim": "THEORY.md, § R3: matching adaptive lower bound",
+      "lean": ["Cubature.gaussian_radial_adaptive_lower"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": ["Cornelissen, Apers and Gribling, arXiv:2503.02207v1, Theorems 3.4 and 4.6"],
+        "explanation": "Matches their randomized precision exponent but for Gaussian RMSE on a fixed, smooth radial jump class. Combined with R1 it proves the exact adaptive minimax exponent without logarithms. Their result instead concerns relative Lebesgue volume of general convex bodies."
+      }
+    },
+    {
+      "id": "R4",
+      "claim": "THEORY.md, § R4: matching nonadaptive cubature",
+      "lean": ["Cubature.gaussian_radial_nonadaptive_cubature"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "He and Wang, doi:10.1137/15M1007963, Theorems 3.5–3.6",
+          "Rademacher and Vempala, arXiv:cs/0608054v2, Theorem 8",
+          "Cornelissen, Apers and Gribling, arXiv:2503.02207v1, Theorems 3.4 and 4.6"
+        ],
+        "explanation": "Matches the nonadaptive Gaussian precision lower bound R2, and with R1 and R3 yields sharp distinct adaptive and nonadaptive exponents. The variance exponent improves over the general scrambled-sequence bound on the overlap, but with different rules and structural assumptions."
+      }
+    },
+    {
+      "id": "R5",
+      "claim": "THEORY.md, § R5: arbitrary-order adaptive radial cubature",
+      "lean": ["Cubature.gaussian_radial_polynomial_cubature"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo and Sloan, arXiv:2112.11621, Theorem 1 and Conclusion",
+          "Cornelissen, Apers and Gribling, arXiv:2503.02207v1, Theorem 3.4"
+        ],
+        "explanation": "Arbitrary-order, log-free query rates for Gaussian closed radial jumps, improving precision exponents for higher-order charts. It avoids the Cartesian fold by changing fibers. The convex-body theorem is for Lebesgue volume and requires no higher-order chart regularity."
+      }
+    },
+    {
+      "id": "R6",
+      "claim": "THEORY.md, § R6: analytic radial jumps in polylogarithmic query complexity",
+      "lean": ["Cubature.gaussian_radial_analytic_cubature"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo and Sloan, arXiv:2112.11621, Theorem 1 and Conclusion",
+          "He and Wang, doi:10.1137/15M1007963, Theorem 3.5",
+          "Cornelissen, Apers and Gribling, arXiv:2503.02207v1, Theorem 3.4"
+        ],
+        "explanation": "Gives stretched-exponential convergence with actual point-query costs for a nonparametric regularity class of analytic closed jumps, even though no Cartesian direction need be monotone. Stronger precision dependence, with uniform analytic radial assumptions absent from the comparison theorems."
+      }
+    },
+    {
+      "id": "R7",
+      "claim": "THEORY.md, § R7: analytic adaptivity separation",
+      "lean": ["Cubature.gaussian_radial_analytic_nonadaptive_lower"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Rademacher and Vempala, arXiv:cs/0608054v2, Theorem 8",
+          "Cornelissen, Apers and Gribling, arXiv:2503.02207v1, Theorem 4.6"
+        ],
+        "explanation": "An inverse-budget RMSE lower bound for nonadaptive queries at fixed dimension, even when the hard inputs are balls. Its purpose is the separation from the stretched-exponential adaptive guarantee on the same analytic class, not novelty for scalar thresholds."
+      }
+    },
+    {
+      "id": "R8",
+      "claim": "THEORY.md, § R8: unknown centers cause a search lower bound",
+      "lean": ["Cubature.gaussian_unlocated_ball_lower"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": ["Rademacher and Vempala, arXiv:cs/0608054v2, Theorems 2 and 8"],
+        "explanation": "A dimension-growing relative-error lower bound for actual adaptive Gaussian membership cubature on translated analytic balls when the center is not supplied. The cited result assumes an inner ball and considers Lebesgue volume, so the stronger numerical growth is not a bound on their class."
+      }
+    },
+    {
+      "id": "R9",
+      "claim": "THEORY.md, § R9: unbounded worst-case gap at identical analytic budgets",
+      "lean": ["Cubature.gaussian_analytic_same_budget_gap"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo and Sloan, arXiv:2112.11621, Theorem 1 and Conclusion",
+          "Cornelissen, Apers and Gribling, arXiv:2503.02207v1, Theorems 3.4 and 4.6",
+          "Rademacher and Vempala, arXiv:cs/0608054v2, Theorem 8"
+        ],
+        "explanation": "Proves a uniform same-budget adaptive vs nonadaptive separation for every sufficiently large budget on one nonparametric Gaussian class of analytic jumps, with stretched-exponential adaptive decay versus inverse-budget nonadaptive precision. The geometric lower bounds in the comparisons do not give this fixed-dimensional Gaussian precision separation."
+      }
+    },
+    {
+      "id": "R10",
+      "claim": "THEORY.md, § R10: relative Gaussian cubature for centered ellipsoids",
+      "lean": ["Cubature.gaussian_ellipsoid_relative_cubature"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Rademacher and Vempala, arXiv:cs/0608054v2, Theorem 3",
+          "Cornelissen, Apers and Gribling, arXiv:2503.02207v1, Theorem 3.4"
+        ],
+        "explanation": "A deterministic relative Gaussian mass bound with explicit dimension and precision costs for unknown rotated centered ellipsoids. The polylogarithmic precision and polynomial dimension dependence use finite-dimensional quadratic structure, unlike the cited general convex body or parallelepiped Lebesgue-volume problems."
+      }
+    }
+  ]
+}

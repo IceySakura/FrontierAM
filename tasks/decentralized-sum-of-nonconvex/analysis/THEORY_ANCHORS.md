@@ -33,8 +33,10 @@
 | H-LB-net | 下界 | Scaman–Bach–Bubeck–Lee–Massoulié（ICML 2017，arXiv:1702.08704）定理 1（任意直径为 \(D\) 的图、黑盒方法，误差界含指数 \(t/(1+D\tau)\)）与定理 2（gossip、谱隙 \(\gamma\)，证明中节点数依 \(\gamma\) 选取） | 固定 \(n\)、\(W\in\mathcal W_{n,\rho}\) 时：\(T\ge c\,\min\{n,(1-\rho)^{-1/2}\}\sqrt\kappa\,\log R\)。按两条定理合并的标准换算：对手在 \(\mathcal W_{n,\rho}\) 中取直径约为 \(\min\{n,(1-\rho)^{-1/2}\}\) 的慢混合矩阵 | 强凸二次函数（标准类内） | 黑盒方法（含 \(\mathcal A\)） |
 | H-LB-avg | 下界 | Zhou–Gu（ICML 2019，arXiv:1901.11224）定理 4.1：sum-of-nonconvex、\(F\) 为 \(\sigma\)-强凸、分量只要求平均光滑，linear-span 随机算法，\(\Omega(n'+n'^{3/4}\sqrt{L/\sigma}\log\frac{n'\sigma\Delta}{L\epsilon})\) 次查询 | 全部 \(N\) 个分量、集中式模拟：\(T\ge c\,(m+m^{3/4}n^{-1/4}\sqrt\kappa\,\log(\cdot))\) | 只平均光滑（比标准类大） | linear-span |
 | H-LB-pl | 下界 | Peng–Tang–Jia（arXiv:2609.00045，2026-08-30 首发，v3 为 2026-10-10）：逐分量光滑，随机化 IFO 算法（可任意选择分量与查询点）。\(3\le\kappa\le\sqrt n\) 时 \(\Omega(n+n\log(\Delta/\varepsilon)/[1+\log(\sqrt n/\kappa)])\)，困难实例的平均目标全局强凸、分量非凸；\(\kappa\ge\sqrt n\) 时 \(\Omega(n+\kappa\sqrt n\log(\Delta/\varepsilon))\)，但困难实例只满足 PL，不在本题的类中 | 全部 \(N\) 个分量、集中式模拟：\(3\le\kappa\le\sqrt N\) 时 \(T\ge c\,(m+m\log R/[1+\log(\sqrt N/\kappa)])\) | 标准类内（平均强凸、逐分量光滑、\(h=0\)） | 随机化 IFO（含 \(\mathcal A\)） |
+| H-LB-hly | 下界 | Hannah–Liu–O'Connor–Yin（NeurIPS 2018，arXiv:1805.07786）第 2.1 节：凸分量、非自适应（oblivious）p-CLI 算法，\(\Omega(n+(\frac{n}{1+(\ln(n/\kappa))_+}+\sqrt{n\kappa})\ln(1/\epsilon))\) | 集中式模拟（只对模拟后仍是非自适应 p-CLI 的算法）：\(T\ge c\,(m+[m/(1+\ln(N/\kappa))+\sqrt{m\kappa/n}]\log R)\) | 凸分量 | 非自适应 p-CLI（比 \(\mathcal A\) 窄） |
+| H-LB-zsh | 下界 | Zhang–Shu–He（arXiv:2010.08766 v2，2022）定理 3.1：随机化增量梯度方法，强凸、光滑分量；\(n=O(\kappa)\) 时 \(\Omega((n+\sqrt{n\kappa})\log\frac1\epsilon)\)，\(n\gg\kappa\) 时 \(\Omega(n+\frac{n}{\log(n/\kappa)}\log\frac1{n\epsilon})\) | 同上，只对模拟后仍属该方法类的算法 | 强凸分量（更小的类） | 随机化增量梯度方法（大概率为 span 型，比 \(\mathcal A\) 窄；待核实） |
 
-H-LB-data、H-LB-pl、H-LB-avg 两两互不支配（参数范围、类或算法类各不相同）。五个锚点构成目前登记的人类前沿。H-LB-net 的固定 \(n\) 形式没有逐字出现在原文中，登记为由原文标准换算得到的已知结果：模型证明这一项属于复述。H-LB-pl 是 11-27 下午核查时补登的（评审任何试跑之前），见文末“提升空间核查”。
+H-LB-data、H-LB-pl、H-LB-avg 两两互不支配（参数范围、类或算法类各不相同）。五个锚点构成目前登记的人类前沿。H-LB-net 的固定 \(n\) 形式没有逐字出现在原文中，登记为由原文标准换算得到的已知结果：模型证明这一项属于复述。H-LB-pl 是 11-27 下午核查时补登的（评审任何试跑之前），见文末“提升空间核查”。H-LB-hly、H-LB-zsh 是 11-27 晚评审 theory-v1 时发现并补登的：它们的算法类都比 \(\mathcal A\) 窄，与其他锚点互不支配，不影响 Sol 的 R7；影响的是 Opus 的 R3 的分类（`THEORY_REVIEW.md` 第 12 节）。
 
 ## 分档举例（预先说明）
 
