@@ -88,7 +88,7 @@
 | GPT-6.1 Sol | 单轮 | nRF \(E = 0.1323\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.3 | 58 分钟 | [`gpt-6.1-sol-single-1/`](solutions/v6.3/gpt-6.1-sol-single-1/) |
 | GPT-6.1 Sol | 迭代 | nRF \(E = 0.1325\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 48.6 | 12 次提交，240 分钟 | [`gpt-6.1-sol-iterative-3/`](solutions/v6.3/gpt-6.1-sol-iterative-3/) |
 | Claude Opus 5.5 | 单轮 | nRF \(E = 0.1389\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 28.1 | 26 分钟 | [`claude-opus-5-5-single-1/`](solutions/v6.3/claude-opus-5-5-single-1/) |
-| Claude Opus 5.5 | 迭代 | nRF \(E = 0.1288\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.2 | 4 次提交，110 分钟 | [`claude-opus-5-5-iterative-1/`](solutions/v6.3/claude-opus-5-5-iterative-1/) |
+| Claude Opus 5.5 | 迭代 | nRF \(E = 0.1295\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.0 | 16 次提交，160 分钟 | [`claude-opus-5-5-iterative-2/`](solutions/v6.3/claude-opus-5-5-iterative-2/) |
 | Hunyuan 4 | 单轮 | nRF \(E = 0.1574\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 58 分钟 | [`hy4-single-1/`](solutions/v6.3/hy4-single-1/) |
 | Hunyuan 4 | 迭代 | nRF \(E = 0.1382\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 30.1 | 4 次提交，157 分钟 | [`hy4-iterative-1/`](solutions/v6.3/hy4-iterative-1/) |
 | Qwen4 Max | 单轮 | nRF \(E = 0.2038\)（\(U = 0.1476\)，\(W = 0.1320\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 0.0 | 44 分钟 | [`qwen4-max-single-1/`](solutions/v6.3/qwen4-max-single-1/) |
@@ -144,11 +144,11 @@ public 分数随测试提交：36.2（8 分钟） → 35.8（16 分钟） → 39
 
 ### Claude Opus 5.5（迭代，v6.3）
 
-反馈改为 20 个留出用例后的第 2 次尝试进行中；此处暂列此前尝试的成绩（其反馈含工作区样例）。
+此前尝试的测试反馈是 5 个用例，其中 2 个就是工作区里带真值的样例；11-26 起反馈改为 20 个不发给模型的用例（与私有集同一组模拟参数、不同种子），本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：38.1（11 分钟） → 54.6（22 分钟） → 55.6（56 分钟） → 55.6（92 分钟）
+public 分数随测试提交：0.0（11 分钟） → 5.5（18 分钟） → 3.7（24 分钟） → 5.5（28 分钟） → 11.9（33 分钟） → 11.9（58 分钟） → 7.3（69 分钟） → 36.7（77 分钟） → 32.1（82 分钟） → 34.9（88 分钟） → 42.7（97 分钟） → 50.1（109 分钟） → 50.3（114 分钟） → 49.5（133 分钟） → 50.3（143 分钟） → 47.7（150 分钟）
 
-源码 [`solutions/v6.3/claude-opus-5-5-iterative-1/source/`](solutions/v6.3/claude-opus-5-5-iterative-1/source/)（提交 `species-tree-v3-20261112T074642Z-0c4419`）；未复制的二进制或大文件：stree（131,296 字节）、stree_generic（131,352 字节）。
+源码 [`solutions/v6.3/claude-opus-5-5-iterative-2/source/`](solutions/v6.3/claude-opus-5-5-iterative-2/source/)（提交 `species-tree-v3-20261127T124837Z-560611`）；未复制的二进制或大文件：st（190,488 字节）。
 
 ### Hunyuan 4（单轮，v6.3）
 

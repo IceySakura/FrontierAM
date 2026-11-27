@@ -1,0 +1,96 @@
+{
+ "model": "claude-opus-5-5",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "species-tree-v3-20261127T124837Z-560611",
+ "raw": "nRF \\(E = 0.1295\\)（\\(U = 0.1476\\)，\\(W = 0.1320\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 50.974,
+ "review": null,
+ "process": {
+  "minutes": 160.0,
+  "public_tests": 16,
+  "public_curve": [
+   {
+    "minute": 10.9,
+    "score": 0.0,
+    "status": "ok"
+   },
+   {
+    "minute": 17.6,
+    "score": 5.504587155963269,
+    "status": "ok"
+   },
+   {
+    "minute": 24.4,
+    "score": 3.6697247706422003,
+    "status": "ok"
+   },
+   {
+    "minute": 28.3,
+    "score": 5.504587155963269,
+    "status": "ok"
+   },
+   {
+    "minute": 33.1,
+    "score": 11.926605504587135,
+    "status": "ok"
+   },
+   {
+    "minute": 57.8,
+    "score": 11.926605504587135,
+    "status": "ok"
+   },
+   {
+    "minute": 68.9,
+    "score": 7.3394495412844005,
+    "status": "ok"
+   },
+   {
+    "minute": 77.4,
+    "score": 36.697247706422004,
+    "status": "ok"
+   },
+   {
+    "minute": 81.9,
+    "score": 32.11009174311926,
+    "status": "ok"
+   },
+   {
+    "minute": 88.2,
+    "score": 34.86238532110087,
+    "status": "ok"
+   },
+   {
+    "minute": 97.3,
+    "score": 42.6605504587156,
+    "status": "ok"
+   },
+   {
+    "minute": 108.6,
+    "score": 50.13812154696134,
+    "status": "ok"
+   },
+   {
+    "minute": 113.8,
+    "score": 50.27624309392266,
+    "status": "ok"
+   },
+   {
+    "minute": 132.9,
+    "score": 49.541284403669735,
+    "status": "ok"
+   },
+   {
+    "minute": 143.1,
+    "score": 50.27624309392266,
+    "status": "ok"
+   },
+   {
+    "minute": 150.3,
+    "score": 47.7064220183486,
+    "status": "ok"
+   }
+  ]
+ }
+}
