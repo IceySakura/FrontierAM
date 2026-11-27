@@ -1,0 +1,39 @@
+{
+ "task": "blackbox-cubature-v3.5",
+ "model": "gpt-6.2-sol",
+ "setting": "iterative (v6.3 harness, 6 h limit, validation run; public internet during development; human SOTA targets in the statement)",
+ "dev_run": "dev-blackbox-cubature-v3.5-20261126T143805Z-6e7cbe",
+ "submission": "blackbox-cubature-v3.5-20261126T154526Z-da1d60",
+ "started_local": "2026-11-26 22:38",
+ "agent_stop_reason": "formal_submission",
+ "development_seconds": 4034.4,
+ "model_requests": 148,
+ "test_submissions": 10,
+ "public_scores": [62.9, 69.8, 70.2, 73.1, 67.3, 76.6, 76.0, 77.6, 77.1, 77.1],
+ "network": {
+  "log": "netproxy.jsonl",
+  "allowed": {"arxiv.org": 7, "api.crossref.org": 1},
+  "refused": {"github.com": 1, "api.github.com": 1}
+ },
+ "targets_chosen": ["A", "B", "C"],
+ "private_suite": "suite-blackbox-cubature-v3.5-20261127T033012Z-2cbf1d",
+ "reference_suite": "suite-blackbox-cubature-v3.1-20261125T120404Z-5b7631",
+ "program": {
+  "raw": {"G": 0.6677166128662031, "hard": 0.891, "options": 0.445, "G0": -0.36177241147284983},
+  "mapping": "G >= 0: 50 + 25 G",
+  "score": 66.69291532165508,
+  "detail": "score.json"
+ },
+ "theory": {
+  "formal_check": "lean-check/lean-check.json (lake comparator accepted all 4 proved results R1-R4; 11 modules, about 1990 lines)",
+  "review": "tasks/blackbox-cubature/analysis/THEORY_REVIEW.md section 9 (provisional, not an expert review)",
+  "results": [
+   {"id": "R1", "verified": true, "faithful": true, "class": "incomparable", "score": 35},
+   {"id": "R2", "verified": true, "faithful": true, "class": "incomparable", "score": 35},
+   {"id": "R3", "verified": true, "faithful": true, "class": "incomparable", "score": 30},
+   {"id": "R4", "verified": true, "faithful": true, "class": "incomparable (progress on the gap Gilbert-Kuo-Sloan state)", "score": 45}
+  ],
+  "mapping": "human SOTA = 50; strict improvement above 50; provable progress on an author-stated gap may exceed 50; theory score = maximum over verified results",
+  "score": 45
+ }
+}

@@ -1,0 +1,198 @@
+Resolving dependencies
+Building Theory.Statements
+⚠ [3218/3225] Built Theory.GaussianDilation (8.0s)
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Probability.Distributions.Gaussian.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.MeasureTheory.Constructions.Pi` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Tactic.FieldSimp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Tactic.Linarith` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Tactic.Positivity` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Tactic.Ring` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean:65:4: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/GaussianDilation.lean:65:4: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Theory/GaussianDilation.lean:100:5: `Finset.prod_le_prod'` has been deprecated: Use `Finset.prod_le_prod` instead
+
+Hint: Replace the deprecated name:
+  Finset.prod_le_prod'̵
+⚠ [3219/3225] Built Theory.TwoCoordinate (12s)
+warning: Theory/TwoCoordinate.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/TwoCoordinate.lean:114:42: `Set.diff_subset` has been deprecated: Use `Set.sdiff_subset` instead
+
+Hint: Replace the deprecated name:
+  s̲diff_subset
+warning: Theory/TwoCoordinate.lean:150:54: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/TwoCoordinate.lean:150:54: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [3220/3225] Built Theory.BallModel (12s)
+warning: Theory/BallModel.lean: imports `Mathlib.Analysis.Real.Pi.Bounds` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/BallModel.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/BallModel.lean: imports `Mathlib.Tactic.FunProp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/BallModel.lean:48:9: `mul_le_one₀` has been deprecated: No replacement, use constituent lemmas from proof.
+⚠ [3221/3225] Built Theory.Sections (14s)
+warning: Theory/Sections.lean: imports `Mathlib.Tactic.FunProp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Sections.lean:62:64: `if_true` has been deprecated: Use `ite_true` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵t̵r̵u̵e̵i̲t̲e̲_̲t̲r̲u̲e̲
+warning: Theory/Sections.lean:73:84: `if_false` has been deprecated: Use `ite_false` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵f̵a̵l̵s̵e̵i̲t̲e̲_̲f̲a̲l̲s̲e̲
+warning: Theory/Sections.lean:110:34: This simp argument is unused:
+  ite_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [quadBilin, axis, mul_ite, Finset.sum_ite_eq']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Theory/Sections.lean:137:41: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [3222/3225] Built Theory.Stratified (10s)
+warning: Theory/Stratified.lean: imports `Mathlib.Probability.Moments.Variance` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3223/3225] Built Theory.RareGeometry (10s)
+warning: Theory/RareGeometry.lean:114:15: `Finset.prod_le_prod'` has been deprecated: Use `Finset.prod_le_prod` instead
+
+Hint: Replace the deprecated name:
+  Finset.prod_le_prod'̵
+warning: Theory/RareGeometry.lean:131:14: `Finset.prod_le_prod'` has been deprecated: Use `Finset.prod_le_prod` instead
+
+Hint: Replace the deprecated name:
+  Finset.prod_le_prod'̵
+⚠ [3224/3225] Built Theory.Adaptive (4.0s)
+warning: Theory/Adaptive.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Adaptive.lean:49:8: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [3225/3225] Built Theory.Statements (2.7s)
+warning: Theory/Statements.lean:14:8: declaration uses `sorry`
+warning: Theory/Statements.lean:41:8: declaration uses `sorry`
+warning: Theory/Statements.lean:55:8: declaration uses `sorry`
+warning: Theory/Statements.lean:75:8: declaration uses `sorry`
+Build completed successfully (3225 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.ellipsoid_mass_enclosure, Cubature.gaussian_balls_nonadaptive_precision, Cubature.gaussian_rare_balls_adaptive, Cubature.two_axis_preintegration_stratified, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Statements
+Building Theory.Proofs
+⚠ [3210/3227] Replayed Theory.GaussianDilation
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Probability.Distributions.Gaussian.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.MeasureTheory.Constructions.Pi` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Tactic.FieldSimp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Tactic.Linarith` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Tactic.Positivity` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean: imports `Mathlib.Tactic.Ring` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/GaussianDilation.lean:65:4: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/GaussianDilation.lean:65:4: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Theory/GaussianDilation.lean:100:5: `Finset.prod_le_prod'` has been deprecated: Use `Finset.prod_le_prod` instead
+
+Hint: Replace the deprecated name:
+  Finset.prod_le_prod'̵
+⚠ [3211/3227] Replayed Theory.Sections
+warning: Theory/Sections.lean: imports `Mathlib.Tactic.FunProp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Sections.lean:62:64: `if_true` has been deprecated: Use `ite_true` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵t̵r̵u̵e̵i̲t̲e̲_̲t̲r̲u̲e̲
+warning: Theory/Sections.lean:73:84: `if_false` has been deprecated: Use `ite_false` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵f̵a̵l̵s̵e̵i̲t̲e̲_̲f̲a̲l̲s̲e̲
+warning: Theory/Sections.lean:110:34: This simp argument is unused:
+  ite_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [quadBilin, axis, mul_ite, Finset.sum_ite_eq']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Theory/Sections.lean:137:41: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [3213/3227] Replayed Theory.BallModel
+warning: Theory/BallModel.lean: imports `Mathlib.Analysis.Real.Pi.Bounds` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/BallModel.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/BallModel.lean: imports `Mathlib.Tactic.FunProp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/BallModel.lean:48:9: `mul_le_one₀` has been deprecated: No replacement, use constituent lemmas from proof.
+⚠ [3214/3227] Replayed Theory.RareGeometry
+warning: Theory/RareGeometry.lean:114:15: `Finset.prod_le_prod'` has been deprecated: Use `Finset.prod_le_prod` instead
+
+Hint: Replace the deprecated name:
+  Finset.prod_le_prod'̵
+warning: Theory/RareGeometry.lean:131:14: `Finset.prod_le_prod'` has been deprecated: Use `Finset.prod_le_prod` instead
+
+Hint: Replace the deprecated name:
+  Finset.prod_le_prod'̵
+⚠ [3215/3227] Replayed Theory.Adaptive
+warning: Theory/Adaptive.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Adaptive.lean:49:8: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [3223/3227] Replayed Theory.TwoCoordinate
+warning: Theory/TwoCoordinate.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/TwoCoordinate.lean:114:42: `Set.diff_subset` has been deprecated: Use `Set.sdiff_subset` instead
+
+Hint: Replace the deprecated name:
+  s̲diff_subset
+warning: Theory/TwoCoordinate.lean:150:54: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/TwoCoordinate.lean:150:54: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [3224/3227] Replayed Theory.Stratified
+warning: Theory/Stratified.lean: imports `Mathlib.Probability.Moments.Variance` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3225/3227] Built Theory.Reconstruction (9.5s)
+warning: Theory/Reconstruction.lean: imports `Mathlib.Algebra.Order.BigOperators.Ring.Finset` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Reconstruction.lean:135:25: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: Theory/Reconstruction.lean:145:14: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/Reconstruction.lean:145:14: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Theory/Reconstruction.lean:228:35: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [3226/3227] Built Theory.Nonadaptive (9.8s)
+warning: Theory/Nonadaptive.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Nonadaptive.lean:84:36: This simp argument is unused:
+  Finset.sum_filter
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [f, Set.indicator_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Theory/Nonadaptive.lean:89:15: This simp argument is unused:
+  integral_indicator_one
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [f, hMeas, G]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Theory/Nonadaptive.lean:125:50: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Theory/Nonadaptive.lean:125:50: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+✔ [3227/3227] Built Theory.Proofs (3.7s)
+Build completed successfully (3227 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.ellipsoid_mass_enclosure, Cubature.gaussian_balls_nonadaptive_precision, Cubature.gaussian_rare_balls_adaptive, Cubature.two_axis_preintegration_stratified, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Proofs
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!

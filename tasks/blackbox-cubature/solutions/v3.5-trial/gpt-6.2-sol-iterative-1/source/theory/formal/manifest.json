@@ -1,0 +1,58 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md, R1: unknown ellipsoid, deterministic relative Gaussian mass enclosure",
+      "lean": ["Cubature.ellipsoid_mass_enclosure"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo and Sloan, arXiv:2112.11621, Theorem 1 and conclusion",
+          "Rademacher and Vempala, arXiv:cs/0608054, Theorem 2 (volume) and the discussion in the introduction"
+        ],
+        "explanation": "An oracle upper bound with logarithmic precision dependence for nonmonotone, translated Gaussian ellipsoids; this neither negates the Cartesian singularity theorem nor improves the Lebesgue-volume lower bound for parallelepipeds."
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md, R2: nonadaptive precision lower bound for nested Gaussian balls",
+      "lean": ["Cubature.gaussian_balls_nonadaptive_precision"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Rademacher and Vempala, arXiv:cs/0608054, Theorem 23 (nonadaptive lower bound), Section 5.1"
+        ],
+        "explanation": "A randomized nonadaptive Omega(1/epsilon) lower bound uniform in dimension on a nested Gaussian ball family. The cited lower bound concerns dimensional dependence at fixed accuracy for volume and a much broader convex-body class."
+      }
+    },
+    {
+      "id": "R3",
+      "claim": "THEORY.md, R3: inverse-rarity lower bound with adaptive randomized point queries",
+      "lean": ["Cubature.gaussian_rare_balls_adaptive"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Rademacher and Vempala, arXiv:cs/0608054, Theorems 2 (volume) and 23 (nonadaptive lower bound)"
+        ],
+        "explanation": "For Gaussian balls of unknown location with uniformly comparable small masses, any randomized adaptive method needs order inverse mass at constant relative precision. The volume result concerns well-rounded bodies with a supplied common interior ball and dimensional rather than rarity dependence."
+      }
+    },
+    {
+      "id": "R4",
+      "claim": "THEORY.md, R4: two-coordinate preintegration for elliptical sections and stratified variance",
+      "lean": ["Cubature.two_axis_preintegration_stratified"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Gilbert, Kuo and Sloan, arXiv:2112.11621, Theorem 1 and conclusion",
+          "He and Wang, doi:10.1137/15M1007963, Theorems 3.5 and 3.6; He, arXiv:1702.03361, Proposition 2.3"
+        ],
+        "explanation": "A global Lipschitz bound through quadratic tangencies and a variance of order n^(-1-2/(d-2)) after integrating two known Gaussian coordinates. This improves the directly applicable generic discontinuity exponent on the structured subclass, but the method and hypotheses differ from direct scrambled-net results."
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+name = "theory"
+defaultTargets = ["Theory"]
+# The prebuilt dependencies are read-only; build products go to /tmp so that the submission holds only sources.
+packagesDir = "/opt/lean-packages"
+buildDir = "/tmp/lean-build"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.35.0"
+
+[[require]]
+name = "cslib"
+scope = "leanprover"
+rev = "v4.35.0"
+
+[[lean_lib]]
+name = "Theory"
+roots = []
+globs = ["Theory.*"]
