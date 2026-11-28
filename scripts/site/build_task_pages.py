@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[2]
 TASKS = ROOT / 'tasks'
 TEXT = {'.md', '.py', '.txt', '.json', '.sh', '.c', '.cc', '.cpp', '.h', '.hpp', '.R', '.toml', '.yaml', '.yml', '.jl',
         '.m', '.cfg', ''}
-MODEL = {'gpt-6.1-sol': 'GPT-6.1 Sol', 'gpt-6.2-sol': 'GPT-6.2 Sol', 'gpt-6-astra': 'GPT-6 Astra', 'claude-opus-5-5': 'Claude Opus 5.5', 'qwen3.8-max-0902': 'Qwen3.8 Max', 'hy4': 'Hunyuan 4', 'intern-s2': 'Intern S2', 'qwen4-max': 'Qwen4 Max', 'minimax-m3.1-flash': 'MiniMax M3.1 Flash'}
+MODEL = {'gpt-6.1-sol': 'GPT-6.1 Sol', 'gpt-6.2-sol': 'GPT-6.2 Sol', 'gpt-6-astra': 'GPT-6 Astra', 'claude-opus-5-5': 'Claude Opus 5.5', 'qwen3.8-max-0902': 'Qwen3.8 Max', 'hy4': 'Hunyuan 4', 'intern-s2': 'Intern S2', 'qwen4-max': 'Qwen4 Max', 'minimax-m3.1-flash': 'MiniMax M3.1 Flash', 'glm-5.4': 'GLM-5.4'}
 SETTING = {'单轮': 'single', '迭代': 'iterative'}
 REFERENCE_SOURCES = {
     'galaxy-gravity': ['.runtime-ops/galaxy-gravity-v2/packages/operator/operator/baselines'],
@@ -249,7 +249,7 @@ def readme(meta: dict, solutions: list[tuple[dict, str, list[str]]], listed: lis
 COLUMNS = [('gpt-6.2-sol', '单轮'), ('gpt-6.2-sol', '迭代'), ('gpt-6-astra', '单轮'), ('gpt-6-astra', '迭代'), ('gpt-6.1-sol', '单轮'), ('gpt-6.1-sol', '迭代'),
            ('claude-opus-5-5', '单轮'), ('claude-opus-5-5', '迭代'), ('hy4', '单轮'), ('hy4', '迭代'), ('qwen4-max', '单轮'), ('qwen4-max', '迭代'),
            ('qwen3.8-max-0902', '单轮'), ('qwen3.8-max-0902', '迭代'), ('minimax-m3.1-flash', '单轮'), ('minimax-m3.1-flash', '迭代'),
-           ('intern-s2', '单轮'), ('intern-s2', '迭代')]
+           ('glm-5.4', '单轮'), ('intern-s2', '单轮'), ('intern-s2', '迭代')]
 PROTOCOLS = ('v6.3', 'v6.2', 'v6.1', 'v6')  # newest first; the board shows the newest one that has results
 
 

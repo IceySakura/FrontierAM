@@ -235,7 +235,8 @@ LINEAR = '\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)�
 
 # (model, attempt-log tag), roughly in board order (task-page rows follow it); NOTES keys add the model for opus
 MODELS = [('gpt-6.2-sol', 'sol62'), ('gpt-6-astra', 'astra'), ('gpt-6.1-sol', 'sol'), ('claude-opus-5-5', 'opus'), ('hy4', 'hy4'),
-          ('qwen4-max', 'qwen4'), ('qwen3.8-max-0902', 'qwen'), ('minimax-m3.1-flash', 'minimax'), ('intern-s2', 'intern')]
+          ('qwen4-max', 'qwen4'), ('qwen3.8-max-0902', 'qwen'), ('minimax-m3.1-flash', 'minimax'), ('glm-5.4', 'glm'),
+          ('intern-s2', 'intern')]
 
 
 def submission_of(task: str, setting: str, n: int, tag: str = 'sol') -> str | None:

@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts/site'))
 STORE = ROOT / 'var/stores/store-v63'
 TAGS = {'gpt-6.2-sol': 'sol62', 'gpt-6-astra': 'astra', 'gpt-6.1-sol': 'sol', 'claude-opus-5-5': 'opus', 'hy4': 'hy4',
-        'qwen4-max': 'qwen4', 'qwen3.8-max-0902': 'qwen', 'minimax-m3.1-flash': 'minimax'}
+        'qwen4-max': 'qwen4', 'qwen3.8-max-0902': 'qwen', 'minimax-m3.1-flash': 'minimax', 'glm-5.4': 'glm'}
 TASKS = {'conic': ('conic', 'v3'), 'exponential-v3': ('exponential', 'v3'), 'galaxy-gravity-v4': ('galaxy-gravity', 'v4'),
          'polarization-demosaicking-v3': ('polarization-demosaicking', 'v3'), 'trajectory-covariance-v2': ('trajectory-covariance', 'v2'),
          'species-tree-v3': ('species-tree', 'v3'), 'ihvp-sequence-v4': ('ihvp-sequence', 'v4'),

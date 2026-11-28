@@ -2,7 +2,8 @@
 
 The container's ATR client transport sends one non-streaming request per connection (Content-Length body) and waits
 for the whole response. This relay forwards each request to atr serve; when the upstream answers 429 for a transient
-rate limit (organisation-wide tokens or requests per minute), it waits and sends the same request again, with backoff,
+rate limit (organisation-wide tokens or requests per minute) or AI Hub's 1011 (no available upstream account, HTTP
+500), it waits and sends the same request again, with backoff,
 for at most RETRY_BUDGET seconds, instead of handing the 429 to the agent's client (whose own retries do not reach the
 upstream through this chain). Any other answer, including quota exhaustion, is returned unchanged. Retries are logged.
 
@@ -24,10 +25,15 @@ RETRY_BUDGET = 900.0
 # "credit balance is too low": the model gateway's bound upstream account ran dry; ATR rotates the affinity id and
 # answers 429, and a later request lands on another account (an opus attempt exited on it, 2026-11-17).
 TRANSIENT = (b'rate_limit_exceeded', b'Rate limit reached', b'rate limit', b'credit balance is too low')
+# AI Hub 1011 (HTTP 500, PlatformNoAvailableAccount): no upstream account was free for the model at that moment; the
+# gateway's retry policy marks it retryable (list_retry_policies; glm-5.4 failed most requests this way, 2026-11-28).
+NO_ACCOUNT = b'PlatformNoAvailableAccount'
 HOP = {'connection', 'keep-alive', 'transfer-encoding', 'content-length', 'proxy-connection', 'te', 'trailer', 'upgrade'}
 
 
 def transient(status: int, body: bytes) -> bool:
+    if status == 500 and NO_ACCOUNT in body:
+        return True
     return status == 429 and any(m in body for m in TRANSIENT) and b'insufficient_quota' not in body
 
 
@@ -71,7 +77,7 @@ def forward(port: int, method: str, path: str, headers, body: bytes, log, sleep=
         if time.monotonic() - started + wait > RETRY_BUDGET:
             log({'event': 'rate_limit_gave_up', 'attempts': attempt, 'waited_s': round(time.monotonic() - started, 1)})
             return result
-        log({'event': 'rate_limit_retry', 'attempt': attempt, 'wait_s': wait})
+        log({'event': 'rate_limit_retry', 'attempt': attempt, 'wait_s': wait, 'status': response.status})
         sleep(wait)
 
 
