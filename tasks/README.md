@@ -9,7 +9,7 @@
 | [galaxy-gravity](galaxy-gravity/README.md) | 24 |
 | [polarization-demosaicking](polarization-demosaicking/README.md) | 26 |
 | [trajectory-covariance](trajectory-covariance/README.md) | 19 |
-| [species-tree](species-tree/README.md) | 19 |
+| [species-tree](species-tree/README.md) | 20 |
 | [ihvp-sequence](ihvp-sequence/README.md) | 24 |
 | [pdhcg-qp](pdhcg-qp/README.md) | 0 |
 | [blackbox-cubature](blackbox-cubature/README.md) | 16 |
