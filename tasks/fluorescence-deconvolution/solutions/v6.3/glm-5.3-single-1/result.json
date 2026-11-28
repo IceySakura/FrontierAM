@@ -1,0 +1,14 @@
+{
+ "model": "glm-5.3",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "fluorescence-deconvolution-20261128T161217Z-9b700c",
+ "raw": "nMSE \\(E = 0.11756\\)，96 例，单例最长 0.42 秒（RL20：\\(U = 0.21995\\)，SHB10：\\(W = 0.16114\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 63.523,
+ "review": null,
+ "process": {
+  "minutes": 43.6,
+  "public_tests": 0
+ }
+}

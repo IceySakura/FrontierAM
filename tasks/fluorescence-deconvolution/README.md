@@ -80,6 +80,7 @@
 | Qwen3.8 Max | 迭代 | nMSE \(E = 0.07322\)，96 例，单例最长 0.19 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 77.3 | 3 次提交，220 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | nMSE \(E = 0.16457\)，96 例，单例最长 0.40 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 47.1 | 22 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | nMSE \(E = 0.10660\)，96 例，单例最长 0.36 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 66.9 | 14 次提交，74 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
+| GLM-5.3 | 单轮 | nMSE \(E = 0.11756\)，96 例，单例最长 0.42 秒（RL20：\(U = 0.21995\)，SHB10：\(W = 0.16114\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 63.5 | 44 分钟 | [`glm-5.3-single-1/`](solutions/v6.3/glm-5.3-single-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -178,6 +179,10 @@ public 分数随测试提交：75.1（100 分钟） → 78.3（119 分钟） →
 public 分数随测试提交：56.3（19 分钟） → 62.5（24 分钟） → 64.5（30 分钟） → 65.6（33 分钟） → 65.6（37 分钟） → 66.8（39 分钟） → 67.5（42 分钟） → 68.8（44 分钟） → 69.2（55 分钟） → 69.5（58 分钟） → 70.5（60 分钟） → 71.2（62 分钟） → 71.2（68 分钟） → 71.2（69 分钟）
 
 源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `fluorescence-deconvolution-20261125T215519Z-30dcbf`）。
+
+### GLM-5.3（单轮，v6.3）
+
+源码 [`solutions/v6.3/glm-5.3-single-1/source/`](solutions/v6.3/glm-5.3-single-1/source/)（提交 `fluorescence-deconvolution-20261128T161217Z-9b700c`）。
 
 ## 观察与说明
 
