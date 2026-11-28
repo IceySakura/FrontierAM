@@ -4,7 +4,8 @@ Each shard's metrics hold per-part rows (weak/strong for the reference pair, can
 from a reference suite (--reference) or, by default, from the store's active baseline for the task.
 
 v3 (two tracks, per-instance floors, arena/operator_drivers/blackbox_cubature_v3.py) also reports the tracks and
-the error-bound diagnostics of the candidate.
+the error-bound diagnostics of the candidate; with the curved track (v3.6) also the two-track G and score on the v3.1
+instances alone (two_track), for comparison with v3.1 to v3.5.
 
 Usage: cubature-suite-score.py --store STORE [--task blackbox-cubature-v2] [--reference SUITE] [--candidate SUITE] --out OUT.json
 """
@@ -81,6 +82,12 @@ def main():
             if v3:
                 result.update(tracks=g['tracks'], mc_tracks=g0['tracks'], cells=g['cells'],
                               bounds=blackbox_cubature_v3.bound_diagnostics(candidate['rows']))
+            if v3 and any(row['track'] == 'curved' for row in candidate['rows']):
+                rows = [row for row in candidate['rows'] if row['track'] != 'curved']
+                kept = {row['id'] for row in rows}
+                ref = [row for row in strong['rows'] if row['id'] in kept]
+                g2, g20 = gain(rows, ref, guard), gain([row for row in weak['rows'] if row['id'] in kept], ref, guard)
+                result['two_track'] = {'gain': g2['gain'], 'score': score_100(g2, g20), 'mc_gain': g20['gain']}
         else:
             result['score'] = None
     args.out.parent.mkdir(parents=True, exist_ok=True)
