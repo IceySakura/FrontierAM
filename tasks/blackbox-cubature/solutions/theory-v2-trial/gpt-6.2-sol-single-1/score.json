@@ -1,0 +1,14 @@
+{
+ "score": 100,
+ "scale": "0-100, reference 50 (a new valuable point on the human frontier)",
+ "raw": {
+  "verified_results": [
+   "R1",
+   "R2"
+  ],
+  "tier": "partial-order better (optimality path)",
+  "decisive_result": "R1/R2: necessity of the same condition, classical part (exact C^q) and Sobolev part (weak mixed second derivative not square integrable)"
+ },
+ "mapping": "tiers with the optimality path (THEORY_REVIEW.md sections 2 and 2.1); decentralized task: max(frontier tier T, row score R)",
+ "review": "provisional (agent review, not an expert review), THEORY_REVIEW.md section 13"
+}

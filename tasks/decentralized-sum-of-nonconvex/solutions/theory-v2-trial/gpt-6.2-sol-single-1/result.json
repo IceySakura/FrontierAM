@@ -1,0 +1,24 @@
+{
+ "task": "decentralized-sum-of-nonconvex-theory-v2",
+ "model": "gpt-6.2-sol",
+ "setting": "single (v6.3 harness, 6 h limit, validation run; theory only; public internet during development)",
+ "dev_run": "dev-decentralized-sum-of-nonconvex-theory-v2-20261128T030617Z-e53625",
+ "submission": "decentralized-sum-of-nonconvex-theory-v2-20261128T040048Z-3b1efc",
+ "status": "frozen",
+ "agent_stop_reason": "turn_completed",
+ "development_seconds": 3267.73385056993,
+ "started_utc": "20261128T030617Z",
+ "network": {
+  "log": "netproxy.jsonl",
+  "requests": 87,
+  "allowed": 29,
+  "denied": 58,
+  "allowed_hosts": [
+   "arxiv.org",
+   "export.arxiv.org",
+   "jmlr.org",
+   "www.cs.technion.ac.il",
+   "www.jmlr.org"
+  ]
+ }
+}

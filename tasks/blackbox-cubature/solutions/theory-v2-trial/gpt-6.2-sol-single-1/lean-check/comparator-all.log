@@ -1,0 +1,132 @@
+Resolving dependencies
+Building Theory.Statements
+⚠ [3211/3213] Built Theory.Setup (2.6s)
+warning: Theory/Setup.lean: imports `Mathlib.Analysis.Calculus.LineDeriv.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Setup.lean: imports `Mathlib.Probability.Distributions.Gaussian.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Setup.lean: imports `Mathlib.MeasureTheory.Constructions.Pi` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [3212/3213] Built Theory.WeakSetup (2.5s)
+⚠ [3213/3213] Built Theory.Statements (2.6s)
+warning: Theory/Statements.lean: imports `Mathlib.MeasureTheory.Function.LocallyIntegrable` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Statements.lean:13:8: declaration uses `sorry`
+warning: Theory/Statements.lean:37:8: declaration uses `sorry`
+Build completed successfully (3213 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.gaussianMixedOrder_sharp, Cubature.gaussianMixedSecond_weakL2_sharp, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Statements
+Building Theory.Proofs
+⚠ [3210/3270] Replayed Theory.Setup
+warning: Theory/Setup.lean: imports `Mathlib.Analysis.Calculus.LineDeriv.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Setup.lean: imports `Mathlib.Probability.Distributions.Gaussian.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Setup.lean: imports `Mathlib.MeasureTheory.Constructions.Pi` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3280/3287] Built Theory.Axis (13s)
+warning: Theory/Axis.lean: imports `Mathlib.Analysis.Calculus.ContDiff.Deriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Axis.lean: imports `Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Axis.lean: imports `Mathlib.Analysis.Calculus.Deriv.Abs` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Axis.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3281/3287] Built Theory.Growth (13s)
+warning: Theory/Growth.lean: imports `Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Growth.lean: imports `Mathlib.RingTheory.Polynomial.Hermite.Gaussian` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3282/3287] Built Theory.Coordinates (13s)
+warning: Theory/Coordinates.lean: imports `Mathlib.Analysis.Calculus.Deriv.Shift` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Coordinates.lean: imports `Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Coordinates.lean: imports `Mathlib.Algebra.BigOperators.Group.Finset.Defs` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Coordinates.lean: imports `Mathlib.Data.Multiset.Replicate` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3283/3287] Built Theory.SharpPhase (9.2s)
+warning: Theory/SharpPhase.lean:60:0: automatically included section variable(s) unused in theorem `Cubature.hasAxisCoordinatePartial`:
+  [Fintype ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SharpPhase.lean:68:0: automatically included section variable(s) unused in theorem `Cubature.hasRetainedCoordinatePartial_axis`:
+  [Fintype ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SharpPhase.lean:100:0: automatically included section variable(s) unused in theorem `Cubature.contDiff_retainedSum`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SharpPhase.lean:104:0: automatically included section variable(s) unused in theorem `Cubature.polynomialGrowth_retainedSum`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SharpPhase.lean:161:39: This simp argument is unused:
+  List.count_cons
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [ih]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Theory/SharpPhase.lean:178:0: automatically included section variable(s) unused in theorem `Cubature.hasDerivAt_sharpPhase_fiber`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SharpPhase.lean:192:0: automatically included section variable(s) unused in theorem `Cubature.continuous_sharpRoot`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SharpPhase.lean:195:0: automatically included section variable(s) unused in theorem `Cubature.tendsto_sharpPhase_fiber`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SharpPhase.lean:203:0: automatically included section variable(s) unused in theorem `Cubature.sharpRoot_eq_iff`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SharpPhase.lean:259:0: automatically included section variable(s) unused in theorem `Cubature.contDiff_preintegrated_sharpPhase`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [3284/3287] Built Theory.Splice (10s)
+warning: Theory/Splice.lean: imports `Mathlib.Analysis.Calculus.Deriv.Inverse` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/Splice.lean: imports `Mathlib.Analysis.SpecialFunctions.Sqrt` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3285/3287] Built Theory.WeakObstruction (5.4s)
+warning: Theory/WeakObstruction.lean: imports `Mathlib.Analysis.Distribution.AEEqOfIntegralContDiff` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/WeakObstruction.lean: imports `Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/WeakObstruction.lean: imports `Mathlib.Analysis.SpecialFunctions.Integrability.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Theory/WeakObstruction.lean: imports `Mathlib.MeasureTheory.Group.Prod` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [3286/3287] Built Theory.SpliceInput (3.7s)
+warning: Theory/SpliceInput.lean:106:0: automatically included section variable(s) unused in theorem `Cubature.continuous_spliceRoot`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SpliceInput.lean:109:0: automatically included section variable(s) unused in theorem `Cubature.tendsto_splicePhase_fiber`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SpliceInput.lean:120:0: automatically included section variable(s) unused in theorem `Cubature.spliceRoot_eq_iff`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Theory/SpliceInput.lean:176:0: automatically included section variable(s) unused in theorem `Cubature.gaussianPreintegral_splicePhase`:
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [3287/3287] Built Theory.Proofs (2.8s)
+Build completed successfully (3287 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Cubature.gaussianMixedOrder_sharp, Cubature.gaussianMixedSecond_weakL2_sharp, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Proofs
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!

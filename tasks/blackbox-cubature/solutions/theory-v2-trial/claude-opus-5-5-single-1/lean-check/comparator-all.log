@@ -1,0 +1,80 @@
+Resolving dependencies
+Building Theory.Statements
+⚠ [9047/9048] Built Theory.Defs (4.7s)
+warning: Theory/Defs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9048/9048] Built Theory.Statements (5.2s)
+warning: Theory/Statements.lean:57:8: declaration uses `sorry`
+warning: Theory/Statements.lean:114:8: declaration uses `sorry`
+warning: Theory/Statements.lean:168:8: declaration uses `sorry`
+Build completed successfully (9048 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, GKLS.gkls_mixed_condition_sharp, GKLS.gkls_mixed_condition_kink, GKLS.quadric_preintegration_sqrt, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Statements
+Building Theory.Proofs
+⚠ [9047/9056] Replayed Theory.Defs
+warning: Theory/Defs.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9048/9056] Built Theory.Weak (11s)
+warning: Theory/Weak.lean:22:10: This simp argument is unused:
+  Function.update_of_ne h
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Pi.single_apply, h]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Theory/Weak.lean:22:35: This simp argument is unused:
+  Pi.single_apply
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Function.update_of_ne h, h]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [9049/9056] Built Theory.OneDim (12s)
+warning: Theory/OneDim.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [9050/9056] Built Theory.Tail (8.4s)
+warning: Theory/Tail.lean:177:55: This simp argument is unused:
+  Real.dist_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [9051/9056] Built Theory.MultiDim (15s)
+⚠ [9052/9056] Built Theory.Quadric (26s)
+warning: Theory/Quadric.lean:136:10: This simp argument is unused:
+  h
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [not_lt.mpr h.le, neg_pos.mpr h]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Theory/Quadric.lean:162:33: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+
+Hint: Replace the deprecated name:
+  S̵e̵t̵.̵m̵e̵m̵_̵s̵e̵t̵O̵f̵_̵e̵q̵m̲e̲m̲_̲o̲f̲P̲r̲e̲d̲_̲e̲q̲
+⚠ [9053/9056] Built Theory.Main (11s)
+warning: Theory/Main.lean:81:8: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: Theory/Main.lean:84:15: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: Theory/Main.lean:106:8: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: Theory/Main.lean:112:8: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [9054/9056] Built Theory.Kink (6.3s)
+warning: Theory/Kink.lean:70:33: `Set.setOf_eq_eq_singleton` has been deprecated: Use `Set.ofPred_eq_eq_singleton` instead
+
+Hint: Replace the deprecated name:
+  S̵e̵t̵.̵s̵e̵t̵O̵f̵_̵e̵q̵_̵e̵q̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵o̲f̲P̲r̲e̲d̲_̲e̲q̲_̲e̲q̲_̲s̲i̲n̲g̲l̲e̲t̲o̲n̲
+✔ [9055/9056] Built Theory.Hcond (9.5s)
+✔ [9056/9056] Built Theory.Proofs (5.2s)
+Build completed successfully (9056 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, GKLS.gkls_mixed_condition_sharp, GKLS.gkls_mixed_condition_kink, GKLS.quadric_preintegration_sqrt, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Proofs
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!

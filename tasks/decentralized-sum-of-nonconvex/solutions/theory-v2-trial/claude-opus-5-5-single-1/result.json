@@ -1,0 +1,23 @@
+{
+ "task": "decentralized-sum-of-nonconvex-theory-v2",
+ "model": "claude-opus-5-5",
+ "setting": "single (v6.3 harness, 6 h limit, validation run; theory only; public internet during development)",
+ "dev_run": "dev-decentralized-sum-of-nonconvex-theory-v2-20261128T030637Z-ce7160",
+ "submission": "decentralized-sum-of-nonconvex-theory-v2-20261128T045528Z-b54380",
+ "status": "frozen",
+ "agent_stop_reason": "turn_completed",
+ "development_seconds": 6527.529361479916,
+ "started_utc": "20261128T030637Z",
+ "network": {
+  "log": "netproxy.jsonl",
+  "requests": 57,
+  "allowed": 57,
+  "denied": 0,
+  "allowed_hosts": [
+   "api.openalex.org",
+   "api.semanticscholar.org",
+   "arxiv.org",
+   "export.arxiv.org"
+  ]
+ }
+}

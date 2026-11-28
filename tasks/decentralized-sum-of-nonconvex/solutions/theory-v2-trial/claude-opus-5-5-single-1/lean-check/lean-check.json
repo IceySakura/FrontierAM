@@ -1,0 +1,276 @@
+{
+ "source": "/data/workspace/FrontierAM/tasks/decentralized-sum-of-nonconvex/solutions/theory-v2-trial/claude-opus-5-5-single-1/source",
+ "toolchain": "leanprover/lean4:v4.35.0",
+ "packages": {
+  "cslib": "5b56df99362532c46e1175381fbbdd755bd56030",
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "plausible": "dfa4f38190d07c37e315953e08b90fe2d95b3c24",
+  "LeanSearchClient": "d6b4c7be5be75ec4917c873ac50c756dc1436372",
+  "importGraph": "a41f0e9a4dea23188ea9cc1c41ac9f8bbafe0b93",
+  "proofwidgets": "df72b022e558978a1c50264cfc4d7fec86fa8e04",
+  "aesop": "4a174c490d8707121c4a9290800489f105d85e07",
+  "Qq": "dce0ad79c486cb1fb504af04f953c3466b0c6db8",
+  "batteries": "66e469188fe07963e5cf666c7d4433f45b8131c5",
+  "Cli": "c24fe6078c630e89b489bffe59b3e20ac30d12c8"
+ },
+ "permitted_axioms": [
+  "propext",
+  "Quot.sound",
+  "Classical.choice"
+ ],
+ "paranoid": false,
+ "manifest_problems": [],
+ "work": "/data/workspace/FrontierAM/var/lean-check/lean-check-461a51",
+ "fixed": {
+  "Theory/Model.lean": {
+   "template_sha256": "4f1318478b3ece258b125ac30b17566a16d55d66668e567bf778991aae5ff9d3",
+   "submission": "unchanged"
+  },
+  "Theory/Sanity.lean": {
+   "template_sha256": "87f2fad8b027420bd93df532644564c8e56136b9259978eef99501f9b7c40446",
+   "submission": "unchanged"
+  }
+ },
+ "lean_files": [
+  "Theory/Chain.lean",
+  "Theory/LowerBound.lean",
+  "Theory/Main.lean",
+  "Theory/Model.lean",
+  "Theory/Proofs.lean",
+  "Theory/Sanity.lean",
+  "Theory/Statements.lean",
+  "Theory/StronglyConvex.lean",
+  "Theory/Support.lean",
+  "Theory/Unified.lean"
+ ],
+ "statement_layer": {
+  "Theory.Statements": [],
+  "Theory.Model": []
+ },
+ "results": [
+  {
+   "id": "R1",
+   "claim": "THEORY.md §2 table row R1, proof in §4 (Proof of R1): T_eps >= ceil(m(1 - eps/Delta)) for every admissible algorithm and every W, on one instance whose components are mu-strongly convex (linear + (mu/2)||x||^2)",
+   "lean": [
+    "ULB63.lower_bound_transient"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "equal",
+    "human": [
+     "Woodworth-Srebro, NeurIPS 2016, arXiv:1605.08003v3, Theorem 8 (Omega(m) term)",
+     "Peng-Tang-Jia, arXiv:2609.00045v3, Theorem thm:pl-main (n term)"
+    ],
+    "explanation": "The additive Omega(m) data term is known; R1 restates it in the decentralized model with explicit constant (1 - eps/Delta)."
+   },
+   "verified": true
+  },
+  {
+   "id": "R2",
+   "claim": "THEORY.md §2 row R2, proof §4 (Proof of R2, R5, R7): for q in (0,1) with 4 N mu q <= (L - mu)(1-q)^2, T_eps >= ceil((m/2) ln((1-q)^2 Delta/eps) / ln(1/q)) for every admissible algorithm and every W, hard components mu-strongly convex L-smooth quadratics",
+   "lean": [
+    "ULB63.lower_bound_chain"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "stronger",
+    "human": [
+     "H-LB-hly: Hannah-Liu-O'Connor-Yin, NeurIPS 2018, arXiv:1805.07786v1, Theorem 2 / appendix theorem 'Lower complexity bound oblivious p-CLI algorithms'",
+     "H-LB-zsh: Zhang-Shu-He, arXiv:2010.08766v2, Theorem 3.1",
+     "Han-Xie-Zhang, JMLR 2024, arXiv:2103.08280v5, theorem thm:strongly"
+    ],
+    "explanation": "General form of R3: same bound order as H-LB-hly/H-LB-zsh (n/(1+ln(n/kappa)) ln(1/eps) shape for kappa <= N), same hard class (mu-strongly convex L-smooth quadratic components), but for the strictly larger class of all zero-respecting randomized adaptive algorithms in the decentralized model (anchors: oblivious p-CLI; undefined, implicitly linear-span IFO methods; i.i.d. sampling). Not dominated: Peng-Tang-Jia needs nonconvex components, Woodworth-Srebro gives only Omega(m) for kappa <= 161N. For kappa > 161N it is dominated by Woodworth-Srebro (see R4). Primary anchor: H-LB-zsh (its IFO method class needs each query to reveal at most one coordinate, so it is contained in A; its theorem covers only the informal regime n >> kappa and kappa > 3.5n, whereas ours is explicit for all kappa, in particular kappa ~ N). Against H-LB-hly the gain is adaptivity (the registration table records oblivious p-CLI as narrower than A; literally the p-CLI oracle also admits dense oblivious matrices). Also answers the question stated by Han-Xie-Zhang (arXiv:2103.08280v5): 'Sampling without replacement and methods that break the linear-span protocol are also worth considering.'"
+   },
+   "verified": true
+  },
+  {
+   "id": "R3",
+   "claim": "THEORY.md §0 and §2 row R3, proof §4 (Proof of R3): for 0 < kappa - 1 <= 8N, T_eps >= ceil((m/2) ln(Delta/(4 eps)) / ln(16 N/(kappa-1))) for every admissible algorithm and every W, hard components mu-strongly convex L-smooth quadratics",
+   "lean": [
+    "ULB63.lower_bound_small_kappa"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "stronger",
+    "human": [
+     "H-LB-hly: Hannah-Liu-O'Connor-Yin, NeurIPS 2018, arXiv:1805.07786v1, Theorem 2 (oblivious p-CLI)",
+     "H-LB-zsh: Zhang-Shu-He, arXiv:2010.08766v2, Theorem 3.1, case n >> kappa (randomized incremental gradient methods)",
+     "Han-Xie-Zhang, JMLR 2024, arXiv:2103.08280v5, theorem thm:strongly (i.i.d. index sampling, linear span)"
+    ],
+    "explanation": "Same bound order m ln R/(1+ln(N/kappa)) (plus the m term of R1) and same hard class (mu-strongly convex L-smooth quadratic components) as the anchors, proved for the strictly larger class A (adaptive index choice, zero-respecting nonlinear local computation, prox, decentralized communication, any W) directly in the decentralized iteration model, with explicit constants and explicit validity 0 < kappa-1 <= 8N (no informal n >> kappa). Not dominated by any known result: Peng-Tang-Jia (stronger denominator) needs nonconvex components and 3 <= kappa <= sqrt(N); Woodworth-Srebro gives only Omega(m) for kappa <= 161N; Han-Xie-Zhang is restricted to i.i.d. sampling; Hendrikx-Bach-Massoulie (arXiv:2005.10675) needs kappa >= 3m. The bound improvement is not claimed (ZSH's raw bound has the same order in Delta-normalization). Primary anchor: H-LB-zsh (its IFO method class needs each query to reveal at most one coordinate, so it is contained in A; its theorem covers only the informal regime n >> kappa and kappa > 3.5n, whereas ours is explicit for all kappa, in particular kappa ~ N). Against H-LB-hly the gain is adaptivity (the registration table records oblivious p-CLI as narrower than A; literally the p-CLI oracle also admits dense oblivious matrices). Also answers the question stated by Han-Xie-Zhang (arXiv:2103.08280v5): 'Sampling without replacement and methods that break the linear-span protocol are also worth considering.'"
+   },
+   "verified": true
+  },
+  {
+   "id": "R4",
+   "claim": "THEORY.md §2 row R4, proof §4 (Proof of R4): for kappa - 1 >= 16N, T_eps >= ceil((m/8) sqrt((kappa-1)/N) ln(4 N Delta/((kappa-1) eps))) for every admissible algorithm and every W, hard components mu-strongly convex",
+   "lean": [
+    "ULB63.lower_bound_large_kappa"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "H-LB-data: Woodworth-Srebro, NeurIPS 2016, arXiv:1605.08003v3, Theorem 8",
+     "H-LB-hly: arXiv:1805.07786v1, Theorem 2"
+    ],
+    "explanation": "For kappa > 161N dominated by Woodworth-Srebro (larger algorithm class, same sqrt(m kappa/n) and better log argument ln(R sqrt(N/kappa)) vs ours ln(4NR/kappa)); on 16N+1 <= kappa <= 161N, where WS does not apply, it extends the HLY/ZSH large-kappa shape to the full class A."
+   },
+   "verified": true
+  },
+  {
+   "id": "R5",
+   "claim": "THEORY.md §2 row R5, proof §4 (Proof of R2, R5, R7): for mu <= L and q in (0,1) with 4 N mu q <= L (1-q)^2, T_eps >= ceil((m/2) ln((1-q)^2 Delta/eps)/ln(1/q)) for every admissible algorithm and every W, hard components convex (h = (mu/2)||x||^2)",
+   "lean": [
+    "ULB63.lower_bound_chain_convex"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "stronger",
+    "human": [
+     "H-LB-hly: Hannah-Liu-O'Connor-Yin, NeurIPS 2018, arXiv:1805.07786v1, Theorem 2 (convex components per the registration table; oblivious p-CLI)"
+    ],
+    "explanation": "Same bound shape as H-LB-hly on convex-component instances, for the strictly larger class A; additionally covers 1 <= kappa < 2 (with q = kappa/(16N)) where the strongly-convex-component version degenerates. Against H-LB-hly the gain is adaptivity (the registration table records oblivious p-CLI as narrower than A; literally the p-CLI oracle also admits dense oblivious matrices)."
+   },
+   "verified": true
+  },
+  {
+   "id": "R6",
+   "claim": "THEORY.md §2 row R6, proof §4 (Proof of R6): for rho >= 0 and q as in R5, minimax n m c L mu Delta rho eps >= max(ceil(m(1-eps/Delta)), ceil((m/2) ln((1-q)^2 Delta/eps)/ln(1/q)))",
+   "lean": [
+    "ULB63.minimax_lower_bound"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "H-LB-pl: Peng-Tang-Jia, arXiv:2609.00045v3, Theorem thm:pl-main",
+     "H-LB-data: Woodworth-Srebro, arXiv:1605.08003v3, Theorem 8"
+    ],
+    "explanation": "Lower bound on the minimax quantity of the standard class for all kappa >= 1 and all n, m >= 1; weaker than Peng-Tang-Jia on 3 <= kappa <= sqrt(N), n >= n0 (by up to a log N factor near kappa = sqrt(N)), not covered by PL or WS for kappa < 3, small N, and sqrt(N) < kappa <= 161N (there PL at kappa = sqrt(N) plus monotonicity in L would give the stronger m ln R)."
+   },
+   "verified": true
+  },
+  {
+   "id": "R7",
+   "claim": "THEORY.md §2 row R7, proof §4 (Proof of R2, R5, R7): under the hypotheses of R2, for every admissible algorithm, every W, every seed and every t < (m/2) ln((1-q)^2 Delta/eps)/ln(1/q), phi(x_t) - phi* > eps (pathwise)",
+   "lean": [
+    "ULB63.lower_bound_chain_pathwise"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "stronger",
+    "human": [
+     "H-LB-hly: arXiv:1805.07786v1, Theorem 2",
+     "H-LB-zsh: arXiv:2010.08766v2, Theorem 3.1"
+    ],
+    "explanation": "Pathwise (every seed) version of R2: in addition to the larger algorithm class, the guarantee type is stronger than an expectation bound (it also rules out success with any positive probability before the bound). Primary anchor: H-LB-zsh (its IFO method class needs each query to reveal at most one coordinate, so it is contained in A; its theorem covers only the informal regime n >> kappa and kappa > 3.5n, whereas ours is explicit for all kappa, in particular kappa ~ N). Against H-LB-hly the gain is adaptivity (the registration table records oblivious p-CLI as narrower than A; literally the p-CLI oracle also admits dense oblivious matrices). Also answers the question stated by Han-Xie-Zhang (arXiv:2103.08280v5): 'Sampling without replacement and methods that break the linear-span protocol are also worth considering.'"
+   },
+   "verified": true
+  },
+  {
+   "id": "R8",
+   "claim": "THEORY.md §2 row R8, proof §4 (Proof of R3, convex variant): for mu <= L <= 8 N mu, T_eps >= ceil((m/2) ln(Delta/(4 eps)) / ln(16 N/kappa)) for every admissible algorithm and every W, hard components convex (h = (mu/2)||x||^2)",
+   "lean": [
+    "ULB63.lower_bound_small_kappa_convex"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "stronger",
+    "human": [
+     "H-LB-hly: Hannah-Liu-O'Connor-Yin, NeurIPS 2018, arXiv:1805.07786v1, Theorem 2 (oblivious p-CLI; convex components per the registration table)",
+     "Han-Xie-Zhang, JMLR 2024, arXiv:2103.08280v5, theorem thm:strongly (i.i.d. sampling, linear span)"
+    ],
+    "explanation": "Explicit-kappa form of R5 for 1 <= kappa <= 8N: the HLY shape m ln R/(1+ln(N/kappa)) holds for all zero-respecting randomized adaptive algorithms down to kappa = 1, on convex-component instances; not dominated (Peng-Tang-Jia needs nonconvex components and kappa >= 3; Woodworth-Srebro gives only Omega(m) here). Against H-LB-hly the gain is adaptivity (the registration table records oblivious p-CLI as narrower than A; literally the p-CLI oracle also admits dense oblivious matrices)."
+   },
+   "verified": true
+  },
+  {
+   "id": "R9",
+   "claim": "THEORY.md §0 (Relation) and §2 row R9, proof §4 (Proof of R9): for L >= 2 mu, Delta/eps >= 16 and Delta/eps >= ((kappa-1)/(4N))^2, on one instance with mu-strongly convex components, every admissible algorithm and every W: T_eps >= ceil((m + (m/(1+(ln(N/kappa))_+) + sqrt(m(kappa-1)/n)) ln(Delta/eps))/100)",
+   "lean": [
+    "ULB63.lower_bound_hly_form"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "stronger",
+    "human": [
+     "H-LB-hly: Hannah-Liu-O'Connor-Yin, NeurIPS 2018, arXiv:1805.07786v1, Theorem 2 / appendix theorem 'Lower complexity bound oblivious p-CLI algorithms'",
+     "H-LB-zsh: Zhang-Shu-He, arXiv:2010.08766v2, Theorem 3.1",
+     "Han-Xie-Zhang, JMLR 2024, arXiv:2103.08280v5, theorem thm:strongly"
+    ],
+    "explanation": "Exactly the form of H-LB-hly (converted: m + [m/(1+(ln(N/kappa))_+) + sqrt(m kappa/n)] ln R), with explicit constant 1/100, for all kappa >= 2 in the small-eps range R >= max(16, ((kappa-1)/(4N))^2), on instances with mu-strongly convex L-smooth quadratic components (H-LB-hly's hard class), but for the strictly larger class A of all zero-respecting randomized adaptive algorithms in the decentralized model (H-LB-hly: oblivious p-CLI). Not dominated: for kappa <= 161N no known result gives this for adaptive algorithms with strongly convex components (Peng-Tang-Jia needs nonconvex components; Woodworth-Srebro gives only Omega(m) there; Han-Xie-Zhang i.i.d. sampling); for kappa > 161N it agrees in order with Woodworth-Srebro Theorem 8 (which covers all randomized algorithms). Primary anchor: H-LB-zsh (its IFO method class needs each query to reveal at most one coordinate, so it is contained in A; its theorem covers only the informal regime n >> kappa and kappa > 3.5n, whereas ours is explicit for all kappa, in particular kappa ~ N). Against H-LB-hly the gain is adaptivity (the registration table records oblivious p-CLI as narrower than A; literally the p-CLI oracle also admits dense oblivious matrices). Also answers the question stated by Han-Xie-Zhang (arXiv:2103.08280v5): 'Sampling without replacement and methods that break the linear-span protocol are also worth considering.'"
+   },
+   "verified": true
+  },
+  {
+   "id": "R10",
+   "claim": "THEORY.md §2 row R10, proof §4 (Proof of R6/R10): under the hypotheses of R9 and rho >= 0, minimax n m c L mu Delta rho eps >= ceil((m + (m/(1+(ln(N/kappa))_+) + sqrt(m(kappa-1)/n)) ln(Delta/eps))/100)",
+   "lean": [
+    "ULB63.minimax_lower_bound_hly_form"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "incomparable",
+    "human": [
+     "H-LB-pl: Peng-Tang-Jia, arXiv:2609.00045v3, Theorem thm:pl-main",
+     "H-LB-data: Woodworth-Srebro, arXiv:1605.08003v3, Theorem 8"
+    ],
+    "explanation": "Bound on the minimax quantity of the standard class in HLY form for all kappa >= 2 (small eps). Weaker than Peng-Tang-Jia on 3 <= kappa <= sqrt(N) (by up to log N), equal in order to Woodworth-Srebro for kappa > 161N; not covered by either for kappa < 3 and for sqrt(N) < kappa <= 161N (where PL at kappa = sqrt(N) plus monotonicity in L would give the stronger m ln R)."
+   },
+   "verified": true
+  },
+  {
+   "id": "R11",
+   "claim": "THEORY.md §2 row R11, proof §4 (Proof of R9/R11): under the hypotheses of R9, for every admissible algorithm, every W, every seed and every t < (m + (m/(1+(ln(N/kappa))_+) + sqrt(m(kappa-1)/n)) ln(Delta/eps))/100, phi(x_t) - phi* > eps (pathwise HLY form)",
+   "lean": [
+    "ULB63.lower_bound_hly_form_pathwise"
+   ],
+   "status": "proved",
+   "comparison": {
+    "class": "stronger",
+    "human": [
+     "H-LB-hly: Hannah-Liu-O'Connor-Yin, NeurIPS 2018, arXiv:1805.07786v1, Theorem 2",
+     "H-LB-zsh: Zhang-Shu-He, arXiv:2010.08766v2, Theorem 3.1"
+    ],
+    "explanation": "Pathwise (every seed) version of R9: HLY's form for all kappa >= 2 for the full class A on strongly-convex-component instances, with the stronger guarantee type (failure on every realization before the bound; also covers success-probability criteria). H-LB-hly is stated for expected suboptimality and oblivious p-CLI; H-LB-zsh for an undefined, implicitly linear-span IFO class."
+   },
+   "verified": true
+  }
+ ],
+ "runs": {
+  "all": {
+   "theorems": [
+    "ULB63.lower_bound_transient",
+    "ULB63.lower_bound_chain",
+    "ULB63.lower_bound_small_kappa",
+    "ULB63.lower_bound_large_kappa",
+    "ULB63.lower_bound_chain_convex",
+    "ULB63.minimax_lower_bound",
+    "ULB63.lower_bound_chain_pathwise",
+    "ULB63.lower_bound_small_kappa_convex",
+    "ULB63.lower_bound_hly_form",
+    "ULB63.minimax_lower_bound_hly_form",
+    "ULB63.lower_bound_hly_form_pathwise"
+   ],
+   "accepted": true,
+   "exit_code": 0,
+   "seconds": 252.3,
+   "errors": [],
+   "last_line": "Your solution is okay!"
+  }
+ },
+ "verified": [
+  "R1",
+  "R2",
+  "R3",
+  "R4",
+  "R5",
+  "R6",
+  "R7",
+  "R8",
+  "R9",
+  "R10",
+  "R11"
+ ]
+}

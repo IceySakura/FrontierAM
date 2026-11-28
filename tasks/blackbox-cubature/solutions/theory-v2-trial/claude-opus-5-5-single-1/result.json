@@ -1,0 +1,31 @@
+{
+ "task": "blackbox-cubature-theory-v2",
+ "model": "claude-opus-5-5",
+ "setting": "single (v6.3 harness, 6 h limit, validation run; theory only; public internet during development)",
+ "dev_run": "dev-blackbox-cubature-theory-v2-20261128T030557Z-9d83c1",
+ "submission": "blackbox-cubature-theory-v2-20261128T053734Z-a3e5c2",
+ "status": "frozen",
+ "agent_stop_reason": "turn_completed",
+ "development_seconds": 9093.165216120891,
+ "started_utc": "20261128T030557Z",
+ "network": {
+  "log": "netproxy.jsonl",
+  "requests": 108,
+  "allowed": 100,
+  "denied": 8,
+  "allowed_hosts": [
+   "api.core.ac.uk",
+   "api.crossref.org",
+   "api.openalex.org",
+   "api.semanticscholar.org",
+   "api.unpaywall.org",
+   "arxiv.org",
+   "export.arxiv.org",
+   "ins.uni-bonn.de",
+   "publica.fraunhofer.de",
+   "web.maths.unsw.edu.au",
+   "www.ams.org",
+   "www.sciencedirect.com"
+  ]
+ }
+}

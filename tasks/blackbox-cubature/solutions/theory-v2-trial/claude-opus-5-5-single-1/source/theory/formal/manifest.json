@@ -1,0 +1,84 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md §3 (Theorem R1), proof in §4: the condition r_j >= sum_{k != j} r_k of Griewank-Kuo-Leövey-Sloan 2018, Theorem 3, cannot be weakened. For every d >= 2, j and r with 1 <= r_j < sum_{k != j} r_k there is phi (theta = 1, Gaussian rho) satisfying all other hypotheses of the theorem (theta = 1 in C^r_mix and W^r; phi in C^r_mix and C^infinity in x_{-j}; D_j phi >= 1/2; phi -> infinity as x_j -> infinity; U_j = R^{d-1}; |D^alpha phi| <= 3/2 for alpha != 0 with alpha_j <= r_j; |phi| <= 1 + sum |x_i|; D^alpha phi (alpha_j <= r_j) in L^p(Gaussian) for all p and in L^p with any integrable product weights; classical derivatives = weak derivatives; GKLS's condition (h2) for all parameters) such that P_j(ind(phi)) is not in C^{r_{-j}}_mix (the classical part of GKLS's conclusion fails); moreover P_j(ind(phi)) has exactly total mixed order r_j (all iterated partial derivatives of order <= r_j exist and are continuous, none of order > r_j exists everywhere).",
+      "lean": [
+        "GKLS.gkls_mixed_condition_sharp"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": [
+          "A-GKLS: Griewank, Kuo, Leövey, Sloan, High dimensional integration of kinks and jumps - smoothing by preintegration, J. Comput. Appl. Math. 344 (2018) 259-274, doi:10.1016/j.cam.2018.04.009, arXiv:1712.00920, Theorem 3 (with the setting of Theorem 2)",
+          "A-GKS: Gilbert, Kuo, Sloan, Preintegration is not smoothing when monotonicity fails, arXiv:2112.11621, Theorem 1 (complementary: necessity of monotonicity)"
+        ],
+        "explanation": "Optimality result for the registered anchor A-GKLS (the task's Target E: a counterexample proving that the condition cannot be weakened). GKLS prove sufficiency of r_j >= sum_{k != j} r_k and justify it only through their proof; R1 proves necessity for every multi-index violating it with r_j >= 1: the explicit data satisfy all remaining hypotheses (for every p and every admissible weight family), while the conclusion as stated fails through its classical part C^{r_{-j}}_mix. The properties (H0)-(H6), (C), (E) are kernel-checked ((H0): theta = 1 is in C^r_mix and W^r), including (H5w) that the classical derivatives are the weak derivatives and (H6) GKLS's integrability condition (h2) for all parameters (THEORY.md §3). No known human result proves this necessity (literature search in THEORY.md §5). Complementary to A-GKS (which concerns monotonicity, not the order of smoothness)."
+      },
+      "coordinates": {
+        "kind": "regularity",
+        "class": "f = theta * ind(phi) on R^d (d >= 2), theta = 1, Gaussian rho; phi in C^r_mix(R^d) cap W^r_{d,p,zeta,mix} (all p, all admissible zeta), C^infinity in x_{-j}, D_j phi >= 1/2, phi -> infinity as x_j -> infinity, U_j = R^{d-1}; any multi-index r with 1 <= r_j < sum_{k != j} r_k",
+        "inputs": [],
+        "bound": "P_j f is not in C^{r_{-j}}_mix(R^{d-1}); exactly: every iterated partial derivative of P_j f of total order <= r_j exists everywhere and is continuous, and no iterated partial derivative of total order > r_j exists everywhere (it fails at the origin)",
+        "validity": "all d >= 2, all j, all multi-indices r with 1 <= r_j < sum_{k != j} r_k; all p in [1, infinity); every weight family zeta with zeta_0 = rho",
+        "guarantee": "exact (explicit deterministic counterexample; kernel-checked in Lean)",
+        "anchors": [
+          "A-GKLS",
+          "A-GKS"
+        ]
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md §3a (Theorem R2), proof in §4a: kink case theta = phi of GKLS 2018 Theorem 3. For every d >= 2, j and r with 1 <= r_j and r_j + 1 < sum_{k != j} r_k there is phi satisfying (H1)-(H5) of R1 (theta = phi satisfies them too) and GKLS's condition (h2) for theta = phi such that P_j(max(phi,0)) is not in C^{r_{-j}}_mix; P_j(max(phi,0)) has exactly total mixed order r_j + 1. Hence for kinks the condition r_j >= sum_{k != j} r_k can be relaxed by at most one.",
+      "lean": [
+        "GKLS.gkls_mixed_condition_kink"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "A-GKLS: Griewank, Kuo, Leövey, Sloan, J. Comput. Appl. Math. 344 (2018) 259-274, arXiv:1712.00920, Theorem 3, in its kink case f = phi * ind(phi) (theta = phi)"
+        ],
+        "explanation": "Partial optimality for the kink case of the registered anchor: GKLS Theorem 3 (covering kinks via theta = phi) assumes r_j >= sum_{k != j} r_k; R2 proves that no condition admitting some r with r_j <= sum_{k != j} r_k - 2 can work for kinks. The borderline r_j = sum - 1 remains open (conjectured sufficient, THEORY.md Remark 4.4), so R2 does not prove that the kink condition cannot be weakened; hence incomparable rather than stronger. No known human result addresses necessity in the kink case."
+      },
+      "coordinates": {
+        "kind": "regularity",
+        "class": "kinks f = phi * ind(phi) = max(phi, 0) on R^d (d >= 2), Gaussian rho; phi as in R1 (C^r_mix and C^infinity in x_{-j}, D_j phi >= 1/2, phi -> infinity in x_j, U_j = R^{d-1}, bounded derivatives, weighted Sobolev for all p and admissible zeta); any r with 1 <= r_j and r_j + 1 < sum_{k != j} r_k",
+        "inputs": [],
+        "bound": "P_j f is not in C^{r_{-j}}_mix(R^{d-1}); exactly: every iterated partial derivative of P_j f of total order <= r_j + 1 exists everywhere and is continuous, none of total order > r_j + 1 exists everywhere",
+        "validity": "all d >= 2, all j, all r with 1 <= r_j <= sum_{k != j} r_k - 2; all p in [1, infinity); every weight family zeta with zeta_0 = rho",
+        "guarantee": "exact (explicit deterministic counterexample; kernel-checked in Lean)",
+        "anchors": [
+          "A-GKLS"
+        ]
+      }
+    },
+    {
+      "id": "R3",
+      "claim": "THEORY.md §7 (Theorem R3): for the jump f = ind(a x_j^2 + beta(x_{-j}) x_j + kappa(x_{-j})) across a hypersurface quadratic (hence non-monotone) in the preintegration variable, a != 0, arbitrary beta, kappa, D = beta^2 - 4 a kappa: (U) |P_j f(y) - P_j f(y')| <= (|beta(y) - beta(y')| + sqrt|D(y) - D(y')|) / (|a| sqrt(2 pi)); (Z) for a < 0, P_j f = 0 where D <= 0; (L) for a < 0 and both roots in [-R, R], P_j f(y) >= rho(R) sqrt(D(y)) / |a|. This is an explicit, global version of the square-root behaviour found by Gilbert-Kuo-Sloan (Theorem 1, Examples 1-3) for this class (all quadric surfaces with A_jj != 0: ellipsoids, saddles).",
+      "lean": [
+        "GKLS.quadric_preintegration_sqrt"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "A-GKS: Gilbert, Kuo, Sloan, Preintegration is not smoothing when monotonicity fails, in Advances in Modeling and Simulation, Springer (2022) 169-191, arXiv:2112.11621, Theorem 1"
+        ],
+        "explanation": "GKS Theorem 1 proves, for general C^2 phi at a fold point, a square-root singularity of the preintegrated function; its proof gives a local two-sided asymptotic and Examples 1-3 give closed forms for specific quadrics. R3 gives, for the class of jumps quadratic in the preintegration variable (all quadric surfaces with A_jj != 0), a global explicit Hoelder-1/2 upper bound in terms of the data (beta, D) and explicit-constant versions of the lower bound. Narrower class, elementary generalization of GKS's closed forms: incomparable and of low novelty. It gives no QMC/RQMC rate, so it does not answer P1."
+      },
+      "coordinates": {
+        "kind": "regularity",
+        "class": "jumps f = ind(a x_j^2 + beta(x_{-j}) x_j + kappa(x_{-j})) on R^d with a != 0 and arbitrary beta, kappa (includes every quadric surface x^T A x + b^T x + c = 0 with A_jj != 0), Gaussian rho, preintegration along x_j",
+        "inputs": [],
+        "bound": "|P_j f(y) - P_j f(y')| <= (|beta(y)-beta(y')| + sqrt|D(y)-D(y')|)/(|a| sqrt(2 pi)), D = beta^2 - 4 a kappa; for a < 0: P_j f = 0 on {D <= 0} and P_j f >= rho(R) sqrt(D)/|a| when the roots lie in [-R, R]",
+        "validity": "all d >= 1 (n >= 0), all j, all a != 0, all functions beta, kappa; (Z), (L) for a < 0",
+        "guarantee": "exact deterministic inequalities (kernel-checked in Lean)",
+        "anchors": [
+          "A-GKS"
+        ]
+      }
+    }
+  ]
+}

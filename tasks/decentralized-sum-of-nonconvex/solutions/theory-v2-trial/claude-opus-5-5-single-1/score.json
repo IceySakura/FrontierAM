@@ -1,0 +1,24 @@
+{
+ "score": 25,
+ "scale": "0-100, reference 50 (a new valuable point on the human frontier)",
+ "raw": {
+  "verified_results": [
+   "R1",
+   "R2",
+   "R3",
+   "R4",
+   "R5",
+   "R6",
+   "R7",
+   "R8",
+   "R9",
+   "R10",
+   "R11"
+  ],
+  "tier": "incomparable, low value",
+  "decisive_result": "R9/R10: stronger bound shape (Zhang-Shu-He form for all admissible algorithms, strongly convex components) but a validity threshold Delta/eps >= ((kappa-1)/(4N))^2 narrower than the anchors",
+  "row_score_R": 10
+ },
+ "mapping": "tiers with the optimality path (THEORY_REVIEW.md sections 2 and 2.1); decentralized task: max(frontier tier T, row score R)",
+ "review": "provisional (agent review, not an expert review), THEORY_REVIEW.md section 13"
+}

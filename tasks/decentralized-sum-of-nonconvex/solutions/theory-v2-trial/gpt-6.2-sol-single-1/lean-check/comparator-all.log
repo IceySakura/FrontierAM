@@ -1,0 +1,38 @@
+Resolving dependencies
+Building Theory.Statements
+⚠ [9047/9062] Built Theory.Model (5.6s)
+warning: Theory/Model.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [9048/9062] Built Theory.Sanity (7.9s)
+✔ [9049/9062] Built Theory.BlockGeometry (22s)
+✔ [9050/9062] Built Theory.BlockGap (9.4s)
+✔ [9051/9062] Built Theory.BlockRun (13s)
+✔ [9052/9062] Built Theory.LocalSmoothness (15s)
+✔ [9053/9062] Built Theory.Disconnected (35s)
+✔ [9054/9062] Built Theory.BlockLower (34s)
+✔ [9055/9062] Built Theory.ProxFacts (35s)
+✔ [9056/9062] Built Theory.RelaxedLower (14s)
+✔ [9057/9062] Built Theory.Acceleration (13s)
+✔ [9058/9062] Built Theory.LocalClass (10s)
+✔ [9059/9062] Built Theory.TwoNodeAlgorithm (11s)
+✔ [9060/9062] Built Theory.TwoNodeRun (7.1s)
+✔ [9061/9062] Built Theory.TwoNodeUpper (4.8s)
+⚠ [9062/9062] Built Theory.Statements (4.9s)
+warning: Theory/Statements.lean:22:8: declaration uses `sorry`
+warning: Theory/Statements.lean:32:8: declaration uses `sorry`
+warning: Theory/Statements.lean:41:8: declaration uses `sorry`
+warning: Theory/Statements.lean:55:8: declaration uses `sorry`
+warning: Theory/Statements.lean:65:8: declaration uses `sorry`
+warning: Theory/Statements.lean:75:8: declaration uses `sorry`
+warning: Theory/Statements.lean:86:8: declaration uses `sorry`
+warning: Theory/Statements.lean:93:8: declaration uses `sorry`
+Build completed successfully (9062 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, ULB63.minimax_data_no_accuracy_prefactor, ULB63.minimax_data_high_condition, ULB63.local_average_data_lower, ULB63.local_average_only_breaks_hub, ULB63.two_node_local_average_upper, ULB63.two_node_local_average_lower, ULB63.two_node_standard_upper, ULB63.minimax_infinite_at_disconnected_endpoint, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Statements
+Building Theory.Proofs
+⚠ [9047/9062] Replayed Theory.Model
+warning: Theory/Model.lean: imports `Mathlib` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [9062/9062] Built Theory.Proofs (6.7s)
+Build completed successfully (9062 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, ULB63.minimax_data_no_accuracy_prefactor, ULB63.minimax_data_high_condition, ULB63.local_average_data_lower, ULB63.local_average_only_breaks_hub, ULB63.two_node_local_average_upper, ULB63.two_node_local_average_lower, ULB63.two_node_standard_upper, ULB63.minimax_infinite_at_disconnected_endpoint, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Theory.Proofs
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!

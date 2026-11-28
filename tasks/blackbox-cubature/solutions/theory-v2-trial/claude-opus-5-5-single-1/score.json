@@ -1,0 +1,15 @@
+{
+ "score": 100,
+ "scale": "0-100, reference 50 (a new valuable point on the human frontier)",
+ "raw": {
+  "verified_results": [
+   "R1",
+   "R2",
+   "R3"
+  ],
+  "tier": "partial-order better (optimality path)",
+  "decisive_result": "R1: the condition r_j >= sum_{k != j} r_k of Griewank-Kuo-Leovey-Sloan 2018 Theorem 3 cannot be weakened (counterexample for every d, j, r with 1 <= r_j < sum; exact total order r_j)"
+ },
+ "mapping": "tiers with the optimality path (THEORY_REVIEW.md sections 2 and 2.1); decentralized task: max(frontier tier T, row score R)",
+ "review": "provisional (agent review, not an expert review), THEORY_REVIEW.md section 13"
+}

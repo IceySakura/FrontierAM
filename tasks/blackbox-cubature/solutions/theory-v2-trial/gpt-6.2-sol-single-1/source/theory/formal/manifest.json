@@ -1,0 +1,54 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md, R1. The pure integrated-coordinate order cannot be lowered",
+      "lean": ["Cubature.gaussianMixedOrder_sharp"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Griewank–Kuo–Leövey–Sloan (2018), Theorems 2–3, arXiv:1712.00920v1, DOI 10.1016/j.cam.2018.04.009",
+          "Gilbert–Kuo–Sloan, distribution functions and densities, Theorem 3, arXiv:2112.10308v5",
+          "He, conditional QMC, Theorem 3.4, arXiv:1708.09512v2",
+          "Gilbert–Kuo–Sloan, monotonicity failure, Theorem 1, arXiv:2112.11621v1"
+        ],
+        "explanation": "Optimality side of A-GKLS: for every retained mixed order with sum at least two, even one fewer phase derivative in the integrated coordinate can invalidate the original joint conclusion, while all available weighted input and trace hypotheses hold. This is a necessity result, not a better sufficient bound."
+      },
+      "coordinates": {
+        "kind": "regularity",
+        "class": "Gaussian unit-jump integrands with one regular graph, strictly monotone phase with partial derivative at least 1, all retained phase orders and all finite Gaussian moments",
+        "inputs": ["Exact preintegration in the stated coordinate", "Explicit phase and constant amplitude"],
+        "bound": "With q integrated-coordinate phase derivatives and retained target order r of sum greater than q, the preintegral is C^q but no ordered retained partial of total order q+1 can be everywhere defined and continuous; in particular the target classical mixed class is not guaranteed.",
+        "validity": "All m retained dimensions and integer 1 <= q < sum(r), including q = sum(r)-1; all finite Gaussian Lp input exponents",
+        "guarantee": "Exact pointwise regularity obstruction, not a quadrature or query-rate bound",
+        "anchors": ["A-GKLS", "A-GKS"]
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md, R2. The mixed weak L2 condition itself can fail",
+      "lean": ["Cubature.gaussianMixedSecond_weakL2_sharp"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "Griewank–Kuo–Leövey–Sloan (2018), Theorems 2–3, arXiv:1712.00920v1, DOI 10.1016/j.cam.2018.04.009",
+          "Gilbert–Kuo–Sloan, distribution functions and densities, Theorem 3, arXiv:2112.10308v5",
+          "He, conditional QMC, Theorem 3.4, arXiv:1708.09512v2",
+          "Gilbert–Kuo–Sloan, monotonicity failure, Theorem 1, arXiv:2112.11621v1"
+        ],
+        "explanation": "Optimality side of A-GKLS at retained order (1,1) and p=2. Even discarding the classical conclusion does not rescue the weak mixed L2 guarantee when the phase order is lowered to one."
+      },
+      "coordinates": {
+        "kind": "regularity",
+        "class": "Three-dimensional Gaussian unit jumps with one regular graph and integrated phase derivative in [1/2,1]; all retained phase derivatives and all applicable boundary factors controlled",
+        "inputs": ["Exact preintegration in the stated coordinate", "Explicit inverse phase profile and constant amplitude"],
+        "bound": "Output is C^1, but every locally integrable representative of its weak mixed second derivative fails square integrability on [-1,1]^2 and in the product Gaussian measure",
+        "validity": "d=3, integrated phase order one and target retained order (1,1); p=2 for the failed output condition",
+        "guarantee": "Exact local and Gaussian weak-regularity obstruction",
+        "anchors": ["A-GKLS", "A-GKS"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "results": [
+    {
+      "id": "R1",
+      "claim": "THEORY.md, R1. Standard-model data bound with no condition-dependent accuracy loss",
+      "lean": ["ULB63.minimax_data_no_accuracy_prefactor", "ULB63.minimax_data_high_condition"],
+      "status": "proved",
+      "comparison": {
+        "class": "stronger",
+        "human": [
+          "H-LB-data: Woodworth–Srebro, arXiv:1605.08003v1, Theorem 8, registered iteration conversion",
+          "H-LB-zsh: Zhang–Shu–He, arXiv:2010.08766v2, Theorem 3.1 and Section 4.1",
+          "H-LB-hly: Hannah–Liu–O'Connor–Yin, arXiv:1805.07786v1, Section 2.1",
+          "H-LB-pl: Peng–Tang–Jia, arXiv:2609.00045v2, Theorem 3.2",
+          "H-LB-net: Scaman et al., arXiv:1702.08704v1, Theorems 1–2",
+          "H-LB-avg: Zhou–Gu, arXiv:1901.11224v1, Theorem 4.1"
+        ],
+        "explanation": "On the registered class, keeps the data startup term and replaces log(R sqrt(nm/kappa)) by log R, with validity down to a constant R. The improvement is unbounded at the same accuracy inside H-LB-data's range when kappa/(nm) and m/n grow. The proof does not extend the original unrestricted algorithm or component proximal oracle theorem."
+      },
+      "coordinates": {
+        "kind": "lower",
+        "class": "Standard class. The explicit witness has convex, individually L-smooth quadratic components and shared h(x)=mu||x||^2/2. All admissible adaptive randomized algorithms, any fixed message width.",
+        "inputs": ["all standard inputs allowed; no tuning restrictions"],
+        "bound": "ceil max { m(1-epsilon/Delta), m log(Delta/epsilon)/(2 log(1/q)) }, q=(sqrt(1+4L/(5nm mu))-1)/(sqrt(1+4L/(5nm mu))+1). In the high-condition regime: ceil(m/4 + sqrt(m L/(n mu)) log(Delta/epsilon)/20).",
+        "validity": "All standard n,m,L,mu,Delta,rho and 0<epsilon<Delta; simple corollary for L/mu >= 5nm and epsilon <= Delta/2.",
+        "guarantee": "Minimax first time to expected gap <= epsilon; one instance obstructs all earlier times seed by seed. Can use W=J.",
+        "anchors": ["H-LB-data", "H-LB-zsh", "H-LB-hly", "H-LB-pl", "H-LB-net", "H-LB-avg"],
+        "rows": {
+          "assumptions": "=",
+          "upper_data": "none",
+          "upper_network": "none",
+          "lower_data": "+",
+          "lower_network": "none",
+          "resources": "none"
+        }
+      }
+    },
+    {
+      "id": "R2",
+      "claim": "THEORY.md, R2. Smooth local averages alone do not preserve the H-UB order",
+      "lean": ["ULB63.local_average_data_lower", "ULB63.local_average_only_breaks_hub"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "H-UB: Liu–Low, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3",
+          "H-LB-avg: Zhou–Gu, arXiv:1901.11224v1, Theorem 4.1 (distinct mean-squared assumption)"
+        ],
+        "explanation": "Necessity result: no algorithm can retain the registered H-UB order after replacing individual smoothness by only L-smooth local averages and still tuning the target order with that L. Formal separation includes any fixed powers of logarithms. The two bounds themselves are about different classes."
+      },
+      "coordinates": {
+        "kind": "lower",
+        "class": "PROFILE section 3 local-average smoothness relaxation, with individually theta*L-smooth witnesses for 1<=theta<=m.",
+        "inputs": ["all standard inputs allowed; no restriction on admissible algorithm tuning"],
+        "bound": "Same lower expression as R1 with L changed to theta*L inside q. With theta=m the fixed n=2, rho=0, L=m, mu=Delta=1, epsilon=1/m family beats every C m^(5/4) (1+log m)^s bound.",
+        "validity": "1<=theta<=m, 0<epsilon<Delta; the strict separation has m arbitrarily large on a two-node exact averaging network.",
+        "guarantee": "Uniform hard instance for first-hitting time of every admissible adaptive randomized algorithm; no alternative communication oracle.",
+        "anchors": ["H-UB", "H-LB-avg"],
+        "rows": {
+          "assumptions": "+",
+          "upper_data": "none",
+          "upper_network": "none",
+          "lower_data": "none",
+          "lower_network": "none",
+          "resources": "none"
+        }
+      }
+    },
+    {
+      "id": "R3",
+      "claim": "THEORY.md, R3. Matching two-node bounds by exact averaging and proximal acceleration",
+      "lean": [
+        "ULB63.two_node_local_average_upper",
+        "ULB63.two_node_local_average_lower",
+        "ULB63.two_node_standard_upper"
+      ],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "H-UB: Liu–Low, arXiv:2402.02356v1, Theorem 5.1 and Corollary 5.3",
+          "Scaman et al., arXiv:1702.08704v1, Section 3.2 and discussion after Corollary 1"
+        ],
+        "explanation": "Two-node matching bound in the local-average-only relaxation and the standard m=1 case. Exact decoding from a weighted sum removes dependence on the spectral gap and uses one round per accelerated step, but a full local gradient per step can worsen the data count at large m."
+      },
+      "coordinates": {
+        "kind": "upper",
+        "class": "Two-node local-average-only smoothness with differentiable components; all other geometry and oracles unchanged. Positive off-diagonal entry in each row; includes the two-node standard class.",
+        "inputs": ["m", "L for local averages", "mu", "local row of W", "x0", "Delta and epsilon for a certified reporting horizon"],
+        "bound": "(m+2) ceil(sqrt(16 L/mu)) ceil_+(log(Delta/epsilon)/log 2); one mixed vector per accelerated step. Matching Theta(m sqrt(L/mu) log(Delta/epsilon)) for R>=2 in the relaxation, and at m=1 in the standard class.",
+        "validity": "n=2, m>=1, L>=mu>0, Delta>0, epsilon>0. No quantitative lower bound on a nonzero off-diagonal weight.",
+        "guarantee": "Deterministic exact proximal algorithm; identical node outputs at the certified time.",
+        "anchors": ["H-UB", "H-LB-net"],
+        "rows": {
+          "assumptions": "=",
+          "upper_data": "-",
+          "upper_network": "+",
+          "lower_data": "none",
+          "lower_network": "none",
+          "resources": "none"
+        }
+      }
+    },
+    {
+      "id": "R4",
+      "claim": "THEORY.md, R4. Removing connectivity can make the averaged-output problem unsolvable",
+      "lean": ["ULB63.minimax_infinite_at_disconnected_endpoint"],
+      "status": "proved",
+      "comparison": {
+        "class": "incomparable",
+        "human": [
+          "H-UB: Liu–Low, arXiv:2402.02356v1, doubly stochastic matrix assumption and Theorem 5.1",
+          "H-LB-net: Scaman et al., arXiv:1702.08704v1, Theorem 2"
+        ],
+        "explanation": "An explicit support-based impossibility for the evaluator's averaged output if the matrix class is weakened to permit the identity. Not a stronger finite-rho network lower bound."
+      },
+      "coordinates": {
+        "kind": "lower",
+        "class": "Standard function and algorithm classes with the communication condition relaxed to rho=1, which admits the identity.",
+        "inputs": ["all standard inputs allowed; no restriction on tuning"],
+        "bound": "minimax = infinity when epsilon < Delta (ell/(mu+ell))^2, ell=(n-1)L/(2n).",
+        "validity": "All n>=2, m>=1, L>=mu>0, Delta>0, and 0<epsilon<Delta (ell/(mu+ell))^2.",
+        "guarantee": "A common dimension-two instance misses the target at every time for every admissible algorithm.",
+        "anchors": ["H-UB", "H-LB-net"],
+        "rows": {
+          "assumptions": "+",
+          "upper_data": "none",
+          "upper_network": "none",
+          "lower_data": "none",
+          "lower_network": "none",
+          "resources": "none"
+        }
+      }
+    }
+  ]
+}
