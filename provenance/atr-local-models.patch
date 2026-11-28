@@ -1,8 +1,56 @@
 diff --git a/src/atr/upstream/models.yaml b/src/atr/upstream/models.yaml
-index 51f7585..76cf7f4 100644
+index 51f7585..060f82d 100644
 --- a/src/atr/upstream/models.yaml
 +++ b/src/atr/upstream/models.yaml
-@@ -1127,6 +1127,50 @@ models:
+@@ -69,6 +69,47 @@ connections:
+         taiji-messages; the dedicated environment reference leaves preview credentials unchanged.
+       confirmed_at: '2026-11-04'
+       confirmed: [root_url, root_env, auth.kind, auth.token_env]
++  qwen-token-plan:
++    root_url: https://token-plan.maas.qianwenaiapi.com
++    root_env: ''
++    auth:
++      kind: bearer
++      token_env: QWEN_TOKEN_PLAN_KEY
++    provenance:
++      basis: manual
++      source: User-supplied Qwen token-plan Anthropic endpoint for FrontierAM qwen3.8 runs, 2026-11-13 (local only)
++      confirmed_at: '2026-11-13'
++      confirmed: [root_url, root_env, auth.kind, auth.token_env]
++  inkstone:
++    root_url: https://discovery-api.intern-ai.org.cn
++    root_env: ''
++    auth:
++      kind: bearer
++      token_env: INKSTONE_API_KEY
++    provenance:
++      basis: manual
++      source: User-supplied Intern (Shusheng) token-plan API for FrontierAM intern-s2 runs, base URL
++        https://discovery-api.intern-ai.org.cn/v1 with a bearer from INKSTONE_API_KEY, 2026-11-14 (local only)
++      confirmed_at: '2026-11-14'
++      confirmed: [root_url, root_env, auth.kind, auth.token_env]
++  openai-account:
++    root_url: https://chatgpt.com
++    root_env: ''
++    auth:
++      kind: openai_oauth
++      credential_file_env: ATR_OPENAI_CREDENTIAL_FILE
++      account_id: '5428aa9f-2502-44fe-ae3d-ff06f504d8cc'
++    provenance:
++      basis: manual
++      source: User signed in to the ChatGPT Pro account through ATR device login, 2026-11-21, to run gpt-6-astra on the
++        v6.3 board on the account quota instead of AI Hub billing.
++      confirmed_at: '2026-11-21'
++      confirmed:
++      - root_url
++      - root_env
++      - auth.kind
++      - auth.credential_file_env
++      - auth.account_id
+ models:
+   muse-wonder-1.0:
+     status: active
+@@ -1127,6 +1168,210 @@ models:
        source: User proposal 2026-09-23
        note: Explicit field-by-field confirmation is required; these additions were absent from the migration
          baseline.
@@ -11,7 +59,7 @@ index 51f7585..76cf7f4 100644
 +    connection: aihub
 +    provider: minimax
 +    model: minimax-m3.1-flash
-+    default_dialect: responses
++    default_dialect: anthropic
 +    endpoints:
 +      responses:
 +        path: /v1/responses
@@ -45,11 +93,876 @@ index 51f7585..76cf7f4 100644
 +            limits.max_output_tokens, limits.client_context_tokens, limits.context_accounting,
 +            limits.output_tokens_include_reasoning, limits.output_field, reasoning.levels, reasoning.aliases,
 +            reasoning.policy, reasoning.policy.mode, request_fields, required_headers, history]
++      anthropic:
++        path: /anthropic/v1/messages
++        transport: native
++        streaming: true
++        limits:
++          max_input_tokens: null
++          context_window_tokens: null
++          max_output_tokens: 524288
++          client_context_tokens: 1000000
++          context_accounting: unknown
++          output_tokens_include_reasoning: null
++          output_field: max_tokens
++        reasoning:
++          levels:
++          - low
++          - medium
++          - high
++          - xhigh
++          - max
++          aliases: {}
++          policy:
++            enabled:
++            - - - thinking
++                - type
++              - adaptive
++            remove:
++            - - thinking
++              - budget_tokens
++            mode: effort
++        request_fields: {}
++        required_headers: {}
++        history: {}
++        provenance:
++          basis: manual
++          source: FrontierAM 2026-11-25. AI Hub get_models_protocol lists only the MiniMax passthrough
++            /anthropic/v1/messages (provider in the bearer); the model detail says thinking is always on with effort
++            low/medium/high/xhigh/max (default max) and max_output 524288. Live checks with provider=minimax found
++            streaming SSE with usage in message_delta; a tool_use round trip with the assistant content replayed;
++            output_config.effort low, medium, high, xhigh and max accepted; thinking.type adaptive and enabled
++            accepted, disabled rejected (HTTP 400, code 2013, adaptive thinking required); an array system accepted;
++            max_tokens 524288 accepted and 600000 rejected.
++          confirmed_at: '2026-11-25'
++          confirmed: [path, transport, streaming, limits.max_input_tokens, limits.context_window_tokens,
++            limits.max_output_tokens, limits.client_context_tokens, limits.context_accounting,
++            limits.output_tokens_include_reasoning, limits.output_field, reasoning.levels, reasoning.aliases,
++            reasoning.policy, reasoning.policy.mode, reasoning.policy.enabled, reasoning.policy.remove, request_fields,
++            required_headers, history]
 +    provenance:
 +      basis: manual
-+      source: Added locally by FrontierAM for a Codex-over-Responses run; not part of upstream ATR.
-+      confirmed_at: '2026-11-04'
++      source: Added locally by FrontierAM for a Codex-over-Responses run (2026-11-04); on 2026-11-25 the Messages
++        passthrough, which AI Hub now lists as the model's interface, became the default dialect for Claude Code.
++        Not part of upstream ATR.
++      confirmed_at: '2026-11-25'
++      confirmed: [status, connection, provider, model, default_dialect, endpoints]
++  qwen4-max:
++    status: active
++    connection: aihub
++    provider: ali
++    model: qwen4-max
++    default_dialect: responses
++    endpoints:
++      responses:
++        path: /compatible-mode/v1/responses
++        transport: native
++        streaming: true
++        limits:
++          max_input_tokens: null
++          context_window_tokens: null
++          max_output_tokens: 256000
++          client_context_tokens: 1000000
++          context_accounting: unknown
++          output_tokens_include_reasoning: null
++          output_field: max_output_tokens
++        reasoning:
++          levels:
++          - none
++          - minimal
++          - low
++          - medium
++          - high
++          - xhigh
++          - max
++          aliases: {}
++          policy:
++            mode: effort
++        request_fields:
++          reasoning:
++            summary: auto
++        required_headers: {}
++        history: {}
++        provenance:
++          basis: manual
++          source: FrontierAM 2026-11-25. AI Hub get_models_protocol lists only the Alibaba passthrough
++            /compatible-mode/v1/responses (provider ali in the bearer); the model detail gives context_length 1000000
++            and max_output 256000. Live checks found streaming SSE with reasoning items and usage in response.completed;
++            reasoning.effort none, minimal, low, medium, high, xhigh and max accepted (none gives no reasoning item,
++            an unknown level fails); reasoning.summary auto accepted (the user's choice for every Responses endpoint,
++            2026-10-08); a function-call round trip with store false and the reasoning item (with encrypted_content)
++            replayed in full history; max_output_tokens is not checked against the model limit (300000 accepted), so
++            the limit is the model detail value 256000.
++          confirmed_at: '2026-11-25'
++          confirmed: [path, transport, streaming, limits.max_input_tokens, limits.context_window_tokens,
++            limits.max_output_tokens, limits.client_context_tokens, limits.context_accounting,
++            limits.output_tokens_include_reasoning, limits.output_field, reasoning.levels, reasoning.aliases,
++            reasoning.policy, reasoning.policy.mode, request_fields, request_fields.reasoning.summary,
++            required_headers, history]
++    provenance:
++      basis: manual
++      source: Added locally by FrontierAM at the user's request (board run, 2026-11-25); not part of upstream ATR.
++      confirmed_at: '2026-11-25'
++      confirmed: [status, connection, provider, model, default_dialect, endpoints]
++  glm-5.4:
++    status: active
++    connection: aihub
++    provider: zhipu
++    model: glm-5.4
++    default_dialect: responses
++    endpoints:
++      responses:
++        path: /api/v1/responses
++        transport: native
++        streaming: true
++        limits:
++          max_input_tokens: null
++          context_window_tokens: null
++          max_output_tokens: 131072
++          client_context_tokens: 1000000
++          context_accounting: unknown
++          output_tokens_include_reasoning: null
++          output_field: max_output_tokens
++        reasoning:
++          levels:
++          - low
++          - high
++          - max
++          aliases: {}
++          policy:
++            mode: effort
++        request_fields:
++          reasoning:
++            summary: auto
++        required_headers: {}
++        history: {}
++        provenance:
++          basis: manual
++          source: FrontierAM 2026-11-28. AI Hub get_models_protocol lists only the zhipu passthrough /api/v1/responses
++            and the standard Chat Completions endpoint (no Anthropic Messages); the model detail gives context_length
++            1000000 and max_output 131072. Live checks found streaming SSE with reasoning_text deltas, reasoning and
++            message items, and usage with cached and reasoning tokens in response.completed; reasoning.effort low,
++            high and max accepted, none, minimal and medium rejected (the model always thinks); reasoning.summary
++            auto accepted (reasoning arrives as text, no summary); a first function call returned. Half of the
++            requests failed with AI Hub 1011 (no available account), so the store-false history replay and the output
++            limit are not verified yet.
++          confirmed_at: '2026-11-28'
++          confirmed: [path, transport, streaming, limits.max_input_tokens, limits.context_window_tokens,
++            limits.max_output_tokens, limits.client_context_tokens, limits.context_accounting,
++            limits.output_tokens_include_reasoning, limits.output_field, reasoning.levels, reasoning.aliases,
++            reasoning.policy, reasoning.policy.mode, request_fields, request_fields.reasoning.summary,
++            required_headers, history]
++    provenance:
++      basis: manual
++      source: Added locally by FrontierAM at the user's request (single-setting board run, 2026-11-28); not part of
++        upstream ATR.
++      confirmed_at: '2026-11-28'
 +      confirmed: [status, connection, provider, model, default_dialect, endpoints]
    deepseek-v4-pro:
+     status: active
+     connection: aihub
+@@ -2028,23 +2273,190 @@ models:
+       note: Explicit field-by-field confirmation is required; these additions were absent from the migration baseline.
+   gpt-6-astra:
+     status: active
+-    connection: aihub
++    default_provider: openai
++    providers:
++      openai:
++        status: active
++        connection: aihub
++        provider: openai
++        model: gpt-6-astra
++        default_dialect: responses
++        endpoints:
++          responses: &astra-responses
++            path: /v1/responses
++            transport: native
++            streaming: true
++            limits:
++              max_input_tokens: null
++              context_window_tokens: null
++              max_output_tokens: 128000
++              client_context_tokens: 1050000
++              context_accounting: unknown
++              output_tokens_include_reasoning: null
++              output_field: max_output_tokens
++            reasoning:
++              levels:
++              - low
++              - medium
++              - high
++              - xhigh
++              - max
++              aliases: {}
++              policy:
++                mode: effort
++            request_fields:
++              reasoning:
++                summary: auto
++            required_headers: {}
++            history:
++              checked_at: '2026-09-20T11:59:55.483482+00:00'
++              default_encrypted_envelope: true
++              diagnostics_file: local/probes/reasoning-generic-20260920/50d35e2370ac4fac8fd9088b65564f2e/result.json
++              encrypted_envelope: true
++              full_history_accepted: true
++              include_encrypted_content: true
++              item_reference_accepted: true
++              previous_response_id_accepted: true
++              probe_version: 3
++              reasoning_item: true
++              reasoning_summary: false
++              reasoning_text: false
++              requires_encrypted_content: false
++            provenance:
++              basis: migration
++              source: agent-traffic-runtime daa367f routes.json; retained configuration, not newly verified
++              confirmed:
++              - request_fields.reasoning.summary
++              manual_updates:
++              - field: request_fields.reasoning.summary
++                value: auto
++                source: User chose auto for Luna and requested it for every configured Responses endpoint, 2026-10-08.
++                confirmed_at: '2026-10-08'
++              legacy_evidence:
++                effort_compatibility_source:
++                  https://github.com/BerriAI/litellm/blob/main/litellm/litellm_core_utils/reasoning_effort_utils.py
++                effort_diagnostics: local/probes/all-effort-20260922/requests/gpt-6-astra
++                effort_note: Responses uses the model maximum; Chat currently rejects max. The Messages bridge maps thinking
++                  budgets to low/medium/high and ignores output_config.effort.
++                effort_source: https://developers.openai.com/api/docs/models/gpt-6-astra
++                effort_verified_at: '2026-09-22'
++              legacy_context_length: 1050000
++        provenance:
++          basis: migration
++          source: agent-traffic-runtime daa367f routes.json; retained configuration, not newly verified
++          confirmed: []
++        proposals:
++        - field: endpoints.responses.limits.max_input_tokens
++          value: 1050000
++          status: awaiting-human-confirmation
++          source: User proposal 2026-09-23
++          note: Current context figure retained; maximum input on this endpoint remains unverified.
++        - field: endpoints.responses.request_fields
++          value:
++            reasoning:
++              mode: standard
++          status: awaiting-human-confirmation
++          source: User proposal 2026-09-23
++          note: Explicit field-by-field confirmation is required; these additions were absent from the migration baseline.
++      azure:
++        status: active
++        connection: aihub
++        provider: azure
++        model: gpt-6-astra
++        default_dialect: responses
++        endpoints:
++          responses:
++            <<: *astra-responses
++            path: /openai/v1/responses
++            provenance:
++              basis: manual
++              source: User requested gpt-6-astra results on the v6.3 board, 2026-11-21; azure route as for gpt-6.1-sol and
++                gpt-6.2-sol.
++              confirmed_at: '2026-11-21'
++              confirmed:
++              - path
++              - transport
++              - streaming
++              - limits.max_input_tokens
++              - limits.context_window_tokens
++              - limits.max_output_tokens
++              - limits.client_context_tokens
++              - limits.context_accounting
++              - limits.output_tokens_include_reasoning
++              - limits.output_field
++              - reasoning.levels
++              - reasoning.aliases
++              - reasoning.policy
++              - reasoning.policy.mode
++              - request_fields
++              - request_fields.reasoning.summary
++              - required_headers
++              - history
++              - history.checked_at
++              - history.default_encrypted_envelope
++              - history.diagnostics_file
++              - history.encrypted_envelope
++              - history.full_history_accepted
++              - history.include_encrypted_content
++              - history.item_reference_accepted
++              - history.previous_response_id_accepted
++              - history.probe_version
++              - history.reasoning_item
++              - history.reasoning_summary
++              - history.reasoning_text
++              - history.requires_encrypted_content
++              reference_model: gpt-6-astra
++              reference_provider: openai
++              reference_dialect: responses
++              path_source: Direct AI Hub requests with provider=azure returned 200 completed with reply model gpt-6-astra
++                from /openai/v1/responses for reasoning.effort low, medium, high, xhigh and max, and 404 from
++                /v1/responses, 2026-11-21. none returns 400 naming snapshot gpt-6-astra-2026-09-03 and listing low to max.
++                Streaming and function calls returned the standard Responses events and items.
++              note: Controls inherit the openai provider's Responses endpoint, including its migrated history evidence;
++                only the path differs. Alignment is the confirmation basis, not an independent measurement of azure.
++        provenance:
++          basis: manual
++          source: User requested gpt-6-astra results on the v6.3 board, 2026-11-21; OpenAI refuses Codex requests for
++            this organization (2026-11-14) and AI Hub also serves the model through azure.
++          confirmed_at: '2026-11-21'
++          confirmed:
++          - status
++          - connection
++          - provider
++          - model
++          - default_dialect
++          - endpoints
++    provenance:
++      basis: manual
++      source: User requested gpt-6-astra through azure for the v6.3 board, 2026-11-21.
++      confirmed_at: '2026-11-21'
++      confirmed:
++      - default_provider
++      - providers
++      note: The existing openai provider stays unchanged as the default, so selections without a provider resolve
++        to the same route as before.
++  gpt-6-astra-account:
++    status: active
++    connection: openai-account
+     provider: openai
+     model: gpt-6-astra
+     default_dialect: responses
+     endpoints:
+       responses:
+-        path: /v1/responses
++        path: /backend-api/codex/responses
+         transport: native
+         streaming: true
++        request_policy:
++          require_stream: true
++          require_instructions: true
+         limits:
+           max_input_tokens: null
+-          context_window_tokens: null
++          context_window_tokens: 872000
+           max_output_tokens: 128000
+-          client_context_tokens: 1050000
++          client_context_tokens: 872000
+           context_accounting: unknown
+           output_tokens_include_reasoning: null
+-          output_field: max_output_tokens
++          output_field: unsupported
+         reasoning:
+           levels:
+           - low
+@@ -2060,55 +2472,56 @@ models:
+             summary: auto
+         required_headers: {}
+         history:
+-          checked_at: '2026-09-20T11:59:55.483482+00:00'
+-          default_encrypted_envelope: true
+-          diagnostics_file: local/probes/reasoning-generic-20260920/50d35e2370ac4fac8fd9088b65564f2e/result.json
+-          encrypted_envelope: true
+-          full_history_accepted: true
+-          include_encrypted_content: true
+-          item_reference_accepted: true
+-          previous_response_id_accepted: true
+-          probe_version: 3
+-          reasoning_item: true
+-          reasoning_summary: false
+-          reasoning_text: false
+-          requires_encrypted_content: false
++          store: false
++          require_full_history: true
++          requires_encrypted_content: true
+         provenance:
+-          basis: migration
+-          source: agent-traffic-runtime daa367f routes.json; retained configuration, not newly verified
++          basis: manual
++          source: User signed in to the ChatGPT Pro account for gpt-6-astra on the v6.3 board, 2026-11-21. The Codex
++            backend model list (GET /backend-api/codex/models, client_version 0.166.0) gives gpt-6-astra context_window
++            272000 and max_context_window 872000; the client window uses the maximum because the gpt-6.1-sol and
++            gpt-6.2-sol rows on AI Hub sent requests up to 624k tokens.
++          confirmed_at: '2026-11-21'
+           confirmed:
+-          - request_fields.reasoning.summary
+-          manual_updates:
+-          - field: request_fields.reasoning.summary
+-            value: auto
+-            source: User chose auto for Luna and requested it for every configured Responses endpoint, 2026-10-08.
+-            confirmed_at: '2026-10-08'
+-          legacy_evidence:
+-            effort_compatibility_source:
+-              https://github.com/BerriAI/litellm/blob/main/litellm/litellm_core_utils/reasoning_effort_utils.py
+-            effort_diagnostics: local/probes/all-effort-20260922/requests/gpt-6-astra
+-            effort_note: Responses uses the model maximum; Chat currently rejects max. The Messages bridge maps thinking
+-              budgets to low/medium/high and ignores output_config.effort.
+-            effort_source: https://developers.openai.com/api/docs/models/gpt-6-astra
+-            effort_verified_at: '2026-09-22'
+-          legacy_context_length: 1050000
++          - path
++          - transport
++          - streaming
++          - limits.max_input_tokens
++          - limits.context_window_tokens
++          - limits.max_output_tokens
++          - limits.client_context_tokens
++          - limits.context_accounting
++          - limits.output_tokens_include_reasoning
++          - limits.output_field
++          - reasoning.levels
++          - reasoning.aliases
++          - reasoning.policy
++          - reasoning.policy.mode
++          - request_fields
++          - request_fields.reasoning.summary
++          - required_headers
++          - history
++          - history.store
++          - history.require_full_history
++          - history.requires_encrypted_content
++          - request_policy.require_stream
++          - request_policy.require_instructions
++          evidence: Direct streaming requests with instructions, store false and full input returned 200 completed with
++            reply model gpt-6-astra for reasoning.effort low, medium, high, xhigh and max; ultra returned 400 listing none,
++            minimal, low, medium, high, xhigh and max. A 526784-token input completed; a request of about 1.3M tokens
++            ended without a terminal event. The responses carry x-codex quota headers (weekly window).
++          note: max_output_tokens records the API capability; the endpoint has no output cap field (unsupported).
+     provenance:
+-      basis: migration
+-      source: agent-traffic-runtime daa367f routes.json; retained configuration, not newly verified
+-      confirmed: []
+-    proposals:
+-    - field: endpoints.responses.limits.max_input_tokens
+-      value: 1050000
+-      status: awaiting-human-confirmation
+-      source: User proposal 2026-09-23
+-      note: Current context figure retained; maximum input on this endpoint remains unverified.
+-    - field: endpoints.responses.request_fields
+-      value:
+-        reasoning:
+-          mode: standard
+-      status: awaiting-human-confirmation
+-      source: User proposal 2026-09-23
+-      note: Explicit field-by-field confirmation is required; these additions were absent from the migration baseline.
++      basis: manual
++      source: User signed in to the ChatGPT Pro account for gpt-6-astra on the v6.3 board, 2026-11-21; upstream model
++        gpt-6-astra on the Codex backend, same model name as the AI Hub routes.
++      confirmed_at: '2026-11-21'
++      confirmed:
++      - connection
++      - provider
++      - model
++      - default_dialect
++      - endpoints
+   gpt-6-luna:
+     status: active
+     connection: aihub
+@@ -2209,93 +2622,173 @@ models:
+       - default_dialect
+       - endpoints
+   gpt-6.1-sol:
++    status: active
++    default_provider: openai
++    providers:
++      openai:
++        status: active
++        connection: aihub
++        provider: openai
++        model: gpt-6.1-sol
++        default_dialect: responses
++        endpoints:
++          responses: &gpt61sol-responses
++            path: /v1/responses
++            transport: native
++            streaming: true
++            limits:
++              max_input_tokens: null
++              context_window_tokens: null
++              max_output_tokens: 128000
++              client_context_tokens: 1050000
++              context_accounting: unknown
++              output_tokens_include_reasoning: true
++              output_field: max_output_tokens
++            reasoning:
++              levels:
++              - low
++              - medium
++              - high
++              - xhigh
++              - max
++              aliases: {}
++              policy:
++                mode: effort
++            request_fields:
++              reasoning:
++                summary: auto
++            required_headers: {}
++            history:
++              requires_encrypted_content: false
++              store: false
++            provenance:
++              basis: manual
++              source: User requested gpt-6.1-sol aligned with gpt-6-astra and supplied the AIHub GPT-6.1 Sol protocol
++                capability tables (sections 3.1 and 3.2), 2026-10-23.
++              confirmed_at: '2026-10-23'
++              confirmed: &gpt61sol-endpoint-confirmations
++              - path
++              - transport
++              - streaming
++              - limits.max_input_tokens
++              - limits.context_window_tokens
++              - limits.max_output_tokens
++              - limits.client_context_tokens
++              - limits.context_accounting
++              - limits.output_tokens_include_reasoning
++              - limits.output_field
++              - reasoning.levels
++              - reasoning.levels.low
++              - reasoning.levels.medium
++              - reasoning.levels.high
++              - reasoning.levels.xhigh
++              - reasoning.levels.max
++              - reasoning.levels.order
++              - reasoning.aliases
++              - reasoning.policy
++              - reasoning.policy.mode
++              - request_fields
++              - request_fields.reasoning.summary
++              - required_headers
++              - history
++              - history.requires_encrypted_content
++              - history.store
++              documentation: https://developers.openai.com/api/docs/models/gpt-6.1-sol
++              note: The openai pass-through route is POST /v1/responses with provider=openai, which the aihub connection
++                adds to the authorization string. max_output_tokens accepts 16 to 128000 and includes reasoning tokens.
++                reasoning.effort accepts low, medium, high, xhigh and max; none and minimal return 400. reasoning.summary
++                auto resolves to detailed. With store=false, previous_response_id returns 400, so the client sends the
++                full history; reasoning items carry encrypted_content by default without include. The context window is
++                not documented; the client window is aligned with gpt-6-astra by user instruction. No additional
++                required headers.
++        provenance:
++          basis: manual
++          source: User requested adding gpt-6.1-sol aligned with gpt-6-astra, 2026-10-23. Reuses the configured aihub
++            connection, including AIHUB_ROOT_URL override and AIHUB_API_KEY credential reference.
++          confirmed_at: '2026-10-23'
++          confirmed: &gpt61sol-route-confirmations
++          - status
++          - connection
++          - provider
++          - model
++          - default_dialect
++          - endpoints
++      azure:
++        status: active
++        connection: aihub
++        provider: azure
++        model: gpt-6.1-sol
++        default_dialect: responses
++        endpoints:
++          responses:
++            <<: *gpt61sol-responses
++            path: /openai/v1/responses
++            provenance:
++              basis: manual
++              source: User requested gpt-6.1-sol through azure on the existing Responses controls, 2026-11-14.
++              confirmed_at: '2026-11-14'
++              confirmed: *gpt61sol-endpoint-confirmations
++              reference_model: gpt-6.1-sol
++              reference_provider: openai
++              reference_dialect: responses
++              reference_endpoint_sha256: 92ba02a32b575b50352247d27ca6ec043fd039ae5445978613cf72c8f56b6715
++              path_source: Direct AI Hub requests with provider=azure returned 200 completed with reply model
++                gpt-6.1-sol from /openai/v1/responses and 404 from /v1/responses, 2026-11-14. gpt-6.1-terra uses the
++                same azure native path.
++              note: Controls inherit the openai provider's Responses endpoint, including its explicit unknown values;
++                only the path differs. Alignment is the confirmation basis, not an independent measurement of azure
++                limits.
++        provenance:
++          basis: manual
++          source: User requested gpt-6.1-sol through azure on the existing Responses controls, 2026-11-14.
++          confirmed_at: '2026-11-14'
++          confirmed: *gpt61sol-route-confirmations
++          reference_model: gpt-6.1-sol
++          reference_provider: openai
++          reference_dialect: responses
++    provenance:
++      basis: manual
++      source: User requested gpt-6.1-sol through azure on the existing Responses controls, 2026-11-14.
++      confirmed_at: '2026-11-14'
++      confirmed:
++      - default_provider
++      - providers
++      note: The existing openai provider stays unchanged as the default, so selections without a provider resolve
++        to the same route as before.
++  gpt-6.2-sol:
+     status: active
+     connection: aihub
+-    provider: openai
+-    model: gpt-6.1-sol
++    provider: azure
++    model: gpt-6.2-sol
+     default_dialect: responses
+     endpoints:
+       responses:
+-        path: /v1/responses
+-        transport: native
+-        streaming: true
+-        limits:
+-          max_input_tokens: null
+-          context_window_tokens: null
+-          max_output_tokens: 128000
+-          client_context_tokens: 1050000
+-          context_accounting: unknown
+-          output_tokens_include_reasoning: true
+-          output_field: max_output_tokens
+-        reasoning:
+-          levels:
+-          - low
+-          - medium
+-          - high
+-          - xhigh
+-          - max
+-          aliases: {}
+-          policy:
+-            mode: effort
+-        request_fields:
+-          reasoning:
+-            summary: auto
+-        required_headers: {}
+-        history:
+-          requires_encrypted_content: false
+-          store: false
++        <<: *gpt61sol-responses
++        path: /openai/v1/responses
+         provenance:
+           basis: manual
+-          source: User requested gpt-6.1-sol aligned with gpt-6-astra and supplied the AIHub GPT-6.1 Sol protocol
+-            capability tables (sections 3.1 and 3.2), 2026-10-23.
+-          confirmed_at: '2026-10-23'
+-          confirmed:
+-          - path
+-          - transport
+-          - streaming
+-          - limits.max_input_tokens
+-          - limits.context_window_tokens
+-          - limits.max_output_tokens
+-          - limits.client_context_tokens
+-          - limits.context_accounting
+-          - limits.output_tokens_include_reasoning
+-          - limits.output_field
+-          - reasoning.levels
+-          - reasoning.levels.low
+-          - reasoning.levels.medium
+-          - reasoning.levels.high
+-          - reasoning.levels.xhigh
+-          - reasoning.levels.max
+-          - reasoning.levels.order
+-          - reasoning.aliases
+-          - reasoning.policy
+-          - reasoning.policy.mode
+-          - request_fields
+-          - request_fields.reasoning.summary
+-          - required_headers
+-          - history
+-          - history.requires_encrypted_content
+-          - history.store
+-          documentation: https://developers.openai.com/api/docs/models/gpt-6.1-sol
+-          note: The openai pass-through route is POST /v1/responses with provider=openai, which the aihub connection
+-            adds to the authorization string. max_output_tokens accepts 16 to 128000 and includes reasoning tokens.
+-            reasoning.effort accepts low, medium, high, xhigh and max; none and minimal return 400. reasoning.summary
+-            auto resolves to detailed. With store=false, previous_response_id returns 400, so the client sends the
+-            full history; reasoning items carry encrypted_content by default without include. The context window is
+-            not documented; the client window is aligned with gpt-6-astra by user instruction. No additional
+-            required headers.
++          source: User requested gpt-6.2-sol on the gpt-6.1-sol Responses controls, 2026-11-19. AI Hub lists azure as
++            the only provider, with context 1050000, max output 128000, reasoning low to max that cannot be disabled,
++            and the same prices as gpt-6.1-sol.
++          confirmed_at: '2026-11-19'
++          confirmed: *gpt61sol-endpoint-confirmations
++          reference_model: gpt-6.1-sol
++          reference_provider: azure
++          reference_dialect: responses
++          path_source: Direct AI Hub requests with provider=azure returned 200 completed with reply model gpt-6.2-sol
++            from /openai/v1/responses for reasoning.effort low, medium, high, xhigh and max, and 404 from
++            /v1/responses, 2026-11-19. none returns 400 naming snapshot gpt-6.2-sol-2026-11-17. Streaming and
++            function calls returned the standard Responses events and items.
++          note: Controls inherit the gpt-6.1-sol Responses endpoint; only the path differs. The request is not
++            rejected above 128000 max_output_tokens, so the AI Hub listing is the basis for that limit.
+     provenance:
+       basis: manual
+-      source: User requested adding gpt-6.1-sol aligned with gpt-6-astra, 2026-10-23. Reuses the configured aihub
+-        connection, including AIHUB_ROOT_URL override and AIHUB_API_KEY credential reference.
+-      confirmed_at: '2026-10-23'
+-      confirmed:
+-      - status
+-      - connection
+-      - provider
+-      - model
+-      - default_dialect
+-      - endpoints
++      source: User requested gpt-6.2-sol on the gpt-6.1-sol Responses controls, 2026-11-19.
++      confirmed_at: '2026-11-19'
++      confirmed: *gpt61sol-route-confirmations
++      reference_model: gpt-6.1-sol
++      reference_provider: azure
++      reference_dialect: responses
+   grok-4.6:
+     status: active
+     connection: aihub
+@@ -3360,6 +3853,153 @@ models:
+       status: awaiting-human-confirmation
+       source: User proposal 2026-09-23
+       note: Confirm exact Responses field; preserve_thinking differs from Hunyuan preserved_thinking.
++  qwen3.8-max:
++    status: active
++    connection: qwen-token-plan
++    provider: ali
++    model: qwen3.8-max
++    default_dialect: anthropic
++    endpoints:
++      anthropic:
++        path: /apps/anthropic/v1/messages
++        transport: native
++        streaming: true
++        limits:
++          max_input_tokens: null
++          context_window_tokens: null
++          max_output_tokens: 131072
++          client_context_tokens: 1000000
++          context_accounting: unknown
++          output_tokens_include_reasoning: null
++          output_field: max_tokens
++        reasoning:
++          levels:
++          - none
++          - minimal
++          - low
++          - medium
++          - high
++          - xhigh
++          - max
++          aliases: {}
++          policy:
++            disabled:
++            - - - thinking
++                - type
++              - disabled
++            enabled:
++            - - - thinking
++                - type
++              - adaptive
++            remove:
++            - - thinking_budget
++            - - thinking
++              - budget_tokens
++            mode: effort
++        request_fields: {}
++        required_headers: {}
++        history: {}
++        provenance:
++          basis: manual
++          source: FrontierAM 2026-11-13. qwen3.8-max-0902 Anthropic settings on the token-plan endpoint; /apps/anthropic/v1/messages answered qwen3.8-max with streaming, max_tokens 131072 and thinking.type adaptive.
++          confirmed_at: '2026-11-13'
++          confirmed: [path, transport, streaming, limits.max_input_tokens, limits.context_window_tokens,
++            limits.max_output_tokens, limits.client_context_tokens, limits.context_accounting,
++            limits.output_tokens_include_reasoning, limits.output_field, reasoning.levels, reasoning.aliases,
++            reasoning.policy, reasoning.policy.mode, reasoning.policy.disabled, reasoning.policy.enabled,
++            reasoning.policy.remove, request_fields, required_headers, history]
++    provenance:
++      basis: manual
++      source: Added locally by FrontierAM at the user's request, 2026-11-13; qwen3.8-max-0902 Anthropic settings on the user-supplied token-plan endpoint (model name qwen3.8-max there).
++      confirmed_at: '2026-11-13'
++      confirmed: [status, connection, provider, model, default_dialect, endpoints]
++  intern-s2:
++    status: active
++    connection: inkstone
++    provider: inkstone
++    model: intern-s2
++    default_dialect: anthropic
++    endpoints:
++      anthropic:
++        path: /v1/messages
++        transport: native
++        streaming: true
++        limits:
++          max_input_tokens: null
++          context_window_tokens: 262144
++          max_output_tokens: 65536
++          client_context_tokens: 262144
++          context_accounting: unknown
++          output_tokens_include_reasoning: true
++          output_field: max_tokens
++        reasoning:
++          levels: []
++          aliases: {}
++          policy:
++            remove:
++            - - thinking
++            mode: fixed
++        request_fields: {}
++        required_headers: {}
++        history: {}
++        request_policy:
++          system_as_text: true
++        provenance:
++          basis: manual
++          source: FrontierAM live checks 2026-11-14 and 2026-11-16. /v1/messages ignores a system prompt given as a list
++            of text blocks, with or without cache_control (the input count barely changes and the instruction is not
++            followed), and applies it as a string, so text blocks are joined; list-form user content is applied.
++            /v1/messages answered intern-s2 with thinking blocks (no signature)
++            by default, streamed thinking_delta events with zero usage in message_start and final usage in
++            message_delta, ran a tool_use round trip with the unsigned thinking blocks sent back, and accepted
++            max_tokens up to 262144; output_tokens include thinking. thinking.type disabled and adaptive (with
++            output_config.effort) are refused with HTTP 422, enabled with budget_tokens is accepted, so the client's
++            thinking object is removed and thinking stays at the model default. /v1/models lists a 262144-token
++            context; 65536 output and a 262144 client window are FrontierAM's settings, not provider-published caps.
++          confirmed_at: '2026-11-14'
++          confirmed: [path, transport, streaming, limits.max_input_tokens, limits.context_window_tokens,
++            limits.max_output_tokens, limits.client_context_tokens, limits.context_accounting,
++            limits.output_tokens_include_reasoning, limits.output_field, reasoning.levels, reasoning.aliases,
++            reasoning.policy, reasoning.policy.mode, reasoning.policy.remove, reasoning.policy.remove.0,
++            request_fields, required_headers, history, request_policy.system_as_text]
++      chat:
++        path: /v1/chat/completions
++        transport: native
++        streaming: true
++        limits:
++          max_input_tokens: null
++          context_window_tokens: 262144
++          max_output_tokens: 65536
++          client_context_tokens: 262144
++          context_accounting: unknown
++          output_tokens_include_reasoning: true
++          output_field: max_tokens
++        reasoning:
++          levels: []
++          aliases: {}
++          policy:
++            mode: fixed
++        request_fields: {}
++        required_headers: {}
++        history: {}
++        provenance:
++          basis: manual
++          source: FrontierAM live checks 2026-11-14. /v1/chat/completions answered intern-s2 with reasoning_content
++            by default, streamed reasoning_content deltas with usage in the final chunk (stream_options.include_usage),
++            returned tool_calls, and accepted max_tokens and max_completion_tokens; completion_tokens include
++            reasoning_tokens. reasoning_effort low and high gave the same amount of thinking, so it is cleared;
++            /v1/responses is not offered for this model.
++          confirmed_at: '2026-11-14'
++          confirmed: [path, transport, streaming, limits.max_input_tokens, limits.context_window_tokens,
++            limits.max_output_tokens, limits.client_context_tokens, limits.context_accounting,
++            limits.output_tokens_include_reasoning, limits.output_field, reasoning.levels, reasoning.aliases,
++            reasoning.policy, reasoning.policy.mode, request_fields, required_headers, history]
++    provenance:
++      basis: manual
++      source: Added locally by FrontierAM at the user's request, 2026-11-14; Intern S2 on the user-supplied token-plan
++        API (Messages and Chat Completions; Responses is not offered).
++      confirmed_at: '2026-11-14'
++      confirmed: [status, connection, provider, model, default_dialect, endpoints]
+   qwen3.8-max-0902:
      status: active
      connection: aihub

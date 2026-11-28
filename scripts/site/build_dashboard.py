@@ -34,7 +34,7 @@ MATH = re.compile(r'(\$\$.+?\$\$|\\\[.+?\\\]|\\\(.+?\\\)|(?<![\\$])\$[^$\n]+?\$)
 LINK = re.compile(r'\[([^\]]+)\]\((?!https?://)[^)]+\)')
 MODEL_NAMES = {'gpt-6.1-sol': 'GPT-6.1 Sol', 'gpt-6.2-sol': 'GPT-6.2 Sol', 'gpt-6-astra': 'GPT-6 Astra', 'claude-opus-5-5': 'Claude Opus 5.5',
                'hy4': 'Hunyuan 4', 'intern-s2': 'Intern S2', 'step-5-preview': 'Step-5 Preview', 'deepseek-v4-pro': 'DeepSeek V4 Pro',
-               'minimax-m3.1-flash': 'MiniMax M3.1 Flash', 'qwen3.8-max-0902': 'Qwen3.8 Max', 'qwen4-max': 'Qwen4 Max', 'glm-5.4': 'GLM-5.4'}
+               'minimax-m3.1-flash': 'MiniMax M3.1 Flash', 'qwen3.8-max-0902': 'Qwen3.8 Max', 'qwen4-max': 'Qwen4 Max', 'glm-5.4': 'GLM-5.4', 'glm-5.3': 'GLM-5.3'}
 GROUP_NAMES = {'linear': '线性', 'quadratic': '二次', 'soc': '二阶锥', 'psd': '半正定', 'exponential': '指数锥'}
 
 
@@ -408,7 +408,7 @@ def task_page(task: dict) -> str:
 
 
 BOARD_MODELS = ['gpt-6.2-sol', 'gpt-6-astra', 'gpt-6.1-sol', 'claude-opus-5-5', 'hy4', 'qwen4-max', 'qwen3.8-max-0902',
-                'minimax-m3.1-flash', 'glm-5.4', 'intern-s2']
+                'minimax-m3.1-flash', 'glm-5.4', 'glm-5.3', 'intern-s2']
 
 
 def index_page(site: dict, tasks: list[dict]) -> str:

@@ -77,6 +77,7 @@ HARNESS = {
     'qwen3.8-max-0902': 'claude',
     'qwen4-max': 'codex',  # AI Hub offers only the Responses passthrough (2026-11-25)
     'glm-5.4': 'codex',  # AI Hub offers the zhipu Responses passthrough and Chat Completions, no Messages (2026-11-28)
+    'glm-5.3': 'claude',  # /standard/v1/messages answers with signed thinking and tool use (ATR's entry; 2026-11-28)
     'intern-s2': 'claude',
 }
 CREDENTIALS = {
@@ -89,7 +90,7 @@ DEFAULT_CREDENTIAL = ('AIHUB_API_KEY', Path('/root/.frontieram/aihub.key'))
 # until its whole answer exists; streamed answers keep sending thinking or keepalive events, so these models' upstream
 # requests stay streaming.
 UPSTREAM_STREAM = {'claude-opus-5-5', 'gpt-6-astra', 'gpt-6.1-sol', 'gpt-6.2-sol', 'hy4', 'intern-s2', 'minimax-m3.1-flash',
-                   'qwen3.8-max', 'qwen3.8-max-0902', 'qwen4-max', 'glm-5.4'}
+                   'qwen3.8-max', 'qwen3.8-max-0902', 'qwen4-max', 'glm-5.4', 'glm-5.3'}
 # ATR configuration where it is not the model name, and the environment it needs: gpt-6-astra runs on the user's
 # ChatGPT Pro account through the Codex backend instead of AI Hub billing (user decision 2026-11-21; ATR models.yaml
 # gpt-6-astra-account: same upstream model, reasoning up to max, 872k-token window, no output cap field).
