@@ -89,6 +89,7 @@
 | Qwen3.8 Max | 迭代 | RMSE \(E = 1.6174\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 40.7 | 9 次提交，148 分钟 | [`v3/qwen3.8-max-0902-iterative-2/`](solutions/v6.3/v3/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | RMSE \(E = 1.7097\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 32.9 | 23 分钟 | [`v3/minimax-m3.1-flash-single-1/`](solutions/v6.3/v3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | RMSE \(E = 1.6657\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 36.6 | 2 次提交，56 分钟 | [`v3/minimax-m3.1-flash-iterative-2/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-2/) |
+| GLM-5.3 | 单轮 | RMSE \(E = 1.6636\)，116 景（\(U = 2.1006\)，\(W = 1.5070\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 36.8 | 29 分钟 | [`v3/glm-5.3-single-1/`](solutions/v6.3/v3/glm-5.3-single-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -189,6 +190,10 @@ public 分数随测试提交：1.0（23 分钟） → 0.0（52 分钟） → 9.9
 public 分数随测试提交：34.6（32 分钟） → 34.6（50 分钟）
 
 源码 [`solutions/v6.3/v3/minimax-m3.1-flash-iterative-2/source/`](solutions/v6.3/v3/minimax-m3.1-flash-iterative-2/source/)（提交 `polarization-demosaicking-v3-20261126T210023Z-a2f787`）。
+
+### GLM-5.3（单轮，v6.3）
+
+源码 [`solutions/v6.3/v3/glm-5.3-single-1/source/`](solutions/v6.3/v3/glm-5.3-single-1/source/)（提交 `polarization-demosaicking-v3-20261128T154844Z-2e03b9`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

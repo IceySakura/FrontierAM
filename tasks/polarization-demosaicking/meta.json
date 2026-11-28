@@ -229,6 +229,19 @@
           "folder": "v3/minimax-m3.1-flash-iterative-2"
         },
         {
+          "model": "glm-5.3",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "polarization-demosaicking-v3-20261128T154844Z-2e03b9",
+          "store": "var/stores/store-v63",
+          "raw": "RMSE \\(E = 1.6636\\)，116 景（\\(U = 2.1006\\)，\\(W = 1.5070\\)）",
+          "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+          "score": 36.812,
+          "notes_md": "",
+          "folder": "v3/glm-5.3-single-1"
+        },
+        {
           "model": "intern-s2",
           "protocol": "v6.3",
           "setting": "单轮",

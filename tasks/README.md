@@ -7,7 +7,7 @@
 | [conic](conic/README.md) | 29 |
 | [exponential](exponential/README.md) | 26 |
 | [galaxy-gravity](galaxy-gravity/README.md) | 24 |
-| [polarization-demosaicking](polarization-demosaicking/README.md) | 26 |
+| [polarization-demosaicking](polarization-demosaicking/README.md) | 27 |
 | [trajectory-covariance](trajectory-covariance/README.md) | 19 |
 | [species-tree](species-tree/README.md) | 20 |
 | [ihvp-sequence](ihvp-sequence/README.md) | 24 |
