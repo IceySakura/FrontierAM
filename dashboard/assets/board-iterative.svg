@@ -28,8 +28,8 @@
 <text x="596" y="245.0" font-size="13" font-weight="700" fill="#111827">43.2</text>
 <text x="120" y="277.0" font-size="13" fill="#374151" text-anchor="end">Qwen4 Max</text>
 <rect x="132" y="264.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
-<rect x="132" y="264.0" width="192.7" height="16" rx="4" fill="#5b21b6"/>
-<text x="596" y="277.0" font-size="13" font-weight="700" fill="#111827">42.6</text>
+<rect x="132" y="264.0" width="190.4" height="16" rx="4" fill="#5b21b6"/>
+<text x="596" y="277.0" font-size="13" font-weight="700" fill="#111827">42.1</text>
 <text x="120" y="309.0" font-size="13" fill="#374151" text-anchor="end">MiniMax M3.1 Flash</text>
 <rect x="132" y="296.0" width="452" height="16" rx="4" fill="#f3f4f6"/>
 <rect x="132" y="296.0" width="159.4" height="16" rx="4" fill="#dc2626"/>
