@@ -98,7 +98,7 @@
 | Qwen3.8 Max | 单轮 | 43/66 个计分例合格；不合格：`accuracy_failure` 13，`cpu_limit` 10（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 20.8 | 32 分钟 | [`qwen3.8-max-0902-single-2/`](solutions/v6.3/qwen3.8-max-0902-single-2/) |
 | Qwen3.8 Max | 迭代 | 66/66 个计分例合格，总体 \(R = 0.581\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 64.9 | 7 次提交，161 分钟 | [`qwen3.8-max-0902-iterative-3/`](solutions/v6.3/qwen3.8-max-0902-iterative-3/) |
 | MiniMax M3.1 Flash | 单轮 | 46/66 个计分例合格；不合格：`accuracy_failure` 20（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 15.7 | 38 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
-| MiniMax M3.1 Flash | 迭代 | 65/66 个计分例合格；不合格：`accuracy_failure` 1（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 60.0 | 7 次提交，74 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
+| MiniMax M3.1 Flash | 迭代 | 64/66 个计分例合格；不合格：`accuracy_failure` 2（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 43.3 | 9 次提交，164 分钟 | [`minimax-m3.1-flash-iterative-2/`](solutions/v6.3/minimax-m3.1-flash-iterative-2/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -198,11 +198,11 @@ public 分数随测试提交：60.1（69 分钟） → 61.3（90 分钟） → 5
 
 ### MiniMax M3.1 Flash（迭代，v6.3）
 
-反馈扩到 43 例（含 p7、p10）后的第 2 次尝试进行中；此处暂列此前尝试的成绩（其反馈只有 p4）。
+此前尝试的测试反馈只有 p4 精度档的 16 例，p7、p10 档的失败在反馈里看不到，且反馈按旧的全有或全无规则计分；11-26 起反馈为 43 例（每个结构族第一个公开母矩阵的 p4、p7、p10 全部会话加 2 个对照例），按逐例规则计分，本格为此后的第 2 次尝试（results/OPEN_ITEMS.md）。
 
-public 分数随测试提交：44.7（31 分钟） → 43.7（45 分钟） → 51.4（51 分钟） → 53.0（53 分钟） → 0.0（56 分钟） → 53.3（63 分钟） → 51.7（71 分钟）
+public 分数随测试提交：27.6（51 分钟） → 42.8（64 分钟） → 43.8（71 分钟） → 44.2（77 分钟） → 35.6（88 分钟） → 36.0（105 分钟） → 28.4（133 分钟） → 34.0（140 分钟） → 45.3（146 分钟）
 
-源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `exponential-v3-20261125T135911Z-455269`）；未复制的二进制或大文件：libfamexp.so（19,768 字节）。
+源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-2/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-2/source/)（提交 `exponential-v3-20261128T024054Z-73ca86`）；未复制的二进制或大文件：bin/fastsolve（74,512 字节）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

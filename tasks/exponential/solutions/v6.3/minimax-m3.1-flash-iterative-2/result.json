@@ -1,0 +1,61 @@
+{
+ "model": "minimax-m3.1-flash",
+ "protocol": "v6.3",
+ "setting": "迭代",
+ "submission": "exponential-v3-20261128T024054Z-73ca86",
+ "raw": "64/66 个计分例合格；不合格：`accuracy_failure` 2（\\(r\\)：逐例用时 ÷ 7 方法参照组该例最快成员）",
+ "mapping": "逐例 \\(100/(1+r)\\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均",
+ "score": 43.271,
+ "review": null,
+ "process": {
+  "minutes": 163.5,
+  "public_tests": 9,
+  "public_curve": [
+   {
+    "minute": 51.0,
+    "score": 27.624622366007213,
+    "status": "ok"
+   },
+   {
+    "minute": 63.9,
+    "score": 42.75233287531171,
+    "status": "ok"
+   },
+   {
+    "minute": 71.2,
+    "score": 43.8477339322885,
+    "status": "ok"
+   },
+   {
+    "minute": 77.4,
+    "score": 44.16279609407321,
+    "status": "ok"
+   },
+   {
+    "minute": 87.9,
+    "score": 35.63725901501902,
+    "status": "ok"
+   },
+   {
+    "minute": 105.1,
+    "score": 35.97000955145193,
+    "status": "ok"
+   },
+   {
+    "minute": 132.8,
+    "score": 28.35734046577511,
+    "status": "ok"
+   },
+   {
+    "minute": 140.3,
+    "score": 34.04348136332576,
+    "status": "ok"
+   },
+   {
+    "minute": 145.5,
+    "score": 45.322017611156774,
+    "status": "ok"
+   }
+  ]
+ }
+}
