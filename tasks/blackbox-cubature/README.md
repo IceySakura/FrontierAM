@@ -24,6 +24,7 @@
 | `v3.3` | `blackbox-cubature-v3.3` | v3.2 的题面修订：写明提前结束不加分、理论分只看最强的一条通过验证的结论（一条有分量的结论胜过多条初等结论），建议先在 THEORY.md 定目标与证明路线再分步形式化；环境、数据与评分同 v3.2；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.12） |
 | `v3.4` | `blackbox-cubature-v3.4` | v3.3 加开发阶段联网：宿主侧代理放行公网，拒绝 GitHub 及其镜像、包管理源、在线大模型服务与内网，请求全部记录；厂商侧联网工具关闭；评测仍离线；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.13） |
 | `v3.5` | `blackbox-cubature-v3.5` | v3.4 加题面中的人类 SOTA 目标（Gilbert–Kuo–Sloan 2022、He–Wang 2015、Rademacher–Vempala 2008、Liu–Owen 2023，均按原文核对），要求至少选一个尝试严格改进；其余同 v3.4；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.14） |
+| `v3.6` | `blackbox-cubature-v3.6` | v3.5 加曲面赛道（出题人意见：合成赛道多为二次曲面）：7 个非二次族（随机光滑界面的星形闭合曲面、弯曲图形面、相交图形面、窄光滑脊），按几何形状、正则性、单调性、结构维数、稀有程度搭配，三条赛道等权，另报只含 v3.1 实例的两赛道 G；理论部分按 theory-v2 规则分档；只做试跑，不上榜（analysis/DUAL_PLAN.md 9.18） |
 
 ## 题目背景
 

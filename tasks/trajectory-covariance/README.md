@@ -87,6 +87,7 @@ MCMC 的输出是相关的样本，不能用独立样本的公式算均值的标
 | Qwen3.8 Max | 迭代 | 白化误差 \(E = 0.2240\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 51.1 | 5 次提交，169 分钟 | [`qwen3.8-max-0902-iterative-1/`](solutions/v6.3/qwen3.8-max-0902-iterative-1/) |
 | MiniMax M3.1 Flash | 单轮 | 白化误差 \(E = 0.2255\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 50.8 | 47 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | 白化误差 \(E = 0.2294\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 49.8 | 6 次提交，117 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
+| GLM-5.3 | 单轮 | 白化误差 \(E = 0.3237\)（\(U = 0.3493\)，\(W = 0.2290\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 10.7 | 24 分钟 | [`glm-5.3-single-1/`](solutions/v6.3/glm-5.3-single-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -175,6 +176,10 @@ public 分数随测试提交：0.0（16 分钟） → 50.8（111 分钟） → 5
 public 分数随测试提交：0.0（30 分钟） → 0.0（58 分钟） → 33.1（72 分钟） → 33.1（86 分钟） → 50.0（99 分钟） → 50.0（110 分钟）
 
 源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `trajectory-covariance-v2-20261125T191131Z-fe391d`）。
+
+### GLM-5.3（单轮，v6.3）
+
+源码 [`solutions/v6.3/glm-5.3-single-1/source/`](solutions/v6.3/glm-5.3-single-1/source/)（提交 `trajectory-covariance-v2-20261128T150751Z-d00852`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 

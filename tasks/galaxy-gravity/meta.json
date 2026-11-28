@@ -229,6 +229,19 @@
           "folder": "v4/minimax-m3.1-flash-iterative-1"
         },
         {
+          "model": "glm-5.3",
+          "protocol": "v6.3",
+          "setting": "单轮",
+          "attempt": 1,
+          "submission": "galaxy-gravity-v4-20261128T152712Z-42acc5",
+          "store": "var/stores/store-v63",
+          "raw": "\\(E = 0.27\\)，20 组（4 档规模 × 5 类）等权；CPU 用量最多到逐例时限的 19%（经典树 theta 0.8：\\(E_0 = 0.00175\\)，改进树 theta 0.7：\\(E_{50} = 0.000665\\)）",
+          "mapping": "对数刻度：\\(E < E_{50}\\) 为 \\(50 + 50\\,\\log(E_{50}/E)/\\log(E_{50}/10^{-15})\\)；\\(E_{50} \\le E < E_0\\) 为 \\(50\\,\\log(E_0/E)/\\log(E_0/E_{50})\\)；失败或超限的组按经典树参照该组的误差计",
+          "score": 0.0,
+          "notes_md": "",
+          "folder": "v4/glm-5.3-single-1"
+        },
+        {
           "model": "intern-s2",
           "protocol": "v6.3",
           "setting": "单轮",
