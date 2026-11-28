@@ -8,6 +8,8 @@ Sets (`--set`):
              option family in the configuration the public set does not use (namespace 4);
   public     the hidden feedback set: one synthetic instance per (family, d), one per formal option family;
   private    the formal set: every synthetic configuration and every formal option configuration x 2 seeds.
+--variant v3.6 builds only the curved track (curved.py) in the same set layout: samples at d = 16 (every k level),
+public one per (family, d), private every (family, d, k) x 2 seeds; merge_v36.py appends it to the v3.1 sets.
 The public and private sets draw a random 62-bit namespace (recorded only in their instances.json, which stays off
 GitHub), so the generator code does not reveal them. Rotation and protocol seeds come from the same stream.
 
@@ -35,6 +37,7 @@ from pathlib import Path  # noqa: E402
 
 import numpy as np  # noqa: E402
 
+import curved  # noqa: E402
 import localvol  # noqa: E402
 import options  # noqa: E402
 import paths  # noqa: E402
@@ -62,6 +65,8 @@ SAMPLE_NAMESPACE = 4
 ANISO = 3.0
 LV_CONFIGS = (('lv_call', 1, 32), ('lv_call', 1, 64), ('lv_digital', 1, 32), ('lv_digital', 1, 64),
               ('lv_do_call', 1, 16), ('lv_do_call', 1, 64), ('lv_dko_call', 1, 16), ('lv_dko_call', 1, 64))
+# v3.6 (DUAL_PLAN 9.18): the curved track alone (curved.py); merge_v36.py joins it to the v3.1 sets.
+CURVED_DIMS = (16, 64)
 VARIANT = 'v3'
 
 
@@ -70,6 +75,27 @@ def _synthetic(fam: str, d: int, k: int, s: int | None) -> dict:
     suffix, stream = ('', [1, fi, d, k]) if s is None else (f'-s{s}', [1, fi, d, k, s])
     return {'id': f'{fam}-d{d}-k{k}{suffix}', 'track': 'hard', 'family': fam, 'L': None, 'm': None, 'd': d, 'k': k,
             'stream': stream}
+
+
+def _curved(fam: str, d: int, k: int, s: int | None) -> dict:
+    fi = curved.FAMILIES.index(fam)
+    suffix, stream = ('', [4, fi, d, k]) if s is None else (f'-s{s}', [4, fi, d, k, s])
+    return {'id': f'{fam}-d{d}-k{k}{suffix}', 'track': 'curved', 'family': fam, 'L': None, 'm': None, 'd': d, 'k': k,
+            'stream': stream}
+
+
+def plan_curved(which: str) -> list[dict]:
+    if which == 'prototype':
+        return [_curved(fam, d, k, None) for fam in curved.FAMILIES for d in CURVED_DIMS for k in curved.k_levels(fam, d)]
+    if which == 'private':
+        return [_curved(fam, d, k, s) for fam in curved.FAMILIES for d in CURVED_DIMS for k in curved.k_levels(fam, d)
+                for s in SEEDS]
+    if which == 'public':
+        return [_curved(fam, d, curved.k_levels(fam, d)[(fi + di) % len(curved.k_levels(fam, d))], 0)
+                for fi, fam in enumerate(curved.FAMILIES) for di, d in enumerate(CURVED_DIMS)]
+    if which == 'samples':
+        return [_curved(fam, 16, k, 0) for fam in curved.FAMILIES for k in curved.k_levels(fam, 16)]
+    raise ValueError(which)
 
 
 def _option(fam: str, L: int, m: int, s: int) -> dict:
@@ -84,7 +110,9 @@ def plan(only: set | None, which: str = 'prototype') -> list[dict]:
     option_configs = LV_CONFIGS if VARIANT == 'v3.1' else OPTION_CONFIGS
     formal = localvol.FAMILIES if VARIANT == 'v3.1' else FORMAL_OPTION_FAMILIES
     configs = {fam: [(L, m) for f, L, m in option_configs if f == fam] for fam in (*OPTION_FAMILIES, *localvol.FAMILIES)}
-    if which == 'prototype':
+    if VARIANT == 'v3.6':
+        tasks = plan_curved(which)
+    elif which == 'prototype':
         tasks += [_synthetic(fam, d, k, None) for fam in synthetic.FAMILIES for d in HARD_DIMS
                   for k in synthetic.k_levels(fam, d)]
         tasks += [_option(fam, L, m, s) for fam, L, m in option_configs for s in SEEDS]
@@ -142,6 +170,11 @@ def build(task: dict, namespace: int, rqmc_m: int, redraw: int = 0) -> dict:
         spec['rotation_seed'] = int(rng.integers(2 ** 31))
         a, b = synthetic.reference(spec), synthetic.reference_swapped(spec)
         routes = [_det_route(a['method'], a), _det_route(b['method'], b)]
+    elif task['track'] == 'curved':
+        spec = curved.sample(fam, task['d'], task['k'], rng)
+        spec['rotation_seed'] = int(rng.integers(2 ** 31))
+        a, b = curved.reference(spec), curved.reference_second(spec)
+        routes = [_det_route(a['method'], a), _det_route(b['method'], b)]
     elif fam in localvol.FAMILIES:
         spec = localvol.sample(fam, rng, m=task['m'])
         spec['rotation_seed'] = int(rng.integers(2 ** 31))
@@ -169,6 +202,8 @@ def _build(variant: str, *args):
 
 
 def cost(task: dict) -> float:
+    if task['track'] == 'curved':
+        return 8.0 if task['family'] == 'C4' else task['k'] / 64
     if task['track'] != 'options':
         return task['d'] / 64
     if task['family'] in localvol.FAMILIES:
@@ -180,7 +215,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('out', type=Path)
     ap.add_argument('--set', default='prototype', choices=('prototype', 'samples', 'public', 'private'))
-    ap.add_argument('--variant', default='v3', choices=('v3', 'v3.1'))
+    ap.add_argument('--variant', default='v3', choices=('v3', 'v3.1', 'v3.6'))
     ap.add_argument('--workers', type=int, default=6)
     ap.add_argument('--rqmc-m', type=int, default=20)
     ap.add_argument('--namespace', type=int, default=None,

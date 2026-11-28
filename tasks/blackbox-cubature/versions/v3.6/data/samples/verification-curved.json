@@ -1,0 +1,366 @@
+{
+ "bvn_max_diff": 3.3306690738754696e-16,
+ "oracle_m": 18,
+ "instances": [
+  {
+   "id": "samples/C1-d16-k3-s0",
+   "track": "curved",
+   "family": "C1",
+   "d": 16,
+   "reference": {
+    "value": 2.00252292100695,
+    "uncertainty": 1e-13,
+    "rel_uncertainty": 4.993700643871578e-14,
+    "e_floor": -12.0,
+    "method": "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)"
+   },
+   "agreement": {
+    "ratio": 0.004440892098500626,
+    "pair": [
+     "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)",
+     "B: polar coordinates around the centre, adaptive Gauss-Kronrod in (theta, psi), radial Gauss-Legendre (150)"
+    ],
+    "diff": 8.881784197001252e-16
+   },
+   "oracle": {
+    "value": 2.002638947018225,
+    "se": 0.0002526452358686799,
+    "z": 0.4592448018097708,
+    "ratio": 0.11481120044108177
+   },
+   "pointwise": {
+    "reduction": 1.4635730176844764e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.8
+  },
+  {
+   "id": "samples/C1-d16-k16-s0",
+   "track": "curved",
+   "family": "C1",
+   "d": 16,
+   "reference": {
+    "value": 1.8429103089183565,
+    "uncertainty": 1e-13,
+    "rel_uncertainty": 5.426200044357674e-14,
+    "e_floor": -12.0,
+    "method": "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)"
+   },
+   "agreement": {
+    "ratio": 0.0033306690738754696,
+    "pair": [
+     "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)",
+     "B: polar coordinates around the centre, adaptive Gauss-Kronrod in (theta, psi), radial Gauss-Legendre (150)"
+    ],
+    "diff": 6.661338147750939e-16
+   },
+   "oracle": {
+    "value": 1.8430078917856572,
+    "se": 5.660412019349913e-05,
+    "z": 1.7239534324900234,
+    "ratio": 0.43098835793215384
+   },
+   "pointwise": {
+    "reduction": 9.90799968445101e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.9
+  },
+  {
+   "id": "samples/C1t-d16-k3-s0",
+   "track": "curved",
+   "family": "C1t",
+   "d": 16,
+   "reference": {
+    "value": 2.2253871267444483,
+    "uncertainty": 1e-13,
+    "rel_uncertainty": 4.493600183006877e-14,
+    "e_floor": -12.0,
+    "method": "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)"
+   },
+   "agreement": {
+    "ratio": 0.019984014443252818,
+    "pair": [
+     "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)",
+     "B: polar coordinates around the centre, adaptive Gauss-Kronrod in (theta, psi), radial Gauss-Legendre (150)"
+    ],
+    "diff": 3.9968028886505635e-15
+   },
+   "oracle": {
+    "value": 2.2187170458367005,
+    "se": 0.0070510611544564,
+    "z": -0.9459683814445681,
+    "ratio": 0.23649209536030352
+   },
+   "pointwise": {
+    "reduction": 4.9706221017770046e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.5
+  },
+  {
+   "id": "samples/C1t-d16-k16-s0",
+   "track": "curved",
+   "family": "C1t",
+   "d": 16,
+   "reference": {
+    "value": 2.3650588027803274,
+    "uncertainty": 1e-13,
+    "rel_uncertainty": 4.2282246801830684e-14,
+    "e_floor": -12.0,
+    "method": "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)"
+   },
+   "agreement": {
+    "ratio": 0.3375077994860476,
+    "pair": [
+     "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)",
+     "B: polar coordinates around the centre, adaptive Gauss-Kronrod in (theta, psi), radial Gauss-Legendre (150)"
+    ],
+    "diff": 6.750155989720952e-14
+   },
+   "oracle": {
+    "value": 2.368398136684603,
+    "se": 0.00457081617694449,
+    "z": 0.7305771606216838,
+    "ratio": 0.18264429015442196
+   },
+   "pointwise": {
+    "reduction": 3.608707952105739e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.7
+  },
+  {
+   "id": "samples/C2-d16-k3-s0",
+   "track": "curved",
+   "family": "C2",
+   "d": 16,
+   "reference": {
+    "value": 1.6370770133915369,
+    "uncertainty": 1e-13,
+    "rel_uncertainty": 6.108448117100473e-14,
+    "e_floor": -12.0,
+    "method": "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)"
+   },
+   "agreement": {
+    "ratio": 0.062172489379008766,
+    "pair": [
+     "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)",
+     "B: polar coordinates around the centre, adaptive Gauss-Kronrod in (theta, psi), radial Gauss-Legendre (150)"
+    ],
+    "diff": 1.2434497875801753e-14
+   },
+   "oracle": {
+    "value": 1.6372049206537158,
+    "se": 9.973623399832478e-05,
+    "z": 1.2824553028649175,
+    "ratio": 0.320613825635864
+   },
+   "pointwise": {
+    "reduction": 1.2760668419919434e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.7
+  },
+  {
+   "id": "samples/C2-d16-k16-s0",
+   "track": "curved",
+   "family": "C2",
+   "d": 16,
+   "reference": {
+    "value": 1.6867022624602408,
+    "uncertainty": 1e-13,
+    "rel_uncertainty": 5.928728633715058e-14,
+    "e_floor": -12.0,
+    "method": "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)"
+   },
+   "agreement": {
+    "ratio": 0.021094237467877974,
+    "pair": [
+     "A: polar coordinates around the centre, tensor Gauss-Legendre x trapezoid x Gauss-Legendre (192 x 320 x 192)",
+     "B: polar coordinates around the centre, adaptive Gauss-Kronrod in (theta, psi), radial Gauss-Legendre (150)"
+    ],
+    "diff": 4.218847493575595e-15
+   },
+   "oracle": {
+    "value": 1.6867223063561678,
+    "se": 3.811731124923855e-05,
+    "z": 0.525847581325002,
+    "ratio": 0.13146189524502858
+   },
+   "pointwise": {
+    "reduction": 1.798148278389227e-14
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 9.9
+  },
+  {
+   "id": "samples/C3-d16-k3-s0",
+   "track": "curved",
+   "family": "C3",
+   "d": 16,
+   "reference": {
+    "value": 2.1970680001432865,
+    "uncertainty": 1e-13,
+    "rel_uncertainty": 4.551520480635023e-14,
+    "e_floor": -12.0,
+    "method": "A: closed-form x1 integral, tensor Gauss-Hermite (300 x 300)"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: closed-form x1 integral, tensor Gauss-Hermite (300 x 300)",
+     "B: closed-form x1 integral, adaptive Gauss-Kronrod over the plane"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.197022211012216,
+    "se": 2.521030421996782e-05,
+    "z": -1.8162863355719552,
+    "ratio": 0.45407158344270504
+   },
+   "pointwise": {
+    "closed_form": 3.133839290781048e-16
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.6
+  },
+  {
+   "id": "samples/C4-d16-k3-s0",
+   "track": "curved",
+   "family": "C4",
+   "d": 16,
+   "reference": {
+    "value": 2.8666581843547787,
+    "uncertainty": 2.8666581843547786e-12,
+    "rel_uncertainty": 1e-12,
+    "e_floor": -11.0,
+    "method": "A: closed-form x1 integral, nested adaptive Gauss-Kronrod (x2 outer) with the kink as breakpoints"
+   },
+   "agreement": {
+    "ratio": 0.021688141864392205,
+    "pair": [
+     "A: closed-form x1 integral, nested adaptive Gauss-Kronrod (x2 outer) with the kink as breakpoints",
+     "B: closed-form x1 integral, nested adaptive Gauss-Kronrod (x3 outer) with the kink as breakpoints"
+    ],
+    "diff": 1.2434497875801753e-13
+   },
+   "oracle": {
+    "value": 2.866647166162375,
+    "se": 3.1527513786265694e-05,
+    "z": -0.34947863248857636,
+    "ratio": 0.08736965613610943
+   },
+   "pointwise": {
+    "closed_form": 1.7482837183973878e-16
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 10.1
+  },
+  {
+   "id": "samples/C5-d16-k3-s0",
+   "track": "curved",
+   "family": "C5",
+   "d": 16,
+   "reference": {
+    "value": 2.71545971586837,
+    "uncertainty": 2.0106138975961585e-12,
+    "rel_uncertainty": 7.404322317310421e-13,
+    "e_floor": -11.13,
+    "method": "A: closed-form x1 integral, tensor Gauss-Hermite (300 x 300)"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: closed-form x1 integral, tensor Gauss-Hermite (300 x 300)",
+     "B: closed-form x1 integral, adaptive Gauss-Kronrod over the plane"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.71448520772593,
+    "se": 0.00931219313848161,
+    "z": -0.10464861799449654,
+    "ratio": 0.026162154497211956
+   },
+   "pointwise": {
+    "closed_form": 1.8101509021187126e-15
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 8.9
+  },
+  {
+   "id": "samples/C6-d16-k3-s0",
+   "track": "curved",
+   "family": "C6",
+   "d": 16,
+   "reference": {
+    "value": 2.43286132054454,
+    "uncertainty": 1e-13,
+    "rel_uncertainty": 4.110386365040211e-14,
+    "e_floor": -12.0,
+    "method": "A: closed-form x1 integral, tensor Gauss-Hermite (300 x 300)"
+   },
+   "agreement": {
+    "ratio": 0.0,
+    "pair": [
+     "A: closed-form x1 integral, tensor Gauss-Hermite (300 x 300)",
+     "B: closed-form x1 integral, adaptive Gauss-Kronrod over the plane"
+    ],
+    "diff": 0.0
+   },
+   "oracle": {
+    "value": 2.432114462800417,
+    "se": 0.000252981438162684,
+    "z": -2.9522234893886474,
+    "ratio": 0.738055872274226
+   },
+   "pointwise": {
+    "closed_form": 2.1431102967386253e-16
+   },
+   "passed": {
+    "agreement": true,
+    "oracle": true,
+    "pointwise": true
+   },
+   "seconds": 7.9
+  }
+ ]
+}

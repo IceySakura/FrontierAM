@@ -55,6 +55,7 @@ HARNESS_IMAGES = {'exponential': 'frontieram-exponential-harness:v6', 'conic': '
                   'blackbox-cubature-v3.3': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.4': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-v3.5': 'frontieram-blackbox-cubature-v3-harness:v6',
+                  'blackbox-cubature-v3.6': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-theory-v1': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'decentralized-sum-of-nonconvex-theory-v1': 'frontieram-blackbox-cubature-v3-harness:v6',
                   'blackbox-cubature-theory-v2': 'frontieram-blackbox-cubature-v3-harness:v6',
@@ -466,6 +467,13 @@ SCORING_DISCLOSURE['blackbox-cubature-theory-v2'] = (
     'from the human papers 50, otherwise 25; dominated by or equal to a known human result (a restatement or special '
     'case) 10. The score is the best of these among the verified results; unformalized results score nothing, and '
     'ending the session early earns nothing.'
+)
+SCORING_DISCLOSURE['blackbox-cubature-v3.6'] = (
+    SCORING_DISCLOSURE['blackbox-cubature-v3'].split(' The theory document')[0].replace(
+        'over the two tracks with equal weight', 'over the three tracks with equal weight')
+    + ' The theory is scored separately and reported on its own; it is not part of the program score and gets no '
+    'feedback during the attempt. '
+    + SCORING_DISCLOSURE['blackbox-cubature-theory-v2'].split('there is no program. ', 1)[1]
 )
 SCORING_DISCLOSURE['decentralized-sum-of-nonconvex-theory-v2'] = SCORING_DISCLOSURE['blackbox-cubature-theory-v2'].replace(
     ' The score is the best of these among the verified results;',

@@ -12,8 +12,9 @@ query {points} -> values {values}; one result {estimate, error_bound?, confidenc
 
 Score: per instance e = log10 relative error clipped to [e_floor, 0], e_floor the instance's reference resolution
 (generate.py); gain g = e_reference - e against the locally rerun GPCA-RQMC reference on the same instance, clipped
-to [-2, 2]; mean per cell ((family, d) on the hard track, (family, configuration) on the option track), mean over a
-family's cells, mean over a track's families, mean of the two tracks gives G. G >= 0 scores 50 + 25 G (every
+to [-2, 2]; mean per cell ((family, d) on the hard and curved tracks, (family, configuration) on the option track),
+mean over a family's cells, mean over a track's families, mean of the tracks present (two up to v3.5, three from v3.6)
+gives G. G >= 0 scores 50 + 25 G (every
 instance 100x better than the reference: 100); G < 0 scores 50 (G - G0) / -G0, where G0 is plain Monte Carlo's gain
 on the same instances (0 points). Error bounds are diagnostics only (coverage and tightness), never scored.
 
@@ -58,7 +59,7 @@ def load_oracle():
 
 
 def cell(instance: dict) -> str:
-    return f'd{instance["d"]}' if instance['track'] == 'hard' else f'L{instance["L"]}-m{instance["m"]}'
+    return f'L{instance["L"]}-m{instance["m"]}' if instance['track'] == 'options' else f'd{instance["d"]}'
 
 
 @contextmanager

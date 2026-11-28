@@ -11,7 +11,7 @@ A version whose task.json names data_dir (v3.2: the v3.1 instance sets) takes it
 there and only its workspace from its own directory. A theory-only version (task.json theory_only) has neither
 samples nor instance files.
 
-Usage: seal_cubature_v3.py [--version v3|v3.1|v3.2|v3.3|v3.4|v3.5|theory-v1] [--force] [--provisional]
+Usage: seal_cubature_v3.py [--version v3|v3.1|v3.2|v3.3|v3.4|v3.5|v3.6|theory-v1] [--force] [--provisional]
 """
 from __future__ import annotations
 
@@ -49,18 +49,19 @@ def samples_json() -> bytes:
     strong, weak = ({r['id']: r for r in refs[k]} for k in ('strong', 'weak'))
     out = []
     for inst in data['instances']:
-        cell = f'd{inst["d"]}' if inst['track'] == 'hard' else f'L{inst["L"]}-m{inst["m"]}'
+        cell = f'L{inst["L"]}-m{inst["m"]}' if inst['track'] == 'options' else f'd{inst["d"]}'
         out.append({'id': inst['id'], 'track': inst['track'], 'family': inst['family'], 'cell': cell,
                     'dimension': inst['d'], 'L': inst['L'], 'm': inst['m'], 'k': inst['k'], 'seed': inst['seed'],
                     'reference_value': inst['reference']['value'],
                     'reference_rel_uncertainty': inst['reference']['rel_uncertainty'],
                     'e_floor': inst['reference']['e_floor'],
                     'e_reference': strong[inst['id']]['log10_rel_error'], 'e_mc': weak[inst['id']]['log10_rel_error']})
+    tracks = 'hard and curved tracks' if any(i['track'] == 'curved' for i in data['instances']) else 'hard track'
     note = ('Sample instances (same distribution as the hidden ones, other seeds). reference_value is the true '
             'integral to the stated relative uncertainty; e_floor is the clip floor of the score; e_reference and e_mc '
             'are the raw log10 relative errors of the GPCA-RQMC reference and of plain Monte Carlo on that instance '
             '(the anchors of the score), measured with the formal evaluator. k is the dimension of the subspace '
-            'carrying the non-smooth part (hard track); L and m are the numbers of assets and monitoring dates.')
+            f'carrying the non-smooth part ({tracks}); L and m are the numbers of assets and monitoring dates.')
     return (json.dumps({'note': note, 'instances': out}, indent=1) + '\n').encode()
 
 
@@ -87,7 +88,8 @@ def workspace_tar(destination: Path, samples: bool = True) -> int:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--version', default='v3', choices=('v3', 'v3.1', 'v3.2', 'v3.3', 'v3.4', 'v3.5', 'theory-v1'))
+    parser.add_argument('--version', default='v3', choices=('v3', 'v3.1', 'v3.2', 'v3.3', 'v3.4', 'v3.5', 'v3.6',
+                                                            'theory-v1'))
     parser.add_argument('--force', action='store_true', help='replace an existing seal')
     parser.add_argument('--provisional', action='store_true',
                         help='no samples.json yet: lets the task image be loaded into the grading daemons early; '

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
+import curved
 import localvol
 import options
 import paths
@@ -14,6 +15,8 @@ from gauss import rotation
 def canonical(spec: dict):
     if spec['family'] in synthetic.FAMILIES:
         return lambda y: synthetic.value(spec, y)
+    if spec['family'] in curved.FAMILIES:
+        return lambda y: curved.value(spec, y)
     if spec['family'] in localvol.FAMILIES:
         return lambda y: localvol.payoff(spec, y)
     if spec['family'] in paths.FAMILIES:

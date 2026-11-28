@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "id": "R0",
+      "claim": "THEORY.md, example entry (replace)",
+      "lean": ["Cubature.gaussian_integral_example"],
+      "status": "proved",
+      "comparison": {
+        "class": "equal",
+        "human": ["The classical Gaussian integral (Mathlib: integral_gaussian)"],
+        "explanation": "Restates a known identity; shows the format only."
+      },
+      "coordinates": {
+        "kind": "other",
+        "class": "the one-dimensional function exp(-x^2)",
+        "inputs": [],
+        "bound": "integral equals sqrt(pi)",
+        "validity": "always",
+        "guarantee": "exact",
+        "anchors": []
+      }
+    }
+  ]
+}

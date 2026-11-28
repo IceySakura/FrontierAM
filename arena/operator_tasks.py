@@ -909,6 +909,30 @@ class BlackboxCubatureV35(BlackboxCubatureV34):
     VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.5'
 
 
+class BlackboxCubatureV36(BlackboxCubatureV35):
+    """v3.6: v3.5 with a third, curved-interface track (versions/v3/generation/curved.py, after the original author's
+    review of 2026-11-27) and the theory rules of theory-v2 (public anchors and value preferences, a reachable target,
+    proofs of optimality, the comparison protocol and result cards). The score is the three-track G; the two-track G on
+    the unchanged v3.1 instances is reported beside it for comparison with v3.1 to v3.5."""
+    VERSION = ROOT / 'tasks/blackbox-cubature/versions/v3.6'
+
+    def score(self, runtime, metrics, baseline):
+        from .operator_drivers.blackbox_cubature_v3 import gain, score_100
+
+        result = super().score(runtime, metrics, baseline)
+        if result.get('status') != 'ok' or result.get('score') is None:
+            return result
+        anchors = baseline['metrics']['parts']
+        rows = [row for row in metrics['parts']['candidate']['rows'] if row['track'] != 'curved']
+        ids = {row['id'] for row in rows}
+        strong = [row for row in anchors['strong']['rows'] if row['id'] in ids]
+        candidate = gain(rows, strong)
+        mc = gain([row for row in anchors['weak']['rows'] if row['id'] in ids], strong)
+        result['two_track'] = {'raw_error': candidate['gain'], 'score': score_100(candidate, mc),
+                               'anchors': {'weak': mc['gain'], 'strong': 0.0}}
+        return result
+
+
 class TheoryOnlyTask(PublicInternetDev, OperatorTask):
     """Theory only (user decision 2026-11-27): one single-setting session with Lean and the public internet, no
     program. Scored only by the Lean check (scripts/grade/lean-comparator.py) and the theory review
@@ -1018,6 +1042,7 @@ CLASSES = {'galaxy-gravity': GalaxyGravity, 'galaxy-gravity-v2': GalaxyGravityV2
            'blackbox-cubature-v3': BlackboxCubatureV3, 'blackbox-cubature-v3.1': BlackboxCubatureV31,
            'blackbox-cubature-v3.2': BlackboxCubatureV32, 'blackbox-cubature-v3.3': BlackboxCubatureV33,
            'blackbox-cubature-v3.4': BlackboxCubatureV34, 'blackbox-cubature-v3.5': BlackboxCubatureV35,
+           'blackbox-cubature-v3.6': BlackboxCubatureV36,
            'blackbox-cubature-theory-v1': BlackboxCubatureTheoryV1,
            'decentralized-sum-of-nonconvex-theory-v1': DecentralizedSumOfNonconvexTheoryV1,
            'blackbox-cubature-theory-v2': BlackboxCubatureTheoryV2,

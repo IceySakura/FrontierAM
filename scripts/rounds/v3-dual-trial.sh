@@ -13,6 +13,7 @@ case $MODEL in gpt-6.2-sol) TAG=sol62;; gpt-6.1-sol) TAG=sol;; claude-opus-5-5) 
 TASK=${TASK:-blackbox-cubature-v3}
 case $TASK in blackbox-cubature-v3) PFX=v3trial;; blackbox-cubature-v3.1) PFX=v31trial;; blackbox-cubature-v3.2) PFX=v32trial;;
   blackbox-cubature-v3.3) PFX=v33trial;; blackbox-cubature-v3.4) PFX=v34trial;; blackbox-cubature-v3.5) PFX=v35trial;;
+  blackbox-cubature-v3.6) PFX=v36trial;;
   *) echo "unknown task $TASK" >&2; exit 2;; esac
 LOG=var/stores/store/reruns/$PFX-$TAG-iterative-$N.log
 [ -e "$LOG" ] && { echo "$LOG exists" >&2; exit 1; }
