@@ -1,0 +1,14 @@
+{
+ "model": "glm-5.3",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "conic-20261128T151803Z-6a6068",
+ "raw": "138 / 650（\\(p = 0.212\\)；弱参照 HiGHS \\(p_0 = 0.254\\)，参照 \\(p_B = 0.789\\)）",
+ "mapping": "\\(p \\le p_0\\) 记 0；\\(p_0 < p \\le p_B\\) 为 \\(50\\,(p-p_0)/(p_B-p_0)\\)；高于 \\(p_B\\) 为 \\(50 + 50\\,(p-p_B)/(1-p_B)\\)",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 34.3,
+  "public_tests": 0
+ }
+}

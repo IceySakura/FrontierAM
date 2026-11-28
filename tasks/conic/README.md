@@ -86,6 +86,7 @@
 | Qwen3.8 Max | 迭代 | 196 / 650（\(p = 0.302\)；弱参照 HiGHS \(p_0 = 0.254\)，参照 \(p_B = 0.789\)） | \(p \le p_0\) 记 0；\(p_0 < p \le p_B\) 为 \(50\,(p-p_0)/(p_B-p_0)\)；高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 4.5 | 0 次提交，96 分钟 | [`qwen3.8-max-0902-iterative-2/`](solutions/v6.3/qwen3.8-max-0902-iterative-2/) |
 | MiniMax M3.1 Flash | 单轮 | 74 / 650（\(p = 0.114\)；弱参照 HiGHS \(p_0 = 0.254\)，参照 \(p_B = 0.789\)） | \(p \le p_0\) 记 0；\(p_0 < p \le p_B\) 为 \(50\,(p-p_0)/(p_B-p_0)\)；高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 30 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | 176 / 650（\(p = 0.271\)；弱参照 HiGHS \(p_0 = 0.254\)，参照 \(p_B = 0.789\)） | \(p \le p_0\) 记 0；\(p_0 < p \le p_B\) 为 \(50\,(p-p_0)/(p_B-p_0)\)；高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 1.6 | 13 次提交，190 分钟 | [`minimax-m3.1-flash-iterative-1/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/) |
+| GLM-5.3 | 单轮 | 138 / 650（\(p = 0.212\)；弱参照 HiGHS \(p_0 = 0.254\)，参照 \(p_B = 0.789\)） | \(p \le p_0\) 记 0；\(p_0 < p \le p_B\) 为 \(50\,(p-p_0)/(p_B-p_0)\)；高于 \(p_B\) 为 \(50 + 50\,(p-p_B)/(1-p_B)\) | 0.0 | 34 分钟 | [`glm-5.3-single-1/`](solutions/v6.3/glm-5.3-single-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -186,6 +187,10 @@ public 分数随测试提交：0.0（26 分钟） → 0.0（38 分钟） → 0.0
 public 分数随测试提交：0.0（20 分钟） → 0.0（33 分钟） → 0.0（44 分钟） → 0.0（60 分钟） → 0.0（88 分钟） → 0.0（98 分钟） → 0.0（112 分钟） → 0.0（124 分钟） → 0.0（135 分钟） → 0.0（146 分钟） → 0.0（156 分钟） → 0.0（166 分钟） → 0.0（179 分钟）
 
 源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-1/source/)（提交 `conic-20261125T151704Z-f24769`）。
+
+### GLM-5.3（单轮，v6.3）
+
+源码 [`solutions/v6.3/glm-5.3-single-1/source/`](solutions/v6.3/glm-5.3-single-1/source/)（提交 `conic-20261128T151803Z-6a6068`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
