@@ -87,6 +87,7 @@
 | Qwen3.8 Max | 迭代 | 增益 \(G = 0.207\)（fourier -0.28，折点 ridge -1.06，乘积峰 +1.96），144 例，单例最长 1.1 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 55.2 | 1 次提交，240 分钟 | [`v2/qwen3.8-max-0902-iterative-1/`](solutions/v6.3/v2/qwen3.8-max-0902-iterative-1/) |
 | MiniMax M3.1 Flash | 单轮 | 增益 \(G = -0.094\)（fourier -0.51，折点 ridge -0.07，乘积峰 +0.29），144 例，单例最长 1.2 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 43.4 | 26 分钟 | [`v2/minimax-m3.1-flash-single-1/`](solutions/v6.3/v2/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | 增益 \(G = 0.146\)（fourier -0.98，折点 ridge -0.59，乘积峰 +2.00），144 例，单例最长 1.7 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 53.6 | 9 次提交，90 分钟 | [`v2/minimax-m3.1-flash-iterative-1/`](solutions/v6.3/v2/minimax-m3.1-flash-iterative-1/) |
+| GLM-5.3 | 单轮 | 增益 \(G = 0.499\)（fourier +0.51，折点 ridge -0.99，乘积峰 +1.98），144 例，单例最长 1.8 秒（普通蒙特卡洛 \(G_0 = -0.713\)，HumanPortfolio-v1 为 0） | 与参照同例配对的 log10 相对误差增益（每例截到 ±2），按族×维度平均：\(G \ge 0\) 为 \(50 + 25\,G\)；\(G < 0\) 为 \(\max(0,\,50\,(G - G_0)/(-G_0))\) | 62.5 | 38 分钟 | [`v2/glm-5.3-single-1/`](solutions/v6.3/v2/glm-5.3-single-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -175,6 +176,10 @@ public 分数随测试提交：44.1（114 分钟）
 public 分数随测试提交：52.2（19 分钟） → 52.2（26 分钟） → 52.3（36 分钟） → 39.0（41 分钟） → 53.3（54 分钟） → 53.3（55 分钟） → 53.3（63 分钟） → 51.6（67 分钟） → 51.6（84 分钟）
 
 源码 [`solutions/v6.3/v2/minimax-m3.1-flash-iterative-1/source/`](solutions/v6.3/v2/minimax-m3.1-flash-iterative-1/source/)（提交 `blackbox-cubature-v2-20261125T204134Z-599310`）。
+
+### GLM-5.3（单轮，v6.3）
+
+源码 [`solutions/v6.3/v2/glm-5.3-single-1/source/`](solutions/v6.3/v2/glm-5.3-single-1/source/)（提交 `blackbox-cubature-v2-20261128T154620Z-dafbf1`）。
 
 ## 观察与说明
 
