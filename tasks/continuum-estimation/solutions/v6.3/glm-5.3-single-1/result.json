@@ -1,0 +1,14 @@
+{
+ "model": "glm-5.3",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "continuum-estimation-20261128T160634Z-19e99b",
+ "raw": "损失 \\(E = 0.00382412\\)，45 例，单例最长 2.3 秒（一阶 Richardson：\\(U = 0.0176266\\)，GRE：\\(W = 0.00160119\\)）",
+ "mapping": "\\(E \\ge U\\) 记 0；\\(W \\le E < U\\) 为 \\(50\\,(U-E)/(U-W)\\)；\\(E < W\\) 为 \\(100 - 50\\,E/W\\)",
+ "score": 43.064,
+ "review": null,
+ "process": {
+  "minutes": 38.7,
+  "public_tests": 0
+ }
+}

@@ -80,6 +80,7 @@
 | Qwen3.8 Max | 迭代 | 损失 \(E = 0.00306695\)，45 例，单例最长 2.1 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 45.4 | 9 次提交，177 分钟 | [`qwen3.8-max-0902-iterative-3/`](solutions/v6.3/qwen3.8-max-0902-iterative-3/) |
 | MiniMax M3.1 Flash | 单轮 | 损失 \(E = 0.00329319\)，45 例，单例最长 1.3 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 44.7 | 60 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | 损失 \(E = 0.0078232\)，45 例，单例最长 0.6 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 30.6 | 14 次提交，157 分钟 | [`minimax-m3.1-flash-iterative-2/`](solutions/v6.3/minimax-m3.1-flash-iterative-2/) |
+| GLM-5.3 | 单轮 | 损失 \(E = 0.00382412\)，45 例，单例最长 2.3 秒（一阶 Richardson：\(U = 0.0176266\)，GRE：\(W = 0.00160119\)） | \(E \ge U\) 记 0；\(W \le E < U\) 为 \(50\,(U-E)/(U-W)\)；\(E < W\) 为 \(100 - 50\,E/W\) | 43.1 | 39 分钟 | [`glm-5.3-single-1/`](solutions/v6.3/glm-5.3-single-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -178,6 +179,10 @@ public 分数随测试提交：72.9（93 分钟） → 70.4（117 分钟） → 
 public 分数随测试提交：73.4（53 分钟） → 75.5（80 分钟） → 73.5（96 分钟） → 75.8（101 分钟） → 77.6（110 分钟） → 76.5（112 分钟） → 77.7（115 分钟） → 77.2（116 分钟） → 77.1（120 分钟） → 77.6（124 分钟） → 77.6（127 分钟） → 75.8（133 分钟） → 77.6（137 分钟） → 77.5（148 分钟）
 
 源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-2/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-2/source/)（提交 `continuum-estimation-20261126T160500Z-74c5e9`）。
+
+### GLM-5.3（单轮，v6.3）
+
+源码 [`solutions/v6.3/glm-5.3-single-1/source/`](solutions/v6.3/glm-5.3-single-1/source/)（提交 `continuum-estimation-20261128T160634Z-19e99b`）。
 
 ## 观察与说明
 
