@@ -1,0 +1,14 @@
+{
+ "model": "glm-5.3",
+ "protocol": "v6.3",
+ "setting": "单轮",
+ "submission": "exponential-v3-20261128T151951Z-f79fc4",
+ "raw": "无效提交（对照例不合格；73 例不合格：`stream_io_failure` 54，`short_output` 15，`short_output;stream_io_failure` 4）",
+ "mapping": "对照例不合格记 0",
+ "score": 0.0,
+ "review": null,
+ "process": {
+  "minutes": 36.1,
+  "public_tests": 0
+ }
+}

@@ -99,6 +99,7 @@
 | Qwen3.8 Max | 迭代 | 66/66 个计分例合格，总体 \(R = 0.581\)（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 64.9 | 7 次提交，161 分钟 | [`qwen3.8-max-0902-iterative-3/`](solutions/v6.3/qwen3.8-max-0902-iterative-3/) |
 | MiniMax M3.1 Flash | 单轮 | 46/66 个计分例合格；不合格：`accuracy_failure` 20（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 15.7 | 38 分钟 | [`minimax-m3.1-flash-single-1/`](solutions/v6.3/minimax-m3.1-flash-single-1/) |
 | MiniMax M3.1 Flash | 迭代 | 64/66 个计分例合格；不合格：`accuracy_failure` 2（\(r\)：逐例用时 ÷ 7 方法参照组该例最快成员） | 逐例 \(100/(1+r)\)，不合格例记 0；按精度、场景、族、母矩阵逐层等权平均 | 43.3 | 9 次提交，164 分钟 | [`minimax-m3.1-flash-iterative-2/`](solutions/v6.3/minimax-m3.1-flash-iterative-2/) |
+| GLM-5.3 | 单轮 | 无效提交（对照例不合格；73 例不合格：`stream_io_failure` 54，`short_output` 15，`short_output;stream_io_failure` 4） | 对照例不合格记 0 | 0.0 | 36 分钟 | [`glm-5.3-single-1/`](solutions/v6.3/glm-5.3-single-1/) |
 
 ### GPT-6.2 Sol（单轮，v6.3）
 
@@ -203,6 +204,10 @@ public 分数随测试提交：60.1（69 分钟） → 61.3（90 分钟） → 5
 public 分数随测试提交：27.6（51 分钟） → 42.8（64 分钟） → 43.8（71 分钟） → 44.2（77 分钟） → 35.6（88 分钟） → 36.0（105 分钟） → 28.4（133 分钟） → 34.0（140 分钟） → 45.3（146 分钟）
 
 源码 [`solutions/v6.3/minimax-m3.1-flash-iterative-2/source/`](solutions/v6.3/minimax-m3.1-flash-iterative-2/source/)（提交 `exponential-v3-20261128T024054Z-73ca86`）；未复制的二进制或大文件：bin/fastsolve（74,512 字节）。
+
+### GLM-5.3（单轮，v6.3）
+
+源码 [`solutions/v6.3/glm-5.3-single-1/source/`](solutions/v6.3/glm-5.3-single-1/source/)（提交 `exponential-v3-20261128T151951Z-f79fc4`）。
 
 <details><summary>旧版本的成绩与解法</summary>
 
